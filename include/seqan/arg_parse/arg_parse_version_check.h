@@ -45,6 +45,15 @@
 #include <future>
 #include <sys/types.h> 
 #include <utime.h>
+
+// ==========================================================================
+// Forwards
+// ==========================================================================
+
+// NOTE(rrahn): In-file forward for function call operator.
+struct VersionCheck;
+inline bool _checkForNewerVersion(VersionCheck &);
+
 // ==========================================================================
 // Tags, Classes, Enums
 // ==========================================================================
@@ -60,7 +69,6 @@ struct VersionCheck
     std::string _program;
     std::string _command;
     std::string _website = "https://github.com/seqan/seqan/tree/master/apps";
-    std::future<bool> & _fut;
 
 #if defined(PLATFORM_WINDOWS)
     std::string _path = std::string(getenv("UserProfile")) + "/.config/seqan";
@@ -86,11 +94,10 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------------
-    VersionCheck(std::future<bool> & fut,
-                 std::string const & name,
+
+    VersionCheck(std::string const & name,
                  std::string const & version,
-                 std::string const & website):
-    _fut(fut)
+                 std::string const & website)
     {
         _name = name;
         if (!version.empty() &&
@@ -102,42 +109,16 @@ struct VersionCheck
         _updateCommand();
     }
 
-    VersionCheck(VersionCheck const & rhs):
-    _fut(rhs._fut)
-    {
-        _name    = rhs._name;
-        _version = rhs._version;
-        _website = rhs._website;
-        _program = rhs._program;
-        _command = rhs._command;
-    }
-
-    VersionCheck(VersionCheck && rhs) :
-        _fut(rhs._fut)
-    {
-        swap(rhs);
-    }
-
-    VersionCheck & operator=(VersionCheck rhs)
-    {
-        swap(rhs);
-        return *this;
-    }
-
     // ----------------------------------------------------------------------------
     // Member Functions
     // ----------------------------------------------------------------------------
-    inline void swap(VersionCheck & rhs)
-    {
-        std::swap(_name,    rhs._name);
-        std::swap(_version, rhs._version);
-        std::swap(_website, rhs._website);
-        std::swap(_program, rhs._program);
-        std::swap(_command, rhs._command);
-        std::swap(_fut,     rhs._fut);
-    }
 
-#ifdef __unix
+#if defined(PLATFORM_WINDOWS)
+    void _getProgram()
+    {
+        _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -erroraction 'silentlycontinue' -OutFile";
+    }
+#else  // Unix based platforms.
     void _getProgram()
     {
         // ask if system call for version or help is successfull
@@ -145,20 +126,14 @@ struct VersionCheck
             _program = "wget -q -O";
         else if (!system("curl --version > /dev/null 2>&1"))
             _program =  "curl -o";
-#ifndef __linux
-        // ftp call does not work on linux
+#ifndef __linux  // ftp call does not work on linux
         else if (!system("which ftp > /dev/null 2>&1"))
             _program =  "ftp -Vo";
 #endif
         else
             _program.clear();
     }
-#else // windows
-    void _getProgram()
-    {
-        _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -erroraction 'silentlycontinue' -OutFile";
-    }
-#endif
+#endif  // defined(PLATFORM_WINDOWS)
 
     void _updateCommand()
     {
@@ -169,6 +144,11 @@ struct VersionCheck
             _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
 #endif
         }
+    }
+
+    inline void operator()(std::promise<bool> versionCheckProm)
+    {
+        versionCheckProm.set_value(_checkForNewerVersion(*this));
     }
 };
 
@@ -352,7 +332,7 @@ inline bool _isSmaller(seqan::String<int> & left, seqan::String<int> & right)
 // ----------------------------------------------------------------------------
 // Function _callServer()
 // ----------------------------------------------------------------------------
-inline bool _callServer(VersionCheck me, bool version_file_exists)
+inline bool _callServer(VersionCheck const & me, bool version_file_exists)
 {
     // system call
     // http response is stored in a file '.config/seqan/{app_name}_version'
@@ -394,7 +374,8 @@ inline bool _callServer(VersionCheck me, bool version_file_exists)
 // ----------------------------------------------------------------------------
 // Function checkForNewerVersion()
 // ----------------------------------------------------------------------------
-inline bool checkForNewerVersion(VersionCheck & me)
+
+inline bool _checkForNewerVersion(VersionCheck & me)
 {
     if (!_checkWritability(me._path))
     {
@@ -417,7 +398,7 @@ inline bool checkForNewerVersion(VersionCheck & me)
 
     if (file_time_diff < min_time_diff && version_file_exists)
         return false; // only check for newer version once a day
-    
+
     if (version_file_exists) // file exists. TODO:: ask if there should be a time limit here too
     {
         seqan::String<int> new_ver;
@@ -458,9 +439,7 @@ inline bool checkForNewerVersion(VersionCheck & me)
 
     // launch a seperate thread to not defer runtime
     // std::cout << me._command << std::endl;
-    me._fut = std::async(std::launch::async, _callServer, me, version_file_exists);
-
-    return true;
+    return _callServer(me, version_file_exists);
 }
 
 #endif //SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_

@@ -316,19 +316,22 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
 
     if (!(check=="OFF"))
     {
-        VersionCheck app_version(me.appVersionCheckFuture,
-                                 toCString(me._toolDoc._name),
+        VersionCheck app_version(toCString(me._toolDoc._name),
                                  toCString(me._toolDoc._version),
                                  toCString(me._toolDoc._url));
-        checkForNewerVersion(app_version);
+        std::promise<bool> appVersionProm;
+        me.appVersionCheckFuture = appVersionProm.get_future();
+        std::thread(app_version, std::move(appVersionProm)).detach();
 
         if (!(check=="APP_ONLY"))
         {
             std::string seqan_ver_string = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
                                            std::to_string(SEQAN_VERSION_MINOR) + "." +
                                            std::to_string(SEQAN_VERSION_PATCH);
-            VersionCheck seqan_version(me.seqanVersionCheckFuture, "seqan", seqan_ver_string, "http//www.github.com/seqan/seqan");
-            checkForNewerVersion(seqan_version);
+            VersionCheck seqan_version("seqan", seqan_ver_string, "http//www.github.com/seqan/seqan");
+            std::promise<bool> seqanVersionProm;
+            me.seqanVersionCheckFuture = seqanVersionProm.get_future();
+            std::thread(seqan_version, std::move(seqanVersionProm)).detach();
         }
     }
 #endif
