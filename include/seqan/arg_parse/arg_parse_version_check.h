@@ -57,6 +57,9 @@ namespace seqan
 // NOTE(rrahn): In-file forward for function call operator.
 struct VersionCheck;
 inline bool _checkForNewerVersion(VersionCheck &);
+inline std::string _getOS();
+inline std::string _getPath();
+inline std::string _getBitSys();
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -73,35 +76,13 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Member Variables
     // ----------------------------------------------------------------------------
-    std::string _url = "http://www.seqan.de/version_check/SeqAn_";
+    std::string _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys();
     std::string _name;
     std::string _version = "0.0.0";
     std::string _program;
     std::string _command;
     std::string _website = "https://github.com/seqan/seqan/tree/master/apps";
-
-#if defined(PLATFORM_WINDOWS)
-    std::string _path = std::string(getenv("UserProfile")) + "/.config/seqan";
-#else
-    std::string _path = std::string(getenv("HOME")) + "/.config/seqan";
-#endif
-    
-    //get system information
-#ifdef __linux
-    std::string _os = "Linux";
-#elif __APPLE__
-	std::string _os = "MacOS";
-#elif defined(PLATFORM_WINDOWS)
-	std::string _os = "Windows";
-#elif __FreeBSD__
-    std::string _os = "FreeBSD";
-#elif __OpenBSD__
-    std::string _os = "OpenBSD";
-#else
-    std::string _os = "unknown";
-#endif
-
-    // TODO:: is 64/32 bit system??
+    std::string _path = _getPath();
 
     // ----------------------------------------------------------------------------
     // Constructors
@@ -151,7 +132,8 @@ struct VersionCheck
     {
         if (!_program.empty())
         {
-            _command = _program + " " + _path + "/" + _name + ".version " + _url + _os + "_64_"+ _name + "_" + _version;
+            _command = _program + " " + _path + "/" + _name + ".version " + 
+                       _url + _name + "_" + _version;
 #if defined(PLATFORM_WINDOWS)
             _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
 #endif
@@ -179,6 +161,58 @@ inline void setURL(VersionCheck & me, std::string url)
 {
     std::swap(me._url, url);
     me._updateCommand();
+}
+
+// ----------------------------------------------------------------------------
+// Function _getOS()
+// ----------------------------------------------------------------------------
+inline std::string _getOS()
+{
+    //get system information
+    std::string os;
+#ifdef __linux
+    os = "Linux";
+#elif __APPLE__
+    os = "MacOS";
+#elif defined(PLATFORM_WINDOWS)
+    os = "Windows";
+#elif __FreeBSD__
+    os = "FreeBSD";
+#elif __OpenBSD__
+    os = "OpenBSD";
+#else
+    os = "unknown";
+#endif
+    return os;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getPath()
+// ----------------------------------------------------------------------------
+inline std::string _getPath()
+{
+    std::string path;
+#if defined(PLATFORM_WINDOWS)
+    path = std::string(getenv("UserProfile")) + "/.config/seqan";
+#else
+    path = std::string(getenv("HOME")) + "/.config/seqan";
+#endif
+    return path;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getPath()
+// ----------------------------------------------------------------------------
+inline std::string _getBitSys()
+{
+    std::string bitSys;
+
+#if SEQAN_IS_32_BIT
+    bitSys = "_32_";
+#else
+    bitSys = "_64_";
+#endif
+    return bitSys;
 }
 
 // ----------------------------------------------------------------------------
