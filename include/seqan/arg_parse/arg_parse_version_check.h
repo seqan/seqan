@@ -62,6 +62,12 @@ inline bool _checkForNewerVersion(VersionCheck &);
 // Tags, Classes, Enums
 // ==========================================================================
 
+struct VersionControlTags
+{
+    constexpr static const char * SEQAN_NAME = "seqan";
+    constexpr static const char * UNREGISTERED_APP = "UNREGISTERED APP";
+};
+
 struct VersionCheck
 {
     // ----------------------------------------------------------------------------
@@ -275,7 +281,7 @@ inline bool _readVersionNumbers(String<int> & version_numbers, std::string const
             _getNumbersFromString(version_numbers, line);
             myfile.close();
         }
-        else if (line == "UNREGISTERED APP")
+        else if (line == VersionControlTags::UNREGISTERED_APP)
         {
             std::cerr << "[SEQAN INFO] :: Thank you for using SeqAn!\n"
                       << "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
@@ -373,7 +379,7 @@ inline bool _checkForNewerVersion(VersionCheck & me)
 
         if (_isSmaller(old_ver, new_ver))
         {
-            if(me._name == "seqan")
+            if(me._name == VersionControlTags::SEQAN_NAME)
             {
                 std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn "
                           << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << " Go to "
