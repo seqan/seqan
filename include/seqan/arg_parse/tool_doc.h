@@ -650,7 +650,7 @@ public:
         _manSection(1) {}
 
     ToolDoc(ToolDoc const & toolDoc) :
-        _name(toolDoc._name), _shortDescription(toolDoc._shortDescription),_url(toolDoc._url),
+        _name(toolDoc._name), _shortDescription(toolDoc._shortDescription), _url(toolDoc._url),
         _date(toolDoc._date), _version(toolDoc._version), _shortCopyright(toolDoc._shortCopyright),
         _longCopyright(toolDoc._longCopyright), _citation(toolDoc._citation), _manTitle(toolDoc._manTitle),
         _category(toolDoc._category), _manSection(1)
