@@ -78,6 +78,12 @@ option (SEQAN_ARCH_SSE4 "Build SSE optimized binaries." OFF)
 option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 
 # ===========================================================================
+# Version Check Variable.
+# ===========================================================================
+
+option (SEQAN_VERSION_CHECK "SeqAn version check." ON)
+
+# ===========================================================================
 # Setup Modules and Find Packages.
 # ===========================================================================
 
