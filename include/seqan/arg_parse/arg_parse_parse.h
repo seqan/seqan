@@ -308,7 +308,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_ERROR;
     }
 
-#if _SEQAN_VERSION_CHECK == 1
+#if _SEQAN_VERSION_CHECK
     // do version check if not turned off by the user
     std::string check = "DEV"; // default
     if(isSet(me, "version-check"))
@@ -327,7 +327,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
             std::string seqan_ver_string = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
                                            std::to_string(SEQAN_VERSION_MINOR) + "." +
                                            std::to_string(SEQAN_VERSION_PATCH);
-            VersionCheck seqan_version(me.seqanVersionCheckFuture, "seqan", seqan_ver_string, "http//www.seqan.de");
+            VersionCheck seqan_version(me.seqanVersionCheckFuture, "seqan", seqan_ver_string, "http//www.github.com/seqan/seqan");
             checkForNewerVersion(seqan_version);
         }
     }
