@@ -45,6 +45,10 @@
 #include <future>
 #include <sys/types.h> 
 #include <utime.h>
+#include <chrono>
+
+namespace seqan
+{
 
 // ==========================================================================
 // Forwards
@@ -90,6 +94,8 @@ struct VersionCheck
 #else
     std::string _os = "unknown";
 #endif
+
+    // TODO:: is 64/32 bit system??
 
     // ----------------------------------------------------------------------------
     // Constructors
@@ -139,7 +145,7 @@ struct VersionCheck
     {
         if (!_program.empty())
         {
-            _command = _program + " " + _path + "/" + _name + "_version.txt " + _url + _os + "_64_"+ _name + "_" + _version;
+            _command = _program + " " + _path + "/" + _name + ".version " + _url + _os + "_64_"+ _name + "_" + _version;
 #if defined(PLATFORM_WINDOWS)
             _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
 #endif
@@ -218,52 +224,29 @@ inline bool _checkWritability(std::string path)
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
-#if defined(PLATFORM_WINDOWS)
-inline double _getFileTimeDiff(std::string version_file)
+inline  double _getFileTimeDiff(std::string const & timestamp_filename)
 {
-    FILETIME curr;
-    GetSystemTimeAsFileTime(&curr);
+    double curr = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    std::ifstream timestamp_file;
+    timestamp_file.open(timestamp_filename.c_str());
 
-    HANDLE hFile;
-    FILETIME hFileTime;
-    hFile = CreateFile(version_file.c_str(), GENERIC_READ, FILE_SHARE_READ,  NULL,  OPEN_EXISTING,  FILE_ATTRIBUTE_NORMAL, NULL);
+    if (timestamp_file.is_open())
+    {
+        std::string str_time;
+        std::getline(timestamp_file, str_time);
+        timestamp_file.close();
+        double d_time;
+        lexicalCast(d_time, str_time);
+        return curr - d_time;
+    }
 
-    if(hFile == INVALID_HANDLE_VALUE)
-        return -1;
-    
-    if(!GetFileTime(hFile, NULL, NULL, &hFileTime))
-        return -1;
-    
-    ULARGE_INTEGER ul_curr;
-    ULARGE_INTEGER ul_file;
-    ul_curr.LowPart  = curr.dwLowDateTime;
-    ul_curr.HighPart = curr.dwHighDateTime;
-    ul_file.LowPart  = hFileTime.dwLowDateTime;
-    ul_file.HighPart = hFileTime.dwHighDateTime;
-
-    ULONGLONG diffInTicks = ul_curr.QuadPart - ul_file.QuadPart; // get time difference
-    LONGLONG diffInS = diffInTicks / 10000000;
-    CloseHandle(hFile);
-    return((double)diffInS);
+    return curr;
 }
-#else
-inline double _getFileTimeDiff(std::string version_file)
-{
-    time_t curr;
-    time(&curr); // get current time
-
-    struct stat t_stat;
-    if (stat(version_file.c_str(), &t_stat) < 0)  // file does not exist
-        return -1;
-    else
-        return (difftime(curr, t_stat.st_mtime)); // returns time in seconds
-}
-#endif
 
 // ----------------------------------------------------------------------------
 // Function _getNumbersFromString()
 // ----------------------------------------------------------------------------
-inline void _getNumbersFromString(seqan::String<int> & numbers, std::string const & str)
+inline void _getNumbersFromString(String<int> & numbers, std::string const & str)
 {
     std::string number;
     std::istringstream iss(str);
@@ -271,7 +254,7 @@ inline void _getNumbersFromString(seqan::String<int> & numbers, std::string cons
     {
         if (!number.empty())
         {
-            seqan::appendValue(numbers, atoi(seqan::toCString(number)));
+            appendValue(numbers, atoi(toCString(number)));
         }
     }
 }
@@ -279,7 +262,7 @@ inline void _getNumbersFromString(seqan::String<int> & numbers, std::string cons
 // ----------------------------------------------------------------------------
 // Function _getVersionNumbers()
 // ----------------------------------------------------------------------------
-inline bool _readVersionNumbers(seqan::String<int> & version_numbers, std::string const & version_file)
+inline bool _readVersionNumbers(String<int> & version_numbers, std::string const & version_file)
 {
     std::ifstream myfile;
     myfile.open(version_file.c_str());
@@ -317,7 +300,7 @@ inline bool _readVersionNumbers(seqan::String<int> & version_numbers, std::strin
 // ----------------------------------------------------------------------------
 // Function _isSmaller()
 // ----------------------------------------------------------------------------
-inline bool _isSmaller(seqan::String<int> & left, seqan::String<int> & right)
+inline bool _isSmaller(String<int> & left, String<int> & right)
 {
     for (unsigned i = 0; i < length(left); ++i)
     {
@@ -332,43 +315,26 @@ inline bool _isSmaller(seqan::String<int> & left, seqan::String<int> & right)
 // ----------------------------------------------------------------------------
 // Function _callServer()
 // ----------------------------------------------------------------------------
-inline bool _callServer(VersionCheck const & me, bool version_file_exists)
+
+inline bool _callServer(VersionCheck const & me)
 {
     // system call
     // http response is stored in a file '.config/seqan/{app_name}_version'
-    if (system(me._command.c_str()))
+    int res = system(me._command.c_str());
+
+    // update timestamp
+    std::string timestamp_filename = me._path + "/" + me._name + ".timestamp";
+    std::ofstream timestamp_file(timestamp_filename.c_str());
+    if (timestamp_file.is_open())
     {
-        std::string version_file = me._path + "/" + me._name + "_version.txt";
-        if (!version_file_exists)
-        {
-            std::ofstream version_file_out (version_file.c_str());
-            if (version_file_out.is_open())
-            {
-                version_file_out << "UNABLE TO CALL HOME.\n";
-                version_file_out.close();
-            }
-        }
-        else // just set last modified date to current and do not override possible version information
-        {
-#if defined(PLATFORM_WINDOWS)
-            FILETIME curr;
-            GetSystemTimeAsFileTime(&curr);
-            HANDLE hFile;
-            hFile = CreateFile(version_file.c_str(), GENERIC_WRITE, FILE_SHARE_READ,  NULL,  OPEN_EXISTING,  FILE_ATTRIBUTE_NORMAL, NULL);
-            SetFileTime(hFile, NULL, NULL, &curr);
-            CloseHandle(hFile);
-#else
-            time_t curr;
-            time(&curr); // get current time
-            struct utimbuf puttime;
-            puttime.modtime = curr;
-            puttime.actime = curr;
-            utime(version_file.c_str(), &puttime);
-#endif
-        }
-        return false;
+        timestamp_file << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        timestamp_file.close();
     }
-    return true;
+
+    if (res == 0)
+        return true;
+    else
+        return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -391,46 +357,43 @@ inline bool _checkForNewerVersion(VersionCheck & me)
         me._updateCommand();
     }
 
-    std::string version_file = me._path + "/" + me._name + "_version.txt";
-    double min_time_diff = 86400;                           // one day = 86400 seonds
-    double file_time_diff = _getFileTimeDiff(version_file); // time difference: last modified date until now in seconds
-    bool version_file_exists = (file_time_diff > -1) ? true : false;
+    std::string version_filename   = me._path + "/" + me._name + ".version";
+    std::string timestamp_filename = me._path + "/" + me._name + ".timestamp";
+    double min_time_diff = 86400;                                 // one day = 86400 seonds
+    double file_time_diff = _getFileTimeDiff(timestamp_filename); // time difference in seconds
 
-    if (file_time_diff < min_time_diff && version_file_exists)
+    if (file_time_diff < min_time_diff)
         return false; // only check for newer version once a day
 
-    if (version_file_exists) // file exists. TODO:: ask if there should be a time limit here too
+    String<int> new_ver;
+    if (_readVersionNumbers(new_ver, version_filename))
     {
-        seqan::String<int> new_ver;
-        if (_readVersionNumbers(new_ver, version_file))
-        {
-            seqan::String<int> old_ver;
-            _getNumbersFromString(old_ver, me._version);
+        String<int> old_ver;
+        _getNumbersFromString(old_ver, me._version);
 
-            if (_isSmaller(old_ver, new_ver))
+        if (_isSmaller(old_ver, new_ver))
+        {
+            if(me._name == "seqan")
             {
-                if(me._name == "seqan")
-                {
-                    std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn "
-                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << " Go to "
-                              << me._website << "\n"
-                              << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY" << "\n\n";
-                }
-                else
-                {
-                    std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " 
-                              << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
-                              << "[APP INFO] :: Check out " << me._website << "\n"
-                              << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF" << "\n\n";
-                }
+                std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn "
+                          << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << " Go to "
+                          << me._website << "\n"
+                          << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY" << "\n\n";
             }
-            else if (_isSmaller(new_ver, old_ver))
+            else
             {
-                std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered.\n"
-                          << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)" 
-                          << "[APP INFO] :: If not, you might want to contact the developer."
-                          << "\n\n";
+                std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " 
+                          << new_ver[0] << "." << new_ver[1] << "." << new_ver[2] << "\n"
+                          << "[APP INFO] :: Check out " << me._website << "\n"
+                          << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF" << "\n\n";
             }
+        }
+        else if (_isSmaller(new_ver, old_ver))
+        {
+            std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered.\n"
+                      << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)" 
+                      << "[APP INFO] :: If not, you might want to contact the developer."
+                      << "\n\n";
         }
     }
 
@@ -439,7 +402,8 @@ inline bool _checkForNewerVersion(VersionCheck & me)
 
     // launch a seperate thread to not defer runtime
     // std::cout << me._command << std::endl;
-    return _callServer(me, version_file_exists);
+    return _callServer(me);
 }
 
+} // namespace seqan
 #endif //SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_
