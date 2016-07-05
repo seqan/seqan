@@ -79,14 +79,14 @@
 
 #include <omp.h>
 
-#if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
+  // MSVC __pragma-operator
+  #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
+#else
   // GCC _Pragma operator
   #define SEQAN_DO_PRAGMA(x) _Pragma(# x)
   #define SEQAN_OMP_PRAGMA(x) SEQAN_DO_PRAGMA(omp x)
-#else  // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
-  // MSVC __pragma-operator
-  #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
-#endif // #if defined(COMPILER_GCC) || defined(COMPILER_INTEL) || defined(COMPILER_CLANG)
+#endif
 
 #else  // #ifdef _OPENMP
 

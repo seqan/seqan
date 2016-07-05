@@ -78,6 +78,7 @@ _alignWrapperSequential(StringSet<TString1, TSpec1> const & stringsH,
     forEach(zipCont,
             [&] (auto tuple)
             {
+                using namespace seqan;
                 DPScoutState_<Default> dpScoutState;
                 String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
                 std::get<0>(tuple) = _setUpAndRunAlignment(traceSegments, dpScoutState,
@@ -111,6 +112,7 @@ _alignWrapperSequential(TString1 const & stringH,
     forEach(zipCont,
             [&] (auto tuple)
             {
+                using namespace seqan;
                 DPScoutState_<Default> dpScoutState;
                 String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
                 std::get<0>(tuple) = _setUpAndRunAlignment(traceSegments, dpScoutState, stringH, std::get<1>(tuple),
@@ -147,6 +149,7 @@ _alignWrapperSequential(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gap
     forEach(zipCont,
             [&] (auto tuple)
             {
+                using namespace seqan;
                 String<TTraceSegment> trace;
                 DPScoutState_<Default> dpScoutState;
                 std::get<0>(tuple) = _setUpAndRunAlignment(trace, dpScoutState, source(std::get<1>(tuple)),

@@ -23,8 +23,8 @@ endif ()
 
 # Search SeqAn and select dependencies.
 find_package (ZLIB)
-find_package (SeqAn REQUIRED)
 find_package (Boost)
+find_package (SeqAn REQUIRED)
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
     message (STATUS "  Boost or zlib not found: Not building bs_tools.")
@@ -132,4 +132,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
 
   seqan_configure_cpack_app (bs_tools "bs_tools")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
-

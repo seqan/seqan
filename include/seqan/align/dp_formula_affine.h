@@ -279,7 +279,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
         activeCell._score = activeCell._verticalScore = rightCompare;
     else
         activeCell._score = activeCell._verticalScore;
-        return TraceBitMap_<TScoreValue>::NONE;
+    return TraceBitMap_<TScoreValue>::NONE;
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueR>

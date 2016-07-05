@@ -70,9 +70,6 @@ target_link_libraries (test_journaled_string_tree_find ${SEQAN_LIBRARIES})
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
-# Enable OpenMP.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-
 # ----------------------------------------------------------------------------
 # Register with CTest
 # ----------------------------------------------------------------------------
