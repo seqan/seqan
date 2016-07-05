@@ -76,7 +76,7 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Member Variables
     // ----------------------------------------------------------------------------
-    std::string _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys();
+    std::string _url;
     std::string _name;
     std::string _version = "0.0.0";
     std::string _program;
@@ -98,6 +98,7 @@ struct VersionCheck
             _version = version.substr(0,5); // in case the git revision number is given take only version number
         if(!website.empty())
             _website = website;
+        _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
         _updateCommand();
     }
@@ -132,8 +133,7 @@ struct VersionCheck
     {
         if (!_program.empty())
         {
-            _command = _program + " " + _path + "/" + _name + ".version " + 
-                       _url + _name + "_" + _version;
+            _command = _program + " " + _path + "/" + _name + ".version " + _url;
 #if defined(PLATFORM_WINDOWS)
             _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
 #endif
