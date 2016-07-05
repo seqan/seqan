@@ -179,7 +179,7 @@ inline void setURL(VersionCheck & me, std::string url)
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
 #if defined(PLATFORM_WINDOWS)
-inline bool _checkWritability(std::string path)
+inline bool _checkWritability(std::string const & path)
 {
     DWORD ftyp = GetFileAttributesA(path.c_str());
     if (ftyp == INVALID_FILE_ATTRIBUTES || !(ftyp & FILE_ATTRIBUTE_DIRECTORY))
@@ -200,7 +200,7 @@ inline bool _checkWritability(std::string path)
     return true;
 }
 #else
-inline bool _checkWritability(std::string path)
+inline bool _checkWritability(std::string const & path)
 {
     struct stat d_stat;
     if (stat(path.c_str(), &d_stat) < 0)
