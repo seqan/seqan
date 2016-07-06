@@ -1194,11 +1194,16 @@ getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
-inline TSize
-getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c)
+inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c)
 {
     TPos smaller;
     return getRank(dict, pos, static_cast<TValue>(c), smaller);
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
+inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & smaller)
+{
+    return getRank(dict, pos, static_cast<TValue>(c));
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
