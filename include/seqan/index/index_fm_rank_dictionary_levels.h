@@ -57,13 +57,6 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryBitsPerBlock_;
 
 // ----------------------------------------------------------------------------
-// Metafunction RankDictionaryBlockType_
-// ----------------------------------------------------------------------------
-
-/*template <typename TSize, unsigned LEVELS, unsigned LEVEL>
-struct RankDictionaryBlockType_;*/
-
-// ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBlock_
 // ----------------------------------------------------------------------------
 
@@ -442,7 +435,7 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
 
     typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 1>::Type   Type;
     static_assert(BitsPerValue<typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 1>::Type>::VALUE >= LogN<_VALUES_PER_BLOCK + 1, 2>::VALUE,
-        "The datatype of the lowest level has to be larger or the number of words per block smaller. See the online documentation for moe information.");
+        "The datatype of the lowest level has to be larger or the number of words per block smaller. See the online documentation for more information.");
 
     typedef typename RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::Type TWordType;
 
@@ -1457,13 +1450,11 @@ reserve(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const newC
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDict_;
 
-    bool res = true;
-    res &= reserve(dict.blocks, (newCapacity + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
     if (TConfig::LEVELS > 1)
-        res &= resize(dict.superblocks, (newCapacity + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK, tag);
+        reserve(dict.superblocks, (newCapacity + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK, tag);
     if (TConfig::LEVELS > 2)
-        res &= resize(dict.ultrablocks, (newCapacity + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK, tag);
-    return res;
+        reserve(dict.ultrablocks, (newCapacity + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK, tag);
+    return reserve(dict.blocks, (newCapacity + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -1476,14 +1467,12 @@ resize(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const newLe
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDict_;
 
-    bool result = true;
     dict._length = newLength;
-    result &= resize(dict.blocks, (newLength + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
     if (TConfig::LEVELS > 1)
-        result &= resize(dict.superblocks, (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK, tag);
+        resize(dict.superblocks, (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK, tag);
     if (TConfig::LEVELS > 2)
-        result &= resize(dict.ultrablocks, (newLength + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK, tag);
-    return result;
+        resize(dict.ultrablocks, (newLength + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK, tag);
+    return resize(dict.blocks, (newLength + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
 }
 
 template <typename TValue, typename TSpec, typename TConfig>
@@ -1492,9 +1481,7 @@ inline bool save(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, c
     String<char> name;
     bool result = true;
 
-    name = fileName;
-    append(name, "");
-    result &= save(getFibre(dict, FibreRanks()), toCString(name), openMode);
+    result &= save(getFibre(dict, FibreRanks()), toCString(fileName), openMode);
 
     if (TConfig::LEVELS > 1)
     {
