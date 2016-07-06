@@ -47,16 +47,22 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     include (SetCPackSystemName)
 
     # ===========================================================================
-    # Archive Packages (.tar & .tar.bz2)
+    # Archive Packages
     # ===========================================================================
-
     if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-        set (CPACK_GENERATOR "ZIP")
+      set(CPACK_GENERATOR "ZIP;NSIS")
+    elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+      set(CPACK_GENERATOR "ZIP;DragNDrop")
     elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
-        set (CPACK_GENERATOR "ZIP;TBZ2")
-    else ()
-        set (CPACK_GENERATOR "ZIP;TXZ")
+      set(CPACK_GENERATOR "TBZ2")
+    else()
+      set(CPACK_GENERATOR "TXZ")
     endif ()
+
+    if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+      set(CPACK_GENERATOR "${CPACK_GENERATOR};DEB;RPM")
+    endif ()
+
     if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE")
       SET(CPACK_PACKAGE_NAME "seqan")
     elseif ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY")
