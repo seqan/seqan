@@ -47,6 +47,8 @@
 #include "test_stream_read_embl.h"
 #include "test_stream_read_genbank.h"
 
+#include "test_read_bam.h"
+
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
     // Test recognition of supported file types.
@@ -97,6 +99,15 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_stream_read_genbank_record_char_array_stream);
     SEQAN_CALL_TEST(test_stream_read_genbank_single_mmap);
     SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_mmap);
+
+    // Tests for BAM-File
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_read_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_read_sequences_and_qualities);
+
+#if SEQAN_HAS_ZLIB
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_read_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_read_sequences_and_qualities);
+#endif
 }
 
 SEQAN_END_TESTSUITE
