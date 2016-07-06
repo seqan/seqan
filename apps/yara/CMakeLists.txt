@@ -14,7 +14,7 @@ message (STATUS "Configuring apps/yara")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-if (MSVC)
+if (COMPILER_MSVC)
     message (STATUS "Yara is currently not build on Microsoft Visual because it requires OpenMP 3.0.")
     return ()
 endif ()

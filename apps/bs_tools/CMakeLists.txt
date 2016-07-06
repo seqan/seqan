@@ -31,11 +31,6 @@ if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
     return ()
 endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
 
-if (MSVC)
-    message (STATUS "  Not building bs_tools under Visual Studio.")
-    return ()
-endif()
-
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------

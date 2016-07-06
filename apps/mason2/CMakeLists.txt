@@ -26,11 +26,6 @@ if (NOT ZLIB_FOUND)
   return ()
 endif (NOT ZLIB_FOUND)
 
-if (MSVC)
-  message (STATUS "  Not building MASON2 under Visual Studio.")
-  return ()
-endif()
-
 # Enable C++11 in GCC and/or CLANG.
 #if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
 #    add_definitions ("-std=c++0x")
