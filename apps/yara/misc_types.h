@@ -172,7 +172,7 @@ struct YaraFMConfig
 
     // Sparse SA sampling rate.
     static const unsigned SAMPLING =                    10;
-    static const unsigned WORDS_PER_BLOCK =             2;
+    static const unsigned WORDS_PER_BLOCK =             0;
     static const unsigned LEVELS =                      1;
 };
 
