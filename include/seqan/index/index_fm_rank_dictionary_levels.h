@@ -1201,7 +1201,7 @@ inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<T
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
-inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & smaller)
+inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & /*smaller*/)
 {
     return getRank(dict, pos, static_cast<TValue>(c));
 }
