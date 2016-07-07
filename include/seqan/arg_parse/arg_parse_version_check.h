@@ -71,6 +71,13 @@ struct VersionControlTags
     constexpr static const char * UNREGISTERED_APP = "UNREGISTERED APP";
 };
 
+enum VersionControlOptions
+{
+    VERSION_OPTION_DEV      = 0,
+    VERSION_OPTION_APP_ONLY = 1,
+    VERSION_OPTION_OFF      = 2
+};
+
 struct VersionCheck
 {
     // ----------------------------------------------------------------------------
@@ -301,7 +308,7 @@ inline std::string _readVersionString(std::string const & version_file)
             std::cerr << "[SEQAN INFO] :: Thank you for using SeqAn!\n"
                       << "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
                       << "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
-                      << "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF\n\n";
+                      << "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check 2\n\n";
             line.clear();
         }
         myfile.close();
@@ -367,14 +374,14 @@ inline bool _checkForNewerVersion(VersionCheck & me)
             if (me._name == VersionControlTags::SEQAN_NAME)
             {
                 std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn " << server_version << " Go to " << me._website << "\n"
-                          << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY"
+                          << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check 1"
                           << "\n\n";
             }
             else
             {
                 std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " << server_version << "\n"
                           << "[APP INFO] :: Check out " << me._website << "\n"
-                          << "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF"
+                          << "[APP INFO] :: If you don't want to recieve this message again set --version_check 2"
                           << "\n\n";
             }
         }

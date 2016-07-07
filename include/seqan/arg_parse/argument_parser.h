@@ -228,12 +228,12 @@ public:
 #if _SEQAN_VERSION_CHECK == 1
         addOption(*this, ArgParseOption("",
                                         "version-check",
-                                        "Choose 'OFF' if you don't want any notifications. "
-                                        "Choose 'APP_ONLY' if you don't want any notification about a new SeqAn version. "
-                                        "DEV(eloper) is the default value and will check for both versions.",
+                                        "Choose 2 if you don't want any notifications. "
+                                        "Choose 1 if you don't want any notification about a new SeqAn version. "
+                                        "0 is the default value and will check for both versions.",
                                         ArgParseArgument::STRING,
                                         "OPTION"));
-        setValidValues(*this, "version-check", "DEV APP_ONLY OFF");
+        setValidValues(*this, "version-check", "0 1 2");
 #endif
     }
 
