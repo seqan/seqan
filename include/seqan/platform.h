@@ -436,4 +436,15 @@ typedef int8_t __int8;     // nolint
     #endif
 #endif //ndef SEQAN_ASYNC_IO
 
+// There is a bug in clang35 on FreeBSD that crashes the compiler.
+// Since this is only triggered on some codepaths we define a macro
+// here that we can later access.
+#if defined(__FreeBSD__) && defined(COMPILER_CLANG)
+#define COMPILER_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
+#if (COMPILER_VERSION >= 30500) && (COMPILER_VERSION < 30600)
+    #define SEQAN_CLANG35_FREEBSD_BUG 1
+#endif
+#undef COMPILER_VERSION
+#endif
+
 #endif
