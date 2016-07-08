@@ -455,8 +455,13 @@ macro(INTEL_FILES_FOR_VERSION version)
   if(NOT CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY)
     set(__install__libs
       "${INTEL${v}_FILES_DIR}/libmmd.dll"
-      "${INTEL${v}_FILES_DIR}/libiomp5md.dll"
       )
+
+    if(CMAKE_INSTALL_OPENMP_LIBRARIES)
+      set(__install__libs ${__install__libs}
+        "${INTEL${v}_FILES_DIR}/libiomp5md.dll"
+        )
+    endif()
   else()
     set(__install__libs)
   endif()
@@ -487,6 +492,8 @@ macro(INTEL_FILES_FOR_VERSION version)
 endmacro()
 
 macro (seqan_install_required_system_libraries)
+  set (CMAKE_INSTALL_OPENMP_LIBRARIES ${OPENMP_FOUND})
+
   # include intel dll's
   if(COMPILER_WINTEL)
     INTEL_FILES_FOR_VERSION(2016)
@@ -494,7 +501,6 @@ macro (seqan_install_required_system_libraries)
 
   # The following include automates the MS Redistributable installer.
   set (CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
-  set (CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)
   include (InstallRequiredSystemLibraries)
 endmacro()
 
