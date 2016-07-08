@@ -282,6 +282,9 @@ template <typename... TContTypes>
 inline ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<> >
 makeZipView(TContTypes && ...contArgs)
 {
+#ifdef SEQAN_CLANG35_FREEBSD_BUG
+    static_assert(false, "The Zip Container triggers a bug on FreeBSD+clang-3.5, please upgrade you compiler!");
+#endif
     return ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<> >(std::forward<TContTypes>(contArgs)...);
 }
 

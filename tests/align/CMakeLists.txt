@@ -10,6 +10,14 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_tests_align CXX)
 message (STATUS "Configuring tests/align")
 
+set (ALIGN_SIMD_TEST TRUE CACHE INTERNAL "Whether to build test_align_simd.")
+# workaround a bug in llvm35 on FreeBSD
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
+    (COMPILER_CLANG) AND
+    (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
+    set (ALIGN_SIMD_TEST FALSE CACHE INTERNAL "Whether to build test_align_simd.")
+endif ()
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -54,13 +62,15 @@ add_executable (test_align
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align ${SEQAN_LIBRARIES})
 
-# Add executable for simd tests.
-add_executable(test_align_simd
-               test_align_simd.cpp
-               test_align_simd.h)
+if (ALIGN_SIMD_TEST)
+    # Add executable for simd tests.
+    add_executable (test_align_simd
+                    test_align_simd.cpp
+                    test_align_simd.h)
 
-# Add dependencies found by find_package (SeqAn).
-target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})
+    # Add dependencies found by find_package (SeqAn).
+    target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})
+endif()
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -70,4 +80,6 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_align COMMAND $<TARGET_FILE:test_align>)
-add_test (NAME test_test_align_simd COMMAND $<TARGET_FILE:test_align_simd>)
+if (ALIGN_SIMD_TEST)
+    add_test (NAME test_test_align_simd COMMAND $<TARGET_FILE:test_align_simd>)
+endif ()
