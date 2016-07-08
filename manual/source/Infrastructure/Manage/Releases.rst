@@ -30,13 +30,34 @@ On Windows, replace the last command with
 
     deploy # cmake --build . --target PACKAGE
 
+Depending on the platform this might create a ZIP-file, a tarball and/or a platform specific installer.
 
-This will create a ZIP-file and on unix also a tarball (``.tar.xz``) of the package.
-For the official packages distributed by us we also set ``-DSEQAN_STATIC_APPS=1 -DSEQAN_ARCH_SSE4=1`` which means that  binaries contain optimizations and are built statically, i.e. they will not depend on external libraries (OpenMP, Zlib...). For downstream packages you will likely not want to set these options.
+Official Packages
+-----------------
+
+We provide (1) a source package of SeqAn library; and for each official application (3) single binary packages for different operating systems and architectures.
 
 .. note::
 
     Especially when creating packages, make sure that the cmake generator and/or compiler are the ones you want!
+
+GNU/Linux, macOS & BSD
+^^^^^^^^^^^^^^^^^^^^^^
+
+* The binary packages should be built on the **oldest supported kernel** and with the **oldest supported GCC** compiler.
+* The CMake version on the building system should be at least 3.1.
+* Builds should be static (``-DSEQAN_STATIC_APPS=1``).
+* There should be a 32Bit package, built on a 32Bit system or cross-compiled (``-DCMAKE_CXX_FLAGS="-m32"``).
+* There should be a 64Bit package.
+* There should be an optimized 64Bit build (``-DSEQAN_ARCH_SSE4=1``).
+* For applications where it makes sense, a further optimized build *can* be provided (``-DSEQAN_ARCH_AVX2=1``)
+
+Windows
+^^^^^^^
+
+* The binary packages should be built with the latest **Intel C++ Compiler** for performance and compatibility reasons (see :ref:`here <infra-use-cmake-build-dirs>`).
+* There should be a 32Bit package, built on a 32Bit system or cross-compiled (see :ref:`here <infra-use-cmake-build-dirs>`).
+* There should be a 64Bit package.
 
 Downstream Packaging
 --------------------
