@@ -22,6 +22,14 @@ Selected Bug Fixes
     - compute correct trace from split position.
     - allows flexible free-end gaps configuration.
 
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Build System:
+    - The Intel Compiler is now fully supported on Linux and Windows, both 32bit and 64bit; it builds faster binaries and supports some functionality not available in MSVC.
+    - On Windows there is now experimental support for Clang/C2, the Microsoft version of the clang compiler.
+    - Please see the `manual <http://seqan.readthedocs.io/en/master/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
+
 Release 2.1.1
 ~~~~~~~~~~~~~
 
