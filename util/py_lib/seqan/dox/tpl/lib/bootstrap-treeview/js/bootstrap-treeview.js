@@ -33,15 +33,15 @@
 
 		levels: 2,
 
-		expandIcon: 'glyphicon glyphicon-plus',
-		collapseIcon: 'glyphicon glyphicon-minus',
+		expandIcon: 'glyphicon glyphicon-chevron-right',
+		collapseIcon: 'glyphicon glyphicon-chevron-down',
 		emptyIcon: 'glyphicon',
 		nodeIcon: '',
 		selectedIcon: '',
 		checkedIcon: 'glyphicon glyphicon-check',
 		uncheckedIcon: 'glyphicon glyphicon-unchecked',
 
-		color: undefined, // '#000000',
+		color: '#000000', // '#000000',
 		backColor: undefined, // '#FFFFFF',
 		borderColor: undefined, // '#dddddd',
 		onhoverColor: '#F5F5F5',

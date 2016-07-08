@@ -71,13 +71,15 @@ for(var i=0; i < window.searchData.length; ++i) {
     srcfileList.push(srcfile.replace("|",DELIMITER).replace(".h","").split("/"));
 }
 
+var showHTML = "Module list : <a href='javascript:showMT();'>[show]</a>"; 
+var hideHTML = "Module list : <a href='javascript:hideMT();'>[hide]</a>"; 
 function hideMT() {
    document.getElementById("module_tree").style.display = "none";
+   mt_toggle_div.innerHTML = showHTML;  
 }
-
-
 function showMT() {
     document.getElementById("module_tree").style.display = "block";
+    mt_toggle_div.innerHTML = hideHTML;  
 }
 
 // sorting
@@ -94,25 +96,16 @@ updateTags(treeData);
 var mt_toggle_div = document.createElement("div");
 mt_toggle_div.setAttribute("id", "module_tree_toggle");
 mt_toggle_div.setAttribute("style", "text-align:center;display:block");
-mt_toggle_div.innerHTML = "Module list : ";
-
-var showlink = document.createElement('a');
-showlink.setAttribute("href","javascript:showMT()");
-showlink.appendChild(document.createTextNode("[show]"));
-mt_toggle_div.appendChild(showlink);
-mt_toggle_div.innerHTML += "&nbsp;";
-var hidelink = document.createElement('a');
-hidelink.setAttribute("href","javascript:hideMT()");
-hidelink.appendChild(document.createTextNode("[hide]"));
-mt_toggle_div.appendChild(hidelink);
+mt_toggle_div.innerHTML = showHTML;  
 
 var mt_div = document.createElement("div");
 mt_div.setAttribute("id", "module_tree");
 mt_div.setAttribute("style", "display:none");
 
 var content_div = document.getElementById("content");
-content_div.appendChild(mt_toggle_div);
 content_div.appendChild(mt_div);
+
+document.getElementById("list_bottom_left").appendChild(mt_toggle_div);
 
 // add tree
 $('#module_tree').treeview({
