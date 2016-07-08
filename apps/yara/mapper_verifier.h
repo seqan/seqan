@@ -55,7 +55,7 @@ struct AnchorsVerifier
     typedef typename Traits::TReadSeq          TReadSeq;
     typedef typename Traits::TReadsContext     TReadsContext;
     typedef typename Traits::TMatchesViewSet   TMatchesSet;
-    typedef typename Traits::TMatchesAppender  TMatches;
+    typedef typename Traits::TMatches          TMatches;
     typedef typename Traits::TMatch            TMatch;
 
 //    typedef Myers<>                                     TAlgorithm;

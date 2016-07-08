@@ -184,7 +184,7 @@ allocate(T & me,
 
 template <typename T, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(T const &,
+allocate(T &&,
          TValue * & data,
          TSize count,
          Tag<TUsage> const &)
@@ -236,6 +236,21 @@ allocate(T &,
 #endif
 }
 
+// Allocation for string with wrapped atomic type.
+template <typename T, typename TValue, typename TSize, typename TUsage>
+inline void
+allocate(T &&,
+         std::atomic<TValue *> & data,
+         TSize const count,
+         Tag<TUsage> const &)
+{
+#ifdef STDLIB_VS
+    data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
+#else
+    data = (TValue *) operator new(count * sizeof(TValue));
+#endif
+}
+
 // NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
 // allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
 // See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
@@ -276,6 +291,21 @@ allocate(T &,
     #else
         data = (TValue *) malloc(count * sizeof(TValue));
     #endif
+#endif
+}
+
+// Allocation for string with wrapped atomic type.
+template <typename T, typename TValue, typename TSize>
+inline void
+allocate(T &&,
+         std::atomic<TValue *> & data,
+         TSize const count,
+         TagAllocateAlignedMalloc const &)
+{
+#ifdef STDLIB_VS
+    data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
+#else
+    data = (TValue *) malloc(count * sizeof(TValue));
 #endif
 }
 

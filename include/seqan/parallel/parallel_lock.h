@@ -140,8 +140,8 @@ spinCas(TAtomic & x, TValue cmp, TValue y)
 class ReadWriteLock
 {
 public:
-    Atomic<unsigned>::Type readers;
-    Atomic<unsigned>::Type writers;
+    std::atomic<unsigned> readers;
+    std::atomic<unsigned> writers;
 
     ReadWriteLock() :
         readers(0),
@@ -274,13 +274,13 @@ lockReading(ReadWriteLock & lock)
         // wait for the end of a write access
         spinWhileNeq(lock.writers, 0u);
 
-        atomicInc(lock.readers);
+        ++lock.readers;
 
         if (lock.writers == 0u)
             break;
 
         // writer hasn't noticed us -> retry
-        atomicDec(lock.readers);
+        --lock.readers;
     }
     while (true);
 }
@@ -292,7 +292,7 @@ lockReading(ReadWriteLock & lock)
 inline void
 unlockReading(ReadWriteLock & lock)
 {
-    atomicDec(lock.readers);
+    --lock.readers;
 }
 
 // ----------------------------------------------------------------------------

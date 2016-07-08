@@ -41,6 +41,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
+#include <seqan/parallel.h>
 
 #include <string>
 
@@ -214,7 +215,13 @@ typedef
     seqan::TagList<std::list<seqan::Dna5>,
     seqan::TagList<std::list<char>,
     seqan::TagList<std::list<int>,
-    seqan::TagList<std::list<CountingChar>
+    seqan::TagList<std::list<CountingChar>,
+    // ConcurrentAppendString
+    seqan::TagList<String<Dna5, Alloc<ConcurrentAppend<> > >,
+    seqan::TagList<String<char, Alloc<ConcurrentAppend<> > >,
+    seqan::TagList<String<int, Alloc<ConcurrentAppend<> > >,
+    seqan::TagList<String<CountingChar, Alloc<ConcurrentAppend<> > >
+    > > > >  // ConcurrentAppendString
     > > > > > > > > > > > > > > > > > > > > > > > > >
     > > > > > > > > > > > > > > //> >
     > > > >

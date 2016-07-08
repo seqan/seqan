@@ -56,13 +56,6 @@ namespace seqan {
 // Metafunctions
 // ============================================================================
 
-
-template <typename T>
-struct Atomic
-{
-    typedef std::atomic<T> Type;
-};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -76,6 +69,7 @@ struct Atomic
  * @fn AtomicPrimitives#atomicInc
  * @headerfile <seqan/parallel.h>
  * @brief Atomically increment an integer.
+ * @deprecated Use STL atomic library instead.
  *
  * @signature TResult atomicInc(x);
  *
@@ -97,6 +91,7 @@ struct Atomic
  * @fn AtomicPrimitives#atomicDec
  * @headerfile <seqan/parallel.h>
  * @brief Atomically decrement an integer.
+ * @deprecated Use STL atomic library instead.
  *
  * @signature TResult atomicDec(x);
  *
@@ -118,6 +113,7 @@ struct Atomic
  * @fn AtomicPrimitives#atomicAdd
  * @headerfile <seqan/parallel.h>
  * @brief Atomically add an integer to another integer.
+ * @deprecated Use STL atomic library instead.
  *
  * @signature TResult atomicAdd(x, y)
  *
@@ -141,6 +137,7 @@ struct Atomic
  * @fn AtomicPrimitives#atomicOr
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>OR</tt> operation.
+ * @deprecated Use STL atomic library instead.
  *
  * @signature TResult atomicOr(x, y);
  *
@@ -166,6 +163,7 @@ struct Atomic
  * @fn AtomicPrimitives#atomicXor
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>XOR</tt> operation.
+ * @deprecated Use STL atomic library instead.
  *
  * @signature TResult atomicXor(x, y);
  *
@@ -191,6 +189,7 @@ struct Atomic
  * @fn AtomicPrimitives#atomicCas
  * @headerfile <seqan/parallel.h>
  * @brief Atomic ompare-and-Swap operation.
+ * @deprecated Use STL atomic library instead.
  *
  * @signature TResult atomicCas(x, cmp, y)
  *
@@ -411,6 +410,7 @@ inline T1 * atomicAdd(T1 * volatile & x, T2 y)
 // Wrappers to use faster non-synced functions in serial implementations
 // ----------------------------------------------------------------------------
 
+// NOTE(rrahn): The wrapper functions are deprecated and should be replaced by stl atomic library.
 template <typename T>   inline T atomicInc(T          & x,             Serial)      { return ++x;                    }
 template <typename T>   inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
 template <typename T>   inline T atomicDec(T          & x,             Serial)      { return --x;                    }
