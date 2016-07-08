@@ -426,6 +426,85 @@ macro (seqan_setup_install_vars APP_NAME)
 endmacro (seqan_setup_install_vars)
 
 # ---------------------------------------------------------------------------
+# Macro seqan_install_required_system_libraries ()
+#
+# When packaging apps copy needed dlls
+# ---------------------------------------------------------------------------
+
+macro(INTEL_FILES_FOR_VERSION version)
+  # version can be 2016
+  set(v "${version}")
+
+  # set intel architecture
+  if (CMAKE_MSVC_ARCH STREQUAL "x64")
+    set(CMAKE_INTEL_ARCH "intel64")
+  else ()
+    set(CMAKE_INTEL_ARCH "ia32")
+  endif()
+
+  # Find the runtime library redistribution directory.
+  set(programfilesx86 "ProgramFiles(x86)")
+  find_path(INTEL${v}_REDIST_DIR NAMES ${CMAKE_INTEL_ARCH}/compiler
+    PATHS
+      "$ENV{ProgramFiles}/IntelSWTools/compilers_and_libraries_${v}/windows/redist"
+      "$ENV{${programfilesx86}}/IntelSWTools/compilers_and_libraries_${v}/windows/redist"
+    )
+  mark_as_advanced(INTEL${v}_REDIST_DIR)
+  set(INTEL${v}_FILES_DIR "${INTEL${v}_REDIST_DIR}/${CMAKE_INTEL_ARCH}/compiler")
+
+  if(NOT CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY)
+    set(__install__libs
+      "${INTEL${v}_FILES_DIR}/libmmd.dll"
+      )
+
+    if(CMAKE_INSTALL_OPENMP_LIBRARIES)
+      set(__install__libs ${__install__libs}
+        "${INTEL${v}_FILES_DIR}/libiomp5md.dll"
+        )
+    endif()
+  else()
+    set(__install__libs)
+  endif()
+
+  if(CMAKE_INSTALL_DEBUG_LIBRARIES)
+    set(__install__libs ${__install__libs}
+      "${INTEL${v}_FILES_DIR}/libmmdd.dll"
+      )
+  endif()
+
+  foreach(lib
+      ${__install__libs}
+      )
+    if(EXISTS ${lib})
+      set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
+        ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} ${lib})
+    else()
+      if(NOT CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+        message(WARNING "system runtime library file does not exist: '${lib}'")
+        # This warning indicates an incomplete Visual Studio installation
+        # or a bug somewhere above here in this file.
+        # If you would like to avoid this warning, fix the real problem, or
+        # set CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS before including
+        # this file.
+      endif()
+    endif()
+  endforeach()
+endmacro()
+
+macro (seqan_install_required_system_libraries)
+  set (CMAKE_INSTALL_OPENMP_LIBRARIES ${OPENMP_FOUND})
+
+  # include intel dll's
+  if(COMPILER_WINTEL)
+    INTEL_FILES_FOR_VERSION(2016)
+  endif()
+
+  # The following include automates the MS Redistributable installer.
+  set (CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+  include (InstallRequiredSystemLibraries)
+endmacro()
+
+# ---------------------------------------------------------------------------
 # Macro seqan_configure_cpack_app (APP_NAME APP_DIR)
 #
 # Setup variables for install, depending on build mode.
@@ -434,8 +513,7 @@ endmacro (seqan_setup_install_vars)
 # ---------------------------------------------------------------------------
 
 macro (seqan_configure_cpack_app APP_NAME APP_DIR)
-  # The following include automates the MS Redistributable installer.
-  include (InstallRequiredSystemLibraries)
+  seqan_install_required_system_libraries()
 
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     set(CPACK_GENERATOR "ZIP;NSIS")
