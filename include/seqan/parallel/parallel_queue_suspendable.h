@@ -83,18 +83,18 @@ public:
     typedef typename Host<ConcurrentQueue>::Type    TString;
     typedef typename Size<TString>::Type            TSize;
 
-    size_t          readerCount;
-    size_t          writerCount;
+    size_t                  readerCount;
+    size_t                  writerCount;
 
-    TString         data;
-    TSize           occupied;
-    TSize           back;
-    TSize           front;
+    TString                 data;
+    TSize                   occupied;
+    TSize                   back;
+    TSize                   front;
 
-    std::mutex      cs;
+    std::mutex              cs;
     std::condition_variable more;
 
-    bool            virgin;
+    bool                    virgin;
 
     ConcurrentQueue():
         readerCount(0),

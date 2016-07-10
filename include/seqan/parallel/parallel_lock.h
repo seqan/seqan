@@ -43,8 +43,6 @@
 
 #ifdef STDLIB_VS
 #include <Windows.h>
-#else
-#include <sched.h>
 #endif
 
 namespace seqan {
@@ -53,7 +51,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct Mutex;
 inline void yieldProcessor();
 
 // ============================================================================
@@ -89,13 +86,6 @@ waitFor(SpinDelay & me)
     else
     {
         std::this_thread::yield();
-//#ifdef STDLIB_VS
-//#if _WIN32_WINNT >= 0x0400
-//        SwitchToThread();
-//#endif
-//#else
-//        sched_yield();
-//#endif
     }
 }
 

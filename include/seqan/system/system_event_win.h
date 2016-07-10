@@ -32,12 +32,13 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SYSTEM_EVENT_H
-#define SEQAN_HEADER_SYSTEM_EVENT_H
+#ifndef SEQAN_HEADER_SYSTEM_EVENT_WIN_H
+#define SEQAN_HEADER_SYSTEM_EVENT_WIN_H
 
 namespace seqan {
 
-// NOTE(rrahn): Only needed for File<Async> on Windows platforms.
+// NOTE(rrahn): This calss implements an synchronization event for asynchronous file I/O on windows platforms.
+// This file is required by file_async.
 #ifdef STDLIB_VS
 
 static SECURITY_ATTRIBUTES EventDefaultAttributes =

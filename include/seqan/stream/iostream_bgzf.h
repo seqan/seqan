@@ -692,6 +692,7 @@ public:
                 {
                     // wait for the end of decompression
                     DecompressionJob &job = jobs[currentJobId];
+
                     {
                         std::unique_lock<std::mutex> lock(job.cs);
                         job.readyEvent.wait(lock, [&job]{return job.ready;});
