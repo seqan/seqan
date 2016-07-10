@@ -283,7 +283,9 @@ inline ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type
 makeZipView(TContTypes && ...contArgs)
 {
 #ifdef SEQAN_CLANG35_FREEBSD_BUG
-    static_assert(false, "The Zip Container triggers a bug on FreeBSD+clang-3.5, please upgrade you compiler!");
+    // the condition always evaluates to false, but ensures that the assertion
+    // only fires if the function is actually instantiated
+    static_assert(sizeof...(contArgs) == 0, "The Zip Container triggers a bug on FreeBSD+clang-3.5, please upgrade you compiler!");
 #endif
     return ContainerView<std::tuple<typename std::remove_reference<TContTypes>::type...>, ZipContainer<> >(std::forward<TContTypes>(contArgs)...);
 }
