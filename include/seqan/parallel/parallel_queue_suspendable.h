@@ -192,7 +192,6 @@ unlockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
         lk.unlock();
         me.more.notify_all();
     }
-
 }
 
 template <typename TValue, typename TSize, typename TSpec>

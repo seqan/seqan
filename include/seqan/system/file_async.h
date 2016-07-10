@@ -1257,4 +1257,3 @@ deallocate(File<Async<TSpec> > const & me,
 }
 
 #endif  // SEQAN_HEADER_FILE_ASYNC_H
-

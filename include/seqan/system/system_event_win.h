@@ -231,40 +231,6 @@ inline bool signal(Event & e)
 }
 
 #endif  // #ifdef STDLIB_VS
-/*
-    //////////////////////////////////////////////////////////////////////////////
-    // emulate events in a singlethreaded environment
-
-    struct DummyEvent {
-        typedef    void Handle;
-        DummyEvent(bool initial = false) {}
-        inline bool wait(unsigned timeOut = NULL) { return true; }
-        inline void reset() {}
-        inline void signal() {}
-    };
-
-    //////////////////////////////////////////////////////////////////////////////
-    // global dummy event functions
-
-    template < typename TCount >
-    inline bool waitForAll(DummyEvent eventList[], TCount count) {
-        return true;
-    }
-
-    template < typename TCount, typename TTime >
-    inline bool waitForAll(DummyEvent eventList[], TCount count, TTime timeoutMilliSec) {
-        return true;
-    }
-
-    template < typename TCount >
-    inline TCount waitForAny(DummyEvent eventList[], TCount count) {
-        return 0;
-    }
-    template < typename TCount, typename TTime >
-    inline TCount waitForAny(DummyEvent eventList[], TCount count, TTime timeoutMilliSec) {
-        return 0;
-    }
-*/
 }
 
 #endif
