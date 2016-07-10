@@ -69,7 +69,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicInc
  * @headerfile <seqan/parallel.h>
  * @brief Atomically increment an integer.
- * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @deprecated Use STL atomic library instead. See <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  *
  * @signature TResult atomicInc(x);
  *
@@ -91,7 +91,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicDec
  * @headerfile <seqan/parallel.h>
  * @brief Atomically decrement an integer.
- * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @deprecated Use STL atomic library instead. See <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  *
  * @signature TResult atomicDec(x);
  *
@@ -113,7 +113,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicAdd
  * @headerfile <seqan/parallel.h>
  * @brief Atomically add an integer to another integer.
- * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @deprecated Use STL atomic library instead. See <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  *
  * @signature TResult atomicAdd(x, y)
  *
@@ -137,7 +137,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicOr
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>OR</tt> operation.
- * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @deprecated Use STL atomic library instead. See <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  *
  * @signature TResult atomicOr(x, y);
  *
@@ -163,7 +163,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicXor
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>XOR</tt> operation.
- * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @deprecated Use STL atomic library instead. See <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  *
  * @signature TResult atomicXor(x, y);
  *
@@ -192,7 +192,7 @@ namespace seqan {
  *
  * @signature TResult atomicCas(x, cmp, y[, tag])
  *
- * @param[in,out] x   Value to swap. Must be of type @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @param[in,out] x   Value to swap. Must be of type <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  * @param[in,out] cmp Value to compare <tt>x</tt> with.
  * @param[in]     y   Value to set <tt>x</tt> to if it is equal to <tt>cmp</tt>.
  * @param[in]     tag One of @link ParallelismTags @endlink. If tag is @link ParallelismTags#Parallel @endlink, 
@@ -224,7 +224,7 @@ namespace seqan {
  *
  * @signature bool atomicCasBool(x, cmp, y[, tag])
  *
- * @param[in,out] x   Value to swap. Must be of type @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @param[in,out] x   Value to swap. Must be of type <a> http://en.cppreference.com/w/cpp/atomic/atomic </a>.
  * @param[in,out] cmp Value to compare <tt>x</tt> with.
  * @param[in]     y   Value to set <tt>x</tt> to if it is equal to <tt>cmp</tt>.
  * @param[in]     tag One of @link ParallelismTags @endlink. If tag is @link ParallelismTags#Parallel @endlink,

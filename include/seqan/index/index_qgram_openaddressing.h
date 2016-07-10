@@ -45,7 +45,7 @@ namespace seqan
     struct BucketMap
     {
         static const THashValue EMPTY;
-        String<THashValue> qgramCode;
+        String<std::atomic<THashValue> > qgramCode;
     };
 
     template <typename THashValue>
