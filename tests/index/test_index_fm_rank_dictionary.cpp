@@ -34,6 +34,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
+#include <seqan/reduced_aminoacid.h>
 #include <seqan/index.h>
 
 #include "test_index_helpers.h"
@@ -42,7 +43,7 @@ using namespace seqan;
 
 // ==========================================================================
 // Metafunctions
-// ========================================================================== 
+// ==========================================================================
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
@@ -58,30 +59,76 @@ using namespace seqan;
 
 // ==========================================================================
 // Types
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // RankDictionary Types
 // --------------------------------------------------------------------------
 
+typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> >         ReducedMurphy10;
+
+typedef Levels<void, LevelsPrefixRDConfig<uint32_t, Alloc<>, 1, 1> > Prefix1Level;
+typedef Levels<void, LevelsPrefixRDConfig<uint32_t, Alloc<>, 2, 2> > Prefix2Level;
+typedef Levels<void, LevelsPrefixRDConfig<uint32_t, Alloc<>, 3, 3> > Prefix3Level;
+
+typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 1, 1> >       Default1Level;
+typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 2, 2> >       Default2Level;
+typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 3, 3> >       Default3Level;
+
 typedef
-    TagList<RankDictionary<bool,            Naive<> >,
-    TagList<RankDictionary<bool,            Levels<> >,
-    TagList<RankDictionary<Dna,             Levels<> >,
-    TagList<RankDictionary<char,            Levels<> >,
+    TagList<RankDictionary<bool,            Prefix1Level>,
+    TagList<RankDictionary<Dna,             Prefix1Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix1Level>,
+    TagList<RankDictionary<ReducedMurphy10, Prefix1Level>,
+    TagList<RankDictionary<AminoAcid,       Prefix1Level>,
+    TagList<RankDictionary<char,            Prefix1Level>,
+    TagList<RankDictionary<bool,            Prefix2Level>,
+    TagList<RankDictionary<Dna,             Prefix2Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix2Level>,
+    TagList<RankDictionary<ReducedMurphy10, Prefix2Level>,
+    TagList<RankDictionary<AminoAcid,       Prefix2Level>,
+    TagList<RankDictionary<char,            Prefix2Level>,
+    TagList<RankDictionary<bool,            Prefix3Level>,
+    TagList<RankDictionary<Dna,             Prefix3Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix3Level>,
+    TagList<RankDictionary<ReducedMurphy10, Prefix3Level>,
+    TagList<RankDictionary<AminoAcid,       Prefix3Level>,
+    TagList<RankDictionary<char,            Prefix3Level>,
+    TagList<RankDictionary<bool,            WaveletTree<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
-    TagList<RankDictionary<Dna5,            WaveletTree<> >,
-    TagList<RankDictionary<DnaQ,            WaveletTree<> >,
     TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >,
-    TagList<RankDictionary<char,            WaveletTree<> >,
-    TagList<RankDictionary<unsigned char,   WaveletTree<> >
-    > > > > > > > > > > >
-    RankDictionaryTypes;
+    TagList<RankDictionary<char,            WaveletTree<> >
+    > > > > > > > > > > > > > > > > > > > > > > >
+    RankDictionaryPrefixSumTypes;
 
-// ========================================================================== 
+typedef
+    TagList<RankDictionary<bool,            Naive<> >,
+    TagList<RankDictionary<bool,            Default1Level>,
+    TagList<RankDictionary<Dna,             Default1Level>,
+    TagList<RankDictionary<Dna5Q,           Default1Level>,
+    TagList<RankDictionary<ReducedMurphy10, Default1Level>,
+    TagList<RankDictionary<AminoAcid,       Default1Level>,
+    TagList<RankDictionary<char,            Default1Level>,
+    TagList<RankDictionary<bool,            Default2Level>,
+    TagList<RankDictionary<Dna,             Default2Level>,
+    TagList<RankDictionary<Dna5Q,           Default2Level>,
+    TagList<RankDictionary<ReducedMurphy10, Default2Level>,
+    TagList<RankDictionary<AminoAcid,       Default2Level>,
+    TagList<RankDictionary<char,            Default2Level>,
+    TagList<RankDictionary<bool,            Default3Level>,
+    TagList<RankDictionary<Dna,             Default3Level>,
+    TagList<RankDictionary<Dna5Q,           Default3Level>,
+    TagList<RankDictionary<ReducedMurphy10, Default3Level>,
+    TagList<RankDictionary<AminoAcid,       Default3Level>,
+    TagList<RankDictionary<char,            Default3Level>,
+    RankDictionaryPrefixSumTypes
+    > > > > > > > > > > > > > > > > > > >
+    RankDictionaryAllTypes;
+
+// ==========================================================================
 // Test Classes
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Class RankDictionaryTest
@@ -108,17 +155,21 @@ public:
 
     void setUp()
     {
-        createText(text, TValue());
+        generateText(text, 3947);
         textBegin = begin(text, Standard());
         textEnd = end(text, Standard());
     }
 };
 
-SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryTypes);
+template <typename TRankDictionary>
+class RankDictionaryPrefixTest : public RankDictionaryTest<TRankDictionary> {};
 
-// ========================================================================== 
+SEQAN_TYPED_TEST_CASE(RankDictionaryTest, RankDictionaryAllTypes);
+SEQAN_TYPED_TEST_CASE(RankDictionaryPrefixTest, RankDictionaryPrefixSumTypes);
+
+// ==========================================================================
 // Tests
-// ========================================================================== 
+// ==========================================================================
 
 // ----------------------------------------------------------------------------
 // Test RankDictionary()
@@ -195,6 +246,38 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
         // Check the rank for all alphabet symbols.
         for (TValueSize c = 0; c < this->alphabetSize; ++c)
             SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c), prefixSum[c]);
+    }
+}
+
+SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetPrefixRank)
+{
+    typedef typename TestFixture::TValueSize TValueSize;
+    typedef typename TestFixture::TText TText;
+    typedef typename TestFixture::TTextIterator TTextIterator;
+    typedef typename Size<TText>::Type TTextSize;
+    typedef String<TTextSize> TPrefixSum;
+
+    typename TestFixture::TRankDict dict(this->text);
+
+    // The prefix sum is built while scanning the text.
+    TPrefixSum prefixSum;
+    resize(prefixSum, this->alphabetSize, 0);
+
+    // Scan the text.
+    for (TTextIterator textIt = this->textBegin; textIt != this->textEnd; ++textIt)
+    {
+        // Update the prefix sum.
+        prefixSum[ordValue(value(textIt))]++;
+
+        // Check the rank for all alphabet symbols.
+        unsigned long smallerNaive = 0;
+        for (TValueSize c = 0; c < this->alphabetSize; ++c)
+        {
+            unsigned long smaller;
+            SEQAN_ASSERT_EQ(getRank(dict, (unsigned long)(textIt - this->textBegin), c, smaller), prefixSum[c]);
+            SEQAN_ASSERT_EQ(smaller, smallerNaive);
+            smallerNaive += prefixSum[c];
+        }
     }
 }
 
