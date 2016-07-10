@@ -69,7 +69,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicInc
  * @headerfile <seqan/parallel.h>
  * @brief Atomically increment an integer.
- * @deprecated Use STL atomic library instead.
+ * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
  *
  * @signature TResult atomicInc(x);
  *
@@ -91,7 +91,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicDec
  * @headerfile <seqan/parallel.h>
  * @brief Atomically decrement an integer.
- * @deprecated Use STL atomic library instead.
+ * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
  *
  * @signature TResult atomicDec(x);
  *
@@ -113,7 +113,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicAdd
  * @headerfile <seqan/parallel.h>
  * @brief Atomically add an integer to another integer.
- * @deprecated Use STL atomic library instead.
+ * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
  *
  * @signature TResult atomicAdd(x, y)
  *
@@ -137,7 +137,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicOr
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>OR</tt> operation.
- * @deprecated Use STL atomic library instead.
+ * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
  *
  * @signature TResult atomicOr(x, y);
  *
@@ -163,7 +163,7 @@ namespace seqan {
  * @fn AtomicPrimitives#atomicXor
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>XOR</tt> operation.
- * @deprecated Use STL atomic library instead.
+ * @deprecated Use STL atomic library instead. See @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
  *
  * @signature TResult atomicXor(x, y);
  *
@@ -188,14 +188,15 @@ namespace seqan {
 /*!
  * @fn AtomicPrimitives#atomicCas
  * @headerfile <seqan/parallel.h>
- * @brief Atomic ompare-and-Swap operation.
- * @deprecated Use STL atomic library instead.
+ * @brief Atomic compare-and-Swap operation.
  *
- * @signature TResult atomicCas(x, cmp, y)
+ * @signature TResult atomicCas(x, cmp, y[, tag])
  *
- * @param[in,out] x   Pointer to the integer to swap.
+ * @param[in,out] x   Value to swap. Must be of type @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
  * @param[in,out] cmp Value to compare <tt>x</tt> with.
  * @param[in]     y   Value to set <tt>x</tt> to if it is equal to <tt>cmp</tt>.
+ * @param[in]     tag One of @link ParallelismTags @endlink. If tag is @link ParallelismTags#Parallel @endlink, 
+*                     the operation is thread-safe, otherwise not.
  *
  * @return TResult Returns the original value of x.
  *
@@ -212,7 +213,38 @@ namespace seqan {
  * }
  * @endcode
  *
- * On Windows, atomic CAS is only available for 16, 32, and 64 bit integers, 64 bit is only available on 64 bit Windows.
+ * You are responsible for correctly aligning <tt>x</tt> such that the atomic increment works on the hardware you
+ * target.
+ */
+
+/*!
+ * @fn AtomicPrimitives#atomicCasBool
+ * @headerfile <seqan/parallel.h>
+ * @brief Atomic compare-and-Swap operation.
+ *
+ * @signature bool atomicCasBool(x, cmp, y[, tag])
+ *
+ * @param[in,out] x   Value to swap. Must be of type @link http://en.cppreference.com/w/cpp/atomic/atomic @endlink.
+ * @param[in,out] cmp Value to compare <tt>x</tt> with.
+ * @param[in]     y   Value to set <tt>x</tt> to if it is equal to <tt>cmp</tt>.
+ * @param[in]     tag One of @link ParallelismTags @endlink. If tag is @link ParallelismTags#Parallel @endlink,
+ *                    the operation is thread-safe, otherwise not.
+ *
+ * @return bool <tt>true</tt> iff swap was successful, otherwise <tt>false</tt>.
+ *
+ * @section Remarks
+ *
+ * The pseudo code for this is as follows:
+ *
+ * @code{.cpp}
+ * atomic {
+ *     T val = *(&x);
+ *     if (val != cmp)
+ *         return false;
+ *     *(&x) = y;
+ *     return true;
+ * }
+ * @endcode
  *
  * You are responsible for correctly aligning <tt>x</tt> such that the atomic increment works on the hardware you
  * target.
@@ -411,38 +443,38 @@ inline T1 * atomicAdd(T1 * volatile & x, T2 y)
 // ----------------------------------------------------------------------------
 
 // NOTE(rrahn): The wrapper functions are deprecated and should be replaced by stl atomic library.
-template <typename T>   inline T atomicInc(T          & x,             Serial)      { return ++x;                    }
-template <typename T>   inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
-template <typename T>   inline T atomicDec(T          & x,             Serial)      { return --x;                    }
-template <typename T>   inline T atomicPostDec(T      & x,             Serial)      { return x--;                    }
-template <typename T>   inline T atomicOr (T          & x, T y,        Serial)      { return x |= y;                 }
-template <typename T>   inline T atomicXor(T          & x, T y,        Serial)      { return x ^= y;                 }
+template <typename T>   [[deprecated]] inline T atomicInc(T          & x,             Serial)      { return ++x;                    }
+template <typename T>   [[deprecated]] inline T atomicPostInc(T      & x,             Serial)      { return x++;                    }
+template <typename T>   [[deprecated]] inline T atomicDec(T          & x,             Serial)      { return --x;                    }
+template <typename T>   [[deprecated]] inline T atomicPostDec(T      & x,             Serial)      { return x--;                    }
+template <typename T>   [[deprecated]] inline T atomicOr (T          & x, T y,        Serial)      { return x |= y;                 }
+template <typename T>   [[deprecated]] inline T atomicXor(T          & x, T y,        Serial)      { return x ^= y;                 }
 // In serial mode, there is no other thread changing cmp except us
-template <typename T>   inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
+template <typename T>   [[deprecated]] inline T atomicCas(T          & x, T cmp, T y, Serial)      { if (x == cmp) x = y; return x; }
 //template <typename T>   inline bool atomicCasBool(T   & x, T cmp, T y, Serial)      { if (x == cmp) { x = y; return true; } return false; }
-template <typename T>   inline bool atomicCasBool(T volatile & x, T, T y, Serial)   { x = y; return true;            }
+template <typename T>   [[deprecated]] inline bool atomicCasBool(T volatile & x, T, T y, Serial)   { x = y; return true;            }
 
-template <typename T>   inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
-template <typename T>   inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
-template <typename T>   inline T atomicDec(T volatile & x,             Parallel)    { return atomicDec(x);           }
-template <typename T>   inline T atomicPostDec(T volatile & x,         Parallel)    { return atomicPostDec(x);       }
-template <typename T>   inline T atomicOr (T volatile & x, T y,        Parallel)    { return atomicOr(x, y);         }
-template <typename T>   inline T atomicXor(T volatile & x, T y,        Parallel)    { return atomicXor(x, y);        }
-template <typename T>   inline T atomicCas(T volatile & x, T cmp, T y, Parallel)    { return atomicCas(x, cmp, y);   }
-template <typename T>   inline bool atomicCasBool(T volatile & x, T cmp, T y, Parallel) { return atomicCasBool(x, cmp, y); }
+template <typename T>   [[deprecated]] inline T atomicInc(T volatile & x,             Parallel)    { return atomicInc(x);           }
+template <typename T>   [[deprecated]] inline T atomicPostInc(T volatile & x,         Parallel)    { return atomicPostInc(x);       }
+template <typename T>   [[deprecated]] inline T atomicDec(T volatile & x,             Parallel)    { return atomicDec(x);           }
+template <typename T>   [[deprecated]] inline T atomicPostDec(T volatile & x,         Parallel)    { return atomicPostDec(x);       }
+template <typename T>   [[deprecated]] inline T atomicOr (T volatile & x, T y,        Parallel)    { return atomicOr(x, y);         }
+template <typename T>   [[deprecated]] inline T atomicXor(T volatile & x, T y,        Parallel)    { return atomicXor(x, y);        }
+template <typename T>   [[deprecated]] inline T atomicCas(T volatile & x, T cmp, T y, Parallel)    { return atomicCas(x, cmp, y);   }
+template <typename T>   [[deprecated]] inline bool atomicCasBool(T volatile & x, T cmp, T y, Parallel) { return atomicCasBool(x, cmp, y); }
 
-template <typename T1, typename T2>   inline T1 atomicAdd(T1          & x, T2 y, Serial)    { return x = x + y; }
-template <typename T1, typename T2>   inline T1 atomicAdd(T1 volatile & x, T2 y, Parallel)  { return atomicAdd(x, y); }
+template <typename T1, typename T2>   [[deprecated]] inline T1 atomicAdd(T1          & x, T2 y, Serial)    { return x = x + y; }
+template <typename T1, typename T2>   [[deprecated]] inline T1 atomicAdd(T1 volatile & x, T2 y, Parallel)  { return atomicAdd(x, y); }
 
 
 // C++11 atomic wrappers
 
-template <typename T>   inline T atomicInc(std::atomic<T>        & x     )        { return ++x;                    }
-template <typename T>   inline T atomicPostInc(std::atomic<T>    & x     )        { return x++;                    }
-template <typename T>   inline T atomicDec(std::atomic<T>        & x     )        { return --x;                    }
-template <typename T>   inline T atomicPostDec(std::atomic<T>    & x     )        { return x--;                    }
-template <typename T>   inline T atomicOr (std::atomic<T>        & x, T y)        { return x |= y;                 }
-template <typename T>   inline T atomicXor(std::atomic<T>        & x, T y)        { return x ^= y;                 }
+template <typename T>   [[deprecated]] inline T atomicInc(std::atomic<T>        & x     )        { return ++x;                    }
+template <typename T>   [[deprecated]] inline T atomicPostInc(std::atomic<T>    & x     )        { return x++;                    }
+template <typename T>   [[deprecated]] inline T atomicDec(std::atomic<T>        & x     )        { return --x;                    }
+template <typename T>   [[deprecated]] inline T atomicPostDec(std::atomic<T>    & x     )        { return x--;                    }
+template <typename T>   [[deprecated]] inline T atomicOr (std::atomic<T>        & x, T y)        { return x |= y;                 }
+template <typename T>   [[deprecated]] inline T atomicXor(std::atomic<T>        & x, T y)        { return x ^= y;                 }
 template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Serial)   { if (x == cmp) x = y;             return x;   }
 template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y, Parallel) { x.compare_exchange_weak(cmp, y); return cmp; }
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T    , T y, Serial)   { x = y; return true;                          }

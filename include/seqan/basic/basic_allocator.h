@@ -41,6 +41,8 @@
 // Dependencies
 // --------------------------------------------------------------------------
 
+#include <atomic>
+
 #include <seqan/platform.h>
 #include <seqan/basic/basic_fundamental.h>
 #include <seqan/basic/basic_smart_pointer.h>
