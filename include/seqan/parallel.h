@@ -45,16 +45,6 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#ifdef STDLIB_VS
-#include <windows.h>
-#else
-#include <pthread.h>
-#include <errno.h>
-#endif
-
-#include <seqan/system/system_critical_section.h>   // Suspendable Queue
-#include <seqan/system/system_condition.h>          // Suspendable Queue
-
 // ----------------------------------------------------------------------------
 // STL
 // ----------------------------------------------------------------------------
@@ -70,6 +60,9 @@
 
 #include <atomic>
 #include <thread>
+#include <future>
+#include <mutex>
+#include <condition_variable>
 
 // ============================================================================
 // Module Headers
