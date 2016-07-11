@@ -525,6 +525,16 @@
 				treeItem.append(_this.template.indent);
 			}
 
+			// Add tags as badges
+			if (_this.options.showTags && node.tags) {
+				$.each(node.tags, function addTag(id, tag) {
+					treeItem
+						.append($(_this.template.badge)
+							.append(tag)
+						);
+				});
+			}
+
 			// Add expand, collapse or empty spacer icons
 			var classList = [];
 			if (node.nodes) {
@@ -544,7 +554,6 @@
 				.append($(_this.template.icon)
 					.addClass(classList.join(' '))
 				);
-
 
 			// Add node icon
 			if (_this.options.showIcon) {
@@ -594,16 +603,6 @@
 				// otherwise just text
 				treeItem
 					.append(node.text);
-			}
-
-			// Add tags as badges
-			if (_this.options.showTags && node.tags) {
-				$.each(node.tags, function addTag(id, tag) {
-					treeItem
-						.append($(_this.template.badge)
-							.append(tag)
-						);
-				});
 			}
 
 			// Add item to the tree
