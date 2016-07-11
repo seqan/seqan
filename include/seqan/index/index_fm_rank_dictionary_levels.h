@@ -1223,7 +1223,7 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre,
 
     // TODO(cpockrandt): remove if-statement for an additional block/superblock/ultrablock with value 0
     smaller = 0;
-    if (ordValue(c) > 0)
+    if (SEQAN_LIKELY(ordValue(c) > 0))
         return _getUltraBlockRank(dict, ultraBlock, pos, static_cast<TValue>(c), smaller)
              + _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c), smaller)
              + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
@@ -1249,7 +1249,7 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre,
     TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
 
     smaller = 0;
-    if (ordValue(c) > 0)
+    if (SEQAN_LIKELY(ordValue(c) > 0))
         return _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c), smaller)
              + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
              + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
@@ -1271,7 +1271,7 @@ getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre,
     TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
 
     smaller = 0;
-    if (ordValue(c) > 0)
+    if (SEQAN_LIKELY(ordValue(c) > 0))
         return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
              + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
 
