@@ -95,6 +95,7 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------------
+
     VersionCheck(std::string const & name,
                  std::string const & version,
                  std::string const & website)
@@ -113,6 +114,7 @@ struct VersionCheck
     // ----------------------------------------------------------------------------
     // Member Functions
     // ----------------------------------------------------------------------------
+
 #if defined(PLATFORM_WINDOWS)
     void _getProgram()
     {
@@ -165,6 +167,7 @@ struct VersionCheck
 // ----------------------------------------------------------------------------
 // Function setURL()
 // ----------------------------------------------------------------------------
+
 inline void setURL(VersionCheck & me, std::string url)
 {
     std::swap(me._url, url);
@@ -174,6 +177,7 @@ inline void setURL(VersionCheck & me, std::string url)
 // ----------------------------------------------------------------------------
 // Function _getOS()
 // ----------------------------------------------------------------------------
+
 inline std::string _getOS()
 {
     //get system information
@@ -197,6 +201,7 @@ inline std::string _getOS()
 // ----------------------------------------------------------------------------
 // Function _getPath()
 // ----------------------------------------------------------------------------
+
 inline std::string _getPath()
 {
     std::string path;
@@ -211,6 +216,7 @@ inline std::string _getPath()
 // ----------------------------------------------------------------------------
 // Function _getPath()
 // ----------------------------------------------------------------------------
+
 inline std::string _getBitSys()
 {
     std::string bitSys;
@@ -226,6 +232,7 @@ inline std::string _getBitSys()
 // ----------------------------------------------------------------------------
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
+
 #if defined(PLATFORM_WINDOWS)
 inline bool _checkWritability(std::string const & path)
 {
@@ -272,6 +279,7 @@ inline bool _checkWritability(std::string const & path)
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
+
 inline double _getFileTimeDiff(std::string const & timestamp_filename)
 {
     double curr = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -294,24 +302,21 @@ inline double _getFileTimeDiff(std::string const & timestamp_filename)
 // ----------------------------------------------------------------------------
 // Function _getNumbersFromString()
 // ----------------------------------------------------------------------------
+
 inline String<int> _getNumbersFromString(std::string const & str)
 {
     String<int> numbers;
-    std::string number;
-    std::istringstream iss(str);
-    while (std::getline(iss, number, '.'))
-    {
-        if (!number.empty())
-        {
-            appendValue(numbers, atoi(toCString(number)));
-        }
-    }
+    StringSet<std::string> set;
+    strSplit(set, str, EqualsChar<'.'>(), false);
+    for (auto & num : set)
+        appendValue(numbers, lexicalCast<int>(num));
     return numbers;
 }
 
 // ----------------------------------------------------------------------------
 // Function _readVersionString()
 // ----------------------------------------------------------------------------
+
 inline std::string _readVersionString(std::string const & version_file)
 {
     std::ifstream myfile;
@@ -341,6 +346,7 @@ inline std::string _readVersionString(std::string const & version_file)
 // ----------------------------------------------------------------------------
 // Function _callServer()
 // ----------------------------------------------------------------------------
+
 inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 {
     // update timestamp
@@ -363,6 +369,7 @@ inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 // ----------------------------------------------------------------------------
 // Function checkForNewerVersion()
 // ----------------------------------------------------------------------------
+
 inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
 {
     if (!_checkWritability(me._path))
@@ -432,8 +439,7 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         return;
     }
 
-    // launch a seperate thread to not defer runtime
-    // std::cout << me._command << std::endl;
+    // launch a seperate thread to not defer runtime.
     std::thread(_callServer, me, std::move(prom)).detach();
 }
 
