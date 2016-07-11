@@ -15,10 +15,10 @@ function addVersionSelection(arr)
     var version_div = document.createElement("div");
 
     version_select.setAttribute("id","version_select");
-    version_div.setAttribute("style","background:#dad9dc; vertical-align:middle; transparent:false; line-hieght:150px; width:100%; text-align:right; position:fixed; padding:10px; padding-right:20px; bottom:0px;");
+    version_div.setAttribute("style","vertical-align:middle; text-align:right;");
     version_div.appendChild(document.createTextNode("Version: "));
     version_div.appendChild(version_select);
-    document.body.appendChild(version_div);
+    document.getElementById("list_bottom_right").appendChild(version_div);
            
     version_select.addEventListener("change", function(){changeVersion(this.id);}, false);
 
@@ -43,7 +43,7 @@ req.onreadystatechange = function()
 {
     if( req.readyState == 4 && req.status == 200 )
     {
-       var response = JSON.parse(req.responseText);
+        var response = JSON.parse(req.responseText);
         addVersionSelection(response); // add selection form
     }
 }
