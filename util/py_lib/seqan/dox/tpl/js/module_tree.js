@@ -71,15 +71,49 @@ for(var i=0; i < window.searchData.length; ++i) {
     srcfileList.push(srcfile.replace("|",DELIMITER).replace(".h","").split("/"));
 }
 
-var showHTML = "Module list : <a href='javascript:showMT();'>[show]</a>"; 
-var hideHTML = "Module list : <a href='javascript:hideMT();'>[hide]</a>"; 
+var mt_div = document.createElement("div");
+mt_div.setAttribute("id", "module_tree");
+mt_div.setAttribute("style", "display:none");
+
+var showHTML = "Module list : <a href='javascript:void(0);' onClick='javascript:showMT();'>[show]</a>"; 
+var hideHTML = "Module list : <a href='javascript:void(0);' onClick='javascript:hideMT();'>[hide]</a>";
 function hideMT() {
-   document.getElementById("module_tree").style.display = "none";
-   mt_toggle_div.innerHTML = showHTML;  
+    var module_tree = document.getElementById("module_tree");
+    if (module_tree.style.display == "block")
+    {
+        document.getElementById("module_tree").style.display = "none";
+        mt_toggle_div.innerHTML = showHTML;  
+    }
 }
 function showMT() {
-    document.getElementById("module_tree").style.display = "block";
-    mt_toggle_div.innerHTML = hideHTML;  
+    /*
+    search_input.value= "";
+    if ("createEvent" in document)
+    { 
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent("change", false, true);
+        search_input.dispatchEvent(evt);
+    }
+    else
+        search_input.fireEvent("onchange");
+    */
+    var module_tree = document.getElementById("module_tree");
+    var search_input = document.getElementById("search_input");
+    if (module_tree.style.display == "none")
+    {
+        search_input.value= "";
+        if ("createEvent" in document)
+        { 
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            search_input.dispatchEvent(evt);
+        }
+        else
+            search_input.fireEvent("onchange");
+
+        document.getElementById("module_tree").style.display = "block";
+        mt_toggle_div.innerHTML = hideHTML;
+    }
 }
 
 // sorting
@@ -98,13 +132,8 @@ mt_toggle_div.setAttribute("id", "module_tree_toggle");
 mt_toggle_div.setAttribute("style", "text-align:center;display:block");
 mt_toggle_div.innerHTML = showHTML;  
 
-var mt_div = document.createElement("div");
-mt_div.setAttribute("id", "module_tree");
-mt_div.setAttribute("style", "display:none");
-
 var content_div = document.getElementById("content");
 content_div.appendChild(mt_div);
-
 document.getElementById("list_bottom_left").appendChild(mt_toggle_div);
 
 // add tree

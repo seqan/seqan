@@ -319,6 +319,8 @@ for(i=0; i < window.searchData.length; ++i)
                 var results = '';
                 var module = false;
 
+                hideMT();
+
                 if (settings.queryInput.val() != '') {
                     settings.queryInput.addClass('not-empty');
                 } else {
