@@ -141,6 +141,8 @@ struct VersionCheck
             _command = _program + " " + _path + "/" + _name + ".version " + _url;
 #if defined(PLATFORM_WINDOWS)
             _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
+#else
+            _command = _command + " > /dev/null 2>&1";
 #endif
         }
     }
