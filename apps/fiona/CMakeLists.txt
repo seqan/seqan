@@ -33,6 +33,12 @@ if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     return ()
 endif()
 
+# all windows compilers are currently broken with Fiona (in different ways)
+if (MSVC)
+    message (STATUS "  Not building fiona under Visual Studio.")
+    return ()
+endif()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
