@@ -320,7 +320,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
                                  toCString(me._toolDoc._url));
         std::promise<bool> appVersionProm;
         me.appVersionCheckFuture = appVersionProm.get_future();
-        std::thread(app_version, std::move(appVersionProm)).detach();
+        app_version(std::move(appVersionProm));
 
         if (version_option != VersionControlTags::OPTION_APP_ONLY)
         {
@@ -330,7 +330,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
             VersionCheck seqan_version("seqan", seqan_ver_string, "http//www.github.com/seqan/seqan");
             std::promise<bool> seqanVersionProm;
             me.seqanVersionCheckFuture = seqanVersionProm.get_future();
-            std::thread(seqan_version, std::move(seqanVersionProm)).detach();
+            seqan_version(std::move(seqanVersionProm));
         }
     }
 #endif

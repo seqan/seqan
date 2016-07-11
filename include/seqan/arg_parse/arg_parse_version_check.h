@@ -56,7 +56,7 @@ namespace seqan
 
 // NOTE(rrahn): In-file forward for function call operator.
 struct VersionCheck;
-inline bool _checkForNewerVersion(VersionCheck &);
+inline void _checkForNewerVersion(VersionCheck &, std::promise<bool>);
 inline std::string _getOS();
 inline std::string _getPath();
 inline std::string _getBitSys();
@@ -151,7 +151,7 @@ struct VersionCheck
 
     inline void operator()(std::promise<bool> versionCheckProm)
     {
-        versionCheckProm.set_value(_checkForNewerVersion(*this));
+        _checkForNewerVersion(*this, std::move(versionCheckProm));
     }
 };
 
@@ -342,7 +342,7 @@ inline std::string _readVersionString(std::string const & version_file)
 // ----------------------------------------------------------------------------
 // Function _callServer()
 // ----------------------------------------------------------------------------
-inline bool _callServer(VersionCheck const & me)
+inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 {
     // update timestamp
     std::string timestamp_filename = me._path + "/" + me._name + ".timestamp";
@@ -356,24 +356,29 @@ inline bool _callServer(VersionCheck const & me)
     // system call
     // http response is stored in a file '.config/seqan/{app_name}_version'
     if (system(me._command.c_str()))
-        return false;
-
-    return true;
+        prom.set_value(false);
+    else
+        prom.set_value(true);
 }
 
 // ----------------------------------------------------------------------------
 // Function checkForNewerVersion()
 // ----------------------------------------------------------------------------
-inline bool _checkForNewerVersion(VersionCheck & me)
+inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
 {
     if (!_checkWritability(me._path))
     {
 #if defined(PLATFORM_WINDOWS)
         TCHAR tmp_path [MAX_PATH];
         if (GetTempPath(MAX_PATH, tmp_path) != 0)
+        {
             me._path = tmp_path;
-        else //GetTempPath() returns 0 on failure
-            return false;
+        }
+        else
+        { //GetTempPath() returns 0 on failure
+            prom.set_value(false);
+            return;
+        }
 # else // unix
         me._path = "/tmp";
 #endif
@@ -385,8 +390,11 @@ inline bool _checkForNewerVersion(VersionCheck & me)
     double min_time_diff = 86400;                                 // one day = 86400 seonds
     double file_time_diff = _getFileTimeDiff(timestamp_filename); // time difference in seconds
 
-    if (file_time_diff < min_time_diff)
-        return false; // only check for newer version once a day
+    /*if (file_time_diff < min_time_diff)
+    {
+        prom.set_value(false); // only check for newer version once a day
+        return;
+    }*/
 
     std::string str_server_version = _readVersionString(version_filename);
     if (!str_server_version.empty())
@@ -420,11 +428,14 @@ inline bool _checkForNewerVersion(VersionCheck & me)
     }
 
     if (me._program.empty())
-        return false;
+    {
+        prom.set_value(false);
+        return;
+    }
 
     // launch a seperate thread to not defer runtime
     // std::cout << me._command << std::endl;
-    return _callServer(me);
+    std::thread(_callServer, me, std::move(prom)).detach();
 }
 
 } // namespace seqan
