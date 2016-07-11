@@ -287,6 +287,24 @@ inline double _getFileTimeDiff(std::string const & timestamp_filename)
 }
 
 // ----------------------------------------------------------------------------
+// Function _getNumbersFromString()
+// ----------------------------------------------------------------------------
+inline String<int> _getNumbersFromString(std::string const & str)
+{
+    String<int> numbers;
+    std::string number;
+    std::istringstream iss(str);
+    while (std::getline(iss, number, '.'))
+    {
+        if (!number.empty())
+        {
+            appendValue(numbers, atoi(toCString(number)));
+        }
+    }
+    return numbers;
+}
+
+// ----------------------------------------------------------------------------
 // Function _readVersionString()
 // ----------------------------------------------------------------------------
 inline std::string _readVersionString(std::string const & version_file)
@@ -364,29 +382,32 @@ inline bool _checkForNewerVersion(VersionCheck & me)
     if (file_time_diff < min_time_diff)
         return false; // only check for newer version once a day
 
-    std::string server_version = _readVersionString(version_filename);
-    if (!server_version.empty())
+    std::string str_server_version = _readVersionString(version_filename);
+    if (!str_server_version.empty())
     {
-        if (isLess(me._version, server_version))
+        String<int> server_version  = _getNumbersFromString(str_server_version);
+        String<int> current_version = _getNumbersFromString(me._version);
+        Lexical<> version_comp(current_version, server_version);
+        if (isLess(version_comp))
         {
             if (me._name == VersionControlTags::SEQAN_NAME)
             {
-                std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn " << server_version << " Go to " << me._website << "\n"
+                std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn " << str_server_version << " Go to " << me._website << "\n"
                           << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check 1"
                           << "\n\n";
             }
             else
             {
-                std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " << server_version << "\n"
+                std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " << str_server_version << "\n"
                           << "[APP INFO] :: Check out " << me._website << "\n"
                           << "[APP INFO] :: If you don't want to recieve this message again set --version_check 2"
                           << "\n\n";
             }
         }
-        else if (isGreater(me._version, server_version))
+        else if (isGreater(version_comp))
         {
-            std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered.\n"
-                      << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)" 
+            std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered (" << str_server_version << ").\n"
+                      << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)\n"
                       << "[APP INFO] :: If not, you might want to contact the developer."
                       << "\n\n";
         }
