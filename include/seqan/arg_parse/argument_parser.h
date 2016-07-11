@@ -40,6 +40,7 @@
 #include <seqan/arg_parse/arg_parse_type_support.h>
 #include <seqan/arg_parse/arg_parse_argument.h>
 #include <seqan/arg_parse/arg_parse_option.h>
+#include <seqan/arg_parse/arg_parse_version_check.h>
 
 #include <seqan/arg_parse/tool_doc.h>
 
@@ -236,7 +237,7 @@ public:
                                         ArgParseArgument::STRING,
                                         "OPTION"));
         setValidValues(*this, "version-check", "DEV OFF APP_ONLY");
-        setDefaultValue(*this, "version-check", "DEV");
+        setDefaultValue(*this, "version-check", VersionControlTags::OPTION_DEV);
 #endif
     }
 

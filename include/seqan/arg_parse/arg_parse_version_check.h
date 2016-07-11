@@ -67,12 +67,18 @@ inline std::string _getBitSys();
 
 struct VersionControlTags
 {
-    constexpr static const char * SEQAN_NAME = "seqan";
-    constexpr static const char * UNREGISTERED_APP = "UNREGISTERED APP";
-    constexpr static const char * OPTION_OFF = "OFF";
-    constexpr static const char * OPTION_DEV = "DEV";
-    constexpr static const char * OPTION_APP_ONLY = "APP_ONLY";
+    static const char * SEQAN_NAME;
+    static const char * UNREGISTERED_APP;
+    static const char * OPTION_OFF;
+    static const char * OPTION_DEV;
+    static const char * OPTION_APP_ONLY;
 };
+
+const char * VersionControlTags::SEQAN_NAME = "seqan";
+const char * VersionControlTags::UNREGISTERED_APP = "UNREGISTERED APP";
+const char * VersionControlTags::OPTION_OFF = "OFF";
+const char * VersionControlTags::OPTION_DEV = "DEV";
+const char * VersionControlTags::OPTION_APP_ONLY = "APP_ONLY";
 
 struct VersionCheck
 {
