@@ -63,6 +63,7 @@ class LocalAlignmentEnumerator;
  * @tparam TScore The type of the @link Score @endlink to use for the local alignment.
  * @tparam TSpec  The tag to use for specializing the enumerator.
  *
+ * This is an abstract class that will only be instantiated through its subclasses.
  * See the documentation of the specializations for examples.
  *
  * @section References

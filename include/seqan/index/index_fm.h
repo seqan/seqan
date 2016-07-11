@@ -200,6 +200,16 @@ public:
     typename Fibre<Index, FibreLF>::Type            lf;
     typename Fibre<Index, FibreSA>::Type            sa;
 
+    /*!
+     * @fn FMIndex::Index
+     * @brief Constructor
+     *
+     * @signature Index::Index();
+     * @signature Index::Index(text);
+     *
+     * @param[in] text The text to be indexed.
+     */
+
     Index() {};
 
     Index(TText & text) :
