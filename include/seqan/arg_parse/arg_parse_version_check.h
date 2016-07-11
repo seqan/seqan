@@ -390,11 +390,11 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
     double min_time_diff = 86400;                                 // one day = 86400 seonds
     double file_time_diff = _getFileTimeDiff(timestamp_filename); // time difference in seconds
 
-    /*if (file_time_diff < min_time_diff)
+    if (file_time_diff < min_time_diff)
     {
         prom.set_value(false); // only check for newer version once a day
         return;
-    }*/
+    }
 
     std::string str_server_version = _readVersionString(version_filename);
     if (!str_server_version.empty())
