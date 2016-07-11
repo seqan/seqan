@@ -62,6 +62,8 @@ class ArgParseOption;
 void addOption(ArgumentParser & me, ArgParseOption const & opt);
 void hideOption(ArgumentParser & me, std::string const & name, bool hide);
 void setValidValues(ArgumentParser & me, std::string const & name, std::string const & values);
+template <typename TValue>
+void setDefaultValue(ArgumentParser & me, std::string const & name, const TValue & value);
 
 // Required in addOption() and addArgument().
 inline void hideOption(ArgumentParser & me, std::string const & name, bool hide = true);
@@ -228,12 +230,13 @@ public:
 #if _SEQAN_VERSION_CHECK == 1
         addOption(*this, ArgParseOption("",
                                         "version-check",
-                                        "Choose 2 if you don't want any notifications. "
-                                        "Choose 1 if you don't want any notification about a new SeqAn version. "
-                                        "0 is the default value and will check for both versions.",
+                                        "Choose OFF if you don't want any notifications. "
+                                        "Choose APP_ONLY if you don't want any notification about a new SeqAn version. "
+                                        "DEV is the default value and will check for both versions.",
                                         ArgParseArgument::STRING,
                                         "OPTION"));
-        setValidValues(*this, "version-check", "0 1 2");
+        setValidValues(*this, "version-check", "DEV OFF APP_ONLY");
+        setDefaultValue(*this, "version-check", "DEV");
 #endif
     }
 

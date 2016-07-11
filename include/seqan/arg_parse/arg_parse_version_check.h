@@ -69,13 +69,9 @@ struct VersionControlTags
 {
     constexpr static const char * SEQAN_NAME = "seqan";
     constexpr static const char * UNREGISTERED_APP = "UNREGISTERED APP";
-};
-
-enum VersionControlOptions
-{
-    VERSION_OPTION_DEV      = 0,
-    VERSION_OPTION_APP_ONLY = 1,
-    VERSION_OPTION_OFF      = 2
+    constexpr static const char * OPTION_OFF = "OFF";
+    constexpr static const char * OPTION_DEV = "DEV";
+    constexpr static const char * OPTION_APP_ONLY = "APP_ONLY";
 };
 
 struct VersionCheck
