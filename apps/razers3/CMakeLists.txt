@@ -106,12 +106,8 @@ install (FILES example/genome.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-# The parallel code paths are only available when compiling with OpenMP.
-if (OpenMP_FLAG_DETECTED)
-  seqan_add_app_test (razers3)
-endif (OpenMP_FLAG_DETECTED)
-
-# However, the sequential tests are always executed.
+# Both tests are always executed; without OpenMP the first one is serial, too
+seqan_add_app_test (razers3)
 seqan_add_app_test (razers3 _sequential)
 
 # ----------------------------------------------------------------------------
