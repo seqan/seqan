@@ -164,7 +164,7 @@ Infrastructure Updates
     - Major improvements to build system resulting in cleanup and dropped dependencies
     - C++11 is now required and many datatypes now have move cosntructors and -assignment operators
     - added support for new compiler versions, but dropped support for older compilers
-    - requirements are now GCC ≥ 4.8 or LLVM / Clang ≥ 3.4 (for Linux, Mac OSX, FreeBSD) and Visual C++ ≥ 10.0 / Visual Studio ≥ 2010 (for Windows)
+    - requirements are now GCC ≥ 4.9 or LLVM / Clang ≥ 3.5 (for Linux, Mac OSX, FreeBSD) and Visual C++ ≥ 14.0 / Visual Studio ≥ 2015 (for Windows)
 
 
 Release 2.0.2
