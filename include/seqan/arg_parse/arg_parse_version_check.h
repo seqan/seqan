@@ -44,7 +44,6 @@
 #include <regex>
 #include <future>
 #include <sys/types.h> 
-#include <utime.h>
 #include <chrono>
 
 namespace seqan
