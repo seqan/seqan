@@ -23,7 +23,8 @@ Prerequisites
 
 Linux, Mac OSX, FreeBSD:
   * GCC ≥ 4.9
-  * LLVM / Clang ≥ 3.5
+  * Clang/LLVM ≥ 3.5
+  * Intel Compiler ≥ 16.0.2
 Windows:
   * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
   * Intel Compiler ≥ 16.0.3 / Visual Studio ≥ 2015u2
