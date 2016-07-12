@@ -232,7 +232,7 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
 
 template <typename TSource, typename TSpec, typename TReference>
 void
-bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, BamAlignmentRecord & record)
+bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, BamAlignmentRecord const & record)
 {
     // TODO(holtgrew): Clipping better than copying infix? But is it generic?
     resize(rows(result), 2);
