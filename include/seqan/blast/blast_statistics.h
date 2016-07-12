@@ -1095,9 +1095,9 @@ template <typename T>
 inline void
 _conditionalDec(T & val, BlastScoringScheme<Score<int, Simple>> const & scheme)
 {
-    typedef KarlinAltschulValues<TScore> TKAValues;
+    typedef KarlinAltschulValues<Score<int, Simple>> TKAValues;
     if (TKAValues::VALUE[scheme.parameterIndex][10])
-        --rawScore;
+        --val;
 }
 
 template <typename TScore>
@@ -1107,8 +1107,6 @@ computeEValue(uint64_t rawScore,
               uint64_t const dbLength,
               BlastScoringScheme<TScore> const & scheme)
 {
-    typedef KarlinAltschulValues<TScore> TKAValues;
-
     // for some parameters the score has to be "rounded down" to being even
     _conditionalDec(rawScore, scheme);
 
