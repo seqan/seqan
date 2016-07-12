@@ -105,16 +105,19 @@ struct VersionCheck
     // Constructors
     // ----------------------------------------------------------------------------
 
-    VersionCheck(std::string const & name,
+    VersionCheck(std::string name,
                  std::string const & version,
-                 std::string const & website)
+                 std::string website)
     {
-        _name = name;
+        _name = {std::move(name)};
+        std::smatch versionMatch;
         if (!version.empty() &&
-            std::regex_match(version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+.*")))
-            _version = version.substr(0,5); // in case the git revision number is given take only version number
+            std::regex_search(version, versionMatch, std::regex("^([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+).*")))
+        {
+            _version = versionMatch.str(1); // in case the git revision number is given take only version number
+        }
         if (!website.empty())
-            _website = website;
+            _website = {std::move(website)};
         _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
         _updateCommand();
@@ -124,7 +127,7 @@ struct VersionCheck
     // Member Functions
     // ----------------------------------------------------------------------------
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
     void _getProgram()
     {
         _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -erroraction 'silentlycontinue' -OutFile";
@@ -144,14 +147,14 @@ struct VersionCheck
         else
             _program.clear();
     }
-#endif  // defined(PLATFORM_WINDOWS)
+#endif  // defined(STDLIB_VS)
 
     void _updateCommand()
     {
         if (!_program.empty())
         {
             _command = _program + " " + _path + "/" + _name + ".version " + _url;
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
             _command = _command + "; exit  [int] -not $?}\" > nul 2>&1";
 #else
             _command = _command + " > /dev/null 2>&1";
@@ -195,7 +198,7 @@ inline std::string _getOS()
     os = "Linux";
 #elif __APPLE__
     os = "MacOS";
-#elif defined(PLATFORM_WINDOWS)
+#elif defined(STDLIB_VS)
     os = "Windows";
 #elif __FreeBSD__
     os = "FreeBSD";
@@ -214,7 +217,7 @@ inline std::string _getOS()
 inline std::string _getPath()
 {
     std::string path;
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
     path = std::string(getenv("UserProfile")) + "/.config/seqan";
 #else
     path = std::string(getenv("HOME")) + "/.config/seqan";
@@ -242,7 +245,7 @@ inline std::string _getBitSys()
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
 inline bool _checkWritability(std::string const & path)
 {
     DWORD ftyp = GetFileAttributesA(path.c_str());
@@ -383,7 +386,7 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
 {
     if (!_checkWritability(me._path))
     {
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
         TCHAR tmp_path [MAX_PATH];
         if (GetTempPath(MAX_PATH, tmp_path) != 0)
         {
