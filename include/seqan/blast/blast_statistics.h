@@ -1086,6 +1086,20 @@ _computeEValue(double const rawScore,
     return getKappa(scheme) * adjustedQueryLength * adjustedDbLength * std::exp(-getLambda(scheme) * rawScore);
 }
 
+template <typename T, typename TScore>
+inline void
+_conditionalDec(T &, BlastScoringScheme<TScore> const &)
+{}
+
+template <typename T>
+inline void
+_conditionalDec(T & val, BlastScoringScheme<Score<int, Simple>> const & scheme)
+{
+    typedef KarlinAltschulValues<TScore> TKAValues;
+    if (TKAValues::VALUE[scheme.parameterIndex][10])
+        --rawScore;
+}
+
 template <typename TScore>
 inline double
 computeEValue(uint64_t rawScore,
@@ -1094,9 +1108,9 @@ computeEValue(uint64_t rawScore,
               BlastScoringScheme<TScore> const & scheme)
 {
     typedef KarlinAltschulValues<TScore> TKAValues;
+
     // for some parameters the score has to be "rounded down" to being even
-    if ((TKAValues::nParams >= 11) && (TKAValues::VALUE[scheme.parameterIndex][10]))
-        --rawScore;
+    _conditionalDec(rawScore, scheme);
 
     uint64_t adj = _lengthAdjustment(dbLength, queryLength, scheme);
     return _computeEValue(rawScore, queryLength - adj, dbLength - adj, scheme);
