@@ -24,7 +24,7 @@ Library Features
     - ModifiedString ModPadding: Expand a string with padding symbols, without changing the source.
 
 - Other:
-    - Replace p_thread implementation with STLs thread support library. Increases performance and fixes rare bugs.
+    - Replace pthread implementation with STLs thread support library. Increases performance and fixes rare bugs in bam_io.
 
 App Updates
 ^^^^^^^^^^^
@@ -54,11 +54,11 @@ Infrastructure Updates
 - Build System:
     - The Intel Compiler is now fully supported on Linux and Windows, both 32bit and 64bit; it builds faster binaries and supports some functionality not available in MSVC.
     - On Windows there is now experimental support for Clang/C2, the Microsoft version of the clang compiler.
-        - Please see the `manual <http://seqan.readthedocs.io/en/master/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
+    - Please see the `manual <http://seqan.readthedocs.io/en/master/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
     - support deb/rpm/exe/dmg packages and SSE4+POPCNT binaries
 
 - Platforms:
-    - full BSD support
+    - full FreeBSD support
     - Ship UCRT, OPENMP and Intel DLLs for apps on windows
     - more apps available on Windows and some packaging fixes
 
