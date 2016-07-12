@@ -237,7 +237,7 @@ public:
                                         ArgParseArgument::STRING,
                                         "OPTION"));
         setValidValues(*this, "version-check", "DEV OFF APP_ONLY");
-        setDefaultValue(*this, "version-check", VersionControlTags::OPTION_DEV);
+        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_DEV);
 #endif
     }
 

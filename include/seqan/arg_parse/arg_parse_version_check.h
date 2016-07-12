@@ -64,20 +64,26 @@ inline std::string _getBitSys();
 // Tags, Classes, Enums
 // ==========================================================================
 
-struct VersionControlTags
+template <typename TVoidSpec = void>
+struct VersionControlTags_
 {
-    static const char * SEQAN_NAME;
-    static const char * UNREGISTERED_APP;
-    static const char * OPTION_OFF;
-    static const char * OPTION_DEV;
-    static const char * OPTION_APP_ONLY;
+    static constexpr char const * const SEQAN_NAME = "seqan";
+    static constexpr char const * const UNREGISTERED_APP= "UNREGISTERED APP";
+    static constexpr char const * const OPTION_OFF = "OFF";
+    static constexpr char const * const OPTION_DEV = "DEV";
+    static constexpr char const * const OPTION_APP_ONLY = "APP_ONLY";
 };
 
-const char * VersionControlTags::SEQAN_NAME = "seqan";
-const char * VersionControlTags::UNREGISTERED_APP = "UNREGISTERED APP";
-const char * VersionControlTags::OPTION_OFF = "OFF";
-const char * VersionControlTags::OPTION_DEV = "DEV";
-const char * VersionControlTags::OPTION_APP_ONLY = "APP_ONLY";
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::SEQAN_NAME;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::UNREGISTERED_APP;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_OFF;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_DEV;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_APP_ONLY;
 
 struct VersionCheck
 {
@@ -329,7 +335,7 @@ inline std::string _readVersionString(std::string const & version_file)
         {
             line.clear();
         }
-        if (line == VersionControlTags::UNREGISTERED_APP)
+        if (line == VersionControlTags_<>::UNREGISTERED_APP)
         {
             std::cerr << "[SEQAN INFO] :: Thank you for using SeqAn!\n"
                       << "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
@@ -410,7 +416,7 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         Lexical<> version_comp(current_version, server_version);
         if (isLess(version_comp))
         {
-            if (me._name == VersionControlTags::SEQAN_NAME)
+            if (me._name == VersionControlTags_<>::SEQAN_NAME)
             {
                 std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn " << str_server_version << " Go to " << me._website << "\n"
                           << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check 1"

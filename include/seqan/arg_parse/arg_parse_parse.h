@@ -313,7 +313,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
     std::string version_option;
     getOptionValue(version_option, me, "version-check");
 
-    if (version_option != VersionControlTags::OPTION_OFF)
+    if (version_option != VersionControlTags_<>::OPTION_OFF)
     {
         VersionCheck app_version(toCString(me._toolDoc._name),
                                  toCString(me._toolDoc._version),
@@ -322,7 +322,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         me.appVersionCheckFuture = appVersionProm.get_future();
         app_version(std::move(appVersionProm));
 
-        if (version_option != VersionControlTags::OPTION_APP_ONLY)
+        if (version_option != VersionControlTags_<>::OPTION_APP_ONLY)
         {
             std::string seqan_ver_string = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
                                            std::to_string(SEQAN_VERSION_MINOR) + "." +
