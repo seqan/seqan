@@ -228,7 +228,6 @@ public:
         hideOption(*this, "export-help", true);
         setValidValues(*this, "export-help", "html man txt");
 
-#if _SEQAN_VERSION_CHECK == 1
         addOption(*this, ArgParseOption("",
                                         "version-check",
                                         "Choose OFF if you don't want any notifications. "
@@ -236,9 +235,13 @@ public:
                                         "DEV is the default value and will check for both versions.",
                                         ArgParseArgument::STRING,
                                         "OPTION"));
-        setValidValues(*this, "version-check", "DEV OFF APP_ONLY");
-        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_DEV);
-#endif
+        setValidValues(*this, "version-check", VersionControlTags_<>::OPTIONS);
+#ifdef SEQAN_DISABLE_VERSION_CHECK
+        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);
+        hideOption(*this, "version-check", true);
+#else
+        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);  // TODO(rrahn): Set to "DEV" after proper testing.
+#endif  // SEQAN_DISABLE_VERSION_CHECK
     }
 
     // ----------------------------------------------------------------------------

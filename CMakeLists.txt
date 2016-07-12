@@ -81,10 +81,7 @@ option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 # Version Check Variable.
 # ===========================================================================
 
-# TODO(rrahn): For 2.2.0 we set it off per default to make sure everything
-# works well after some more elaborated testing.
-# We will then switch back to ON as default for 2.3.0.
-option (SEQAN_VERSION_CHECK "SeqAn version check." OFF)
+option (SEQAN_VERSION_CHECK "SeqAn version check." ON)
 
 # ===========================================================================
 # Setup Modules and Find Packages.

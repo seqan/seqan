@@ -67,11 +67,12 @@ inline std::string _getBitSys();
 template <typename TVoidSpec = void>
 struct VersionControlTags_
 {
-    static constexpr char const * const SEQAN_NAME = "seqan";
-    static constexpr char const * const UNREGISTERED_APP= "UNREGISTERED APP";
-    static constexpr char const * const OPTION_OFF = "OFF";
-    static constexpr char const * const OPTION_DEV = "DEV";
-    static constexpr char const * const OPTION_APP_ONLY = "APP_ONLY";
+    static constexpr char const * const SEQAN_NAME       = "seqan";
+    static constexpr char const * const UNREGISTERED_APP = "UNREGISTERED_APP";
+    static constexpr char const * const OPTION_OFF       = "OFF";
+    static constexpr char const * const OPTION_DEV       = "DEV";
+    static constexpr char const * const OPTION_APP_ONLY  = "APP_ONLY";
+    static constexpr char const * const OPTIONS          = "DEV APP_ONLY OFF";
 };
 
 template <typename TVoidSpec>
@@ -84,6 +85,8 @@ template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_DEV;
 template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_APP_ONLY;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::OPTIONS;
 
 struct VersionCheck
 {

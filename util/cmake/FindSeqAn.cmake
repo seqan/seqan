@@ -436,10 +436,8 @@ endif (NOT DEFINED SEQAN_VERSION_STRING)
 # SeqAn Version Check
 # ----------------------------------------------------------------------------
 
-if (SEQAN_VERSION_CHECK)
-  set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-D_SEQAN_VERSION_CHECK=1")
-else ()
-  set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-D_SEQAN_VERSION_CHECK=0")
+if (NOT SEQAN_VERSION_CHECK)
+  set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-DSEQAN_DISABLE_VERSION_CHECK")
 endif ()
 
 # ----------------------------------------------------------------------------
