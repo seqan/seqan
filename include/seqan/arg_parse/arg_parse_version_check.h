@@ -107,9 +107,9 @@ struct VersionCheck
 
     VersionCheck(std::string name,
                  std::string const & version,
-                 std::string website)
+                 std::string const & website) :
+        _name{std::move(name)}
     {
-        _name = {std::move(name)};
         std::smatch versionMatch;
         if (!version.empty() &&
             std::regex_search(version, versionMatch, std::regex("^([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+).*")))
@@ -117,7 +117,7 @@ struct VersionCheck
             _version = versionMatch.str(1); // in case the git revision number is given take only version number
         }
         if (!website.empty())
-            _website = {std::move(website)};
+            _website = website;
         _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
         _updateCommand();

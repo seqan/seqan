@@ -216,6 +216,13 @@ macro (seqan_build_system_init)
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
     ## options
+
+    # SeqAn Version Check
+    if (NOT SEQAN_VERSION_CHECK)
+        set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-DSEQAN_DISABLE_VERSION_CHECK")
+    endif ()
+
+    # Architecture.
     if (NOT SEQAN_64BIT_TARGET_PLATFORM)
         set (SEQAN_ARCH_SSE4 FALSE)
     endif ()

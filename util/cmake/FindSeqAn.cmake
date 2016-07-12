@@ -433,14 +433,6 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
-# SeqAn Version Check
-# ----------------------------------------------------------------------------
-
-if (NOT SEQAN_VERSION_CHECK)
-  set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-DSEQAN_DISABLE_VERSION_CHECK")
-endif ()
-
-# ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
 
