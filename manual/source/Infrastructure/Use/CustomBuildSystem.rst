@@ -43,14 +43,14 @@ GNU/Linux
 
 **Libraries**
 
-Add ``-lrt -lpthread`` to the compiler call.
+Add ``-lrt`` to the compiler call.
 
 BSD
 ^^^
 
 **Libraries**
 
-Add ``-lpthread -lexecinfo -lelf`` to the compiler call.
+Add ``-lexecinfo -lelf`` to the compiler call.
 
 **Misc**
 
@@ -300,9 +300,9 @@ Short Version
 +---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
 | OS      | Compiler            | Flags                                                                                                                                       |
 +=========+=====================+=============================================================================================================================================+
-| Linux   | GCC/Clang≥3.8/ICC   | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic -fopenmp -lpthread -lrt``                                            |
+| Linux   | GCC/Clang≥3.8/ICC   | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic -fopenmp -lrt``                                            |
 +---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
-| BSD     | GCC/Clang≥3.8/ICC   | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic -fopenmp -lpthread -lexecinfo -lelf -D_GLIBCXX_USE_C99=1``           |
+| BSD     | GCC/Clang≥3.8/ICC   | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic -fopenmp -lexecinfo -lelf -D_GLIBCXX_USE_C99=1``           |
 +---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
 | macOS   | system's Clang      | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic``                                                                    |
 +---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
