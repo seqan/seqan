@@ -57,19 +57,31 @@ namespace seqan {
  */
 
 struct FibreRanks_;
+typedef Tag<FibreRanks_> const FibreRanks;
 
-typedef Tag<FibreRanks_>
-const FibreRanks;
+struct FibreSuperBlocks_;
+typedef Tag<FibreSuperBlocks_> const FibreSuperBlocks;
+
+struct FibreUltraBlocks_;
+typedef Tag<FibreUltraBlocks_> const FibreUltraBlocks;
 
 // ----------------------------------------------------------------------------
 // Tag RDConfig
 // ----------------------------------------------------------------------------
 
-template <typename TSize = size_t, typename TFibre = Alloc<> >
+template <
+    typename TSize = size_t,
+    typename TFibre = Alloc<>,
+    unsigned LEVELS_ = 1,
+    unsigned WORDS_PER_BLOCK_ = 1
+>
 struct RDConfig
 {
-    typedef TFibre  Fibre;
     typedef TSize   Size;
+    typedef TFibre  Fibre;
+
+    static const unsigned WORDS_PER_BLOCK = WORDS_PER_BLOCK_;
+    static const unsigned LEVELS          = LEVELS_;
 };
 
 // ============================================================================
@@ -155,14 +167,14 @@ struct Value<RankDictionary<TValue, TSpec> const> :
 
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<RankDictionary<TValue, TSpec>, FibreRanks>::Type &
+inline typename Fibre<RankDictionary<TValue, TSpec>, FibreRanks>::Type &
 getFibre(RankDictionary<TValue, TSpec> & dict, FibreRanks)
 {
     return dict.ranks;
 }
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<RankDictionary<TValue, TSpec>, FibreRanks>::Type const &
+inline typename Fibre<RankDictionary<TValue, TSpec>, FibreRanks>::Type const &
 getFibre(RankDictionary<TValue, TSpec> const & dict, FibreRanks)
 {
     return dict.ranks;
@@ -205,7 +217,7 @@ inline void clear(RankDictionary<TValue, TSpec> & dict)
  */
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline bool empty(RankDictionary<TValue, TSpec> const & dict)
+inline bool empty(RankDictionary<TValue, TSpec> const & dict)
 {
     return empty(getFibre(dict, FibreRanks()));
 }

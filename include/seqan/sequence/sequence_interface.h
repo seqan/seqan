@@ -318,7 +318,7 @@ shareResources(T1 const & obj1,
 //* ???Anti Default Sequences
 // TODO(holtgrew): Evil -- each value is a container of length 1.
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T, Standard>::Type
+inline typename Iterator<T, Standard>::Type
 _beginDefault(T & me,
                Standard)
 {
@@ -326,7 +326,7 @@ _beginDefault(T & me,
 }
 // TODO(holtgrew): Evil -- each value is a container of length 1.
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, Standard>::Type
+inline typename Iterator<T const, Standard>::Type
 _beginDefault(T const & me,
                Standard)
 {
@@ -335,7 +335,7 @@ _beginDefault(T const & me,
 //*/
 
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T, Rooted>::Type
+inline typename Iterator<T, Rooted>::Type
 _beginDefault(T & me,
                Rooted)
 {
@@ -343,7 +343,7 @@ _beginDefault(T & me,
     return TIterator(me, begin(me, Standard()));
 }
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, Rooted>::Type
+inline typename Iterator<T const, Rooted>::Type
 _beginDefault(T const & me,
                Rooted)
 {
@@ -356,14 +356,14 @@ _beginDefault(T const & me,
 // --------------------------------------------------------------------------
 
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
+inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
 begin(T & me)
 {
     return begin(me, typename DefaultGetIteratorSpec<T>::Type()) ;
 }
 
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type
+inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type
 begin(T const & me)
 {
     return begin(me, typename DefaultGetIteratorSpec<T>::Type()) ;
@@ -373,7 +373,7 @@ begin(T const & me)
 //implemented in string_pointer.h
 // template <typename TValue,
 //           typename DisableIf<Is<StlContainerConcept<typename RemoveReference<T>::Type> >, int>::Type>
-// SEQAN_HOST_DEVICE inline typename Iterator<TValue const *, Standard>::Type
+// inline typename Iterator<TValue const *, Standard>::Type
 // begin(TValue const * me,
 //       Standard);
 
@@ -454,14 +454,14 @@ beginPosition(T const &)
 
 //* ???Anti Default Sequences
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T, Standard>::Type
+inline typename Iterator<T, Standard>::Type
 _endDefault(T & me,
              Standard)
 {
     return (& me) + 1;
 }
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, Standard>::Type
+inline typename Iterator<T const, Standard>::Type
 _endDefault(T const & me,
              Standard)
 {
@@ -470,7 +470,7 @@ _endDefault(T const & me,
 //*/
 
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T, Rooted>::Type
+inline typename Iterator<T, Rooted>::Type
 _endDefault(T & me,
              Rooted)
 {
@@ -478,7 +478,7 @@ _endDefault(T & me,
     return TIterator(me, end(me, Standard()));
 }
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, Rooted>::Type
+inline typename Iterator<T const, Rooted>::Type
 _endDefault(T const & me,
              Rooted)
 {
@@ -491,21 +491,21 @@ _endDefault(T const & me,
 // --------------------------------------------------------------------------
 
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
+inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
 end(T & me)
 {
     return end(me, typename DefaultGetIteratorSpec<T>::Type()) ;
 }
 
 template <typename T>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type
+inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type
 end(T const & me)
 {
     return end(me, typename DefaultGetIteratorSpec<T>::Type()) ;
 }
 
 template <typename T, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Iterator<T, Tag<TSpec> const>::Type
+inline typename Iterator<T, Tag<TSpec> const>::Type
 end(T & me,
     Tag<TSpec> const tag_)
 {
@@ -513,7 +513,7 @@ end(T & me,
 }
 
 template <typename T, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Iterator<T const, Tag<TSpec> const>::Type
+inline typename Iterator<T const, Tag<TSpec> const>::Type
 end(T const & me,
     Tag<TSpec> const tag_)
 {
@@ -771,7 +771,7 @@ length(T const & /*me*/)
  */
 
 template <typename T>
-inline SEQAN_HOST_DEVICE typename Size<T const>::Type
+inline typename Size<T const>::Type
 capacity(T const & me)
 {
     return length(me);

@@ -62,13 +62,13 @@ namespace seqan
  * @signature template <[typename TFile[, unsigned PAGESIZE[, unsigned FRAMES]]>
  *            struct ExternalConfig;
  *
- * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
- * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
- *                   calculations.  Default: 2<sup>20</sup>.
- * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
- *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ * @tparam TFile     The @link File @endlink type to use. Default: <tt>File&lt;&gt;</tt>.
+ * @tparam PAGESIZE The number of values in one page. This should be a power of 2 to speed up transfer and
+ *                   calculations. Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  *
- * When using this configuration, the Size type of the ExternalString is <tt>unsigned</tt>.  Thus, with this configuration at
+ * When using this configuration, the <tt>Size</tt> type of the ExternalString is <tt>unsigned</tt>. Thus, with this configuration at
  * most 4.294.967.296 values can be stored in an ExternalString on a 32 bit system.
  *
  * For a larger size type use @link ExternalConfigLarge @endlink.
@@ -84,20 +84,20 @@ namespace seqan
  * @signature template <[typename TFile[, unsigned PAGESIZE[, unsigned FRAMES]]>
  *            struct ExternalConfigLarge;
  *
- * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
- * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
- *                   calculations.  Default: 2<sup>20</sup>.
- * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
- *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ * @tparam TFile     The @link File @endlink type to use. Default: <tt>File&lt;&gt;</tt>.
+ * @tparam PAGESIZE The number of values in one page. This should be a power of 2 to speed up transfer and
+ *                   calculations. Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  *
  * @see ExternalConfig
  *
  * @section Remarks
  *
- * When using this configuration ,th eSize type o fthe ExternalString is Size type of <tt>TFile</tt>.  Normally, this is
- * a 64 bit integer.  For a smaller size type use ExternalConfig.
+ * When using this configuration ,the <tt>Size</tt> type of the ExternalString is <tt>Size</tt> type of <tt>TFile</tt>. Normally, this is
+ * a 64 bit integer. For a smaller size type use ExternalConfig.
  *
- * Some data structures store size types values (e.g. suffix arrays in indices).  To save memory, you should think o
+ * Some data structures store size types values (e.g. suffix arrays in indices). To save memory, you should think o
  * fusing ExternalConfig.
  */
 
@@ -110,11 +110,11 @@ namespace seqan
  *            class ExternalConfigSize;
  *
  * @tparam TSize The size type of the ExternalString.
- * @tparam TFile Type of file the ExternalString will be based on.  Defaults to <tt>File&lt;&gt;</tt>.
- * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
- *                   calculations.  Default: 2<sup>20</sup>.
- * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
- *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ * @tparam TFile Type of file the ExternalString will be based on. Defaults to <tt>File&lt;&gt;</tt>.
+ * @tparam PAGESIZE The number of values in one page. This should be a power of 2 to speed up transfer and
+ *                   calculations. Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  */
 
 /*!
@@ -127,25 +127,25 @@ namespace seqan
  *            class String<TValue, External<TConfig> >;
  *
  * @tparam TValue  The type that is used for the items/characters stored in the string.
- * @tparam TConfig A structure to confgure the external string.  Defaults to <tt>ExternalConfigLarge&lt;&gt;.  See
+ * @tparam TConfig A structure to configure the external string. Defaults to <tt>ExternalConfigLarge&lt;&gt;. See
  *                 ExternalConfig, ExternalConfigLarge, and ExternalConfigSize.
  *
  * The External String enables to access sequences larger than the available internal memory (RAM) by using external
- * memory (e.g. Hard disk, Network storage, ...) via a File object.  Sequences of nearly arbitrary size can be accessed
+ * memory (e.g. Hard disk, Network storage, ...) via a File object. Sequences of nearly arbitrary size can be accessed
  * even larger than the logically addressable memory, i.e. they can in particular contain more than 2^32 elements on a
- * 32bit system (see Tag.ExternalConfigLarge).  See the String constructor for more details.
+ * 32bit system (see Tag.ExternalConfigLarge). See the String constructor for more details.
  *
  * This String also supports fast appending and removing of values at the end (see Block String, appendValue)
  *
- * The External String implements a LRU mechanism to swap out pages.  The External String's Iterator detects a forward or
+ * The External String implements a LRU mechanism to swap out pages. The External String's Iterator detects a forward or
  * backward iteration and asynchronously prefetches pages that certainly will be accessed and automatically swaps out
  * pages that certainly won't be accessed any more in the iteration process.
  *
- * The String is implemented like a virtual memory manager.  It divides its character sequence into pages of a fixed
+ * The String is implemented like a virtual memory manager. It divides its character sequence into pages of a fixed
  * length (e.g. 4MB) and maintains a page table with information for each page (e.g. resides in memory or was swapped
- * out, is dirty and needs to be saved, ...).  Besides the page table the String also contains a size-limited list of
- * page frames.  A page frame is reserved internal memory for a page.  When accessing values of a page that is stored in
- * external memory, the page is loaded to a page frame first.  In case that there is no page frame free, another page is
+ * out, is dirty and needs to be saved, ...). Besides the page table the String also contains a size-limited list of
+ * page frames. A page frame is reserved internal memory for a page. When accessing values of a page that is stored in
+ * external memory, the page is loaded to a page frame first. In case that there is no page frame free, another page is
  * swapped out before to free a page frame.
  */
 
@@ -1146,7 +1146,7 @@ namespace seqan
  * @signature String::String(file);
  * @signature String::String(fileName[, openMode]);
  *
- * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensture that
+ * @param[in]     file     The @link File @endlink to use for reading and writing. You must ensure that
  *                         <tt>file</tt> is open as the string will not call <tt>open</tt> and <tt>close</tt>
  *                         on the file.
  * @param[in]     fileName The path to open. Type: <tt>char const *</tt>
@@ -1154,12 +1154,12 @@ namespace seqan
  *
  * @section Remarks
  *
- * When a file or file name is given, this file will be used for the ExternalString.  If the file exists, this file will
- * be used and determines the strings length and content.  If the file doesn't exist, a new and empty file will be
- * created and used for the string.  In both cases, the string won't delete the file in the destructor.
+ * When a file or file name is given, this file will be used for the ExternalString. If the file exists, this file will
+ * be used and determines the strings length and content. If the file doesn't exist, a new and empty file will be
+ * created and used for the string. In both cases, the string won't delete the file in the destructor.
  *
  * When no file is given (default c'tor) the string will be empty and no file is used until the string needs to swap out
- * page frames.  Then a temporary file will be used which will be deleted when the string is destroyed.
+ * page frames. Then a temporary file will be used which will be deleted when the string is destroyed.
  *
  * Instead of giving file or fileName to the constructor, you could also use the default constructor and call open or
  * openTemp afterwards to reach the same behaviour.

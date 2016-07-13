@@ -71,9 +71,7 @@ namespace seqan {
  * <tt>getValue()</tt>, <tt>assignValue()</tt>, <tt>moveValue()</tt>, <tt>setValue()</tt> instead.
  */
 
-#ifdef PLATFORM_WINDOWS
-    #pragma pack(push,1)
-#endif
+#pragma pack(push,1)
 template <typename T1, typename T2>
 struct Pair<T1, T2, Pack>
 {
@@ -88,24 +86,18 @@ struct Pair<T1, T2, Pack>
     // Constructors
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE Pair() : i1(T1()), i2(T2()) {}
+    Pair() : i1(T1()), i2(T2()) {}
 
-    SEQAN_HOST_DEVICE Pair(Pair const &_p) : i1(_p.i1), i2(_p.i2) {}
+    Pair(Pair const &_p) : i1(_p.i1), i2(_p.i2) {}
 
-    SEQAN_HOST_DEVICE Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
+    Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 
     template <typename T1_, typename T2_, typename TSpec__>
     // TODO(holtgrew): explicit?
-    SEQAN_HOST_DEVICE Pair(Pair<T1_, T2_, TSpec__> const &_p)
+    Pair(Pair<T1_, T2_, TSpec__> const &_p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)) {}
-}
-#ifndef PLATFORM_WINDOWS
-    __attribute__((packed))
-#endif
-    ;
-#ifdef PLATFORM_WINDOWS
-      #pragma pack(pop)
-#endif
+};
+#pragma pack(pop)
 
 // ============================================================================
 // Metafunctions

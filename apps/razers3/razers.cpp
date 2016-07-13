@@ -64,7 +64,7 @@
 #include <seqan/arg_parse.h>
 #include <seqan/parallel.h>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <process.h>
 #endif
 
@@ -159,11 +159,11 @@ int mapReads(
             cerr << "Taboo length:                    \t" << options.tabooLength << endl;
         if (options._debugLevel >= 1)
         {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
             int pid = _getpid();
-#else // #ifdef PLATFORM_WINDOWS
+#else // #ifdef STDLIB_VS
             int pid = getpid();
-#endif // #ifdef PLATFORM_WINDOWS
+#endif // #ifdef STDLIB_VS
             cerr << "Program PID:                     \t" << pid << endl;
         }
         cerr << endl;
@@ -542,7 +542,7 @@ extractOptions(
     {
         if (back(pm_options.paramFolder) != '/' && back(pm_options.paramFolder) != '\\')
         {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
             appendValue(pm_options.paramFolder, '\\');
 #else
             appendValue(pm_options.paramFolder, '/');

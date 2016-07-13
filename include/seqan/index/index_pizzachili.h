@@ -103,6 +103,18 @@ public:
     impl::index_t index_handle;
     Holder<String<TValue, PizzaChili<TSpec> > > text;
 
+    /*!
+     * @fn PizzaChiliIndex::Index
+     * @brief Constructor
+     *
+     * @signature Index::Index();
+     * @signature Index::Index(index);
+     * @signature Index::Index(text);
+     *
+     * @param[in] index Other Index object to copy from.
+     * @param[in] text  The text to be indexed.
+     */
+
     Index() : index_handle(0), text() { }
 
     Index(Index& other) : index_handle(0), text() {

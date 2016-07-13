@@ -666,6 +666,20 @@ SEQAN_DEFINE_TEST(test_score_sequence_entry_for_score)
     testScoreSequenceEntryForScore<ScoreMatrix<AminoAcid, Blosum62_> >();
 }
 
+SEQAN_DEFINE_TEST(test_score_dynamic_score_matrix)
+{
+    Blosum62 blo;
+    SelectableAminoAcidMatrix sel;
+    SEQAN_ASSERT(getScoreMatrixId(sel) != AminoAcidScoreMatrixID::BLOSUM62);
+
+    setScoreMatrixById(sel, AminoAcidScoreMatrixID::BLOSUM62);
+    SEQAN_ASSERT(getScoreMatrixId(sel) == AminoAcidScoreMatrixID::BLOSUM62);
+
+    for (unsigned i = 0; i < ValueSize<AminoAcid>::VALUE; ++i)
+        for (unsigned j = 0; j < ValueSize<AminoAcid>::VALUE; ++j)
+            SEQAN_ASSERT_EQ(score(blo, static_cast<AminoAcid>(i), static_cast<AminoAcid>(j)),
+                            score(sel, static_cast<AminoAcid>(i), static_cast<AminoAcid>(j)));
+}
 
 SEQAN_BEGIN_TESTSUITE(test_score) {
     // Call the tests for this module.
@@ -676,5 +690,6 @@ SEQAN_BEGIN_TESTSUITE(test_score) {
     SEQAN_CALL_TEST(test_score_matrix_file);
     SEQAN_CALL_TEST(test_score_matrix_data);
     SEQAN_CALL_TEST(test_score_sequence_entry_for_score);
+    SEQAN_CALL_TEST(test_score_dynamic_score_matrix);
 }
 SEQAN_END_TESTSUITE

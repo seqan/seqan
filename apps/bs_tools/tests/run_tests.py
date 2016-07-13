@@ -209,7 +209,7 @@ def main(source_base, binary_base):
     # ============================================================
     # 0
 
-    if not sys.platform.startswith('freebsd'):
+    if not (sys.platform.startswith('freebsd') or sys.platform.startswith('win')):
         conf = app_tests.TestConf(
             program=path_to_casbar,
             redir_stdout=ph.outFile('other.stdout'),

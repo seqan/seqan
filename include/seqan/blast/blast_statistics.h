@@ -86,7 +86,21 @@ namespace seqan
 
 /// GENERIC
 template <typename TScore, typename TSpec = void>
-struct KarlinAltschulValues;
+struct KarlinAltschulValues
+{
+    typedef uint8_t TSize;
+
+    /* statics */
+    static constexpr TSize nParams = 0;
+    static constexpr TSize nParamSets = 0;
+    static double const VALUE[1][8]; // size 8 to silence warnings
+};
+
+template <typename TScore, typename TSpec>
+double const KarlinAltschulValues<TScore, TSpec>::VALUE[1][8] =
+{
+    {0,0,0,0,0,0,0,0}
+};
 
 /// BLOSUM30
 // not implemented in BLAST
@@ -401,6 +415,8 @@ double const KarlinAltschulValues<Score<int, Simple>, TSpec>::VALUE
  * This would however involve adding a new template parameter to score and
  * changing lots of code. Also it would become confusing as the shortcuts
  * like Blosum62 would no longer work...
+ * TODO for SeqAn3: include this files implications when redesigning scoring schemes
+ * and reduce complexity
  */
 template <typename TScore>
 struct BlastScoringScheme
@@ -414,6 +430,10 @@ struct BlastScoringScheme
 
     /* parameter selection */
     TNumValues parameterIndex = std::numeric_limits<TNumValues>::max();
+
+    /* hacks for the dynamic matrix */
+    double const * _m;
+    TNumValues _nParams;
 };
 
 // ============================================================================
@@ -528,19 +548,17 @@ inline bool
 isValid(BlastScoringScheme<TScore> const & scheme)
 {
     typedef KarlinAltschulValues<TScore> TKAValues;
-    return scheme.parameterIndex < TKAValues::nParamSets;
+    return scheme.parameterIndex != std::numeric_limits<typename TKAValues::TSize>::max();
 }
 
 // ----------------------------------------------------------------------------
 // Function _selectSet
 // ----------------------------------------------------------------------------
 
-template <typename TScore>
+template <typename TScore, typename TKAValues>
 inline bool
 _selectSet(BlastScoringScheme<TScore> & scheme)
 {
-    typedef KarlinAltschulValues<TScore> TKAValues;
-
     for (typename TKAValues::TSize i = 0; i < TKAValues::nParamSets; ++i)
     {
         if ((TKAValues::VALUE[i][0] == -scoreGapOpenBlast(scheme)) &&
@@ -553,6 +571,35 @@ _selectSet(BlastScoringScheme<TScore> & scheme)
     // no suitable adapter
     scheme.parameterIndex = std::numeric_limits<typename TKAValues::TSize>::max();
     return false;
+}
+
+template <typename TValue, typename TSpec>
+inline bool
+_selectSet(BlastScoringScheme<Score<TValue, ScoreMatrix<AminoAcid, TSpec>>> & scheme)
+{
+    using TScore = Score<TValue, ScoreMatrix<AminoAcid, TSpec>>;
+    using TKAValues = KarlinAltschulValues<TScore>;
+    return _selectSet<TScore, TKAValues>(scheme);
+}
+
+template <typename TValue>
+inline bool
+_selectSet(BlastScoringScheme<Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> & scheme)
+{
+    using TScoreOrig = Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>;
+    bool ret = false;
+    impl::score::matrixTagDispatch(impl::score::MatrixTags(),
+                                   getScoreMatrixId(seqanScheme(scheme)),
+                                   [&] (auto const & tag)
+    {
+        using TScoreMod = Score<TValue, ScoreMatrix<AminoAcid, std::decay_t<decltype(tag)>>>;
+        using TKAValues = KarlinAltschulValues<TScoreMod>;
+        ret =  _selectSet<TScoreOrig, TKAValues>(scheme);
+        // save some KAV data in scheme for retrievel without tag dispatching
+        scheme._m = &TKAValues::VALUE[0][0];
+        scheme._nParams = TKAValues::nParams;
+    });
+    return ret;
 }
 
 inline bool
@@ -678,6 +725,13 @@ setScoreGapExtend(BlastScoringScheme<TScore> & scheme, typename Value<TScore>::T
  * @signature double getLambda(blastScoringScheme);
  */
 
+inline double
+getLambda(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> const & scoringScheme)
+{
+    SEQAN_ASSERT(isValid(scoringScheme));
+    return *(scoringScheme._m + scoringScheme.parameterIndex * scoringScheme._nParams + 3);
+}
+
 template <typename TMatrixSpec>
 inline double
 getLambda(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> const & scoringScheme)
@@ -705,6 +759,13 @@ getLambda(BlastScoringScheme<Score<int, Simple>> const & scoringScheme)
  * @brief Get the &Kappa; value of the Karlin-Altschul parameters.
  * @signature double getKappa(blastScoringScheme);
  */
+
+inline double
+getKappa(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> const & scoringScheme)
+{
+    SEQAN_ASSERT(isValid(scoringScheme));
+    return *(scoringScheme._m + scoringScheme.parameterIndex * scoringScheme._nParams + 4);
+}
 
 template <typename TMatrixSpec>
 inline double
@@ -735,6 +796,13 @@ getKappa(BlastScoringScheme<Score<int, Simple>> const & scoringScheme)
  * @signature double getH(blastScoringScheme);
  */
 
+inline double
+getH(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> const & scoringScheme)
+{
+    SEQAN_ASSERT(isValid(scoringScheme));
+    return *(scoringScheme._m + scoringScheme.parameterIndex * scoringScheme._nParams + 5);
+}
+
 template <typename TMatrixSpec>
 inline double
 getH(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> const & scoringScheme)
@@ -764,6 +832,14 @@ getH(BlastScoringScheme<Score<int, Simple>> const & scoringScheme)
  * @signature double getAlpha(blastScoringScheme);
  */
 
+inline double
+getAlpha(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> const & scoringScheme)
+{
+    SEQAN_ASSERT(isValid(scoringScheme));
+    return *(scoringScheme._m + scoringScheme.parameterIndex * scoringScheme._nParams + 6);
+}
+
+
 template <typename TMatrixSpec>
 inline double
 getAlpha(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, TMatrixSpec>>> const & scoringScheme)
@@ -791,6 +867,13 @@ getAlpha(BlastScoringScheme<Score<int, Simple>> const & scoringScheme)
  * @brief Get the &beta; value of the Karlin-Altschul parameters.
  * @signature double getBeta(blastScoringScheme);
  */
+
+inline double
+getBeta(BlastScoringScheme<Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable>>> const & scoringScheme)
+{
+    SEQAN_ASSERT(isValid(scoringScheme));
+    return *(scoringScheme._m + scoringScheme.parameterIndex * scoringScheme._nParams + 7);
+}
 
 template <typename TMatrixSpec>
 inline double
@@ -1003,6 +1086,20 @@ _computeEValue(double const rawScore,
     return getKappa(scheme) * adjustedQueryLength * adjustedDbLength * std::exp(-getLambda(scheme) * rawScore);
 }
 
+template <typename T, typename TScore>
+inline void
+_conditionalDec(T &, BlastScoringScheme<TScore> const &)
+{}
+
+template <typename T>
+inline void
+_conditionalDec(T & val, BlastScoringScheme<Score<int, Simple>> const & scheme)
+{
+    typedef KarlinAltschulValues<Score<int, Simple>> TKAValues;
+    if (TKAValues::VALUE[scheme.parameterIndex][10])
+        --val;
+}
+
 template <typename TScore>
 inline double
 computeEValue(uint64_t rawScore,
@@ -1010,10 +1107,8 @@ computeEValue(uint64_t rawScore,
               uint64_t const dbLength,
               BlastScoringScheme<TScore> const & scheme)
 {
-    typedef KarlinAltschulValues<TScore> TKAValues;
     // for some parameters the score has to be "rounded down" to being even
-    if ((TKAValues::nParams >= 11) && (TKAValues::VALUE[scheme.parameterIndex][10]))
-        --rawScore;
+    _conditionalDec(rawScore, scheme);
 
     uint64_t adj = _lengthAdjustment(dbLength, queryLength, scheme);
     return _computeEValue(rawScore, queryLength - adj, dbLength - adj, scheme);

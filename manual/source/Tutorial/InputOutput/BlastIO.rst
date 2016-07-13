@@ -133,7 +133,7 @@ The twelve default columns are:
 
    #. **Interval notation:** Blast uses 1-based closed intervals for positions, i.e. a match from the 100th position to
       the 200th position of a sequence will be shown as ``100  200`` in the file. SeqAn internally uses 0-based
-      half open intervals, i.e. it starts counting at positition 0 and stores the first position behind the sequence
+      half open intervals, i.e. it starts counting at position 0 and stores the first position behind the sequence
       as "end", e.g. position ``99`` and ``200`` for our example.
    #. **Reverse strands:** For matches found on the reverse complement strand the positions are counted backwards from
       the end of the sequence, e.g. a match from the 100th position to the 200th position on a reverse complement strand
@@ -192,7 +192,7 @@ this tutorial (see the dox for a simple example).
 To work with the first two formats you need to understand at least the following data structures:
   * :dox:`BlastRecord`: the record covers all :dox:`BlastMatch` es belonging to one query sequence.
   * :dox:`FormattedFile`: one of :dox:`BlastReportFileOut`, :dox:`BlastTabularFileOut` and :dox:`BlastTabularFileIn`.
-  * :dox:`BlastIOContext`: the context of the FormatteFile.
+  * :dox:`BlastIOContext`: the context of the FormattedFile.
 
 The context contains file-global data like the name of the database and can also be used to read/write certain file
 format properties, e.g. "with comment lines" or "legacyFormat".
@@ -200,7 +200,7 @@ format properties, e.g. "with comment lines" or "legacyFormat".
 .. caution::
     Due to the structure of blast tabular files lots of information is repeated in every block of comment lines, e.g.
     the database name. Because it is expected that these stay the same they are saved in the context and not the record.
-    You may still, however, check everytime you ``readRecord()`` if you want to make sure.
+    You may still, however, check every time you ``readRecord()`` if you want to make sure.
 
 File reading example
 --------------------
@@ -333,7 +333,7 @@ without further configuration in SeqAn.
 .. container:: assignment
 
   Objective
-    Read :dox:`BlastIOContext` again focussing on :dox:`BlastIOContext::fields` and also read :dox:`BlastMatchField`.
+    Read :dox:`BlastIOContext` again focusing on :dox:`BlastIOContext::fields` and also read :dox:`BlastMatchField`.
     Now adapt the previous program to print for every record the ``optionLabel`` of each field used.
 
     Verify that the results are as expected on the files ``tests/blast/defaultfields.m9`` and

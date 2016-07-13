@@ -1799,7 +1799,7 @@ bool loadPositions(TPositions & positions,
 
 
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
 template<typename TVal>
 double

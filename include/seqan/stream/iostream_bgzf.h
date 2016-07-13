@@ -142,7 +142,8 @@ public:
     };
 
     // array of worker threads
-    Thread<CompressionThread>   *threads;
+    using TFuture = decltype(std::async(CompressionThread{nullptr, CompressionContext<BgzfFile>{}, static_cast<size_t>(0)}));
+    std::vector<TFuture>         threads;
 
     basic_bgzf_streambuf(ostream_reference ostream_,
                          size_t numThreads = 16,
@@ -168,12 +169,9 @@ public:
             SEQAN_ASSERT(success);
         }
 
-        threads = new Thread<CompressionThread>[numThreads];
-        for (unsigned i = 0; i < numThreads; ++i)
+        for (size_t i = 0; i < numThreads; ++i)
         {
-            threads[i].worker.streamBuf = this;
-            threads[i].worker.threadNum = i;
-            run(threads[i]);
+            threads.push_back(std::async(std::launch::async, CompressionThread{this, CompressionContext<BgzfFile>{}, i}));
         }
 
         currentJobAvail = popFront(currentJobId, idleQueue);
@@ -191,10 +189,6 @@ public:
 
         unlockWriting(jobQueue);
         unlockReading(idleQueue);
-
-        for (unsigned i = 0; i < numThreads; ++i)
-            waitFor(threads[i]);
-        delete[] threads;
     }
 
     bool compressBuffer(size_t size)
@@ -310,13 +304,12 @@ public:
     struct Serializer
     {
         istream_reference   istream;
-        Mutex               lock;
+        std::mutex          lock;
         IOError             *error;
         off_type            fileOfs;
 
         Serializer(istream_reference istream) :
             istream(istream),
-            lock(false),
             error(NULL),
             fileOfs(0u)
         {}
@@ -333,31 +326,34 @@ public:
     {
         typedef std::vector<byte_type, byte_allocator_type> TInputBuffer;
 
-        TInputBuffer    inputBuffer;
-        TBuffer         buffer;
-        off_type        fileOfs;
-        int             size;
-        unsigned        compressedSize;
+        TInputBuffer            inputBuffer;
+        TBuffer                 buffer;
+        off_type                fileOfs;
+        int                     size;
+        unsigned                compressedSize;
 
-        CriticalSection cs;
-        Condition       readyEvent;
-        bool            ready;
+        std::mutex              cs;
+        std::condition_variable readyEvent;
+        bool                    ready;
 
         DecompressionJob() :
             inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
             buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
             fileOfs(),
             size(0),
-            readyEvent(cs),
+            cs(),
+            readyEvent(),
             ready(true)
         {}
 
+        // TODO(rrahn): Do we need a copy constructor for the decompression job.
         DecompressionJob(DecompressionJob const &other) :
             inputBuffer(other.inputBuffer),
             buffer(other.buffer),
             fileOfs(other.fileOfs),
             size(other.size),
-            readyEvent(cs),
+            cs(),
+            readyEvent(),
             ready(other.ready)
         {}
     };
@@ -395,16 +391,13 @@ public:
                 // the caller defers the task of waiting to the decompression threads
                 if (!job.ready)
                 {
-                    ScopedLock<CriticalSection> lock(job.cs);
-                    if (!job.ready)
-                    {
-                        waitFor(job.readyEvent);
-                        job.ready = true;
-                    }
+                    std::unique_lock<std::mutex> lock(job.cs);
+                    job.readyEvent.wait(lock, [&job]{return job.ready;});
+                    SEQAN_ASSERT_EQ(job.ready, true);
                 }
 
                 {
-                    ScopedLock<Mutex> scopedLock(streamBuf->serializer.lock);
+                    std::lock_guard<std::mutex> scopedLock(streamBuf->serializer.lock);
 
                     if (streamBuf->serializer.error != NULL)
                         return;
@@ -469,11 +462,11 @@ public:
                     {
                         // signal that job is ready
                         {
-                            ScopedLock<CriticalSection> lock(job.cs);
+                            std::unique_lock<std::mutex> lock(job.cs);
                             job.ready = true;
-                            signal(job.readyEvent);
                         }
-                        return;
+                        job.readyEvent.notify_all();
+                        return;  // Terminate this thread.
                     }
                 }
 
@@ -486,18 +479,19 @@ public:
 
                     // signal that job is ready
                     {
-                        ScopedLock<CriticalSection> lock(job.cs);
+                        std::unique_lock<std::mutex> lock(job.cs);
                         job.ready = true;
-                        signal(job.readyEvent);
                     }
+                    job.readyEvent.notify_all();
                 }
             }
         }
     };
 
     // array of worker threads
-    Thread<DecompressionThread> *threads;
-    TBuffer                     putbackBuffer;
+    using TFuture = decltype(std::async(DecompressionThread{nullptr, CompressionContext<BgzfFile>{}}));
+    std::vector<TFuture> threads;
+    TBuffer              putbackBuffer;
 
     basic_unbgzf_streambuf(istream_reference istream_,
                            size_t numThreads = 16,
@@ -524,11 +518,9 @@ public:
             SEQAN_ASSERT(success);
         }
 
-        threads = new Thread<DecompressionThread>[numThreads];
         for (unsigned i = 0; i < numThreads; ++i)
         {
-            threads[i].worker.streamBuf = this;
-            run(threads[i]);
+            threads.push_back(std::async(std::launch::async, DecompressionThread{this, CompressionContext<BgzfFile>{}}));
         }
     }
 
@@ -536,10 +528,6 @@ public:
     {
         unlockWriting(todoQueue);
         unlockReading(runningQueue);
-
-        for (unsigned i = 0; i < numThreads; ++i)
-            waitFor(threads[i]);
-        delete[] threads;
     }
 
     int_type underflow()
@@ -585,9 +573,8 @@ public:
 
             // wait for the end of decompression
             {
-                ScopedLock<CriticalSection> lock(job.cs);
-                if (!job.ready)
-                    waitFor(job.readyEvent);
+                std::unique_lock<std::mutex> lock(job.cs);
+                job.readyEvent.wait(lock, [&job]{return job.ready;});
             }
 
             size_t size = (job.size != -1)? job.size : 0;
@@ -656,7 +643,7 @@ public:
 
                 // ok, different block
                 {
-                    ScopedLock<Mutex> scopedLock(serializer.lock);
+                    std::lock_guard<std::mutex> scopedLock(serializer.lock);
 
                     // remove all running jobs and put them in the idle queue unless we
                     // find our seek target
@@ -705,10 +692,10 @@ public:
                 {
                     // wait for the end of decompression
                     DecompressionJob &job = jobs[currentJobId];
+
                     {
-                        ScopedLock<CriticalSection> lock(job.cs);
-                        if (!job.ready)
-                            waitFor(job.readyEvent);
+                        std::unique_lock<std::mutex> lock(job.cs);
+                        job.readyEvent.wait(lock, [&job]{return job.ready;});
                     }
 
                     SEQAN_ASSERT_EQ(job.fileOfs, (off_type)destFileOfs);

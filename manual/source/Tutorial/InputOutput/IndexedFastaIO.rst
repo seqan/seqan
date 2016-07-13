@@ -26,7 +26,7 @@ To do this, the program creates an index file that contains one entry for each s
 If the FASTA file is named ``path/sequence.fasta``, the index file is usually named ``path/sequence.fasta.fai``.
 
 Using such index files, it is possible to rapidly read parts of the given sequence file.
-The module ``<seqan/seq_io.h>`` allows to create and read such ``.fai`` index files and exposes an API to read parts randomly of FASTA file.
+The module ``<seqan/seq_io.h>`` allows to create and read such ``.fai`` index files and exposes an API to read parts of FASTA file randomly.
 
 .. note::
 
@@ -39,7 +39,7 @@ The module ``<seqan/seq_io.h>`` allows to create and read such ``.fai`` index fi
     However, it is common to store the sequence identifier (*id*) at the beginning of the metadata field before the first space.
     The id is unique to the whole file and often identifies the associated sequence uniquely in a database (see section Sequence Identifiers on the `Wikipedia FASTA format <http://en.wikipedia.org/wiki/FASTA_format>`_ page).
 
-    While not documented anywhere explicitely, **only the characters up to the first space are used as identifiers** by widely used tools such as `BWA <http://bio-bwa.sourceforge.net/>`_.
+    While not documented anywhere explicitly, **only the characters up to the first space are used as identifiers** by widely used tools such as `BWA <http://bio-bwa.sourceforge.net/>`_.
     Only the identifier is carried over into files generated from the input files (BWA uses the sequence id from the genome FASTA to identify the contig/chromosome and the read id as the read name in the SAM output).
 
 How Does It Work?

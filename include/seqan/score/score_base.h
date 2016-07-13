@@ -83,6 +83,22 @@ struct Value<Score<TValue, TSpec> > {
     typedef TValue Type;
 };
 
+/*!
+ * @mfn Score#Spec
+ * @brief Return the specialization type of the scoring scheme.
+ *
+ * @signature Spec<TScore>::Type;
+ *
+ * @tparam TScore The Score specialization.
+ *
+ * @return Type The score specialization type of the scoring scheme.
+ */
+
+template <typename TValue, typename TSpec>
+struct Spec<Score<TValue, TSpec> > {
+    typedef TSpec Type;
+};
+
 // --------------------------------------------------------------------------
 // Metafunction ConsensusScoreSequenceEntry
 // --------------------------------------------------------------------------

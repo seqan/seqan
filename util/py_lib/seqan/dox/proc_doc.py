@@ -71,6 +71,8 @@ class ProcDoc(object):
         self.second_level_entries = {}
         self.entries = {}
         self.local_name_counter = {}
+        self.top_level_entries_filename = {}
+        self.second_level_entries_filename = {}
 
     def addTopLevelEntry(self, x):
         """Add a top-level-entry."""
@@ -120,6 +122,7 @@ class ProcDoc(object):
         
     def registerEntry(self, x):
         """Register an entry."""
+
         name = x.name
         if name == '':
             msg = 'Entry must not have an empty name.'
@@ -1585,9 +1588,13 @@ class DocProcessor(object):
             }
         self.msg_printer = msg_printer or dox_parser.MessagePrinter()
         self.validators = [x(self.msg_printer) for x in validation.VALIDATORS]
+        self.entry_filenames = []
+        self.topLevelEntry_filenames = {} 
+        self.secondLevelEntry_filenames = {} 
 
     def run(self, doc):
         res = ProcDoc(self)
+        self.entry_filenames = doc.filenames
         self.log('Processing Documentation...')
         self.convertTopLevelEntries(doc, res)
         self.convertSecondLevelEntries(doc, res)
@@ -1605,7 +1612,7 @@ class DocProcessor(object):
         """
         self.log('  1) Converting Top-Level Entries.')
         #print 'doc.entries', [e.name.text for e in doc.entries]
-        for raw_entry in doc.entries:
+        for index,raw_entry in enumerate(doc.entries):
             # Get fitting converter or warn if there is none.
             kind = raw_entry.getType()
             if not kind in ['concept', 'class', 'global_function',
@@ -1621,10 +1628,11 @@ class DocProcessor(object):
             # Store object in ProcDoc.
             #self.log('    * %s (%s)' % (proc_entry.name, proc_entry))
             res.addTopLevelEntry(proc_entry)
+            self.topLevelEntry_filenames[proc_entry] = self.entry_filenames[index]
 
     def convertSecondLevelEntries(self, doc, res):
         self.log('  2) Converting Second-Level Entries.')
-        for raw_entry in doc.entries:
+        for index,raw_entry in enumerate(doc.entries):
             # Get fitting converter or warn if there is none.
             kind = raw_entry.getType()
             if not kind in ['member_function', 'interface_function',
@@ -1641,6 +1649,7 @@ class DocProcessor(object):
             # Store object in ProcDoc.
             #self.log('    * %s' % proc_entry.name)
             res.addSecondLevelEntry(proc_entry)
+            self.secondLevelEntry_filenames[proc_entry] = self.entry_filenames[index]
 
     def convertVariables(self, doc, res):
         self.log('  3) Converting variable and enum value entries.')

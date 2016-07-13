@@ -191,14 +191,14 @@ public:
     // ----------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Reference<String>::Type
+    inline typename Reference<String>::Type
     operator[] (TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE inline typename Reference<String const>::Type
+    inline typename Reference<String const>::Type
     operator[] (TPos pos) const
     {
         return value(*this, pos);
@@ -264,14 +264,14 @@ swap(String<TValue, Alloc<TSpec> > & a,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
+inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
 begin(String<TValue, Alloc<TSpec> > & me,
       Standard)
 {
     return me.data_begin;
 }
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
+inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
 begin(String<TValue, Alloc<TSpec> > const & me,
       Standard)
 {
@@ -283,14 +283,14 @@ begin(String<TValue, Alloc<TSpec> > const & me,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
+inline typename Iterator<String<TValue, Alloc<TSpec> >, Standard>::Type
 end(String<TValue, Alloc<TSpec> > & me,
     Standard const &)
 {
     return me.data_end;
 }
 template <typename TValue, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
+inline typename Iterator<String<TValue, Alloc<TSpec> > const, Standard>::Type
 end(String<TValue, Alloc<TSpec> > const & me,
     Standard const & )
 {
@@ -353,9 +353,11 @@ inline typename Value<String<TValue, Alloc<TSpec> > >::Type *
 _allocateStorage(String<TValue, Alloc<TSpec> > & me,
                  TSize new_capacity)
 {
+    typedef typename If<IsSameType<TSpec, OverAligned>, TagAllocateAlignedMalloc, TagAllocateStorage>::Type AllocTag;
+
     typename Size<String<TValue, Alloc<TSpec> > >::Type size = _computeSizeForCapacity(me, new_capacity);
     typename Value<String<TValue, Alloc<TSpec> > >::Type * _returnValue = me.data_begin;
-    allocate(me, me.data_begin, size, TagAllocateStorage());
+    allocate(me, me.data_begin, size, AllocTag());
     me.data_capacity = new_capacity;
     return _returnValue;
 }
@@ -370,8 +372,10 @@ _deallocateStorage(String<TValue, Alloc<TSpec> > & me,
                    TPtr * ptr,
                    TSize capacity)
 {
+    typedef typename If<IsSameType<TSpec, OverAligned>, TagAllocateAlignedMalloc, TagAllocateStorage>::Type AllocTag;
+
     typename Size<String<TValue, Alloc<TSpec> > >::Type size = _computeSizeForCapacity(me, capacity);
-    deallocate(me, ptr, size, TagAllocateStorage());
+    deallocate(me, ptr, size, AllocTag());
 }
 
 // ----------------------------------------------------------------------------

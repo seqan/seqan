@@ -16,3 +16,4 @@ It includes a description of the repository structure, detailed conventions and 
    WriteAppTests
    WriteTutorials
    Releases
+   NightlyBuilds

@@ -37,14 +37,12 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_LOCK_H_
 #define SEQAN_PARALLEL_PARALLEL_LOCK_H_
 
-#if defined(__SSE2__) && !defined(__CUDACC__)
+#if defined(__SSE2__)
 #include <xmmintrin.h>  // _mm_pause()
 #endif
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <Windows.h>
-#else
-#include <sched.h>
 #endif
 
 namespace seqan {
@@ -53,7 +51,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct Mutex;
 inline void yieldProcessor();
 
 // ============================================================================
@@ -88,13 +85,7 @@ waitFor(SpinDelay & me)
     }
     else
     {
-#ifdef PLATFORM_WINDOWS
-#if _WIN32_WINNT >= 0x0400
-        SwitchToThread();
-#endif
-#else
-        sched_yield();
-#endif
+        std::this_thread::yield();
     }
 }
 
@@ -146,37 +137,6 @@ public:
     ReadWriteLock() :
         readers(0),
         writers(0)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class ScopedLock
-// ----------------------------------------------------------------------------
-
-template <typename TMutex = Mutex, typename TParallel = Parallel>
-struct ScopedLock
-{
-    TMutex & mutex;
-
-    explicit
-    ScopedLock(TMutex & mutex) :
-        mutex(mutex)
-    {
-        lock(mutex);
-    }
-
-    ~ScopedLock()
-    {
-        unlock(mutex);
-    }
-
-};
-
-template <typename TLock>
-struct ScopedLock<TLock, Serial>
-{
-    explicit
-    ScopedLock(TLock &)
     {}
 };
 
@@ -253,9 +213,7 @@ struct ScopedWriteLock<TLock, Serial>
 inline void
 yieldProcessor()
 {
-#if defined( __CUDACC__)
-    // don't wait on the GPU
-#elif defined(PLATFORM_WINDOWS_VS)
+#if defined(STDLIB_VS)
     YieldProcessor();
 #elif defined(__SSE2__)
     _mm_pause();

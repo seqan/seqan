@@ -181,8 +181,14 @@ public:
     // Array Subscript Operator
     // -----------------------------------------------------------------------
 
-    inline TValue_
-    operator[](TPosition_ clippedViewPos) const
+    inline typename Reference<Gaps>::Type
+    operator[](TPosition_ const clippedViewPos)
+    {
+        return value(*this, clippedViewPos);
+    }
+
+    inline typename Reference<Gaps const>::Type
+    operator[](TPosition_ const clippedViewPos) const
     {
         return value(*this, clippedViewPos);
     }
@@ -207,6 +213,8 @@ void swap(Gaps<TSequence, ArrayGaps> & lhs, Gaps<TSequence, ArrayGaps> & rhs)
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+
 
 // ============================================================================
 // Functions
@@ -628,21 +636,6 @@ insertGaps(Gaps<TSequence, ArrayGaps> & gaps, TPosition clippedViewPos, TCount c
 
     // Adjust clipping information.
     gaps._clippingEndPos += count;
-}
-
-// ----------------------------------------------------------------------------
-// Function value()
-// ----------------------------------------------------------------------------
-
-template <typename TSequence, typename TPosition>
-inline typename Value<Gaps<TSequence, ArrayGaps> >::Type
-value(Gaps<TSequence, ArrayGaps> const & gaps, TPosition clippedViewPos)
-{
-    if (isGap(gaps, clippedViewPos))
-        return '-';
-    else
-        return value(source(gaps), toSourcePosition(gaps, clippedViewPos));
-    return typename Value<Gaps<TSequence, ArrayGaps> >::Type();
 }
 
 // ----------------------------------------------------------------------------

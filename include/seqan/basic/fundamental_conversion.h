@@ -111,7 +111,7 @@ struct Convert
 // NOTE(doering): Can copy or reinterpret, depending on Convert::Type
 
 template <typename TTarget, typename T, typename TSource>
-SEQAN_HOST_DEVICE inline typename Convert<TTarget, TSource>::Type
+inline typename Convert<TTarget, TSource>::Type
 convertImpl(Convert<TTarget, T> const,
             TSource const & source)
 {
@@ -143,7 +143,7 @@ convertImpl(Convert<TTarget, T> const,
  */
 
 template <typename TTarget, typename TSource>
-SEQAN_HOST_DEVICE inline typename Convert<TTarget, TSource>::Type
+inline typename Convert<TTarget, TSource>::Type
 convert(TSource const & source)
 {
     return convertImpl(Convert<TTarget, TSource>(), source);

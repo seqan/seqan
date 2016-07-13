@@ -120,11 +120,28 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
 };
 
 template <typename TScoreValue, typename TGapCostFunction>
-const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE = MinValue<TScoreValue>::VALUE / 2;
+    const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE =
+        createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE) / createVector<TScoreValue>(2);
 
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :
     public DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >{};
+
+// ----------------------------------------------------------------------------
+// Metafunction StringSpecForValue_
+// ----------------------------------------------------------------------------
+
+// Defines the default infinity value for a DPCell.
+template <typename TValue, typename TSpec>
+struct StringSpecForValue_<DPCell_<TValue, TSpec> >
+{
+    typedef typename If<Is<SimdVectorConcept<TValue> >, Alloc<OverAligned>, Alloc<> >::Type Type;
+};
+
+template <typename TValue, typename TSpec>
+struct StringSpecForValue_<DPCell_<TValue, TSpec> const> :
+    StringSpecForValue_<DPCell_<TValue, TSpec> >
+{};
 
 // ============================================================================
 // Functions
@@ -160,6 +177,13 @@ _setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & ne
     dpCell._score = newScore;
 }
 
+template <typename TScoreValue, typename TGapCosts>
+inline void
+_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore, TScoreValue const & mask)
+{
+    dpCell._score = blend(dpCell._score, newScore, mask);
+}
+
 // ----------------------------------------------------------------------------
 // Function _verticalScoreOfCell()
 // ----------------------------------------------------------------------------
@@ -187,6 +211,13 @@ _verticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 template <typename TScoreValue, typename TGapSpec>
 inline void
 _setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/)
+{
+    // no-op
+}
+
+template <typename TScoreValue, typename TGapSpec>
+inline void
+_setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/, TScoreValue const & /*mask*/)
 {
     // no-op
 }
@@ -222,6 +253,13 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreVal
     // no-op
 }
 
+template <typename TScoreValue, typename TGapSpec>
+inline void
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newHorizontalScore*/, TScoreValue const & /*mask*/)
+{
+    // no-op
+}
+
 // ----------------------------------------------------------------------------
 // Function setGapExtension()
 // ----------------------------------------------------------------------------
@@ -229,6 +267,13 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreVal
 template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2>
 inline void
 setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2)
+{
+    // no-op
+}
+
+template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2>
+inline void
+setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2, TScoreValue)
 {
     // no-op
 }

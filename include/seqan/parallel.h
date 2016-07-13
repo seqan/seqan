@@ -45,31 +45,24 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-#else
-#include <pthread.h>
-#include <errno.h>
-#endif
-
-#include <seqan/system/system_critical_section.h>   // Suspendable Queue
-#include <seqan/system/system_condition.h>          // Suspendable Queue
-
 // ----------------------------------------------------------------------------
 // STL
 // ----------------------------------------------------------------------------
 // Use MCSTL which is part of the GCC since version 4.3
 
-#if defined(_OPENMP) && defined(PLATFORM_GNU)
+#if defined(_OPENMP) && defined(STDLIB_GNU)
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
 #include <algorithm>
 #include <numeric>
-#endif // PLATFORM_GCC
+#endif // COMPILER_GCC
 
 #include <atomic>
 #include <thread>
+#include <future>
+#include <mutex>
+#include <condition_variable>
 
 // ============================================================================
 // Module Headers

@@ -37,6 +37,8 @@
 #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
 #define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
 
+#if SEQAN_SIMD_ENABLED
+
 #include <random>
 
 #include <seqan/sequence.h>
@@ -149,6 +151,6 @@ SEQAN_DEFINE_TEST(test_basic_simd_transpose_32x32)
 
 #endif  // #ifdef __AVX2__
 #endif  // #ifdef __SSE4_1__
-
+#endif  // SEQAN_SIMD_ENABLED
 
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_

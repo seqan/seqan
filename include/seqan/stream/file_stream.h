@@ -60,7 +60,7 @@ template <typename TValue, typename TSpec>
 inline void
 free(Buffer<TValue, TSpec> & me)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     VirtualFree(me.begin, 0, MEM_RELEASE);
 #else
     ::free(me.begin);
@@ -84,7 +84,7 @@ reserve(Buffer<TValue, TSpec> & me, TSize newCapacity)
         return;
 
     free(me);
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     me.begin = me.end = (TValue *) VirtualAlloc(NULL, newCapacity * sizeof(TValue), MEM_COMMIT, PAGE_READWRITE);
 #else
     me.begin = me.end = (TValue *) valloc(newCapacity * sizeof(TValue));
@@ -326,7 +326,7 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, File<TFileSpec> &
     reserve(page.raw, page.size);
 
     // do nothing in output-only mode or when there is nothing to read
-    if (IsSameType<TDirection, Output>::VALUE || page.filePos >= pager.fileSize)
+    if (IsSameType<TDirection, Output>::VALUE || page.filePos >= static_cast<decltype(page.filePos)>(pager.fileSize))
     {
         // no valid data read and we return immediately
         resize(page.raw, 0);
@@ -346,7 +346,7 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> &pager, File<TFileSpec> &
     return false;   // false = reading in process
 }
 
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
 template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
 inline bool
 _readFilePage(FilePageTable<TValue, TDirection, TSpec> &, FileMapping<TFileSpec> & file, TPageFrame & page)
@@ -442,7 +442,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, File<TFileSpec>
     return false;   // false = writing in process
 }
 
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
 template <typename TValue, typename TDirection, typename TSpec, typename TFileSpec, typename TPageFrame>
 inline bool
 _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, FileMapping<TFileSpec> & file, TPageFrame & page)
@@ -864,7 +864,7 @@ struct FileStreamBuffer :
             readPage = NULL;
         }
 
-        if (pager.fileSize <= readPagePos)
+        if (static_cast<decltype(readPagePos)>(pager.fileSize) <= readPagePos)
             return false;
 
         Pair<int64_t, unsigned> ol = _getPageOffsetAndLength(pager.table, readPagePos);
@@ -987,7 +987,7 @@ struct FileStreamBuffer :
     {
         if (readPage != NULL)
         {
-            if (readPage->filePos <= pos && pos < readPage->filePos + readPage->size)
+            if (readPage->filePos <= pos && pos < readPage->filePos + static_cast<decltype(pos)>(readPage->size))
             {
                 this->setg(readPage->data.begin, readPage->data.begin + (pos - readPage->filePos), readPage->data.end);
                 return pos;
@@ -1017,7 +1017,7 @@ struct FileStreamBuffer :
     {
         if (writePage != NULL)
         {
-            if (writePage->filePos <= pos && pos < writePage->filePos + writePage->size)
+            if (writePage->filePos <= pos && pos < writePage->filePos + static_cast<decltype(pos)>(writePage->size))
             {
                 this->setg(writePage->data.begin, writePage->data.begin + (pos - writePage->filePos), writePage->data.end);
                 return pos;

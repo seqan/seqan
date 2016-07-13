@@ -641,4 +641,17 @@ SEQAN_DEFINE_TEST(test_blast_write_report_constexpr)
     _testBlastOutput(context, BlastReport());
 }
 
+SEQAN_DEFINE_TEST(test_blast_write_report_constexpr_dynmatrix)
+{
+    SelectableAminoAcidMatrix sel;
+    SEQAN_ASSERT(getScoreMatrixId(sel) != AminoAcidScoreMatrixID::BLOSUM62);
+    setScoreMatrixById(sel, AminoAcidScoreMatrixID::BLOSUM62);
+    SEQAN_ASSERT(getScoreMatrixId(sel) == AminoAcidScoreMatrixID::BLOSUM62);
+
+    BlastIOContext<SelectableAminoAcidMatrix, BlastProgram::BLASTP> context;
+    context.scoringScheme._internalScheme = sel;
+
+    _testBlastOutput(context, BlastReport());
+}
+
 #endif  // SEQAN_TESTS_TEST_BLAST_OUTPUT_H_

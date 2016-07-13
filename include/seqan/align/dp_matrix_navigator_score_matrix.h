@@ -64,25 +64,13 @@ public:
     typedef typename Pointer_<TDPMatrix_>::Type TDPMatrixPointer_;
     typedef typename Iterator<TDPMatrix_, Standard>::Type TDPMatrixIterator;
 
-    TDPMatrixPointer_ _ptrDataContainer;        // Pointer to the matrix this navigator is working on.
-    int _laneLeap;                              // Stores the jump to the next column
-    TDPMatrixIterator _activeColIterator;       // The active column iterator.
-    TDPMatrixIterator _prevColIterator;         // The previous column iterator.
-    TValue _prevCellDiagonal;                   // The previous diagonal cell
-    TValue _prevCellHorizontal;                 // The previous Horizontal cell
-    TValue _prevCellVertical;                   // The previous Vertical cell
-
-
-
-    DPMatrixNavigator_() :
-        _ptrDataContainer(TDPMatrixPointer_(0)),
-        _laneLeap(0),
-        _activeColIterator(),
-        _prevColIterator(),
-        _prevCellDiagonal(),
-        _prevCellHorizontal(),
-        _prevCellVertical()
-    {}
+    TDPMatrixPointer_ _ptrDataContainer     = nullptr;  // Pointer to the matrix this navigator is working on.
+    int _laneLeap                           = 0;  // Stores the jump to the next column
+    TDPMatrixIterator _activeColIterator    = TDPMatrixIterator();  // The active column iterator.
+    TDPMatrixIterator _prevColIterator      = TDPMatrixIterator();  // The previous column iterator.
+    TValue _prevCellDiagonal                = TValue();  // The previous diagonal cell
+    TValue _prevCellHorizontal              = TValue();  // The previous Horizontal cell
+    TValue _prevCellVertical                = TValue();  // The previous Vertical cell
 };
 
 // ============================================================================
