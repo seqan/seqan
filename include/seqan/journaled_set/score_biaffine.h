@@ -52,51 +52,44 @@ template <typename TScoreValue>
 class Score<TScoreValue, BiAffine>
 {
     public:
-    TScoreValue _match;
-    TScoreValue _mismatch;
+    TScoreValue data_match;
+    TScoreValue data_mismatch;
     TScoreValue _gapExtendHorizontal;
     TScoreValue _gapOpenHorizontal;
     TScoreValue _gapExtendVertical;
     TScoreValue _gapOpenVertical;
 
 
-    Score() : _match(0),
-              _mismatch(0),
+    Score() : data_match(0),
+              data_mismatch(0),
               _gapExtendHorizontal(0),
               _gapOpenHorizontal(0),
               _gapExtendVertical(0),
               _gapOpenVertical(0) {}
 
     Score(TScoreValue match, TScoreValue mismatch, TScoreValue gap) :
-                                    _match(match),
-                                    _mismatch(mismatch),
+                                    data_match(match),
+                                    data_mismatch(mismatch),
                                     _gapExtendHorizontal(gap),
                                     _gapOpenHorizontal(gap),
                                     _gapExtendVertical(gap),
                                     _gapOpenVertical(gap) {}
 
     Score(TScoreValue match, TScoreValue mismatch, TScoreValue gapExtend, TScoreValue gapOpen) :
-                                    _match(match),
-                                    _mismatch(mismatch),
+                                    data_match(match),
+                                    data_mismatch(mismatch),
                                     _gapExtendHorizontal(gapExtend),
                                     _gapOpenHorizontal(gapOpen),
                                     _gapExtendVertical(gapExtend),
                                     _gapOpenVertical(gapOpen) {}
 
     Score(TScoreValue match, TScoreValue mismatch, TScoreValue gapExtendHorizontal, TScoreValue gapOpenHorizontal,
-          TScoreValue gapExtendVertical, TScoreValue gapOpenVertical) : _match(match),
-                                                                        _mismatch(mismatch),
+          TScoreValue gapExtendVertical, TScoreValue gapOpenVertical) : data_match(match),
+                                                                        data_mismatch(mismatch),
                                                                         _gapExtendHorizontal(gapExtendHorizontal),
                                                                         _gapOpenHorizontal(gapOpenHorizontal),
                                                                         _gapExtendVertical(gapExtendVertical),
                                                                         _gapOpenVertical(gapOpenVertical) {}
-
-    Score(Score const & other) : _match(other._match),
-                                 _mismatch(other._mismatch),
-                                 _gapExtendHorizontal(other._gapExtendHorizontal),
-                                 _gapOpenHorizontal(other._gapOpenHorizontal),
-                                 _gapExtendVertical(other._gapExtendVertical),
-                                 _gapOpenVertical(other._gapOpenVertical) {}
 };
 
 // ============================================================================
@@ -119,8 +112,8 @@ score(Score<TScoreValue, BiAffine> const & me,
       TSeqEntry2 const & seqEntry2)
 {
     if (seqEntry1 == static_cast<TSeqEntry1>(seqEntry2))
-        return me._match;
-    return me._mismatch;
+        return me.data_match;
+    return me.data_mismatch;
 }
 
 // ----------------------------------------------------------------------------
@@ -183,7 +176,7 @@ template <typename TScoreValue>
 inline void
 setScoreMatch(Score<TScoreValue, BiAffine> & scoringScheme, TScoreValue const & score)
 {
-    scoringScheme._match = score;
+    scoringScheme.data_match = score;
 }
 
 // ----------------------------------------------------------------------------
@@ -194,7 +187,7 @@ template <typename TScoreValue>
 inline void
 setScoreMismatch(Score<TScoreValue, BiAffine>  & scoringScheme, TScoreValue const & score)
 {
-    scoringScheme._mismatch = score;
+    scoringScheme.data_mismatch = score;
 }
 
 // ----------------------------------------------------------------------------
