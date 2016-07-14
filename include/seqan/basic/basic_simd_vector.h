@@ -43,15 +43,26 @@
 #include <tuple>
 //#include <seqan/basic/iterator_zip.h>
 
-#if defined(PLATFORM_WINDOWS_VS)
-  /* Microsoft C/C++-compatible compiler */
-  #include <intrin.h>
-#elif defined(PLATFORM_GCC) && (defined(__x86_64__) || defined(__i386__))
-  /* GCC-compatible compiler, targeting x86/x86-64 */
-  #include <x86intrin.h>
-#else
- #warning "No supported platform for SIMD vectorization!"
-#endif
+#if !defined(__arm__) || !defined(_M_ARM)  // We do not support arm architecture.
+#if defined(STDLIB_VS)  // Microsoft C/C++-compatible compiler
+    #include <intrin.h>
+#else  // GCC-compatible compiler, targeting x86/x86-64
+    #include <x86intrin.h>
+#endif  // defined(STDLIB_VS)
+
+// Define global macro to check if simd instructions are enabled.
+#define SEQAN_SIMD_ENABLED
+
+// Define maximal size of vector in byte.
+#if defined(__AVX2__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 32
+#elif defined(__SSE4_1__) && defined(__SSE4_2__)
+    #define SEQAN_SSE4
+    #define SEQAN_SIZEOF_MAX_VECTOR 16
+#else  // defined(__AVX2__)
+    #undef SEQAN_SIMD_ENABLED  // Disable simd instructions.
+#endif  // defined(__AVX2__)
+#endif  // !defined(__arm__) || !defined(_M_ARM)
 
 namespace seqan {
 
@@ -63,7 +74,6 @@ namespace seqan {
 #define SEQAN_VECTOR_CAST_(T, v) reinterpret_cast<T>(v)
 #define SEQAN_VECTOR_CAST_LVALUE_(T, v) reinterpret_cast<T>(v)
 #endif
-
 
 // ============================================================================
 // Forwards
@@ -106,26 +116,12 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
     vector[pos] = value;                                                                                \
 }
 
-// Define global macro to check if simd instructions are enabled.
-#define SEQAN_SIMD_ENABLED 1
-
-// Define maximal size of vector in byte.
-#if defined(__AVX2__)
-    #define SEQAN_SIZEOF_MAX_VECTOR 32
-#elif defined(__SSE4_1__) && defined(__SSE4_2__)
-    #define SEQAN_SSE4
-    #define SEQAN_SIZEOF_MAX_VECTOR 16
-#else
-    #undef SEQAN_SIMD_ENABLED
-    #define SEQAN_SIMD_ENABLED 0  // Disable simd instructions.
-#endif
-
 // define a concept and its models
 // they allow us to define generic vector functions
 SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
 
 // Only include following code if simd instructions are enabled.
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 
 // ============================================================================
 // Tags, Classes, Enums

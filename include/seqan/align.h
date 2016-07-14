@@ -155,7 +155,7 @@
 #include <seqan/align/dp_context.h>
 #include <seqan/align/dp_setup.h>
 
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 #include <seqan/align/dp_scout_simd.h>
 #include <seqan/align/dp_align_simd_helper.h>
 #endif  // SEQAN_SIMD_ENABLED
