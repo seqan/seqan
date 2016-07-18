@@ -3088,10 +3088,10 @@ inline bool _writeSnp(TFile & file,
         return false;
     }
     CharString genotype = "";
-    int l = length(genotype);
     if (snp.called)
     {
         genotype = getGenotypeList(snp.genotype);                               //Get bases of called genotype
+        int l = length(genotype);
         if (l == 1 && (Dna5)(genotype[0]) == (Dna5)refAllele)                   //GT only has ref base
         {
             gt.i1 = 0;
@@ -3101,7 +3101,7 @@ inline bool _writeSnp(TFile & file,
         {                                                                       //only list alt bases
             genotype = ((Dna5)(genotype[0]) == (Dna5)refAllele) ? (CharString)genotype[2] : (CharString)genotype[0];
             gt.i1 = 0;
-            gt.i1 = 1;
+            gt.i2 = 1;
         }
         else if (l == 3)                                                        //GT has 2 different alt bases
         {
@@ -3123,7 +3123,7 @@ inline bool _writeSnp(TFile & file,
     {
         if (snp.called)                                         //genotypeCalled != genotypeRef)
             file << genotype << '\t' << snp.snpQuality << '\t'; //Alt genotype and quality
-        else                                                    //TODO(serosko): Support for two different substitutions
+        else
             file << snp.second << "\t"<< snp.snpQuality << "\t";
         if (snp.filter == 0)
             file << "PASS\t";
