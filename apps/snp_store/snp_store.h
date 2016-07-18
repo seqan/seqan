@@ -150,6 +150,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
          // SNP calling related
         unsigned    method;                     // 0 = threshold method, 1 = Maq method
         bool        useBaseQuality;             // use base qual. instead of min{base quality,mapping,avg read quality}
+                                                //    TODO(serosko) remove, since never used.
         unsigned    minCoverage;                // min depth at variant calling positions
         int         forceCallCount;             // force variant call if there are at least this many mutationas
                                                 //     observed at the candidate site
@@ -217,7 +218,6 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
         SNPCallingOptions()
         {
-
             _debugLevel = 0;
             printVersion = false;
             programCall << "";
@@ -263,7 +263,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
             // SNP calling related
             method = 1;                 // Maq-method is default
-            forceCallCount = 10;
+            forceCallCount = 10;        // TODO(serosko):Seems to be never used - remove
             minCoverage = 2;
             minDifferentReadPos = 0;
             excludeBorderPos = 0;
@@ -282,7 +282,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             theta = 0.85;
             eta = 0.03;
             priorHetQ = 0;              // will be set during het table computation
-            numHaplotypes = 2;          // only 2 works...
+            numHaplotypes = 2;          // only 2 works until now
 
             // amplification bias distribution
             printHetTable = false;
@@ -291,7 +291,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
             amplificationEfficiency = 0.3;
             initialN = 10;
             meanAlleleFrequency = 0.51;
-            newQualityCalibrationFactor = 0.0;  // off..
+            newQualityCalibrationFactor = 0.0;  // off
 
             // indel-calling related
             maxPolymerRun = 100;        // off
@@ -342,7 +342,6 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
         char            orientation;        // 'F'..forward strand, 'R'..reverse comp. strand   --> endPos > beginPos ?
 
     };
-
 
     enum CALLSNPS_ERROR {
         CALLSNPS_GFF_FAILED = 1,
@@ -1735,9 +1734,6 @@ int readMatchesFromSamBam_Batch(
             clipLeft = clipRight;
             clipRight = temp;
         }
-
-
-
         if (options._debugLevel>0 && (rSeq%1000000)==0)
             std::cout <<rSeq<<".."<<std::flush;
         if (/*length(curr_read)> 30 && */
@@ -1794,7 +1790,6 @@ int readMatchesFromSamBam_Batch(
             if (clipLeft + clipRight > 76 )
                 ::std::cerr << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
 #endif
-
             if (options._debugLevel > 1)
                 ::std::cout<<fragmentStore.readSeqStore[rSeq] << " with edit="
                           << editDist << " at position " << beginPos << "\n";
@@ -3093,27 +3088,30 @@ inline bool _writeSnp(TFile & file,
         return false;
     }
     CharString genotype = "";
+    int l = length(genotype);
     if (snp.called)
     {
-        genotype = getGenotypeList(snp.genotype);   //Get bases of called genotype
-        if ((Dna5)refAllele == Dna5(genotype[0]))   //Translate called alleles to 0/0, 1/0, 1/1, 1/1 representation
+        genotype = getGenotypeList(snp.genotype);                               //Get bases of called genotype
+        if (l == 1 && (Dna5)(genotype[0]) == (Dna5)refAllele)                   //GT only has ref base
         {
             gt.i1 = 0;
             gt.i2 = 0;
+        }                                                                       //GT has 2 bases: 1 ref + 1 alt
+        else if (l == 3 && ((Dna5)(genotype[0]) == (Dna5)refAllele || (Dna5)(genotype[2]) == (Dna5)refAllele))
+        {                                                                       //only list alt bases
+            genotype = ((Dna5)(genotype[0]) == (Dna5)refAllele) ? (CharString)genotype[2] : (CharString)genotype[0];
+            gt.i1 = 0;
+            gt.i1 = 1;
         }
-            else
+        else if (l == 3)                                                        //GT has 2 different alt bases
+        {
+            gt.i1 = 1;
+            gt.i2 = 2;
+        }
+        else                                                                    //GT has 2 identical alt base
         {
             gt.i1 = 1;
             gt.i2 = 1;
-        }
-        if (length(genotype) == 3)
-        {
-            if (genotype[2] == genotype[0])
-                gt.i2 = gt.i1;
-            else if ((Dna5)genotype[2] == (Dna5)refAllele)
-                gt.i2 = 0;
-            else
-                gt.i2 = 2;
         }
     }
     CharString dbsnp = ".";                                 //TODO(serosko): should later contain the dbsnp id(if known)
