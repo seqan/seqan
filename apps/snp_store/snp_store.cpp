@@ -827,7 +827,9 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             snpFileStream << "\n##FILTER=<ID=dp" << options.minDifferentReadPos
                           << ",Description=\"Number of different read positions supporting variant below "
                           << options.minDifferentReadPos << "\">";
-        snpFileStream << "\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT";
+        snpFileStream << "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n";
+        snpFileStream << "##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">\n";
+        snpFileStream << "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT";
         for (unsigned i = 0; i < length(options.readFNames); ++i)
         {
             std::string readFNameNoExt = "";
@@ -966,10 +968,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
                     ++sumwindows;
                     continue;
                 }
-                if (options._debugLevel > 0)
-                    SEQAN_OMP_PRAGMA(critical (stdout))//not necessary since this debuglvl should not be used with t>1
-                            ::std::cout << "Sequence number " << i << " window "
-                                        << currentWindowBegin << ".." << currentWindowEnd << "\n";
 
                 TFragmentStore fragmentStore;
                 // Count number of reads that are identical to the given one.
@@ -1443,12 +1441,6 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
                                      "Name of positions input file.",
                                      ArgParseArgument::STRING));
     hideOption(parser, "ip");
-    addOption(parser, ArgParseOption("mpr",
-                                     "max-polymer-run",
-                                     "Discard indels in homopolymer runs longer than mpr.",
-                                     ArgParseArgument::INTEGER));
-    setMinValue(parser, "max-polymer-run", "0");
-    setDefaultValue(parser, "max-polymer-run", options.maxPolymerRun);
     addOption(parser, ArgParseOption("dp",
                                      "diff-pos",
                                      "Minimal number of different read positions supporting the mutation.",
@@ -1581,6 +1573,12 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
                                      ArgParseArgument::INTEGER));
     setMinValue(parser, "indel-quality-thresh", "0");
     setDefaultValue(parser, "indel-quality-thresh", options.indelQualityThreshold);
+    addOption(parser, ArgParseOption("mpr",
+                                     "max-polymer-run",
+                                     "Discard indels in homopolymer runs longer than mpr.",
+                                     ArgParseArgument::INTEGER));
+    setMinValue(parser, "max-polymer-run", "0");
+    setDefaultValue(parser, "max-polymer-run", options.maxPolymerRun);
     addOption(parser, ArgParseOption("bsi",
                                      "both-strands-indel",
                                      "Both strands need to be observed for indel to be called. Default: off."));
