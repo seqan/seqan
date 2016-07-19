@@ -2334,6 +2334,7 @@ inline void fail()
 
 // TODO(holtgrew): Subject to change wiht restructuring.
 // Returns a const char * string with the path to the projects directory.
+[[deprecated("Unsafe.")]]
 #define SEQAN_PATH_TO_ROOT()                      \
     ::seqan::ClassTest::StaticData::pathToRoot()
 
