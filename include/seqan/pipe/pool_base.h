@@ -832,11 +832,13 @@ namespace seqan
         //////////////////////////////////////////////////////////////////////////////
         // auto-disposal interface (deprecated)
 
+        [[deprecated]]
         inline void addListener() {
             if (!listeners) return;
             ++listeners;
         }
 
+        [[deprecated]]
         inline void delListener() {
             if (!listeners) return;
             if (--listeners == 0) {
@@ -1064,8 +1066,8 @@ namespace seqan
         return me.clear();
     }
 
-    // deprecated
     template < typename TValue, typename TSpec >
+    [[deprecated]]
     inline typename Size< Pool<TValue, TSpec> >::Type
     size(Pool<TValue, TSpec> const &me)
     {
