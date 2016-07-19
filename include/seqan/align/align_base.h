@@ -475,6 +475,7 @@ detach(Align<TSource, TSpec> & me)
  */
 
 template <typename TFile, typename TSource, typename TSpec>
+[[deprecated("Old-style I/O.")]]
 inline void
 write(TFile & target,
       Align<TSource, TSpec> const & source)
