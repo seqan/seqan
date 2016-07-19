@@ -95,7 +95,7 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
  */
 
 template <typename TText, typename TSpec>
-class Index<TText, PizzaChili<TSpec> > {
+class [[deprecated("This Module is outdated and is not maintained anymore.")]] Index<TText, PizzaChili<TSpec> > {
 public:
     typedef typename Value<TText>::Type TValue;
     typedef typename PizzaChiliCodeProvider<TSpec>::Type TCodeProvider;

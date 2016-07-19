@@ -680,10 +680,10 @@ struct IsSignedInteger : Is< SignedIntegerConcept<T> > {};
 template <typename T>
 struct IsUnsignedInteger : Is< UnsignedIntegerConcept<T> > {};
 template <typename T>
-struct IsInteger : Is< IntegerConcept<T> > {};
+struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsInteger : Is< IntegerConcept<T> > {};
 
 template <typename T>
-struct IsIntegral : IsInteger<T> {};
+struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsIntegral : IsInteger<T> {};
 
 // ============================================================================
 // Concepts for integers

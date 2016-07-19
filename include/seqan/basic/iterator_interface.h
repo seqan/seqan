@@ -183,6 +183,7 @@ struct Container
 // ---------------------------------------------------------------------------
 
 template <typename T>
+[[deprecated("Use operator*() instead.")]]
 inline typename Reference<T>::Type
 value(T & me)
 {
@@ -190,6 +191,7 @@ value(T & me)
 }
 
 template <typename T>
+[[deprecated("Use operator*() instead.")]]
 inline typename Reference<T const>::Type
 value(T const & me)
 {
@@ -201,6 +203,7 @@ value(T const & me)
 // ---------------------------------------------------------------------------
 
 template <typename T>
+[[deprecated("Use operator*() instead.")]]
 inline typename GetValue<T>::Type
 getValue(T & me)
 {
@@ -208,6 +211,7 @@ getValue(T & me)
 }
 
 template <typename T>
+[[deprecated("Use operator*() instead.")]]
 inline typename GetValue<T const>::Type
 getValue(T const & me)
 {
@@ -226,6 +230,7 @@ getValue(T const & me)
 // ---------------------------------------------------------------------------
 
 template <typename T, typename TValue>
+[[deprecated("Use dereferencement and assignment instead.")]]
 inline void
 assignValue(T & me,
             TValue const & _value)
@@ -235,6 +240,7 @@ assignValue(T & me,
 
 //const version for iterators as targets
 template <typename T, typename TValue>
+[[deprecated("Use dereferencement and assignment instead.")]]
 inline void
 assignValue(T const & me,
             TValue const & _value)

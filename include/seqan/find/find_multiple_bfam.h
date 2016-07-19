@@ -76,6 +76,7 @@ namespace seqan
 template <typename TSpec = Oracle>
 struct MultiBfam; //multiple backward factor automaton searching
 
+[[deprecated]]
 typedef MultiBfam<Oracle> SBomAlgo; //deprecated
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1619,6 +1619,7 @@ concat(StringSet<TString, TSpec> const & constMe)
 
 // this function is deprecated and the return value is very ungeneric, e.g. doesn't work if strings are std::string
 template <typename TStrings, typename TDelim>
+[[deprecated]]
 inline String<typename Value<typename Value<TStrings>::Type>::Type>
 concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
 {
