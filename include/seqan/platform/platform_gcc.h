@@ -155,19 +155,27 @@
  */
 
 // default 64bit type
+[[deprecated("Use int64_t instead.")]]
 typedef int64_t __int64;   // nolint
+[[deprecated("Use uint64_t instead.")]]
 typedef uint64_t __uint64; // nolint
 
 // default 32bit type
+[[deprecated("Use int32_t instead.")]]
 typedef int32_t __int32;   // nolint
+[[deprecated("Use uint32_t instead.")]]
 typedef uint32_t __uint32; // nolint
 
 // default 16bit type
+[[deprecated("Use int16_t instead.")]]
 typedef int16_t __int16;   // nolint
+[[deprecated("Use uint16_t instead.")]]
 typedef uint16_t __uint16; // nolint
 
 // default 8bit type
+[[deprecated("Use int8_t instead.")]]
 typedef int8_t __int8;     // nolint
+[[deprecated("Use uint8_t instead.")]]
 typedef uint8_t __uint8;   // nolint
 
 #define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
