@@ -212,6 +212,7 @@ value(StringSet<TString, Dependent<Tight> >const & me, TPos pos)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TId>
+[[deprecated("Use the subscript operator (operator[]) instead.")]]
 inline typename Reference<StringSet<TString, Dependent<Tight> > >::Type
 getValueById(StringSet<TString, Dependent<Tight> > & me,
             TId const id)
@@ -225,6 +226,7 @@ getValueById(StringSet<TString, Dependent<Tight> > & me,
 // --------------------------------------------------------------------------
 
 template<typename TString, typename TString2>
+[[deprecated("Use assignValue instead.")]]
 inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
 assignValueById(StringSet<TString, Dependent<Tight> >& me,
                 TString2& obj)
@@ -265,6 +267,7 @@ assignValueById(StringSet<TString, Dependent<Tight> >& me,
 // --------------------------------------------------------------------------
 
 template<typename TString, typename TId>
+[[deprecated("Use erase instead.")]]
 inline void
 removeValueById(StringSet<TString, Dependent<Tight> >& me, TId const id)
 {
@@ -293,6 +296,7 @@ removeValueById(StringSet<TString, Dependent<Tight> >& me, TId const id)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TPos>
+[[deprecated("ID is the same as the position")]]
 inline typename Id<StringSet<TString, Dependent<Tight> > >::Type
 positionToId(StringSet<TString, Dependent<Tight> > & me,
             TPos const pos)
@@ -313,6 +317,7 @@ positionToId(StringSet<TString, Dependent<Tight> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TId>
+[[deprecated("ID is the same as the position")]]
 inline typename Position<StringSet<TString, Dependent<Tight> > >::Type
 idToPosition(StringSet<TString, Dependent<Tight> > const & me,
             TId const id)
