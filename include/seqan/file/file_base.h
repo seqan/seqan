@@ -597,6 +597,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     // deprecated
     template < typename TSpec, typename AsyncRequest >
+    [[deprecated]]
     inline void release(File<TSpec> &, AsyncRequest &)
     {
 //IOREV _noop_ see general discussion about AsynRequest
