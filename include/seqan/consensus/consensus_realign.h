@@ -542,6 +542,7 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
 // TODO(holtgrew): realignmentMethod should not be optional or moved to the end of the list.
 // TODO(holtgrew): The method should be selected with an enum instead of an int.
 template<typename TSpec, typename TConfig, typename TScore, typename TId, typename TMethod, typename TBandwidth>
+[[deprecated]]
 void
 reAlign(FragmentStore<TSpec, TConfig> & fragStore,
         TScore & consScore,
