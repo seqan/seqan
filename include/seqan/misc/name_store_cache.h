@@ -293,18 +293,16 @@ void appendName(NameStoreCache<TCNameStore, TCName> & cache, TName const & name)
     cache.nameSet.insert(length(host(cache)) - 1);
 }
 
-// TODO(holtgrew): Add deprecation annotation for compiler warnings.
-
-// deprecated.
 // In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
 template <typename TNameStore, typename TName, typename TContext>
+[[deprecated]]
 void appendName(TNameStore &nameStore, TName const & name, TContext &)
 {
     appendName(nameStore, name);
 }
 
-// deprecated.
 template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
+[[deprecated]]
 void appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
 {
     appendValue(nameStore, name, Generous());
@@ -379,16 +377,16 @@ getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TNa
     return false;
 }
 
-// deprecated.
 template <typename TNameStore, typename TName, typename TPos, typename TContext>
+[[deprecated]]
 inline bool
 getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
 {
     return getIdByName(pos, nameStore, name);
 }
 
-// deprecated.
 template<typename TNameStore, typename TName, typename TPos, typename TCNameStore, typename TCName>
+[[deprecated]]
 inline bool
 getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
 {
