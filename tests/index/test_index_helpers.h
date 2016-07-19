@@ -63,7 +63,7 @@ void generateText(TText & text, unsigned textLength = 100000)
     int minChar = MinValue<TChar>::VALUE;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    std::mt19937 rng(SEED);
+    std::mt19937 rng(time(nullptr));
 
     resize(text, textLength);
 
@@ -83,7 +83,21 @@ void generateText(CharString & text, unsigned textLength = 100000)
     int minChar = -128;
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
-    std::mt19937 rng(SEED);
+    std::mt19937 rng(time(nullptr));
+
+    resize(text, textLength);
+
+    for (unsigned i = 0; i < textLength; ++i)
+        text[i] = rng() % alphabetSize - minChar;
+}
+
+template<typename TText>
+void generateText(std::mt19937 & rng, TText & text, unsigned textLength = 100000)
+{
+    typedef typename Value<TText>::Type TChar;
+
+    int minChar = MinValue<TChar>::VALUE;
+    unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
     resize(text, textLength);
 
@@ -95,8 +109,8 @@ void generateText(CharString & text, unsigned textLength = 100000)
 // Function generateText(StringSet)
 // --------------------------------------------------------------------------
 
-template <typename TText>
-void generateText(StringSet<TText> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
+template <typename TText, typename TConfig>
+void generateText(StringSet<TText, TConfig> & text, unsigned numSeq = 1000, unsigned seqLength = 2000)
 {
     typedef typename Value<TText>::Type TChar;
 
@@ -618,7 +632,20 @@ typedef
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
     TagList<Index<StringSet<CharString>, FMIndex<> >
     > > > > > >
+    UnidirectionalFMIndexTypes;
+
+typedef
+    TagList<Index<DnaString, BidirectionalIndex<FMIndex<> > >,
+    UnidirectionalFMIndexTypes
+    >
     FMIndexTypes;
+
+typedef
+    TagList<Index<CharString, IndexSa<> >,
+    TagList<Index<CharString, IndexEsa<> >,
+    UnidirectionalFMIndexTypes
+    > >
+    UnidirectionalIndexTypes;
 
 typedef
     TagList<Index<CharString, IndexSa<> >,

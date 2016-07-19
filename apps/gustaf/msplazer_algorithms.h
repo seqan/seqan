@@ -422,12 +422,10 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     // Compute breakpoint score
                     // The resulting score is the sum of the scores of both alignments. --> substract old match scores
                     // Note: old match scores are already distances, new score is a negative score bc. we use scoring sceme (0, -1, -1, -1)
-                    score = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
-                                                minValue<int>(), maxValue<int>(),
-                                                scoreType);
-
-                    SEQAN_ASSERT_NEQ(score, maxValue<int>());
-                    score += (static_cast<int>(matchDistanceScores[m1]) + static_cast<int>(matchDistanceScores[m2]));
+                    auto tmp = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
+                                                   scoreType, AlignConfig<false, false, true, true>());
+                    SEQAN_ASSERT_NEQ(std::get<0>(tmp) + std::get<1>(tmp), maxValue<int>());
+                    score = std::get<0>(tmp) + std::get<1>(tmp) + (static_cast<int>(matchDistanceScores[m1]) + static_cast<int>(matchDistanceScores[m2]));
                     splitPos = endPosition(row(match1, 0)) + stMatch1.begin2;
 
                     // Refine cargo by reducing distance by score, score is the number of edit errors avoided by the breakpoint/trimming
@@ -640,9 +638,9 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                         // int lDiag = -10, uDiag = 10;
                         // score = splitAlignment(match1, match2, scoreType, lDiag, uDiag);
                         // score = splitAlignment(match1, match2, scoreType);
-                        score = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
-                                                    minValue<int>(), maxValue<int>(),
-                                                    scoreType);
+                        auto tmp = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
+                                                    scoreType, AlignConfig<false, false, true, true>());
+                        score = std::get<0>(tmp) + std::get<1>(tmp);
                         SEQAN_ASSERT_EQ(endPosition(row(match1, 0)), beginPosition(row(match2, 0)));
 
                         // Compute cargo, reduce distance by score

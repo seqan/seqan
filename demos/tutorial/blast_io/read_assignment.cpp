@@ -1,6 +1,6 @@
 #include <iostream>
 #include <seqan/basic.h>
-#ifndef PLATFORM_WINDOWS_VS
+#ifndef STDLIB_VS
 #include <seqan/blast.h>
 
 using namespace seqan;

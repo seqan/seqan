@@ -48,7 +48,7 @@
  *
  * relation to file_format_mmap.h unclear
  *
- * relation to string_external unclear, what benifit does string_mmap provide?
+ * relation to string_external unclear, what benefit does string_mmap provide?
  *
  */
 
@@ -481,12 +481,12 @@ namespace seqan
     inline bool
     _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity)
     {
-        typedef typename Size<String<TValue, MMap<TConfig> > >::Type    TSize;
-        typedef typename Size<typename TConfig::TFile>::Type            TFileSize;
+        typedef typename Size<String<TValue, MMap<TConfig> > >::Type    TSize SEQAN_UNUSED_TYPEDEF;
+        typedef typename Size<typename TConfig::TFile>::Type            TFileSize SEQAN_UNUSED_TYPEDEF;
 
         bool result = true;
 
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
         // Windows doesn't allow to resize the file while having a mapped file segment
         // Thus, the following part is only supported on Linux/BSD/Mac OS
         TSize old_capacity = capacity(me);

@@ -101,7 +101,7 @@ enum FileMappingMode {
  * @brief The address range in the advise will not be needed any more.
  */
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
 enum FileMappingAdvise {
     MAP_NORMAL = 0,
@@ -136,7 +136,7 @@ enum FileMappingAdvise {
  * This structure represents both a file and its memory mapping.
  */
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 static SECURITY_ATTRIBUTES FileMappingDefaultAttributes =
 {
     sizeof(SECURITY_ATTRIBUTES),
@@ -159,7 +159,7 @@ struct FileMapping
     // Members
     // -----------------------------------------------------------------------
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     HANDLE      handle;
 #endif
 
@@ -241,7 +241,7 @@ template <typename TSpec>
 inline void
 _initialize(FileMapping<TSpec> &mapping)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     mapping.handle = NULL;
 #endif
     mapping.fileSize = 0;
@@ -262,7 +262,7 @@ _mapFile(FileMapping<TSpec> &mapping, TSize mappingSize)
     ignoreUnusedVariableWarning(mappingSize);
 
     bool result = true;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     if (mappingSize == 0)
     {
         mapping.handle = NULL;
@@ -313,12 +313,25 @@ _unmapFile(FileMapping<TSpec> &mapping)
     ignoreUnusedVariableWarning(mapping);
 
     bool result = true;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     if (mapping.handle != NULL)
     {
         result &= (CloseHandle(mapping.handle) != 0);
         if (!result)
-            SEQAN_FAIL("CloseHandle failed in unmap: \"%s\"", strerror(errno));
+        {
+            LPVOID lpMsgBuf;
+            FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                NULL,
+                GetLastError(),
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                (LPTSTR) &lpMsgBuf,
+                0,
+                NULL);
+
+            SEQAN_FAIL("CloseHandle failed in unmap: \"%s\"", lpMsgBuf /*strerror(GetLastError())*/);
+            LocalFree(lpMsgBuf);
+        }
         mapping.handle = NULL;
     }
 #endif
@@ -543,7 +556,7 @@ template <typename TSpec, typename TPos, typename TSize>
 inline bool
 flushFileSegment(FileMapping<TSpec> &, void *addr, TPos beginPos, TSize size)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(beginPos);
     ignoreUnusedVariableWarning(size);
@@ -572,7 +585,7 @@ template <typename TSpec, typename TPos, typename TSize>
 inline bool
 cancelFileSegment(FileMapping<TSpec> &, void *addr, TPos fileOfs, TSize size)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(fileOfs);
     ignoreUnusedVariableWarning(size);
@@ -588,9 +601,9 @@ cancelFileSegment(FileMapping<TSpec> &, void *addr, TPos fileOfs, TSize size)
  *
  * @signature bool adviseFileSegment(fileMapping, advise, addr, fileOfs, size);
  *
- * @param[in,out] fileMapping The FileMapping object to adsive segment in.
+ * @param[in,out] fileMapping The FileMapping object to advise segment in.
  * @param[in]     advise      The advise type.  Type: @link FileMappingAdvise @endlink.
- * @param[in]     addr        A pointer t othe beginning of the memory-mapped segment in memory (returned by a
+ * @param[in]     addr        A pointer to the beginning of the memory-mapped segment in memory (returned by a
  *                            prior call of @link FileMapping#mapFileSegment @endlink).
  * @param[in]     fileOfs     The absolute start address of the segment in bytes.
  * @param[in]     size        The segment length in bytes.
@@ -606,7 +619,7 @@ template <typename TSpec, typename TPos, typename TSize>
 inline bool
 adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TPos fileOfs, TSize size)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(advise);
     ignoreUnusedVariableWarning(addr);
     ignoreUnusedVariableWarning(fileOfs);
@@ -627,7 +640,7 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
  * @param[in,out] fileMapping A FileMapping object.
  * @param[in]     fileOfs     The absolute start address of the segment in bytes.
  * @param[in]     size        The segment length in bytes.
- * @param[in]     mode        The mapping access mode.  Default rread/write open mode of the underlying file.
+ * @param[in]     mode        The mapping access mode.  Default read/write open mode of the underlying file.
  *                            Type: @link FileMappingMode @endlink.
  *
  * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  TPtr is
@@ -646,7 +659,7 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs, TSize size, TFileMappi
         return NULL;
     mode = (FileMappingMode)(mode & (mapping.openMode & OPEN_MASK));
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
     DWORD access = ((mode & OPEN_MASK) == OPEN_RDONLY) ? FILE_MAP_READ : FILE_MAP_ALL_ACCESS;
     LARGE_INTEGER largeOfs;
@@ -721,7 +734,7 @@ inline bool
 unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
 {
     bool result;
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     ignoreUnusedVariableWarning(size);
     result = (UnmapViewOfFile(addr) != 0);
 #else
@@ -755,7 +768,7 @@ inline void *
 remapFileSegment(FileMapping<TSpec> &mapping, void *oldAddr, TPos oldFileOfs, TSize oldSize, TSize newSize)
 {
     void *addr;
-#if !defined(PLATFORM_WINDOWS) && defined(MREMAP_MAYMOVE)
+#if !defined(STDLIB_VS) && defined(MREMAP_MAYMOVE)
     ignoreUnusedVariableWarning(mapping);
     ignoreUnusedVariableWarning(oldFileOfs);
     addr = mremap(oldAddr, oldSize, newSize, MREMAP_MAYMOVE);

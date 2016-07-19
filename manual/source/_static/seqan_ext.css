@@ -60,3 +60,11 @@ p.sidebar-title { margin-bottom: 7px !important; }
 #contents > ul > li li li {
   list-style-type: disc;
 }
+
+div[class^='highlight'] pre {
+    color: #AAA
+}
+
+.gp {
+    color: #AAA
+}

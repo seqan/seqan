@@ -328,7 +328,7 @@ position(T * /*me*/)
 }
 
 template <typename TContainer, typename TIterator>
-inline SEQAN_HOST_DEVICE typename Position<TContainer>::Type
+inline typename Position<TContainer>::Type
 position(TIterator const & it,
          TContainer const & me)
 {
@@ -342,7 +342,7 @@ position(TIterator const & it,
 // TODO(doering): Was, wenn der Container leer ist?
 
 template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 atBegin(T const & it,
         TContainer const & cont)
 {
@@ -350,7 +350,7 @@ atBegin(T const & it,
 }
 
 template <typename T>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 atBegin(T const & it)
 {
     return atBegin(it, container(it));
@@ -361,7 +361,7 @@ atBegin(T const & it)
 // ---------------------------------------------------------------------------
 
 template <typename T, typename TContainer>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 atEnd(T const & it,
       TContainer const & cont)
 {
@@ -369,7 +369,7 @@ atEnd(T const & it,
 }
 
 template <typename T>
-inline SEQAN_HOST_DEVICE bool
+inline bool
 atEnd(T const & it)
 {
     return atEnd(it, container(it));
@@ -380,7 +380,7 @@ atEnd(T const & it)
 // ---------------------------------------------------------------------------
 
 template <typename TIterator, typename TContainer>
-inline SEQAN_HOST_DEVICE void
+inline void
 goBegin(TIterator & it,
         TContainer & container)
 {
@@ -396,7 +396,7 @@ goBegin(TIterator & it,
 // }
 
 template <typename TIterator>
-inline SEQAN_HOST_DEVICE void
+inline void
 goBegin(TIterator & it)
 {
     typename Parameter_<typename Container<TIterator>::Type>::Type tmpContainer = container(it);
@@ -408,7 +408,7 @@ goBegin(TIterator & it)
 // ---------------------------------------------------------------------------
 
 template <typename TIterator, typename TContainer>
-inline SEQAN_HOST_DEVICE void
+inline void
 goEnd(TIterator & it,
       TContainer & container)
 {
@@ -416,7 +416,7 @@ goEnd(TIterator & it,
 }
 
 template <typename TIterator, typename TContainer>
-inline SEQAN_HOST_DEVICE void
+inline void
 goEnd(TIterator & it,
       TContainer const & container)
 {
@@ -424,7 +424,7 @@ goEnd(TIterator & it,
 }
 
 template <typename TIterator>
-inline SEQAN_HOST_DEVICE void
+inline void
 goEnd(TIterator & it)
 {
     goEnd(it, container(it));
@@ -435,7 +435,7 @@ goEnd(TIterator & it)
 // ---------------------------------------------------------------------------
 
 template <typename TIterator>
-inline SEQAN_HOST_DEVICE void
+inline void
 goNext(TIterator & it)
 {
     ++it;
@@ -446,7 +446,7 @@ goNext(TIterator & it)
 // ---------------------------------------------------------------------------
 
 template <typename TIterator, typename TDiff>
-inline SEQAN_HOST_DEVICE void
+inline void
 goFurther(TIterator & it,
           TDiff steps)
 {   // return distance type from arbitrary argument
@@ -458,7 +458,7 @@ goFurther(TIterator & it,
 // ---------------------------------------------------------------------------
 
 template <typename TIterator>
-inline SEQAN_HOST_DEVICE void
+inline void
 goPrevious(TIterator & it)
 {
     --it;
@@ -469,7 +469,7 @@ goPrevious(TIterator & it)
 // ---------------------------------------------------------------------------
 
 template <typename TIterator>
-inline SEQAN_HOST_DEVICE
+inline
 typename Difference<TIterator>::Type
 difference(TIterator const & begin,
            TIterator const & end)

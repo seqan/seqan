@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fiona CXX)
 message (STATUS "Configuring apps/fiona")
 
-set (SEQAN_APP_VERSION "0.2.5")
+set (SEQAN_APP_VERSION "0.2.6")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -19,8 +19,8 @@ set (SEQAN_APP_VERSION "0.2.5")
 # Search SeqAn and select dependencies.
 find_package (OpenMP)
 find_package (ZLIB)
-find_package (SeqAn REQUIRED)
 find_package (Boost)
+find_package (SeqAn REQUIRED)
 
 # Stop here if we cannot find Boost or OpenMP.
 if (NOT Boost_FOUND OR NOT OPENMP_FOUND)
@@ -28,13 +28,14 @@ if (NOT Boost_FOUND OR NOT OPENMP_FOUND)
     return ()
 endif ()
 
-if (MSVC)
-    message (STATUS "  Not building fiona under Visual Studio.")
+if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message (STATUS "  Not building fiona on 32bit architectures.")
     return ()
 endif()
 
-if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message (STATUS "  Not building fiona on 32bit architectures.")
+# all windows compilers are currently broken with Fiona (in different ways)
+if (MSVC)
+    message (STATUS "  Not building fiona under Visual Studio.")
     return ()
 endif()
 
@@ -115,4 +116,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:fiona")
 
   seqan_configure_cpack_app (fiona "fiona")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:fiona")
-

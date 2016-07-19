@@ -89,7 +89,7 @@ include(CheckCXXSourceCompiles)
 # ----------------------------------------------------------------------------
 
 set(_SEQAN_DEFAULT_LIBRARIES ZLIB OpenMP)
-set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP CUDA)
+set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP)
 
 # ----------------------------------------------------------------------------
 # Set variables SEQAN_FIND_* to their default unless they have been set.
@@ -112,60 +112,55 @@ endif ()
 
 # Recognize Clang compiler.
 
-set (COMPILER_IS_CLANG FALSE)
+set (COMPILER_CLANG FALSE)
+set (COMPILER_GCC FALSE)
+set (COMPILER_LINTEL FALSE)
+set (COMPILER_WINTEL FALSE)
+set (COMPILER_MSVC FALSE)
+set (STDLIB_VS ${MSVC})
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set (COMPILER_IS_CLANG TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-
-set (CMAKE_COMPILER_IS_GNUCXX FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set (CMAKE_COMPILER_IS_GNUCXX TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-
-# Intel
-set (COMPILER_IS_INTEL FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-  set (COMPILER_IS_INTEL TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-
-# Visual Studio
-set (COMPILER_IS_MSVC FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set (COMPILER_IS_MSVC TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_CLANG TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
+  set (COMPILER_WINTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_LINTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set (COMPILER_GCC TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_MSVC TRUE)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Check required compiler versions.
 # ----------------------------------------------------------------------------
 
-if (CMAKE_COMPILER_IS_GNUCXX)
+if (COMPILER_GCC)
 
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         message(AUTHOR_WARNING "GCC version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 4.9! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_CLANG)
+elseif (COMPILER_CLANG)
 
     # require at least clang 3.5
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
         message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_INTEL)
+elseif (COMPILER_LINTEL OR COMPILER_WINTEL)
 
     # require at least icpc 16.0.2
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
         message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 16.0.2! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_MSVC)
+elseif (COMPILER_MSVC)
 
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
         message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
-    else ()
-        set (CXX11_FOUND TRUE CACHE INTERNAL "Availability of c++11") # always active
     endif ()
 
 else ()
@@ -173,32 +168,34 @@ else ()
 endif ()
 
 # ----------------------------------------------------------------------------
-# Require C++11
+# Require C++14
 # ----------------------------------------------------------------------------
 
-if (NOT CXX11_FOUND)
+# The visual studio compiler and intel compiler on windows defines __cplusplus
+# still as 199711L, thus the check below would fail.
+if (NOT (COMPILER_MSVC OR COMPILER_WINTEL))
     set(CXXSTD_TEST_SOURCE
-    "#if !defined(__cplusplus) || (__cplusplus < 201103L)
-    #error NOCXX11
+    "#if !defined(__cplusplus) || (__cplusplus < 201300L)
+    #error NOCXX14
     #endif
     int main() {}")
-    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX11_DETECTED)
-    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
-    if (NOT CXX11_FOUND)
-        message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0, but your compiler does "
-                "not support it. Make sure that you specify -std=c++11 in your CMAKE_CXX_FLAGS. "
-                "If you absolutely know what you are doing, you can overwrite this check "
-                " by defining CXX11_FOUND.")
-        return ()
-    endif (NOT CXX11_FOUND)
-endif (NOT CXX11_FOUND)
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_BUILTIN)
+    if (NOT CXX14_BUILTIN)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+        check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_FLAG)
+        if (NOT CXX14_FLAG)
+            message (FATAL_ERROR "SeqAn requires C++14 since v2.2.0, but your compiler does not support it.")
+            return ()
+        endif ()
+    endif ()
+endif ()
 
 # ----------------------------------------------------------------------------
 # Compile-specific settings and workarounds around missing CMake features.
 # ----------------------------------------------------------------------------
 
 # GCC/CLANG/ICC
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
+if (COMPILER_GCC OR COMPILER_CLANG OR COMPILER_LINTEL)
   # Tune warnings for GCC.
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
@@ -228,14 +225,16 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -DNOMINMAX")
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DNOMINMAX)
 endif (WIN32)
 
 # Visual Studio Setup
-if (MSVC)
+if (COMPILER_MSVC OR COMPILER_WINTEL)
   # Enable intrinics (e.g. _interlockedIncrease)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /EHsc /Oi")
-endif (MSVC)
+  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_WINTEL, but
+  # COMPILER_CLANG (clang/c2 3.7) can not handle the /EHsc and /Oi flag
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /Oi)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Search for directory seqan.
@@ -356,8 +355,13 @@ if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
 endif ()
 
 if (OPENMP_FOUND)
-    if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+    if (COMPILER_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
         message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
+        set (OPENMP_FOUND FALSE)
+    elseif (COMPILER_CLANG AND STDLIB_VS AND (_GCC_VERSION MATCHES "^38[0-9]$"))
+        # The compiler also issues a warning
+        # clang.exe : warning : '-fopenmp=libomp': OpenMP is not supported
+        message (STATUS "The clang/c2 compiler on windows (version 3.7 and 3.8) doesn't support OpenMP!")
         set (OPENMP_FOUND FALSE)
     else ()
         set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
@@ -368,18 +372,18 @@ if (OPENMP_FOUND)
     endif ()
 endif ()
 
-# CUDA
-
-list(FIND SEQAN_FIND_DEPENDENCIES "CUDA" _SEQAN_FIND_CUDA)
-mark_as_advanced(_SEQAN_FIND_CUDA)
-
-set (SEQAN_HAS_CUDA FALSE)
-if (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
-  find_package(CUDA QUIET)
-  if (CUDA_FOUND)
-    set (SEQAN_HAS_CUDA TRUE)
-  endif ()
-endif (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
+if (Boost_FOUND)
+  # Example warning:
+  # C:\seqan-deps\boost_1_53_0\boost/mpl/if.hpp(131,1): error : pasting formed
+  # 'BOOST_PP_TUPLE_ELEM_E_2(', an invalid preprocessing token
+  if (COMPILER_CLANG AND STDLIB_VS)
+    message (STATUS "The boost library (at least until 1.53) doesn't support the clang/c2 compiler on windows (version 3.7 and 3.8), yet!")
+    set (Boost_FOUND FALSE)
+    unset(Boost_INCLUDE_DIRS)
+    unset(Boost_LIBRARY_DIRS)
+    unset(Boost_LIBRARIES)
+  endif()
+endif()
 
 # Build SEQAN_INCLUDE_DIRS from SEQAN_INCLUDE_DIRS_MAIN and SEQAN_INCLUDE_DIRS_DEPS
 
@@ -461,7 +465,6 @@ if (SEQAN_FIND_DEBUG)
   message("  SEQAN_HAS_ZLIB             ${SEQAN_HAS_ZLIB}")
   message("  SEQAN_HAS_BZIP2            ${SEQAN_HAS_BZIP2}")
   message("  SEQAN_HAS_OPENMP           ${SEQAN_HAS_OPENMP}")
-  message("  SEQAN_HAS_CUDA             ${SEQAN_HAS_CUDA}")
   message("")
   message("  SEQAN_INCLUDE_DIRS         ${SEQAN_INCLUDE_DIRS}")
   message("  SEQAN_INCLUDE_DIRS_DEPS    ${SEQAN_INCLUDE_DIRS_DEPS}")

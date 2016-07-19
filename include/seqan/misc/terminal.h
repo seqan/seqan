@@ -76,7 +76,7 @@ namespace seqan {
  * @see isAnsiColorTerminal
  */
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
 
 #include <io.h>
 
@@ -85,9 +85,9 @@ inline bool isTerminal()
     return false;  // Windows does not understand ANSI codes.
 }
 
-#endif  // #if defined(PLATFORM_WINDOWS)
+#endif  // #if defined(STDLIB_VS)
 
-#if defined(PLATFORM_GCC)
+#if !defined(STDLIB_VS)
 
 #include <unistd.h>
 
@@ -100,7 +100,7 @@ inline bool isTerminal()
 #endif
 }
 
-#endif  // #if defined(PLATFORM_GCC)
+#endif  // #if !defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function isAnsiColorTerminal()
@@ -123,21 +123,21 @@ inline bool isTerminal()
  * @see getTerminalSize
  */
 
-#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_GCC_MINGW)
+#if defined(STDLIB_VS)
 
 inline bool isAnsiColorTerminal()
 {
     return false;
 }
 
-#else  // #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_GCC_MINGW)
+#else  // #if defined(STDLIB_VS)
 
 inline bool isAnsiColorTerminal()
 {
     return isTerminal();
 }
 
-#endif  // #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_GCC_MINGW)
+#endif  // #if defined(STDLIB_VS)
 
 // ----------------------------------------------------------------------------
 // Function getTerminalSize()
@@ -169,7 +169,7 @@ inline bool isAnsiColorTerminal()
  * @see isAnsiColorTerminal
  */
 
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
 
 #include <Windows.h>
 
@@ -187,9 +187,9 @@ inline bool getTerminalSize(unsigned & cols, unsigned & rows)
     return true;
 }
 
-#endif  // #if defined(PLATFORM_WINDOWS)
+#endif  // #if defined(STDLIB_VS)
 
-#if defined(PLATFORM_GCC)
+#if !defined(STDLIB_VS)
 
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -208,7 +208,7 @@ inline bool getTerminalSize(unsigned & cols, unsigned & rows)
     return true;
 }
 
-#endif  // #if defined(PLATFORM_GCC)
+#endif  // #if !defined(STDLIB_VS)
 
 }  // namespace seqan
 

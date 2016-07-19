@@ -29,28 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: René Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef TEST_CUDA_COMMON_H_
-#define TEST_CUDA_COMMON_H_
+#include <seqan/basic.h>
+#include <seqan/stream.h>
 
-namespace seqan {
+#include "test_align_simd.h"
 
-// ============================================================================
-// Kernels
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Kernel testGetValue()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TPos, typename TValue>
-SEQAN_GLOBAL void testGetValue(TString str, TPos pos, TValue value)
-{
-    SEQAN_ASSERT_EQ(str[pos], value);
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
 }
-
-}
-
-#endif // TEST_CUDA_COMMON_H_

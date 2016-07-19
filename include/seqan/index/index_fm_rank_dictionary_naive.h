@@ -105,7 +105,7 @@ struct RankDictionary<TValue, Naive<TSpec, TConfig> >
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<bool, Naive<TSpec, TConfig> > const>::Type
+inline typename Size<RankDictionary<bool, Naive<TSpec, TConfig> > const>::Type
 getRank(RankDictionary<bool, Naive<TSpec, TConfig> > const & dict, TPos pos, bool c = true)
 {
     typedef RankDictionary<bool, Naive<TSpec, TConfig> > const                       TRankDictionary;
@@ -126,7 +126,7 @@ getRank(RankDictionary<bool, Naive<TSpec, TConfig> > const & dict, TPos pos, boo
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<RankDictionary<bool, Naive<TSpec, TConfig> > >::Type
+inline typename Value<RankDictionary<bool, Naive<TSpec, TConfig> > >::Type
 getValue(RankDictionary<bool, Naive<TSpec, TConfig> > & dict, TPos pos)
 {
     typedef RankDictionary<bool, Naive<TSpec, TConfig> > const                       TRankDictionary;
@@ -143,7 +143,7 @@ getValue(RankDictionary<bool, Naive<TSpec, TConfig> > & dict, TPos pos)
 }
 
 template <typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<RankDictionary<bool, Naive<TSpec, TConfig> > const>::Type
+inline typename Value<RankDictionary<bool, Naive<TSpec, TConfig> > const>::Type
 getValue(RankDictionary<bool, Naive<TSpec, TConfig> > const & dict, TPos pos)
 {
     typedef RankDictionary<bool, Naive<TSpec, TConfig> > const                       TRankDictionary;

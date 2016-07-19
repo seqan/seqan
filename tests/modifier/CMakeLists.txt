@@ -35,7 +35,8 @@ add_executable (test_modifier
                 test_modifier_functors.h
                 test_modifier_shortcuts.h
                 test_modifier_string.h
-                test_modifier_view.h)
+                test_modifier_view.h
+                test_modifier_string_padding.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_modifier ${SEQAN_LIBRARIES})

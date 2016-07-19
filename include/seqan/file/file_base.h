@@ -43,7 +43,7 @@
  * base class with SPecs and Tags
  * also contains standard calls for IO as wrappers around members
  * in system/file_sync.h and system/file_ssync.h
- * (hese files are built around c++ fstream IO)
+ * (these files are built around c++ fstream IO)
  * well documented (in comparison to other files)
  *
  * SEQAN_DIRECTIO Macro mentioned here but not documented or tested
@@ -197,7 +197,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @section Remarks
  *
- * The records are written at the position pointed to by th ecurrent file pointer (see @link File#seek @endlink).
+ * The records are written at the position pointed to by the current file pointer (see @link File#seek @endlink).
  */
 
     template < typename TSpec, typename TValue, typename TSize >
@@ -491,7 +491,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 */
 
     //////////////////////////////////////////////////////////////////////
-    // queue-less request based pseudo asychronous read/write
+    // queue-less request based pseudo asynchronous read/write
 
 /*!
  * @fn File#asyncReadAt
@@ -531,7 +531,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @param[in]     fileOfs The absolute file position in bytes measured form the beginning.
  * @param[in]     request Reference to a structure that will be associated with this asynchronous request.
  *
- * @return bool <tt>true</tt> on succcess, <tt>false</tt> on failure.
+ * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
     template < typename File, typename TValue, typename TSize, typename TPos,
@@ -565,7 +565,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
 /*!
  * @fn File#waitFor
- * @brief Waits for an asychronous request to complete.
+ * @brief Waits for an asynchronous request to complete.
  *
  * @signature bool waitFor(request[, timeout]);
  *

@@ -299,22 +299,18 @@ SEQAN_DEFINE_TEST(test_pipe_test_sorter) {
     testSorter(MAX_SIZE);
 }
 
-template <typename TStringSet>
-inline void appendValues(TStringSet &stringSet, int numArgs, ...)
+template <typename TStringSet, typename T>
+inline void appendValues(TStringSet &stringSet, T t)
 {
-    va_list ap;
-    va_start(ap, numArgs);
-    for(int j = 0; j < numArgs; ++j)
-        appendValue(stringSet, va_arg(ap, char const *));
-    va_end(ap);
+    appendValue(stringSet, t);
 }
 
-template <typename TStringSet, typename TStrings>
-inline void appendValues(TStringSet &stringSet, TStrings const &strings)
+template <typename TStringSet, typename T, typename... Args>
+inline void appendValues(TStringSet &stringSet, T t, Args... args)
 {
-    typename Size<TStrings>::Type numStrings = length(strings);
-    for(int j = 0; j < numStrings; ++j)
-        appendValue(stringSet, strings[j]);
+    // use recursive variadic function, instead of va_list
+    appendValue(stringSet, t);
+    appendValues(stringSet, args...) ;
 }
 
 template <typename TPipe, typename TStrings>
@@ -365,7 +361,7 @@ void testPipeSampler()
         string = "TA";
         SEQAN_ASSERT_EQ(length(source), 2u);
         clear(expectedOutput);
-        appendValues(expectedOutput, 2,
+        appendValues(expectedOutput,
             "< 2 , [T A A] >",
             "< 1 , [A A A] >");
         comparePipeStream(sampler, expectedOutput);
@@ -374,7 +370,7 @@ void testPipeSampler()
         string = "TAC";
         SEQAN_ASSERT_EQ(length(source), 3u);
         clear(expectedOutput);
-        appendValues(expectedOutput, 2,
+        appendValues(expectedOutput,
             "< 2 , [A C A] >",
             "< 1 , [C A A] >");
         comparePipeStream(sampler, expectedOutput);
@@ -383,7 +379,7 @@ void testPipeSampler()
         string = "TACG";
         SEQAN_ASSERT_EQ(length(source), 4u);
         clear(expectedOutput);
-        appendValues(expectedOutput, 3,
+        appendValues(expectedOutput,
             "< 4 , [T A C] >",
             "< 2 , [C G A] >",
             "< 1 , [G A A] >");
@@ -420,7 +416,7 @@ void testPipeSampler()
         SEQAN_ASSERT_EQ(length(source), 106u);
 
         StringSet<CharString> expectedOutput;
-        appendValues(expectedOutput, 53,
+        appendValues(expectedOutput,
             "< < 0 , 9 > , [C G G A A G G] >",
             "< < 0 , 8 > , [G G A A G G C] >",
             "< < 0 , 4 > , [G G C C A A C] >",
@@ -510,7 +506,7 @@ void testPipeTupler()
     StringSet<CharString> expectedOutput;
     if (omitLast)
     {
-        appendValues(expectedOutput, 7,
+        appendValues(expectedOutput,
             "< 0 , [A B C D] >",
             "< 1 , [B C D E] >",
             "< 2 , [C D E F] >",
@@ -521,7 +517,7 @@ void testPipeTupler()
     }
     else
     {
-        appendValues(expectedOutput, 10,
+        appendValues(expectedOutput,
             "< 0 , [A B C D] >",
             "< 1 , [B C D E] >",
             "< 2 , [C D E F] >",
@@ -594,7 +590,7 @@ void testPipeMultiTupler()
     StringSet<CharString> expectedOutput;
     if (omitLast)
     {
-        appendValues(expectedOutput, 14,
+        appendValues(expectedOutput,
             "< < 0 , 0 > , [A B C D] >",
             "< < 0 , 1 > , [B C D E] >",
             "< < 0 , 2 > , [C D E F] >",
@@ -612,7 +608,7 @@ void testPipeMultiTupler()
     }
     else
     {
-        appendValues(expectedOutput, 24,
+        appendValues(expectedOutput,
             "< < 0 , 0 > , [A B C D] >",
             "< < 0 , 1 > , [B C D E] >",
             "< < 0 , 2 > , [C D E F] >",

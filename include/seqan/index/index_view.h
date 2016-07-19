@@ -525,56 +525,56 @@ struct HistoryStack_<Iter<Index<StringSet<ContainerView<TText, TViewSpec>, TSSet
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec>, FibreText>::Type &
+inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec>, FibreText>::Type &
 getFibre(Index<ContainerView<TText, TViewSpec>, TSpec> & index, FibreText)
 {
     return index.text;
 }
 
 template <typename TText, typename TViewSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec> const, FibreText>::Type &
+inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec> const, FibreText>::Type &
 getFibre(Index<ContainerView<TText, TViewSpec>, TSpec> const & index, FibreText)
 {
     return index.text;
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec>, FibreText>::Type &
+inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec>, FibreText>::Type &
 getFibre(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> & index, FibreText)
 {
     return index.text;
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> const, FibreText>::Type &
+inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> const, FibreText>::Type &
 getFibre(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> const & index, FibreText)
 {
     return index.text;
 }
 
 template <typename TText, typename TViewSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec>, FibreRawText>::Type &
+inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec>, FibreRawText>::Type &
 getFibre(Index<ContainerView<TText, TViewSpec>, TSpec> & index, FibreRawText)
 {
     return concat(getFibre(index, FibreText()));
 }
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec> const, FibreRawText>::Type &
+inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec> const, FibreRawText>::Type &
 getFibre(Index<ContainerView<TText, TViewSpec>, TSpec> const & index, FibreRawText)
 {
     return concat(getFibre(index, FibreText()));
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec>, FibreRawText>::Type &
+inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec>, FibreRawText>::Type &
 getFibre(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> & index, FibreRawText)
 {
     return concat(getFibre(index, FibreText()));
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> const, FibreRawText>::Type &
+inline typename Fibre<Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> const, FibreRawText>::Type &
 getFibre(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> const & index, FibreRawText)
 {
     return concat(getFibre(index, FibreText()));
@@ -585,7 +585,7 @@ getFibre(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> con
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexRequire(Index<ContainerView<TText, TViewSpec>, TSpec> & index, Tag<TFibre> const fibre)
 {
     bool supplied = indexSupplied(index, fibre);
@@ -594,7 +594,7 @@ indexRequire(Index<ContainerView<TText, TViewSpec>, TSpec> & index, Tag<TFibre> 
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexRequire(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> & index, Tag<TFibre> const fibre)
 {
     bool supplied = indexSupplied(index, fibre);
@@ -607,7 +607,7 @@ indexRequire(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexRequire(Index<ContainerView<TText, TViewSpec>, FMIndex<TSpec, TConfig> > & index, Tag<TFibre> const fibre)
 {
     bool supplied = indexSupplied(index, fibre);
@@ -616,7 +616,7 @@ indexRequire(Index<ContainerView<TText, TViewSpec>, FMIndex<TSpec, TConfig> > & 
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexRequire(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, FMIndex<TSpec, TConfig> > & index, Tag<TFibre> const fibre)
 {
     bool supplied = indexSupplied(index, fibre);
@@ -629,7 +629,7 @@ indexRequire(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, FMInde
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexCreate(Index<ContainerView<TText, TViewSpec>, TSpec> & /* index */, Tag<TFibre> const /* fibre */)
 {
     SEQAN_ASSERT_MSG(false, "Fibre cannot be created on a view.");
@@ -637,7 +637,7 @@ indexCreate(Index<ContainerView<TText, TViewSpec>, TSpec> & /* index */, Tag<TFi
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexCreate(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> & /* index */, Tag<TFibre> const /* fibre */)
 {
     SEQAN_ASSERT_MSG(false, "Fibre cannot be created on a view.");
@@ -649,7 +649,7 @@ indexCreate(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec> 
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexCreate(Index<ContainerView<TText, TViewSpec>, FMIndex<TSpec, TConfig> > & /* index */, Tag<TFibre> const /* fibre */)
 {
     SEQAN_ASSERT_MSG(false, "Fibre cannot be created on a view.");
@@ -657,7 +657,7 @@ indexCreate(Index<ContainerView<TText, TViewSpec>, FMIndex<TSpec, TConfig> > & /
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig, typename TFibre>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 indexCreate(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, FMIndex<TSpec, TConfig> > & /* index */, Tag<TFibre> const /* fibre */)
 {
     SEQAN_ASSERT_MSG(false, "Fibre cannot be created on a view.");
@@ -669,28 +669,28 @@ indexCreate(Index<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, FMIndex
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig>, FibreLF>::Type &
+inline typename Fibre<CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig>, FibreLF>::Type &
 getFibre(CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> & sa, FibreLF)
 {
     return sa.lf;
 }
 
 template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> const, FibreLF>::Type &
+inline typename Fibre<CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> const, FibreLF>::Type &
 getFibre(CompressedSA<ContainerView<TText, TViewSpec>, TSpec, TConfig> const & sa, FibreLF)
 {
     return sa.lf;
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig>, FibreLF>::Type &
+inline typename Fibre<CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig>, FibreLF>::Type &
 getFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> & sa, FibreLF)
 {
     return sa.lf;
 }
 
 template <typename TText, typename TViewSpec, typename TSSetSpec, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> const, FibreLF>::Type &
+inline typename Fibre<CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> const, FibreLF>::Type &
 getFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TConfig> const & sa, FibreLF)
 {
     return sa.lf;

@@ -1444,141 +1444,6 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValueById)
 //    testConstructDeconstruct(strSet);
 }
 
-// // TODO (singer): define behaviour and adjust test.
-// // Infix() compiles and does what it is supposed to do?!
-// // However, it is not very intuitive. For details see comments below.
-// // There is a need to improve the documentation of this!
-// // Test of infix()
-// template <typename TStringSet>
-// void testStringSetInfix(TStringSet & /*Tag*/)
-// {
-//     using namespace seqan;
-// 
-//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-// 
-//     TString str("AAAA");
-//     TString str2("CCC");
-//     TString str3("GGGG");
-//     TNonConstStringSet nonConstStringSet;
-//     appendValue(nonConstStringSet, str);
-//     appendValue(nonConstStringSet, str2);
-//     appendValue(nonConstStringSet, str3);
-// 
-//     // Only non-const test for this scenario possible.
-//     TStringSet stringSet(nonConstStringSet);
-//     TString string = infix(stringSet, 0, 1); // Returns the first character not string!
-//     // std::cerr << string << std::endl; -> "A"
-// 
-//     // Only non-const test for this scenario possible.
-//     // TString str2("TT");
-//     // nonConstStringSet[0] = str2;
-// 
-//     // Since the infix (should) point to the fist element it should point to "T"
-//     // std::cerr << string << std::endl; -> "A"
-//     // Therefore there is a different behaviour to normal strings.
-// }
-// 
-// // TODO(singer): No appendValue for string sets of packed strings
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// // TODO(singer)
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue,typename TStringSetSpec>
-// void testStringSetInfix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// SEQAN_TYPED_TEST(StringSetTestCommon, Infix)
-// {
-//     CountingChar::clear();
-// 
-//     typename TestFixture::TStringSet strSet;
-//     testStringSetInfix(strSet);
-// 
-//     typename TestFixture::TStringSet const constStrSet;
-//     testStringSetInfix(constStrSet);
-// 
-// //    testConstructDeconstruct(strSet);
-// }
-// 
-// // TODO (singer): define behaviour and adjust test.
-// // Infix() compiles and does what it is supposed to do?!
-// // However, it is not very intuitive. For details see comments below.
-// // There is a need to improve the documentation of this!
-// // Test of infixWithLength()
-// template <typename TStringSet>
-// void testStringSetInfixWithLength(TStringSet & /*Tag*/)
-// {
-// using namespace seqan;
-// 
-//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-// 
-//     TString str("AAAA");
-//     TString str2("CCC");
-//     TString str3("GGGG");
-//     TNonConstStringSet nonConstStringSet;
-//     appendValue(nonConstStringSet, str);
-//     appendValue(nonConstStringSet, str2);
-//     appendValue(nonConstStringSet, str3);
-// 
-//     // Only non-const test for this scenario possible.
-//     TStringSet stringSet(nonConstStringSet);
-//     TString string = infixWithLength(stringSet, 0, 1); // Returns the first character not string!
-//     // std::cerr << string << std::endl; -> "A"
-// 
-//     // Only non-const test for this scenario possible.
-//     // TString str2("TT");
-//     // nonConstStringSet[0] = str2;
-// 
-//     // Since the infix (should) point to the fist element it should point to "T"
-//     // std::cerr << string << std::endl; -> "A"
-//     // Therefore there is a different behaviour to normal strings.
-// }
-// // TODO(singer): No appendValue for string sets of packed strings
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// // TODO(singer)
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue,typename TStringSetSpec>
-// void testStringSetInfixWithLength(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
-// {
-//     CountingChar::clear();
-// 
-//     typename TestFixture::TStringSet strSet;
-//     testStringSetInfixWithLength(strSet);
-// 
-//     typename TestFixture::TStringSet const constStrSet;
-//     testStringSetInfixWithLength(constStrSet);
-// 
-// //    testConstructDeconstruct(strSet);
-// }
-
 // Test of insert().
 // TODO (singer): no insert function implemented.
 template <typename TStringSet>
@@ -1814,61 +1679,6 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 // //     testConstructDeconstruct(strSet);
 // }
 
-// // TODO (singer): see infix.
-// // Test of prefix().
-// template <typename TStringSet>
-// void testStringSetPrefix(TStringSet & /*Tag*/)
-// {
-//     using namespace seqan;
-//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-// 
-//     TString str("ACGTACGT");
-//     TString str2("GTACGT");
-//     TString str3("TACGT");
-//     TNonConstStringSet nonConstStringSet;
-//     appendValue(nonConstStringSet, str);
-//     appendValue(nonConstStringSet, str2);
-//     appendValue(nonConstStringSet, str3);
-//     TStringSet stringSet(nonConstStringSet);
-//     TString pref = prefix(stringSet, 3);
-//     TString str4("ACG");
-//     SEQAN_ASSERT_EQ(pref, str4);
-// }
-// 
-// // TODO(singer): No appendValue for string sets of packed strings
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// // TODO(singer)
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetPrefix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
-// {
-//     CountingChar::clear();
-// 
-//     typename TestFixture::TStringSet strSet;
-//     testStringSetPrefix(strSet);
-// 
-//     typename TestFixture::TStringSet const constStrSet;
-//     testStringSetPrefix(constStrSet);
-// 
-// //    testConstructDeconstruct(strSet);
-// }
-
 // TODO (singer); replace is not defined for string sets.
 //// Test of replace().
 //template <typename TStringSet>
@@ -1972,63 +1782,6 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Resize)
 
 //    testConstructDeconstruct(strSet);
 }
-
-// // TODO (singer): see infix.
-// // Test of suffix().
-// template <typename TStringSet>
-// void testStringSetSuffix(TStringSet & /*Tag*/)
-// {
-//     using namespace seqan;
-//     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-//     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-// 
-//     TString str("ACGTACGT");
-//     TString str2("GTACGT");
-//     TString str3("TACGT");
-//     TNonConstStringSet nonConstStringSet;
-//     appendValue(nonConstStringSet, str);
-//     appendValue(nonConstStringSet, str2);
-//     appendValue(nonConstStringSet, str3);
-//     TStringSet stringSet(nonConstStringSet);
-//     TString pref = suffix(stringSet, 5);
-//     TString str4("CGT");
-//     SEQAN_ASSERT_EQ(pref, str4);
-// }
-// 
-// // TODO(singer): No appendValue for string sets of packed strings
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, MMap<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// 
-// // TODO(singer)
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, External<> >, TStringSetSpec> & /*Tag*/) {}
-// template <typename TValue, typename TStringSetSpec>
-// void testStringSetSuffix(StringSet<String<TValue, External<> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
-// {
-//     CountingChar::clear();
-// 
-//     typename TestFixture::TStringSet strSet;
-//     testStringSetSuffix(strSet);
-// 
-//     typename TestFixture::TStringSet const constStrSet;
-//     testStringSetSuffix(constStrSet);
-// 
-// //    testConstructDeconstruct(strSet);
-// }
-
 
 // TODO (singer): swap is not working because a constructor string set (StringSet(StringSet, Move)) is missing.
 // Test of swap().
@@ -2276,5 +2029,273 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 // 
 // ////    testConstructDeconstruct(strSet);
 // }
+
+// ----------------------------------------------------------------------------
+// Issue #1678
+// ----------------------------------------------------------------------------
+
+template <typename TStringSet>
+void testStringSetInfix(TStringSet & set)
+{
+    typedef typename Value<TStringSet>::Type TSetValue;
+    typedef typename Infix<TStringSet>::Type TSetInfix;
+
+    bool res = IsSameType<TSetValue, typename Value<TSetInfix>::Type>::VALUE;
+    SEQAN_ASSERT(res);
+
+    TSetInfix inf = infix(set, 1, 3);
+
+    SEQAN_ASSERT(length(inf) == 2u);
+    SEQAN_ASSERT(inf[0] == set[1]);
+    SEQAN_ASSERT(inf[1] == set[2]);
+}
+
+template <typename TStringSet>
+void testStringSetSuffix(TStringSet & set)
+{
+    typedef typename Value<TStringSet>::Type TSetValue;
+    typedef typename Suffix<TStringSet>::Type TSetSuffix;
+
+    bool res = IsSameType<TSetValue, typename Value<TSetSuffix>::Type>::VALUE;
+
+    SEQAN_ASSERT(res);
+
+    TSetSuffix suf = suffix(set, 1);
+
+    SEQAN_ASSERT(length(suf) == 3u);
+    SEQAN_ASSERT(suf[0] == set[1]);
+    SEQAN_ASSERT(suf[1] == set[2]);
+    SEQAN_ASSERT(suf[2] == set[3]);
+}
+
+template <typename TStringSet>
+void testStringSetPrefix(TStringSet & set)
+{
+    typedef typename Value<TStringSet>::Type TSetValue;
+    typedef typename Prefix<TStringSet>::Type TSetPrefix;
+
+    bool res = IsSameType<TSetValue, typename Value<TSetPrefix>::Type>::VALUE;
+
+    SEQAN_ASSERT(res);
+
+    TSetPrefix pref = prefix(set, 3);
+
+    SEQAN_ASSERT(length(pref) == 3u);
+    SEQAN_ASSERT(pref[0] == set[0]);
+    SEQAN_ASSERT(pref[1] == set[1]);
+    SEQAN_ASSERT(pref[2] == set[2]);
+}
+
+SEQAN_TYPED_TEST(StringSetTestCommon, Infix)
+{
+    CountingChar::clear();
+    typedef typename TestFixture::TStringSet TSet;
+
+    TSet strSet;
+    char raw1[] = "AAAA";
+    char raw2[] = "CCCC";
+    char raw3[] = "GGGG";
+    char raw4[] = "TTTT";
+
+    appendValue(strSet, raw1);
+    appendValue(strSet, raw2);
+    appendValue(strSet, raw3);
+    appendValue(strSet, raw4);
+
+    TSet const constStrSet(strSet);
+
+    testStringSetInfix(strSet);
+    testStringSetInfix(constStrSet);
+}
+
+SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
+{
+    CountingChar::clear();
+
+    typename TestFixture::TStringSet strSet;
+
+    char raw1[] = "AAAA";
+    char raw2[] = "CCCC";
+    char raw3[] = "GGGG";
+    char raw4[] = "TTTT";
+
+    appendValue(strSet, raw1);
+    appendValue(strSet, raw2);
+    appendValue(strSet, raw3);
+    appendValue(strSet, raw4);
+
+    testStringSetPrefix(strSet);
+
+    typename TestFixture::TStringSet const constStrSet(strSet);
+    testStringSetPrefix(constStrSet);
+}
+
+SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
+{
+    CountingChar::clear();
+
+    typename TestFixture::TStringSet strSet;
+
+    char raw1[] = "AAAA";
+    char raw2[] = "CCCC";
+    char raw3[] = "GGGG";
+    char raw4[] = "TTTT";
+
+    appendValue(strSet, raw1);
+    appendValue(strSet, raw2);
+    appendValue(strSet, raw3);
+    appendValue(strSet, raw4);
+
+    testStringSetSuffix(strSet);
+
+    typename TestFixture::TStringSet const constStrSet(strSet);
+    testStringSetSuffix(constStrSet);
+}
+
+// ----------------------------------------------------------------------------
+// Tests InfixOnValue, SuffixOnValue, PrefixOnValue
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+constexpr bool _isAlwaysInfix(StringSet<TString, ConcatDirect<TSpec> > const &)
+{
+    return true;
+}
+
+template <typename TString, typename TSpec>
+constexpr bool _isAlwaysInfix(StringSet<TString, Segment<TSpec> > const &)
+{
+    return true;
+}
+
+template <typename TStringSet>
+constexpr bool _isAlwaysInfix(TStringSet const &)
+{
+    return false;
+}
+
+template <typename TStringSet>
+void testStringSetInfixOnValue(TStringSet & set)
+{
+    typedef typename Value<TStringSet>::Type                TSetValue;
+    typedef typename InfixOnValue<TStringSet>::Type          TSetInfixOnValue;
+    typedef typename StringSetPosition<TStringSet>::Type    TSetPosition;
+
+    bool res = IsSameType<TSetInfixOnValue, typename Infix<TSetValue>::Type>::VALUE;
+    SEQAN_ASSERT(res);
+
+    TSetInfixOnValue inf = infix(set, TSetPosition(1, 1), TSetPosition(1, 3));
+
+    SEQAN_ASSERT(length(inf) == 2u);
+    SEQAN_ASSERT(inf == infix(set[1], 1, 3));
+}
+
+template <typename TStringSet>
+void testStringSetSuffixOnValue(TStringSet & set)
+{
+    typedef typename Value<TStringSet>::Type                TSetValue;
+    typedef typename SuffixOnValue<TStringSet>::Type         TSetSuffixOnValue;
+    typedef typename StringSetPosition<TStringSet>::Type    TSetPosition;
+
+    bool res = false;
+
+    if (_isAlwaysInfix(set))
+        res = IsSameType<TSetSuffixOnValue, typename Infix<TSetValue>::Type>::VALUE;
+    else
+        res = IsSameType<TSetSuffixOnValue, typename Suffix<TSetValue>::Type>::VALUE;
+
+    SEQAN_ASSERT(res);
+
+    TSetSuffixOnValue suf = suffix(set, TSetPosition(2, 1));
+
+    SEQAN_ASSERT(length(suf) == 3u);
+    SEQAN_ASSERT(suf == suffix(set[2], 1));
+}
+
+template <typename TStringSet>
+void testStringSetPrefixOnValue(TStringSet & set)
+{
+    typedef typename Value<TStringSet>::Type                TSetValue;
+    typedef typename PrefixOnValue<TStringSet>::Type         TSetPrefixOnValue;
+    typedef typename StringSetPosition<TStringSet>::Type    TSetPosition;
+
+    bool res = false;
+
+    if (_isAlwaysInfix(set))
+        res = IsSameType<TSetPrefixOnValue, typename Infix<TSetValue>::Type>::VALUE;
+    else
+        res = IsSameType<TSetPrefixOnValue, typename Prefix<TSetValue>::Type>::VALUE;
+
+    SEQAN_ASSERT(res);
+
+    TSetPrefixOnValue pref = prefix(set, TSetPosition(0, 3));
+
+    SEQAN_ASSERT(length(pref) == 3u);
+    SEQAN_ASSERT(pref == prefix(set[0], 3));
+}
+
+SEQAN_TYPED_TEST(StringSetTestCommon, InfixOnValue)
+{
+    CountingChar::clear();
+    typedef typename TestFixture::TStringSet TSet;
+
+    TSet strSet;
+    char raw1[] = "ACGT";
+    char raw2[] = "CGTA";
+    char raw3[] = "GTAC";
+    char raw4[] = "TACG";
+
+    appendValue(strSet, raw1);
+    appendValue(strSet, raw2);
+    appendValue(strSet, raw3);
+    appendValue(strSet, raw4);
+
+    TSet const constStrSet(strSet);
+
+    testStringSetInfixOnValue(strSet);
+    testStringSetInfixOnValue(constStrSet);
+}
+
+SEQAN_TYPED_TEST(StringSetTestCommon, PrefixOnValue)
+{
+    CountingChar::clear();
+
+    typename TestFixture::TStringSet strSet;
+    char raw1[] = "ACGT";
+    char raw2[] = "CGTA";
+    char raw3[] = "GTAC";
+    char raw4[] = "TACG";
+
+    appendValue(strSet, raw1);
+    appendValue(strSet, raw2);
+    appendValue(strSet, raw3);
+    appendValue(strSet, raw4);
+
+    testStringSetPrefixOnValue(strSet);
+
+    typename TestFixture::TStringSet const constStrSet(strSet);
+    testStringSetPrefixOnValue(constStrSet);
+}
+
+SEQAN_TYPED_TEST(StringSetTestCommon, SuffixOnValue)
+{
+    CountingChar::clear();
+
+    typename TestFixture::TStringSet strSet;
+    char raw1[] = "ACGT";
+    char raw2[] = "CGTA";
+    char raw3[] = "GTAC";
+    char raw4[] = "TACG";
+
+    appendValue(strSet, raw1);
+    appendValue(strSet, raw2);
+    appendValue(strSet, raw3);
+    appendValue(strSet, raw4);
+
+    testStringSetSuffixOnValue(strSet);
+
+    typename TestFixture::TStringSet const constStrSet(strSet);
+    testStringSetSuffixOnValue(constStrSet);
+}
 
 #endif // TESTS_SEQUENCE_TEST_STRINGSET_H_

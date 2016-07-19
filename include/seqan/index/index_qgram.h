@@ -225,14 +225,6 @@ struct Fibre< Index<TText, IndexQGram<TShapeSpec, TSpec> >, FibreBucketMap>
     typedef Nothing Type;
 };
 
-#ifdef PLATFORM_WINDOWS_VS
-#pragma warning( push )
-// Disable warning C4521 locally (multiple copy constructors).
-#pragma warning( disable: 4521 )
-// Disable warning C4522 locally (multiple assignment operators).
-#pragma warning( disable: 4522 )
-#endif  // PLATFORM_WINDOWS_VS
-
 template < typename TText_, typename TShapeSpec, typename TSpec >
 class Index<TText_, IndexQGram<TShapeSpec, TSpec> > {
 public:
@@ -256,6 +248,19 @@ public:
     TCargo            cargo;        // user-defined cargo
     TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
     TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+
+    /*!
+     * @fn IndexQGram::Index
+     * @brief Constructor
+     *
+     * @signature Index::Index();
+     * @signature Index::Index(index);
+     * @signature Index::Index(text[, shape]);
+     *
+     * @param[in] index Other Index object to copy from.
+     * @param[in] text  The text to be indexed.
+     * @param[in] shape The q gram @link Shape @endlink to be applied. (optional)
+     */
 
     Index():
     stepSize(1) {}
@@ -302,11 +307,6 @@ public:
     shape(_shape),
     stepSize(1) {}
 };
-
-#ifdef PLATFORM_WINDOWS_VS
-// Reset warning state to previous values for C4521, C4522.
-#pragma warning( pop )
-#endif  // PLATFORM_WINDOWS_VS
 
 template <typename TText, typename TShapeSpec, typename TSpec>
 SEQAN_CONCEPT_IMPL((Index<TText, IndexQGram<TShapeSpec, TSpec> >), (StringTrieConcept));

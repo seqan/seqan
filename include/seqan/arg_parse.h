@@ -48,7 +48,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
 #include <unistd.h>
 #endif
 

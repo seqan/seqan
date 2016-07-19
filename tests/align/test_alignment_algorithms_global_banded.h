@@ -461,22 +461,22 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_affine_banded)
 
     // Simple alignment without any leading or trailing gaps.
     {
-    DnaString strH = "ATGT";
-    Dna5String strV = "ATAGAT";
+        DnaString strH = "ATGT";
+        Dna5String strV = "ATAGAT";
 
-    Gaps<DnaString> gapsH(strH);
-    Gaps<Dna5String> gapsV(strV);
+        Gaps<DnaString> gapsH(strH);
+        Gaps<Dna5String> gapsV(strV);
 
-    int score = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -3, 2, Gotoh());
+        int score = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig, -3, 2, Gotoh());
 
-    SEQAN_ASSERT_EQ(score, 2);
+        SEQAN_ASSERT_EQ(score, 2);
 
-    std::stringstream ssH, ssV;
-    ssH << gapsH;
-    ssV << gapsV;
+        std::stringstream ssH, ssV;
+        ssH << gapsH;
+        ssV << gapsV;
 
-    SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
-    SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
+        SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
+        SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
     }
 
     // Alignment with both leading and trailing gaps in one row.
@@ -1494,7 +1494,6 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_linear_banded)
     }
 }
 
-
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_semi_global_linear_banded)
 {
     using namespace seqan;
@@ -1599,8 +1598,6 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
         SEQAN_ASSERT_EQ(ssV.str(), "--AATTTTTTTTTTGGGGG");
     }
 }
-
-
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_affine_banded)
 {

@@ -131,8 +131,9 @@ public:
 // Metafunction ScoutSpecForAlignmentAlgorithm_
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TDPMatrixLocation>
-struct ScoutSpecForAlignmentAlgorithm_<BandedChainAlignment_<TSpec, TDPMatrixLocation> >
+template <typename TSpec, typename TDPMatrixLocation, typename TDPCell>
+struct ScoutSpecForAlignmentAlgorithm_<BandedChainAlignment_<TSpec, TDPMatrixLocation>,
+                                       DPScoutState_<BandedChainAlignmentScoutState<TDPCell> > >
 {
     typedef BandedChainAlignmentScout Type;
 };

@@ -293,7 +293,7 @@ struct Value<Segment<THost, TSpec> > :
 
 template <typename THost, typename TSpec>
 struct Value<Segment<THost, TSpec> const > :
-    Value<THost const> {};
+    Value<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -303,7 +303,7 @@ struct GetValue<Segment<THost, TSpec> > :
 
 template <typename THost, typename TSpec>
 struct GetValue<Segment<THost, TSpec> const > :
-    GetValue<THost const> {};
+    GetValue<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -437,14 +437,14 @@ getObjectId(Segment<THost, TSpec> const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Pointer_<Segment<THost, TSpec> >::Type
+inline typename Pointer_<Segment<THost, TSpec> >::Type
 _toPointer(Segment<THost, TSpec> & me)
 {
     return me;
 }
 
 template <typename THost, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Pointer_<Segment<THost, TSpec> const >::Type
+inline typename Pointer_<Segment<THost, TSpec> const >::Type
 _toPointer(Segment<THost, TSpec> const & me)
 {
     return me;
@@ -470,7 +470,7 @@ Segment<THost, TSpec> _fromPointer(Segment<THost, TSpec> const & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TSpec>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 empty(Segment<THost, TSpec> const & me)
 {
     return (beginPosition(me) == endPosition(me));
@@ -479,7 +479,7 @@ empty(Segment<THost, TSpec> const & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TSpec>
-SEQAN_HOST_DEVICE inline typename Size<Segment<THost, TSpec> const>::Type
+inline typename Size<Segment<THost, TSpec> const>::Type
 length(Segment<THost, TSpec> const & me)
 {
     return endPosition(me) - beginPosition(me);

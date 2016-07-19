@@ -127,8 +127,8 @@ namespace seqan
 
     struct PoolParameters
     {
-
-#if SEQAN_IS_32_BIT
+// The enum for 64bit does not work: building an index runs out of memoty
+#if 1 //SEQAN_IS_32_BIT
         // in 32bit mode at most 4GB are addressable
         enum { DefaultMemBufferSize     = 384 * 1024,      // low memory config [kB]
                DefaultPageSize          = 32 * 1024,            // [kB]

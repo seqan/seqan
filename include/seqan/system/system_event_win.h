@@ -32,12 +32,14 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SYSTEM_EVENT_H
-#define SEQAN_HEADER_SYSTEM_EVENT_H
+#ifndef SEQAN_HEADER_SYSTEM_EVENT_WIN_H
+#define SEQAN_HEADER_SYSTEM_EVENT_WIN_H
 
 namespace seqan {
 
-#ifdef PLATFORM_WINDOWS
+// NOTE(rrahn): This calss implements an synchronization event for asynchronous file I/O on windows platforms.
+// This file is required by file_async.
+#ifdef STDLIB_VS
 
 static SECURITY_ATTRIBUTES EventDefaultAttributes =
 {
@@ -49,7 +51,7 @@ static SECURITY_ATTRIBUTES EventDefaultAttributes =
 struct Event        // this class mustn't exceed the size of HANDLE (needed by waitForAll/Any)
 {
     typedef HANDLE Handle;
-    enum {Infinite = INFINITE};
+    enum : unsigned {Infinite = INFINITE};
     Handle hEvent;
 
     Event() :
@@ -180,126 +182,6 @@ inline int waitForAny(Event eventList[], DWORD count)
     return waitForAny(eventList, count, Event::Infinite);
 }
 
-#else
-
-struct Event :
-    public Mutex
-{
-    typedef pthread_cond_t * Handle;
-    enum {Infinite = LONG_MAX};
-    pthread_cond_t data, * hEvent;
-
-    Event() :
-        hEvent(NULL) {}
-
-    Event(bool initial)
-    {
-        SEQAN_DO_SYS(open(initial));
-    }
-
-    // Move constructors
-    Event(Event & other, Move) :
-        Mutex(other, Move()),
-        hEvent(other.hEvent)
-    {
-        other.hEvent = NULL;
-    }
-
-    Event(Event && other) :
-        hEvent(other.hEvent)
-    {
-        other.hEvent = NULL;
-    }
-
-    ~Event()
-    {
-        if (*this)
-            SEQAN_DO_SYS(close());
-    }
-
-    inline Event & operator=(Event const & origin)
-    {
-        // resource sharing is not yet supported (performance reason)
-        // it needs a reference counting technique
-        if (origin)
-        {
-            data = origin.data;
-            const_cast<Event &>(origin).hEvent = NULL;
-            hEvent = &data;
-        }
-        else
-            hEvent = NULL;
-        return *this;
-    }
-
-    inline bool open(bool initial = false)
-    {
-        if (Mutex::open() && pthread_cond_init(&data, NULL) == 0 && (hEvent = &data))
-        {
-            if (initial)
-                return signal();
-
-            return true;
-        }
-        else
-            return false;
-    }
-
-    inline bool close()
-    {
-        bool success = (pthread_cond_destroy(hEvent) == 0);
-        success &= Mutex::close();
-        hEvent = NULL;
-        return success;
-    }
-
-    inline bool wait()
-    {
-        if (!hEvent) return true;
-
-        return pthread_cond_wait(hEvent, Mutex::hMutex) == 0;
-    }
-
-    inline bool wait(long timeoutMilliSec, bool & inProgress)
-    {
-        if (timeoutMilliSec != Infinite)
-        {
-            timespec ts;
-            ts.tv_sec = timeoutMilliSec / 1000;
-            ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
-            int result = pthread_cond_timedwait(hEvent, Mutex::hMutex, &ts);
-            inProgress = (result == ETIMEDOUT);
-            return result == 0 || inProgress;
-        }
-        else
-        {
-            inProgress = false;
-            return wait();
-        }
-    }
-
-    inline bool signal()
-    {
-        return pthread_cond_broadcast(hEvent) == 0;
-    }
-
-    inline operator bool() const
-    {
-        return hEvent != NULL;
-    }
-
-private:
-
-    Event(Event const &) :
-        Mutex(),
-        hEvent(NULL)
-    {
-        // we only support move construction (no copy-construction)
-    }
-};
-
-#endif
-
 template <>
 struct HasMoveConstructor<Event> : True {};
 
@@ -348,40 +230,7 @@ inline bool signal(Event & e)
     return e.signal();
 }
 
-/*
-    //////////////////////////////////////////////////////////////////////////////
-    // emulate events in a singlethreaded environment
-
-    struct DummyEvent {
-        typedef    void Handle;
-        DummyEvent(bool initial = false) {}
-        inline bool wait(unsigned timeOut = NULL) { return true; }
-        inline void reset() {}
-        inline void signal() {}
-    };
-
-    //////////////////////////////////////////////////////////////////////////////
-    // global dummy event functions
-
-    template < typename TCount >
-    inline bool waitForAll(DummyEvent eventList[], TCount count) {
-        return true;
-    }
-
-    template < typename TCount, typename TTime >
-    inline bool waitForAll(DummyEvent eventList[], TCount count, TTime timeoutMilliSec) {
-        return true;
-    }
-
-    template < typename TCount >
-    inline TCount waitForAny(DummyEvent eventList[], TCount count) {
-        return 0;
-    }
-    template < typename TCount, typename TTime >
-    inline TCount waitForAny(DummyEvent eventList[], TCount count, TTime timeoutMilliSec) {
-        return 0;
-    }
-*/
+#endif  // #ifdef STDLIB_VS
 }
 
 #endif

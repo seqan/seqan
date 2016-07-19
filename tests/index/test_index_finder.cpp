@@ -63,7 +63,7 @@ public:
     {}
 };
 
-SEQAN_TYPED_TEST_CASE(IndexFinderTest, IndexTypes);
+SEQAN_TYPED_TEST_CASE(IndexFinderTest, UnidirectionalIndexTypes);
 
 // --------------------------------------------------------------------------
 // Test Finder

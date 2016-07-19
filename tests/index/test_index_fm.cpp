@@ -53,16 +53,24 @@ struct WTFMIndexConfig : FMIndexConfig<TSpec, TLengthSum> {};
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct SmallWTFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
-    typedef TLengthSum                              LengthSum;
-    typedef Naive<TSpec, RDConfig<TLengthSum> >     Sentinels;
+    typedef TLengthSum                                           LengthSum;
+    typedef Naive<TSpec, RDConfig<TLengthSum, Alloc<>, 1, 0> >   Sentinels;
 };
 
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct SmallLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
-    typedef TLengthSum                                  LengthSum;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Bwt;
-    typedef Naive<TSpec, RDConfig<LengthSum> >          Sentinels;
+    typedef TLengthSum                                                  LengthSum;
+    typedef Levels<TSpec, LevelsRDConfig<TLengthSum, Alloc<>, 1, 0> >   Bwt;
+    typedef Naive<TSpec, RDConfig<TLengthSum, Alloc<>, 1, 0> >          Sentinels;
+};
+
+template <typename TSpec = void, typename TLengthSum = size_t>
+struct PrefixLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
+{
+    typedef TLengthSum                                                       LengthSum;
+    typedef Levels<TSpec, LevelsPrefixRDConfig<TLengthSum, Alloc<>, 1, 0> >  Bwt;
+    typedef Naive<TSpec, RDConfig<TLengthSum, Alloc<>, 1, 0> >               Sentinels;
 };
 
 // --------------------------------------------------------------------------
@@ -72,6 +80,7 @@ struct SmallLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 typedef FMIndex<void, WTFMIndexConfig<> >       WTFMIndex;
 typedef FMIndex<void, SmallWTFMIndexConfig<> >  SmallWTFMIndex;
 typedef FMIndex<void, SmallLVFMIndexConfig<> >  SmallLVFMIndex;
+typedef FMIndex<void, PrefixLVFMIndexConfig<> > PrefixLVFMIndex;
 
 // --------------------------------------------------------------------------
 // FMIndex Types
@@ -82,8 +91,12 @@ typedef
     TagList<Index<CharString, WTFMIndex>,
     TagList<Index<StringSet<CharString>, WTFMIndex>,
     TagList<Index<StringSet<CharString>, SmallWTFMIndex>,
-    TagList<Index<StringSet<DnaString>, SmallLVFMIndex>
-    > > > > >
+    TagList<Index<StringSet<DnaString>, SmallLVFMIndex>,
+    TagList<Index<String<bool>, PrefixLVFMIndex>,
+    TagList<Index<DnaString, PrefixLVFMIndex>,
+    TagList<Index<CharString, PrefixLVFMIndex>,
+    TagList<Index<StringSet<DnaString>, PrefixLVFMIndex>
+    > > > > > > > > >
     FMIndexTypes2;
 
 // ========================================================================== 

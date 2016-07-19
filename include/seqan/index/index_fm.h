@@ -63,25 +63,26 @@ namespace seqan {
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
  *        @link CompressedSA @endlink.
  *
- * @typedef FMIndexConfig::TValuesSpec
- * @signature typedef WaveletTree<TSpec, TConfig> TValuesSpec;
- * @brief The <tt>TValuesSpec</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
- *        @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
+ * @typedef FMIndexConfig::Bwt
+ * @signature typedef WaveletTree<TSpec, TConfig> Bwt;
+ * @brief The <tt>Bwt</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
+ *        @endlink object the type of <tt>Bwt</tt> is a wavelet tree (@link WaveletTree @endlink).
  *
- * @typedef FMIndexConfig::TSentinelsSpec
- * @signature typedef Levels<TSpec, TConfig> TSentinelsSpec;
- * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink.  In the
- *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
+ * @typedef FMIndexConfig::Sentinels
+ * @signature typedef Levels<TSpec, TConfig> Sentinels;
+ * @brief The <tt>Sentinels</tt> determines the type of the sentinels in the @link FMIndex @endlink. In the
+ *        default @link FMIndexConfig @endlink object the type of <tt>Sentinels</tt> is a two level
  *        @link RankDictionary @endlink.
  */
+
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfig
 {
-    typedef TLengthSum                                  LengthSum;
-    typedef WaveletTree<TSpec, WTRDConfig<LengthSum> >  Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Sentinels;
+    typedef TLengthSum                                                  LengthSum;
+    typedef WaveletTree<TSpec, WTRDConfig<LengthSum, Alloc<>, 1, 0> >   Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, 1, 0> >    Sentinels;
 
-    static const unsigned SAMPLING =                    10;
+    static const unsigned SAMPLING =                                    10;
 };
 
 // ============================================================================
@@ -124,7 +125,7 @@ typedef Tag<FibreSALF_> const           FibreSALF;
  * @tag FMIndexFibres#FibreText
  * @brief The original text of the index.
  *
- * @tagFMIndexFibres#FibreSA
+ * @tag FMIndexFibres#FibreSA
  * @brief The compressed suffix array of the text.
  *
  * @tag FMIndexFibres#FibreLF
@@ -149,13 +150,7 @@ struct Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreTempSA>
 {
     typedef Index<TText, FMIndex<TSpec, TConfig> >          TIndex_;
     typedef typename SAValue<TIndex_>::Type                 TSAValue_;
-
-    // NOTE(esiragusa): External causes problems on device code.
-#ifndef PLATFORM_CUDA
     typedef String<TSAValue_, External<ExternalConfigLarge<> > >                Type;
-#else
-    typedef String<TSAValue_, typename DefaultIndexStringSpec<TText>::Type>     Type;
-#endif
 };
 
 // ----------------------------------------------------------------------------
@@ -205,6 +200,16 @@ public:
     typename Fibre<Index, FibreLF>::Type            lf;
     typename Fibre<Index, FibreSA>::Type            sa;
 
+    /*!
+     * @fn FMIndex::Index
+     * @brief Constructor
+     *
+     * @signature Index::Index();
+     * @signature Index::Index(text);
+     *
+     * @param[in] text The text to be indexed.
+     */
+
     Index() {};
 
     Index(TText & text) :
@@ -253,14 +258,14 @@ inline bool empty(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
 getFibre(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreLF /*tag*/)
 {
     return index.lf;
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
 getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
 {
     return index.lf;
@@ -282,14 +287,14 @@ getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
  */
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
 indexLF(Index<TText, FMIndex<TSpec, TConfig> > & index)
 {
     return getFibre(index, FibreLF());
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
+inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type const &
 indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 {
     return getFibre(index, FibreLF());
@@ -419,13 +424,13 @@ inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
+inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
 {
     return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLF())));
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreSALF const)
+inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreSALF const)
 {
     return !(empty(getFibre(index, FibreSA())) || empty(getFibre(index, FibreLF())));
 }

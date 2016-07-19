@@ -39,7 +39,7 @@
 #include <seqan/sequence.h>
 #include <seqan/arg_parse.h>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <direct.h>
 #endif
 
@@ -53,7 +53,7 @@ typedef EqualsChar<'.'>        IsDot;
 typedef EqualsChar<'/'>        IsSlash;
 typedef EqualsChar<'\\'>       IsBackSlash;
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     typedef IsBackSlash        IsPathDelimited;
 #else
     typedef IsSlash            IsPathDelimited;
@@ -70,7 +70,7 @@ typedef EqualsChar<'\\'>       IsBackSlash;
 template <typename TString, typename TValue>
 bool setEnv(TString const & key, TValue & value)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     return !_putenv_s(toCString(key), toCString(value));
 #else
     return !setenv(toCString(key), toCString(value), true);
@@ -86,7 +86,7 @@ void getCwd(TString & string)
 {
     char cwd[1000];
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     _getcwd(cwd, 1000);
 #else
     ignoreUnusedVariableWarning(getcwd(cwd, 1000));
