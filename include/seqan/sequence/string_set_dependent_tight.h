@@ -91,7 +91,7 @@ struct Dependent;
 
 // StringSet with individual sequences in a tight string of string pointers and corr. IDs
 template <typename TString>
-class StringSet<TString, Dependent<Tight> >
+class [[deprecated]] StringSet<TString, Dependent<Tight> >
 {
 public:
     typedef String<TString *>                           TStrings;
