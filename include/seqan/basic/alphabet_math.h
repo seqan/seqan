@@ -211,7 +211,7 @@ unsigned char toUpperValue(unsigned char c)
 // Function supremumValueImpl
 // ----------------------------------------------------------------------------
 
-template <typename T> inline T const & supremumValueImpl(T *);
+template <typename T> [[deprecated("Use MaxValue instead.")]] inline T const & supremumValueImpl(T *);
 
 // ----------------------------------------------------------------------------
 // Function maxValue
@@ -220,6 +220,7 @@ template <typename T> inline T const & supremumValueImpl(T *);
 // Forward to supremumValueImpl() only.
 
 template <typename T>
+[[deprecated("Use MaxValue instead.")]]
 inline T const &
 maxValue()
 {
@@ -228,6 +229,7 @@ maxValue()
 }
 
 template <typename T>
+[[deprecated("Use MaxValue instead.")]]
 inline T const &
 maxValue(T /*tag*/)
 {
@@ -239,7 +241,7 @@ maxValue(T /*tag*/)
 // Function infimumValueImpl
 // ----------------------------------------------------------------------------
 
-template <typename T> inline T const & infimumValueImpl(T *);
+template <typename T> [[deprecated("Use MinValue instead.")]] inline T const & infimumValueImpl(T *);
 
 // ----------------------------------------------------------------------------
 // Function minValue
@@ -248,6 +250,7 @@ template <typename T> inline T const & infimumValueImpl(T *);
 // Forward to infimumValueImpl() only.
 
 template <typename T>
+[[deprecated("Use MinValue instead.")]]
 inline T const &
 minValue()
 {
@@ -256,6 +259,7 @@ minValue()
 }
 
 template <typename T>
+[[deprecated("Use MinValue instead.")]]
 inline T const &
 minValue(T /*tag*/)
 {

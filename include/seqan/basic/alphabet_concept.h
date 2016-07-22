@@ -171,7 +171,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * @section Status
  *
- * Deprecated, will be removed in favour of OrderedAlphabetConcept#MaxValue.
+ * @deprecated Will be removed in favour of MaxValue.
  *
  * @see OrderedAlphabetConcept#maxValue
  */
@@ -191,7 +191,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * @section Status
  *
- * Deprecated, will be removed in favour of MaxValue.
+ * @deprecated Will be removed in favour of MaxValue.
  *
  * @see OrderedAlphabetConcept#supremumValueImpl
  * @see OrderedAlphabetConcept#minValue
@@ -213,7 +213,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * @section Status
  *
- * Deprecated, will be removed in favour of MinValue.
+ * @deprecated Will be removed in favour of MinValue.
  *
  * @see OrderedAlphabetConcept#minValue
  */
@@ -233,7 +233,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  *
  * @section Status
  *
- * Deprecated, will be removed in favour of MinValue.
+ * @deprecated  Will be removed in favour of MinValue.
  *
  * @see OrderedAlphabetConcept#infimumValueImpl
  * @see OrderedAlphabetConcept#maxValue

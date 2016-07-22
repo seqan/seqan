@@ -171,6 +171,7 @@ unknownValueImpl(char const *)
 // ----------------------------------------------------------------------------
 
 template <typename T>
+[[deprecated("Use MaxValue instead.")]]
 inline T const &
 supremumValueImpl(T *)
 {
@@ -178,6 +179,7 @@ supremumValueImpl(T *)
     return x;
 }
 
+[[deprecated("Use MaxValue instead.")]]
 inline long double const &
 supremumValueImpl(long double *)
 {
@@ -185,12 +187,15 @@ supremumValueImpl(long double *)
     return _value;
 }
 
+[[deprecated("Use MaxValue instead.")]]
 inline double const &
 supremumValueImpl(double *)
 {
     static double const _value = std::numeric_limits<double>::infinity( );
     return _value;
 }
+
+[[deprecated("Use MaxValue instead.")]]
 inline float const &
 supremumValueImpl(float *)
 {
@@ -203,6 +208,7 @@ supremumValueImpl(float *)
 // ----------------------------------------------------------------------------
 
 template <typename T>
+[[deprecated("Use MinValue instead.")]]
 inline T const &
 infimumValueImpl(T *)
 {
@@ -210,6 +216,7 @@ infimumValueImpl(T *)
     return x;
 }
 
+[[deprecated("Use MinValue instead.")]]
 inline float const &
 infimumValueImpl(float *)
 {
@@ -217,6 +224,7 @@ infimumValueImpl(float *)
     return _value;
 }
 
+[[deprecated("Use MinValue instead.")]]
 inline double const &
 infimumValueImpl(double *)
 {
@@ -224,6 +232,7 @@ infimumValueImpl(double *)
     return _value;
 }
 
+[[deprecated("Use MinValue instead.")]]
 inline long double const &
 infimumValueImpl(long double *)
 {
