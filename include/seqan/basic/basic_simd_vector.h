@@ -43,7 +43,7 @@
 #include <tuple>
 //#include <seqan/basic/iterator_zip.h>
 
-#if !defined(__arm__) || !defined(_M_ARM)  // We do not support arm architecture.
+#if !defined(__arm__) && !defined(_M_ARM)  // We do not support arm architecture.
 #if defined(STDLIB_VS)  // Microsoft C/C++-compatible compiler
     #include <intrin.h>
 #else  // GCC-compatible compiler, targeting x86/x86-64

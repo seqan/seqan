@@ -213,7 +213,9 @@ struct ScopedWriteLock<TLock, Serial>
 inline void
 yieldProcessor()
 {
-#if defined(STDLIB_VS)
+#if defined(__arm__) || defined(_M_ARM)
+    asm volatile ("yield" ::: "memory");
+#elif defined(STDLIB_VS)
     YieldProcessor();
 #elif defined(__SSE2__)
     _mm_pause();
