@@ -2385,7 +2385,7 @@ inline void fail()
 
 inline std::string getAbsolutePath(const char * path)
 {
-    return std::string(SEQAN_PATH_TO_ROOT()) + "/" + path;
+    return std::string(::seqan::ClassTest::StaticData::pathToRoot()) + "/" + path;
 }
 
 }  // namespace seqan
