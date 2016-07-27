@@ -29,13 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Tobias Raussch <rausch@embl.de>
+// Authors: Tobias Raussch <rausch@embl.de>, Ryan Wick <rrwick@gmail.com>
 // ==========================================================================
 // Implementation of Depth-First-Search algorithm.
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
+#include <vector>
+#include <utility>
 
 namespace seqan {
 
@@ -121,28 +123,72 @@ void depthFirstSearch(TPredecessorMap & predecessor,
     typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Value<TPredecessorMap>::Type TPredVal;
+    typedef typename Iterator<Graph<TSpec>, AdjacencyIterator>::Type TAdjacencyIterator;
+    enum Task {EXPLORE, FINISH};
+    typedef std::pair<TVertexDescriptor, Task> StackItem;
 
-    // Initialization
+    // Initialization - set each vertex as unvisited and with no predecessor.
     resizeVertexMap(predecessor, g);
     resizeVertexMap(disc, g);
     resizeVertexMap(finish, g);
-    TPredVal nilPred = getNil<TVertexDescriptor>();
-
+    TPredVal nil = getNil<TVertexDescriptor>();
     String<bool> tokenMap;
     resizeVertexMap(tokenMap, g);
     TVertexIterator it(g);
     for(;!atEnd(it);goNext(it)) {
         assignProperty(tokenMap, getValue(it), false);
-        assignProperty(predecessor, getValue(it), nilPred);
+        assignProperty(predecessor, getValue(it), nil);
     }
-
     TSize time = 0;
 
+    // We do the DFS non-recursively using a stack. The stack holds two possible tasks:
+    //   EXPLORE, which means we must follow that vertex's edges
+    //   FINISH, which means the vertex just needs a finish time
+    std::vector<StackItem> vStack;
+
+    // The graph may not be connected, so start at every vertex.
     goBegin(it);
-    for(;!atEnd(it);goNext(it)) {
-        TVertexDescriptor u = getValue(it);
-        if (getProperty(tokenMap, u) == false) {
-            _dfsVisit(g, u, tokenMap, predecessor, disc, finish, time);
+    for(; !atEnd(it); goNext(it)) {
+
+        // If the vertex has already been visited, skip it.
+        TVertexDescriptor v = getValue(it);
+        if (getProperty(tokenMap, v)) {
+            continue;
+        }
+
+        vStack.clear();
+        vStack.push_back(StackItem(v, EXPLORE));
+        while (!vStack.empty()) {
+
+            // Get the vertex and task from the top of the stack.
+            StackItem stackItem = vStack.back();
+            vStack.pop_back();
+            TVertexDescriptor v = stackItem.first;
+
+            if (stackItem.second == FINISH) {
+                assignProperty(finish, v, ++time);
+            }
+
+            // If the task is EXPLORE and the vertex is not visited...
+            else if (!getProperty(tokenMap, v)) {
+                assignProperty(tokenMap, v, true);      // label as visited
+                assignProperty(disc, v, ++time);        // set discovery time
+                vStack.push_back(StackItem(v, FINISH)); // add a task to the stack so the vertex will get a finish time
+
+                // Add EXPLORE tasks to the stack for each unvisited adjacent vertex. They are added in reverse order
+                // so the first adjacent vertex will be the first to come off the stack. This is to mimic the behaviour
+                // of the original recursive implementation of this function.
+                TAdjacencyIterator itad(g, v);
+                goEnd(itad);
+                while (!atBegin(itad)) {
+                    goPrevious(itad);
+                    TVertexDescriptor nextV = getValue(itad);
+                    if (!getProperty(tokenMap, nextV)) {
+                        vStack.push_back(StackItem(nextV, EXPLORE));
+                        assignProperty(predecessor, nextV, v);
+                    }
+                }
+            }
         }
     }
 }
