@@ -2313,10 +2313,8 @@ inline void fail()
 
 // TODO(holtgrew): Subject to change wiht restructuring.
 // Returns a const char * string with the path to the projects directory.
-[[deprecated("Unsafe.")]]
 #define SEQAN_PATH_TO_ROOT()                      \
     ::seqan::ClassTest::StaticData::pathToRoot()
-
 
 // Returns the POSIX int file handle to an open file.
 // TODO(holtgrewe): Uncomment if openTempFile has been implemented.
@@ -2385,7 +2383,7 @@ inline void fail()
 
 inline std::string getAbsolutePath(const char * path)
 {
-    return std::string(SEQAN_PATH_TO_ROOT()) + "/" + path;
+    return std::string(::seqan::ClassTest::StaticData::pathToRoot()) + "/" + path;
 }
 
 }  // namespace seqan

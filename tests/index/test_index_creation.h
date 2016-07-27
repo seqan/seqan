@@ -138,7 +138,7 @@ SEQAN_DEFINE_TEST(testIndexCreation)
     TArray  child, childExt;
     TText   bwt;
 
-    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/index/m_tuberculosis_h37rv.fa";
+    std::string path = getAbsolutePath("/tests/index/m_tuberculosis_h37rv.fa");
 
     SeqFileIn inputFile(path.c_str());
     CharString id;

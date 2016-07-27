@@ -48,8 +48,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     //
     // There are many superfluous gaps in the SAM file that we will get rid of below.
     seqan::FragmentStore<> store;
-    seqan::CharString samPath = SEQAN_PATH_TO_ROOT();
-    append(samPath, "/tests/consensus/small_example.sam");
+    seqan::CharString samPath = seqan::getAbsolutePath("/tests/consensus/small_example.sam");
     seqan::BamFileIn fSamIn(toCString(samPath));
     readRecords(store, fSamIn);
 
