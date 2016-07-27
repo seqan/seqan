@@ -10,11 +10,11 @@ class myBamAlignmentRecord
 {
 public:
     CharString qName;               // QNAME
-    __uint16 flag;                  // FLAG
+    uint16_t flag;                  // FLAG
     int32_t rID;                    // REF
     int32_t beginPos;               // POS
-    __uint8 mapQ;                   // MAPQ mapping quality, 255 for */invalid
-    __uint16 bin;                   // bin for indexing
+    uint8_t mapQ;                   // MAPQ mapping quality, 255 for */invalid
+    uint16_t bin;                   // bin for indexing
     String<CigarElement<> > cigar;  // CIGAR string
     int32_t rNextId;                // RNEXT (0-based)
     int32_t pNext;                  // PNEXT (0-based)
