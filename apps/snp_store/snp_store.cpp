@@ -75,11 +75,11 @@ using namespace seqan;
 // load entire genome into memory
 template <typename TGenomeSet, typename TGenomeSetSize, typename TGenomeNames>
 bool loadGenomes(
-        TGenomeSet &genomes,
-        StringSet<CharString> &fileNameList,
-        ::std::map<CharString,
-        TGenomeSetSize> &gIdStringToIdNumMap,
-        TGenomeNames & genomeNames)
+    TGenomeSet & genomes,
+    StringSet<CharString> & fileNameList,
+    ::std::map<CharString,
+               TGenomeSetSize> & gIdStringToIdNumMap,
+    TGenomeNames & genomeNames)
 {
     unsigned gSeqNo = 0;
     unsigned filecount = 0;
@@ -116,20 +116,20 @@ bool loadGenomes(
         ++filecount;
     }
     resize(genomes, gSeqNo);
-    return (gSeqNo > 0);
+    return gSeqNo > 0;
 }
 
 // transform global cooridnates to coordinates relative to chromosomal segment
-template<typename TFragmentStore, typename TContigPos, typename TOptions>
+template <typename TFragmentStore, typename TContigPos, typename TOptions>
 void
-transformCoordinates(TFragmentStore &fragmentStore, TContigPos startCoord, TOptions&)
+transformCoordinates(TFragmentStore & fragmentStore, TContigPos startCoord, TOptions &)
 {
     typedef typename TFragmentStore::TAlignedReadStore          TMatches;
     //typedef typename Value<TMatches>::Type                      TMatch;
-    typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
+    typedef typename Iterator<TMatches, Standard>::Type          TMatchIt;
 
-    TMatchIt mIt        = begin(fragmentStore.alignedReadStore,Standard());
-    TMatchIt mItEnd     = end(fragmentStore.alignedReadStore,Standard());
+    TMatchIt mIt        = begin(fragmentStore.alignedReadStore, Standard());
+    TMatchIt mItEnd     = end(fragmentStore.alignedReadStore, Standard());
 
     while (mIt != mItEnd)
     {
@@ -141,40 +141,40 @@ transformCoordinates(TFragmentStore &fragmentStore, TContigPos startCoord, TOpti
 }
 
 // copy matches relevant for next window
-template<typename TFragmentStore, typename TReadCigars, typename TReadCounts,
-         typename TReadClips, typename TSize, typename TContigPos, typename TOptions>
-void copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
-                              TReadCounts &readCounts,
-                              TReadCigars &readCigars,
-                              TReadClips  &readClips,
-                              TReadCounts &tmpReadCounts,
-                              typename TFragmentStore::TReadSeqStore &tmpReads,
-                              typename TFragmentStore::TReadStore &tmpRs,
-                              typename TFragmentStore::TAlignedReadStore &tmpMatches,
-                              typename TFragmentStore::TAlignQualityStore &tmpQualities,
-                              TReadClips &tmpReadClips,
-                              TReadCigars &tmpReadCigars,
-                              TSize ,
-                              TContigPos currentWindowEnd,
-                              TOptions &options)
+template <typename TFragmentStore, typename TReadCigars, typename TReadCounts,
+          typename TReadClips, typename TSize, typename TContigPos, typename TOptions>
+void copyNextWindowMatchesAndReads(TFragmentStore & fragmentStore,
+                                   TReadCounts & readCounts,
+                                   TReadCigars & readCigars,
+                                   TReadClips & readClips,
+                                   TReadCounts & tmpReadCounts,
+                                   typename TFragmentStore::TReadSeqStore & tmpReads,
+                                   typename TFragmentStore::TReadStore & tmpRs,
+                                   typename TFragmentStore::TAlignedReadStore & tmpMatches,
+                                   typename TFragmentStore::TAlignQualityStore & tmpQualities,
+                                   TReadClips & tmpReadClips,
+                                   TReadCigars & tmpReadCigars,
+                                   TSize,
+                                   TContigPos currentWindowEnd,
+                                   TOptions & options)
 {
 
     typedef typename TFragmentStore::TAlignedReadStore          TMatches;
     typedef typename Value<TMatches>::Type                      TMatch;
-    typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
+    typedef typename Iterator<TMatches, Standard>::Type          TMatchIt;
     typedef typename Id<TFragmentStore>::Type                   TId;
     //typedef typename Value<TReadClips>::Type                    TPair;
 
-    SEQAN_ASSERT_EQ(length(fragmentStore.readSeqStore),length(fragmentStore.alignQualityStore));
+    SEQAN_ASSERT_EQ(length(fragmentStore.readSeqStore), length(fragmentStore.alignQualityStore));
 
     ::std::sort(begin(fragmentStore.alignedReadStore, Standard()),
                 end(fragmentStore.alignedReadStore, Standard()), LessGPos<TMatch>());
 
-    if (options._debugLevel > 1 )
+    if (options._debugLevel > 1)
         ::std::cout << "Copying matches overlapping more than one window ... \n";
 
-    TMatchIt mIt        = end(fragmentStore.alignedReadStore,Standard());
-    TMatchIt mItBegin   = begin(fragmentStore.alignedReadStore,Standard());
+    TMatchIt mIt        = end(fragmentStore.alignedReadStore, Standard());
+    TMatchIt mItBegin   = begin(fragmentStore.alignedReadStore, Standard());
     --mIt;
 
     // We will use minCoord/maxCoord to store the temporarily minimal and maximal coordinates in the window.
@@ -185,23 +185,24 @@ void copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
 
     //std::cout << " max hit length = " << options.maxHitLength << std::endl;
     // look for matches that are inside our window of interest, copy corresponding matches,reads,qualities
-    while (mIt >= mItBegin && _min((*mIt).beginPos,(*mIt).endPos)
-          + (TContigPos)options.maxHitLength
-          + (TContigPos)options.windowBuff >= currentWindowEnd)
+    while (mIt >= mItBegin && _min((*mIt).beginPos, (*mIt).endPos)
+           + (TContigPos)options.maxHitLength
+           + (TContigPos)options.windowBuff >= currentWindowEnd)
     {
-        if (_max((*mIt).beginPos,(*mIt).endPos) + (TContigPos)options.windowBuff > currentWindowEnd)
+        if (_max((*mIt).beginPos, (*mIt).endPos) + (TContigPos)options.windowBuff > currentWindowEnd)
         {
             TId id = length(tmpMatches);
-            appendValue(tmpMatches,*mIt);
+            appendValue(tmpMatches, *mIt);
             tmpMatches[id].id = id;
             tmpMatches[id].readId = id;
-            appendValue(tmpReads,fragmentStore.readSeqStore[(*mIt).readId]);
-            appendValue(tmpRs,fragmentStore.readStore[(*mIt).readId]);
-            if (!empty(readCounts))appendValue(tmpReadCounts,readCounts[(*mIt).readId]);
-            appendValue(tmpQualities,fragmentStore.alignQualityStore[(*mIt).readId]);
-            appendValue(tmpReadCigars,readCigars[(*mIt).readId]);
+            appendValue(tmpReads, fragmentStore.readSeqStore[(*mIt).readId]);
+            appendValue(tmpRs, fragmentStore.readStore[(*mIt).readId]);
+            if (!empty(readCounts))
+                appendValue(tmpReadCounts, readCounts[(*mIt).readId]);
+            appendValue(tmpQualities, fragmentStore.alignQualityStore[(*mIt).readId]);
+            appendValue(tmpReadCigars, readCigars[(*mIt).readId]);
 //            appendValue(tmpReadClips,TPair(0,0));
-            appendValue(tmpReadClips,readClips[(*mIt).readId]);
+            appendValue(tmpReadClips, readClips[(*mIt).readId]);
             maxCoord = std::max(maxCoord, (int)std::max(mIt->beginPos, mIt->endPos));
             minCoord = std::min(minCoord, (int)std::min(mIt->beginPos, mIt->endPos));
         }
@@ -215,14 +216,13 @@ void copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
         options.maxCoord = maxCoord;
 
     if (options._debugLevel > 1)
-        std::cout << length(tmpMatches)<<" matches left over from previous window.\n";
+        std::cout << length(tmpMatches) << " matches left over from previous window.\n";
 
 
 }
 
-
 // little helper
-template<typename TMatch>
+template <typename TMatch>
 char
 orientation(TMatch & match)
 {
@@ -233,12 +233,12 @@ orientation(TMatch & match)
 }
 
 // discard reads stacking up, give preference to high quality reads
-template<typename TFragmentStore, typename TSize, typename TOptions>
+template <typename TFragmentStore, typename TSize, typename TOptions>
 void
-applyPileupCorrection(TFragmentStore    &fragmentStore,
+applyPileupCorrection(TFragmentStore & fragmentStore,
                       TSize                         arrayBeginPos,
                       TSize                         arrayEndPos,
-                      TOptions                      &options)
+                      TOptions & options)
 {
     typedef StringSet<String<Dna5Q>, Owner<ConcatDirect<> > >    TFalseType;
     typedef typename TFragmentStore::TAlignedReadStore  TMatches;
@@ -250,9 +250,9 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
     //typedef typename TFragmentStore::TContigStore       TGenomeSet;
     //typedef typename Value<TGenomeSet>::Type            TGenome;
     typedef typename TFragmentStore::TContigPos         TContigPos;
-    typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
+    typedef typename Iterator<TMatches, Standard>::Type  TMatchIterator;
 
-    if (IsSameType<TReads, TFalseType >::VALUE)
+    if (IsSameType<TReads, TFalseType>::VALUE)
         std::cout << "Hier stimmt was nciht. strinsetspec concat direct\n";
 
     if (options._debugLevel > 0)
@@ -265,13 +265,13 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
     {
         ::std::sort(iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard()),
                     iter(fragmentStore.alignedReadStore, arrayEndPos, Standard()),
-                    LessGStackOaMQ<TMatches,TMatchQualities>(fragmentStore.alignQualityStore));
+                    LessGStackOaMQ<TMatches, TMatchQualities>(fragmentStore.alignQualityStore));
     }
     else
     {
         ::std::sort(iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard()),
                     iter(fragmentStore.alignedReadStore, arrayEndPos, Standard()),
-                    LessGStackMQ<TMatches,TMatchQualities>(fragmentStore.alignQualityStore));
+                    LessGStackMQ<TMatches, TMatchQualities>(fragmentStore.alignQualityStore));
     }
 
 
@@ -281,17 +281,17 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
 
     while (matchIt != matchRangeEnd)
     {
-        TContigPos currentBegin = _min((*matchIt).beginPos,(*matchIt).endPos);
-        TContigPos currentEnd = _max((*matchIt).beginPos,(*matchIt).endPos);
+        TContigPos currentBegin = _min((*matchIt).beginPos, (*matchIt).endPos);
+        TContigPos currentEnd = _max((*matchIt).beginPos, (*matchIt).endPos);
         unsigned currentSeqno = (*matchIt).contigId;
         char currentOrientation = orientation(*matchIt);
         unsigned currPile = 0;
         while (matchIt != matchRangeEnd &&
-              (*matchIt).contigId == currentSeqno &&
-              _min((*matchIt).beginPos,(*matchIt).endPos) == currentBegin &&
-              _max((*matchIt).beginPos,(*matchIt).endPos) == currentEnd &&
-              (!options.orientationAware || orientation(*matchIt) == currentOrientation) &&
-              currPile < options.maxPile)
+               (*matchIt).contigId == currentSeqno &&
+               _min((*matchIt).beginPos, (*matchIt).endPos) == currentBegin &&
+               _max((*matchIt).beginPos, (*matchIt).endPos) == currentEnd &&
+               (!options.orientationAware || orientation(*matchIt) == currentOrientation) &&
+               currPile < options.maxPile)
         {
             *matchItKeep = *matchIt;
             ++currPile;
@@ -300,17 +300,17 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
         }
         //if (matchRangeEnd > matchItEnd) ::std::cerr <<"neeeeeeee\n";
         while (matchIt != matchRangeEnd &&
-              (*matchIt).contigId == currentSeqno &&
-              _min((*matchIt).beginPos,(*matchIt).endPos) == currentBegin &&
-              _max((*matchIt).beginPos,(*matchIt).endPos) == currentEnd &&
-              (!options.orientationAware || orientation(*matchIt) == currentOrientation))
+               (*matchIt).contigId == currentSeqno &&
+               _min((*matchIt).beginPos, (*matchIt).endPos) == currentBegin &&
+               _max((*matchIt).beginPos, (*matchIt).endPos) == currentEnd &&
+               (!options.orientationAware || orientation(*matchIt) == currentOrientation))
             ++matchIt;
 
     }
 
     if (options._debugLevel > 0)
         std::cout << matchIt - matchItKeep << " matches discarded." << std::endl;
-    resize(fragmentStore.alignedReadStore,matchItKeep - begin(fragmentStore.alignedReadStore,Standard()));
+    resize(fragmentStore.alignedReadStore, matchItKeep - begin(fragmentStore.alignedReadStore, Standard()));
 
     //  ::std::cout << "numMatches = " << length(fragmentStore.alignedReadStore) << ::std::endl;
     SEQAN_ASSERT_LEQ(length(fragmentStore.alignedReadStore), length(fragmentStore.alignQualityStore));
@@ -323,9 +323,9 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
 
 // average quality of read is kept as extra info for each match
 // used for prioritization in pile up correction
-template<typename TFragmentStore, typename TSize, typename TOptions>
+template <typename TFragmentStore, typename TSize, typename TOptions>
 void
-addReadQualityToMatches(TFragmentStore  &fragmentStore,
+addReadQualityToMatches(TFragmentStore & fragmentStore,
                         TSize                           arrayBeginPos,
                         TSize                           arrayEndPos,
                         TOptions &)
@@ -342,30 +342,30 @@ addReadQualityToMatches(TFragmentStore  &fragmentStore,
     int avgRQ;
     for (; it != itEnd; ++it)
     {
-        TRead const &read = fragmentStore.readSeqStore[(*it).readId];
+        TRead const & read = fragmentStore.readSeqStore[(*it).readId];
         avgRQ = 0;
         for (unsigned i = 0; i < length(read); ++i)
-            avgRQ += (int) getQualityValue(read[i]) ;
+            avgRQ += (int) getQualityValue(read[i]);
         // watch out, this is new: use mapping quality if given
         if ((fragmentStore.alignQualityStore[(*it).id]).score == 0 ||
-                (char)(avgRQ/length(read)) < (fragmentStore.alignQualityStore[(*it).id]).score)
-            (fragmentStore.alignQualityStore[(*it).id]).score = (char)(avgRQ/length(read));
+            (char)(avgRQ / length(read)) < (fragmentStore.alignQualityStore[(*it).id]).score)
+            (fragmentStore.alignQualityStore[(*it).id]).score = (char)(avgRQ / length(read));
     }
 }
 
 // checks whether an alignment has indels
-template<typename TValue, typename TSpec>
-bool alignmentHasIndel(Align<TValue,TSpec> &align)
+template <typename TValue, typename TSpec>
+bool alignmentHasIndel(Align<TValue, TSpec> & align)
 {
-    typedef Align<TValue,TSpec>  TAlign;
+    typedef Align<TValue, TSpec>  TAlign;
     typedef typename Row<TAlign>::Type      TAlignRow;
     typedef typename Iterator<TAlignRow>::Type  TAlignIterator;
 
     bool hasIndel = false;
     for (unsigned i = 0; !hasIndel && i < length(rows(align)); ++i)
     {
-        TAlignIterator it = begin(row(align,i));
-        TAlignIterator itEnd = end(row(align,i));
+        TAlignIterator it = begin(row(align, i));
+        TAlignIterator itEnd = end(row(align, i));
         while (it != itEnd)
         {
             if (isGap(it))
@@ -380,13 +380,13 @@ bool alignmentHasIndel(Align<TValue,TSpec> &align)
 }
 
 // perform read clipping
-template<typename TFragmentStore, typename TReadClips, typename TSize, typename TOptions>
+template <typename TFragmentStore, typename TReadClips, typename TSize, typename TOptions>
 void
-clipReads(TFragmentStore    &fragmentStore,
-          TReadClips    &readClips,
+clipReads(TFragmentStore & fragmentStore,
+          TReadClips & readClips,
           TSize     arrayBeginPos,
           TSize     arrayEndPos,
-          TOptions  &options)
+          TOptions & options)
 {
     typedef typename TFragmentStore::TAlignedReadStore      TMatches;
     typedef typename Value<TMatches>::Type              TMatch;
@@ -407,20 +407,20 @@ clipReads(TFragmentStore    &fragmentStore,
 #endif
 
     Score<int> scoreType = Score<int>(0, -999, -1001, -1000);
-    if (length(readClips) < (arrayEndPos-arrayBeginPos))
-        ::std::cout << length(readClips) << " readclips but " << (arrayEndPos-arrayBeginPos) << " many reads.\n";
+    if (length(readClips) < (arrayEndPos - arrayBeginPos))
+        ::std::cout << length(readClips) << " readclips but " << (arrayEndPos - arrayBeginPos) << " many reads.\n";
 
-    TContigSeq &currGenome = fragmentStore.contigStore[0].seq;
+    TContigSeq & currGenome = fragmentStore.contigStore[0].seq;
     int kickout = 0;
     for (; it != itEnd; ++it)
     {
-        TMatch &m = *it;
-        TRead &read = fragmentStore.readSeqStore[m.readId];
+        TMatch & m = *it;
+        TRead & read = fragmentStore.readSeqStore[m.readId];
         int clipLeft = readClips[m.readId].i1;
         int clipRight = readClips[m.readId].i2;
-        TContigPos beginPos = (m.beginPos < m.endPos ) ? m.beginPos : m.endPos;
-        TContigPos endPos = (m.beginPos > m.endPos ) ? m.beginPos : m.endPos;
-        TAlignQuality &aliQ = fragmentStore.alignQualityStore[m.id];
+        TContigPos beginPos = (m.beginPos < m.endPos) ? m.beginPos : m.endPos;
+        TContigPos endPos = (m.beginPos > m.endPos) ? m.beginPos : m.endPos;
+        TAlignQuality & aliQ = fragmentStore.alignQualityStore[m.id];
 
 #ifdef SNPSTORE_DEBUG
         TContigPos beginBefore = beginPos;
@@ -428,15 +428,15 @@ clipReads(TFragmentStore    &fragmentStore,
         if (m.id != m.readId)
             ::std::cout << "match id != readId \n";
 
-        if (clipLeft+clipRight > (int)length(read) || clipLeft > (int)length(read) || clipRight > (int)length(read))
+        if (clipLeft + clipRight > (int)length(read) || clipLeft > (int)length(read) || clipRight > (int)length(read))
         {
             if (options._debugLevel > 0)
                 ::std::cout << "WARNING: clipLeft+clipRight > readLen!!\n";
 
 #ifdef SNPSTORE_DEBUG
-            ::std::cout << "readlength = "<<length(read)<< " \n";
-            ::std::cout << "readId = "<<m.readId << "id=" << m.id << " \n";
-            ::std::cout << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
+            ::std::cout << "readlength = " << length(read) << " \n";
+            ::std::cout << "readId = " << m.readId << "id=" << m.id << " \n";
+            ::std::cout << "clipLeft = " << clipLeft << " clipRight = " << clipRight << "\n";
             ::std::cout << "read=" << read << std::endl;
             ::std::cout << "beginPos=" << beginPos << std::endl;
             ::std::cout << "endPos=" << endPos << std::endl;
@@ -445,33 +445,33 @@ clipReads(TFragmentStore    &fragmentStore,
             clipRight = 0;
         }
 #ifdef SNPSTORE_DEBUG
-            ::std::cout << "readlength = "<<length(read)<< " \n";
-            ::std::cout << "readId = "<<m.readId << "id=" << m.id << " \n";
-            ::std::cout << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
-            ::std::cout << "read=" << read << std::endl;
-            ::std::cout << "beginPos=" << beginPos << std::endl;
-            ::std::cout << "endPos=" << endPos << std::endl;
+        ::std::cout << "readlength = " << length(read) << " \n";
+        ::std::cout << "readId = " << m.readId << "id=" << m.id << " \n";
+        ::std::cout << "clipLeft = " << clipLeft << " clipRight = " << clipRight << "\n";
+        ::std::cout << "read=" << read << std::endl;
+        ::std::cout << "beginPos=" << beginPos << std::endl;
+        ::std::cout << "endPos=" << endPos << std::endl;
 #endif
         if (clipLeft > 0 || clipRight > 0)
         {
             //  if (extraV) ::std::cout << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << std::endl;
-            if ((int)length(read)-clipLeft-clipRight < options.minClippedLength)
+            if ((int)length(read) - clipLeft - clipRight < options.minClippedLength)
             {
-                if (options._debugLevel > 1 )
-                    ::std::cout << "Discarded: "<<read<<" at position "<< beginPos <<"\n";
+                if (options._debugLevel > 1)
+                    ::std::cout << "Discarded: " << read << " at position " << beginPos << "\n";
                 m.endPos = m.beginPos = 0; // "mask" read
                 read = "";
                 ++kickout;
                 continue;
             }
             // adjust read sequence
-            read = infix(read,clipLeft,length(read)-clipRight);
+            read = infix(read, clipLeft, length(read) - clipRight);
 
             // upate avg read quality
             int avgRQ = 0;
             for (unsigned i = 0; i < length(read); ++i)
                 avgRQ += (int) getQualityValue(read[i]);
-            aliQ.score = (char)(avgRQ/length(read));
+            aliQ.score = (char)(avgRQ / length(read));
             //      if (extraV) ::std::cout << "aliQ.score = " << (int)aliQ.score << ::std::endl;
 
 
@@ -481,8 +481,8 @@ clipReads(TFragmentStore    &fragmentStore,
             if ((*it).endPos < (*it).beginPos)
                 reverseComplement(source(row(align, 1)));
 
-            int score = globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());
-            aliQ.errors = (unsigned) round((float)-score/1000);
+            int score = globalAlignment(align, scoreType, AlignConfig<false, true, true, false>(), Gotoh());
+            aliQ.errors = (unsigned) round((float)-score / 1000);
 
 #ifdef SNPSTORE_DEBUG
             if (extraV)
@@ -501,7 +501,7 @@ clipReads(TFragmentStore    &fragmentStore,
                 //              if (isGap(row(align,1),viewPosReadFirst))
                 //                  std::cout << "bgein gap --> do nothing " << std::endl;
                 //              }
-                if (isGap(row(align,1),viewPosReadLast))
+                if (isGap(row(align, 1), viewPosReadLast))
                     genomePosReadLast--;
 #ifdef SNPSTORE_DEBUG
                 if (extraV)
@@ -552,11 +552,11 @@ clipReads(TFragmentStore    &fragmentStore,
             }
             if (beginPos > 300000000 || endPos > 300000000)
             {
-                ::std::cout << "begin bigger 300mio new beginPos = "<< beginPos << " endpos=" << endPos << ::std::endl;
+                ::std::cout << "begin bigger 300mio new beginPos = " << beginPos << " endpos=" << endPos << ::std::endl;
 #ifdef SNPSTORE_DEBUG
                 ::std::cout << "WARNING: clipLeft+clipRight > readLen!!??\n";
-                ::std::cout << "readId = "<<m.readId << "id=" << m.id << " \n";
-                ::std::cout << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
+                ::std::cout << "readId = " << m.readId << "id=" << m.id << " \n";
+                ::std::cout << "clipLeft = " << clipLeft << " clipRight = " << clipRight << "\n";
                 ::std::cout << "read=" << read << std::endl;
                 ::std::cout << "beginPos before=" << beginBefore << std::endl;
                 ::std::cout << "beginPos=" << beginPos << std::endl;
@@ -566,20 +566,19 @@ clipReads(TFragmentStore    &fragmentStore,
         }
     }
     if (options._debugLevel > 0)
-        ::std::cout << kickout <<" reads too short after clipping, discarding!\n";
+        ::std::cout << kickout << " reads too short after clipping, discarding!\n";
 }
 
-
-template<typename TTable>
+template <typename TTable>
 void
 printHetTable(TTable & hetTable)
 {
     cout << "Printing het table:" << std::endl;
-    for (int n1=0; n1<256; ++n1)
+    for (int n1 = 0; n1 < 256; ++n1)
     {
-        for (int n2=0; n2<256; ++n2)
+        for (int n2 = 0; n2 < 256; ++n2)
         {
-            cout << hetTable[n1<<8|n2] << "\t";
+            cout << hetTable[n1 << 8 | n2] << "\t";
 
         }
         cout << std::endl;
@@ -587,7 +586,7 @@ printHetTable(TTable & hetTable)
     cout << std::endl;
 }
 
-template<typename TTmpReads, typename TTmpMatches, typename TTmpQualities, typename TStr>
+template <typename TTmpReads, typename TTmpMatches, typename TTmpQualities, typename TStr>
 void
 _dumpMatches(TTmpReads & reads, TTmpMatches & matches, TTmpQualities & qualities, TStr str)
 {
@@ -596,31 +595,29 @@ _dumpMatches(TTmpReads & reads, TTmpMatches & matches, TTmpQualities & qualities
     std::cout << "Length of reads   = " << length(reads)  << "\n";
     std::cout << "Length of matchqs = " << length(qualities)  << "\n";
 
-    for (unsigned i = 0 ; i < length(matches); ++i)
+    for (unsigned i = 0; i < length(matches); ++i)
     {
         char ori = (matches[i].beginPos < matches[i].endPos) ? 'F' : 'R';
-        std::cout << "--"<<str<<"Match number " << i << ":\n";
-        std::cout << "--"<<str<<"MatchId  = " << matches[i].id << "\n";
-        std::cout << "--"<<str<<"ReadId   = " << matches[i].readId << "\n";
-        std::cout << "--"<<str<<"ContigId = " << matches[i].contigId << std::flush << "\n";
-        std::cout << "--"<<str<<"gBegin   = " << _min(matches[i].beginPos, matches[i].endPos) << "\n";
-        std::cout << "--"<<str<<"gEnd     = " << _max(matches[i].beginPos, matches[i].endPos) << "\n";
-        std::cout << "--"<<str<<"orient   = " << ori << std::flush << std::endl;
+        std::cout << "--" << str << "Match number " << i << ":\n";
+        std::cout << "--" << str << "MatchId  = " << matches[i].id << "\n";
+        std::cout << "--" << str << "ReadId   = " << matches[i].readId << "\n";
+        std::cout << "--" << str << "ContigId = " << matches[i].contigId << std::flush << "\n";
+        std::cout << "--" << str << "gBegin   = " << _min(matches[i].beginPos, matches[i].endPos) << "\n";
+        std::cout << "--" << str << "gEnd     = " << _max(matches[i].beginPos, matches[i].endPos) << "\n";
+        std::cout << "--" << str << "orient   = " << ori << std::flush << std::endl;
         if (length(qualities) > matches[i].id)
         {
-            std::cout << "--"<<str<<"EditDist = " << (int) qualities[matches[i].id].errors << "\n";
-            std::cout << "--"<<str<<"AvgQ     = " << (int) qualities[matches[i].id].score << "\n";
+            std::cout << "--" << str << "EditDist = " << (int) qualities[matches[i].id].errors << "\n";
+            std::cout << "--" << str << "AvgQ     = " << (int) qualities[matches[i].id].score << "\n";
         }
-        std::cout << "--"<<str<<"Readseq  = " << reads[matches[i].readId] << std::flush << "\n";
+        std::cout << "--" << str << "Readseq  = " << reads[matches[i].readId] << std::flush << "\n";
     }
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Main read mapper function
 template <typename TSpec>
-int detectSNPs(SNPCallingOptions<TSpec> &options)
+int detectSNPs(SNPCallingOptions<TSpec> & options)
 {
 
     typedef FragmentStore<SnpStoreSpec_>            TFragmentStore;
@@ -639,14 +636,14 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     typedef              TContigSeq                    TGenome;
     typedef StringSet<TGenome>                         TGenomeSet;
 
-    typedef String<String<TContigPos > >            TPositions;
-    typedef typename Iterator<String<TContigPos > >::Type TPosIterator;
+    typedef String<String<TContigPos> >            TPositions;
+    typedef typename Iterator<String<TContigPos> >::Type TPosIterator;
     typedef typename Size<TGenomeSet>::Type         TGenomeSetSize;
-    typedef ::std::map<CharString, TGenomeSetSize>  TGenomeMap;
+    typedef::std::map<CharString, TGenomeSetSize>  TGenomeMap;
     //typedef typename TGenomeMap::iterator           TMapIter;
     typedef String<unsigned>                TReadCounts;
-    typedef String<Pair<int,int> >              TReadClips;
-    typedef StringSet<String<Pair<char,int> > >     TReadCigars;
+    typedef String<Pair<int, int> >              TReadClips;
+    typedef StringSet<String<Pair<char, int> > >     TReadCigars;
 
     TGenomeSet              genomes;
     StringSet<CharString>           genomeFileNameList;         // filenamen
@@ -710,8 +707,8 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     // Step 2: Load fragmentStore.readSeqStore and fragmentStore.alignedReadStore
     // open read files and  store open file pointers
     String<int> highestChrId;
-    resize(highestChrId,length(options.readFNames),0);
-    vector< ::std::fstream* > readFileStreams;
+    resize(highestChrId, length(options.readFNames), 0);
+    vector<::std::fstream *> readFileStreams;
     readFileStreams.resize(length(options.readFNames));
     for (unsigned i = 0; options.inputFormat == 0 && i < length(options.readFNames); ++i)
     {
@@ -750,19 +747,19 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     if (options.outputSNP != "")
     {
         // prepare lookup tables for maq statistics
-        if (options.method == 1 )
+        if (options.method == 1)
         {
-            computeCnks(options.cnks,options.fks,options);
+            computeCnks(options.cnks, options.fks, options);
 #ifdef CORRECTED_HET // corrected het table computed with normal distribution
             if (options.correctedHetTable)
                 options.priorHetQ = computeHetTable(options.hetTable, options);
             else
 #endif
-                options.priorHetQ = computeHetTable(options.hetTable, options, MaqMethod()); // original Maq method
+            options.priorHetQ = computeHetTable(options.hetTable, options, MaqMethod());     // original Maq method
             //printHetTable(options.hetTable);
             //printHetTable(options.hetTable2);
         }
-        snpFileStream.open(toCString(options.outputSNP),::std::ios_base::out);
+        snpFileStream.open(toCString(options.outputSNP), ::std::ios_base::out);
         if (!snpFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
 
@@ -773,7 +770,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
         snpFileStream << "##reference=" << genomeFileNameList[0];
         for (unsigned i = 1; i < length(genomeFileNameList); ++i)
         {
-            snpFileStream << ", "<< genomeFileNameList[i];
+            snpFileStream << ", " << genomeFileNameList[i];
         }
         snpFileStream << '\n';
         //snpFileStream << "##" << (options.programCall).str() << '\n';
@@ -822,7 +819,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
         if (options.minExplainedColumn > 0)
             snpFileStream << "\n##FILTER=<ID=mec" << options.minExplainedColumn
                           << ",Description=\"Fraction of bases explaining called genotyope below "
-                      << options.minExplainedColumn << "\">";
+                          << options.minExplainedColumn << "\">";
         if (options.minDifferentReadPos > 0)
             snpFileStream << "\n##FILTER=<ID=dp" << options.minDifferentReadPos
                           << ",Description=\"Number of different read positions supporting variant below "
@@ -856,7 +853,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     indelFileStream << "##reference=" << genomeFileNameList[0];
     for (unsigned i = 1; i < length(genomeFileNameList); ++i)
     {
-        indelFileStream << ", "<< genomeFileNameList[i];
+        indelFileStream << ", " << genomeFileNameList[i];
     }
     indelFileStream << '\n';
     indelFileStream << "##INFO=<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">\n";
@@ -873,16 +870,17 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     ::std::ofstream posFileStream;
     if (options.inputPositionFile != "")
     {
-        resize(positions,length(genomeNames));
+        resize(positions, length(genomeNames));
         result = loadPositions(positions, gIdStringToIdNumMap, toCString(options.inputPositionFile), options);
         if (result != 0)
         {
             ::std::cerr << "Failed to read position file " << options.inputPositionFile << ::std::endl;
             return result;
         }
-        posFileStream.open(toCString(options.outputPosition),::std::ios_base::out);
+        posFileStream.open(toCString(options.outputPosition), ::std::ios_base::out);
         if (!posFileStream.is_open())
             return CALLSNPS_OUT_FAILED;
+
         if (options.orientationAware)
             posFileStream << "#chr\tpos\t[A+]\t[C+]\t[G+]\t[T+]\t[gap+]\t[A-]\t[C-]\t[G-]\t[T-]\t[gap-]\n";
         else
@@ -890,7 +888,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     }
     /////////////////////////////////////////////////////////////////////////////
     // helper variables
-    Pair <int,int> zeroPair(0,0); // TODO(serosko): check if this can be removed
+    Pair<int, int> zeroPair(0, 0); // TODO(serosko): check if this can be removed
     int sumreads = 0;
     int sumwindows = 0;
 
@@ -910,7 +908,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     /////////////////////////////////////////////////////////////////////////////
     // Start scanning for SNPs/indels
     // for each chromosome
-    for (unsigned i=0; i < length(genomes); ++i)
+    for (unsigned i = 0; i < length(genomes); ++i)
     {
         //std::cout << genomeNames[i] << "\n";
         inspectPosIt = begin(positions[i], Standard());
@@ -929,14 +927,14 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
         // snp calling is done for all positions between windowBegin and windowEnd
         //TODO(serosko): Start here for parallelisation
 
-            // containers for those matches that overlap two windows   //May cause problems in parallel code
-            TAlignedReadStore tmpMatches;
-            TAlignQualityStore tmpQualities;
-            TReadStore tmpRs;
-            TReadSeqStore tmpReads;
-            TReadCounts tmpReadCounts;
-            TReadClips tmpReadClips;
-            TReadCigars tmpReadCigars;
+        // containers for those matches that overlap two windows   //May cause problems in parallel code
+        TAlignedReadStore tmpMatches;
+        TAlignQualityStore tmpQualities;
+        TReadStore tmpRs;
+        TReadSeqStore tmpReads;
+        TReadCounts tmpReadCounts;
+        TReadClips tmpReadClips;
+        TReadCigars tmpReadCigars;
 //            int chunk = 1;
 //            SEQAN_OMP_PRAGMA(parallel for
 //                             default(none)
@@ -953,339 +951,339 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 //                             reduction(+:sumwindows)
 //                             schedule(dynamic, chunk)
 //                             ordered)
-            for (currentWindowBegin = 0;
-                 currentWindowBegin < (TContigPos)length(genomes[i]);
-                 currentWindowBegin += options.windowSize)
+        for (currentWindowBegin = 0;
+             currentWindowBegin < (TContigPos)length(genomes[i]);
+             currentWindowBegin += options.windowSize)
+        {
+            TContigPos currentWindowEnd = currentWindowBegin + options.windowSize;
+            if (currentWindowEnd > (TContigPos)length(genomes[i]))
+                currentWindowEnd = (TContigPos)length(genomes[i]);
+            if (positionStatsOnly && !(currentWindowBegin <= *inspectPosIt && *inspectPosIt < currentWindowEnd))
             {
-                TContigPos currentWindowEnd = currentWindowBegin + options.windowSize;
-                if (currentWindowEnd > (TContigPos)length(genomes[i]))
-                    currentWindowEnd = (TContigPos)length(genomes[i]);
-                if (positionStatsOnly && !(currentWindowBegin <= *inspectPosIt && *inspectPosIt < currentWindowEnd))
-                {
-                    SEQAN_ASSERT_LEQ(currentWindowBegin, *inspectPosIt);
-                    clear(tmpReads); clear(tmpRs); clear(tmpMatches); clear(tmpQualities);
-                    clear(tmpReadClips); clear(tmpReadCounts); clear(tmpReadCigars);
-                    ++sumwindows;
-                    continue;
-                }
+                SEQAN_ASSERT_LEQ(currentWindowBegin, *inspectPosIt);
+                clear(tmpReads); clear(tmpRs); clear(tmpMatches); clear(tmpQualities);
+                clear(tmpReadClips); clear(tmpReadCounts); clear(tmpReadCigars);
+                ++sumwindows;
+                continue;
+            }
 
-                TFragmentStore fragmentStore;
-                // Count number of reads that are identical to the given one.
-                // Useful for micro RNA data where there were millions of identical reads.
-                // Must be in GFF input, not supported for SAM input.
-                TReadCounts readCounts;
-                // Soft clipping information and/or clipping information from GFF/SAM tag.
-                // Clipping is postponed after pileup correction.
-                TReadClips readClips;
-                // Currently only stored for split-mapped reads.
-                //Split-mapped reads need special handling, especially for realignment.
-                TReadCigars readCigars;
+            TFragmentStore fragmentStore;
+            // Count number of reads that are identical to the given one.
+            // Useful for micro RNA data where there were millions of identical reads.
+            // Must be in GFF input, not supported for SAM input.
+            TReadCounts readCounts;
+            // Soft clipping information and/or clipping information from GFF/SAM tag.
+            // Clipping is postponed after pileup correction.
+            TReadClips readClips;
+            // Currently only stored for split-mapped reads.
+            //Split-mapped reads need special handling, especially for realignment.
+            TReadCigars readCigars;
 
-                // add the matches that were overlapping with this and the last window.
-                //(copied in order to avoid 2 x makeGlobal)
-                if (!empty(tmpMatches))
-                {
-                    sumreads -=  length(tmpReads);  // count these reads only once
-                    resize(fragmentStore.alignQualityStore,length(tmpMatches));
-                    resize(fragmentStore.alignedReadStore,length(tmpMatches));
-                    resize(fragmentStore.readSeqStore,length(tmpMatches));
-                    resize(fragmentStore.readStore,length(tmpMatches));
-                    if (!empty(tmpReadClips))
-                        resize(readClips,length(tmpMatches));
-                    if (!empty(tmpReadCounts))
-                        resize(readCounts,length(tmpMatches));
-                    if (!empty(tmpReadCigars))
-                        resize(readCigars,length(tmpMatches));
-                    //moving temp matches into fragmentStore
-                    arrayMoveForward(begin(tmpQualities,Standard()),
-                                     end(tmpQualities,Standard()),
-                                     begin(fragmentStore.alignQualityStore,Standard()));
-                    arrayMoveForward(begin(tmpMatches,Standard()),
-                                     end(tmpMatches,Standard()),
-                                     begin(fragmentStore.alignedReadStore,Standard()));
-                    arrayMoveForward(begin(tmpReads,Standard()),
-                                     end(tmpReads,Standard()),
-                                     begin(fragmentStore.readSeqStore,Standard()));
-                    arrayMoveForward(begin(tmpRs,Standard()),
-                                     end(tmpRs,Standard()),
-                                     begin(fragmentStore.readStore,Standard()));
-                    if (!empty(tmpReadCounts))
-                        arrayMoveForward(begin(tmpReadCounts,Standard()),
-                                         end(tmpReadCounts,Standard()),
-                                         begin(readCounts,Standard()));
-                    if (!empty(tmpReadCigars))
-                        arrayMoveForward(begin(tmpReadCigars,Standard()),
-                                         end(tmpReadCigars,Standard()),
-                                         begin(readCigars,Standard()));
-                    if (!empty(tmpReadClips))
-                        arrayMoveForward(begin(tmpReadClips,Standard()),
-                                         end(tmpReadClips,Standard()),
-                                         begin(readClips,Standard()));
+            // add the matches that were overlapping with this and the last window.
+            //(copied in order to avoid 2 x makeGlobal)
+            if (!empty(tmpMatches))
+            {
+                sumreads -=  length(tmpReads);      // count these reads only once
+                resize(fragmentStore.alignQualityStore, length(tmpMatches));
+                resize(fragmentStore.alignedReadStore, length(tmpMatches));
+                resize(fragmentStore.readSeqStore, length(tmpMatches));
+                resize(fragmentStore.readStore, length(tmpMatches));
+                if (!empty(tmpReadClips))
+                    resize(readClips, length(tmpMatches));
+                if (!empty(tmpReadCounts))
+                    resize(readCounts, length(tmpMatches));
+                if (!empty(tmpReadCigars))
+                    resize(readCigars, length(tmpMatches));
+                //moving temp matches into fragmentStore
+                arrayMoveForward(begin(tmpQualities, Standard()),
+                                 end(tmpQualities, Standard()),
+                                 begin(fragmentStore.alignQualityStore, Standard()));
+                arrayMoveForward(begin(tmpMatches, Standard()),
+                                 end(tmpMatches, Standard()),
+                                 begin(fragmentStore.alignedReadStore, Standard()));
+                arrayMoveForward(begin(tmpReads, Standard()),
+                                 end(tmpReads, Standard()),
+                                 begin(fragmentStore.readSeqStore, Standard()));
+                arrayMoveForward(begin(tmpRs, Standard()),
+                                 end(tmpRs, Standard()),
+                                 begin(fragmentStore.readStore, Standard()));
+                if (!empty(tmpReadCounts))
+                    arrayMoveForward(begin(tmpReadCounts, Standard()),
+                                     end(tmpReadCounts, Standard()),
+                                     begin(readCounts, Standard()));
+                if (!empty(tmpReadCigars))
+                    arrayMoveForward(begin(tmpReadCigars, Standard()),
+                                     end(tmpReadCigars, Standard()),
+                                     begin(readCigars, Standard()));
+                if (!empty(tmpReadClips))
+                    arrayMoveForward(begin(tmpReadClips, Standard()),
+                                     end(tmpReadClips, Standard()),
+                                     begin(readClips, Standard()));
 #ifdef SNPSTORE_DEBUG
-                    CharString strstr = "afterCopyInFrag";
-                    _dumpMatches(fragmentStore,strstr);
+                CharString strstr = "afterCopyInFrag";
+                _dumpMatches(fragmentStore, strstr);
 #endif
 
-                }
+            }
 
-                // parse matches for current window
-                if (options._debugLevel > 0)
-                    ::std::cout << "Parsing reads up to position " << currentWindowEnd << "...\n";
-                for (unsigned j = 0; j < length(options.readFNames); ++j)
+            // parse matches for current window
+            if (options._debugLevel > 0)
+                ::std::cout << "Parsing reads up to position " << currentWindowEnd << "...\n";
+            for (unsigned j = 0; j < length(options.readFNames); ++j)
+            {
+                unsigned sizeBefore = length(fragmentStore.alignedReadStore);
+
+                // currently only gff supported // TODO(serosko): Check if this still holds.
+                if (options.inputFormat == 0)     // GFF
+                    result = readMatchesFromGFF_Batch(readFileStreams[j],
+                                                      fragmentStore,
+                                                      readCounts,
+                                                      readClips,
+                                                      readCigars,
+                                                      genomes[i],
+                                                      gIdStringToIdNumMap,
+                                                      i,
+                                                      currentWindowBegin,
+                                                      currentWindowEnd,
+                                                      highestChrId[j],
+                                                      options);
+                else if (options.inputFormat >= 1)     // SAM
+                    result = readMatchesFromSamBam_Batch(*bamFileIns[j],
+                                                         records[j],
+                                                         fragmentStore,
+                                                         readCounts,
+                                                         readClips,
+                                                         readCigars,
+                                                         genomes[i],
+                                                         gIdStringToIdNumMap,
+                                                         i,
+                                                         currentWindowBegin,
+                                                         currentWindowEnd,
+                                                         highestChrId[j],
+                                                         options,
+                                                         firstCall);
+                firstCall = false;
+
+                if (result == CALLSNPS_GFF_FAILED)
                 {
-                    unsigned sizeBefore = length(fragmentStore.alignedReadStore);
-
-                    // currently only gff supported // TODO(serosko): Check if this still holds.
-                    if (options.inputFormat == 0) // GFF
-                        result = readMatchesFromGFF_Batch(readFileStreams[j],
-                                                          fragmentStore,
-                                                          readCounts,
-                                                          readClips,
-                                                          readCigars,
-                                                          genomes[i],
-                                                          gIdStringToIdNumMap,
-                                                          i,
-                                                          currentWindowBegin,
-                                                          currentWindowEnd,
-                                                          highestChrId[j],
-                                                          options);
-                    else if (options.inputFormat >= 1) // SAM
-                        result = readMatchesFromSamBam_Batch(*bamFileIns[j],
-                                                             records[j],
-                                                             fragmentStore,
-                                                             readCounts,
-                                                             readClips,
-                                                             readCigars,
-                                                             genomes[i],
-                                                             gIdStringToIdNumMap,
-                                                             i,
-                                                             currentWindowBegin,
-                                                             currentWindowEnd,
-                                                             highestChrId[j],
-                                                             options,
-                                                             firstCall);
-                    firstCall = false;
-
-                    if (result == CALLSNPS_GFF_FAILED)
-                    {
-                        std::cerr << "Failed to open read file " << options.readFNames[j] << ::std::endl;
-                        std::cerr << "or reads are not sorted correctly. " << ::std::endl;
-                        return result;
-                    }
-                    if (result > 0)
-                    {
-                        return result;
-                    }
-
-                    if (options._debugLevel > 0)
-                        std::cout << "parsed reads of file " << j << "\n";
-
-                    // store average quality of each read
-                    addReadQualityToMatches(fragmentStore,
-                                            sizeBefore,
-                                            (unsigned)length(fragmentStore.alignedReadStore),
-                                            options);
-
-                    // do pile up correction if lane-based. lane-specific pileup correction not really used
-                    if (options.maxPile != 0 && options.laneSpecificMaxPile)
-                        applyPileupCorrection(fragmentStore,
-                                              sizeBefore,
-                                              (unsigned)length(fragmentStore.alignedReadStore),
-                                              options);
-
+                    std::cerr << "Failed to open read file " << options.readFNames[j] << ::std::endl;
+                    std::cerr << "or reads are not sorted correctly. " << ::std::endl;
+                    return result;
+                }
+                if (result > 0)
+                {
+                    return result;
                 }
 
-                if (options._debugLevel > 1)  // number of reads currently in memory
-                    ::std::cerr << lengthSum(fragmentStore.readSeqStore) << " bps of "
-                                << length(fragmentStore.readSeqStore) << " reads in memory." << ::std::endl;
-                sumreads +=  length(fragmentStore.readSeqStore);  // total count of reads
+                if (options._debugLevel > 0)
+                    std::cout << "parsed reads of file " << j << "\n";
 
-                // do merged pile up correction
-                if (options.maxPile != 0 && !options.laneSpecificMaxPile)
+                // store average quality of each read
+                addReadQualityToMatches(fragmentStore,
+                                        sizeBefore,
+                                        (unsigned)length(fragmentStore.alignedReadStore),
+                                        options);
+
+                // do pile up correction if lane-based. lane-specific pileup correction not really used
+                if (options.maxPile != 0 && options.laneSpecificMaxPile)
                     applyPileupCorrection(fragmentStore,
-                                          (unsigned)0,
+                                          sizeBefore,
                                           (unsigned)length(fragmentStore.alignedReadStore),
                                           options);
 
-                // these were set while parsing matches, first and last position of parsed matches
-                //          TContigPos startCoord = options.minCoord;// can be < currentWindowBegin
-                //          TContigPos endCoord = options.maxCoord; // can be > currentWindoEnd
+            }
 
-                // check
-                // can be < currentWindowBegin
-                TContigPos startCoord = _max((int)options.minCoord-options.realignAddBorder,0);
-                // can be > currentWindoEnd
-                TContigPos endCoord = _min(options.maxCoord+options.realignAddBorder,length(genomes[i]));
+            if (options._debugLevel > 1)      // number of reads currently in memory
+                ::std::cerr << lengthSum(fragmentStore.readSeqStore) << " bps of "
+                            << length(fragmentStore.readSeqStore) << " reads in memory." << ::std::endl;
+            sumreads +=  length(fragmentStore.readSeqStore);      // total count of reads
+
+            // do merged pile up correction
+            if (options.maxPile != 0 && !options.laneSpecificMaxPile)
+                applyPileupCorrection(fragmentStore,
+                                      (unsigned)0,
+                                      (unsigned)length(fragmentStore.alignedReadStore),
+                                      options);
+
+            // these were set while parsing matches, first and last position of parsed matches
+            //          TContigPos startCoord = options.minCoord;// can be < currentWindowBegin
+            //          TContigPos endCoord = options.maxCoord; // can be > currentWindoEnd
+
+            // check
+            // can be < currentWindowBegin
+            TContigPos startCoord = _max((int)options.minCoord - options.realignAddBorder, 0);
+            // can be > currentWindoEnd
+            TContigPos endCoord = _min(options.maxCoord + options.realignAddBorder, length(genomes[i]));
 
 
-                if (!empty(fragmentStore.alignedReadStore))
+            if (!empty(fragmentStore.alignedReadStore))
+            {
+                //initial values of min and max coords for next round are set here
+                if (currentWindowEnd != (TContigPos)length(genomes[i]))
                 {
-                    //initial values of min and max coords for next round are set here
-                    if (currentWindowEnd != (TContigPos)length(genomes[i]))
-                    {
-                        clear(tmpMatches);
-                        clear(tmpQualities);
-                        clear(tmpRs);
-                        clear(tmpReads);
-                        clear(tmpReadCounts);
-                        clear(tmpReadClips);
-                        clear(tmpReadCigars);
-                        copyNextWindowMatchesAndReads(fragmentStore,
-                                                      readCounts,
-                                                      readCigars,
-                                                      readClips,
-                                                      tmpReadCounts,
-                                                      tmpReads,tmpRs,
-                                                      tmpMatches,
-                                                      tmpQualities,
-                                                      tmpReadClips,
-                                                      tmpReadCigars,
-                                                      i,
-                                                      currentWindowEnd,
-                                                      options);
+                    clear(tmpMatches);
+                    clear(tmpQualities);
+                    clear(tmpRs);
+                    clear(tmpReads);
+                    clear(tmpReadCounts);
+                    clear(tmpReadClips);
+                    clear(tmpReadCigars);
+                    copyNextWindowMatchesAndReads(fragmentStore,
+                                                  readCounts,
+                                                  readCigars,
+                                                  readClips,
+                                                  tmpReadCounts,
+                                                  tmpReads, tmpRs,
+                                                  tmpMatches,
+                                                  tmpQualities,
+                                                  tmpReadClips,
+                                                  tmpReadCigars,
+                                                  i,
+                                                  currentWindowEnd,
+                                                  options);
 #ifdef SNPSTORE_DEBUG
-                        CharString strstr = "afterCopyInTmp";
-                        _dumpMatches(tmpReads,tmpMatches,tmpQualities,strstr);
+                    CharString strstr = "afterCopyInTmp";
+                    _dumpMatches(tmpReads, tmpMatches, tmpQualities, strstr);
 #endif
-                    }
+                }
 
-                    //  ::std::cout << "Min = " << options.minCoord << " Max = " << options.maxCoord << std::endl;
-                    //  ::std::cout << "Min = " << startCoord << " Max = " << endCoord << std::endl;
+                //  ::std::cout << "Min = " << options.minCoord << " Max = " << options.maxCoord << std::endl;
+                //  ::std::cout << "Min = " << startCoord << " Max = " << endCoord << std::endl;
 
-                    // coordinates are relative to current chromosomal window (segment)
-                    transformCoordinates(fragmentStore, startCoord,options);
+                // coordinates are relative to current chromosomal window (segment)
+                transformCoordinates(fragmentStore, startCoord, options);
 
-                    // set the current chromosomal segment as contig sequence
-                    TContig conti;
-                    conti.seq = infix(genomes[i],startCoord,endCoord);
-                    appendValue(fragmentStore.contigStore, conti, Generous() );
-                    appendValue(fragmentStore.contigNameStore, genomeNames[i], Generous() );// internal id is always 0
+                // set the current chromosomal segment as contig sequence
+                TContig conti;
+                conti.seq = infix(genomes[i], startCoord, endCoord);
+                appendValue(fragmentStore.contigStore, conti, Generous());
+                appendValue(fragmentStore.contigNameStore, genomeNames[i], Generous());     // internal id is always 0
 
-                    // clip Reads if clipping is switched on and there were clip tags in the gff file
-                    if ((!options.dontClip && options.clipTagsInFile) || options.softClipTagsInFile)
-                    {
-                        // activate "average read quality"-mode for snp calling, low quality bases should be clipped anyway
-                        options.useBaseQuality = false;
-                        clipReads(fragmentStore,
-                                  readClips,
-                                  (unsigned)0,
-                                  (unsigned)length(fragmentStore.alignedReadStore),
-                                  options);
-                    }
+                // clip Reads if clipping is switched on and there were clip tags in the gff file
+                if ((!options.dontClip && options.clipTagsInFile) || options.softClipTagsInFile)
+                {
+                    // activate "average read quality"-mode for snp calling, low quality bases should be clipped anyway
+                    options.useBaseQuality = false;
+                    clipReads(fragmentStore,
+                              readClips,
+                              (unsigned)0,
+                              (unsigned)length(fragmentStore.alignedReadStore),
+                              options);
+                }
 
-                    // check for indels
-                    if (options.outputIndel != "")
-                    {
-                        if (options._debugLevel > 1)
-                            ::std::cout << "Check for indels..." << std::endl;
-                        if (!options.realign)
-                            dumpShortIndelPolymorphismsBatch(fragmentStore,
-                                                             readCigars,
-                                                             fragmentStore.contigStore[0].seq,
-                                    genomeNames[i],
-                                    startCoord,
-                                    currentWindowBegin,
-                                    currentWindowEnd,
-                                    indelFileStream,
-                                    options);
-                    }
-
-                    //                // check for CNVs
-                    //                if (*options.outputCNV != 0)
-                    //                {
-                    //                    dumpCopyNumberPolymorphismsBatch(fragmentStore,
-                    //                                                     genomeNames[i],
-                    //                                                     startCoord,
-                    //                                                     currentWindowBegin,
-                    //                                                     currentWindowEnd,
-                    //                                                     cnvFileStream,
-                    //                                                     options);
-                    //                }
-
-#ifdef SNPSTORE_DEBUG
-                    CharString strstr = "test";
-                    //              _dumpMatches(fragmentStore, strstr );
-#endif
-                    if (options.outputSNP != "")
-                    {
-                        if (options._debugLevel > 1)
-                            ::std::cout << "Check for SNPs..." << std::endl;
-                        if (options.realign)
-                            dumpVariantsRealignBatchWrap(fragmentStore,
+                // check for indels
+                if (options.outputIndel != "")
+                {
+                    if (options._debugLevel > 1)
+                        ::std::cout << "Check for indels..." << std::endl;
+                    if (!options.realign)
+                        dumpShortIndelPolymorphismsBatch(fragmentStore,
                                                          readCigars,
-                                                         readCounts,
+                                                         fragmentStore.contigStore[0].seq,
                                                          genomeNames[i],
                                                          startCoord,
                                                          currentWindowBegin,
                                                          currentWindowEnd,
-                                                         snpFileStream,
                                                          indelFileStream,
                                                          options);
-                        else
-                            dumpSNPsBatch(fragmentStore,
-                                          readCigars,
-                                          readCounts,
-                                          genomeNames[i],
-                                          startCoord,
-                                          currentWindowBegin,
-                                          currentWindowEnd,
-                                          snpFileStream,
-                                          options);
-                    }
-                    if (positionStatsOnly)
-                    {
-                        if (options._debugLevel > 1)
-                            ::std::cout << "Dumping info for query positions..." << std::endl;
-                        if (options.realign)
-                            dumpPositionsRealignBatchWrap(fragmentStore,
-                                                          inspectPosIt,
-                                                          inspectPosItEnd,
-                                                          readCigars,
-                                                          readCounts,
-                                                          genomeNames[i],
-                                                          startCoord,
-                                                          currentWindowBegin,
-                                                          currentWindowEnd,
-                                                          posFileStream,
-                                                          options);
-                        else
-                            dumpPosBatch(fragmentStore,
-                                         inspectPosIt,
-                                         inspectPosItEnd,
-                                         readCigars,
-                                         readCounts,
-                                         genomeNames[i],
-                                         startCoord,
-                                         currentWindowBegin,
-                                         currentWindowEnd,
-                                         posFileStream,
-                                         options);
-                    }
                 }
-                //            else
-                //            {
-                if (positionStatsOnly && !empty(positions))
+
+                //                // check for CNVs
+                //                if (*options.outputCNV != 0)
+                //                {
+                //                    dumpCopyNumberPolymorphismsBatch(fragmentStore,
+                //                                                     genomeNames[i],
+                //                                                     startCoord,
+                //                                                     currentWindowBegin,
+                //                                                     currentWindowEnd,
+                //                                                     cnvFileStream,
+                //                                                     options);
+                //                }
+
+#ifdef SNPSTORE_DEBUG
+                CharString strstr = "test";
+                //              _dumpMatches(fragmentStore, strstr );
+#endif
+                if (options.outputSNP != "")
                 {
-                    while (inspectPosIt != inspectPosItEnd && *inspectPosIt < currentWindowEnd)
-                    {
-                        if (options.orientationAware)
-                        {
-                            SEQAN_OMP_PRAGMA(critical (writePosition))
-                                    posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
-                                                  << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
-                        }
-                        else
-                        {
-                            SEQAN_OMP_PRAGMA(critical (writePosition))
-                                    posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
-                                                  << "\t0\t0\t0\t0\t0\t0" << std::endl;
-                        }
-                        ++inspectPosIt;
-                    }
+                    if (options._debugLevel > 1)
+                        ::std::cout << "Check for SNPs..." << std::endl;
+                    if (options.realign)
+                        dumpVariantsRealignBatchWrap(fragmentStore,
+                                                     readCigars,
+                                                     readCounts,
+                                                     genomeNames[i],
+                                                     startCoord,
+                                                     currentWindowBegin,
+                                                     currentWindowEnd,
+                                                     snpFileStream,
+                                                     indelFileStream,
+                                                     options);
+                    else
+                        dumpSNPsBatch(fragmentStore,
+                                      readCigars,
+                                      readCounts,
+                                      genomeNames[i],
+                                      startCoord,
+                                      currentWindowBegin,
+                                      currentWindowEnd,
+                                      snpFileStream,
+                                      options);
                 }
-                //            }
-                ++sumwindows;
+                if (positionStatsOnly)
+                {
+                    if (options._debugLevel > 1)
+                        ::std::cout << "Dumping info for query positions..." << std::endl;
+                    if (options.realign)
+                        dumpPositionsRealignBatchWrap(fragmentStore,
+                                                      inspectPosIt,
+                                                      inspectPosItEnd,
+                                                      readCigars,
+                                                      readCounts,
+                                                      genomeNames[i],
+                                                      startCoord,
+                                                      currentWindowBegin,
+                                                      currentWindowEnd,
+                                                      posFileStream,
+                                                      options);
+                    else
+                        dumpPosBatch(fragmentStore,
+                                     inspectPosIt,
+                                     inspectPosItEnd,
+                                     readCigars,
+                                     readCounts,
+                                     genomeNames[i],
+                                     startCoord,
+                                     currentWindowBegin,
+                                     currentWindowEnd,
+                                     posFileStream,
+                                     options);
+                }
             }
+            //            else
+            //            {
+            if (positionStatsOnly && !empty(positions))
+            {
+                while (inspectPosIt != inspectPosItEnd && *inspectPosIt < currentWindowEnd)
+                {
+                    if (options.orientationAware)
+                    {
+                        SEQAN_OMP_PRAGMA(critical(writePosition))
+                        posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
+                                      << "\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0" << std::endl;
+                    }
+                    else
+                    {
+                        SEQAN_OMP_PRAGMA(critical(writePosition))
+                        posFileStream << genomeNames[i] << '\t' << *inspectPosIt + options.positionFormat
+                                      << "\t0\t0\t0\t0\t0\t0" << std::endl;
+                    }
+                    ++inspectPosIt;
+                }
+            }
+            //            }
+            ++sumwindows;
+        }
     }
     if (options.outputSNP != "")
         snpFileStream.close();
@@ -1298,10 +1296,9 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     return 0;
 }
 
-
 // log file to keep track of happenings
 template <typename TSpec>
-int writeLogFile(int argc, const char *argv[], SNPCallingOptions<TSpec> &options)
+int writeLogFile(int argc, const char * argv[], SNPCallingOptions<TSpec> & options)
 {
     ::std::ofstream logfile;
     logfile.open(toCString(options.outputLog), ::std::ios_base::out | ::std::ios_base::trunc);
@@ -1315,7 +1312,7 @@ int writeLogFile(int argc, const char *argv[], SNPCallingOptions<TSpec> &options
         logfile << argv[i] << " ";
     logfile << std::endl;
     logfile << "#files" << ::std::endl;
-    logfile << "Genome=\"" << options.genomeFName << "\""<<::std::endl;
+    logfile << "Genome=\"" << options.genomeFName << "\"" << ::std::endl;
     logfile << "Reads=\"" << options.readFNames[0];
     for (unsigned i = 1; i < length(options.readFNames); ++i)
         logfile << " " << options.readFNames[i] << ::std::endl;
@@ -1323,7 +1320,7 @@ int writeLogFile(int argc, const char *argv[], SNPCallingOptions<TSpec> &options
     if (options.outputSNP != "")
         logfile << "OutputSnp=\"" << CharString(options.outputSNP) << "\"" << ::std::endl;
     if (options.outputIndel != "")
-        logfile << "OutputIndel=\"" << CharString(options.outputIndel) << "\""<< ::std::endl;
+        logfile << "OutputIndel=\"" << CharString(options.outputIndel) << "\"" << ::std::endl;
     logfile << "#settings" << ::std::endl;
     logfile << "MaxPile=" << options.maxPile << ::std::endl;
     logfile << "MinCov=" << options.minCoverage << ::std::endl;
@@ -1347,7 +1344,6 @@ int writeLogFile(int argc, const char *argv[], SNPCallingOptions<TSpec> &options
     return 0;
 }
 
-
 template <typename TSpec>
 ArgumentParser::ParseResult
 parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** argv)
@@ -1357,7 +1353,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     // Set short description, version, and date.
     setShortDescription(parser, "SnpStore");
     setCategory(parser, "Variant Detection");
-	setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
@@ -1642,7 +1638,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     getOptionValue(options.outputIndel, parser, "indel-file");
     std::string tmp;
     getOptionValue(tmp, parser, "method");
-    options.method = (tmp == "maq")? 1: 0;
+    options.method = (tmp == "maq") ? 1 : 0;
     getOptionValue(options.maxPile, parser, "max-pile");
     options.laneSpecificMaxPile = !isSet(parser, "merged-max-pile");
     getOptionValue(options.minCoverage, parser, "min-coverage");
@@ -1660,7 +1656,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     getOptionValue(options.windowSize, parser, "parse-window-size");
     //get number of threads to use
     getOptionValue(options.threads, parser, "threads");
-    omp_set_num_threads (options.threads);
+    omp_set_num_threads(options.threads);
     getOptionValue(options.realignAddBorder, parser, "realign-border");
     // SNP Calling Options:
     getOptionValue(options.minMutT, parser, "min-mutations");
@@ -1756,9 +1752,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     return ArgumentParser::PARSE_OK;
 }
 
-
-
-int main(int argc, const char *argv[])
+int main(int argc, const char * argv[])
 {
     ArgumentParser parser;
     SNPCallingOptions<>     options;
