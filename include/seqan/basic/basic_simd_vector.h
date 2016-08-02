@@ -41,9 +41,8 @@
 
 #include <utility>
 #include <tuple>
-//#include <seqan/basic/iterator_zip.h>
 
-#if !defined(__arm__) && !defined(_M_ARM)  // We do not support arm architecture.
+#if defined(amd64) || defined(x86__64) || defined(i386)  // Only support these architectures at the moment.
 #if defined(STDLIB_VS)  // Microsoft C/C++-compatible compiler
     #include <intrin.h>
 #else  // GCC-compatible compiler, targeting x86/x86-64
@@ -62,7 +61,7 @@
 #else  // defined(__AVX2__)
     #undef SEQAN_SIMD_ENABLED  // Disable simd instructions.
 #endif  // defined(__AVX2__)
-#endif  // !defined(__arm__) || !defined(_M_ARM)
+#endif  // defined(amd64) || defined(x86__64) || defined(i386)
 
 namespace seqan {
 
