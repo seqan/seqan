@@ -36,31 +36,21 @@
 // generic SIMD interface for SSE3 / AVX2
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
-#define SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_H_
+#define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_H_
 
 #include <utility>
 #include <tuple>
 
-// Currently only support the following compilers
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
-    // Define global macro to check if simd instructions are enabled.
-    #define SEQAN_SIMD_ENABLED
-
-    // Define maximal size of vector in byte.
-    #if defined(__AVX2__)
-        #define SEQAN_SIZEOF_MAX_VECTOR 32
-    #elif defined(__SSE4_1__) && defined(__SSE4_2__)
-        #define SEQAN_SSE4
-        #define SEQAN_SIZEOF_MAX_VECTOR 16
-    #else  // defined(__AVX2__)
-        #undef SEQAN_SIMD_ENABLED  // Disable simd if instruction set is not supported.
-    #endif  // defined(__AVX2__)
-#endif  // defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
-
-#ifdef SEQAN_SIMD_ENABLED  // Include header with intrinsics.
-    #include <x86intrin.h>
-#endif  // SEQAN_SIMD_ENABLED
+#if defined(PLATFORM_WINDOWS_VS)
+  /* Microsoft C/C++-compatible compiler */
+  #include <intrin.h>
+#elif defined(PLATFORM_GCC) && (defined(__x86_64__) || defined(__i386__))
+  /* GCC-compatible compiler, targeting x86/x86-64 */
+  #include <x86intrin.h>
+#else
+ #warning "No supported platform for SIMD vectorization!"
+#endif
 
 namespace seqan {
 
@@ -114,9 +104,15 @@ assignValue(TSimdVector &vector, TPosition pos, TValue2 value)                  
     vector[pos] = value;                                                                                \
 }
 
-// define a concept and its models
-// they allow us to define generic vector functions
-SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
+// Define maximal size of vector in byte.
+#if defined(__AVX2__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 32
+#elif defined(__SSE4_1__) && defined(__SSE4_2__)
+    #define SEQAN_SSE4
+    #define SEQAN_SIZEOF_MAX_VECTOR 16
+#else
+    #undef SEQAN_SIMD_ENABLED  // Disable simd if instruction set is not supported.
+#endif
 
 // Only include following code if simd instructions are enabled.
 #ifdef SEQAN_SIMD_ENABLED
@@ -1668,4 +1664,4 @@ print(std::ostream &stream, TSimdVector const &vector)
 
 } // namespace seqan
 
-#endif // SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
+#endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_H_

@@ -29,26 +29,40 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: David Weese <david.weese@fu-berlin.de>
+// Author: Marcel Ehrhardt <marcel.ehrhardt@fu-berlin.de>
 // ==========================================================================
-// Tests for SIMD vectors.
+// generic SIMD interface for SSE3 / AVX2
 // ==========================================================================
 
-#include <seqan/basic.h>
-#include "test_basic_simd_vector.h"
+#ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
 
-SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
+// Define global macro to check if simd instructions are enabled.
+#define SEQAN_SIMD_ENABLED 1
+
+namespace seqan
 {
-#ifdef SEQAN_SIMD_ENABLED
-#ifdef SEQAN_SSE4
-    SEQAN_CALL_TEST(test_basic_simd_shuffle);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
-#ifdef __AVX2__
-    SEQAN_CALL_TEST(test_basic_simd_shuffle_avx);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_32x32);
-#endif  // #ifdef __AVX2__
-#endif  // #ifdef SEQAN_SSE4
-#endif
-}
-SEQAN_END_TESTSUITE
+
+// a metafunction returning the biggest supported SIMD vector
+template <typename TValue, int LENGTH>
+struct SimdVector;
+
+// define a concept and its models
+// they allow us to define generic vector functions
+SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
+
+template <typename TSimdVector, typename TPosition>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename Value<TSimdVector>::Type)
+getValue(TSimdVector &vector, TPosition pos);
+
+template <typename TSimdVector, typename TPosition>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename Value<TSimdVector>::Type)
+value(TSimdVector &vector, TPosition pos);
+
+template <typename TSimdVector, typename TPosition, typename TValue2>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
+assignValue(TSimdVector &vector, TPosition pos, TValue2 value);
+
+} // namespace seqan
+
+#endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_

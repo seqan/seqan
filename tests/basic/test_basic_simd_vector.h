@@ -37,11 +37,10 @@
 #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
 #define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
 
+#include <seqan/simd.h>
 #include <random>
-
 #include <seqan/sequence.h>
 #include <seqan/misc/bit_twiddling.h>
-#include <seqan/basic/basic_simd_vector.h>
 
 #if defined(SEQAN_SIMD_ENABLED)
 namespace seqan {
@@ -52,7 +51,7 @@ inline void test_matrix_transpose()
     typedef typename Value<TVector>::Type TValue;
     typedef TVector TMatrix[LENGTH<TVector>::VALUE];
     const int COLS = LENGTH<TVector>::VALUE;
-    
+
     String<TValue> random;
     resize(random, ROWS * COLS);
 
@@ -75,7 +74,7 @@ inline void test_matrix_transpose()
 //    std::cout << std::endl;
 //    for(int i=0;i<DIM;++i)
 //        print(std::cout, tmp[i]) << std::endl;
-    
+
     for (int i = 0; i < ROWS; ++i)
         for (int j = 0; j < COLS; ++j)
             SEQAN_ASSERT_EQ(tmp[i][j], random[j * ROWS + i]);
@@ -118,7 +117,7 @@ SEQAN_DEFINE_TEST(test_basic_simd_shuffle_avx)
 {
     seqan::SimdVector<unsigned short, 16>::Type vec;
     seqan::SimdVector<unsigned char, 16>::Type  indices;
-    
+
     const int perm[] = {1,4,2,6,3,5,0,7};
 
     for (int i = 0; i < 8; ++i)

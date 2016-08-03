@@ -29,26 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: David Weese <david.weese@fu-berlin.de>
+// Author: Marcel Ehrhardt <marcel.ehrhardt@fu-berlin.de>
 // ==========================================================================
-// Tests for SIMD vectors.
+// generic SIMD interface for SSE3 / AVX2
 // ==========================================================================
 
-#include <seqan/basic.h>
-#include "test_basic_simd_vector.h"
+#ifndef SEQAN_INCLUDE_SEQAN_SIMD_H_
+#define SEQAN_INCLUDE_SEQAN_SIMD_H_
 
-SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
-{
-#ifdef SEQAN_SIMD_ENABLED
-#ifdef SEQAN_SSE4
-    SEQAN_CALL_TEST(test_basic_simd_shuffle);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
-#ifdef __AVX2__
-    SEQAN_CALL_TEST(test_basic_simd_shuffle_avx);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_32x32);
-#endif  // #ifdef __AVX2__
-#endif  // #ifdef SEQAN_SSE4
-#endif
-}
-SEQAN_END_TESTSUITE
+#include "simd/simd_base.h"
+#include "simd/simd_base_seqan_impl.h"
+
+#endif // SEQAN_INCLUDE_SEQAN_SIMD_H_
