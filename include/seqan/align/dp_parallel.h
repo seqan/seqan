@@ -554,12 +554,12 @@ void implParallelTrace(TTarget & target,
     if ((idxH == length(seqH) - 1 && idxV == length(seqV) - 1) && IsGlobalAlignment_<TAlgorithm>::VALUE)
     {
         lastTraceValue = _retrieveInitialTraceDirection(value(navi), DPProfile());
-        _computeTraceback(target, value(navi), lastTraceValue, navi, seqH[idxH], seqV[idxV], DPBandConfig<BandOff>(), DPProfile(), False(), True());
+        _computeTraceback(target, value(navi), lastTraceValue, navi, length(seqH[idxH]), length(seqV[idxV]), DPBandConfig<BandOff>(), DPProfile(), False(), True());
     }
     else if ((idxH == 0 && idxV == 0) && IsGlobalAlignment_<TAlgorithm>::VALUE)
-        _computeTraceback(target, value(navi), lastTraceValue, navi, seqH[idxH], seqV[idxV], DPBandConfig<BandOff>(), DPProfile(), True(), False());
+        _computeTraceback(target, value(navi), lastTraceValue, navi, length(seqH[idxH]), length(seqV[idxV]), DPBandConfig<BandOff>(), DPProfile(), True(), False());
     else
-        _computeTraceback(target, value(navi), lastTraceValue, navi, seqH[idxH], seqV[idxV], DPBandConfig<BandOff>(), DPProfile(), False(), False());
+        _computeTraceback(target, value(navi), lastTraceValue, navi, length(seqH[idxH]), length(seqV[idxV]), DPBandConfig<BandOff>(), DPProfile(), False(), False());
 
     // Check if we reached end of alignment.
     if (idxH == 0 && idxV == 0)  // TODO(rmaerker): Need to be updated for the local alignment and the semi-global alignment.

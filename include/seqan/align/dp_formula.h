@@ -200,7 +200,7 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 
 template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgoTag, typename TTraceFlag, typename TExecPolicy>
-inline typename TraceBitMap_::TTraceValue
+inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,
