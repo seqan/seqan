@@ -73,7 +73,16 @@ struct LENGTH<SimdVector<TValue, LENGTH_> const>:
 
 // define a concept and its models
 // they allow us to define generic vector functions
-SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
+SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
+    typedef typename Reference<TSimdVector>::Type TReference;
+
+    TSimdVector a;
+
+    SEQAN_CONCEPT_USAGE(SimdVectorConcept)
+    {
+        static_assert(IsSameType<decltype(a[0]), TReference>::VALUE, "Type of a[] should be the same as the reference type of a.");
+    }
+};
 
 template <typename TSimdVector, typename TPosition>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename Value<TSimdVector>::Type)
