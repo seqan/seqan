@@ -182,6 +182,7 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskOmp>, TSp
         SEQAN_OMP_PRAGMA(barrier)
     }
     SEQAN_ASSERT_EQ(lastTask(graph)->refCount, 1u);
+    lastTask(graph)->execute(tls);
 }
 }  // namespace seqan
 
