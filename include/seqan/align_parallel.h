@@ -41,16 +41,25 @@
 
 #include <seqan/basic.h>
 #include <seqan/align.h>
+#include <seqan/parallel.h>
 
 // ============================================================================
-// DAG Task
+// DP Task
 // ============================================================================
 
-#include <seqan/align_parallel/dag_task_base.h>
-#include <seqan/align_parallel/dag_task_tbb.h>
+#include <seqan/align_parallel/dp_task_base.h>
+#if defined(SEQAN_TBB)
+#include <seqan/align_parallel/dp_task_tbb.h>
+#endif
+#if defined(_OPENMP)
+#include <seqan/align_parallel/dp_task_omp.h>
+#endif
+#include <seqan/align_parallel/dp_task_std.h>
 
 // ============================================================================
 // Interfaces.
 // ============================================================================
+
+#include <seqan/align_parallel/align_parallel_impl.h>
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_H_

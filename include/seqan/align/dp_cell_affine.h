@@ -105,6 +105,19 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+// Needed for banded chain alignment for the set.
+template <typename TStream, typename TScore>
+inline TStream& operator<<(TStream & stream,
+                           DPCell_<TScore, AffineGaps> const & dpCell)
+{
+    stream << "<S = " << dpCell._score << " H = " << dpCell._horizontalScore << " V = " << dpCell._verticalScore << ">";
+    return stream;
+}
+
+// ----------------------------------------------------------------------------
 // Function operator<()
 // ----------------------------------------------------------------------------
 
