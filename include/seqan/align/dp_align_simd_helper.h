@@ -89,11 +89,11 @@ struct SimdAlignVariableLengthTraits
 // Function _createSimdRepImpl()
 // ----------------------------------------------------------------------------
 
-#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    getValue(data[strPos + 1], chrPos), getValue(data[strPos], chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_32(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos + 16, chrPos), SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    getValue(data[strPos], chrPos), getValue(data[strPos + 1], chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos)
+#define SEQAN_CREATE_SIMD_REP_IMPL_32(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos), SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos + 16, chrPos)
 
 #define SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(MACRO, data, chrPos) MACRO(data, 0, chrPos)
 #define SEQAN_CREATE_SIMD_REP_FILL_IMPL(data, chrPos, SIZE) SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(SEQAN_CREATE_SIMD_REP_IMPL_##SIZE, data, chrPos)
@@ -514,4 +514,3 @@ _alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSet
 
 }  // namespace seqan
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_
-
