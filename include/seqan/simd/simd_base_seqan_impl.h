@@ -689,8 +689,27 @@ inline TSimdVector _gather(TValue const * memAddr,
     // 1. Unpack low idx values and interleave with 0 and gather from memAddr.
     // 2. Unpack high idx values and interleave with 0, than gather from memAddr.
     // 3. Merge 2 8x32 vectors into 1x16 vector by signed saturation. This operation reverts the interleave by the unpack operations above.
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_packs_epi32(_mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpacklo_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE),
-                                                              _mm256_i32gather_epi32(static_cast<int32_t const *>(memAddr), _mm256_unpackhi_epi16(SEQAN_VECTOR_CAST_(__m256i const &, idx), _mm256_set1_epi16(0)), SCALE)));
+    return SEQAN_VECTOR_CAST_(
+      TSimdVector,
+      _mm256_packs_epi32(
+        _mm256_i32gather_epi32(
+          static_cast<int32_t const *>(memAddr),
+          _mm256_unpacklo_epi16(
+            SEQAN_VECTOR_CAST_(__m256i const &, idx),
+            _mm256_set1_epi16(0)
+          ),
+          SCALE
+        ),
+        _mm256_i32gather_epi32(
+          static_cast<int32_t const *>(memAddr),
+          _mm256_unpackhi_epi16(
+            SEQAN_VECTOR_CAST_(__m256i const &, idx),
+            _mm256_set1_epi16(0)
+          ),
+          SCALE
+        )
+      )
+    );
 }
 
 // --------------------------------------------------------------------------
