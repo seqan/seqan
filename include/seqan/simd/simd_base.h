@@ -84,17 +84,204 @@ SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
     }
 };
 
+/**
+ * ```
+ * getValue(a, pos);
+ *
+ * // same as
+ *
+ * a[pos];
+ * ```
+ */
 template <typename TSimdVector, typename TPosition>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename Value<TSimdVector>::Type)
 getValue(TSimdVector &vector, TPosition pos);
 
+/**
+ * ```
+ * value(a, pos);
+ *
+ * // same as
+ *
+ * a[pos];
+ * ```
+ */
 template <typename TSimdVector, typename TPosition>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename Value<TSimdVector>::Type)
 value(TSimdVector &vector, TPosition pos);
 
+/**
+ * ```
+ * assignValue(a, pos, value);
+ *
+ * // same as
+ *
+ * a[pos] = value;
+ * ```
+ */
 template <typename TSimdVector, typename TPosition, typename TValue2>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
 assignValue(TSimdVector &vector, TPosition pos, TValue2 value);
+
+template <int ROWS, typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
+transpose(TSimdVector matrix[ROWS]);
+
+/**
+ * ```
+ * clearVector(a);
+ *
+ * // same as
+ *
+ * for(auto i = 0u; i < LENGTH; ++i)
+ *     c[i] = 0;
+ * ```
+ */
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
+clearVector(TSimdVector &vector);
+
+/**
+ * ```
+ * auto c = createVector<SimdVector4Int>(a);
+ *
+ * // same as
+ *
+ * for(auto i = 0u; i < LENGTH; ++i)
+ *     c[i] = a;
+ * ```
+ */
+template <typename TSimdVector, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+createVector(TValue x);
+
+/**
+ * ```
+ * fillVector(a, 1, 3, 23, 1337);
+ *
+ * // same as
+ *
+ * a[0] = 1;
+ * a[1] = 3;
+ * a[2] = 13;
+ * a[3] = 1337;
+ * ```
+ */
+template <typename TSimdVector, typename ...TValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
+fillVector(TSimdVector &vector, TValue const... args);
+
+/**
+ * ```
+ * c = cmpEq(a, b);
+ *
+ * // same as
+ *
+ * c = a == b;
+ * ```
+ */
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+cmpEq (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator == (TSimdVector const &a, TSimdVector const &b);
+
+/**
+ * ```
+ * c = cmpGt(a, b);
+ *
+ * // same as
+ *
+ * c = a > b;
+ * ```
+ */
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+cmpGt (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator > (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+max(TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator | (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
+operator |= (TSimdVector &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator & (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
+operator &= (TSimdVector &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator ~ (TSimdVector const &a);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator + (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator - (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator * (TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+operator/ (TSimdVector const &a, TSimdVector const &b);
+
+/**
+ * ```
+ * c = andNot(a, b);
+ *
+ * // same as
+ *
+ * for(auto i = 0u; i < LENGTH; ++i)
+ *     c[i] = (~a[i]) & b[i];
+ * ```
+ */
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+andNot(TSimdVector const &a, TSimdVector const &b);
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
+shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+shiftRightLogical(TSimdVector const &vector, const int imm);
+
+template <typename TSimdVector, typename TSimdVectorMask>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask);
+
+template <typename T, typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
+storeu(T * memAddr, TSimdVector const &vec);
+
+template <typename TSimdVector, typename T>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+load(T const * memAddr);
+
+template <typename TValue, typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+gather(TValue const * memAddr, TSimdVector const & idx);
 
 } // namespace seqan
 
