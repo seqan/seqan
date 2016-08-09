@@ -37,10 +37,16 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_H_
 
+// Define global macro to check if simd instructions are enabled.
+#define SEQAN_SIMD_ENABLED 1
+
+#define SEQAN_SEQANSIMD_ENABLED 1
+//#define SEQAN_UMESIMD_ENABLED 1
+
 #include "simd/simd_base.h"
 #include "simd/simd_base_seqan_impl.h"
 
-#if SEQAN_SIMD_ENABLED
+#if SEQAN_SEQANSIMD_ENABLED
     #if defined(SEQAN_SSE4)
     #include "simd/simd_base_seqan_impl_sse4.2.h"
     #endif // defined(SEQAN_SSE4)
@@ -51,5 +57,9 @@
 
     #include "simd/simd_base_seqan_interface.h"
 #endif // SEQAN_SIMD_ENABLED
+
+#if SEQAN_UMESIMD_ENABLED
+    #include "simd/simd_base_umesimd_impl.h"
+#endif
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_H_

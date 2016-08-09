@@ -37,9 +37,6 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
 
-// Define global macro to check if simd instructions are enabled.
-#define SEQAN_SIMD_ENABLED 1
-
 namespace seqan
 {
 
