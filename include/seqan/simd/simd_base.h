@@ -283,6 +283,14 @@ template <typename TValue, typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 gather(TValue const * memAddr, TSimdVector const & idx);
 
+// NOTE(rmaerker): Make this function available, also if SIMD is not enabled.
+template <typename TSimdVector, typename TValue>
+inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+createVector(TValue x)
+{
+    return x;
+}
+
 } // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_

@@ -40,4 +40,16 @@
 #include "simd/simd_base.h"
 #include "simd/simd_base_seqan_impl.h"
 
+#if SEQAN_SIMD_ENABLED
+    #if defined(SEQAN_SSE4)
+    #include "simd/simd_base_seqan_impl_sse4.2.h"
+    #endif // defined(SEQAN_SSE4)
+
+    #if defined(__AVX2__)
+    #include "simd/simd_base_seqan_impl_avx2.h"
+    #endif // defined(__AVX2__)
+
+    #include "simd/simd_base_seqan_interface.h"
+#endif // SEQAN_SIMD_ENABLED
+
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_H_
