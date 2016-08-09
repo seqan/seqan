@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+//         Marcel Ehrhardt <marcel.ehrhardt@fu-berlin.de>
 // ==========================================================================
 // Tests for SIMD vectors.
 // ==========================================================================
@@ -80,9 +81,517 @@ inline void test_matrix_transpose()
             SEQAN_ASSERT_EQ(tmp[i][j], random[j * ROWS + i]);
 }
 
+template <typename TSimdVector>
+void fillVectors(TSimdVector & a, TSimdVector & b)
+{
+    using namespace seqan;
+    constexpr auto length = LENGTH<TSimdVector>::VALUE;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        a[i] = i * 3;
+        b[i] = length - i;
+    }
 }
 
-#ifdef SEQAN_SSE4
+} // namespace seqan
+
+// ----------------------------------------------------------------------------
+// Configuration of typed tests for simd vectors.
+// ----------------------------------------------------------------------------
+
+template <typename TSimdVector_>
+class SimdVectorTestCommon : public seqan::Test
+{
+public:
+    using TValue = typename seqan::Value<TSimdVector_>::Type;
+    constexpr static auto const LENGTH = seqan::LENGTH<TSimdVector_>::VALUE;
+    using TSimdVector = TSimdVector_;
+};
+
+typedef
+        seqan::TagList<seqan::SimdVector<int8_t, 16>::Type,
+        seqan::TagList<seqan::SimdVector<int16_t, 8>::Type,
+        seqan::TagList<seqan::SimdVector<int32_t, 4>::Type,
+        // seqan::TagList<seqan::SimdVector<int64_t, 2>::Type,
+        seqan::TagList<seqan::SimdVector<uint8_t, 16>::Type,
+        seqan::TagList<seqan::SimdVector<uint16_t, 8>::Type,
+        seqan::TagList<seqan::SimdVector<uint32_t, 4>::Type
+        // seqan::TagList<seqan::SimdVector<uint64_t, 2>::Type
+        > > > > > >
+        // > >
+        SimdVectorCommonCommonTypes;
+
+SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
+
+#ifdef __SSE4_1__
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, ClearVector)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    auto zero = static_cast<TValue>(0);
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    clearVector(a);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)a[i] << " = " << 0 << std::endl;
+        SEQAN_ASSERT_EQ(a[i], zero);
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, CreateVector)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    auto scalar = static_cast<TValue>(23);
+    auto a = createVector<TSimdVector>(scalar);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)a[i] << " = " << 23 << std::endl;
+        SEQAN_ASSERT_EQ(a[i], scalar);
+    }
+}
+
+template <typename TSimdVector, int L>
+inline void
+test_fill_vector(TSimdVector & a, seqan::SimdParams_<2, L>)
+{
+    using namespace seqan;
+    fillVector(a, 0, 1);
+}
+
+template <typename TSimdVector, int L>
+inline void
+test_fill_vector(TSimdVector & a, seqan::SimdParams_<4, L>)
+{
+    using namespace seqan;
+    fillVector(a, 0, 1, 2, 3);
+}
+
+template <typename TSimdVector, int L>
+inline void
+test_fill_vector(TSimdVector & a, seqan::SimdParams_<8, L>)
+{
+    using namespace seqan;
+    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7);
+}
+
+template <typename TSimdVector, int L>
+inline void
+test_fill_vector(TSimdVector & a, seqan::SimdParams_<16, L>)
+{
+    using namespace seqan;
+    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+}
+
+template <typename TSimdVector, int L>
+inline void
+test_fill_vector(TSimdVector & a, seqan::SimdParams_<32, L>)
+{
+    using namespace seqan;
+    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a;
+    test_fill_vector(a, SimdParams_<length, 0>());
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)a[i] << " = " << i << std::endl;
+        SEQAN_ASSERT_EQ(a[i], static_cast<TValue>(i));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    constexpr auto length = TestFixture::LENGTH;
+
+    int zeros = 0, ones = ~0;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a == b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " == " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] == b[i] ? ones : zeros);
+        SEQAN_ASSERT_EQ(c[i], (i * 3) == (length - i) ? ones : zeros);
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    constexpr auto length = TestFixture::LENGTH;
+
+    int zeros = 0, ones = ~0;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a > b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? ones : zeros);
+        SEQAN_ASSERT_EQ(c[i], (i * 3) > (length - i) ? ones : zeros);
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = max(a, b);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = max (" << (int)a[i] << ", " << (int)b[i] << ")" << std::endl;
+        SEQAN_ASSERT_EQ(c[i], std::max(a[i], b[i]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(std::max(i * 3, length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOr)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a | b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " | " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] | b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) | (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOrAssign)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b, c;
+    fillVectors(a, b);
+
+    c = a;
+    c |= b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " | " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] | b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) | (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAnd)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a & b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " & " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] & b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) & (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndAssign)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b, c;
+    fillVectors(a, b);
+
+    c = a;
+    c &= b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " & " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] & b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) & (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseNot)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = ~a;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = ~" << (int)a[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~a[i]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~(i * 3)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Addition)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a + b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " + " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] + b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(length + 2*i));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Subtraction)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a - b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " - " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[i] - b[i]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3 - (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Multiplication)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a * b;
+
+    for (size_t i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " * " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[i] * b[i]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3 * (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Division)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = a / b;
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " * " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] / b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3 / (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndNot)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = andNot(a, b);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = (~" << (int)a[i] << ") & " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~a[i] & b[i]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~(i * 3) & (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, ShiftRightLogical)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = shiftRightLogical(a, 2);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " >> " << (int)2 << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] >> 2);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) >> 2));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    auto c = blend(b, a, a > b);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << " ? " << (int)a[i] << " : " << (int)b[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? a[i] : b[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) > (length - i) ? (i * 3) : (length - i)));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Storeu)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+
+    TValue c[length];
+    storeu(c, a);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Load)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, c;
+    fillVectors(a, c);
+
+    alignas(sizeof(TSimdVector)) TValue b[length];
+    storeu(b, a);
+    c = load<TSimdVector>(b);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[i]);
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a, idx;
+    fillVectors(a, idx);
+
+    for (auto i = 0u; i < length; ++i)
+        idx[i] = length - i - 1;
+
+    TValue b[length];
+    storeu(b, a);
+    auto c = gather(b, idx);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[idx[i]] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[idx[i]]);
+        SEQAN_ASSERT_EQ(c[i], a[length - i - 1]);
+    }
+}
 
 SEQAN_DEFINE_TEST(test_basic_simd_shuffle)
 {
@@ -111,6 +620,7 @@ SEQAN_DEFINE_TEST(test_basic_simd_transpose_16x16)
     seqan::test_matrix_transpose<16, seqan::SimdVector<unsigned char, 16>::Type>();
 }
 
+#endif  // #ifdef __SSE4_1__
 #ifdef __AVX2__
 
 SEQAN_DEFINE_TEST(test_basic_simd_shuffle_avx)
@@ -141,14 +651,12 @@ SEQAN_DEFINE_TEST(test_basic_simd_shuffle_avx)
     }
 }
 
-
 SEQAN_DEFINE_TEST(test_basic_simd_transpose_32x32)
 {
     seqan::test_matrix_transpose<32, seqan::SimdVector<unsigned char, 32>::Type >();
 }
 
 #endif  // #ifdef __AVX2__
-#endif  // #ifdef SEQAN_SSE4
 #endif  // SEQAN_SIMD_ENABLED
 
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
