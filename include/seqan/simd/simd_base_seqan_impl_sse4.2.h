@@ -516,6 +516,24 @@ inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, 
 }
 
 // --------------------------------------------------------------------------
+// _gather (128bit)
+// --------------------------------------------------------------------------
+
+template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE, typename TSimdParams>
+inline TSimdVector _gather(TValue const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+                           TSimdParams)
+{
+    TSimdVector ret;
+    for (auto i = 0u; i < LENGTH<TSimdVector>::VALUE; ++i)
+    {
+        ret[i] = memAddr[idx[i]];
+    }
+    return ret;
+}
+
+// --------------------------------------------------------------------------
 // _shuffleVector (128bit)
 // --------------------------------------------------------------------------
 
