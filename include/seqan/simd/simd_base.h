@@ -47,6 +47,30 @@ namespace seqan
 template <typename TValue, int LENGTH>
 struct SimdVector;
 
+template <typename TValue, int LENGTH>
+struct Value<SimdVector<TValue, LENGTH> >
+{
+    typedef TValue Type;
+};
+
+template <typename TValue, int LENGTH>
+struct Value<SimdVector<TValue, LENGTH> const>:
+    public Value<SimdVector<TValue, LENGTH> >
+{
+};
+
+template <typename TValue, int LENGTH_>
+struct LENGTH<SimdVector<TValue, LENGTH_> >
+{
+    enum { VALUE = LENGTH_ };
+};
+
+template <typename TValue, int LENGTH_>
+struct LENGTH<SimdVector<TValue, LENGTH_> const>:
+    public LENGTH<SimdVector<TValue, LENGTH_> >
+{
+};
+
 // define a concept and its models
 // they allow us to define generic vector functions
 SEQAN_CONCEPT(SimdVectorConcept, (T)) {};
