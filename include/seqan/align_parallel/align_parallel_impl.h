@@ -133,6 +133,21 @@ public:
 // Metafunctions
 // ============================================================================
 
+template <typename TCond1, typename TCond2>
+struct CorrectLastColumn_ : False
+{};
+
+template <>
+struct CorrectLastColumn_<True, True> : True
+{};
+
+template <typename TCond1, typename TCond2>
+struct CorrectLastRow_ : False
+{};
+
+template <>
+struct CorrectLastRow_<True, True> : True
+{};
 
 // ============================================================================
 // Functions
@@ -264,7 +279,7 @@ _computeCell(TDPScout & scout,
     // Copy values into horizontal buffer for the tile below this tile in vertical direction.
     auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
     (*scout.state.ptrHorBuffer)[pos].i1 = activeCell;
-    (*scout.state.ptrHorBuffer)[pos].i2 = TraceBitMap_<TScoreValue>::NONE;
+    (*scout.state.ptrHorBuffer)[pos].i2 = value(traceMatrixNavigator);
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
@@ -305,7 +320,7 @@ _computeCell(TDPScout & scout,
 
     activeCell = front(*scout.state.ptrVerBuffer).i1 = back(*scout.state.ptrHorBuffer).i1;  // Copy horizontal buffer value in active cell and in
     assignValue(traceMatrixNavigator, back(*scout.state.ptrHorBuffer).i2);
-    front(*scout.state.ptrVerBuffer).i2 = TraceBitMap_<>::NONE;   // Store trace value in vertical buffer.
+    front(*scout.state.ptrVerBuffer).i2 = value(traceMatrixNavigator);   // Store trace value in vertical buffer.
 
     if (TrackingEnabled_<TMetaColumn, FirstCell>::VALUE)
     {
@@ -314,7 +329,7 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell(); FinalCol;
+// Function _computeCell(); InnerCell, FinalCol;
 // ----------------------------------------------------------------------------
 
 // Stores computed values in vertical buffer for initializing next tile right of the current.
@@ -349,7 +364,7 @@ _computeCell(TDPScout & scout,
     // Store values in vertical buffer.
     auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
     (*scout.state.ptrVerBuffer)[pos].i1 = activeCell;
-    (*scout.state.ptrVerBuffer)[pos].i2 = TraceBitMap_<>::NONE;
+    (*scout.state.ptrVerBuffer)[pos].i2 = value(traceMatrixNavigator);
 
     if (TrackingEnabled_<TMetaColumn, InnerCell>::VALUE)
     {
@@ -358,7 +373,7 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell(); FinalCol;
+// Function _computeCell(); LastCell, FinalCol;
 // ----------------------------------------------------------------------------
 
 // Stores computed values in vertical buffer for initializing next tile right of the current.
@@ -393,7 +408,7 @@ _computeCell(TDPScout & scout,
                               TDPProfile()));
     // Store values in vertical and horizontal buffer.
     back(*scout.state.ptrHorBuffer).i1 = back(*scout.state.ptrVerBuffer).i1 = activeCell;
-    back(*scout.state.ptrHorBuffer).i2 = back(*scout.state.ptrVerBuffer).i2 = TraceBitMap_<>::NONE;
+    back(*scout.state.ptrHorBuffer).i2 = back(*scout.state.ptrVerBuffer).i2 = value(traceMatrixNavigator);
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
@@ -422,7 +437,9 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,
                   DPBandConfig<TBandSwitch> const & band,
-                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, Parallel> const & dpProfile)
+                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, Parallel> const & dpProfile,
+                  bool const & lastCol,
+                  bool const & lastRow)
 {
     typedef typename DefaultScoreMatrixSpec_<TAlignmentAlgorithm>::Type TScoreMatrixSpec;
 
@@ -484,7 +501,10 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
         return maxScore(dpScout);
 
     // Some check to get same behavior as old module.
-    if (IsSingleTrace_<TTraceFlag>::VALUE)
+    if (IsTracebackEnabled_<TTraceFlag>::VALUE &&
+        ((IsFreeEndGap_<TAlignmentAlgorithm, DPLastColumn>::VALUE && lastCol) ||
+        (IsFreeEndGap_<TAlignmentAlgorithm, DPLastRow>::VALUE && lastRow) ||
+        (lastCol && lastRow)))
     {
         // Check if max was found at the bottom right corner of the matrix.
         // This is also true if in last row, and last column
@@ -516,83 +536,38 @@ void implParallelTrace(TTarget & target,
                        TTracebackBlocks const & tracebackBlocks,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
-                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> const & /*dpProfile*/,
-                       typename TraceBitMap_<>::Type lastTraceValue = TraceBitMap_<>::NONE)
+                       DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> const & dpProfile)
 {
     typedef DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> DPProfile;
 
-    typedef typename Value<TTracebackBlocks>::Type                                                  TTraceMatHost;
-    typedef typename Value<TTraceMatHost>::Type                                                     TTraceValue;
-    typedef DPMatrix_<TTraceValue, FullDPMatrix, TTraceMatHost>                                     TDPTraceMatrix;
-    typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTracebackSpec>, NavigateColumnWise>   TDPTraceMatrixNavigator;
+    using TNavigator = BlockTraceNavigator<TTracebackBlocks const, TSequenceH const, TSequenceV const, TTracebackSpec>;
+    using TPos = typename impl::LocalPosition<TNavigator>::Type;
 
+    // Initialized the blockNavi.
+    TNavigator navi(tracebackBlocks, seqH, seqV, idxH, idxV, blockPos);
+    // extract firstValue?
+    auto traceValue = scalarValue(navi);
+    auto lastTraceValue = _retrieveInitialTraceDirection(traceValue, dpProfile);
 
-    // Emulate dp trace matrix and fill it with the corresponding trace block.
-    // Thus, we can use the existing traceback engine to compute the traceback.
-    TDPTraceMatrix dpTraceMatrix;
-    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH[idxH]) + 1);
-    setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, length(seqV[idxV]) + 1);
-    setHost(dpTraceMatrix, tracebackBlocks[idxH * length(seqV) + idxV]);
-    resize(dpTraceMatrix);  // Needed to actually update the internal variables.
-
-    TDPTraceMatrixNavigator navi;
-    _init(navi, dpTraceMatrix, DPBandConfig<BandOff>());  // Always assume Band off.
-    _setToPosition(navi, blockPos);  // Set the navigator to the correct position within the block.
-
-
-    // Delegation to the internal traceback engine.
-    // TODO(rrahn): Fix this to work with local and semi-global as well.
-    if ((idxH == length(seqH) - 1 && idxV == length(seqV) - 1) && IsGlobalAlignment_<TAlgorithm>::VALUE)
-    {
-        lastTraceValue = _retrieveInitialTraceDirection(value(navi), DPProfile());
-        _computeTraceback(target, value(navi), lastTraceValue, navi, length(seqH[idxH]), length(seqV[idxV]), DPBandConfig<BandOff>(), DPProfile(), False(), True());
-    }
-    else if ((idxH == 0 && idxV == 0) && IsGlobalAlignment_<TAlgorithm>::VALUE)
-        _computeTraceback(target, value(navi), lastTraceValue, navi, length(seqH[idxH]), length(seqV[idxV]), DPBandConfig<BandOff>(), DPProfile(), True(), False());
-    else
-        _computeTraceback(target, value(navi), lastTraceValue, navi, length(seqH[idxH]), length(seqV[idxV]), DPBandConfig<BandOff>(), DPProfile(), False(), False());
-    
-    // Check if we reached end of alignment.
-    if (idxH == 0 && idxV == 0)  // TODO(rmaerker): Need to be updated for the local alignment and the semi-global alignment.
-        return;
-    
-    // Now we need to determine the position where we start the tracing in the next block.
-    // case 1: alignment ends in cell (0,0)
-    if (position(navi) == 0)
-    {
-        --idxH; --idxV;
-        blockPos = length(tracebackBlocks[idxH * length(seqV) + idxV]) - 1;
-    }  // Case 2: alignment ends in cell (0,j).
-    else if (coordinate(navi, +DPMatrixDimension_::HORIZONTAL) == 0)  // Continues in block left!
-    {
-        SEQAN_ASSERT_GT(coordinate(navi, +DPMatrixDimension_::VERTICAL), 0u);
-        --idxH;
-        // Block pos is last column times length of the column + coordinate in vertical dimension.
-        blockPos = length(seqH[idxH]) * (length(seqV[idxV]) + 1) + coordinate(navi, +DPMatrixDimension_::VERTICAL);
-    }
-    else  // Case 3: alignment ends in cell (i,0).
-    {
-        SEQAN_ASSERT_EQ(coordinate(navi, +DPMatrixDimension_::VERTICAL), 0u);
-        SEQAN_ASSERT_GT(coordinate(navi, +DPMatrixDimension_::HORIZONTAL), 0u);
-        --idxV;
-        blockPos = coordinate(navi, +DPMatrixDimension_::HORIZONTAL) * (length(seqV[idxV]) + 1) + length(seqV[idxV]);
-    }
-    
-    // Recursive call to compute the traceback.
-    implParallelTrace(target, blockPos, idxH, idxV, tracebackBlocks, seqH, seqV, DPProfile(), lastTraceValue);
+    _computeTraceback(target, traceValue, lastTraceValue, navi,
+                      impl::toGlobalPosition(TPos(length(seqH) - 1, length(back(seqH))), navi, +DPMatrixDimension_::HORIZONTAL),
+                      impl::toGlobalPosition(TPos(length(seqV) - 1, length(back(seqV))), navi, +DPMatrixDimension_::VERTICAL),
+                      DPBandConfig<BandOff>(), DPProfile(), True(), True());
 }
 // ----------------------------------------------------------------------------
 // Function implParallelAlign()
 // ----------------------------------------------------------------------------
 
 // The block wise wrapper interface to arrange the dp matrix into blocks and process them via the minor diagonal.
-template <typename TTarget,
+template <typename TParSpec, typename TVecSpec,
+          typename TTarget,
           typename TTraceHost,
           typename TSeqH,
           typename TSeqV,
           typename TScoreValue, typename TScoreSpec>
 inline TScoreValue
-implParallelAlign(TTarget & target,
+implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
+                  TTarget & target,
                   TTraceHost & traceHost,
                   TSeqH const & seqH,
                   TSeqV const & seqV,
@@ -617,7 +592,7 @@ implParallelAlign(TTarget & target,
 
     // TODO(rrahn): Refine design. This design is based on the internal DP module and must be revised when changing the public API interface.
     typedef typename SubstituteAlignConfig_<AlignConfig<> >::Type TFreeEndGaps;
-    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, AffineGaps, TracebackOn<>, Parallel> TDPProfile;  // A type trait to configure the DP algorithm.
+    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> >, Parallel> TDPProfile;  // A type trait to configure the DP algorithm.
 
     typedef DPScoutState_<DPTiled<TBuffer> > TDPScoutState;  // Through the dpScoutState we access the buffer per tile.
 
@@ -724,14 +699,13 @@ implParallelAlign(TTarget & target,
     DPBandConfig<BandOff> dpBand;
     TTaskContext taskContext(&seqH, &seqV, &score, &dpBand, &tileBuffer, &tracebackBlock);
 
-    auto taskGraph = createGraph(taskContext, DPTaskOmp());
+    auto taskGraph = createGraph(taskContext, TParSpec());
     invoke(taskGraph);
 
 //    // TODO(rrahn): Fix to also support local and semi-global alignment!
-//    implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
-//                      seqH, seqV, TDPProfile());
+    implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
+                      seqH, seqV, TDPProfile());
     return _scoreOfCell(back(back(tileBuffer.horizontalBuffer)).i1);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -741,11 +715,13 @@ implParallelAlign(TTarget & target,
 // Main function to be called by the user.
 // The interface is minimalistic here, since we plan to revise the user interface
 // in the future.
-template <typename TTargetH,
+template <typename TExecPolicy,
+          typename TTargetH,
           typename TTargetV,
           typename TScoreValue, typename TScoreSpec>
 inline TScoreValue
-parallelAlign(TTargetH & targetH,
+parallelAlign(TExecPolicy const & policy,
+              TTargetH & targetH,
               TTargetV & targetV,
               Score<TScoreValue, TScoreSpec> const & score)
 {
@@ -794,7 +770,7 @@ parallelAlign(TTargetH & targetH,
     String<TTraceSegment> trace;  // Stores the trace segments which are converted at the end into the final alignment.
 
     // The main blockwise wrapper for the dp algorithm.
-    TScoreValue res = implParallelAlign(trace, traceMatrix, seqHBlocks, seqVBlocks, score);
+    TScoreValue res = implParallelAlign(policy, trace, traceMatrix, seqHBlocks, seqVBlocks, score);
     _adaptTraceSegmentsTo(targetH, targetV, trace);  // Convert to corresponding alignment representation.
     return res;
 }

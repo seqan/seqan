@@ -121,7 +121,6 @@ struct PreferGapsAtEnd_<DPProfile_<TAlgorithm, AffineGaps, TTracebackSpec, TExec
 template <typename TAlgorithm, typename TTraceSpec, typename TExecSpec>
 struct PreferGapsAtEnd_<DPProfile_<TAlgorithm, LinearGaps, TracebackOn<TracebackConfig_<TTraceSpec, GapsRight> >, TExecSpec> > : True{};
 
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -184,7 +183,6 @@ _isInBand(TracebackCoordinator_<TPosition> const & coordinator)
     return (coordinator._currColumn > coordinator._breakpoint1 || coordinator._currColumn <= coordinator._breakpoint2);
 }
 
-
 // ----------------------------------------------------------------------------
 // Function _doTracebackGoDiagonal()
 // ----------------------------------------------------------------------------
@@ -241,7 +239,8 @@ _doTracebackGoVertical(TTarget & target,
     // We are in a vertical gap. So continue after we reach the end of the vertical gap.
     if (IsSameType<TGapCosts, AffineGaps>::VALUE)
     {
-        while ((!(traceValue & TraceBitMap_<>::VERTICAL_OPEN) || (traceValue & TraceBitMap_<>::VERTICAL)) && (tracebackCoordinator._currRow != 1))
+        while ((!(traceValue & TraceBitMap_<>::VERTICAL_OPEN) || (traceValue & TraceBitMap_<>::VERTICAL)) &&
+               tracebackCoordinator._currRow != 1)
         {
             _traceVertical(matrixNavigator, _isInBand(tracebackCoordinator));
             traceValue = scalarValue(matrixNavigator);
@@ -318,7 +317,8 @@ _doTracebackGoHorizontal(TTarget & target,
     }
     if (IsSameType<TGapCosts, AffineGaps>::VALUE)
     {
-        while ((!(traceValue & TraceBitMap_<>::HORIZONTAL_OPEN) || (traceValue & TraceBitMap_<>::HORIZONTAL)) && (tracebackCoordinator._currColumn != 1))
+        while ((!(traceValue & TraceBitMap_<>::HORIZONTAL_OPEN) || (traceValue & TraceBitMap_<>::HORIZONTAL)) &&
+               tracebackCoordinator._currColumn != 1)
         {
             _traceHorizontal(matrixNavigator, _isInBand(tracebackCoordinator));
             traceValue = scalarValue(matrixNavigator);
@@ -506,9 +506,8 @@ void _computeTraceback(TTarget & target,
                        TTraceHead const &,
                        TTraceTail const &)
 {
-    typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
-    typedef typename Size<TContainer>::Type TSize;
-    typedef typename Position<TContainer>::Type TPosition;
+    typedef typename Size<TTarget>::Type TSize;
+    typedef typename Position<TDPTraceMatrixNavigator>::Type TPosition;
 
     if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
         return;

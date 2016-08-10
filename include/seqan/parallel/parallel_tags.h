@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+//         Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 // Tags to select serial/parallel algorithms.
 // ==========================================================================
@@ -42,6 +43,9 @@ namespace seqan {
 // ============================================================================
 // Forwards
 // ============================================================================
+
+template <typename T>
+struct IsExecutionPolicy;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -67,9 +71,74 @@ namespace seqan {
 struct Parallel_;
 typedef Tag<Parallel_> Parallel;
 
+// ----------------------------------------------------------------------------
+// Tag ExecutionPolicy
+// ----------------------------------------------------------------------------
+
+// Dynamic execution policy.
+template <typename TParallelSpec, typename TVectorSpec = Default>
+struct ExecutionPolicy{};
+
+// ----------------------------------------------------------------------------
+// Tag SerialExecutionPolicy
+// ----------------------------------------------------------------------------
+
+constexpr ExecutionPolicy<Serial> ser{};
+
+// ----------------------------------------------------------------------------
+// Tag VectorExecutionPolicy
+// ----------------------------------------------------------------------------
+
+struct VectorExecutionPolicy_;
+using VectorExecutionPolicy = Tag<VectorExecutionPolicy_>;
+constexpr ExecutionPolicy<Serial, VectorExecutionPolicy> vec{};
+
+// ----------------------------------------------------------------------------
+// Tag ParallelExecutionPolicyTbb
+// ----------------------------------------------------------------------------
+
+#if defined(SEQAN_TBB)
+struct ParallelExecutionPolicyTbb_;
+using ParallelExecutionPolicyTbb = Tag<ParallelExecutionPolicyTbb_>;
+constexpr ExecutionPolicy<ParallelExecutionPolicyTbb> parTbb{};
+constexpr ExecutionPolicy<ParallelExecutionPolicyTbb, VectorExecutionPolicy> parTbbVec{};
+#endif
+
+// ----------------------------------------------------------------------------
+// Tag ParallelExecutionPolicyOmp
+// ----------------------------------------------------------------------------
+
+#if defined(_OPENMP)
+struct ParallelExecutionPolicyOmp_;
+using ParallelExecutionPolicyOmp = Tag<ParallelExecutionPolicyOmp_>;
+constexpr ExecutionPolicy<ParallelExecutionPolicyOmp> parOmp{};
+constexpr ExecutionPolicy<ParallelExecutionPolicyOmp, VectorExecutionPolicy> parOmpVec{};
+#endif
+
+// ----------------------------------------------------------------------------
+// Tag ParallelExecutionPolicyNative
+// ----------------------------------------------------------------------------
+
+struct ParallelExecutionPolicyNative_;
+using ParallelExecutionPolicyNative = Tag<ParallelExecutionPolicyNative_>;
+constexpr ExecutionPolicy<ParallelExecutionPolicyNative> parNative{};
+constexpr ExecutionPolicy<ParallelExecutionPolicyNative, VectorExecutionPolicy> parNativeVec{};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction IsExecutionPolicy
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsExecutionPolicy : False
+{};
+
+template <typename TPar, typename TVec>
+struct IsExecutionPolicy<ExecutionPolicy<TPar, TVec> > : True
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultParallelSpec

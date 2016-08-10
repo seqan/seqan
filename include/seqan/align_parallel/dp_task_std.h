@@ -46,17 +46,17 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-struct DPTaskStd_;
-typedef Tag<DPTaskStd_> DPTaskStd;
+struct ParallelExecutionPolicyNative_;
+typedef Tag<ParallelExecutionPolicyNative_> ParallelExecutionPolicyNative;
 
 template <typename TTaskConfig, typename TThreadLocalStorage>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, DPTaskStd> :
-public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, DPTaskStd> >
+class DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyNative> :
+public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyNative> >
 {
 public:
 
     using TSize = typename TTaskConfig::TSize;
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, DPTaskStd> >;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyNative> >;
 
     // ============================================================================
     // Member variables.
@@ -109,13 +109,13 @@ public:
 // ============================================================================
 
 template <typename TTaskContext, typename TThreadLocalStorage>
-struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd> > : True
+struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative> > : True
 {};
 
 template <typename TTaskContext, typename TThreadLocalStorage>
-struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd> >
+struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative> >
 {
-    using TTask_ = DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd>;
+    using TTask_ = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>;
     using Type  = std::unique_ptr<TTask_>;
 };
 
@@ -125,10 +125,10 @@ struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd> >
 
 template <typename TTaskContext>
 inline auto
-createGraph(TTaskContext & context, DPTaskStd const & /*taskImplTag*/)
+createGraph(TTaskContext & context, ParallelExecutionPolicyNative const & /*taskImplTag*/)
 {
     using TThreadLocalStorage = typename TTaskContext::TDPContext;
-    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd>;
+    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>;
 
     DPTaskGraph<TDagTask> graph;
 
@@ -150,9 +150,9 @@ createGraph(TTaskContext & context, DPTaskStd const & /*taskImplTag*/)
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TSpec>
 inline void
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd>, TSpec> & graph)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>, TSpec> & graph)
 {
-    using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskStd>;
+    using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>;
     using TWorkQueue = ConcurrentQueue<TTask *>;
 
     struct DPThread

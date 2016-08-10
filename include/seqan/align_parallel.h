@@ -57,7 +57,13 @@
 #include <seqan/align_parallel/dp_task_std.h>
 
 // ============================================================================
-// Interfaces.
+// Helper
+// ============================================================================
+
+#include <seqan/align_parallel/dp_trace_matrix_navigator_block_wise.h>
+
+// ============================================================================
+// Interfaces
 // ============================================================================
 
 #include <seqan/align_parallel/align_parallel_impl.h>

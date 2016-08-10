@@ -141,6 +141,16 @@ struct Container<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> c
     typedef TDPMatrix const Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Position
+// ----------------------------------------------------------------------------
+
+template <typename TDPMatrix, typename TDPMatrixType, typename TNavigationSpec>
+struct Position<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> >
+{
+    typedef typename Position<TDPMatrix>::Type Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
