@@ -49,17 +49,14 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-struct DPTaskTbb_;
-typedef Tag<DPTaskTbb_> DPTaskTbb;
-
 template <typename TTaskConfig, typename TThreadLocalStorage>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, DPTaskTbb> :
-    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, DPTaskTbb> >,
+class DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyTbb> :
+    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyTbb> >,
     public tbb::task
 {
 public:
 
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, DPTaskTbb> >;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyTbb> >;
 
     // ============================================================================
     // Member variables.
@@ -123,7 +120,7 @@ public:
 // ============================================================================
 
 template <typename TTaskContext, typename TThreadLocalStorage>
-struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskTbb> > : True
+struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyTbb> > : True
 {};
 
 // ============================================================================
@@ -132,10 +129,10 @@ struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskTbb> > : Tru
 
 template <typename TTaskContext>
 inline auto
-createGraph(TTaskContext & context, DPTaskTbb const & /*taskImplTag*/)
+createGraph(TTaskContext & context, ParallelExecutionPolicyTbb const & /*taskImplTag*/)
 {
     using TThreadLocalStorage = tbb::enumerable_thread_specific<typename TTaskContext::TDPContext>;
-    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskTbb>;
+    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyTbb>;
 
     DPTaskGraph<TDagTask> graph;
 
@@ -158,7 +155,7 @@ createGraph(TTaskContext & context, DPTaskTbb const & /*taskImplTag*/)
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TSpec>
 inline void
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, DPTaskTbb>, TSpec> & graph)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyTbb>, TSpec> & graph)
 {
     lastTask(graph)->spawn_and_wait_for_all(*firstTask(graph));
     lastTask(graph)->execute();

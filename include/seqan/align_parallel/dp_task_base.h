@@ -169,12 +169,13 @@ public:
     inline void execute(TDPContext & dpContext)
     {
         // dpContext needs to be thread local storage.
-//        auto& dpContext = _derivedTask.getLocalDpContext();
         getDpTraceMatrix(dpContext) = _taskContext.getTraceBlock()[(_col * length(_taskContext.getSeqV())) + _row]; // Thread local.
         TDPScoutState scoutState(_taskContext.getTileBuffer().horizontalBuffer[_col], _taskContext.getTileBuffer().verticalBuffer[_row]);  // Task local
         String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
         _computeAlignment(dpContext, traceSegments, scoutState, _taskContext.getSeqH()[_col], _taskContext.getSeqV()[_row],
-                          _taskContext.getScore(), _taskContext.getBand(), typename TTaskConfig::TDPConfig());
+                          _taskContext.getScore(), _taskContext.getBand(), typename TTaskConfig::TDPConfig(),
+                          _col == length(_taskContext.getSeqH()) - 1,
+                          _row == length(_taskContext.getSeqV()) - 1);
 
         // Task is done.
 //        {
@@ -185,8 +186,6 @@ public:
 //            debug::printBuffer(std::cout, _taskContext.getTileBuffer().horizontalBuffer[_row]);
 //            std::cout << "\n" << std::endl;
 //        }
-//        _derivedTask.updateAndSpawnSuccessors(successor);
-//        return nullptr;
     }
 
 };
