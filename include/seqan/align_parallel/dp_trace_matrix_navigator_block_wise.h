@@ -175,7 +175,7 @@ _initNextBlock(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
 template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline void
 _traceHorizontal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
-                 bool isBandShift)
+                 bool const isBandShift)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
@@ -184,11 +184,9 @@ _traceHorizontal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
     if (coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) == 0)
     {
         --me.mBlockH;
-        auto blockPos = (length(me.mSeqH[me.mBlockH]) - 1) * (length(me.mSeqV[me.mBlockV]) + 1) +
+        auto blockPos = length(me.mSeqH[me.mBlockH]) * (length(me.mSeqV[me.mBlockV]) + 1) +
                         coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL);
         _initNextBlock(me, blockPos);
-        // Block pos is last column times length of the column + coordinate in vertical dimension.
-        return;
     }
     _traceHorizontal(me.mBlockNavigator, isBandShift);
 }
@@ -200,7 +198,7 @@ _traceHorizontal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
 template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline void
 _traceDiagonal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
-               bool isBandShift)
+               bool const isBandShift)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
@@ -210,28 +208,25 @@ _traceDiagonal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
     {  // Continue in previous diagonal block.
         --me.mBlockV;
         --me.mBlockH;
-        auto blockPos = (length(me.mSeqH[me.mBlockH]) - 1) * (length(me.mSeqV[me.mBlockV]) + 1) +
-                        length(me.mSeqV[me.mBlockV]) - 1;
+        auto blockPos = length(me.mSeqH[me.mBlockH]) * (length(me.mSeqV[me.mBlockV]) + 1) +
+                        length(me.mSeqV[me.mBlockV]);
         _initNextBlock(me, blockPos);
     }
     else if(coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL) == 0)
     {  // Continue in previous vertical block.
         --me.mBlockV;
-        auto blockPos = (coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) - 1) *
-                        (length(me.mSeqV[me.mBlockV]) + 1) + length(me.mSeqV[me.mBlockV]) - 1;
+        auto blockPos = coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) *
+                        (length(me.mSeqV[me.mBlockV]) + 1) + length(me.mSeqV[me.mBlockV]);
         _initNextBlock(me, blockPos);
     }
     else if (coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) == 0)
     {  // Continue in previous horizontal block.
         --me.mBlockH;
-        auto blockPos = (length(me.mSeqH[me.mBlockH]) - 1) * (length(me.mSeqV[me.mBlockV]) + 1) +
-                        coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL) - 1;
+        auto blockPos = length(me.mSeqH[me.mBlockH]) * (length(me.mSeqV[me.mBlockV]) + 1) +
+                        coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL);
         _initNextBlock(me, blockPos);
     }
-    else
-    {
-        _traceDiagonal(me.mBlockNavigator, isBandShift);
-    }
+    _traceDiagonal(me.mBlockNavigator, isBandShift);
 }
 
 // ----------------------------------------------------------------------------
@@ -241,7 +236,7 @@ _traceDiagonal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
 template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline void
 _traceVertical(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
-               bool isBandShift)
+               bool const isBandShift)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
@@ -250,13 +245,10 @@ _traceVertical(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
     {
         --me.mBlockV;
         auto blockPos = coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) *
-                        (length(me.mSeqV[me.mBlockV]) + 1) + length(me.mSeqV[me.mBlockV]) - 1;
+                        (length(me.mSeqV[me.mBlockV]) + 1) + length(me.mSeqV[me.mBlockV]);
         _initNextBlock(me, blockPos);
     }
-    else
-    {
-        _traceVertical(me.mBlockNavigator, isBandShift);
-    }
+    _traceVertical(me.mBlockNavigator, isBandShift);
 }
 
 // ----------------------------------------------------------------------------
