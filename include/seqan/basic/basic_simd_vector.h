@@ -42,26 +42,25 @@
 #include <utility>
 #include <tuple>
 
-#if defined(amd64) || defined(x86__64) || defined(i386)  // Only support these architectures at the moment.
-#if defined(STDLIB_VS)  // Microsoft C/C++-compatible compiler
-    #include <intrin.h>
-#else  // GCC-compatible compiler, targeting x86/x86-64
+// Currently only support the following compilers
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
+    // Define global macro to check if simd instructions are enabled.
+    #define SEQAN_SIMD_ENABLED
+
+    // Define maximal size of vector in byte.
+    #if defined(__AVX2__)
+        #define SEQAN_SIZEOF_MAX_VECTOR 32
+    #elif defined(__SSE4_1__) && defined(__SSE4_2__)
+        #define SEQAN_SSE4
+        #define SEQAN_SIZEOF_MAX_VECTOR 16
+    #else  // defined(__AVX2__)
+        #undef SEQAN_SIMD_ENABLED  // Disable simd if instruction set is not supported.
+    #endif  // defined(__AVX2__)
+#endif  // defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
+
+#ifdef SEQAN_SIMD_ENABLED  // Include header with intrinsics.
     #include <x86intrin.h>
-#endif  // defined(STDLIB_VS)
-
-// Define global macro to check if simd instructions are enabled.
-#define SEQAN_SIMD_ENABLED
-
-// Define maximal size of vector in byte.
-#if defined(__AVX2__)
-    #define SEQAN_SIZEOF_MAX_VECTOR 32
-#elif defined(__SSE4_1__) && defined(__SSE4_2__)
-    #define SEQAN_SSE4
-    #define SEQAN_SIZEOF_MAX_VECTOR 16
-#else  // defined(__AVX2__)
-    #undef SEQAN_SIMD_ENABLED  // Disable simd instructions.
-#endif  // defined(__AVX2__)
-#endif  // defined(amd64) || defined(x86__64) || defined(i386)
+#endif  // SEQAN_SIMD_ENABLED
 
 namespace seqan {
 
