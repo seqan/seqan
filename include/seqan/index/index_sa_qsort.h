@@ -185,6 +185,7 @@ namespace seqan
         typedef StringSet< TString, TSSetSpec > TText;
         typedef typename Size<TSA>::Type TSize;
         typedef typename Iterator<TSA, Standard>::Type TIter;
+        typedef typename Value<TSA>::Type              TSAValue;
 
         // 1. Fill suffix array with a permutation (the identity)
         TIter it = begin(SA, Standard());
@@ -192,14 +193,14 @@ namespace seqan
         {
             TSize len = length(s[j]);
             for(TSize i = 0; i < len; ++i, ++it)
-                *it = Pair<unsigned, TSize>(j, i);
+                *it = TSAValue(j, i);
         }
 
         // 2. Sort suffix array with quicksort
         std::sort(
             begin(SA, Standard()),
             end(SA, Standard()),
-            SuffixLess_<typename Value<TSA>::Type, TText const>(s));
+            SuffixLess_<TSAValue, TText const>(s));
     }
 
     // Fill suffix array with permutation (i, 0)
