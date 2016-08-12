@@ -108,7 +108,6 @@ public:
         SEQAN_ASSERT(localDpContext != nullptr);
         TBase::runScalar(*localDpContext);
         updateAndSpawn(pWorkQueue);
-        return nullptr;
     }
 
     template <typename TVec, typename TQueue>
