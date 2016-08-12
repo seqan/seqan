@@ -46,59 +46,118 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-struct ParallelExecutionPolicyNative_;
-typedef Tag<ParallelExecutionPolicyNative_> ParallelExecutionPolicyNative;
-
-template <typename TTaskConfig, typename TThreadLocalStorage>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyNative> :
-public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyNative> >
+template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy>
+class DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> :
+    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >
 {
 public:
 
     using TSize = typename TTaskConfig::TSize;
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyNative> >;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >;
 
     // ============================================================================
     // Member variables.
 
     std::atomic<unsigned>   refCount;
     TThreadLocalStorage*    localDpContext = nullptr;
+    bool                    mIsLastTask = false;
 
     // ============================================================================
     // Constructor.
 
     DPTaskImpl(TSize pCol, TSize pRow, TTaskConfig & pConfig) :
-    TBase(pCol, pRow, pConfig, *this)
+        TBase(pCol, pRow, pConfig, *this)
     {}
 
     // ============================================================================
     // Member functions.
 
-    void setRefCount(unsigned const n)
+    inline void
+    setRefCount(unsigned const n)
     {
         refCount.store(n, std::memory_order_relaxed);
     }
 
-    unsigned decrementRefCount()
+    inline unsigned
+    decrementRefCount()
     {
         return --refCount;
     }
 
-    unsigned incrementRefCount()
+    inline unsigned
+    incrementRefCount()
     {
         return ++refCount;
     }
 
     template <typename TQueue>
-    DPTaskImpl * execute(TQueue& pWorkQueue)
+    inline void
+    updateAndSpawn(TQueue & pWorkQueue)
+    {
+        for(auto& task : TBase::successor)
+        {
+            if (task != nullptr && task->decrementRefCount() == 0)
+                appendValue(pWorkQueue, task);
+        }
+    }
+
+    template <typename TVec, typename TQueue>
+    inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVec> >, void)
+    executeImpl(TQueue& pWorkQueue)
     {
         SEQAN_ASSERT(localDpContext != nullptr);
-        TBase::execute(*localDpContext);
+        TBase::runScalar(*localDpContext);
+        updateAndSpawn(pWorkQueue);
+        return nullptr;
+    }
 
-        for(auto t : TBase::successor)
+    template <typename TVec, typename TQueue>
+    inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVec>, void)
+    executeImpl(TQueue& pWorkQueue)
+    {
+        SEQAN_ASSERT(localDpContext != nullptr);
+
+        String<DPTaskImpl*> tasks;
+        {  // Acquire scoped lock.
+            std::lock_guard<decltype(TBase::_taskContext.mLock)> scopedLock(TBase::_taskContext.mLock);
+
+            appendValue(tasks, this);
+            if (length(pWorkQueue) >= TBase::_taskContext.mSimdLength - 1)
+                for (auto i = 0; i < TBase::_taskContext.mSimdLength - 1; ++i)
+                    appendValue(tasks, popFront(pWorkQueue));
+        }   // Release scoped lock.
+
+        SEQAN_ASSERT_GT(length(tasks), 0u);
+
+        if (length(tasks) == 1)
         {
-            if (t != nullptr && t->decrementRefCount() == 0)
-                appendValue(pWorkQueue, t);
+            front(tasks)->TBase::runScalar(*localDpContext);
+        }
+        else
+        {
+            SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
+            // Make to simd version!
+            TBase::runSimd(tasks, *localDpContext);
+        }
+        // Update and spawn sucessors.
+        for (auto& task : tasks)
+        {
+            task->updateAndSpawn(pWorkQueue);
+        }
+    }
+
+    template <typename TQueue>
+    inline DPTaskImpl *
+    execute(TQueue& pWorkQueue)
+    {
+        executeImpl<TVecExecPolicy>(pWorkQueue);
+        if (mIsLastTask)
+        {
+            {
+                std::lock_guard<std::mutex> lk(TBase::_taskContext.mLockEvent);
+                TBase::_taskContext.mReady = true;
+            }
+            TBase::_taskContext.mReadyEvent.notify_all();
         }
         return nullptr;
     }
@@ -108,14 +167,14 @@ public:
 // Metafunctions
 // ============================================================================
 
-template <typename TTaskContext, typename TThreadLocalStorage>
-struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative> > : True
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> > : True
 {};
 
-template <typename TTaskContext, typename TThreadLocalStorage>
-struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative> >
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >
 {
-    using TTask_ = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>;
+    using TTask_ = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative>;
     using Type  = std::unique_ptr<TTask_>;
 };
 
@@ -123,12 +182,14 @@ struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionP
 // Functions
 // ============================================================================
 
-template <typename TTaskContext>
+template <typename TTaskContext, typename TVecExecPolicy>
 inline auto
-createGraph(TTaskContext & context, ParallelExecutionPolicyNative const & /*taskImplTag*/)
+createGraph(TTaskContext & context,
+            TVecExecPolicy const & /*vecExecPolicy*/,
+            ParallelExecutionPolicyNative const & /*taskImplTag*/)
 {
     using TThreadLocalStorage = typename TTaskContext::TDPContext;
-    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>;
+    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative>;
 
     DPTaskGraph<TDagTask> graph;
 
@@ -144,15 +205,15 @@ createGraph(TTaskContext & context, ParallelExecutionPolicyNative const & /*task
             graph[i][j]->setRefCount(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0));
         }
     }
-    lastTask(graph)->incrementRefCount();
+    lastTask(graph)->mIsLastTask = true;
     return graph;
 }
 
-template <typename TTaskContext, typename TThreadLocalStorage, typename TSpec>
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
 inline void
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>, TSpec> & graph)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> > & graph)
 {
-    using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyNative>;
+    using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative>;
     using TWorkQueue = ConcurrentQueue<TTask *>;
 
     struct DPThread
@@ -172,7 +233,7 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecuti
 
                 SEQAN_ASSERT(task != nullptr);
                 task->localDpContext = &tls;
-                task->execute(*workQueuePtr);
+                task->template execute(*workQueuePtr);
             }
         }
     };
@@ -185,14 +246,17 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecuti
     waitForWriters(queue, std::thread::hardware_concurrency());
     appendValue(queue, firstTask(graph).get());  // Kick off execution.
 
-    spinWhileNeq(lastTask(graph)->refCount, 1u);  // Wait for threads to finish.
+    // Wait for threads to finish.
+    {
+        std::unique_lock<std::mutex> lk(lastTask(graph)->_taskContext.mLockEvent);
+        lastTask(graph)->_taskContext.mReadyEvent.wait(lk, [&graph]{return lastTask(graph)->_taskContext.mReady;});
+    }
 
-    appendValue(queue, lastTask(graph).get());
     for (unsigned jobId = 0; jobId < length(workerThreads); ++jobId)
         unlockWriting(queue);
 
-    SEQAN_ASSERT_EQ(lastTask(graph)->refCount, 1u);
     SEQAN_ASSERT(empty(queue));
+    // Barrier for waiting on the jobs.
     for (auto& worker : workerThreads)
         worker.join();
 }

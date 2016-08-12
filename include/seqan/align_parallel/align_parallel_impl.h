@@ -699,12 +699,12 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
     DPBandConfig<BandOff> dpBand;
     TTaskContext taskContext(&seqH, &seqV, &score, &dpBand, &tileBuffer, &tracebackBlock);
 
-    auto taskGraph = createGraph(taskContext, TParSpec());
+    auto taskGraph = createGraph(taskContext, TVecSpec(), TParSpec());
     invoke(taskGraph);
 
 //    // TODO(rrahn): Fix to also support local and semi-global alignment!
-    implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
-                      seqH, seqV, TDPProfile());
+//    implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
+//                      seqH, seqV, TDPProfile());
     return _scoreOfCell(back(back(tileBuffer.horizontalBuffer)).i1);
 }
 
