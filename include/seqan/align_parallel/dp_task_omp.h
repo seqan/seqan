@@ -87,7 +87,7 @@ public:
 
     template <typename TThreadStore>
     inline void
-    updataAndSpawn(TThreadStore & tls)
+    updateAndSpawn(TThreadStore & tls)
     {
         if (DPTaskImpl* t = TBase::successor[0])
         {
