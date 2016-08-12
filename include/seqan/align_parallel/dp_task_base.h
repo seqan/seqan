@@ -86,6 +86,11 @@ struct DPTaskContext
     using TDPScoutState = typename std::decay<std::tuple_element_t<8, TData> >::type;
 
     TData _data;
+    std::mutex mLock;
+    std::mutex mLockEvent;
+    std::condition_variable mReadyEvent;
+    bool       mReady = false;
+    unsigned   mSimdLength = 8;
 
     DPTaskContext() = default;
 
@@ -137,17 +142,17 @@ struct DPTaskContext
     }
 };
 
-template <typename TTaskConfig, typename TThreadLocalStorage, typename TSpec>
+template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy, typename TParExecPolicy>
 class DPTaskImpl;
 
 template <typename TTask>
 class DPTaskBase;
 
 // Base class.
-template <typename TTaskConfig, typename TThreadLocalStorage, typename TTaskSpec>
-class DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TTaskSpec> >
+template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy, typename TParExecPolicy>
+class DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, TParExecPolicy> >
 {
-    using TDerivedTask = DPTaskImpl<TTaskConfig, TThreadLocalStorage, TTaskSpec>;
+    using TDerivedTask = DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, TParExecPolicy>;
     using TDPScoutState = typename TTaskConfig::TDPScoutState;
     using TSize = typename TTaskConfig::TSize;
 public:
@@ -166,9 +171,8 @@ public:
     {}
 
     template <typename TDPContext>
-    inline void execute(TDPContext & dpContext)
+    inline void runScalar(TDPContext & dpContext)
     {
-        // dpContext needs to be thread local storage.
         getDpTraceMatrix(dpContext) = _taskContext.getTraceBlock()[(_col * length(_taskContext.getSeqV())) + _row]; // Thread local.
         TDPScoutState scoutState(_taskContext.getTileBuffer().horizontalBuffer[_col], _taskContext.getTileBuffer().verticalBuffer[_row]);  // Task local
         String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
@@ -176,20 +180,46 @@ public:
                           _taskContext.getScore(), _taskContext.getBand(), typename TTaskConfig::TDPConfig(),
                           _col == length(_taskContext.getSeqH()) - 1,
                           _row == length(_taskContext.getSeqV()) - 1);
-
-        // Task is done.
-//        {
-//            std::lock_guard<std::mutex> lock(debug::m);
-//            std::cout << "Horizontal Buffer: " << "(" << _col << ", " << _row <<")\n";
-//            debug::printBuffer(std::cout, _taskContext.getTileBuffer().horizontalBuffer[_col]);
-//            std::cout << "Vertical Buffer:\n";
-//            debug::printBuffer(std::cout, _taskContext.getTileBuffer().horizontalBuffer[_row]);
-//            std::cout << "\n" << std::endl;
-//        }
     }
 
+    template <typename TTasks, typename TDPContext>
+    inline void runSimd(TTasks const & tasks, TDPContext & /*dpContext*/)
+    {
+//        getDpTraceMatrix(dpContext) = _taskContext.getTraceBlock()[(_col * length(_taskContext.getSeqV())) + _row]; // Thread local.
+//        TDPScoutState scoutState(_taskContext.getTileBuffer().horizontalBuffer[_col], _taskContext.getTileBuffer().verticalBuffer[_row]);  // Task local
+//        String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
+//        _computeAlignment(dpContext, traceSegments, scoutState, _taskContext.getSeqH()[_col], _taskContext.getSeqV()[_row],
+//                          _taskContext.getScore(), _taskContext.getBand(), typename TTaskConfig::TDPConfig(),
+//                          _col == length(_taskContext.getSeqH()) - 1,
+//                          _row == length(_taskContext.getSeqV()) - 1);
+        using TSeqH = typename std::decay<decltype(_taskContext.getSeqH()[_col])>::type;
+        using TSeqV = typename std::decay<decltype(_taskContext.getSeqV()[_row])>::type;
+        StringSet<Gaps<TSeqH> > setH;
+        StringSet<Gaps<TSeqV> > setV;
+        for (auto& task : tasks)
+        {
+            Gaps<TSeqH> gapsH;
+            assignSource(gapsH, _taskContext.getSeqH()[task->_col]);
+            Gaps<TSeqV> gapsV;
+            assignSource(gapsV, _taskContext.getSeqV()[task->_row]);
+            appendValue(setH, gapsH);
+            appendValue(setV, gapsV);
+        }
+        globalAlignment(setH, setV, _taskContext.getScore());
+    }
+
+    // TODO(rrahn): Remove after refactoring omp dag.
+    template <typename TDPContext>
+    inline void execute(TDPContext & dpContext)
+    {
+        runScalar(dpContext);
+        _derivedTask.updateAndSpawnScalar();
+    }
 };
 
+// ----------------------------------------------------------------------------
+// Class DPTaskGraph
+// ----------------------------------------------------------------------------
 
 template <typename TTask, typename TSpec = void>
 class DPTaskGraph

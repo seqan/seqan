@@ -129,6 +129,22 @@ constexpr ExecutionPolicy<ParallelExecutionPolicyNative, VectorExecutionPolicy> 
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction IsVectorExecutionPolicy
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsVectorExecutionPolicy : False
+{};
+
+template <>
+struct IsVectorExecutionPolicy<VectorExecutionPolicy> : True
+{};
+
+template <typename TPar, typename TVec>
+struct IsVectorExecutionPolicy<ExecutionPolicy<TPar, TVec> > : IsVectorExecutionPolicy<TVec>
+{};
+
+// ----------------------------------------------------------------------------
 // Metafunction IsExecutionPolicy
 // ----------------------------------------------------------------------------
 

@@ -49,19 +49,23 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTaskConfig, typename TThreadLocalStorage>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyTbb> :
-    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyTbb> >,
+template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy>
+class DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> :
+    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >,
     public tbb::task
 {
 public:
 
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyTbb> >;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >;
+    using TSimdQueue = ConcurrentQueue<DPTaskImpl*>;
 
     // ============================================================================
     // Member variables.
 
     std::shared_ptr<TThreadLocalStorage> _ptrTls;
+    TSimdQueue*                          mSimdQueuePtr = nullptr;
+    bool                                 mIsLastTask = false;
+//    std::atomic<uint8_t>                 mRefCount;
 
     // ============================================================================
     // Constructor.
@@ -97,20 +101,104 @@ public:
         return _ptrTls->local();
     }
 
-    template <typename TArray>
-    void updateAndSpawnSuccessors(TArray & successor)
+    template <typename TVec>
+    inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVec> >, void)
+    updateAndSpawn()
     {
-        for (auto& t : successor)
-            if (t != nullptr && t->decrementRefCount() == 0)
-                spawn(*t);
+        for (auto& task : TBase::successor)
+        {
+            if (task != nullptr && task->decrementRefCount() == 0)
+            {
+                spawn(*task);
+            }
+        }
     }
 
-    task* execute()
+    template <typename TVec>
+    inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVec> , void)
+    updateAndSpawn()
     {
-        TBase::execute(_ptrTls->local());
-        for (auto& t : TBase::successor)
-            if (t != nullptr && t->decrementRefCount() == 0)
-                spawn(*t);
+        for (auto& task : TBase::successor)
+        {
+            if (task != nullptr && task->decrementRefCount() == 0)
+            {
+                task->mSimdQueuePtr = mSimdQueuePtr;  // Forwarding the simd queue.
+                appendValue(*mSimdQueuePtr, task);
+                spawn(*task);
+            }
+        }
+    }
+
+    template <typename TVec>
+    inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVec> >, void)
+    executeImpl()
+    {
+        SEQAN_ASSERT(_ptrTls != nullptr);
+        TBase::runScalar(_ptrTls->local());
+        updateAndSpawn<TVecExecPolicy>();
+    }
+
+    template <typename TVec>
+    inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVec> , void)
+    executeImpl()
+    {
+        SEQAN_ASSERT(localDpContext != nullptr);
+        SEQAN_ASSERT(mSimdQueuePtr != nullptr);
+
+        String<DPTaskImpl*> tasks;
+        {  // Acquire scoped lock.
+            std::lock_guard<decltype(TBase::_taskContext.mLock)> scopedLock(TBase::_taskContext.mLock);
+
+            if (empty(*mSimdQueuePtr))
+            {
+                return;
+            }
+
+            if (length(*mSimdQueuePtr) < TBase::_taskContext.mSimdLength)
+            {
+                appendValue(tasks, popFront(*mSimdQueuePtr));
+            }
+            else
+            {
+                SEQAN_ASSERT_GEQ(length(*mSimdQueuePtr), TBase::_taskContext.mSimdLength);
+                for (auto i = 0; i < TBase::_taskContext.mSimdLength; ++i)
+                    appendValue(tasks, popFront(*mSimdQueuePtr));
+            }
+        }  // Release scoped lock.
+
+        SEQAN_ASSERT_GT(length(tasks), 0u);
+
+        if (length(tasks) == 1)
+        {
+            front(tasks)->TBase::runScalar(_ptrTls->local());
+        }
+        else
+        {
+            SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
+            // Make to simd version!
+            TBase::runSimd(tasks, _ptrTls->local());
+        }
+        // Update and spawn sucessors.
+        for (auto& task : tasks)
+        {
+            task->template updateAndSpawn<TVecExecPolicy>();
+            if (task->mIsLastTask)
+            {
+                cancel_group_execution();  // Notify, that all queued tasks can be canceled.
+                {
+                    std::lock_guard<std::mutex> lk(TBase::_taskContext.mLockEvent);
+                    TBase::_taskContext.mReady = true;
+                }
+                TBase::_taskContext.mReadyEvent.notify_all();
+            }
+        }
+    }
+
+    // Override of tbb::task::execute()
+    task *
+    execute()
+    {
+        executeImpl<TVecExecPolicy>();
         return nullptr;
     }
 };
@@ -119,20 +207,22 @@ public:
 // Metafunctions
 // ============================================================================
 
-template <typename TTaskContext, typename TThreadLocalStorage>
-struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyTbb> > : True
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> > : True
 {};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TTaskContext>
+template <typename TTaskContext, typename TVecExecPolicy>
 inline auto
-createGraph(TTaskContext & context, ParallelExecutionPolicyTbb const & /*taskImplTag*/)
+createGraph(TTaskContext & context,
+            TVecExecPolicy const & /*vecExecPolicy*/,
+            ParallelExecutionPolicyTbb const & /*taskImplTag*/)
 {
     using TThreadLocalStorage = tbb::enumerable_thread_specific<typename TTaskContext::TDPContext>;
-    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyTbb>;
+    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>;
 
     DPTaskGraph<TDagTask> graph;
 
@@ -149,17 +239,35 @@ createGraph(TTaskContext & context, ParallelExecutionPolicyTbb const & /*taskImp
             graph[i][j]->setRefCount(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0));
         }
     }
-    graph[length(context.getSeqH())-1][length(context.getSeqV())-1]->incrementRefCount();
+    lastTask(graph)->mIsLastTask = true;
     return graph;
 }
 
-template <typename TTaskContext, typename TThreadLocalStorage, typename TSpec>
-inline void
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyTbb>, TSpec> & graph)
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVecExecPolicy> >, void)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>, TSpec> & graph)
 {
+    lastTask(graph)->incrementRefCount();
     lastTask(graph)->spawn_and_wait_for_all(*firstTask(graph));
     lastTask(graph)->execute();
     tbb::task::destroy(*lastTask(graph));
+}
+
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVecExecPolicy>, void)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>, TSpec> & graph)
+{
+    using DPDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>;
+    ConcurrentQueue<DPDagTask*> queue;
+    firstTask(graph)->mSimdQueuePtr = &queue;
+    appendValue(queue, firstTask(graph));
+    lastTask(graph)->spawn(*firstTask(graph));
+
+    {
+        std::unique_lock<std::mutex> lk(lastTask(graph)->_taskContext.mLockEvent);
+        lastTask(graph)->_taskContext.mReadyEvent.wait(lk, [&graph]{return lastTask(graph)->_taskContext.mReady;});
+    }
+    SEQAN_ASSERT(empty(queue));
 }
 
 }  // namespace seqan

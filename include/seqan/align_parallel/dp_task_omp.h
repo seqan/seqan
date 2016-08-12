@@ -46,17 +46,14 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-struct ParallelExecutionPolicyOmp_;
-typedef Tag<ParallelExecutionPolicyOmp_> ParallelExecutionPolicyOmp;
-
-template <typename TTaskConfig, typename TThreadLocalStorage>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyOmp> :
-    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyOmp> >
+template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy>
+class DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> :
+    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >
 {
 public:
 
     using TSize = typename TTaskConfig::TSize;
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, ParallelExecutionPolicyOmp> >;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >;
 
     // ============================================================================
     // Member variables.
@@ -73,27 +70,25 @@ public:
     // ============================================================================
     // Member functions.
 
-    void setRefCount(unsigned const n)
+    inline void setRefCount(unsigned const n)
     {
         refCount.store(n, std::memory_order_relaxed);
     }
 
-    unsigned decrementRefCount()
+    inline unsigned decrementRefCount()
     {
         return --refCount;
     }
 
-    unsigned incrementRefCount()
+    inline unsigned incrementRefCount()
     {
         return ++refCount;
     }
 
     template <typename TThreadStore>
-    DPTaskImpl* execute(TThreadStore & tls)
+    inline void
+    updataAndSpawn(TThreadStore & tls)
     {
-        TBase::execute(tls[omp_get_thread_num()]);
-
-        // spawning right and downward neighbors
         if (DPTaskImpl* t = TBase::successor[0])
         {
             if (t->decrementRefCount() == 0)
@@ -118,6 +113,13 @@ public:
                 t->execute(tls);
             }
         }
+    }
+
+    template <typename TThreadStore>
+    DPTaskImpl* execute(TThreadStore & tls)
+    {
+        TBase::runScalar(tls[omp_get_thread_num()]);
+        updateAndSpawn(tls);
         return nullptr;
     }
 };
@@ -126,14 +128,14 @@ public:
 // Metafunctions
 // ============================================================================
 
-template <typename TTaskContext, typename TThreadLocalStorage>
-struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyOmp> > : True
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> > : True
 {};
 
-template <typename TTaskContext, typename TThreadLocalStorage>
-struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyOmp> >
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >
 {
-    using TTask_ = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyOmp>;
+    using TTask_ = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>;
     using Type  = std::unique_ptr<TTask_>;
 };
 
@@ -141,12 +143,14 @@ struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionP
 // Functions
 // ============================================================================
 
-template <typename TTaskContext>
+template <typename TTaskContext, typename TVecExecPolicy>
 inline auto
-createGraph(TTaskContext & context, ParallelExecutionPolicyOmp const & /*taskImplTag*/)
+createGraph(TTaskContext & context,
+            TVecExecPolicy const & /*vecExecPolicy*/,
+            ParallelExecutionPolicyOmp const & /*taskImplTag*/)
 {
     using TThreadLocalStorage = typename TTaskContext::TDPContext;
-    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyOmp>;
+    using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>;
 
     DPTaskGraph<TDagTask> graph;
 
@@ -166,9 +170,9 @@ createGraph(TTaskContext & context, ParallelExecutionPolicyOmp const & /*taskImp
     return graph;
 }
 
-template <typename TTaskContext, typename TThreadLocalStorage, typename TSpec>
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
 inline void
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, ParallelExecutionPolicyOmp>, TSpec> & graph)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>, TSpec> & graph)
 {
     std::vector<TThreadLocalStorage> tls(omp_get_max_threads());
     SEQAN_OMP_PRAGMA(parallel)

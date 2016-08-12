@@ -772,6 +772,34 @@ globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
     return _alignWrapper(gapSeqSetH, gapSeqSetV, scoringScheme, TAlignConfig2(), TGapModel());
 }
 
+// Interface without algorithm tag.
+template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
+          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
+                                    StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, NeedlemanWunsch());
+    else
+        return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
+          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
+                                    StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig);
+}
+
 // ----------------------------------------------------------------------------
 // Function globalAlignment()        [unbanded, SIMD version, StringSet<Align>]
 // ----------------------------------------------------------------------------
