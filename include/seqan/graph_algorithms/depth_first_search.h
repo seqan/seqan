@@ -29,13 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Authors: Tobias Raussch <rausch@embl.de>, Ryan Wick <rrwick@gmail.com>
+// Author: Tobias Raussch <rausch@embl.de>
+// Author: Ryan Wick <rrwick@gmail.com>
 // ==========================================================================
 // Implementation of Depth-First-Search algorithm.
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
+
 #include <vector>
 #include <utility>
 
@@ -97,7 +99,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
     typedef typename Value<TPredecessorMap>::Type TPredVal;
     typedef typename Iterator<Graph<TSpec>, AdjacencyIterator>::Type TAdjacencyIterator;
 
-    enum class Task : uint8_t
+    enum class _DfsTask : uint8_t
     {
         EXPLORE,
         FINISH
@@ -121,7 +123,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
     // We do the DFS non-recursively using a stack. The stack holds two possible tasks:
     //   EXPLORE, which means we must follow that vertex's edges
     //   FINISH, which means the vertex just needs a finish time
-    std::vector<std::pair<TVertexDescriptor, Task> > vStack;
+    std::vector<std::pair<TVertexDescriptor, _DfsTask> > vStack;
 
     // The graph may not be connected, so start at every vertex.
     goBegin(it);
@@ -135,7 +137,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
         }
 
         vStack.clear();
-        vStack.emplace_back(v, Task::EXPLORE);
+        vStack.emplace_back(v, _DfsTask::EXPLORE);
         while (!vStack.empty())
         {
             // Get the vertex and task from the top of the stack.
@@ -143,7 +145,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
             vStack.pop_back();
             TVertexDescriptor v = stackItem.first;
 
-            if (stackItem.second == Task::FINISH)
+            if (stackItem.second == _DfsTask::FINISH)
             {
                 assignProperty(finish, v, ++time);
             }
@@ -151,7 +153,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
             {
                 assignProperty(tokenMap, v, true);    // label as visited
                 assignProperty(disc, v, ++time);      // set discovery time
-                vStack.emplace_back(v, Task::FINISH); // add a task to the stack so the vertex will get a finish time
+                vStack.emplace_back(v, _DfsTask::FINISH); // add a task to the stack so the vertex will get a finish time
 
                 // Add EXPLORE tasks to the stack for each unvisited adjacent vertex. They are added in reverse order
                 // so the first adjacent vertex will be the first to come off the stack. This is to mimic the behaviour
@@ -164,7 +166,7 @@ void depthFirstSearch(TPredecessorMap & predecessor,
                     TVertexDescriptor nextV = getValue(itad);
                     if (!getProperty(tokenMap, nextV))
                     {
-                        vStack.emplace_back(nextV, Task::EXPLORE);
+                        vStack.emplace_back(nextV, _DfsTask::EXPLORE);
                         assignProperty(predecessor, nextV, v);
                     }
                 }
