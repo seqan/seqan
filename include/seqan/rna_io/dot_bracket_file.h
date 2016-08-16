@@ -59,7 +59,7 @@ namespace seqan {
  * @class DotBracketFileIn
  * @signature typedef FormattedFile<DotBracket, Input> DotBracketFileIn;
  * @extends FormattedFileIn
- * @headerfile <seqan/rna_io.h>
+ * @headerfile <seqan/Rna_io.h>
  * @brief Class for reading DotBracket files.
  *
  * @see DotBracketHeader
@@ -76,7 +76,7 @@ typedef FormattedFile<DotBracket, Input>   DotBracketFileIn;
  * @class DotBracketFileOut
  * @signature typedef FormattedFile<DotBracket, Output> DotBracketFileOut;
  * @extends FormattedFileOut
- * @headerfile <seqan/rna_io.h>
+ * @headerfile <seqan/Rna_io.h>
  * @brief Class for writing DotBracket files.
  *
  * @see DotBracketHeader
@@ -92,7 +92,7 @@ typedef FormattedFile<DotBracket, Output>  DotBracketFileOut;
 template <typename TDirection, typename TSpec, typename TStorageSpec>
 struct FormattedFileContext<FormattedFile<DotBracket, TDirection, TSpec>, TStorageSpec>
 {
-    typedef RNAIOContext Type;
+    typedef RnaIOContext Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -111,20 +111,20 @@ struct FileFormat<FormattedFile<DotBracket, TDirection, TSpec> >
 
 template <typename TSpec>
 inline void
-writeRecord(FormattedFile<DotBracket, Output, TSpec> & file, RNARecord & record)
+writeRecord(FormattedFile<DotBracket, Output, TSpec> & file, RnaRecord & record)
 {
     writeRecord(file.iter, record, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeHeader(); DotBracketHeader
+// Function readHeader(); RnaHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeHeader(FormattedFile<DotBracket, Output, TSpec> & file, RNAHeader & header)
+readRecord(RnaRecord & record, FormattedFile<Connect, Input, TSpec> & file)
 {
-    writeHeader(file.iter, header, file.format);
+    readHeader(record, context(file), file.iter, file.format);
 }
 
 

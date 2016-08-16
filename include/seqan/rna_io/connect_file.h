@@ -52,18 +52,18 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Typedef RNAFileIn
+// Typedef RnaFileIn
 // ----------------------------------------------------------------------------
 
 /*!
- * @class RNAFileIn
- * @signature typedef FormattedFile<RNA, Input> ConenctFileIn;
+ * @class RnaFileIn
+ * @signature typedef FormattedFile<Rna, Input> ConenctFileIn;
  * @extends FormattedFileIn
- * @headerfile <seqan/RNA_format_io.h>
- * @brief Class for reading RNA files.
+ * @headerfile <seqan/Rna_format_io.h>
+ * @brief Class for reading Rna files.
  *
- * @see RNAHeader
- * @see RNARecord
+ * @see RnaHeader
+ * @see RnaRecord
  */
 typedef FormattedFile<Connect, Input>   ConnectFileIn;
 
@@ -72,14 +72,14 @@ typedef FormattedFile<Connect, Input>   ConnectFileIn;
 // ----------------------------------------------------------------------------
 
 /*!
- * @class RNAFileOut
- * @signature typedef FormattedFile<RNA, Output> ConenctFileOut;
+ * @class RnaFileOut
+ * @signature typedef FormattedFile<Rna, Output> ConenctFileOut;
  * @extends FormattedFileOut
- * @headerfile <seqan/RNA_format_io.h>
- * @brief Class for writing RNA files.
+ * @headerfile <seqan/Rna_format_io.h>
+ * @brief Class for writing Rna files.
  *
- * @see RNAHeader
- * @see RNARecord
+ * @see RnaHeader
+ * @see RnaRecord
  */
 
 typedef FormattedFile<Connect, Output>  ConnectFileOut;
@@ -91,7 +91,7 @@ typedef FormattedFile<Connect, Output>  ConnectFileOut;
 template <typename TDirection, typename TSpec, typename TStorageSpec>
 struct FormattedFileContext<FormattedFile<Connect, TDirection, TSpec>, TStorageSpec>
 {
-    typedef RNAIOContext Type;
+    typedef RnaIOContext Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -104,25 +104,15 @@ struct FileFormat<FormattedFile<Connect, TDirection, TSpec> >
     typedef Connect Type;
 };
 
-// ----------------------------------------------------------------------------
-// Function readHeader(); RNAHeader
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline void
-readHeader(RNAHeader & header, FormattedFile<Connect, Input, TSpec> & file)
-{
-    readHeader(header, context(file), file.iter, file.format);
-}
 
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); RNAHeader
+// Function readRecord(); RnaHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-readRecord(RNARecord & record, FormattedFile<Connect, Input, TSpec> & file)
+readRecord(RnaRecord & record, FormattedFile<Connect, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -130,25 +120,14 @@ readRecord(RNARecord & record, FormattedFile<Connect, Input, TSpec> & file)
 
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); RNARecord
+// Function writeRecord(); RnaRecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeRecord(FormattedFile<Connect, Output, TSpec> & file, RNARecord & record)
+writeRecord(FormattedFile<Connect, Output, TSpec> & file, RnaRecord & record)
 {
     writeRecord(file.iter, record, file.format);
-}
-
-//--------------------------------------------------------------------------
-// Function writeHeader(); RNAHeader
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline void
-writeHeader(FormattedFile<Connect, Output, TSpec> & file, RNAHeader & header)
-{
-    writeHeader(file.iter, header, file.format);
 }
 
 

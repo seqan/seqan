@@ -34,18 +34,18 @@
 // This file contains routines to read and write to connect format files (.ct)
 // ==========================================================================
 
-#ifndef SEQAN_RNA_FORMAT_READ_H
-#define SEQAN_RNA_FORMAT_READ_H
+#ifndef SEQAN_CONNECT_FORMAT_READ_WRITE_H
+#define SEQAN_CONNECT_FORMAT_READ_WRITE_H
 
 #include <seqan/stream.h>
 
 
 /* IMPLEMENTATION NOTES
 
-RNA FORMAT example:
+Rna FORMAT example:
 
-=> HEADER START : number of bases in the sequence
-=> HEADER END: title of the structure
+=> record START : number of bases in the sequence
+=> record END: title of the structure
 => Each line has information about a base pair in the sequence
 	Each line is a base, with this order of information:
 		- Base number: index n
@@ -53,13 +53,13 @@ RNA FORMAT example:
 		- Index n-1
 		- Index n+1
 		- Number of the base to which n is paired. No pairing is indicated by 0 (zero).
-		- Natural numbering. RNAstructure ignores the actual value given in natural numbering, 
+		- Natural numbering. Rnastructure ignores the actual value given in natural numbering, 
 			so it is easiest to repeat n here.
 
 CT Files can hold multiple structures of a single sequence.
 This is done by repeating the format for each structure without any blank lines between structures. 
 
-HEADER
+record
  N  SEQUENCE   N-1  	 N+1	J POSITION  N  
  1 	G       	0    	2   	72    		1
  2 	C       	1    	3   	71    		2
@@ -77,15 +77,15 @@ namespace seqan{
 // Forwards
 // ============================================================================
 // --------------------------------------------------------------------------
-// Tag RNA
+// Tag Rna
 // --------------------------------------------------------------------------
 
 struct Connect_;
 typedef Tag<Connect_> Connect;
 
 template <typename T>
-struct MagicHeader<Connect, T> :
-    public MagicHeader<Nothing, T> {};
+struct Magicrecord<Connect, T> :
+    public Magicrecord<Nothing, T> {};
 
 // ============================================================================
 // Metafunctions
@@ -111,24 +111,20 @@ char const * FileExtensions<Connect, T>::VALUE[1] =
 // Functions
 // ==========================================================================
 
-// ----------------------------------------------------------------------------
-// Function readHeader(); RNAHeader
-// ----------------------------------------------------------------------------
 
 template <typename TForwardIter>
-inline void
-readHeader(RNAHeader & header, RNAIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
+inline void 
+readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
 {
-    typedef OrFunctor<IsTab, IsNewline> TNextEntry;
+    //read old "record" info
+    //  73 ENERGY =     -17.50    S.cerevisiae_tRna-PHE
 
-    //  73 ENERGY =     -17.50    S.cerevisiae_tRNA-PHE
-
-    clear(header);
+    clear(record);
     clear(context.buffer); 
     skipUntil(iter, NotFunctor<IsWhitespace>()); 
     readUntil(context.buffer, iter, IsWhitespace());
-    if (!lexicalCast(header.amount, context.buffer))
-        throw BadLexicalCast(header.amount, context.buffer);
+    if (!lexicalCast(record.amount, context.buffer))
+        throw BadLexicalCast(record.amount, context.buffer);
     clear(context.buffer);
 
     skipUntil(iter, NotFunctor<IsWhitespace>());
@@ -139,21 +135,13 @@ readHeader(RNAHeader & header, RNAIOContext & context, TForwardIter & iter, Conn
     skipOne(iter);
     
     readUntil(context.buffer, iter, IsWhitespace());
-    if (!lexicalCast(header.energy, context.buffer))
-        throw BadLexicalCast(header.energy, context.buffer);
+    if (!lexicalCast(record.energy, context.buffer))
+        throw BadLexicalCast(record.energy, context.buffer);
     clear(context.buffer);
 
     readUntil(context.buffer, iter, NotFunctor<IsWhitespace>());
 
-    readUntil(header.name,  iter, IsNewline());   
-    
-}
-
-
-template <typename TForwardIter>
-inline void 
-readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
-{
+    readUntil(record.name,  iter, IsNewline());   
 // 3  G           2       4       70          3
 // N  SEQUENCE   N-1     N+1    J POSITION  N  
 
@@ -197,13 +185,23 @@ readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, Conn
 
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(RNA);
+// Function writeRecord(Rna);
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RNARecord const & record, Connect const & /*tag*/)     
+writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)     
 {
+    //write old "header"
+        appendNumber(target, record.amount);
+    writeValue(target, ' ');
+    write(target, "ENERGY = ");
+    writeValue(target, '\t');
+    appendNumber(target, record.energy);
+    writeValue(target, '\t');
+    write(target, record.name);
+    writeValue(target, '\n');
+    //write "body"
     for (unsigned i = 0; i < length(record.base); i++)
     {
         writeValue(target, ' ');    //All records start with a space
@@ -221,26 +219,9 @@ writeRecord(TTarget & target, RNARecord const & record, Connect const & /*tag*/)
         writeValue(target, '\n');
     }
 }
-
-// ----------------------------------------------------------------------------
-// Function writeHeader(); RNAHeader
-// ----------------------------------------------------------------------------
-
-template <typename TTarget>
-inline void
-writeHeader(TTarget & target, RNAHeader const & header, Connect const & /*tag*/)
-{
-    appendNumber(target, header.amount);
-    writeValue(target, ' ');
-    write(target, "ENERGY = ");
-    writeValue(target, '\t');
-    appendNumber(target, header.energy);
-    writeValue(target, '\t');
-    write(target, header.name);
-    writeValue(target, '\n');
-}
+ 
 
 
 } //namespace seqan
 
-#endif // SEQAN_RNA_FORMAT_READ_H
+#endif // SEQAN_CONNECT_FORMAT_READ_WRITE_H

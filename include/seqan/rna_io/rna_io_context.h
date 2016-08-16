@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Lily Shellhammer
 // ==========================================================================
-// Class RNAIOContext, accessor functions.
+// Class RnaIOContext, accessor functions.
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_RNA_IO_RNA_IO_CONTEXT_H_
@@ -49,7 +49,7 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-class RNAIOContext
+class RnaIOContext
 {
 public:
     CharString buffer;
@@ -70,7 +70,7 @@ public:
 // Function clear()
 // ----------------------------------------------------------------------------
 
-inline void clear(RNAIOContext & context)
+inline void clear(RnaIOContext & context)
 {
 	clear(context.buffer);
     clear(context.base);

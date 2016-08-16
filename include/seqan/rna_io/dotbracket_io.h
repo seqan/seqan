@@ -44,7 +44,7 @@
 
 DotBracket FORMAT example:
 
->S.cerevisiae_tRNA-PHE M10740/1-73
+>S.cerevisiae_tRna-PHE M10740/1-73
 GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
 (((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
 
@@ -59,7 +59,7 @@ namespace seqan{
 // Forwards
 // ============================================================================
 // --------------------------------------------------------------------------
-// Tag RNA
+// Tag Rna
 // --------------------------------------------------------------------------
 
 struct DotBracket_;
@@ -99,14 +99,14 @@ char const * FileExtensions<DotBracket, T>::VALUE[1] =
 // ==========================================================================
 
 // ----------------------------------------------------------------------------
-// Function readHeader(); RNAHeader
+// Function readHeader(); RnaHeader
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter>
 inline void
-readHeader(RNAHeader & header, RNAIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
+readHeader(RnaHeader & header, RnaIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
 {
-    //>S.cerevisiae_tRNA-PHE M10740/1-73
+    //>S.cerevisiae_tRna-PHE M10740/1-73
 
     typedef OrFunctor<IsTab, IsNewline> TNextEntry;
 
@@ -137,7 +137,7 @@ readHeader(RNAHeader & header, RNAIOContext & context, TForwardIter & iter, DotB
 
 template <typename TForwardIter>
 inline void 
-readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
+readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
 {
 
     readUntil(record.base, iter, IsNewline());
@@ -153,7 +153,7 @@ readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, DotB
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RNARecord const & record, DotBracket const & /*tag*/)     
+writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag*/)     
 {
     write(target, record.base);
   
@@ -163,12 +163,12 @@ writeRecord(TTarget & target, RNARecord const & record, DotBracket const & /*tag
 }
 
 // ----------------------------------------------------------------------------
-// Function writeHeader(); RNAHeader
+// Function writeHeader(); RnaHeader
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
 inline void
-writeHeader(TTarget & target, RNAHeader const & header, DotBracket const & /*tag*/)
+writeHeader(TTarget & target, RnaHeader const & header, DotBracket const & /*tag*/)
 {   
     write(target, header.name);
     writeValue(target, '\n');

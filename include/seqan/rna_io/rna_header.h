@@ -32,7 +32,7 @@
 // ==========================================================================
 // Author: Lily Shellhammer <>
 // ==========================================================================
-// This file contains the header of RNA records
+// This file contains the header of Rna records
 // ==========================================================================
 
 #ifndef SEQAN_RNA_HEADER_H
@@ -41,10 +41,10 @@
 
 namespace seqan {
 // ----------------------------------------------------------------------------
-// Class RNAHeaderRecord
+// Class RnaHeaderRecord
 // ----------------------------------------------------------------------------
 
-class RNAHeader
+class RnaHeader
 {
 public:
     static const int INVALID_POS = -1;
@@ -59,11 +59,11 @@ public:
     CharString name;
 
     // Default constructor.
-    RNAHeader() : energy(0), begPos(INVALID_POS), endPos(INVALID_POS), name(" "), amount(0)
+    RnaHeader() : energy(0), begPos(INVALID_POS), endPos(INVALID_POS), name(" "), amount(0)
     {}
 
     // Construct directly with amount/name.
-    RNAHeader(int32_t const & amount, int32_t const & energy, CharString const & name) :
+    RnaHeader(int32_t const & amount, int32_t const & energy, CharString const & name) :
             amount(amount), energy(energy), name(name)
     {}
 };
@@ -72,7 +72,7 @@ public:
 // Functions
 // ============================================================================
 
-inline void clear(RNAHeader & record)
+inline void clear(RnaHeader & record)
 {
     clear(record.name);
 }

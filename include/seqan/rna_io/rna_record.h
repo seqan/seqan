@@ -43,18 +43,29 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class RNARecord
+// Class RnaRecord
 // ----------------------------------------------------------------------------
 
-class RNARecord
+class RnaRecord
 {
 public:
-    static const int INVALID_POS = -1;
+        static const int INVALID_POS = -1;
+
+
+    // Amount of records.
+    int32_t amount;    
+    //beginning and ending positions of the sequence
+    int32_t begPos;
+    int32_t endPos;
+    //energy
+    float energy;    
+    // Record's name.
+    CharString name;
     
     //beginning and ending positions
     String<int>  index;
 
-    //string of base at each position in RNA strand
+    //string of base at each position in Rna strand
     Rna5String base;   
 
     // Position of n base's pair.
@@ -63,7 +74,7 @@ public:
     //Qual, and information specific to other file formats. Will be set to default value in constructor when I figure out what to set them to.
     CharString qual;
 
-    //energy of rna strand
+    //energy of Rna strand
     int32_t energy;
 
 
@@ -90,7 +101,7 @@ public:
     //mutpos
   
     // Default constructor.
-    RNARecord() : energy(0), offset(0), comment("")
+    RnaRecord() : energy(0), offset(0), comment(""), begPos(INVALID_POS), endPos(INVALID_POS), name(" "), amount(0)
     {}                                                                                      
 
 };
@@ -104,8 +115,9 @@ public:
 // ----------------------------------------------------------------------------
 
 
-inline void clear(RNARecord & record)
+inline void clear(RnaRecord & record)
 {
+    clear(record.name);
     clear(record.index);
     clear(record.base);
     clear(record.pair);

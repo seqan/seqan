@@ -38,13 +38,14 @@
 #define SEQAN_DOTBRACKET_FORMAT_IO_H
 
 #include <seqan/stream.h>
+#include <vector>
 
 
 /* IMPLEMENTATION NOTES
 
 DotBracket FORMAT example:
 
->S.cerevisiae_tRNA-PHE M10740/1-73
+>S.cerevisiae_tRna-PHE M10740/1-73
 GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
 (((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
 
@@ -59,7 +60,7 @@ namespace seqan{
 // Forwards
 // ============================================================================
 // --------------------------------------------------------------------------
-// Tag RNA
+// Tag Rna
 // --------------------------------------------------------------------------
 
 struct DotBracket_;
@@ -97,15 +98,21 @@ char const * FileExtensions<DotBracket, T>::VALUE[1] =
 // ==========================================================================
 // Functions
 // ==========================================================================
-// ----------------------------------------------------------------------------
-// Function readHeader(); RNAHeader
-// ----------------------------------------------------------------------------
 
+struct group {
+    int position;
+    char bracket;
+};
+
+// ----------------------------------------------------------------------------
+// Function readRecord(); RnaRecord, DotBracket
+// ----------------------------------------------------------------------------
 template <typename TForwardIter>
-inline void
-readHeader(RNAHeader & header, RNAIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
+inline void 
+readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
 {
-    //>S.cerevisiae_tRNA-PHE M10740/1-73
+    //read beginning
+        //>S.cerevisiae_tRna-PHE M10740/1-73
     skipOne(iter);
     readUntil(header.name, iter, IsWhitespace());
     skipUntil(iter, EqualsChar<'/'>());
@@ -119,60 +126,71 @@ readHeader(RNAHeader & header, RNAIOContext & context, TForwardIter & iter, DotB
     if (!lexicalCast(header.endPos, context.buffer))
         throw BadLexicalCast(header.endPos, context.buffer);
     clear(context.buffer);
-
-    
-}
-
-
-// ----------------------------------------------------------------------------
-// Function readRecord(); RNARecord, DotBracket
-// ----------------------------------------------------------------------------
-template <typename TForwardIter>
-inline void 
-readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
-{
+    //read body
     //GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
     //(((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
-    CharString brackets = "()<>[]aaAA";
+
+    //declare opening and closing brackets. the reason I use two diff strings is becasue I can see if we have a pair by comparing open[i]==close[i]
+    CharString open = ")>]A";
+    CharString close = "(<[a";
+    group holder;
+    //declare vector as stack
+    std::vector<group> v; 
+
     readUntil(record.base, iter, IsNewline());
+    readUntil(context.buffer, iter, IsWhitespace());
     for(unsigned i = 0; i < length(record.base); ++i)
     {
-        readOne(context.buffer, iter);
-       //s if(context.buffer == )
+        for(unsigned j = 0; j < 4; ++j){
+            if(v.size() > 0){
+                if(context.buffer[i] == close[j] && v.end() == open[j]){
+                    holder = v.pop();
+
+                }
+                    
+            }
+                else if (context.buffer[i] = open[j]){
+                    holder.position = i;
+                    holder.bracket = context.buffer[i];
+                    v.push_back(holder);
+                }
+        }
             
     }
 
 
 }
+
+
 // ----------------------------------------------------------------------------
-// Function writeHeader(); RNAHeader, DotBracket 
+// Function writeRecord(); RnaRecord, DotBracket 
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
 inline void
-writeHeader(TTarget & target, RNAHeader const & header, DotBracket const & /*tag*/)
-{   
+writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag*/)     
+{
+    //write name
     write(target, header.name);
     writeValue(target, ' ');
+    //write index beg/end
     writeValue(target, '/');
-    write(target, "1-");
-    write(target, header.amount);
+    if(header.begPos == 0){
+        write(target, "1-");
+        if(header.amount != 0)  //Check that the default value for record is actually 0
+            write(target, header.amount);
+    }
+    else if (header.endPos >= header.begPos){
+        write(target, header.begPos);
+        writeValue(target, '-');
+        write(target, header.endPos);
+    }
     writeValue(target, '\n');
-
-}
-
-
-// ----------------------------------------------------------------------------
-// Function writeRecord(); RNARecord, DotBracket 
-// ----------------------------------------------------------------------------
-
-template <typename TTarget>
-inline void
-writeRecord(TTarget & target, RNARecord const & record, DotBracket const & /*tag*/)     
-{
+    //write base
     write(target, record.base);
-  
     writeValue(target, '\n');
+    //write pairs
+
     for(unsigned i =0; i < length(record.pair); ++i)
     {
         write(target, record.pair[i]);
