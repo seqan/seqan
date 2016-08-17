@@ -84,8 +84,8 @@ struct Connect_;
 typedef Tag<Connect_> Connect;
 
 template <typename T>
-struct Magicrecord<Connect, T> :
-    public Magicrecord<Nothing, T> {};
+struct MagicHeader<Connect, T> :
+    public MagicHeader<Nothing, T> {};
 
 // ============================================================================
 // Metafunctions

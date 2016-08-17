@@ -43,10 +43,6 @@ namespace seqan {
 // ============================================================================
 // Classes, Tags
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class MagicHeader
-// ----------------------------------------------------------------------------
 // ============================================================================
 // Typedefs
 // ============================================================================
@@ -59,10 +55,10 @@ namespace seqan {
  * @class DotBracketFileIn
  * @signature typedef FormattedFile<DotBracket, Input> DotBracketFileIn;
  * @extends FormattedFileIn
- * @headerfile <seqan/Rna_io.h>
+ * @recordfile <seqan/Rna_io.h>
  * @brief Class for reading DotBracket files.
  *
- * @see DotBracketHeader
+ * @see DotBracketrecord
  * @see DotBracketRecord
  */
 
@@ -76,10 +72,10 @@ typedef FormattedFile<DotBracket, Input>   DotBracketFileIn;
  * @class DotBracketFileOut
  * @signature typedef FormattedFile<DotBracket, Output> DotBracketFileOut;
  * @extends FormattedFileOut
- * @headerfile <seqan/Rna_io.h>
+ * @recordfile <seqan/Rna_io.h>
  * @brief Class for writing DotBracket files.
  *
- * @see DotBracketHeader
+ * @see DotBracketrecord
  * @see DotBracketRecord
  */
 
@@ -117,14 +113,14 @@ writeRecord(FormattedFile<DotBracket, Output, TSpec> & file, RnaRecord & record)
 }
 
 // ----------------------------------------------------------------------------
-// Function readHeader(); RnaHeader
+// Function readrecord(); Rnarecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-readRecord(RnaRecord & record, FormattedFile<Connect, Input, TSpec> & file)
+readRecord(RnaRecord & record, FormattedFile<DotBracket, Input, TSpec> & file)
 {
-    readHeader(record, context(file), file.iter, file.format);
+    readRecord(record, context(file), file.iter, file.format);
 }
 
 

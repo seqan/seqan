@@ -57,23 +57,17 @@ namespace seqan{
 // ==========================================================================
 
 // ============================================================================
-// Forwards
+// Classes, Tags
 // ============================================================================
-// --------------------------------------------------------------------------
-// Tag Rna
-// --------------------------------------------------------------------------
-
 struct DotBracket_;
 typedef Tag<DotBracket_> DotBracket;
 
+// ----------------------------------------------------------------------------
+// Class Magicheader
+// ----------------------------------------------------------------------------
 template <typename T>
-struct MagicHeader<DotBracket, T>
-{
-    static char const VALUE[1];
-};
-template <typename T>
-char const MagicHeader<DotBracket, T>::VALUE[1] = { '>' };  // DotBracket's first character
-
+struct MagicHeader<DotBracket, T> :
+    public MagicHeader<Nothing, T> {};
 
 // ============================================================================
 // Metafunctions
@@ -113,52 +107,69 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
 {
     //read beginning
         //>S.cerevisiae_tRna-PHE M10740/1-73
+    //if(iter == '>')       HOW?
     skipOne(iter);
-    readUntil(header.name, iter, IsWhitespace());
+
+    readUntil(record.name, iter, IsWhitespace());
+    //CHECK IF BLANK AFTER NAME
     skipUntil(iter, EqualsChar<'/'>());
     skipOne(iter);
     readUntil(context.buffer, iter, EqualsChar<'-'>());
-    if (!lexicalCast(header.begPos, context.buffer))
-        throw BadLexicalCast(header.begPos, context.buffer);
+    if (!lexicalCast(record.begPos, context.buffer))
+        throw BadLexicalCast(record.begPos, context.buffer);
     clear(context.buffer);
     skipOne(iter);
     readUntil(context.buffer, iter, IsNewline());
-    if (!lexicalCast(header.endPos, context.buffer))
-        throw BadLexicalCast(header.endPos, context.buffer);
+    if (!lexicalCast(record.endPos, context.buffer))
+        throw BadLexicalCast(record.endPos, context.buffer);
     clear(context.buffer);
+    skipOne(iter);
     //read body
     //GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
     //(((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
 
     //declare opening and closing brackets. the reason I use two diff strings is becasue I can see if we have a pair by comparing open[i]==close[i]
-    CharString open = ")>]A";
-    CharString close = "(<[a";
+    readUntil(record.base, iter, IsNewline());
+    skipOne(iter);
+
+    resize(record.pair, length(record.base));
+
+    CharString open = "({<[a";
+    CharString close = ")}>]A";
     group holder;
     //declare vector as stack
     std::vector<group> v; 
 
-    readUntil(record.base, iter, IsNewline());
     readUntil(context.buffer, iter, IsWhitespace());
     for(unsigned i = 0; i < length(record.base); ++i)
     {
         for(unsigned j = 0; j < 4; ++j){
             if(v.size() > 0){
-                if(context.buffer[i] == close[j] && v.end() == open[j]){
-                    holder = v.pop();
-
+                if(context.buffer[i] == close[j] && v.end()->bracket == open[j]){
+                    holder = *(v.end());
+                    record.pair[i] = holder.position;
+                    std::cout << "record.pair[" << i << "] = " << holder.position << std::endl;
+                    record.pair[holder.position-1] = i+1;
+                    //string at i gets holder.position for pair
+                    //position of holder gets i for pair
+                    v.pop_back();
                 }
-                    
+
             }
-                else if (context.buffer[i] = open[j]){
-                    holder.position = i;
-                    holder.bracket = context.buffer[i];
+            else if (context.buffer[i] == open[j]){
+                    holder.position = i;    //holder gets position 
+                    holder.bracket = context.buffer[i]; //holder gets opening or closing
                     v.push_back(holder);
                 }
+            else if (context.buffer[i] != '.')
+                    record.pair[i] = 0;
+                //take position i and add 0 to pair   
+
         }
             
     }
 
-
+    
 }
 
 
@@ -170,32 +181,34 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag*/)     
 {
+    //write opening character for new record entry
+    writeValue(target, '>');
     //write name
-    write(target, header.name);
+    write(target, record.name);
     writeValue(target, ' ');
     //write index beg/end
     writeValue(target, '/');
-    if(header.begPos == 0){
+    if(record.begPos == -1){
         write(target, "1-");
-        if(header.amount != 0)  //Check that the default value for record is actually 0
-            write(target, header.amount);
+        if(record.amount != -1)  
+            write(target, record.amount);
     }
-    else if (header.endPos >= header.begPos){
-        write(target, header.begPos);
+    else if(record.endPos >= record.begPos){
+        write(target, record.begPos);
         writeValue(target, '-');
-        write(target, header.endPos);
+        write(target, record.endPos);
     }
     writeValue(target, '\n');
     //write base
     write(target, record.base);
     writeValue(target, '\n');
     //write pairs
-
-    for(unsigned i =0; i < length(record.pair); ++i)
+    for(unsigned i = 0; i < length(record.pair); ++i)
     {
-        write(target, record.pair[i]);
-    }
-    writeValue(target, '\n');
+        write(target, record.pair);
+        writeValue(target, ' ');
+   }
+   writeValue(target, '\n');
 }
 
 

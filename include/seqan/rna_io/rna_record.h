@@ -74,9 +74,6 @@ public:
     //Qual, and information specific to other file formats. Will be set to default value in constructor when I figure out what to set them to.
     CharString qual;
 
-    //energy of Rna strand
-    int32_t energy;
-
 
     ////////RDAT FILES
     int offset;
