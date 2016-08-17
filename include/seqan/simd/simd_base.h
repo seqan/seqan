@@ -275,10 +275,18 @@ template <typename TSimdVector, typename TSimdVectorMask>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask);
 
+/**
+ * Unaligned store, i.e. memAddr does not need to be aligned (e.g. SEE4.2 16byte
+ * aligned, AVX2 32byte aligned).
+ */
 template <typename T, typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
 storeu(T * memAddr, TSimdVector const &vec);
 
+/**
+ * Aligned load, i.e. memAddr MUST be aligned (e.g. SEE4.2 16byte
+ * aligned, AVX2 32byte aligned).
+ */
 template <typename TSimdVector, typename T>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 load(T const * memAddr);
