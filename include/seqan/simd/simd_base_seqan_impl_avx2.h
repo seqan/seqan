@@ -436,11 +436,15 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
 }
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<32, 4>)
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("AVX2 intrinsics for max on 64 bit values not implemented!");
-    return a;
+    #if defined(__AVX512F__)
+        return SEQAN_VECTOR_CAST_(TSimdVector,
+                                  _mm256_max_epi64(SEQAN_VECTOR_CAST_(const __m256i&, a),
+                                                   SEQAN_VECTOR_CAST_(const __m256i&, b)));
+    #else // defined(__AVX512F__)
+        return blend(a, b, a < b);
+    #endif // defined(__AVX512F__)
 }
 
 // --------------------------------------------------------------------------
