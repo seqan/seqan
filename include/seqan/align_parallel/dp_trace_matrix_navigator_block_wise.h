@@ -65,28 +65,41 @@ namespace seqan
 // specifies that this is a trace-matrix navigator while the TTraceFlag can either
 // be TracebackOn to enable the navigator or TracebackOff to disable it.
 // The last parameter specifies the kind of navigation.
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
 class BlockTraceNavigator
 {
 public:
-    using TBlock       = typename Value<TMatrix>::Type;
-    using TTraceValue  = typename Value<TBlock>::Type;
-    using TBlockMatrix = DPMatrix_<TTraceValue, FullDPMatrix, TBlock>;
-    using TNavigator   = DPMatrixNavigator_<TBlockMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise>;
-    using TMatrixPtr_  = typename Pointer_<TMatrix>::Type;
+    using TLocalTraceStore = typename TTraceProxy::TLocalTraceStore;
+    using TScalarTrace     = typename TLocalTraceStore::TScalarTraceValue;
+    using TSimdTrace       = typename TLocalTraceStore::TSimdTraceValue;
+    using TScalarTraceMat  = typename TLocalTraceStore::TScalarTraceMatrix;
+    using TSimdTraceMat    = typename TLocalTraceStore::TSimdTraceMatrix;
+    using TScalarDPMatrix  = DPMatrix_<TScalarTrace, FullDPMatrix, TScalarTraceMat>;
+    using TSimdDPMatrix    = DPMatrix_<TSimdTrace, FullDPMatrix, TSimdTraceMat>;
+    using TScalarMatNavi   = DPMatrixNavigator_<TScalarDPMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise>;
+    using TSimdMatNavi     = DPMatrixNavigator_<TSimdDPMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise>;
 
-    TNavigator                    mBlockNavigator  = TNavigator{};
-    TBlockMatrix                  mBlockMatrix     = TBlockMatrix{};
-    TMatrixPtr_                   mHostPtr         = nullptr;
-    TSeqH&                        mSeqH;
-    TSeqV&                        mSeqV;
-    typename Size<TMatrix>::Type  mBlockH          = 0;
-    typename Size<TMatrix>::Type  mBlockV          = 0;
-    typename Size<TMatrix>::Type  mBlockSizeH      = 0;
-    typename Size<TMatrix>::Type  mBlockSizeV      = 0;
+    enum class NavigatorSwitch : uint8_t
+    {
+        SCALAR,
+        SIMD
+    };
+
+    TScalarMatNavi  mScalarNavigator = TScalarMatNavi{};
+    TSimdMatNavi    mSimdNavigator   = TSimdMatNavi{};
+    TScalarDPMatrix mScalarMatrix    = TScalarDPMatrix{};
+    TSimdDPMatrix   mSimdMatrix      = TSimdDPMatrix{};
+    TTraceProxy *   mHostPtr         = nullptr;
+    TSeqH&          mSeqH;
+    TSeqV&          mSeqV;
+    size_t          mBlockH          = 0;
+    size_t          mBlockV          = 0;
+    size_t          mBlockSizeH      = 0;
+    size_t          mBlockSizeV      = 0;
+    NavigatorSwitch mSwitch          = NavigatorSwitch::SCALAR;
 
     template <typename TSize>
-    BlockTraceNavigator(TMatrix &matrix,
+    BlockTraceNavigator(TTraceProxy &matrix,
                         TSeqH &seqH,
                         TSeqV &seqV,
                         TSize const blockH,
@@ -108,10 +121,10 @@ public:
 // Metafunctions
 // ============================================================================
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
-struct Position<BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> >
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+struct Position<BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> >
 {
-    using Type = typename Position<TMatrix>::Type;
+    using Type = typename Position<TTraceProxy>::Type;
 };
 
 namespace impl
@@ -121,10 +134,10 @@ template <typename T>
 struct LocalPosition : Position<T>
 {};
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
-struct LocalPosition<BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> >
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+struct LocalPosition<BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> >
 {
-    using Type = Pair<typename Position<BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> >::Type>;
+    using Type = Pair<typename Position<BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> >::Type>;
 };
 
 }  // namespace impl
@@ -136,9 +149,9 @@ struct LocalPosition<BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> >
 namespace impl
 {
 template <typename TBlockId, typename TBlockPos,
-          typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+          typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline auto toGlobalPosition(Pair<TBlockId, TBlockPos> const & localPos,
-                             BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & me,
+                             BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> const & me,
                              typename DPMatrixDimension_::TValue const & dim)
 {
     if(dim == DPMatrixDimension_::HORIZONTAL)
@@ -146,65 +159,152 @@ inline auto toGlobalPosition(Pair<TBlockId, TBlockPos> const & localPos,
     else
         return localPos.i2 + localPos.i1 * me.mBlockSizeV;
 }
+
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TNavigator,
+          typename TDimension>
+inline auto
+coordinate(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> const & dpNavigator,
+           TNavigator const & navi,
+           TDimension const dimension)
+{
+    using TPos = typename impl::LocalPosition<BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> >::Type;
+
+    if (dimension == DPMatrixDimension_::HORIZONTAL)
+        return impl::toGlobalPosition(TPos(dpNavigator.mBlockH, coordinate(navi, dimension)), dpNavigator,
+                                      +DPMatrixDimension_::HORIZONTAL);
+    else
+        return impl::toGlobalPosition(TPos(dpNavigator.mBlockV, coordinate(navi, dimension)), dpNavigator,
+                                      +DPMatrixDimension_::VERTICAL);
+}
+
 }  // namespace impl
 
 // ----------------------------------------------------------------------------
-// Function _goNextCell
+// Function _initNextBlock
 // ----------------------------------------------------------------------------
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag,
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TBlockId,
           typename TBlockPos>
 inline void
-_initNextBlock(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
+_initNextScalarBlock(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+                     TBlockId const & blockId,
+                     TBlockPos const blockPos)
+{
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
+    me.mSwitch = TNavi::NavigatorSwitch::SCALAR;
+
+    setLength(me.mScalarMatrix, +DPMatrixDimension_::HORIZONTAL, length(me.mSeqH[me.mBlockH]) + 1);
+    setLength(me.mScalarMatrix, +DPMatrixDimension_::VERTICAL, length(me.mSeqV[me.mBlockV]) + 1);
+    setHost(me.mScalarMatrix, std::get<0>(blockId)->mScalarTraceVec[std::get<1>(blockId).mBlockPos]);
+    resize(me.mScalarMatrix);  // Needed to actually update the internal variables.
+
+    me.mScalarNavigator._ptrDataContainer = &me.mScalarMatrix;
+    me.mScalarNavigator._activeColIterator = begin(me.mScalarMatrix, Standard());
+    _setToPosition(me.mScalarNavigator, blockPos);  // Set the navigator to the correct position within the block.
+}
+
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TBlockId,
+          typename TBlockPos>
+inline void
+_initNextSimdBlock(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+                   TBlockId const & blockId,
+                   TBlockPos const blockPos)
+{
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
+    me.mSwitch = TNavi::NavigatorSwitch::SIMD;
+
+    setLength(me.mSimdMatrix, +DPMatrixDimension_::HORIZONTAL, length(me.mSeqH[me.mBlockH]) + 1);
+    setLength(me.mSimdMatrix, +DPMatrixDimension_::VERTICAL, length(me.mSeqV[me.mBlockV]) + 1);
+    setHost(me.mSimdMatrix, std::get<0>(blockId)->mSimdTraceVec[std::get<1>(blockId).mBlockPos]);
+    resize(me.mSimdMatrix);  // Needed to actually update the internal variables.
+
+    me.mSimdNavigator._ptrDataContainer = &me.mSimdMatrix;
+    me.mSimdNavigator._activeColIterator = begin(me.mSimdMatrix, Standard());
+    _setSimdLane(me.mSimdNavigator, std::get<2>(blockId));
+    _setToPosition(me.mSimdNavigator, blockPos);  // Set the navigator to the correct position within the block.
+}
+
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TBlockPos>
+inline void
+_initNextBlock(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
                TBlockPos const blockPos)
 {
-    setLength(me.mBlockMatrix, +DPMatrixDimension_::HORIZONTAL, length(me.mSeqH[me.mBlockH]) + 1);
-    setLength(me.mBlockMatrix, +DPMatrixDimension_::VERTICAL, length(me.mSeqV[me.mBlockV]) + 1);
-    setHost(me.mBlockMatrix, (*me.mHostPtr)[me.mBlockH * length(me.mSeqV) + me.mBlockV]);
-    resize(me.mBlockMatrix);  // Needed to actually update the internal variables.
+    auto blockId = me.mHostPtr->mTraceBlockMap[me.mBlockH * length(me.mSeqV) + me.mBlockV];
 
-    me.mBlockNavigator._ptrDataContainer = &me.mBlockMatrix;
-    me.mBlockNavigator._activeColIterator = begin(me.mBlockMatrix, Standard());
-    _setToPosition(me.mBlockNavigator, blockPos);  // Set the navigator to the correct position within the block.
+    if (std::get<1>(blockId).mBlockId == 0)
+        _initNextScalarBlock(me, blockId, blockPos);
+    else
+        _initNextSimdBlock(me, blockId, blockPos);
 }
 
 // ----------------------------------------------------------------------------
 // Function _traceHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TInternalNavigator>
 inline void
-_traceHorizontal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
+_traceHorizontal(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+                 TInternalNavigator & navi,
                  bool const isBandShift)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        return;  // Do nothing since no trace back is computed.
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
 
     // Update the block.
-    if (coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) == 0)
+    if (coordinate(navi, +DPMatrixDimension_::HORIZONTAL) == 0)
     {
         --me.mBlockH;
         auto blockPos = length(me.mSeqH[me.mBlockH]) * (length(me.mSeqV[me.mBlockV]) + 1) +
-                        coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL);
+                        coordinate(navi, +DPMatrixDimension_::VERTICAL);
         _initNextBlock(me, blockPos);
     }
-    _traceHorizontal(me.mBlockNavigator, isBandShift);
+
+    if (me.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        _traceHorizontal(me.mScalarNavigator, isBandShift);
+    else
+        _traceHorizontal(me.mSimdNavigator, isBandShift);
+}
+
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+inline void
+_traceHorizontal(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+                 bool const isBandShift)
+{
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
+    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+        return;  // Do nothing since no trace back is computed.
+
+    if (me.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        _traceHorizontal(me, me.mScalarNavigator, isBandShift);
+    else
+        _traceHorizontal(me, me.mSimdNavigator, isBandShift);
 }
 
 // ----------------------------------------------------------------------------
 // Function _traceDiagonal()
 // ----------------------------------------------------------------------------
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TInternalNavigator>
 inline void
-_traceDiagonal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
+_traceDiagonal(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+               TInternalNavigator & navi,
                bool const isBandShift)
 {
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
-    if (coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL) == 0 &&
-        coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) == 0)
+    if (coordinate(navi, +DPMatrixDimension_::VERTICAL) == 0 &&
+        coordinate(navi, +DPMatrixDimension_::HORIZONTAL) == 0)
     {  // Continue in previous diagonal block.
         --me.mBlockV;
         --me.mBlockH;
@@ -212,43 +312,87 @@ _traceDiagonal(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
                         length(me.mSeqV[me.mBlockV]);
         _initNextBlock(me, blockPos);
     }
-    else if(coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL) == 0)
+    else if(coordinate(navi, +DPMatrixDimension_::VERTICAL) == 0)
     {  // Continue in previous vertical block.
         --me.mBlockV;
-        auto blockPos = coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) *
+        auto blockPos = coordinate(navi, +DPMatrixDimension_::HORIZONTAL) *
                         (length(me.mSeqV[me.mBlockV]) + 1) + length(me.mSeqV[me.mBlockV]);
         _initNextBlock(me, blockPos);
     }
-    else if (coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) == 0)
+    else if (coordinate(navi, +DPMatrixDimension_::HORIZONTAL) == 0)
     {  // Continue in previous horizontal block.
         --me.mBlockH;
         auto blockPos = length(me.mSeqH[me.mBlockH]) * (length(me.mSeqV[me.mBlockV]) + 1) +
-                        coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL);
+                        coordinate(navi, +DPMatrixDimension_::VERTICAL);
         _initNextBlock(me, blockPos);
     }
-    _traceDiagonal(me.mBlockNavigator, isBandShift);
+
+    if (me.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        _traceDiagonal(me.mScalarNavigator, isBandShift);
+    else
+        _traceDiagonal(me.mSimdNavigator, isBandShift);
+}
+
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+inline void
+_traceDiagonal(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+               bool const isBandShift)
+{
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
+    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+        return;  // Do nothing since no trace back is computed.
+
+    if (me.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        _traceDiagonal(me, me.mScalarNavigator, isBandShift);
+    else
+        _traceDiagonal(me, me.mSimdNavigator, isBandShift);
 }
 
 // ----------------------------------------------------------------------------
 // Function _traceVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
+          typename TInternalNavigator>
 inline void
-_traceVertical(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
+_traceVertical(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+               TInternalNavigator & navi,
                bool const isBandShift)
 {
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
-    if (coordinate(me.mBlockNavigator, +DPMatrixDimension_::VERTICAL) == 0)
+    if (coordinate(navi, +DPMatrixDimension_::VERTICAL) == 0)
     {
         --me.mBlockV;
-        auto blockPos = coordinate(me.mBlockNavigator, +DPMatrixDimension_::HORIZONTAL) *
+        auto blockPos = coordinate(navi, +DPMatrixDimension_::HORIZONTAL) *
                         (length(me.mSeqV[me.mBlockV]) + 1) + length(me.mSeqV[me.mBlockV]);
         _initNextBlock(me, blockPos);
     }
-    _traceVertical(me.mBlockNavigator, isBandShift);
+
+    if (me.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        _traceVertical(me.mScalarNavigator, isBandShift);
+    else
+        _traceVertical(me.mSimdNavigator, isBandShift);
+}
+
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+inline void
+_traceVertical(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & me,
+               bool const isBandShift)
+{
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
+    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+        return;  // Do nothing since no trace back is computed.
+
+    if (me.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        _traceVertical(me, me.mScalarNavigator, isBandShift);
+    else
+        _traceVertical(me, me.mSimdNavigator, isBandShift);
 }
 
 // ----------------------------------------------------------------------------
@@ -256,14 +400,19 @@ _traceVertical(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & me,
 // ----------------------------------------------------------------------------
 
 // Wrapper to get the scalar value.
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline auto
-scalarValue(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNavigator)
+scalarValue(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> const & dpNavigator)
 {
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
-    return scalarValue(dpNavigator.mBlockNavigator);
+    if (dpNavigator.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        return scalarValue(dpNavigator.mScalarNavigator);
+
+    return scalarValue(dpNavigator.mSimdNavigator);
 }
 
 // ----------------------------------------------------------------------------
@@ -271,25 +420,36 @@ scalarValue(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNav
 // ----------------------------------------------------------------------------
 
 // Current position.
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
-inline auto&
-value(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & dpNavigator)
-{
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
-
-    return value(dpNavigator.mBlockNavigator);
-}
-
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
-inline auto&
-value(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNavigator)
-{
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
-
-    return value(dpNavigator.mBlockNavigator);
-}
+// NOTE(rrahn): This cannot work, since the return value depends on the internal state of the dpNavigator.
+//template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+//inline auto&
+//value(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & dpNavigator)
+//{
+//    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+//
+//    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+//        SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
+//
+//    if (dpNavigator.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+//        return value(dpNavigator.mScalarNavigator);
+//
+//    return value(dpNavigator.mSimdNavigator);
+//}
+//
+//template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
+//inline auto&
+//value(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> const & dpNavigator)
+//{
+//    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+//
+//    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+//        SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
+//
+//    if (dpNavigator.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+//        return value(dpNavigator.mScalarNavigator);
+//
+//    return value(dpNavigator.mSimdNavigator);
+//}
 
 // ----------------------------------------------------------------------------
 // Function coordinate()
@@ -297,23 +457,21 @@ value(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNavigator
 
 // Returns the coordinate of the given dimension for the current position of the
 // navigator within the matrix.
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline auto
-coordinate(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNavigator,
+coordinate(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> const & dpNavigator,
            typename DPMatrixDimension_::TValue const & dimension)
 {
-    using TPos = typename impl::LocalPosition<BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> >::Type;
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
 
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
     SEQAN_ASSERT_EQ(_checkCorrectDimension(dimension), true);
 
-    if (dimension == DPMatrixDimension_::HORIZONTAL)
-        return impl::toGlobalPosition(TPos(dpNavigator.mBlockH, coordinate(dpNavigator.mBlockNavigator, dimension)),
-                                      dpNavigator, +DPMatrixDimension_::HORIZONTAL);
-    else
-        return impl::toGlobalPosition(TPos(dpNavigator.mBlockV, coordinate(dpNavigator.mBlockNavigator, dimension)),
-                                      dpNavigator, +DPMatrixDimension_::VERTICAL);
+    if (dpNavigator.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        return impl::coordinate(dpNavigator, dpNavigator.mScalarNavigator, dimension);
+
+    return impl::coordinate(dpNavigator, dpNavigator.mSimdNavigator, dimension);
 }
 
 // ----------------------------------------------------------------------------
@@ -321,31 +479,39 @@ coordinate(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNavi
 // ----------------------------------------------------------------------------
 
 // Returns the current position of the navigator within the matrix.
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag>
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag>
 inline auto
-position(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> const & dpNavigator)
+position(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> const & dpNavigator)
 {
-    using TPos = typename Position<BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> >::Type;
+    using TPos = typename Position<BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> >::Type;
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
     // Return 0 when traceback is not enabled. This is necessary to still track the score even
     // the traceback is not enabled.
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return TPos(0, 0);
 
+    if (dpNavigator.mSwitch == TNavi::NavigatorSwitch::SCALAR)
+        return TPos(dpNavigator.mBlockH * length(dpNavigator.mSeqV) + dpNavigator.mBlockV,
+                    position(dpNavigator.mScalarNavigator));
+
     return TPos(dpNavigator.mBlockH * length(dpNavigator.mSeqV) + dpNavigator.mBlockV,
-                          position(dpNavigator.mBlockNavigator));
+                position(dpNavigator.mSimdNavigator));
 }
 
 // ----------------------------------------------------------------------------
 // Function _setSimdLane()
 // ----------------------------------------------------------------------------
 
-template <typename TMatrix, typename TSeqH, typename TSeqV, typename TTraceFlag,
+template <typename TTraceProxy, typename TSeqH, typename TSeqV, typename TTraceFlag,
           typename TPos>
 inline auto&
-_setSimdLane(BlockTraceNavigator<TMatrix, TSeqH, TSeqV, TTraceFlag> & dpNavigator,
+_setSimdLane(BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag> & dpNavigator,
              TPos const pos)
 {
-    _setSimdLane(dpNavigator.mBlockNavigator, pos);
+    using TNavi = BlockTraceNavigator<TTraceProxy, TSeqH, TSeqV, TTraceFlag>;
+
+    if (dpNavigator.mSwitch == TNavi::NavigatorSwitch::SIMD)
+        _setSimdLane(dpNavigator.mSimdNavigator, pos);
 }
     
 }  // namespace seqan

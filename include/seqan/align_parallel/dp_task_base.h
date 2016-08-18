@@ -73,17 +73,18 @@ struct IsDPTask;
 // 4. parameter: band
 // 5. parameter: TileBuffer
 // 6. parameter: TraceBlock
-// 7. parameter: TDpContext
-// 8. parameter: TDPConfig
-// 9. parameter: TDPScoutState
+// 7. parameter: DebugBuffer
+// 8. parameter: TDpContext
+// 9. parameter: TDPConfig
+// 10. parameter: TDPScoutState
 template <typename... TArgs>
 struct DPTaskContext
 {
     using TData         = std::tuple<TArgs...>;
     using TSize         = typename Size<typename std::decay<std::tuple_element_t<0, TData> >::type>::Type;
-    using TDPContext    = typename std::decay<std::tuple_element_t<6, TData> >::type;
-    using TDPConfig     = typename std::decay<std::tuple_element_t<7, TData> >::type;
-    using TDPScoutState = typename std::decay<std::tuple_element_t<8, TData> >::type;
+    using TDPContext    = typename std::decay<std::tuple_element_t<8, TData> >::type;
+    using TDPConfig     = typename std::decay<std::tuple_element_t<9, TData> >::type;
+    using TDPScoutState = typename std::decay<std::tuple_element_t<10, TData> >::type;
 
     TData _data;
     std::mutex mLock;
@@ -97,7 +98,7 @@ struct DPTaskContext
     template <typename... TSubArgs>
     DPTaskContext(TSubArgs&& ...args)
     {
-        static_assert(sizeof...(TArgs) == 9, "Requires 9 arguments.");
+        static_assert(sizeof...(TArgs) == 11, "Requires 11 arguments.");
         static_assert(sizeof...(TSubArgs) <= sizeof...(TArgs), "Invalid number of parameters.");
         _fill(std::forward_as_tuple(args...), std::make_index_sequence<sizeof...(TSubArgs)>());
     }
@@ -140,6 +141,16 @@ struct DPTaskContext
     {
         return *std::get<5>(_data);
     }
+
+    inline auto& getTraceProxy()
+    {
+        return *std::get<6>(_data);
+    }
+
+    inline auto& getDebugBuffer()
+    {
+        return *std::get<7>(_data);
+    }
 };
 
 template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy, typename TParExecPolicy>
@@ -153,6 +164,7 @@ template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecP
 class DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, TParExecPolicy> >
 {
     using TDerivedTask = DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, TParExecPolicy>;
+    using TGapMode = typename GapTraits<typename TTaskConfig::TDPConfig>::Type;
     using TDPScoutState = typename TTaskConfig::TDPScoutState;
     using TSize = typename TTaskConfig::TSize;
 public:
@@ -170,42 +182,103 @@ public:
         _derivedTask(pTask)
     {}
 
-    template <typename TDPContext>
-    inline void runScalar(TDPContext & dpContext)
+    template <typename TSimdVec>
+    inline void runScalar(impl::dp::parallel::LocalTraceStore<TSimdVec> & pTls)
     {
-        getDpTraceMatrix(dpContext) = _taskContext.getTraceBlock()[(_col * length(_taskContext.getSeqV())) + _row]; // Thread local.
+        using TScoreScheme = typename std::decay<decltype(_taskContext.getScore())>::type;
+        using TScoreValue  = typename Value<TScoreScheme>::Type;
+        using TTraceProxy = typename std::decay<decltype(_taskContext.getTraceProxy())>::type;
+        using TTraceProxyValue = typename TTraceProxy::TTraceMatrixIdentifier;
+
+        DPContext<DPCell_<TScoreValue, TGapMode>, typename TraceBitMap_<>::Type> dpContext;
         TDPScoutState scoutState(_taskContext.getTileBuffer().horizontalBuffer[_col], _taskContext.getTileBuffer().verticalBuffer[_row]);  // Task local
+
+        // DEBUG: Remove!
+//        auto bufHBegin = _taskContext.getTileBuffer().horizontalBuffer[_col];
+//        auto bufVBegin = _taskContext.getTileBuffer().verticalBuffer[_row];
+
         String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
         _computeAlignment(dpContext, traceSegments, scoutState, _taskContext.getSeqH()[_col], _taskContext.getSeqV()[_row],
                           _taskContext.getScore(), _taskContext.getBand(), typename TTaskConfig::TDPConfig(),
                           _col == length(_taskContext.getSeqH()) - 1,
                           _row == length(_taskContext.getSeqV()) - 1);
+
+        // DEBUG: Remove!
+//        _taskContext.getDebugBuffer().matrix[_col][_row] = {bufHBegin, bufVBegin,
+//                                                            _taskContext.getTileBuffer().horizontalBuffer[_col],
+//                                                            _taskContext.getTileBuffer().verticalBuffer[_row],
+//                                                            _col, _row, false};
+
+        swap(getDpTraceMatrix(dpContext), pTls.localScalarTraceMatrix());
+        _taskContext.getTraceProxy().insert(std::make_pair(_col, _row),
+                                            TTraceProxyValue{&pTls, {0, static_cast<uint16_t>(length(pTls.mScalarTraceVec) - 1)}, 0});
     }
 
-    template <typename TTasks, typename TDPContext>
-    inline void runSimd(TTasks const & tasks, TDPContext & /*dpContext*/)
+    template <typename TTasks, typename TSimdVec>
+    inline void runSimd(TTasks const & tasks, impl::dp::parallel::LocalTraceStore<TSimdVec> & pTls)
     {
-//        getDpTraceMatrix(dpContext) = _taskContext.getTraceBlock()[(_col * length(_taskContext.getSeqV())) + _row]; // Thread local.
-//        TDPScoutState scoutState(_taskContext.getTileBuffer().horizontalBuffer[_col], _taskContext.getTileBuffer().verticalBuffer[_row]);  // Task local
-//        String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments. Only needed for the old interface. They are not filled.
-//        _computeAlignment(dpContext, traceSegments, scoutState, _taskContext.getSeqH()[_col], _taskContext.getSeqV()[_row],
-//                          _taskContext.getScore(), _taskContext.getBand(), typename TTaskConfig::TDPConfig(),
-//                          _col == length(_taskContext.getSeqH()) - 1,
-//                          _row == length(_taskContext.getSeqV()) - 1);
-        using TSeqH = typename std::decay<decltype(_taskContext.getSeqH()[_col])>::type;
-        using TSeqV = typename std::decay<decltype(_taskContext.getSeqV()[_row])>::type;
-        StringSet<Gaps<TSeqH> > setH;
-        StringSet<Gaps<TSeqV> > setV;
-        for (auto& task : tasks)
+        using TTraceLocalStore = impl::dp::parallel::LocalTraceStore<TSimdVec>;
+        using TSimdTraceMatrix = typename TTraceLocalStore::TSimdTraceMatrix;
+        using TTraceProxy = typename std::decay<decltype(_taskContext.getTraceProxy())>::type;
+        using TTraceProxyValue = typename TTraceProxy::TTraceMatrixIdentifier;
+
+        // Prepare scout state.
+        bool allSameLength = true;
+
+//        for (auto& task : tasks)
+//        {
+//            auto& val = _taskContext.getDebugBuffer().matrix[task->_col][task->_row];
+//            val.hBegin = _taskContext.getTileBuffer().horizontalBuffer[task->_col];
+//            val.vBegin = _taskContext.getTileBuffer().verticalBuffer[task->_row];
+//            val.col = task->_col;
+//            val.row = task->_row;
+//            val.isSimd = true;
+//        }
+
+//        for(auto& task: tasks)
+//            std::cout << task->_col << " ";
+//        std::cout << '\n';
+
+        auto simdBufferH = impl::gatherSimdBuffer(allSameLength, tasks, _taskContext.getTileBuffer().horizontalBuffer, [](auto& task){ return task->_col; });
+//        for(auto& task: tasks)
+//            std::cout << task->_row << " ";
+//        std::cout << '\n';
+        auto simdBufferV = impl::gatherSimdBuffer(allSameLength, tasks, _taskContext.getTileBuffer().verticalBuffer, [](auto& task){ return task->_row; });
+
+        DPScoutState_<DPTiled<decltype(simdBufferH)> > state(simdBufferH, simdBufferV);
+
+        // Prepare dpContext.
+        DPContext<DPCell_<TSimdVec, TGapMode>,
+                  typename Value<TSimdTraceMatrix>::Type,
+                  String<DPCell_<TSimdVec, TGapMode>, Alloc<OverAligned> >,
+                  TSimdTraceMatrix> dpContext;
+
+
+        // Run alignment.
+        impl::computeSimdBatch(tasks, dpContext, state, _taskContext.getSeqH(), _taskContext.getSeqV(),
+                               _taskContext.getScore(), _taskContext.getBand(), allSameLength,
+                               typename TTaskConfig::TDPConfig());
+
+        // Swap trace matrix into local thread store.
+        swap(getDpTraceMatrix(dpContext), pTls.localSimdTraceMatrix());
+        uint8_t simdLane = 0;
+        for (const auto& task : tasks)
         {
-            Gaps<TSeqH> gapsH;
-            assignSource(gapsH, _taskContext.getSeqH()[task->_col]);
-            Gaps<TSeqV> gapsV;
-            assignSource(gapsV, _taskContext.getSeqV()[task->_row]);
-            appendValue(setH, gapsH);
-            appendValue(setV, gapsV);
+            _taskContext.getTraceProxy().insert(std::make_pair(task->_col, task->_row),
+                                                TTraceProxyValue{&pTls, {1, static_cast<uint16_t>(length(pTls.mSimdTraceVec) - 1)}, simdLane++});
         }
-        globalAlignment(setH, setV, _taskContext.getScore());
+
+        // TODO(rrahn): Write back to buffer.
+        impl::scatterSimdBuffer(_taskContext.getTileBuffer().horizontalBuffer, tasks, simdBufferH, [](auto& task){ return task->_col; });
+        impl::scatterSimdBuffer(_taskContext.getTileBuffer().verticalBuffer, tasks, simdBufferV, [](auto& task){ return task->_row; });
+
+        // DEBUG: Remove!
+//        for (auto& task : tasks)
+//        {
+//            auto& val = _taskContext.getDebugBuffer().matrix[task->_col][task->_row];
+//            val.hEnd = _taskContext.getTileBuffer().horizontalBuffer[task->_col];
+//            val.vEnd = _taskContext.getTileBuffer().verticalBuffer[task->_row];
+//        }
     }
 
     // TODO(rrahn): Remove after refactoring omp dag.

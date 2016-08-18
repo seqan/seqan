@@ -79,10 +79,12 @@ public:
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksV;
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masks;
 
-    String<size_t>  endsH;
-    String<size_t>  endsV;
-    TModString      sortedEndsH;
-    TModString      sortedEndsV;
+    String<size_t> lengthsH;
+    String<size_t> lengthsV;
+    String<size_t> endsH;
+    String<size_t> endsV;
+    TModString     sortedEndsH;
+    TModString     sortedEndsV;
 
     TIterator nextEndsH;
     TIterator nextEndsV;

@@ -46,89 +46,6 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Tag DPTiled<TBuffer>
-// ----------------------------------------------------------------------------
-
-// Tag used to subclass DPScoutState and DPScout.
-// T represents the buffer type.
-template <typename T>
-struct DPTiled;
-
-// ----------------------------------------------------------------------------
-// Class DPTileBuffer
-// ----------------------------------------------------------------------------
-
-// The structure owning the horizontal/vertical buffer.
-template <typename TDPCellBuff, typename TBuffer = String<TDPCellBuff> >
-struct DPTileBuffer
-{
-    TBuffer horizontalBuffer;
-    TBuffer verticalBuffer;
-};
-
-// ----------------------------------------------------------------------------
-// Class DPScoutState_; DPTiled
-// ----------------------------------------------------------------------------
-
-// The overloaded DPScoutState which simply stores the pointers to the corresponding buffer.
-template <typename TBuffer>
-class DPScoutState_<DPTiled<TBuffer> >
-{
-public:
-
-    TBuffer* ptrHorBuffer;
-    TBuffer* ptrVerBuffer;
-
-    DPScoutState_() : ptrHorBuffer(nullptr), ptrVerBuffer(nullptr)
-    {}
-
-    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer) :
-    ptrHorBuffer(&horBuffer),
-    ptrVerBuffer(&verBuffer)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class DPScout_; DPTiled
-// ----------------------------------------------------------------------------
-
-// Overloaded DPScout to store the corresponding buffer for the current dp tile.
-template <typename TDPCell, typename TBuffer>
-class DPScout_<TDPCell, DPTiled<TBuffer> > :
-    public DPScout_<TDPCell, Default>
-{
-public:
-    typedef DPScout_<TDPCell, Default>  TParent;
-
-    DPScoutState_<DPTiled<TBuffer> >    state;
-
-    DPScout_() :
-    TParent(),
-    state()
-    {}
-
-    DPScout_(DPScoutState_<DPTiled<TBuffer> > state) :
-    TParent(),
-    state(state)
-    {}
-
-    DPScout_(DPScout_ const & other) :
-    TParent(other),
-    state(other.state)
-    {}
-
-    DPScout_ & operator=(DPScout_ const & other)
-    {
-        if (this != &other)
-        {
-            TParent::operator=(other);
-            state = other.state;
-        }
-        return *this;
-    }
-};
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -329,7 +246,7 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell(); InnerCell, FinalCol;
+// Function _computeCell(); FinalCol, InnerCell;
 // ----------------------------------------------------------------------------
 
 // Stores computed values in vertical buffer for initializing next tile right of the current.
@@ -368,12 +285,12 @@ _computeCell(TDPScout & scout,
 
     if (TrackingEnabled_<TMetaColumn, InnerCell>::VALUE)
     {
-        _scoutBestScore(scout, activeCell, traceMatrixNavigator, True(), False());
+        _scoutBestScore(static_cast<typename TDPScout::TBase&>(scout), activeCell, traceMatrixNavigator, True(), False());
     }
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell(); LastCell, FinalCol;
+// Function _computeCell(); FinalCol, LastCell;
 // ----------------------------------------------------------------------------
 
 // Stores computed values in vertical buffer for initializing next tile right of the current.
@@ -412,7 +329,7 @@ _computeCell(TDPScout & scout,
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
-        _scoutBestScore(scout, activeCell, traceMatrixNavigator, True(), True());
+        _scoutBestScore(static_cast<typename TDPScout::TBase&>(scout), activeCell, traceMatrixNavigator, True(), True());
     }
 }
 
@@ -423,7 +340,7 @@ _computeCell(TDPScout & scout,
 // Overloaded _computeAlignment interface for the parallel spec.
 template <typename TDPScoreValue, typename TTraceValue, typename TScoreMatHost, typename TTraceMatHost,
           typename TTraceTarget,
-          typename TBuffer,
+          typename TBuffer, typename TSpec,
           typename TSequenceH,
           typename TSequenceV,
           typename TScoreScheme,
@@ -432,14 +349,14 @@ template <typename TDPScoreValue, typename TTraceValue, typename TScoreMatHost, 
 inline typename Value<TScoreScheme>::Type
 _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & dpContext,
                   TTraceTarget & /*traceSegments*/,
-                  DPScoutState_<DPTiled<TBuffer> > & scoutState,
+                  DPScoutState_<DPTiled<TBuffer, TSpec> > & scoutState,
                   TSequenceH const & seqH,
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,
                   DPBandConfig<TBandSwitch> const & band,
                   DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, Parallel> const & dpProfile,
-                  bool const & lastCol,
-                  bool const & lastRow)
+                  bool const lastCol,
+                  bool const lastRow)
 {
     typedef typename DefaultScoreMatrixSpec_<TAlignmentAlgorithm>::Type TScoreMatrixSpec;
 
@@ -449,13 +366,15 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
     typedef DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise> TDPScoreMatrixNavigator;
     typedef DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise> TDPTraceMatrixNavigator;
 
-    typedef DPScout_<TDPScoreValue, DPTiled<TBuffer> > TDPScout;
+    typedef typename ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<DPTiled<TBuffer, TSpec> > >::Type TScoutSpec;
+
+    typedef DPScout_<TDPScoreValue, TScoutSpec> TDPScout;
 
     typedef typename Value<TScoreScheme>::Type TScoreValue;
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
     if (!_isValidDPSettings(seqH, seqV, band, dpProfile))
-        return MinValue<TScoreValue>::VALUE;
+        return createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE);
 
     TDPScoreMatrix dpScoreMatrix;
     TDPTraceMatrix dpTraceMatrix;
@@ -481,7 +400,7 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
     resize(dpScoreMatrix);
     // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
     if (IsTracebackEnabled_<TTraceFlag>::VALUE)
-        resize(dpTraceMatrix);  // Probably never needed here.
+        resize(dpTraceMatrix);
 
     TDPScoreMatrixNavigator dpScoreMatrixNavigator;
     TDPTraceMatrixNavigator dpTraceMatrixNavigator;
@@ -522,29 +441,29 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
 
 // The traceback wrapper to go backwards from block to block and call the internal traceback function.
 template <typename TTarget,
-          typename TPosition,
-          typename TIdxH,
-          typename TIdxV,
-          typename TTracebackBlocks,
+          typename TTraceBlockIdH,
+          typename TTraceBlockIdV,
+          typename TTraceBlockPos,
+          typename TTraceProxy,
           typename TSequenceH,
           typename TSequenceV,
           typename TAlgorithm, typename TGapCosts, typename TTracebackSpec>
 void implParallelTrace(TTarget & target,
-                       TPosition blockPos,
-                       TIdxH idxH,
-                       TIdxV idxV,
-                       TTracebackBlocks const & tracebackBlocks,
+                       TTraceBlockIdH const idH,
+                       TTraceBlockIdV const idV,
+                       TTraceBlockPos const blockPos,
+                       TTraceProxy const & traceProxy,
                        TSequenceH const & seqH,
                        TSequenceV const & seqV,
                        DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> const & dpProfile)
 {
     typedef DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, Parallel> DPProfile;
 
-    using TNavigator = BlockTraceNavigator<TTracebackBlocks const, TSequenceH const, TSequenceV const, TTracebackSpec>;
+    using TNavigator = BlockTraceNavigator<TTraceProxy const, TSequenceH const, TSequenceV const, TTracebackSpec>;
     using TPos = typename impl::LocalPosition<TNavigator>::Type;
 
     // Initialized the blockNavi.
-    TNavigator navi(tracebackBlocks, seqH, seqV, idxH, idxV, blockPos);
+    TNavigator navi(traceProxy, seqH, seqV, idH, idV, blockPos);
     // extract firstValue?
     auto traceValue = scalarValue(navi);
     auto lastTraceValue = _retrieveInitialTraceDirection(traceValue, dpProfile);
@@ -595,7 +514,6 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
     typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> >, Parallel> TDPProfile;  // A type trait to configure the DP algorithm.
 
     typedef DPScoutState_<DPTiled<TBuffer> > TDPScoutState;  // Through the dpScoutState we access the buffer per tile.
-
 
     // ----------------------------------------------------------------------------
     // Initialize TileBuffer.
@@ -683,6 +601,18 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
     // Sanity check: The itTraceEnd must now be at the end of the traceHost.
     SEQAN_ASSERT_EQ(itTraceEnd, end(traceHost, Standard()));
 
+    // DEBUG: DebugMatrix
+
+    impl::debug::DebugBuffer<TBuffer> debugMatrix;
+
+    resize(debugMatrix.matrix, length(seqH), Exact());
+    for (auto& column : debugMatrix.matrix)
+        resize(column, length(seqV), Exact());
+
+    using TSimdVec = typename SimdVector<short>::Type;
+    using TLocalTraceStore = impl::dp::parallel::LocalTraceStore<TSimdVec>;
+    impl::dp::parallel::TraceProxy<TLocalTraceStore> traceProxy(length(seqH), length(seqV));
+
     // Adaption of the dag code.
     typedef DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_<>::Type,
                       String<DPCell_<TScoreValue, AffineGaps> >, TTraceTile> TDPContext;
@@ -692,19 +622,56 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
                                        DPBandConfig<BandOff> *,
                                        TTileBuffer *,
                                        String<TTraceTile> *,
+                                       decltype(traceProxy)*,
+                                       impl::debug::DebugBuffer<TBuffer>*,  // remove after debugging.
                                        TDPContext,
                                        TDPProfile,
                                        TDPScoutState>;
 
     DPBandConfig<BandOff> dpBand;
-    TTaskContext taskContext(&seqH, &seqV, &score, &dpBand, &tileBuffer, &tracebackBlock);
+    TTaskContext taskContext(&seqH, &seqV, &score, &dpBand, &tileBuffer, &tracebackBlock, &traceProxy, &debugMatrix);
 
-    auto taskGraph = createGraph(taskContext, TVecSpec(), TParSpec());
-    invoke(taskGraph);
+    typename impl::dp::parallel::ThreadLocalStorage<TLocalTraceStore, TParSpec>::Type tls;
 
-//    // TODO(rrahn): Fix to also support local and semi-global alignment!
-//    implParallelTrace(target, length(back(tracebackBlock)) - 1, length(seqH) - 1, length(seqV) - 1, tracebackBlock,
-//                      seqH, seqV, TDPProfile());
+    auto begin = sysTime();
+    auto taskGraph = createGraph(taskContext, tls, execPolicy);
+    std::cout << "\nCreation: " << std::setw(15) << sysTime() - begin << "s\n";
+    begin = sysTime();
+    invoke(taskGraph, execPolicy);
+    std::cout << "Invocation: " << std::setw(13) << sysTime() - begin << "s\n";
+
+    // TODO(rrahn): pair<score, tuple<blockH, blockV, blockPos>> combine(tls);
+
+//    std::ofstream fStream("/Users/rmaerker/Documents/par_vec_tbb.csv");
+//    debugMatrix.write(fStream);
+//    fStream.close();
+
+//    std::cout << "Horizontal Buffer: \n";
+//    for (unsigned pos = 0; pos < length(tileBuffer.horizontalBuffer); ++pos)
+//    {
+//        auto& buf = tileBuffer.horizontalBuffer[pos];
+//        std::cout << "< ";
+//        for (unsigned bufPos = 0; bufPos < length(buf) - 1; ++bufPos)
+//            std::cout << "[" << buf[bufPos].i1 << ", " << static_cast<int>(buf[bufPos].i2) << "], ";
+//         std::cout << "[" << back(buf).i1 << ", " << static_cast<int>(back(buf).i2) << "]" << " >\n";
+//    }
+//
+//    std::cout << "Vertical Buffer: \n";
+//    for (unsigned pos = 0; pos < length(tileBuffer.verticalBuffer); ++pos)
+//    {
+//        auto& buf = tileBuffer.verticalBuffer[pos];
+//        std::cout << "< ";
+//        for (unsigned bufPos = 0; bufPos < length(buf) - 1; ++bufPos)
+//            std::cout << "[" << buf[bufPos].i1 << ", " << static_cast<int>(buf[bufPos].i2) << "], ";
+//        std::cout << "[" << back(buf).i1 << ", " << static_cast<int>(back(buf).i2) << "]" << " >\n";
+//    }
+
+
+    // TODO(rrahn): Fix to also support local and semi-global alignment!
+    // TODO(rrahn): Keep a thread local DPScout and combine after wards
+    implParallelTrace(target, length(seqH) - 1, length(seqV) - 1, length(back(tracebackBlock)) - 1, traceProxy,
+                      seqH, seqV, TDPProfile());
+    // We don't know the optimal score, do we?
     return _scoreOfCell(back(back(tileBuffer.horizontalBuffer)).i1);
 }
 
@@ -738,7 +705,7 @@ parallelAlign(TExecPolicy const & policy,
     // Variable used to set the length of a bock.
     // Blocks are quadratic. Only the blocks in the last block column or block row might differ in there size,
     // depending on the length of the original sequences.
-    unsigned const BLOCK_SIZE = 80;
+    unsigned const BLOCK_SIZE = 200;
 
     // Blocks are implemented as array of Ranges (storing begin and end iterator to corresponding block).
     String<Range<TIterH> >  seqHBlocks;

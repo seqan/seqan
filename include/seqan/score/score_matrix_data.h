@@ -307,21 +307,21 @@ typedef Blosum62_ ScoreSpecBlosum62;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum62> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecBlosum62> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // Matrix made by matblas from blosum62.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/2 Bit Units
         // Blocks Database = /data/blocks_5.0/blocks.dat
         // Cluster Percentage: >= 62
         // Entropy =   0.6979, Expected =  -0.5209
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              4, -2,  0, -2, -1, -2,  0, -2, -1, -1, -1, -1, -1, -2,  0, -1, -1, -1,  1,  0,  0,  0, -3, -2, -1,  0, -4,
             -2,  4, -3,  4,  1, -3, -1,  0, -3, -4,  0, -4, -3,  3, -1, -2,  0, -1,  0, -1, -1, -3, -4, -3,  1, -1, -4,
              0, -3,  9, -3, -4, -2, -3, -3, -1, -1, -3, -1, -1, -3, -2, -3, -3, -3, -1, -1, -2, -1, -2, -2, -3, -2, -4,

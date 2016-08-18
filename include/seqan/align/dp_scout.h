@@ -93,6 +93,7 @@ template <typename TDPCell, typename TSpec>
 class DPScout_
 {
 public:
+    using TBase = DPScout_;
     using TScoreValue = typename Value<TDPCell>::Type;
 
     TDPCell _maxScore         = TDPCell();
@@ -109,7 +110,7 @@ class DPScout_<TDPCell, Terminator_<TSpec> >
     : public DPScout_<TDPCell, Default>
 {
 public:
-    typedef DPScout_<TDPCell, Default>  TParent;
+    using TBase = DPScout_<TDPCell, Default>;
 
     DPScoutState_<Terminator_<TSpec> > * state = nullptr;
     bool terminationCriteriumMet               = false;
@@ -117,7 +118,7 @@ public:
     DPScout_() = default;
 
     DPScout_(DPScoutState_<Terminator_<TSpec> > & pState) :
-        DPScout_<TDPCell, Default>(),
+        TBase(),
         state(&pState)
     {}
 };

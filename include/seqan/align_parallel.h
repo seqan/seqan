@@ -39,6 +39,15 @@
 // Prerequisites
 // ============================================================================
 
+#if SEQAN_DEBUG_ENABLED
+#include <typeinfo>
+#include <cxxabi.h>
+#include <stdlib.h>
+#endif
+
+#include <utility>
+#include <vector>
+
 #include <seqan/basic.h>
 #include <seqan/align.h>
 #include <seqan/parallel.h>
@@ -47,6 +56,8 @@
 // DP Task
 // ============================================================================
 
+#include <seqan/align_parallel/dp_parallel_base.h>
+#include <seqan/align_parallel/dp_task_base_simd.h>
 #include <seqan/align_parallel/dp_task_base.h>
 #if defined(SEQAN_TBB)
 #include <seqan/align_parallel/dp_task_tbb.h>
