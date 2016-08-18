@@ -80,6 +80,13 @@ public:
     size_t posH;
     size_t posV;
 
+    String<size_t> lengthsH;
+    String<size_t> lengthsV;
+    String<size_t> endsH;
+    String<size_t> endsV;
+    TModString     sortedEndsH;
+    TModString     sortedEndsV;
+
     TIterator nextEndsH;
     TIterator nextEndsV;
 };

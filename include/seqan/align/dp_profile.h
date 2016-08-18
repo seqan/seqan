@@ -310,7 +310,7 @@ typedef Tag<DynamicGaps_> DynamicGaps;
 // TAlignment: The type to select the pairwise alignment algorithm.
 // TGapCosts:  The gap cost function (LinearGaps or AffineGaps).
 // TTraceback: The traceback switch (TracebackOn or TracebackOff).
-template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TBand = void, typename TExecPolicy = Serial>
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy = Serial>
 struct DPProfile_ {};
 
 
@@ -362,6 +362,24 @@ public:
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction GapTraits
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct GapTraits;
+
+template <typename T>
+struct GapTraits<T const> :
+    GapTraits<T>
+{};
+
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct GapTraits<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >
+{
+    typedef TGapCosts Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction IsGlobalAlignment

@@ -208,7 +208,7 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue
 
 template <typename TScoreValue>
 inline void 
-swap(DPCell_<TScoreValue, AffineGaps> & lhs, 
+swap(DPCell_<TScoreValue, AffineGaps> & lhs,
      DPCell_<TScoreValue, AffineGaps> & rhs)
 {
     std::swap(lhs._score, rhs._score);

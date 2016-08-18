@@ -29,7 +29,8 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Rene Rahn <rene.rahn@fu-berlin.de>
+// Author: Jonnhy Hancox <>
+//         Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_OMP_H_
@@ -59,12 +60,15 @@ public:
     // Member variables.
 
     std::atomic<unsigned>   refCount;
+    TThreadLocalStorage *   mTlsPtr;
 
     // ============================================================================
     // Constructor.
 
-    DPTaskImpl(TSize pCol, TSize pRow, TTaskConfig & pConfig) :
-        TBase(pCol, pRow, pConfig, *this)
+    DPTaskImpl(TSize pCol, TSize pRow, TTaskConfig & pConfig,
+               TThreadLocalStorage & pTls) :
+        TBase(pCol, pRow, pConfig, *this),
+        mTlsPtr(&pTls)
     {}
 
     // ============================================================================
@@ -85,9 +89,8 @@ public:
         return ++refCount;
     }
 
-    template <typename TThreadStore>
     inline void
-    updateAndSpawn(TThreadStore & tls)
+    updateAndSpawn()
     {
         if (DPTaskImpl* t = TBase::successor[0])
         {
@@ -95,14 +98,14 @@ public:
             {
                 if (TBase::_col % 4 == 0)  //only spawn new task every fourth item
                 {
-                    SEQAN_OMP_PRAGMA(task shared(tls) firstprivate(t) untied)
+                    SEQAN_OMP_PRAGMA(task firstprivate(t) untied)
                     {
-                        t->execute(tls);
+                        t->execute();
                     }
                 }
                 else
                 { //use existing thread
-                    t->execute(tls);
+                    t->execute();
                 }
             }
         }
@@ -110,16 +113,105 @@ public:
         {  //use existing thread.
             if (t->decrementRefCount() == 0)
             {
-                t->execute(tls);
+                t->execute();
             }
         }
     }
 
-    template <typename TThreadStore>
-    DPTaskImpl* execute(TThreadStore & tls)
+    template <typename TTaskQueue>
+    inline void
+    updateAndSpawn(TTaskQueue & pTaskQueue)
     {
-        TBase::runScalar(tls[omp_get_thread_num()]);
-        updateAndSpawn(tls);
+        if (DPTaskImpl* t = TBase::successor[0])
+        {
+            if (t->decrementRefCount() == 0)
+            {
+                appendValue(pTaskQueue, t);
+                if (TBase::_col % 4 == 0)  //only spawn new task every fourth item
+                {
+                    SEQAN_OMP_PRAGMA(task shared(pTaskQueue) firstprivate(t) untied)
+                    {
+                        t->execute(pTaskQueue);
+                    }
+                }
+                else
+                { //use existing thread
+                    t->execute(pTaskQueue);
+                }
+            }
+        }
+        if (DPTaskImpl* t = TBase::successor[1])
+        {  //use existing thread.
+            if (t->decrementRefCount() == 0)
+            {
+                appendValue(pTaskQueue, t);
+                t->execute(pTaskQueue);
+            }
+        }
+    }
+
+    DPTaskImpl* execute()
+    {
+        SEQAN_ASSERT(mTlsPtr != nullptr);
+        TBase::runScalar((*mTlsPtr)[omp_get_thread_num()]);
+        updateAndSpawn();
+        return nullptr;
+    }
+
+    template <typename TTaskQueue>
+    DPTaskImpl* execute(TTaskQueue& pTaskQueue)
+    {
+        SEQAN_ASSERT(mTlsPtr != nullptr);
+
+        String<DPTaskImpl*> tasks;
+        {  // Acquire scoped lock.
+            std::lock_guard<decltype(TBase::_taskContext.mLock)> scopedLock(TBase::_taskContext.mLock);
+
+            if (empty(pTaskQueue))
+            {
+                return nullptr;
+            }
+
+            lockReading(pTaskQueue);
+            if (length(pTaskQueue) < TBase::_taskContext.mSimdLength)
+            {
+                appendValue(tasks, popFront(pTaskQueue));
+            }
+            else
+            {
+                SEQAN_ASSERT_GEQ(length(pTaskQueue), TBase::_taskContext.mSimdLength);
+                for (auto i = 0; i < TBase::_taskContext.mSimdLength; ++i)
+                    appendValue(tasks, popFront(pTaskQueue));
+            }
+            unlockReading(pTaskQueue);
+        }  // Release scoped lock.
+
+        SEQAN_ASSERT_GT(length(tasks), 0u);
+
+        if (length(tasks) == 1)
+        {
+            front(tasks)->TBase::runScalar((*mTlsPtr)[omp_get_thread_num()]);
+        }
+        else
+        {
+            SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
+            TBase::runSimd(tasks, (*mTlsPtr)[omp_get_thread_num()]);
+        }
+        // Update and spawn sucessors.
+        for (auto& task : tasks)
+        {
+            task->template updateAndSpawn(pTaskQueue);
+//            if (task->mIsLastTask)
+//            {
+//                bool res = tbb::task::self().cancel_group_execution();  // Notify, that all queued tasks can be canceled.
+//                SEQAN_ASSERT(res);
+//                {
+//                    std::lock_guard<std::mutex> lk(TBase::_taskContext.mLock);
+//                    TBase::_taskContext.mReady = true;
+//                }
+//                TBase::_taskContext.mReadyEvent.notify_all();
+//            }
+        }
         return nullptr;
     }
 };
@@ -139,17 +231,34 @@ struct Pointer_<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, Pa
     using Type  = std::unique_ptr<TTask_>;
 };
 
+namespace impl
+{
+
+namespace dp
+{
+
+namespace parallel
+{
+
+template <typename TLocalStore>
+struct ThreadLocalStorage<TLocalStore, ParallelExecutionPolicyOmp>
+{
+    using Type = std::vector<TLocalStore>;
+};
+}  // namespace parallel
+}  // namespace dp
+}  // namespace impl
+
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TTaskContext, typename TVecExecPolicy>
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
 inline auto
 createGraph(TTaskContext & context,
-            TVecExecPolicy const & /*vecExecPolicy*/,
-            ParallelExecutionPolicyOmp const & /*taskImplTag*/)
+            TThreadLocalStorage & tls,
+            ExecutionPolicy<ParallelExecutionPolicyOmp, TVecExecPolicy> const & /*unused*/)
 {
-    using TThreadLocalStorage = typename TTaskContext::TDPContext;
     using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>;
 
     DPTaskGraph<TDagTask> graph;
@@ -160,7 +269,7 @@ createGraph(TTaskContext & context,
         resize(graph[i], length(context.getSeqV()));
         for (int j = length(context.getSeqV()); --j >= 0;)
         {
-            graph[i][j].reset(new TDagTask(i, j, context));
+            graph[i][j].reset(new TDagTask(i, j, context, tls));
             graph[i][j]->successor[0] = (i + 1 < length(context.getSeqH())) ? graph[i+1][j].get() : nullptr;
             graph[i][j]->successor[1] = (j + 1 < length(context.getSeqV())) ? graph[i][j+1].get() : nullptr;
             graph[i][j]->setRefCount(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0));
@@ -171,23 +280,55 @@ createGraph(TTaskContext & context,
 }
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
-inline void
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>, TSpec> & graph)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVecExecPolicy> >, void)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>, TSpec> & graph,
+       ExecutionPolicy<ParallelExecutionPolicyOmp, TVecExecPolicy> const & execPolicy)
 {
-    std::vector<TThreadLocalStorage> tls(omp_get_max_threads());
-    SEQAN_OMP_PRAGMA(parallel)
+    resize(*(firstTask(graph)->mTlsPtr), execPolicy.numThreads);
+    SEQAN_OMP_PRAGMA(parallel num_threads(execPolicy.numThreads))
     {
         SEQAN_OMP_PRAGMA(master)
         {
             // Create context and pass to execute.
             //now kick the computaion off
-            firstTask(graph)->execute(tls);
+            firstTask(graph)->execute();
         }
         SEQAN_OMP_PRAGMA(barrier)
     }
     SEQAN_ASSERT_EQ(lastTask(graph)->refCount, 1u);
-    lastTask(graph)->execute(tls);
+    lastTask(graph)->execute();
 }
+
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVecExecPolicy>, void)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>, TSpec> & graph,
+       ExecutionPolicy<ParallelExecutionPolicyOmp, TVecExecPolicy> const & execPolicy)
+{
+    using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>;
+
+    resize(*(firstTask(graph)->mTlsPtr), execPolicy.numThreads);
+    ConcurrentQueue<TTask*> queue;
+    queue.writerCount = execPolicy.numThreads;
+    appendValue(queue, firstTask(graph).get());
+
+    SEQAN_OMP_PRAGMA(parallel num_threads(execPolicy.numThreads))
+    {
+        SEQAN_OMP_PRAGMA(master)
+        {
+            // Create context and pass to execute.
+            //now kick the computaion off
+            firstTask(graph)->execute(queue);
+        }
+        SEQAN_OMP_PRAGMA(barrier)
+    }
+    while (queue.writerCount != 0)
+        unlockWriting(queue);
+
+    SEQAN_ASSERT(empty(queue));
+    appendValue(queue, lastTask(graph).get());
+    lastTask(graph)->execute();
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_OMP_H_

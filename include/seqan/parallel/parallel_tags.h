@@ -77,7 +77,10 @@ typedef Tag<Parallel_> Parallel;
 
 // Dynamic execution policy.
 template <typename TParallelSpec, typename TVectorSpec = Default>
-struct ExecutionPolicy{};
+struct ExecutionPolicy
+{
+    size_t numThreads = 1;
+};
 
 // ----------------------------------------------------------------------------
 // Tag SerialExecutionPolicy
@@ -91,7 +94,7 @@ constexpr ExecutionPolicy<Serial> ser{};
 
 struct VectorExecutionPolicy_;
 using VectorExecutionPolicy = Tag<VectorExecutionPolicy_>;
-constexpr ExecutionPolicy<Serial, VectorExecutionPolicy> vec{};
+ExecutionPolicy<Serial, VectorExecutionPolicy> vec{};
 
 // ----------------------------------------------------------------------------
 // Tag ParallelExecutionPolicyTbb
@@ -100,8 +103,8 @@ constexpr ExecutionPolicy<Serial, VectorExecutionPolicy> vec{};
 #if defined(SEQAN_TBB)
 struct ParallelExecutionPolicyTbb_;
 using ParallelExecutionPolicyTbb = Tag<ParallelExecutionPolicyTbb_>;
-constexpr ExecutionPolicy<ParallelExecutionPolicyTbb> parTbb{};
-constexpr ExecutionPolicy<ParallelExecutionPolicyTbb, VectorExecutionPolicy> parTbbVec{};
+ExecutionPolicy<ParallelExecutionPolicyTbb> parTbb{std::thread::hardware_concurrency()};
+ExecutionPolicy<ParallelExecutionPolicyTbb, VectorExecutionPolicy> parTbbVec{std::thread::hardware_concurrency()};
 #endif
 
 // ----------------------------------------------------------------------------
@@ -111,8 +114,8 @@ constexpr ExecutionPolicy<ParallelExecutionPolicyTbb, VectorExecutionPolicy> par
 #if defined(_OPENMP)
 struct ParallelExecutionPolicyOmp_;
 using ParallelExecutionPolicyOmp = Tag<ParallelExecutionPolicyOmp_>;
-constexpr ExecutionPolicy<ParallelExecutionPolicyOmp> parOmp{};
-constexpr ExecutionPolicy<ParallelExecutionPolicyOmp, VectorExecutionPolicy> parOmpVec{};
+ExecutionPolicy<ParallelExecutionPolicyOmp> parOmp{std::thread::hardware_concurrency()};
+ExecutionPolicy<ParallelExecutionPolicyOmp, VectorExecutionPolicy> parOmpVec{std::thread::hardware_concurrency()};
 #endif
 
 // ----------------------------------------------------------------------------
@@ -121,8 +124,8 @@ constexpr ExecutionPolicy<ParallelExecutionPolicyOmp, VectorExecutionPolicy> par
 
 struct ParallelExecutionPolicyNative_;
 using ParallelExecutionPolicyNative = Tag<ParallelExecutionPolicyNative_>;
-constexpr ExecutionPolicy<ParallelExecutionPolicyNative> parNative{};
-constexpr ExecutionPolicy<ParallelExecutionPolicyNative, VectorExecutionPolicy> parNativeVec{};
+ExecutionPolicy<ParallelExecutionPolicyNative> parNative{std::thread::hardware_concurrency()};
+ExecutionPolicy<ParallelExecutionPolicyNative, VectorExecutionPolicy> parNativeVec{std::thread::hardware_concurrency()};
 
 // ============================================================================
 // Metafunctions

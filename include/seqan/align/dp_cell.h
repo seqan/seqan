@@ -66,6 +66,21 @@ class DPCell_;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction Spec
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapCostFunction>
+struct Spec<DPCell_<TScoreValue, TGapCostFunction> >
+{
+    typedef TGapCostFunction Type;
+};
+
+template <typename TScoreValue, typename TGapCostFunction>
+struct Spec<DPCell_<TScoreValue, TGapCostFunction> const> :
+    Spec<DPCell_<TScoreValue, TGapCostFunction> >
+{};
+
+// ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 

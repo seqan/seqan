@@ -36,7 +36,8 @@
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_TBB_H_
 
 #include <tbb/task.h>
-#include "tbb/enumerable_thread_specific.h"
+#include <tbb/enumerable_thread_specific.h>
+#include <tbb/task_scheduler_init.h>
 
 namespace seqan
 {
@@ -62,9 +63,9 @@ public:
     // ============================================================================
     // Member variables.
 
-    std::shared_ptr<TThreadLocalStorage> _ptrTls;
-    TSimdQueue*                          mSimdQueuePtr = nullptr;
-    bool                                 mIsLastTask = false;
+    TThreadLocalStorage * mTlsPtr       = nullptr;
+    TSimdQueue *          mSimdQueuePtr = nullptr;
+    bool                  mIsLastTask   = false;
 //    std::atomic<uint8_t>                 mRefCount;
 
     // ============================================================================
@@ -73,9 +74,9 @@ public:
     DPTaskImpl() = default;
 
     DPTaskImpl(size_t pCol, size_t pRow, TTaskConfig & pConfig,
-               std::shared_ptr<TThreadLocalStorage> & pPtrTls) :
+               TThreadLocalStorage & pTls) :
         TBase(pCol, pRow, pConfig, *this),
-        _ptrTls(pPtrTls)
+        mTlsPtr(&pTls)
     {}
 
     // ============================================================================
@@ -98,7 +99,7 @@ public:
 
     auto& getLocalDpContext()
     {
-        return _ptrTls->local();
+        return mTlsPtr->local();
     }
 
     template <typename TVec>
@@ -133,8 +134,8 @@ public:
     inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVec> >, void)
     executeImpl()
     {
-        SEQAN_ASSERT(_ptrTls != nullptr);
-        TBase::runScalar(_ptrTls->local());
+        SEQAN_ASSERT(mTlsPtr != nullptr);
+        TBase::runScalar(mTlsPtr->local());
         updateAndSpawn<TVecExecPolicy>();
     }
 
@@ -142,8 +143,11 @@ public:
     inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVec> , void)
     executeImpl()
     {
-        SEQAN_ASSERT(localDpContext != nullptr);
+        SEQAN_ASSERT(mTlsPtr != nullptr);
         SEQAN_ASSERT(mSimdQueuePtr != nullptr);
+
+        if (tbb::task::self().is_cancelled())
+            return;
 
         String<DPTaskImpl*> tasks;
         {  // Acquire scoped lock.
@@ -153,7 +157,7 @@ public:
             {
                 return;
             }
-
+            lockReading(*mSimdQueuePtr);
             if (length(*mSimdQueuePtr) < TBase::_taskContext.mSimdLength)
             {
                 appendValue(tasks, popFront(*mSimdQueuePtr));
@@ -164,19 +168,20 @@ public:
                 for (auto i = 0; i < TBase::_taskContext.mSimdLength; ++i)
                     appendValue(tasks, popFront(*mSimdQueuePtr));
             }
+            unlockReading(*mSimdQueuePtr);
         }  // Release scoped lock.
 
         SEQAN_ASSERT_GT(length(tasks), 0u);
 
         if (length(tasks) == 1)
         {
-            front(tasks)->TBase::runScalar(_ptrTls->local());
+            front(tasks)->TBase::runScalar(mTlsPtr->local());
         }
         else
         {
             SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
             // Make to simd version!
-            TBase::runSimd(tasks, _ptrTls->local());
+            TBase::runSimd(tasks, mTlsPtr->local());
         }
         // Update and spawn sucessors.
         for (auto& task : tasks)
@@ -184,9 +189,10 @@ public:
             task->template updateAndSpawn<TVecExecPolicy>();
             if (task->mIsLastTask)
             {
-                cancel_group_execution();  // Notify, that all queued tasks can be canceled.
+                bool res = tbb::task::self().cancel_group_execution();  // Notify, that all queued tasks can be canceled.
+                SEQAN_ASSERT(res);
                 {
-                    std::lock_guard<std::mutex> lk(TBase::_taskContext.mLockEvent);
+                    std::lock_guard<std::mutex> lk(TBase::_taskContext.mLock);
                     TBase::_taskContext.mReady = true;
                 }
                 TBase::_taskContext.mReadyEvent.notify_all();
@@ -211,22 +217,38 @@ template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExec
 struct IsDPTask<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> > : True
 {};
 
+namespace impl
+{
+
+namespace dp
+{
+
+namespace parallel
+{
+
+template <typename TLocalStore>
+struct ThreadLocalStorage<TLocalStore, ParallelExecutionPolicyTbb>
+{
+    using Type = tbb::enumerable_thread_specific<TLocalStore>;
+};
+}  // namespace parallel
+}  // namespace dp
+}  // namespace impl
+
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TTaskContext, typename TVecExecPolicy>
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
 inline auto
 createGraph(TTaskContext & context,
-            TVecExecPolicy const & /*vecExecPolicy*/,
-            ParallelExecutionPolicyTbb const & /*taskImplTag*/)
+            TThreadLocalStorage & tls,
+            ExecutionPolicy<ParallelExecutionPolicyTbb, TVecExecPolicy> const & /*unused*/)
 {
-    using TThreadLocalStorage = tbb::enumerable_thread_specific<typename TTaskContext::TDPContext>;
     using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>;
 
     DPTaskGraph<TDagTask> graph;
 
-    auto tls = std::make_shared<TThreadLocalStorage>();  // Copy into shared ptr per task. So first if all tasks are destroyed this resources is freed.
     resize(graph.get(), length(context.getSeqH()));
     for (int i = length(context.getSeqH()); --i >= 0;)
     {
@@ -245,8 +267,10 @@ createGraph(TTaskContext & context,
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
 inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVecExecPolicy> >, void)
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>, TSpec> & graph)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>, TSpec> & graph,
+       ExecutionPolicy<ParallelExecutionPolicyTbb, TVecExecPolicy> const & execPolicy)
 {
+    tbb::task_scheduler_init init(execPolicy.numThreads);
     lastTask(graph)->incrementRefCount();
     lastTask(graph)->spawn_and_wait_for_all(*firstTask(graph));
     lastTask(graph)->execute();
@@ -255,18 +279,25 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
 inline SEQAN_FUNC_ENABLE_IF(IsVectorExecutionPolicy<TVecExecPolicy>, void)
-invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>, TSpec> & graph)
+invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>, TSpec> & graph,
+       ExecutionPolicy<ParallelExecutionPolicyTbb, TVecExecPolicy> const & execPolicy)
 {
     using DPDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>;
+
+    tbb::task_scheduler_init init(execPolicy.numThreads);
     ConcurrentQueue<DPDagTask*> queue;
+    queue.writerCount = std::thread::hardware_concurrency();
     firstTask(graph)->mSimdQueuePtr = &queue;
     appendValue(queue, firstTask(graph));
     lastTask(graph)->spawn(*firstTask(graph));
 
     {
-        std::unique_lock<std::mutex> lk(lastTask(graph)->_taskContext.mLockEvent);
+        std::unique_lock<std::mutex> lk(lastTask(graph)->_taskContext.mLock);
         lastTask(graph)->_taskContext.mReadyEvent.wait(lk, [&graph]{return lastTask(graph)->_taskContext.mReady;});
     }
+    while (queue.writerCount != 0)
+        unlockWriting(queue);
+        
     SEQAN_ASSERT(empty(queue));
 }
 
