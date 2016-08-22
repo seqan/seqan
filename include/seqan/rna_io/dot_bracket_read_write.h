@@ -89,15 +89,6 @@ char const * FileExtensions<DotBracket, T>::VALUE[1] =
 };
 
 
-// ==========================================================================
-// Functions
-// ==========================================================================
-
-struct group {
-    int position;
-    char bracket;
-};
-
 // ----------------------------------------------------------------------------
 // Function readRecord(); RnaRecord, DotBracket
 // ----------------------------------------------------------------------------
@@ -106,42 +97,60 @@ inline void
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
 {
     //read beginning
-        //>S.cerevisiae_tRna-PHE M10740/1-73
-    //if(iter == '>')       HOW?
+    //>S.cerevisiae_tRna-PHE M10740/1-73
     skipOne(iter);
 
     readUntil(record.name, iter, IsWhitespace());
-    //CHECK IF BLANK AFTER NAME
-    skipUntil(iter, EqualsChar<'/'>());
-    skipOne(iter);
-    readUntil(context.buffer, iter, EqualsChar<'-'>());
-    if (!lexicalCast(record.begPos, context.buffer))
-        throw BadLexicalCast(record.begPos, context.buffer);
-    clear(context.buffer);
-    skipOne(iter);
-    readUntil(context.buffer, iter, IsNewline());
-    if (!lexicalCast(record.endPos, context.buffer))
-        throw BadLexicalCast(record.endPos, context.buffer);
-    clear(context.buffer);
-    skipOne(iter);
-    //read body
-    //GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
-    //(((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
+    //Check that this line doesn't end after name
+    if(*iter != '\n')
+    {
+        skipUntil(iter, EqualsChar<'/'>());
+        skipOne(iter);
+        if(*iter != '\n')
+        {
+            readUntil(context.buffer, iter, EqualsChar<'-'>());
+            if (!lexicalCast(record.begPos, context.buffer))
+                throw BadLexicalCast(record.begPos, context.buffer);    //Read in beginning index position
+            clear(context.buffer);
+            skipOne(iter);
+            readUntil(context.buffer, iter, IsNewline());
+            if (!lexicalCast(record.endPos, context.buffer))
+                throw BadLexicalCast(record.endPos, context.buffer);    //Read in ending index position
+            clear(context.buffer);
+            skipOne(iter);
+
+            if(record.endPos >= record.begPos)
+            {
+                record.amount = record.endPos-record.begPos +1;     //Set record.amount
+            }
+            else{
+                std::cerr << "ERROR: End position is greater than beginning position";
+            }
+        }
+    }
+
+    /*
+    End part of record:
+    
+    GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
+    (((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
+    */
 
     //declare opening and closing brackets. the reason I use two diff strings is becasue I can see if we have a pair by comparing open[i]==close[i]
     readUntil(record.base, iter, IsNewline());
     skipOne(iter);
 
     resize(record.pair, length(record.base));
+    resize(record.index, length(record.base));
 
     std::string const SEQAN_DOTBRACKET_OPEN  = "({<[abcdefghijklmnopqrstuvwxyz";
     std::string const SEQAN_DOTBRACKET_CLOSE = ")}>]ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    group holder;
     //declare vector as stack
-    std::stack<group> v[30];
+    std::stack<unsigned> v[30];
 
     readUntil(context.buffer, iter, IsWhitespace());
-    for(unsigned i = 0; i < length(record.base); ++i)
+
+    for(unsigned i = 0; i < length(context.buffer); ++i)
     {
         if (context.buffer[i] == '.')
         {
@@ -153,19 +162,17 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
         std::size_t br_index = SEQAN_DOTBRACKET_OPEN.find(context.buffer[i]);   // search opening bracket
         if (br_index != std::string::npos)
         {
-            holder.position = i+1;              //holder gets position
-            holder.bracket = context.buffer[i]; //holder gets opening or closing
-            v[br_index].push(holder);
+            v[br_index].push(i+1);
             continue;
         }
         
         br_index = SEQAN_DOTBRACKET_CLOSE.find(context.buffer[i]);              // search closing bracket
         if (br_index != std::string::npos && !v[br_index].empty())
         {
-            holder = v[br_index].top();
-            record.pair[i] = holder.position;
-            std::cout << "record.pair[" << i << "] = " << holder.position-1 << std::endl;
-            record.pair[holder.position-1] = i+1;
+			unsigned position = v[br_index].top();
+            record.pair[i] = position;
+            //std::cout << "record.pair[" << i << "] = " << holder.position-1 << std::endl;
+            record.pair[position-1] = i+1;
             //string at i gets holder.position for pair
             //position of holder gets i for pair
             v[br_index].pop();
@@ -175,6 +182,31 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             throw ParseError("Invalid bracket notation");
         }
     }
+
+    for(unsigned i = 0; i < 30; ++i)
+	{
+		if(!v[i].empty())
+    	{
+        	std::cerr << "ERROR: Imperfectly paired brackets" << std::endl;
+			return;
+    	}
+	}
+
+    clear(context.buffer);
+    if(!atEnd(iter))
+    {
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        if(*iter == '(')
+        {
+            skipOne(iter);    
+            readUntil(context.buffer, iter, EqualsChar<')'>());
+            if (!lexicalCast(record.energy, context.buffer))
+             throw BadLexicalCast(record.energy, context.buffer);
+            clear(context.buffer);
+        }
+    }
+
+    
 }
 
 
@@ -196,8 +228,13 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     if(record.begPos == -1)
     {
         write(target, "1-");
-        if(record.amount != -1)  
+        if(record.amount != 0)  
             write(target, record.amount);
+        else
+        {
+            std::cerr << "ERROR: There is no amount provided." << std::endl;
+            return;
+        }
     }
     else if(record.endPos >= record.begPos)
     {
@@ -205,6 +242,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         writeValue(target, '-');
         write(target, record.endPos);
     }
+
     writeValue(target, '\n');
     //write base
     write(target, record.base);

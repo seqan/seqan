@@ -32,8 +32,8 @@
 // Author: Lily Shellhammer
 // ==========================================================================
 
-#ifndef SEQAN_RNA_FORMAT_RECORD_H_
-#define SEQAN_RNA_FORMAT_RECORD_H_
+#ifndef SEQAN_RDAT_FORMAT_RECORD_H_
+#define SEQAN_RDAT_FORMAT_RECORD_H_
 
 namespace seqan {
 
@@ -105,4 +105,4 @@ inline void clear(RDATRecord & record)
 
 }  // namespace seqan
 
-#endif  //SEQAN_RNA_FORMAT_RECORD_H_
+#endif  //SEQAN_RDAT_FORMAT_RECORD_H_

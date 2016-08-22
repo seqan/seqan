@@ -116,7 +116,7 @@ template <typename TForwardIter>
 inline void 
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
 {
-    //read old "record" info
+    //First line record example:
     //  73 ENERGY =     -17.50    S.cerevisiae_tRna-PHE
 
     clear(record);
@@ -141,10 +141,14 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
 
     readUntil(context.buffer, iter, NotFunctor<IsWhitespace>());
 
-    readUntil(record.name,  iter, IsNewline());   
-// 3  G           2       4       70          3
-// N  SEQUENCE   N-1     N+1    J POSITION  N  
+    readUntil(record.name,  iter, IsNewline());  
 
+    /* 
+    Example records:
+
+     3  G           2       4       70          3
+     N  SEQUENCE   N-1     N+1    J POSITION  N  
+    */
     clear(context);
     unsigned counter = 0;
     skipUntil(iter, NotFunctor<IsWhitespace>()); 
@@ -158,6 +162,15 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
             throw BadLexicalCast(context.number, context.buffer);
         clear(context.buffer);
         append(record.index, context.number);
+        //save starting index position
+        if(counter == 0)
+        {
+            record.begPos = context.number;
+            if(record.amount != 0)  //in case amount is zero, leave it blank until counter is finshed
+                record.endPos = record.amount-record.begPos+1;
+        }
+
+
 
         skipUntil(iter, NotFunctor<IsWhitespace>());    
 
@@ -181,6 +194,13 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         skipUntil(iter, IsNewline());      //skip until newline
         counter++;
     }
+    if(record.amount == 0)
+    {
+        record.amount = counter;
+        if(record.begPos != 1)
+            record.endPos = record.amount-record.begPos+1;
+    }
+
 }
 
 
@@ -193,7 +213,13 @@ inline void
 writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)     
 {
     //write old "header"
+    if(record.amount != 0)
         appendNumber(target, record.amount);
+    else
+    {
+        std::cerr << "ERROR. No amount of records specified";
+        return;
+    }
     writeValue(target, ' ');
     write(target, "ENERGY = ");
     writeValue(target, '\t');
