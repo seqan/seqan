@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer
+// Author: Lily Shellhammer <lily.shellhammer@gmail.com>
 // ==========================================================================
 // Class for reading/writing files in Connect (.ct) files
 // ==========================================================================
@@ -56,29 +56,27 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @class RnaFileIn
+ * @class ConnectFileIn
  * @signature typedef FormattedFile<Rna, Input> ConenctFileIn;
  * @extends FormattedFileIn
- * @headerfile <seqan/Rna_format_io.h>
+ * @headerfile <seqan/rna_format_io.h>
  * @brief Class for reading Rna files.
  *
- * @see RnaHeader
  * @see RnaRecord
  */
 typedef FormattedFile<Connect, Input>   ConnectFileIn;
 
 // ----------------------------------------------------------------------------
-// Typedef VcfFileOut
+// Typedef ConnectFileOut
 // ----------------------------------------------------------------------------
 
 /*!
- * @class RnaFileOut
+ * @class ConnectFileOut
  * @signature typedef FormattedFile<Rna, Output> ConenctFileOut;
  * @extends FormattedFileOut
  * @headerfile <seqan/Rna_format_io.h>
  * @brief Class for writing Rna files.
  *
- * @see RnaHeader
  * @see RnaRecord
  */
 
@@ -107,7 +105,7 @@ struct FileFormat<FormattedFile<Connect, TDirection, TSpec> >
 
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); RnaHeader
+// Function readRecord(); RnaHeader, Connect File
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
@@ -120,7 +118,7 @@ readRecord(RnaRecord & record, FormattedFile<Connect, Input, TSpec> & file)
 
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); RnaRecord
+// Function writeRecord(); RnaRecord, Connect File
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>

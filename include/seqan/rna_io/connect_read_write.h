@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer <>
+// Author: Lily Shellhammer <lily.shellhammer@gmail.com>
 // ==========================================================================
 // This file contains routines to read and write to connect format files (.ct)
 // ==========================================================================
@@ -65,8 +65,8 @@ record
  2 	C       	1    	3   	71    		2
  3 	G       	2    	4   	70    		3
 
-
 */
+
 namespace seqan{
 
 // ==========================================================================
@@ -77,7 +77,7 @@ namespace seqan{
 // Forwards
 // ============================================================================
 // --------------------------------------------------------------------------
-// Tag Rna
+// Tag Connect
 // --------------------------------------------------------------------------
 
 struct Connect_;
@@ -112,6 +112,9 @@ char const * FileExtensions<Connect, T>::VALUE[1] =
 // ==========================================================================
 
 
+// ----------------------------------------------------------------------------
+// Function readRecord(); RnaRecord, Connect
+// ----------------------------------------------------------------------------
 template <typename TForwardIter>
 inline void 
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
@@ -205,7 +208,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
 
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(Rna);
+// Function writeRecord(); RnaRecord, Connect
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>

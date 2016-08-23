@@ -29,7 +29,8 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer <>
+// Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
+//          Jörg Winkler <>
 // ==========================================================================
 // This file contains routines to write to DotBracket format files (.ct)
 // ==========================================================================
@@ -49,7 +50,11 @@ DotBracket FORMAT example:
 GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
 (((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
 
+-Header with amount of records
+-Strand 
+-Dot-Bracket notation for knots or pseudoknots | Energy of rna strand
 */
+
 namespace seqan{
 
 // ==========================================================================
@@ -59,6 +64,10 @@ namespace seqan{
 // ============================================================================
 // Classes, Tags
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Tag DotBracket
+// ----------------------------------------------------------------------------
 struct DotBracket_;
 typedef Tag<DotBracket_> DotBracket;
 
@@ -88,6 +97,9 @@ char const * FileExtensions<DotBracket, T>::VALUE[1] =
     ".dt"      // default output extension
 };
 
+// ============================================================================
+// Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function readRecord(); RnaRecord, DotBracket

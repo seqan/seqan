@@ -55,11 +55,10 @@ namespace seqan {
  * @class DotBracketFileIn
  * @signature typedef FormattedFile<DotBracket, Input> DotBracketFileIn;
  * @extends FormattedFileIn
- * @recordfile <seqan/Rna_io.h>
+ * @recordfile <seqan/rna_io.h>
  * @brief Class for reading DotBracket files.
  *
- * @see DotBracketrecord
- * @see DotBracketRecord
+ * @see RnaRecord
  */
 
 typedef FormattedFile<DotBracket, Input>   DotBracketFileIn;
@@ -72,11 +71,10 @@ typedef FormattedFile<DotBracket, Input>   DotBracketFileIn;
  * @class DotBracketFileOut
  * @signature typedef FormattedFile<DotBracket, Output> DotBracketFileOut;
  * @extends FormattedFileOut
- * @recordfile <seqan/Rna_io.h>
+ * @recordfile <seqan/rna_io.h>
  * @brief Class for writing DotBracket files.
  *
- * @see DotBracketrecord
- * @see DotBracketRecord
+ * @see RnaRecord
  */
 
 typedef FormattedFile<DotBracket, Output>  DotBracketFileOut;
@@ -102,7 +100,7 @@ struct FileFormat<FormattedFile<DotBracket, TDirection, TSpec> >
 };
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); DotBracketRecord
+// Function writeRecord(); RnaRecord, DotBracket File
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
@@ -113,7 +111,7 @@ writeRecord(FormattedFile<DotBracket, Output, TSpec> & file, RnaRecord & record)
 }
 
 // ----------------------------------------------------------------------------
-// Function readrecord(); Rnarecord
+// Function readrecord(); RnaRecord, DotBracket File
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
