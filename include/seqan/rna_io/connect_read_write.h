@@ -135,7 +135,6 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
     skipUntil(iter, EqualsChar<'='>());
     skipOne(iter);
     skipUntil(iter, NotFunctor<IsWhitespace>());
-    skipOne(iter);
     
     readUntil(context.buffer, iter, IsWhitespace());
     if (!lexicalCast(record.energy, context.buffer))
@@ -231,20 +230,24 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
     write(target, record.name);
     writeValue(target, '\n');
     //write "body"
+    int begPos = 1;
+    if(record.begPos != 1)
+        begPos = record.begPos;
     for (unsigned i = 0; i < length(record.base); i++)
     {
+
         writeValue(target, ' ');    //All records start with a space
-        appendNumber(target, record.index[i]);
+        appendNumber(target, i+begPos);
         writeValue(target, ' ');
         write(target, record.base[i]);
         writeValue(target, '\t');
-        appendNumber(target, record.index[i]-1);
+        appendNumber(target, i+begPos-1);
         writeValue(target, '\t');
-        appendNumber(target, record.index[i]+1);
+        appendNumber(target, i+begPos+1);
         writeValue(target, '\t');
         write(target, record.pair[i]);
         writeValue(target, '\t');
-        appendNumber(target, record.index[i]);
+        appendNumber(target, i+begPos);
         writeValue(target, '\n');
     }
 }

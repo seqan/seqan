@@ -108,6 +108,8 @@ template <typename TForwardIter>
 inline void 
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
 {
+    clear(context);
+    clear(record);
     //read beginning
     //>S.cerevisiae_tRna-PHE M10740/1-73
     skipOne(iter);
@@ -338,7 +340,12 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
             write(target, SEQAN_DOTBRACKET_CLOSE[colors[i]-1]);
         }
     }
-    writeValue(target, '\n');
+   writeValue(target, ' ');
+   writeValue(target, '(');
+   write(target, record.energy);
+   writeValue(target, ')');
+
+
 }
 
 
