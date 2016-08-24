@@ -62,20 +62,16 @@ public:
     // Record's name.
     CharString name;
     
-    //beginning and ending positions
-    String<int>  index;
-
     //string of base at each position in Rna strand
     Rna5String base;   
 
     // Position of n base's pair.
     String<int>  pair;
 
-    //Qual, and information specific to other file formats. Will be set to default value in constructor when I figure out what to set them to.
-    CharString qual;
-
 
     ////////RDAT FILES
+    CharString qual; //I think?
+
     int offset;
 
     String<CharString> seqpos;
@@ -115,7 +111,6 @@ public:
 inline void clear(RnaRecord & record)
 {
     clear(record.name);
-    clear(record.index);
     clear(record.base);
     clear(record.pair);
     clear(record.qual);

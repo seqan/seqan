@@ -163,8 +163,6 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         if (!lexicalCast(context.number, context.buffer))
             throw BadLexicalCast(context.number, context.buffer);
         clear(context.buffer);
-        append(record.index, context.number);
-        //save starting index position
         if(counter == 0)
         {
             record.begPos = context.number;

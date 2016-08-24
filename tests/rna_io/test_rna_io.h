@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
     SEQAN_ASSERT_EQ(rnaRecord.base, base);
-    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
+    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72);
 
     /* CHECK DEFAULT VALUES */
 

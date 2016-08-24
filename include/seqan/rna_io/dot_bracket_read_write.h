@@ -177,7 +177,6 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     skipOne(iter);
 
     resize(record.pair, length(record.base));
-    resize(record.index, length(record.base));
 
     // declare stacks for different bracket pairs
     std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
@@ -337,15 +336,16 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
             endpos_stack.pop();
         }
     }
-    
+    int holder = 0;     //This just got rid of all my warnings in the rna_io testing, so I'm keeping this here
     for (unsigned i = 0; i < length(colors); ++i)       // write pairs in bracket notation
     {
+        holder = i+1;
         if (record.pair[i] == 0)                        // unpaired
         {
             SEQAN_ASSERT(colors[i] == 0);
             writeValue(target, '.');
         }
-        else if (i+1 < record.pair[i])                  // open bracket
+        else if (holder < record.pair[i])                  // open bracket
         {
             SEQAN_ASSERT(colors[i] > 0);
             write(target, DotBracketArgs<>::OPEN[colors[i]-1]);
