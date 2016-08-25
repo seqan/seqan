@@ -263,11 +263,12 @@ template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExec
 inline auto
 createGraph(TTaskContext & context,
             TThreadLocalStorage & tls,
-            ExecutionPolicy<ParallelExecutionPolicyNative, TVecExecPolicy> const & /*unsued*/)
+            ExecutionPolicy<ParallelExecutionPolicyNative, TVecExecPolicy> const & execPolicy)
 {
     using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative>;
 
     DPTaskGraph<TDagTask> graph;
+    resize(tls, execPolicy.numThreads, Exact());
 
     resize(graph.get(), length(context.getSeqH()));
     for (int i = length(context.getSeqH()); --i >= 0;)
@@ -294,17 +295,14 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
     using TWorkQueue = ConcurrentQueue<TTask *>;
     using TDPThread = DPThread<TWorkQueue, TTaskContext, typename IsVectorExecutionPolicy<TVecExecPolicy>::Type>;
 
-    unsigned numThreads = execPolicy.numThreads;
-
     // Prepare the tls.
-    resize(*(firstTask(graph)->mTlsPtr), numThreads);
     TWorkQueue queue;
     std::vector<std::thread> workerThreads;
 
-    for (unsigned threadId = 0; threadId < numThreads; ++threadId)
+    for (unsigned threadId = 0; threadId < execPolicy.numThreads; ++threadId)
         workerThreads.emplace_back(std::thread(TDPThread{&queue, firstTask(graph)->_taskContext, static_cast<uint8_t>(threadId)}));
 
-    waitForWriters(queue, numThreads);
+    waitForWriters(queue, execPolicy.numThreads);
     appendValue(queue, firstTask(graph).get());  // Kick off execution.
 
     // Wait for threads to finish.

@@ -152,16 +152,12 @@ class DPScout_<TDPCell, SimdAlignmentScout<TSpec> > :
     public DPScout_<TDPCell, Default>
 {
 public:
+    using TSimdVec    = typename Value<TDPCell>::Type;
     using TBase       = DPScout_<TDPCell, Default>;
     using TScoutState = DPScoutState_<TSpec>;
 
-    //used in the SIMD version to keep track of all host positions
-    //SIMD register size divided by 16bit is the amount of alignments
-    //so we need two vectors of type 32bit to save the host for all alignments
-
-    // TODO(rrahn): Abstract into a struct, so we can model different configurations.
-    SimdVector<int32_t>::Type _maxHostLow; //first half of alignments
-    SimdVector<int32_t>::Type _maxHostHigh; //other half
+    TSimdVec    mHorizontalPos;
+    TSimdVec    mVerticalPos;
     TScoutState * state = nullptr;
     unsigned _simdLane  = 0;
 
@@ -231,33 +227,21 @@ _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> >
 // Function _updateHostPositions()
 // ----------------------------------------------------------------------------
 
-template<typename TDPCell, typename TScoutSpec, typename TSimdVec>
+template<typename TDPCell, typename TScoutSpec,
+         typename TSimdVec,
+         typename TNavigator>
 inline void
 _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
-                     TSimdVec & cmp,
-                     SimdVector<int32_t>::Type positionNavigator)
+                     TSimdVec const & cmp,
+                     TNavigator const & navi)
 {
-// TODO(rrahn): Refactor!
-#if SEQAN_UMESIMD_ENABLED
-    using TSimdHalfVec = typename UME::SIMD::SIMDTraits<TSimdVec>::HALF_LEN_VEC_T;
-    TSimdHalfVec cmpLow, cmpHigh;
-    cmp.unpack(cmpLow, cmpHigh);
+    dpScout.mHorizontalPos = blend(dpScout.mHorizontalPos,
+                                   createVector<TSimdVec>(coordinate(navi, +DPMatrixDimension_::HORIZONTAL)),
+                                   cmp);
 
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
-                                static_cast<SimdVector<int32_t>::Type>(cmpLow));
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                 static_cast<SimdVector<int32_t>::Type>(cmpHigh));
-#elif defined(__AVX2__)
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
-                                _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp))));
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                 _mm256_cvtepi16_epi32(_mm256_extractf128_si256(reinterpret_cast<__m256i&>(cmp),1)));
-#elif defined(__SSE3__)
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
-                                _mm_unpacklo_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                 _mm_unpackhi_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
-#endif
+    dpScout.mVerticalPos = blend(dpScout.mVerticalPos,
+                                 createVector<TSimdVec>(coordinate(navi, +DPMatrixDimension_::VERTICAL)),
+                                 cmp);
 }
 
 // ----------------------------------------------------------------------------
@@ -274,7 +258,7 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & d
 {
     auto cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
     _copySimdCell(dpScout, activeCell, cmp);
-    _updateHostPositions(dpScout, cmp, createVector<SimdVector<int32_t>::Type>(position(navigator)));
+    _updateHostPositions(dpScout, cmp, navigator);
 }
 
 template <typename TDPCell, typename TTraits,
@@ -291,7 +275,21 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTr
     auto cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
     cmp &= dpScout.state->masks[dpScout.state->posV];
     _copySimdCell(dpScout, activeCell, cmp);
-    _updateHostPositions(dpScout, cmp, createVector<SimdVector<int32_t>::Type>(position(navigator)));
+    _updateHostPositions(dpScout, cmp, navigator);
+}
+
+// ----------------------------------------------------------------------------
+// Function maxHostCoordinate()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TScoutSpec,
+          typename TDimension>
+inline auto
+maxHostCoordinate(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout,
+                  TDimension const dimension)
+{
+    return (dimension == DPMatrixDimension_::HORIZONTAL) ? dpScout.mHorizontalPos[dpScout._simdLane] :
+            dpScout.mVerticalPos[dpScout._simdLane];
 }
 
 // ----------------------------------------------------------------------------
@@ -299,14 +297,9 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTr
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TScoutSpec>
-inline unsigned int
-maxHostPosition(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
-{
-    if(dpScout._simdLane < LENGTH<SimdVector<int32_t>::Type>::VALUE)
-        return value(dpScout._maxHostLow, dpScout._simdLane);
-    else
-        return value(dpScout._maxHostHigh, dpScout._simdLane - LENGTH<SimdVector<int32_t>::Type>::VALUE);
-}
+[[deprecated("Use maxHostCoordinate instead!")]] inline unsigned int
+maxHostPosition(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & /*unused*/)
+{}
 
 // ----------------------------------------------------------------------------
 // Function _setSimdLane()

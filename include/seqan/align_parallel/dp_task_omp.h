@@ -257,12 +257,13 @@ template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExec
 inline auto
 createGraph(TTaskContext & context,
             TThreadLocalStorage & tls,
-            ExecutionPolicy<ParallelExecutionPolicyOmp, TVecExecPolicy> const & /*unused*/)
+            ExecutionPolicy<ParallelExecutionPolicyOmp, TVecExecPolicy> const & execPolicy)
 {
     using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>;
 
     DPTaskGraph<TDagTask> graph;
 
+    resize(tls, execPolicy.numThreads, Exact());
     resize(graph.get(), length(context.getSeqH()));
     for (int i = length(context.getSeqH()); --i >= 0;)
     {
@@ -284,7 +285,6 @@ inline SEQAN_FUNC_ENABLE_IF(Not<IsVectorExecutionPolicy<TVecExecPolicy> >, void)
 invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>, TSpec> & graph,
        ExecutionPolicy<ParallelExecutionPolicyOmp, TVecExecPolicy> const & execPolicy)
 {
-    resize(*(firstTask(graph)->mTlsPtr), execPolicy.numThreads);
     SEQAN_OMP_PRAGMA(parallel num_threads(execPolicy.numThreads))
     {
         SEQAN_OMP_PRAGMA(master)
@@ -306,7 +306,6 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
 {
     using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp>;
 
-    resize(*(firstTask(graph)->mTlsPtr), execPolicy.numThreads);
     ConcurrentQueue<TTask*> queue;
     queue.writerCount = execPolicy.numThreads;
     appendValue(queue, firstTask(graph).get());

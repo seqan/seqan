@@ -244,10 +244,11 @@ template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExec
 inline auto
 createGraph(TTaskContext & context,
             TThreadLocalStorage & tls,
-            ExecutionPolicy<ParallelExecutionPolicyTbb, TVecExecPolicy> const & /*unused*/)
+            ExecutionPolicy<ParallelExecutionPolicyTbb, TVecExecPolicy> const & execPolicy)
 {
     using TDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>;
 
+    tbb::task_scheduler_init init(execPolicy.numThreads);
     DPTaskGraph<TDagTask> graph;
 
     resize(graph.get(), length(context.getSeqH()));
