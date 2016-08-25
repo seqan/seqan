@@ -308,6 +308,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_container);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_to_global_position);
 
     // ----------------------------------------------------------------------------
     // Test Recursion Formula.

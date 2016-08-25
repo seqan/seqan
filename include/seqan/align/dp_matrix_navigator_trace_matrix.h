@@ -467,18 +467,40 @@ value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> 
 // Returns the coordinate of the given dimension for the current position of the
 // navigator within the matrix.
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
-inline typename DPMatrixDimension_::TValue
+inline size_t
 coordinate(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator,
            typename DPMatrixDimension_::TValue const & dimension)
 {
     SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
+        return 0;  // Returns default 0, when traceback is set off.
     SEQAN_ASSERT_EQ(_checkCorrectDimension(dimension), true);
 
     SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return _dataLengths(*dpNavigator._ptrDataContainer)[dimension];  // Return lengths of given dimension.
 
     return coordinate(value(dpNavigator._ptrDataContainer), position(dpNavigator), dimension); // Simply delegate to coordinate of underlying matrix.
+}
+
+// ----------------------------------------------------------------------------
+// Function toGlobalPosition()
+// ----------------------------------------------------------------------------
+
+// Returns the current position of the navigator within the matrix.
+template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec,
+          typename TPosH,
+          typename TPosV>
+inline typename Position<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> >::Type
+toGlobalPosition(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator,
+                 TPosH const horizontalCoordinate,
+                 TPosV const verticalCoordinate)
+{
+    // Return 0 when traceback is not enabled. This is necessary to still track the score even
+    // the traceback is not enabled.
+    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+        return 0;
+
+    return  horizontalCoordinate * length(*dpNavigator._ptrDataContainer, DPMatrixDimension_::VERTICAL) +
+            verticalCoordinate;
 }
 
 // ----------------------------------------------------------------------------

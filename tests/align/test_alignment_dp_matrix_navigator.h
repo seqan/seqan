@@ -2027,4 +2027,30 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_contai
     SEQAN_ASSERT_EQ(&container(dpTraceMatrixNavigatorConst), &dpMatrix);
 }
 
+SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_to_global_position)
+{
+    using namespace seqan;
+
+    typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
+
+    DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> navi;
+
+    TDPMatrix dpMatrix;
+    setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
+    setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
+    resize(dpMatrix);
+
+    _init(navi, dpMatrix, DPBandConfig<BandOff>());
+
+    for (unsigned i = 0; i < length(dpMatrix, +DPMatrixDimension_::HORIZONTAL); ++i)
+    {
+        for (unsigned j = 0; j < length(dpMatrix, +DPMatrixDimension_::VERTICAL); ++j)
+        {
+            _setToPosition(navi, toGlobalPosition(navi, i, j));
+            SEQAN_ASSERT_EQ(i, coordinate(navi, +DPMatrixDimension_::HORIZONTAL));
+            SEQAN_ASSERT_EQ(j, coordinate(navi, +DPMatrixDimension_::VERTICAL));
+        }
+    }
+}
+
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_MATRIX_NAVIGATOR_H_
