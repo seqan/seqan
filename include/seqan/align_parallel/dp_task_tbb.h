@@ -29,7 +29,8 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Rene Rahn <rene.rahn@fu-berlin.de>
+// Author: Pascal Costanza <pascal.costanza@intel.com>
+//         Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_TBB_H_

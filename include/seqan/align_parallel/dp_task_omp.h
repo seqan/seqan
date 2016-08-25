@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Jonnhy Hancox <>
+// Author: Jony Hancox <jony.hancox@intel.com>
 //         Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
