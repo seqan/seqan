@@ -124,14 +124,17 @@ struct VersionCheck
     std::string _program;
     std::string _command;
     std::string _path = _getPath();
+    std::ostream & errorStream;
 
     // ----------------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------------
 
     VersionCheck(std::string name,
-                 std::string const & version) :
-        _name{std::move(name)}
+                 std::string const & version,
+                 std::ostream & errorStream) :
+        _name{std::move(name)},
+        errorStream(errorStream)
     {
         std::smatch versionMatch;
         if (!version.empty() &&
@@ -368,7 +371,7 @@ inline String<int> _getNumbersFromString(std::string const & str)
 // Function _readVersionString()
 // ----------------------------------------------------------------------------
 
-inline std::string _readVersionString(std::string const & version_file)
+inline std::string _readVersionString(VersionCheck & me, std::string const & version_file)
 {
     std::ifstream myfile;
     myfile.open(version_file.c_str());
@@ -382,7 +385,7 @@ inline std::string _readVersionString(std::string const & version_file)
         }
         if (line == VersionControlTags_<>::UNREGISTERED_APP)
         {
-            std::cerr << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
+            me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
             line.clear();
         }
         myfile.close();
@@ -437,7 +440,7 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         return;
     }
 
-    std::string str_server_version = _readVersionString(version_filename);
+    std::string str_server_version = _readVersionString(me, version_filename);
     if (!str_server_version.empty())
     {
         String<int> server_version  = _getNumbersFromString(str_server_version);
@@ -446,13 +449,13 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         if (isLess(version_comp))
         {
             if (me._name == VersionControlTags_<>::SEQAN_NAME)
-                std::cerr << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
+                me.errorStream << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
             else
-                std::cerr << VersionControlTags_<>::MESSAGE_APP_UPDATE;
+                me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
         }
         else if (isGreater(version_comp))
         {
-            std::cerr << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
+            me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
         }
     }
 
