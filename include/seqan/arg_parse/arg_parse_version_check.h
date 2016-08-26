@@ -211,37 +211,6 @@ inline std::string _getOS()
 }
 
 // ----------------------------------------------------------------------------
-// Function _getPath()
-// ----------------------------------------------------------------------------
-
-inline std::string _getPath()
-{
-    std::string path;
-#if defined(STDLIB_VS)
-    path = std::string(getenv("UserProfile")) + "/.config/seqan";
-#else
-    path = std::string(getenv("HOME")) + "/.config/seqan";
-#endif
-    return path;
-}
-
-// ----------------------------------------------------------------------------
-// Function _getPath()
-// ----------------------------------------------------------------------------
-
-inline std::string _getBitSys()
-{
-    std::string bitSys;
-
-#if SEQAN_IS_32_BIT
-    bitSys = "_32_";
-#else
-    bitSys = "_64_";
-#endif
-    return bitSys;
-}
-
-// ----------------------------------------------------------------------------
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
 
@@ -287,6 +256,55 @@ inline bool _checkWritability(std::string const & path)
     return true;
 }
 #endif
+
+// ----------------------------------------------------------------------------
+// Function _getPath()
+// ----------------------------------------------------------------------------
+
+inline std::string _getPath()
+{
+    std::string path;
+#if defined(STDLIB_VS)
+    path = std::string(getenv("UserProfile")) + "/.config/seqan";
+#else
+    path = std::string(getenv("HOME")) + "/.config/seqan";
+#endif
+
+    // check if user has permission to write to home path
+    if (!_checkWritability(path))
+    {
+#if defined(STDLIB_VS)
+        TCHAR tmp_path [MAX_PATH];
+        if (GetTempPath(MAX_PATH, tmp_path) != 0)
+        {
+            path = tmp_path;
+        }
+        else
+        { //GetTempPath() returns 0 on failure
+            path.clear();
+        }
+# else // unix
+        path = "/tmp";
+#endif
+    }
+    return path;
+}
+
+// ----------------------------------------------------------------------------
+// Function _getBitSys()
+// ----------------------------------------------------------------------------
+
+inline std::string _getBitSys()
+{
+    std::string bitSys;
+
+#if SEQAN_IS_32_BIT
+    bitSys = "_32_";
+#else
+    bitSys = "_64_";
+#endif
+    return bitSys;
+}
 
 // ----------------------------------------------------------------------------
 // Function _getFileTimeDiff()
@@ -384,23 +402,10 @@ inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 
 inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
 {
-    if (!_checkWritability(me._path))
+    if (me._path.empty()) // neither home dir nor temp dir are writable
     {
-#if defined(STDLIB_VS)
-        TCHAR tmp_path [MAX_PATH];
-        if (GetTempPath(MAX_PATH, tmp_path) != 0)
-        {
-            me._path = tmp_path;
-        }
-        else
-        { //GetTempPath() returns 0 on failure
-            prom.set_value(false);
-            return;
-        }
-# else // unix
-        me._path = "/tmp";
-#endif
-        me._updateCommand();
+        prom.set_value(false);
+        return;
     }
 
     std::string version_filename   = me._path + "/" + me._name + ".version";
