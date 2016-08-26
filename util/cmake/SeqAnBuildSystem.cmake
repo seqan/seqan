@@ -719,6 +719,7 @@ function (seqan_register_demos PREFIX)
     find_package (ZLIB)
     find_package (BZip2)
     find_package (SeqAn REQUIRED)
+    find_package (CXX11)
 
     # Supress unused parameter warnings for demos.
     if (COMPILER_GCC OR COMPILER_CLANG)
