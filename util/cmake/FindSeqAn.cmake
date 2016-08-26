@@ -285,12 +285,11 @@ endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 # Search for dependencies.
 # ----------------------------------------------------------------------------
 
-# librt, libpthread -- implicit, on Linux only
+# librt -- implicit, on Linux only
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
 elseif ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-D_GLIBCXX_USE_C99=1")
 endif ()
 
