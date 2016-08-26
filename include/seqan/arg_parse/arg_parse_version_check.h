@@ -67,12 +67,29 @@ inline std::string _getBitSys();
 template <typename TVoidSpec = void>
 struct VersionControlTags_
 {
-    static constexpr char const * const SEQAN_NAME       = "seqan";
-    static constexpr char const * const UNREGISTERED_APP = "UNREGISTERED_APP";
-    static constexpr char const * const OPTION_OFF       = "OFF";
-    static constexpr char const * const OPTION_DEV       = "DEV";
-    static constexpr char const * const OPTION_APP_ONLY  = "APP_ONLY";
-    static constexpr char const * const OPTIONS          = "DEV APP_ONLY OFF";
+    static constexpr char const * const SEQAN_NAME         = "seqan";
+    static constexpr char const * const UNREGISTERED_APP   = "UNREGISTERED_APP";
+    static constexpr char const * const OPTION_OFF         = "OFF";
+    static constexpr char const * const OPTION_DEV         = "DEV";
+    static constexpr char const * const OPTION_APP_ONLY    = "APP_ONLY";
+    static constexpr char const * const OPTIONS            = "DEV APP_ONLY OFF";
+
+    static constexpr char const * const MESSAGE_SEQAN_UPDATE =
+        "[SEQAN INFO] :: There is a newer SeqAn version available!\n"
+        "[SEQAN INFO] :: Please visit www.seqan.de for an update or inform the developer of this app.\n"
+        "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY\n\n";
+    static constexpr char const * const MESSAGE_APP_UPDATE =
+        "[APP INFO] :: There is a newer version of this application available.\n"
+        "[APP INFO] :: If this app is developed by SeqAn, visit www.seqan.de for updates.\n"
+        "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF\n\n";
+    static constexpr char const * const MESSAGE_UNREGISTERED_APP =
+        "[SEQAN INFO] :: Thank you for using SeqAn!\n"
+        "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
+        "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
+        "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check 2\n\n";
+    static constexpr char const * const MESSAGE_REGISTERED_APP_UPDATE =
+        "[APP INFO] :: We noticed the app version you use is newer than the one registered with us.\n"
+        "[APP INFO] :: Please send us an email with the new version so we can correct it (support@seqan.de)\n\n";
 };
 
 template <typename TVoidSpec>
@@ -87,6 +104,14 @@ template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_APP_ONLY;
 template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::OPTIONS;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::MESSAGE_SEQAN_UPDATE;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::MESSAGE_APP_UPDATE;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::MESSAGE_UNREGISTERED_APP;
+template <typename TVoidSpec>
+constexpr char const * const VersionControlTags_<TVoidSpec>::MESSAGE_REGISTERED_APP_UPDATE;
 
 struct VersionCheck
 {
@@ -361,10 +386,7 @@ inline std::string _readVersionString(std::string const & version_file)
         }
         if (line == VersionControlTags_<>::UNREGISTERED_APP)
         {
-            std::cerr << "[SEQAN INFO] :: Thank you for using SeqAn!\n"
-                      << "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
-                      << "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
-                      << "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check 2\n\n";
+            std::cerr << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
             line.clear();
         }
         myfile.close();
@@ -428,25 +450,13 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         if (isLess(version_comp))
         {
             if (me._name == VersionControlTags_<>::SEQAN_NAME)
-            {
-                std::cerr << "[SEQAN INFO] :: There is a newer SeqAn version available : SeqAn " << str_server_version << " Go to " << me._website << "\n"
-                          << "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check 1"
-                          << "\n\n";
-            }
+                std::cerr << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
             else
-            {
-                std::cerr << "[APP INFO] :: There is a newer version available: " << me._name << " " << str_server_version << "\n"
-                          << "[APP INFO] :: Check out " << me._website << "\n"
-                          << "[APP INFO] :: If you don't want to recieve this message again set --version_check 2"
-                          << "\n\n";
-            }
+                std::cerr << VersionControlTags_<>::MESSAGE_APP_UPDATE;
         }
         else if (isGreater(version_comp))
         {
-            std::cerr << "[APP INFO] :: We noticed your app version (" << me._version << ") is newer than the one registered (" << str_server_version << ").\n"
-                      << "[APP INFO] :: If you are the developer of this app, please send us an email to update your version info (support@seqan.de)\n"
-                      << "[APP INFO] :: If not, you might want to contact the developer."
-                      << "\n\n";
+            std::cerr << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
         }
     }
 
