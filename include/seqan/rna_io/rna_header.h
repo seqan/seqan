@@ -1,4 +1,3 @@
-
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
@@ -30,53 +29,34 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer <>
-// ==========================================================================
-// This file contains the header of Rna records
+// Author: Gianvito Urgese <gianvito.urgese@polito.it>
 // ==========================================================================
 
-#ifndef SEQAN_RNA_HEADER_H
-#define SEQAN_RNA_HEADER_H
-
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_HEADER_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_HEADER_H_
 
 namespace seqan {
-// ----------------------------------------------------------------------------
-// Class RnaHeaderRecord
-// ----------------------------------------------------------------------------
-
-class RnaHeader
-{
-public:
-    static const int INVALID_POS = -1;
-    // Amount of records.
-    int32_t amount;    
-    //beginning and ending positions of the sequence
-    int32_t begPos;
-    int32_t endPos;
-    //energy
-    float energy;    
-    // Record's name.
-    CharString name;
-
-    // Default constructor.
-    RnaHeader() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" ")
-    {}
-
-    // Construct directly with amount/name.
-    RnaHeader(int32_t const & amount, int32_t const & energy, CharString const & name) :
-            amount(amount), energy(energy), name(name)
-    {}
-};
 
 // ============================================================================
-// Functions
+// Tags, Classes, Enums
 // ============================================================================
 
-inline void clear(RnaHeader & record)
-{
-    clear(record.name);
-}
+// ----------------------------------------------------------------------------
+// Class BpseqHeader
+// ----------------------------------------------------------------------------
 
+/*!
+ * @class BbseqHeader
+ * @implements FormattedFileHeaderConcept
+ * @headerfile <seqan/bpseq_io.h>
+ * @brief Store BPSEQ Header information.
+ *
+ * @signature typedef String<BpseqHeaderRecord> BpseqHeader;
+ */
 
-} //namespace seqan
-#endif //SEQAN_RNA_HEADER_H
+// Records for the meta information lines.
+typedef String<RnaHeaderRecord> RnaHeader;
+
+}  // namespace seqan
+
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_RNA_HEADER_H_

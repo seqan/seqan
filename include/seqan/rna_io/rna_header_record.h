@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,11 +29,13 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer
+// Author: Gianvito Urgese <gianvito.urgese@polito.it>
 // ==========================================================================
 
-#ifndef SEQAN_RDAT_FORMAT_RECORD_H_
-#define SEQAN_RDAT_FORMAT_RECORD_H_
+// TODO(holtgrew): Parse more than just the key/value pair.
+
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_HEADER_RECORD_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_HEADER_RECORD_H_
 
 namespace seqan {
 
@@ -42,67 +44,71 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class RNARecord
+// Class rnaHeaderRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class rnaHeaderRecord
+ * @headerfile <seqan/rna_io.h>
+ * @brief Store key/value pair for rna header records.
+ *
+ * @signature class rnaHeaderRecord;
+ *
+ * @var CharString rnaHeaderRecord::key;
+ * @brief Key of the header record.
+ *
+ * @var CharString rnaHeaderRecord::value;
+ * @brief Value of the header record.
+ */
 
-class RDATRecord
+/*!
+ * @fn rnaHeaderRecord::rnaHeaderRecord
+ * @brief Constructor
+ *
+ * @signature rnaHeaderRecord::rnaHeaderRecord();
+ * @signature rnaHeaderRecord::rnaHeaderRecord(key, value);
+ *
+ * @param[in] key   Key of the header record, @link CharString @endlink.
+ * @param[in] value Key of the header record, @link CharString @endlink.
+ */
+
+/*!
+ * @fn rnaHeaderRecord#clear
+ *
+ * @brief Clear a rnaHeaderRecord.
+ * @signature void clear(record);
+ *
+ * @param[in,out] record The rnaHeaderRecord to clear.
+ */
+
+class RnaHeaderRecord
 {
 public:
+    // Record's key.
+    CharString key;
+    // Record's value.
+    CharString value;
 
-    // Base at n index in one-letter notation.
-    Rna5String base;
-    // Position of n base's pair.
-    String<int> pair;
-
-    int offset;
-
-    String<CharString> seqpos;
-
-    String<CharString> annotation;
-
-    CharString comment;
-
-    //Annotation data 1
-    //annotation data 2
-
-    String<float> reactivity;
-
-    String<float> reactivity_error;
-
-    String<float> xsel;
-
-    String<float> xsel_refine;
-
-    //mutpos
-    
     // Default constructor.
-    RDATRecord() : offset(0), comment(" ")
-    {}                                                                                      
+    RnaHeaderRecord()
+    {}
 
+    // Construct directly with key/value.
+    RnaHeaderRecord(CharString const & key, CharString const & value) :
+            key(key), value(value)
+    {}
 };
 
 // ============================================================================
 // Functions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Function clear()
-// ----------------------------------------------------------------------------
-
-inline void clear(RDATRecord & record)
+inline void clear(RnaHeaderRecord & record)
 {
-    clear(record.base);
-    clear(record.pair);
-    clear(record.seqpos);
-    clear(record.annotation);
-    clear(record.comment);
-    clear(record.reactivity);
-    clear(record.reactivity_error);
-    clear(record.xsel);    
-    clear(record.xsel_refine);
+    clear(record.key);
+    clear(record.value);
 }
 
 }  // namespace seqan
 
-#endif  //SEQAN_RDAT_FORMAT_RECORD_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_HEADER_RECORD_H_

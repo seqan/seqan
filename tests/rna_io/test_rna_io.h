@@ -44,7 +44,7 @@ into it a ton just yet.
 #include <seqan/sequence.h>
 #include <seqan/rna_io.h>
 
-// A test for strings.
+// A test for connect file reading
 SEQAN_DEFINE_TEST(test_rna_io_read_connect)
 {
     //Path to example.ct
@@ -85,7 +85,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
     
 }
 
-// A test for strings.
+// A test for dot bracket rna file reading.
 SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
 {
     //Path to example.ct
@@ -114,6 +114,46 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
     /* CHECK DEFAULT VALUES */
 
     //SEQAN_ASSERT_EQ(rnaRecord.qual, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.offset, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.seqpos, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.annotation, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.comment, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.reactivity, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.reactivity_error, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.xsel, /**/);
+    //SEQAN_ASSERT_EQ(rnaRecord.xsel_refine, /**/);
+
+}
+
+///////////////////BPSEQ TEST NOT COMPLETE////////////////////////
+/*
+SEQAN_DEFINE_TEST(test_rna_io_read_bpseq)
+{
+    //Path to example.ct
+    seqan::CharString rnaPath = SEQAN_PATH_TO_ROOT();
+    append(rnaPath, "/tests/rna_io/example.bpseq");
+
+    seqan::String<char, seqan::MMap<> > mmapString;
+    SEQAN_ASSERT(open(mmapString, toCString(rnaPath)));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
+
+    seqan::RnaIOContext rnaIOContext;
+    seqan::RnaRecord rnaRecord;
+    //readHeader(rnaHeader, rnaIOCOntext, iter, seqan::Bpseq());
+    readRecord(rnaRecord, rnaIOContext, iter, seqan::Bpseq());
+
+    // CHECK CONNECT FILE VALUES 
+
+    SEQAN_ASSERT_EQ(rnaRecord.amount, 73);
+    SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
+    SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
+    //SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
+    SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
+    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
+
+    // CHECK DEFAULT VALUES 
+
+    //SEQAN_ASSERT_EQ(rnaRecord.qual, /**/ //);
     //SEQAN_ASSERT_EQ(rnaRecord.offset, /**/);
     //SEQAN_ASSERT_EQ(rnaRecord.seqpos, /**/);
     //SEQAN_ASSERT_EQ(rnaRecord.annotation, /**/);
