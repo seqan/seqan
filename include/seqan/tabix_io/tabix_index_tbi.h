@@ -469,6 +469,9 @@ open(TabixIndex & index, char const * filename)
     CharString tmp;
     readRawPod(lNm, iter);
     read(tmp, iter, lNm);
+    // Trim last terminating '\0's as they confuse strSplit() below
+    while (!empty(tmp) && back(tmp) == '\0')
+        resize(tmp, length(tmp) - 1);
 
     // Split concatenated names at \0's.
     clear(index._nameStore);
