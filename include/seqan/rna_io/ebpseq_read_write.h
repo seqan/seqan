@@ -162,6 +162,150 @@ readRecord(RnaRecord & record,
     CharString &buffer = context.buffer;
     CharString tmpStr="";
     unsigned counter = 0;
+
+    //temporary holders until I figure out a better way to do this
+    int quality_flag;
+    int reaction_1_flag;
+    int reaction_2_flag;
+    int reaction_error_1_flag;
+    int reaction_error_2_flag;
+    String<int> fixed_structure_flags;
+    //resize to be size specified in header/context
+    String<int> matrix_probablilty_pair_flag;
+    //resize to be size specificed in header/context
+
+    //FOR T1 and T2, save in an array and set corresponding info to corresponding records
+
+    if(value(iter)== '#'){
+        skipOne(iter);
+        while(value(iter) != '\n'){
+            skipOne(iter);
+            readUntil(context.buffer, iter, IsWhitespace());
+            clear(context.buffer);
+            //Check with context, compare and store info based on name or whatever
+            //NEED A FUNCTION TO DO THAT
+        }
+        skipOne(iter);//Skip to new line, header of the info in the columns
+        skipOne(iter); //skip #
+        skipOne(iter);  //skip until start
+        readUntil(context.buffer, iter, IsWhitespace());
+
+        //INDEX
+        if(context.buffer != "I"){
+            std::cerr << "ERROR: Incorrect column information" << std::endl;   
+            return;
+        }
+        skipOne(iter);
+        clear(context.buffer);
+
+        //NT
+        readUntil(context.buffer, iter, IsWhitespace());
+        if(context.buffer  != "NT"){
+            std::cerr << "ERROR: Incorrect column information" << std::endl;   
+            return;
+        }
+        skipOne(iter);
+        clear(context.buffer);
+
+        //QUALITY
+        readUntil(context.buffer, iter, IsWhitespace());
+        if(context.buffer  != "QU"){
+            quality_flag = -1;
+        }
+        else{
+            quality_flag = 1;
+            skipOne(iter);
+            clear(context.buffer);
+            readUntil(context.buffer, iter, IsWhitespace());
+        }
+
+        //REACTION____1
+        if(context.buffer != "R1"){
+            reaction_1_flag = -1;
+        }
+        else{
+            reaction_1_flag = 1;
+            skipOne(iter);
+            clear(context.buffer);
+            readUntil(context.buffer, iter, IsWhitespace());
+        }
+
+        //REACTION 2
+        if(context.buffer  != "R2"){
+            reaction_2_flag = -1;
+        }
+        else{
+            reaction_2_flag = 1;
+            skipOne(iter);
+            clear(context.buffer);
+            readUntil(context.buffer, iter, IsWhitespace());
+        }
+
+        //REACTION ERROR 1
+        if(context.buffer  != "RE1"){
+            reaction_error_1_flag = -1;
+        }
+        else{
+            reaction_error_1_flag = 1;
+            skipOne(iter);
+            clear(context.buffer);
+            readUntil(context.buffer, iter, IsWhitespace());
+        }
+
+        //REACTION ERROR 2
+        if(context.buffer  != "RE2"){
+            reaction_error_2_flag = -1;
+        }
+        else{
+            reaction_error_2_flag = 1;
+            skipOne(iter);
+            clear(context.buffer);
+            readUntil(context.buffer, iter, IsWhitespace());
+        }
+
+        //A for loop to iterate through all F1, F2...FN sections
+        String f_name;
+        int f_pos;
+        for(unsigned i = 0; i < /*Length specified in context of F1*/; ++i)
+        {
+            f_pos = i+1;
+            f_name = "F" + f_pos;
+            /////////TO-DO: check name and that this is correct way of doing this
+            if(context.buffer != f_name){
+                fixed_structure_flags[i] = -1;
+            }
+            else{
+                fixed_structure_flags[i] = 1;
+                skipOne(iter);
+                clear(context.buffer);
+                readUntil(context.buffer, iter, IsWhitespace());
+            }
+        }
+
+        //A for loop to iterate through all M1, M2...MN sections
+        String m_name;
+        int m_pos;
+        for(unsigned i = 0; i < /*Length specified in context of F1*/; ++i)
+        {
+            m_pos = i+1;
+            m_name = "M" + f_pos;
+            /////////TO-DO: check name and that this is correct way of doing this
+            if(context.buffer != f_name){
+                matrix_probablilty_pair_flag[i] = -1;
+            }
+            else{
+                matrix_probablilty_pair_flag[i] = 1;
+                skipOne(iter);
+                clear(context.buffer);
+                readUntil(context.buffer, iter, IsWhitespace());
+            }
+        }
+
+    }
+    else
+        std::cerr << "PARSE ERROR\n";
+    //FINISHED WITH HEADER INFO
+
     while (!atEnd(iter) && value(iter) != '#')
     {
         // SEQPOS
@@ -209,7 +353,7 @@ readRecord(RnaRecord & record,
     record.amount = record.endPos - record.begPos + 1;  //set amount of records
 
 //    std::cout << "value(iter)" << value(iter) << std::endl;
-/*
+
     // CHROM
     clear(buffer);
     readUntil(buffer, iter, NextEntry());
@@ -325,9 +469,9 @@ writeHeader(TTarget & target,
 {
     for (unsigned i = 0; i < length(header); ++i)
     {
-        write(target, "#");
+        write(target, "## ");
         write(target, header[i].key);
-        writeValue(target, '=');
+        write(target, ': ');
         write(target, header[i].value);
         writeValue(target, '\n');
     }
@@ -352,6 +496,23 @@ writeRecord(TTarget & target,
             BpseqIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             Bpseq const & /*tag*/)
 {
+    write(target, "# ");
+    write(target, "I\tNT\t");
+    //THE FLAGS NEED TO BE STORED IN CONTEXT BUFFER!!
+    if(quality_flag == 1)
+        write(target, "QU\t")
+    if(reaction_1_flag == 1)
+        write(target, "R1\t")
+    if(reaction_2_flag == 1)
+        write(target, "R2\t")
+    if(reaction_error_1_flag == 1)
+        write(target, "RE1\t")
+    if(reaction_error_2_flag == 1)
+        write(target, "RE2\t")
+    //F1...Fn and M1...Mn
+    write(target, '\n');
+
+    
 //  // SEQPOS
 //    for (unsigned i = 0; i < length(record.seqPos); ++i)
 //    {

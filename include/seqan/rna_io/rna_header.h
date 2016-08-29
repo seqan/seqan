@@ -42,16 +42,16 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class BpseqHeader
+// Class rnaHeader
 // ----------------------------------------------------------------------------
 
 /*!
  * @class BbseqHeader
  * @implements FormattedFileHeaderConcept
- * @headerfile <seqan/bpseq_io.h>
- * @brief Store BPSEQ Header information.
+ * @headerfile <seqan/rna_io.h>
+ * @brief Store rna Header information.
  *
- * @signature typedef String<BpseqHeaderRecord> BpseqHeader;
+ * @signature typedef String<rnaHeaderRecord> rnaHeader;
  */
 
 // Records for the meta information lines.
