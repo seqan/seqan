@@ -55,7 +55,7 @@ struct VersionCheck;
 inline void _checkForNewerVersion(VersionCheck &, std::promise<bool>);
 inline std::string _getOS();
 inline std::string _getPath();
-inline std::string _getBitSys();
+constexpr const char * _getBitSys();
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -232,6 +232,19 @@ inline std::string _getOS()
 }
 
 // ----------------------------------------------------------------------------
+// Function _getBitSys()
+// ----------------------------------------------------------------------------
+
+constexpr const char * _getBitSys()
+{
+#if SEQAN_IS_32_BIT
+    return "_32_";
+#else
+     return "_64_";
+#endif
+}
+
+// ----------------------------------------------------------------------------
 // Function _checkWritability()
 // ----------------------------------------------------------------------------
 
@@ -309,22 +322,6 @@ inline std::string _getPath()
 #endif
     }
     return path;
-}
-
-// ----------------------------------------------------------------------------
-// Function _getBitSys()
-// ----------------------------------------------------------------------------
-
-inline std::string _getBitSys()
-{
-    std::string bitSys;
-
-#if SEQAN_IS_32_BIT
-    bitSys = "_32_";
-#else
-    bitSys = "_64_";
-#endif
-    return bitSys;
 }
 
 // ----------------------------------------------------------------------------
