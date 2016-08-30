@@ -53,8 +53,8 @@ namespace seqan
 // NOTE(rrahn): In-file forward for function call operator.
 struct VersionCheck;
 inline void _checkForNewerVersion(VersionCheck &, std::promise<bool>);
-inline std::string _getOS();
 inline std::string _getPath();
+constexpr const char * _getOS();
 constexpr const char * _getBitSys();
 
 // ==========================================================================
@@ -139,7 +139,7 @@ struct VersionCheck
         {
             _version = versionMatch.str(1); // in case the git revision number is given take only version number
         }
-        _url = "http://www.seqan.de/version_check/SeqAn_" + _getOS() + _getBitSys() + _name + "_" + _version;
+        _url = static_cast<std::string>("http://www.seqan.de/version_check/SeqAn_") + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
         _updateCommand();
     }
@@ -211,24 +211,22 @@ inline void setURL(VersionCheck & me, std::string url)
 // Function _getOS()
 // ----------------------------------------------------------------------------
 
-inline std::string _getOS()
+constexpr const char * _getOS()
 {
     //get system information
-    std::string os;
 #ifdef __linux
-    os = "Linux";
+    return "Linux";
 #elif __APPLE__
-    os = "MacOS";
+    return "MacOS";
 #elif defined(STDLIB_VS)
-    os = "Windows";
+    return "Windows";
 #elif __FreeBSD__
-    os = "FreeBSD";
+    return "FreeBSD";
 #elif __OpenBSD__
-    os = "OpenBSD";
+    return "OpenBSD";
 #else
-    os = "unknown";
+    return "unknown";
 #endif
-    return os;
 }
 
 // ----------------------------------------------------------------------------
@@ -259,7 +257,7 @@ inline bool _checkWritability(std::string const & path)
     }
 
     HANDLE dummyFile; // check writablity by trying to create a file in GENERIC_WRITE mode
-    std::string fileName = path + "/dummy.txt";
+    std::string fileName(path + "/dummy.txt");
     dummyFile = CreateFile(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (dummyFile == INVALID_HANDLE_VALUE)
@@ -276,7 +274,7 @@ inline bool _checkWritability(std::string const & path)
     if (stat(path.c_str(), &d_stat) < 0)
     {
         // try to make dir
-        std::string makeDir = "mkdir -p " + path;
+        std::string makeDir("mkdir -p " + path);
         if (system(makeDir.c_str()))
             return false; // could not create home dir
 
@@ -395,7 +393,7 @@ inline std::string _readVersionString(VersionCheck & me, std::string const & ver
 inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 {
     // update timestamp
-    std::string timestamp_filename = me._path + "/" + me._name + ".timestamp";
+    std::string timestamp_filename(me._path + "/" + me._name + ".timestamp");
     std::ofstream timestamp_file(timestamp_filename.c_str());
     if (timestamp_file.is_open())
     {
@@ -423,10 +421,10 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         return;
     }
 
-    std::string version_filename   = me._path + "/" + me._name + ".version";
-    std::string timestamp_filename = me._path + "/" + me._name + ".timestamp";
-    double min_time_diff = 86400;                                 // one day = 86400 seonds
-    double file_time_diff = _getFileTimeDiff(timestamp_filename); // time difference in seconds
+    std::string version_filename(me._path + "/" + me._name + ".version");
+    std::string timestamp_filename(me._path + "/" + me._name + ".timestamp");
+    double min_time_diff(86400);                                 // one day = 86400 seonds
+    double file_time_diff(_getFileTimeDiff(timestamp_filename)); // time difference in seconds
 
     if (file_time_diff < min_time_diff)
     {
@@ -434,11 +432,11 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         return;
     }
 
-    std::string str_server_version = _readVersionString(me, version_filename);
+    std::string str_server_version(_readVersionString(me, version_filename));
     if (!str_server_version.empty())
     {
-        String<int> server_version  = _getNumbersFromString(str_server_version);
-        String<int> current_version = _getNumbersFromString(me._version);
+        String<int> server_version(_getNumbersFromString(str_server_version));
+        String<int> current_version(_getNumbersFromString(me._version));
         Lexical<> version_comp(current_version, server_version);
         if (isLess(version_comp))
         {
