@@ -35,15 +35,12 @@
 #ifndef SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_
 #define SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_
 
+#include <sys/stat.h>
+
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <sys/stat.h>
-#include <time.h>
-#include <stdio.h>
 #include <regex>
 #include <future>
-#include <sys/types.h> 
 #include <chrono>
 
 namespace seqan
