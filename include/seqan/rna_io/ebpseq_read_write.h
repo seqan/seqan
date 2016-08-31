@@ -91,58 +91,77 @@ readHeader(RnaHeader & header,
     CharString buffer;
     RnaHeaderRecord record;
 
-    while (!atEnd(iter) && value(iter) == '#') // All the information stored in the # lines are saved in a single line
+
+    clear(buffer);
+    skipOne(iter);
+    if(value(iter) == '#')
     {
-        skipOne(iter);
-        clear(buffer);
-        // Write header key.
-        record.key = "Info";
-        // Read header value.
-        readLine(record.value, iter);
-/*
-        if (value(iter) == '#')
+        // Is header line.
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        clear(record);
+
+        // Read header key.
+        readUntil(record.key, iter, EqualsChar<':'>());
+
+        // Parse out names of sequences
+        while (!startsWith(record.key, "S")
         {
-            // Is header line.
-            skipOne(iter);
-            clear(record);
-
-            // Read header key.
-            readUntil(record.key, iter, OrFunctor<EqualsChar<'='>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bpseq> >());
-
-            // Skip '='.
+            // Skip ':'.  
             skipOne(iter);
 
             // Read header value.
             readLine(record.value, iter);
             appendValue(header, record);
-
-            // Parse out name if headerRecord is a contig field.
-            if (record.key == "contig")
-            {
-                _parseBpseqContig(buffer, record.value);
-                appendName(contigNamesCache(context), buffer);
-            }
+            
+            appendName(contigNamesCache(context), record.value);
+            skipOne(iter); //skip to newline
+            skipOne(iter); //skip first '#'
+            if(value(iter)!= '#')
+                break;  ///SHOULD THIS BE RETURN BECAUSE THEN WE ARE DONE WITH HEADER INFO IF THERE ARE NO MORE ## LINES?
+            else
+                readUntil(record.key, iter, EqualsChar<':'>());
         }
-        else
+
+        while(startsWith(record.key, "F")){
+            // Skip ':'.  
+            skipOne(iter);
+
+            // Read header value.
+            readLine(record.value, iter);
+            appendValue(header, record);
+            
+            appendName(fixedStructureNamesCache(context), record.value);
+            skipOne(iter); //skip to newline
+
+            //Read new fixed structure key
+            if(value(iter)!= '#')
+                break;  
+            else
+                readUntil(record.key, iter, EqualsChar<':'>());
+        }
+
+        while(startsWith(record.key, "M"))
         {
-            // Is line "#CHROM\t...".
-            readLine(buffer, iter);
-            if (!startsWith(buffer, "CHROM"))
-                ParseError("Invalid line with samples.");
+            // Skip ':'.  
+            skipOne(iter);
 
-            // Split line, get sample names.
-            StringSet<CharString> fields;
-            strSplit(fields, buffer, IsTab());
-            if (length(fields) < 9u)
-                ParseError("Not enough fields.");
+            // Read header value.
+            readLine(record.value, iter);
+            appendValue(header, record);
+            
+            appendName(baseProbabilityNamesCache(context), record.value);
+            skipOne(iter); //skip to newline
 
-            // Get sample names.
-            for (unsigned i = 9; i < length(fields); ++i)
-                appendName(sampleNamesCache(context), fields[i]);
+            //Read new base probability key
+            if(value(iter)!= '#')
+                break;  
+            else
+                readUntil(record.key, iter, EqualsChar<':'>());
         }
-*/
+        //YET TO DO: T1 AND T2 READ IN
     }
-    appendValue(header, record);
+
+    
 }
 
 // ----------------------------------------------------------------------------
