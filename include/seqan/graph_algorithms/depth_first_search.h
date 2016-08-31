@@ -38,9 +38,6 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
 
-#include <vector>
-#include <utility>
-
 namespace seqan {
 
 // ============================================================================
