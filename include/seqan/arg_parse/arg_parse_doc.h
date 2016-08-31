@@ -38,6 +38,8 @@
 #include <seqan/arg_parse/tool_doc.h>
 #include <seqan/arg_parse/argument_parser.h>
 
+#include <algorithm>
+
 namespace seqan {
 
 // ============================================================================
@@ -729,6 +731,44 @@ inline void _addDefaultValues(std::string & text, ArgParseOption const & opt)
 }
 
 // ----------------------------------------------------------------------------
+// Function _seperateExtensionsForPrettyPrinting()
+// ----------------------------------------------------------------------------
+
+inline void _seperateExtensionsForPrettyPrinting(std::vector<std::string> & file_ext,
+                                                 std::vector<std::string> & comp_ext,
+                                                 std::vector<std::string> const & validValues)
+{
+    // seperate file extensions and compression extensions
+    for (std::vector<std::string>::size_type i = 0; i < validValues.size(); ++i)
+    {
+        std::regex rgx("^(\\.)?([A-z]+)(\\.)?([A-z]+)?");
+        std::smatch result;
+
+        std::regex_search(validValues[i], result, rgx);
+
+        if (!result[4].str().empty())
+        {
+            comp_ext.push_back(result[4].str());
+            file_ext.push_back("." + result[2].str() + "[.x]");
+        }
+        else
+        {
+            file_ext.push_back("." + result[2].str());
+        }
+    }
+
+    std::sort(file_ext.rbegin(), file_ext.rend()); // sort extensions in reverse order such that '.fa[.x]'
+    std::sort(comp_ext.rbegin(), comp_ext.rend()); // comes before '.fa' and will be chosen by std::unique()
+
+    comp_ext.erase(std::unique(comp_ext.begin(), comp_ext.end()), comp_ext.end()); // remove duplicates
+    file_ext.erase(std::unique(file_ext.begin(), file_ext.end(),
+                    [&](auto& lhs, auto& rhs)
+                    {
+                        return lhs.substr(0, lhs.find('[')) == rhs.substr(0, rhs.find('['));
+                    }), file_ext.end());
+}
+
+// ----------------------------------------------------------------------------
 // Function _addValidValuesRestrictions()
 // ----------------------------------------------------------------------------
 
@@ -738,19 +778,33 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
     {
         if (isInputFileArgument(opt) || isOutputFileArgument(opt))
         {
+            std::vector<std::string> file_extensions;
+            std::vector<std::string> compresssion_extensions;
+
+            _seperateExtensionsForPrettyPrinting(file_extensions, compresssion_extensions, opt.validValues);
+
             append(text, " Valid filetype");
 
-            if (opt.validValues.size() > 1)
+            if (file_extensions.size() > 1)
                 append(text, "s are: ");
             else
                 append(text, " is: ");
+
+            _expandList(text, file_extensions);
+
+            if (compresssion_extensions.size() != 0)
+            {
+                append(text, ", where x is any of the following extensions: ");
+                _expandList(text, compresssion_extensions);
+                append(text, " for transparent (de)compression");
+            }
         }
         else
         {
             append(text, " One of ");
+            _expandList(text, opt.validValues);
         }
 
-        _expandList(text, opt.validValues);
         append(text, ".");
     }
 }
