@@ -30,7 +30,7 @@
 //
 // ==========================================================================
 // Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
-//          Joerg Winkler <winkler@molgen.mpg.de>
+//          Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 // This file contains routines to write to DotBracket format files (.ct)
 // ==========================================================================
@@ -131,7 +131,7 @@ constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
 // ----------------------------------------------------------------------------
 // Helper Function for converting a bracket string to an undirected graph
 // ----------------------------------------------------------------------------
-static inline void bracket2graph(TRnaRecordGraph & graph, CharString & bracket_str)
+static inline void bracket2graph(TRnaRecordGraph & graph, CharString const & bracket_str)
 {
     for (unsigned idx = 0; idx < length(bracket_str); ++idx)
         addVertex(graph);
@@ -179,6 +179,92 @@ static inline void bracket2graph(TRnaRecordGraph & graph, CharString & bracket_s
     for(unsigned idx = 0; idx < length(DotBracketArgs<>::OPEN); ++idx)
         if(!stack[idx].empty())
             throw ParseError("Invalid bracket notation: unpaired opening bracket");
+}
+
+// ----------------------------------------------------------------------------
+// Helper Function for converting a bracket string to an undirected graph
+// ----------------------------------------------------------------------------
+static inline void graph2bracket(CharString & bracket_str, TRnaRecordGraph const & graph)
+{
+    std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
+    String<unsigned> colors;                            // colors for bracket pairs
+    resize(colors, numVertices(graph), 0);              // color 0 means 'not set'
+    clear(bracket_str);
+    resize(bracket_str, numVertices(graph), ' ');
+
+    unsigned unprocessed = 1; /* any value > 0 */
+    for (unsigned col = 1; unprocessed > 0; ++col)
+    {
+        unsigned bracket_end = 0;                       // end position of current bracket
+        unprocessed = 0;
+
+        for (unsigned idx = 0; idx < numVertices(graph); ++idx)
+        {
+            if (degree(graph, idx) == 0 || (colors[idx] > 0 && colors[idx] < col))
+                continue;                               // skip processed and unpaired entries
+
+            TAdjacencyIterator adj_it(graph, idx);
+            unsigned const p_end = value(adj_it);       // paired end bracket
+
+            if (p_end < bracket_end && idx < p_end)     // open bracket inside previous bracket
+            {
+                endpos_stack.push(bracket_end);
+                bracket_end = p_end;
+                colors[idx] = colors[p_end] = col;
+            }
+            else if (idx >= bracket_end)                // bracket behind previous bracket
+            {
+                if (endpos_stack.empty())
+                {
+                    if (idx < p_end)                    // open bracket on base level
+                    {
+                        bracket_end = p_end;
+                        colors[idx] = colors[p_end] = col;
+                    }
+                    else                                // close bracket on base level
+                    {
+                        bracket_end = idx;
+                    }
+                }
+                else                                    // close bracket, recover endpos from stack
+                {
+                    bracket_end = endpos_stack.top();
+                    endpos_stack.pop();
+                }
+            }
+            else                                        // bracket will get different color
+            {
+                ++unprocessed;
+            }
+        }
+
+        while (!endpos_stack.empty())                   // reset stack for next color
+        {
+            endpos_stack.pop();
+        }
+    }
+
+    for (unsigned idx = 0; idx < length(colors); ++idx) // write pairs in bracket notation
+    {
+        if (degree(graph, idx) == 0)                    // unpaired
+        {
+            SEQAN_ASSERT(colors[idx] == 0);
+            bracket_str[idx] = '.';
+            continue;
+        }
+
+        TAdjacencyIterator adj_it(graph, idx);
+        if (idx < value(adj_it))                        // open bracket
+        {
+            SEQAN_ASSERT(colors[idx] > 0);
+            bracket_str[idx] = DotBracketArgs<>::OPEN[colors[idx]-1];
+        }
+        else                                            // close bracket
+        {
+            SEQAN_ASSERT(colors[idx] > 0);
+            bracket_str[idx] = DotBracketArgs<>::CLOSE[colors[idx]-1];
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -293,85 +379,10 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     //write base
     write(target, record.sequence[0]);
     writeValue(target, '\n');
-    
-    //compute colours
-    std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
-    String<unsigned> colors;                            // colors for bracket pairs
-    resize(colors, record.amount, 0);                   // color 0 means 'not set'
-    
-    unsigned unprocessed = 1; /* any value > 0 */
-    for (unsigned col = 1; unprocessed > 0; ++col)
-    {
-        unsigned bracket_end = 0;                       // end position of current bracket
-        unprocessed = 0;
-        
-        for (unsigned idx = 0; idx < record.amount; ++idx)
-        {
-            if (degree(record.graph, idx) == 0 || (colors[idx] > 0 && colors[idx] < col))
-                continue;                               // skip processed and unpaired entries
 
-            TAdjacencyIterator adj_it(record.graph, idx);
-            unsigned const p_end = value(adj_it);       // paired end bracket
-
-            if (p_end < bracket_end && idx < p_end)     // open bracket inside previous bracket
-            {
-                endpos_stack.push(bracket_end);
-                bracket_end = p_end;
-                colors[idx] = colors[p_end] = col;
-            }
-            else if (idx >= bracket_end)                // bracket behind previous bracket
-            {
-                if (endpos_stack.empty())
-                {
-                    if (idx < p_end)                    // open bracket on base level
-                    {
-                        bracket_end = p_end;
-                        colors[idx] = colors[p_end] = col;
-                    }
-                    else                                // close bracket on base level
-                    {
-                        bracket_end = idx;
-                    }
-                }
-                else                                    // close bracket, recover endpos from stack
-                {
-                    bracket_end = endpos_stack.top();
-                    endpos_stack.pop();
-                }
-            }
-            else                                        // bracket will get different color
-            {
-                ++unprocessed;
-            }
-        }
-        
-        while (!endpos_stack.empty())                   // reset stack for next color
-        {
-            endpos_stack.pop();
-        }
-    }
-
-    for (unsigned idx = 0; idx < length(colors); ++idx) // write pairs in bracket notation
-    {
-        if (degree(record.graph, idx) == 0)             // unpaired
-        {
-            SEQAN_ASSERT(colors[idx] == 0);
-            writeValue(target, '.');
-            continue;
-        }
-
-        TAdjacencyIterator adj_it(record.graph, idx);
-        if (idx < value(adj_it))                        // open bracket
-        {
-            SEQAN_ASSERT(colors[idx] > 0);
-            write(target, DotBracketArgs<>::OPEN[colors[idx]-1]);
-        }
-        else                                            // close bracket
-        {
-            SEQAN_ASSERT(colors[idx] > 0);
-            write(target, DotBracketArgs<>::CLOSE[colors[idx]-1]);
-        }
-    }
+    CharString bracket_str("");
+    graph2bracket(bracket_str, record.graph);
+    write(target, bracket_str);
     writeValue(target, ' ');
     writeValue(target, '(');
     write(target, record.energy);

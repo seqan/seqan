@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Joerg Winkler <winkler@molgen.mpg.de>
+// Author: Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 // Class for reading/writing RNA structure files in Stockholm (.sth) format
 // ==========================================================================

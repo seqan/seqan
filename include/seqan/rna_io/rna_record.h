@@ -30,7 +30,7 @@
 //
 // ==========================================================================
 // Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
-//          Joerg Winkler <winkler@molgen.mpg.de>
+//          Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 
 

@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Joerg Winkler <winkler@molgen.mpg.de>
+// Author: Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 // This file contains routines to read and write to connect format files (.ct)
 // ==========================================================================
@@ -213,12 +213,33 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*/)     
 {
-    writeValue(target, 'M');
-    write(target, record.amount);
+    write(target, "# STOCKHOLM 1.0\n");                         // header
+    if (record.name != " ")
+    {                                                           // record name
+        write(target, "#=GF ID      ");
+        write(target, record.name);
+        writeValue(target, '\n');
+    }
     writeValue(target, '\n');
+    SEQAN_ASSERT_EQ(length(record.seq_id), length(record.sequence));
+    unsigned maxlen = 12;
+    for (unsigned idx = 0; idx < length(record.seq_id); ++idx)  // determine indentation
+        maxlen = length(record.seq_id[idx]) > maxlen ? length(record.seq_id[idx]) : maxlen;
+    for (unsigned idx = 0; idx < length(record.sequence); ++idx)
+    {                                                           // sequences
+        CharString str = idx < length(record.seq_id) ? record.seq_id[idx] : "seq" + std::to_string(idx);
+        resize(str, maxlen, ' ');
+        write(target, str);
+        write(target, "\t");
+        write(target, record.sequence[idx]);
+        writeValue(target, '\n');
+    }
+    write(target, "#=GC SS_cons\t");                            // bracket string
+    CharString bracket_str("");
+    graph2bracket(bracket_str, record.graph);
+    write(target, bracket_str);
+    write(target, "\n//\n");                                    // closing
 }
- 
-
 
 } //namespace seqan
 
