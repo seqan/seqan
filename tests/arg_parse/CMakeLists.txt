@@ -37,8 +37,15 @@ add_executable (test_arg_parse
                test_argument_parser.h
                test_arg_parse_ctd_support.h)
 
+set (SEQAN_VERSION_CHECK ON FORCE)
+add_executable (test_arg_parse_version_check
+               test_arg_parse_version_check.cpp
+               test_arg_parse_version_check.h)
+set (SEQAN_VERSION_CHECK OFF FORCE)
+
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_arg_parse ${SEQAN_LIBRARIES})
+target_link_libraries (test_arg_parse_version_check ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -48,3 +55,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_arg_parse COMMAND $<TARGET_FILE:test_arg_parse>)
+add_test (NAME test_test_arg_parse_version_check COMMAND $<TARGET_FILE:test_arg_parse_version_check>)
