@@ -295,15 +295,15 @@ void appendName(NameStoreCache<TCNameStore, TCName> & cache, TName const & name)
 
 // In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
 template <typename TNameStore, typename TName, typename TContext>
-[[deprecated]]
+[[deprecated("Use appendName(cache, name) instead.")]]
 void appendName(TNameStore &nameStore, TName const & name, TContext &)
 {
     appendName(nameStore, name);
 }
 
 template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
-[[deprecated]]
-void appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
+[[deprecated("Use appendName(cache, name) instead. (nameStoreCache has a reference to the nameStore)")]]
+void appendName(TNameStore & /*nameStore*/, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
 {
     appendValue(nameStore, name, Generous());
     context.nameSet.insert(length(nameStore) - 1);
@@ -336,7 +336,7 @@ bool getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
     for (TNameStoreIter iter = begin(nameStore, Standard()); iter != end(nameStore, Standard()); ++iter)
     {
         // if the element was found
-        if (name == getValue(iter))
+        if (name == *iter)
         {
             // set the ID
             pos = iter - begin(nameStore, Standard());
@@ -378,7 +378,7 @@ getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TNa
 }
 
 template <typename TNameStore, typename TName, typename TPos, typename TContext>
-[[deprecated]]
+[[deprecated("Use getIdByName(idx, cache, name) instead.")]]
 inline bool
 getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
 {
@@ -386,7 +386,7 @@ getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TConte
 }
 
 template<typename TNameStore, typename TName, typename TPos, typename TCNameStore, typename TCName>
-[[deprecated]]
+[[deprecated("Use getIdByName(idx, cache, name) instead.")]]
 inline bool
 getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
 {

@@ -396,14 +396,14 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    return getValue(hostIterator(me));
+    return *hostIterator(me);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
 inline typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    return getValue(hostIterator(me));
+    return *hostIterator(me);
 }
 
 // ----------------------------------------------------------------------------

@@ -321,14 +321,14 @@ template <typename THost, typename TFunctor>
 inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > >::Type
 getValue(ModifiedIterator<THost, ModView<TFunctor> > & me)
 {
-    return cargo(me).func(getValue(host(me)));
+    return cargo(me).func(*host(me));
 }
 
 template <typename THost, typename TFunctor>
 inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > const>::Type
 getValue(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 {
-    return cargo(me).func(getValue(host(me)));
+    return cargo(me).func(*host(me));
 }
 
 // --------------------------------------------------------------------------

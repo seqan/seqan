@@ -631,7 +631,7 @@ strSplit(TResult & result,
     }
 
     for (TIter it = itBeg; it != itEnd; ++it)
-        if (sep(getValue(it)))
+        if (sep(*it))
         {
             if (allowEmptyStrings || itFrom != it)
             {
@@ -640,7 +640,7 @@ strSplit(TResult & result,
                 {
                     if (!allowEmptyStrings)
                     {
-                        while (it != itEnd && sep(getValue(it)))
+                        while (it != itEnd && sep(*it))
                             ++it;
                     }
                     else
