@@ -38,6 +38,8 @@
 #include <seqan/arg_parse/tool_doc.h>
 #include <seqan/arg_parse/argument_parser.h>
 
+#include <regex>
+#include <vector>
 #include <algorithm>
 
 namespace seqan {
