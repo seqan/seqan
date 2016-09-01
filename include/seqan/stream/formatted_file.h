@@ -716,6 +716,15 @@ inline bool open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
 }
 
 // ----------------------------------------------------------------------------
+// Function isOpen()
+// ----------------------------------------------------------------------------
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline bool isOpen(FormattedFile<TFileFormat, TDirection, TSpec> & file)
+{
+    return file.stream.file.is_open();
+}
+
+// ----------------------------------------------------------------------------
 // Function close()
 // ----------------------------------------------------------------------------
 
