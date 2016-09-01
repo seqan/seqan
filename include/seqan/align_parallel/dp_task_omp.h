@@ -47,14 +47,14 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> :
-    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+class DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> :
+    public DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >
 {
 public:
 
-    using TSize = typename TTaskConfig::TSize;
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >;
+    using TSize = typename TTaskContext::TSize;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyOmp> >;
 
     // ============================================================================
     // Member variables.
@@ -65,7 +65,7 @@ public:
     // ============================================================================
     // Constructor.
 
-    DPTaskImpl(TSize pCol, TSize pRow, TTaskConfig & pConfig,
+    DPTaskImpl(TSize pCol, TSize pRow, TTaskContext & pConfig,
                TThreadLocalStorage & pTls) :
         TBase(pCol, pRow, pConfig, *this),
         mTlsPtr(&pTls)
@@ -173,14 +173,14 @@ public:
             }
 
             lockReading(pTaskQueue);
-            if (length(pTaskQueue) < TBase::_taskContext.mSimdLength)
+            if (length(pTaskQueue) < TTaskContext::VECTOR_SIZE)
             {
                 appendValue(tasks, popFront(pTaskQueue));
             }
             else
             {
-                SEQAN_ASSERT_GEQ(length(pTaskQueue), TBase::_taskContext.mSimdLength);
-                for (auto i = 0; i < TBase::_taskContext.mSimdLength; ++i)
+                SEQAN_ASSERT_GEQ(length(pTaskQueue), +TTaskContext::VECTOR_SIZE);
+                for (auto i = 0; i < TTaskContext::VECTOR_SIZE; ++i)
                     appendValue(tasks, popFront(pTaskQueue));
             }
             unlockReading(pTaskQueue);
@@ -194,7 +194,7 @@ public:
         }
         else
         {
-            SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
+            SEQAN_ASSERT_EQ(length(tasks), +TTaskContext::VECTOR_SIZE);
             TBase::runSimd(tasks, (*mTlsPtr)[omp_get_thread_num()]);
         }
         // Update and spawn sucessors.
@@ -274,6 +274,8 @@ createGraph(TTaskContext & context,
             graph[i][j]->successor[0] = (i + 1 < length(context.getSeqH())) ? graph[i+1][j].get() : nullptr;
             graph[i][j]->successor[1] = (j + 1 < length(context.getSeqV())) ? graph[i][j+1].get() : nullptr;
             graph[i][j]->setRefCount(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0));
+            graph[i][j]->_lastHBlock = (i + 1 == length(context.getSeqH()));
+            graph[i][j]->_lastVBlock = (j + 1 == length(context.getSeqV()));
         }
     }
     lastTask(graph)->incrementRefCount();

@@ -99,9 +99,9 @@ struct DPThread<TWorkQueue, TTaskContext, True>
                 if (!popFront(task, *workQueuePtr))
                     return;
 
-                if (length(*workQueuePtr) >= mTaskContext.mSimdLength - 1)
+                if (length(*workQueuePtr) >= TTaskContext::VECTOR_SIZE - 1)
                 {
-                    for (unsigned i = 0; i < mTaskContext.mSimdLength - 1; ++i)
+                    for (unsigned i = 0; i < TTaskContext::VECTOR_SIZE - 1; ++i)
                         appendValue(tasks, popFront(*workQueuePtr));
                 }
             }
@@ -113,14 +113,14 @@ struct DPThread<TWorkQueue, TTaskContext, True>
 };
 
 
-template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> :
-    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+class DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> :
+    public DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >
 {
 public:
 
-    using TSize = typename TTaskConfig::TSize;
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >;
+    using TSize = typename TTaskContext::TSize;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative> >;
 
     // ============================================================================
     // Member variables.
@@ -132,7 +132,7 @@ public:
     // ============================================================================
     // Constructor.
 
-    DPTaskImpl(TSize pCol, TSize pRow, TTaskConfig & pConfig,
+    DPTaskImpl(TSize pCol, TSize pRow, TTaskContext & pConfig,
                TThreadLocalStorage & pTls) :
         TBase(pCol, pRow, pConfig, *this),
         mTlsPtr(&pTls)
@@ -193,7 +193,7 @@ public:
         else
         {
             appendValue(tasks, this); // Append this to tasks executed as simd.
-            SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
+            SEQAN_ASSERT_EQ(length(tasks), +TTaskContext::VECTOR_SIZE);
             // Make to simd version!
             TBase::runSimd(tasks, (*mTlsPtr)[pThreadId]);
 
@@ -259,6 +259,15 @@ struct ThreadLocalStorage<TLocalStore, ParallelExecutionPolicyNative>
 // Functions
 // ============================================================================
 
+template <typename TLocalStore,
+          typename TReduce>
+inline void
+combine(std::vector<TLocalStore> const & localStore,
+        TReduce && reduce)
+{
+    std::for_each(localStore.cbegin(), localStore.cend(), reduce);
+}
+
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
 inline auto
 createGraph(TTaskContext & context,
@@ -280,6 +289,8 @@ createGraph(TTaskContext & context,
             graph[i][j]->successor[0] = (i + 1 < length(context.getSeqH())) ? graph[i+1][j].get() : nullptr;
             graph[i][j]->successor[1] = (j + 1 < length(context.getSeqV())) ? graph[i][j+1].get() : nullptr;
             graph[i][j]->setRefCount(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0));
+            graph[i][j]->_lastHBlock = (i + 1 == length(context.getSeqH()));
+            graph[i][j]->_lastVBlock = (j + 1 == length(context.getSeqV()));
         }
     }
     lastTask(graph)->mIsLastTask = true;

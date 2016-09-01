@@ -47,15 +47,6 @@ namespace seqan
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Tag DPTiled<TBuffer>
-// ----------------------------------------------------------------------------
-
-// Tag used to subclass DPScoutState and DPScout.
-// T represents the buffer type.
-template <typename TBuffer, typename TSimdSpec = void>
-struct DPTiled;
-
-// ----------------------------------------------------------------------------
 // Class DPTileBuffer
 // ----------------------------------------------------------------------------
 
@@ -65,50 +56,6 @@ struct DPTileBuffer
 {
     TBuffer horizontalBuffer;
     TBuffer verticalBuffer;
-};
-
-// ----------------------------------------------------------------------------
-// Class DPScoutState_; DPTiled
-// ----------------------------------------------------------------------------
-
-// The overloaded DPScoutState which simply stores the pointers to the corresponding buffer.
-template <typename TBuffer>
-class DPScoutState_<DPTiled<TBuffer, void> >
-{
-public:
-
-    TBuffer* ptrHorBuffer;
-    TBuffer* ptrVerBuffer;
-
-    DPScoutState_() : ptrHorBuffer(nullptr), ptrVerBuffer(nullptr)
-    {}
-
-    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer) :
-        ptrHorBuffer(&horBuffer),
-        ptrVerBuffer(&verBuffer)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class DPScout_; DPTiled
-// ----------------------------------------------------------------------------
-
-// Overloaded DPScout to store the corresponding buffer for the current dp tile.
-template <typename TDPCell, typename TBuffer>
-class DPScout_<TDPCell, DPTiled<TBuffer, void> > :
-    public DPScout_<TDPCell, Default>
-{
-public:
-    using TBase = DPScout_<TDPCell, Default>;
-
-    DPScoutState_<DPTiled<TBuffer> > state = DPScoutState_<DPTiled<TBuffer> >{};
-
-    DPScout_() = default;
-
-    DPScout_(DPScoutState_<DPTiled<TBuffer, void> > state) :
-        TBase(),
-        state(state)
-    {}
 };
 
 namespace impl
@@ -163,7 +110,13 @@ struct DebugBuffer
             {
                 stream << ',';
                 for (unsigned i = 1; i < hBufSize; ++i)
-                    stream << matrix[col][row].hBegin[i - 1].i1._score << ',';
+                {
+                    stream << matrix[col][row].hBegin[i - 1].i1._score << " | ";
+                    stream << matrix[col][row].hBegin[i - 1].i1._horizontalScore << " | ";
+                    stream << matrix[col][row].hBegin[i - 1].i1._verticalScore << " | ";
+                    stream << static_cast<int>(matrix[col][row].hBegin[i - 1].i2);
+                    stream << ',';
+                }
             }
             stream << '\n';
             // Write vLines.
@@ -171,10 +124,20 @@ struct DebugBuffer
             {
                 for (unsigned col = 0; col < length(matrix); ++col)
                 {
-                    stream << matrix[col][row].vBegin[r - 1].i1._score << ',';
+//                    stream << matrix[col][row].vBegin[r - 1].i1._score << ',';
+                    stream << matrix[col][row].vBegin[r - 1].i1._score << " | ";
+                    stream << matrix[col][row].vBegin[r - 1].i1._horizontalScore << " | ";
+                    stream << matrix[col][row].vBegin[r - 1].i1._verticalScore << " | ";
+                    stream << static_cast<int>(matrix[col][row].vBegin[r - 1].i2);
+                    stream << ',';
                     for (unsigned c = 1; c < hBufSize - 1; ++c)
                         stream << ',';
-                    stream << matrix[col][row].vEnd[r - 1].i1._score << ',';
+                    stream << matrix[col][row].vEnd[r - 1].i1._score << " | ";
+                    stream << matrix[col][row].vEnd[r - 1].i1._horizontalScore << " | ";
+                    stream << matrix[col][row].vEnd[r - 1].i1._verticalScore << " | ";
+                    stream << static_cast<int>(matrix[col][row].vEnd[r - 1].i2);
+                    stream << ',';
+//                    stream << matrix[col][row].vEnd[r - 1].i1._score << ',';
                 }
                 stream << '\n';
             }
@@ -183,7 +146,14 @@ struct DebugBuffer
             {
                 stream << ',';
                 for (unsigned i = 1; i < hBufSize; ++i)
-                    stream << matrix[col][row].hEnd[i - 1].i1._score << ',';
+                {
+                    stream << matrix[col][row].hEnd[i - 1].i1._score << " | ";
+                    stream << matrix[col][row].hEnd[i - 1].i1._horizontalScore << " | ";
+                    stream << matrix[col][row].hEnd[i - 1].i1._verticalScore << " | ";
+                    stream << static_cast<int>(matrix[col][row].hEnd[i - 1].i2);
+                    stream << ',';
+//                    stream << matrix[col][row].hEnd[i - 1].i1._score << ',';
+                }
             }
             stream << '\n';
         }
@@ -198,7 +168,7 @@ namespace parallel
 {
 
 // ----------------------------------------------------------------------------
-// Tag LocalTraceStore
+// Class LocalTraceStore
 // ----------------------------------------------------------------------------
 
 template <typename TSimdVec>
@@ -236,6 +206,38 @@ public:
     {
         resize(mSimdTraceVec, length(mSimdTraceVec) + 1, Generous());
         return back(mSimdTraceVec);
+    }
+};
+
+// ----------------------------------------------------------------------------
+// Tag LocalDPHit
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TSimdVec>
+class DPLocalStorage
+{
+public:
+    using TLocalTraceStore = LocalTraceStore<TSimdVec>;
+    
+    TScoreValue      mMaxScore        = MinValue<TScoreValue>::VALUE;
+    size_t           mMaxBlockPos     = 0;
+    size_t           mMaxBlockHId     = 0;
+    size_t           mMaxBlockVId     = 0;
+    TLocalTraceStore mLocalTraceStore = LocalTraceStore<TSimdVec>{};
+
+    template <typename TScore, typename TPos, typename TBlockH, typename TBlockV>
+    inline void scoutMaxScore(TScore const pScore,
+                              TPos const pBlockPos,
+                              TBlockH const pHId,
+                              TBlockV const pVId)
+    {
+        if (mMaxScore < pScore)
+        {
+            mMaxScore    = pScore;
+            mMaxBlockPos = pBlockPos;
+            mMaxBlockHId = pHId;
+            mMaxBlockVId = pVId;
+        }
     }
 };
 
@@ -292,24 +294,25 @@ public:
     }
 };
 
+template <typename TTask, typename TDPLocalStore>
+struct StateThreadContext
+{
+    TTask&          mTask;
+    TDPLocalStore&  mDpLocalStore;
+
+    StateThreadContext(TTask & pTask, TDPLocalStore & pLocalStore) :
+        mTask(pTask),
+        mDpLocalStore(pLocalStore)
+    {}
+};
+
 }  // namespace impl::dp::parallel
 }  // namespace impl::dp
 }  // namespace impl
 
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Metafunction ScoutSpecForSimdAlignment_
-// ----------------------------------------------------------------------------
-
-template<typename TAlignmentAlgorithm, typename TBuffer>
-struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<DPTiled<TBuffer, void> > >
-{
-    using Type = DPTiled<TBuffer, void>;
-};
 
 namespace impl
 {
