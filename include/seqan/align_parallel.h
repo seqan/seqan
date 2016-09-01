@@ -57,7 +57,12 @@
 // ============================================================================
 
 #include <seqan/align_parallel/dp_parallel_base.h>
+#include <seqan/align_parallel/dp_parallel_scout.h>
+
+// Simd specific code.
+#include <seqan/align_parallel/dp_parallel_scout_simd.h>
 #include <seqan/align_parallel/dp_task_base_simd.h>
+
 #include <seqan/align_parallel/dp_task_base.h>
 #if defined(SEQAN_TBB)
 #include <seqan/align_parallel/dp_task_tbb.h>

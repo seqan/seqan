@@ -51,14 +51,14 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTaskConfig, typename TThreadLocalStorage, typename TVecExecPolicy>
-class DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> :
-    public DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >,
+template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
+class DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> :
+    public DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >,
     public tbb::task
 {
 public:
 
-    using TBase = DPTaskBase<DPTaskImpl<TTaskConfig, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >;
+    using TBase = DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >;
     using TSimdQueue = ConcurrentQueue<DPTaskImpl*>;
 
     // ============================================================================
@@ -74,7 +74,7 @@ public:
 
     DPTaskImpl() = default;
 
-    DPTaskImpl(size_t pCol, size_t pRow, TTaskConfig & pConfig,
+    DPTaskImpl(size_t pCol, size_t pRow, TTaskContext & pConfig,
                TThreadLocalStorage & pTls) :
         TBase(pCol, pRow, pConfig, *this),
         mTlsPtr(&pTls)
@@ -147,29 +147,24 @@ public:
         SEQAN_ASSERT(mTlsPtr != nullptr);
         SEQAN_ASSERT(mSimdQueuePtr != nullptr);
 
-        if (tbb::task::self().is_cancelled())
-            return;
-
         String<DPTaskImpl*> tasks;
         {  // Acquire scoped lock.
             std::lock_guard<decltype(TBase::_taskContext.mLock)> scopedLock(TBase::_taskContext.mLock);
 
-            if (empty(*mSimdQueuePtr))
+            if (empty(*mSimdQueuePtr) || this->is_cancelled())
             {
                 return;
             }
-            lockReading(*mSimdQueuePtr);
-            if (length(*mSimdQueuePtr) < TBase::_taskContext.mSimdLength)
+            if (length(*mSimdQueuePtr) < TTaskContext::VECTOR_SIZE)
             {
                 appendValue(tasks, popFront(*mSimdQueuePtr));
             }
             else
             {
-                SEQAN_ASSERT_GEQ(length(*mSimdQueuePtr), TBase::_taskContext.mSimdLength);
-                for (auto i = 0; i < TBase::_taskContext.mSimdLength; ++i)
+                SEQAN_ASSERT_GEQ(length(*mSimdQueuePtr), +TTaskContext::VECTOR_SIZE);
+                for (auto i = 0; i < TTaskContext::VECTOR_SIZE; ++i)
                     appendValue(tasks, popFront(*mSimdQueuePtr));
             }
-            unlockReading(*mSimdQueuePtr);
         }  // Release scoped lock.
 
         SEQAN_ASSERT_GT(length(tasks), 0u);
@@ -180,25 +175,16 @@ public:
         }
         else
         {
-            SEQAN_ASSERT_EQ(length(tasks), TBase::_taskContext.mSimdLength);
+            SEQAN_ASSERT_EQ(length(tasks), +TTaskContext::VECTOR_SIZE);
             // Make to simd version!
             TBase::runSimd(tasks, mTlsPtr->local());
         }
         // Update and spawn sucessors.
-        for (auto& task : tasks)
-        {
-            task->template updateAndSpawn<TVecExecPolicy>();
-            if (task->mIsLastTask)
-            {
-                bool res = tbb::task::self().cancel_group_execution();  // Notify, that all queued tasks can be canceled.
-                SEQAN_ASSERT(res);
-                {
-                    std::lock_guard<std::mutex> lk(TBase::_taskContext.mLock);
-                    TBase::_taskContext.mReady = true;
-                }
-                TBase::_taskContext.mReadyEvent.notify_all();
-            }
-        }
+        std::for_each(begin(tasks), end(tasks),
+                      [](auto& task)
+                      {
+                          task->template updateAndSpawn<TVecExecPolicy>();
+                      });
     }
 
     // Override of tbb::task::execute()
@@ -240,6 +226,15 @@ struct ThreadLocalStorage<TLocalStore, ParallelExecutionPolicyTbb>
 // Functions
 // ============================================================================
 
+template <typename TLocalStore,
+typename TReduce>
+inline void
+combine(tbb::enumerable_thread_specific<TLocalStore> & localStore,
+        TReduce && reduce)
+{
+    localStore.combine_each(reduce);
+}
+
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
 inline auto
 createGraph(TTaskContext & context,
@@ -261,6 +256,8 @@ createGraph(TTaskContext & context,
             graph[i][j]->successor[0] = (i + 1 < length(context.getSeqH())) ? graph[i+1][j] : nullptr;
             graph[i][j]->successor[1] = (j + 1 < length(context.getSeqV())) ? graph[i][j+1] : nullptr;
             graph[i][j]->setRefCount(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0));
+            graph[i][j]->_lastHBlock = (i + 1 == length(context.getSeqH()));
+            graph[i][j]->_lastVBlock = (j + 1 == length(context.getSeqV()));
         }
     }
     lastTask(graph)->mIsLastTask = true;
@@ -288,17 +285,21 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
 
     tbb::task_scheduler_init init(execPolicy.numThreads);
     ConcurrentQueue<DPDagTask*> queue;
-    queue.writerCount = std::thread::hardware_concurrency();
+    queue.writerCount = execPolicy.numThreads;
     firstTask(graph)->mSimdQueuePtr = &queue;
     appendValue(queue, firstTask(graph));
-    lastTask(graph)->spawn(*firstTask(graph));
+    lastTask(graph)->incrementRefCount();
+    lastTask(graph)->spawn_and_wait_for_all(*firstTask(graph));
 
-    {
-        std::unique_lock<std::mutex> lk(lastTask(graph)->_taskContext.mLock);
-        lastTask(graph)->_taskContext.mReadyEvent.wait(lk, [&graph]{return lastTask(graph)->_taskContext.mReady;});
-    }
     while (queue.writerCount != 0)
         unlockWriting(queue);
+
+    bool res = lastTask(graph)->cancel_group_execution();
+    SEQAN_ASSERT(res);
+
+    lastTask(graph)-> template executeImpl<void>();
+    tbb::task::destroy(*lastTask(graph));
+
         
     SEQAN_ASSERT(empty(queue));
 }

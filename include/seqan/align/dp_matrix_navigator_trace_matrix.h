@@ -499,8 +499,7 @@ toGlobalPosition(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavig
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return 0;
 
-    return  horizontalCoordinate * length(*dpNavigator._ptrDataContainer, DPMatrixDimension_::VERTICAL) +
-            verticalCoordinate;
+    return  toGlobalPosition(*dpNavigator._ptrDataContainer, horizontalCoordinate, verticalCoordinate);
 }
 
 // ----------------------------------------------------------------------------

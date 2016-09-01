@@ -46,190 +46,6 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Class DPScoutState_; DPTiled
-// ----------------------------------------------------------------------------
-
-// The overloaded DPScoutState which simply stores the pointers to the corresponding buffer.
-template <typename TBuffer, typename TSimdSpec>
-class DPScoutState_<DPTiled<TBuffer, TSimdSpec> > :
-    public DPScoutState_<DPTiled<TBuffer, void> >,
-    public DPScoutState_<TSimdSpec>
-{
-public:
-
-    DPScoutState_() = default;
-
-    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer) :
-        DPScoutState_<DPTiled<TBuffer, void> >(horBuffer, verBuffer),
-        DPScoutState_<TSimdSpec>()
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class DPScout_; DPTiled
-// ----------------------------------------------------------------------------
-
-// Overloaded DPScout to store the corresponding buffer for the current dp tile.
-template <typename TDPCell, typename TBuffer, typename TSimdSpec>
-class DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<TSimdSpec> > > :
-    public DPScout_<TDPCell, SimdAlignmentScout<TSimdSpec> >
-{
-public:
-    using TBase = DPScout_<TDPCell, SimdAlignmentScout<TSimdSpec> >;
-
-    DPScoutState_<DPTiled<TBuffer, TSimdSpec> > state = {};
-
-    DPScout_() = default;
-
-    DPScout_(DPScoutState_<DPTiled<TBuffer, TSimdSpec> > & state) :
-        TBase(static_cast<DPScoutState_<TSimdSpec>&>(state)),
-        state(state)
-    {}
-};
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Metafunction ScoutSpecForSimdAlignment_
-// ----------------------------------------------------------------------------
-
-template<typename TAlignmentAlgorithm, typename TBuffer>
-struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<DPTiled<TBuffer, SimdAlignEqualLength> > >
-{
-    using Type = DPTiled<TBuffer, SimdAlignmentScout<SimdAlignEqualLength> >;
-};
-
-template<typename TAlignmentAlgorithm, typename TBuffer, typename TTraits>
-struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<DPTiled<TBuffer, SimdAlignVariableLength<TTraits> > > >
-{
-    using Type = DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > >;
-};
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function _scoutBestScore()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TSimdSpec,
-          typename TTraceMatrixNavigator,
-          typename TIsLastColumn,
-          typename TIsLastRow>
-inline void
-_scoutBestScore(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<TSimdSpec> > > & dpScout,
-                TDPCell const & activeCell,
-                TTraceMatrixNavigator const & navigator,
-                TIsLastColumn const & /**/,
-                TIsLastRow const & /**/)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<TSimdSpec> > >::TBase;
-    _scoutBestScore(static_cast<TScoutBase&>(dpScout), activeCell, navigator, TIsLastColumn(), TIsLastRow());
-}
-
-// ----------------------------------------------------------------------------
-// Function _preInitScoutHorizontal()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits>
-inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    _preInitScoutHorizontal(static_cast<TScoutBase&>(scout));
-}
-
-// ----------------------------------------------------------------------------
-// Function _preInitScoutVertical()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits>
-inline void
-_preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    _preInitScoutVertical(static_cast<TScoutBase&>(scout));
-}
-
-// ----------------------------------------------------------------------------
-// Function _reachedHorizontalEndPoint()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits, typename TIter>
-inline bool
-_reachedHorizontalEndPoint(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout,
-                           TIter const & hIt)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    return _reachedHorizontalEndPoint(static_cast<TScoutBase&>(scout), hIt);
-}
-
-// ----------------------------------------------------------------------------
-// Function _reachedVerticalEndPoint()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits, typename TIter>
-inline bool
-_reachedVerticalEndPoint(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout,
-                         TIter const & vIt)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    return _reachedVerticalEndPoint(static_cast<TScoutBase&>(scout), vIt);
-}
-
-// ----------------------------------------------------------------------------
-// Function _nextHorizontalEndPos()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits>
-inline void
-_nextHorizontalEndPos(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    _nextHorizontalEndPos(static_cast<TScoutBase&>(scout));
-}
-
-// ----------------------------------------------------------------------------
-// Function _nextVerticalEndPos()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits>
-inline void
-_nextVerticalEndPos(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    _nextVerticalEndPos(static_cast<TScoutBase&>(scout));
-}
-
-// ----------------------------------------------------------------------------
-// Function _incHorizontalPos()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits>
-inline void
-_incHorizontalPos(DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    _incHorizontalPos(static_cast<TScoutBase&>(scout));
-}
-
-// ----------------------------------------------------------------------------
-// Function _incVerticalPos()
-// ----------------------------------------------------------------------------
-
-template <typename TDPCell, typename TBuffer, typename TTraits>
-inline void
-_incVerticalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
-{
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
-    _incVerticalPos(static_cast<TScoutBase&>(scout));
-}
-
-
 namespace impl
 {
 template <typename TDPCell, typename TTrace,
@@ -319,10 +135,9 @@ storeIntoBuffer(TBuffer & buffer,
             });
 }
 
-template <typename TTasks, typename TBufferSet, typename TFunc>
+template <typename TSimdVec, typename TTasks, typename TBufferSet, typename TFunc>
 inline auto
-gatherSimdBuffer(bool & allSameLength,
-                 TTasks const & tasks,
+gatherSimdBuffer(TTasks const & tasks,
                  TBufferSet const & buffer,
                  TFunc && getBlockId)
 {
@@ -332,7 +147,6 @@ gatherSimdBuffer(bool & allSameLength,
     using TDPCellSpec = typename Spec<TDPCell>::Type;
 
     // TODO(rrahn): Pass simd type from outside.
-    using TSimdVec = typename SimdVector<short>::Type;
     using TDPCellSimd = DPCell_<TSimdVec, TDPCellSpec>;
     using TTraceValue = typename TraceBitMap_<TSimdVec>::Type;
     using TBufferValue = Pair<TDPCellSimd, TTraceValue>;
@@ -343,14 +157,14 @@ gatherSimdBuffer(bool & allSameLength,
     String<TBufferValue, Alloc<OverAligned> > simdSet;
 
     auto maxLength = length(buffer[getBlockId(tasks[0])]);
-    std::for_each(begin(tasks) + 1, end(tasks),
-                  [&](auto& task)
-                  {
-                      auto len = length(buffer[getBlockId(task)]);
-                      if (len != maxLength)
-                          allSameLength = false;
-                      maxLength = (len > maxLength) ? len : maxLength;
-                  });
+//    std::for_each(begin(tasks) + 1, end(tasks),
+//                  [&](auto& task)
+//                  {
+//                      auto len = length(buffer[getBlockId(task)]);
+//                      if (len != maxLength)
+//                          allSameLength = false;
+//                      maxLength = (len > maxLength) ? len : maxLength;
+//                  });
 
     resize(simdSet, maxLength, Exact());
     for (unsigned i = 0; i < length(simdSet); ++i)
@@ -382,23 +196,25 @@ scatterSimdBuffer(TBufferSet & buffer,
     }
 }
 
-template <typename TTasks,
-          typename TDPCell, typename TTraceValue, typename TScoreMat, typename TTraceMat,
-          typename TBuffer,
+template <typename TDPCell, typename TTraceValue, typename TScoreMat, typename TTraceMat,
+          typename TStateThreadContext,
+          typename TSimdBufferH,
+          typename TSimdBufferV,
           typename TSetSeqH,
           typename TSetSeqV,
           typename TScore,
           typename TBand,
           typename TDPConfig>
-inline void computeSimdBatch(TTasks const & tasks,
-                             DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & dpContext,
-                             DPScoutState_<DPTiled<TBuffer, void> > & state,
-                             TSetSeqH const & seqH,
-                             TSetSeqV const & seqV,
-                             TScore const & scoringScheme,
-                             TBand const & band,
-                             bool const allSameLength,
-                             TDPConfig const & config)
+inline void
+computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & dpContext,
+                 TStateThreadContext stateThreadContext,
+                 TSimdBufferH & bufferH,
+                 TSimdBufferV & bufferV,
+                 TSetSeqH const & seqH,
+                 TSetSeqV const & seqV,
+                 TScore const & scoringScheme,
+                 TBand const & band,
+                 TDPConfig const & config)
 {
     using TSeqH = typename Value<TSetSeqH>::Type;
     using TSeqV = typename Value<TSetSeqV>::Type;
@@ -407,10 +223,20 @@ inline void computeSimdBatch(TTasks const & tasks,
     // Prepare sequence set.
     StringSet<TSeqH, Dependent<> > depSetH;
     StringSet<TSeqV, Dependent<> > depSetV;
-    for (auto& task : tasks)
+    bool allSameLength = true;
+    auto lenH = length(seqH[stateThreadContext.mTask[0]->_col]);
+    auto lenV = length(seqV[stateThreadContext.mTask[0]->_row]);
+    for (auto& task : stateThreadContext.mTask)
     {
+//        if (stateThreadContext.mTask[0]->_col == 88 && stateThreadContext.mTask[0]->_row == 8)
+//        {
+//            std::cout << "SeqH " << seqH[task->_col] << "\n";
+//            std::cout << "SeqV " << seqV[task->_row] << "\n";
+//        }
         appendValue(depSetH, seqH[task->_col]);
         appendValue(depSetV, seqV[task->_row]);
+        if (lenH != length(seqH[task->_col]) || lenV != length(seqV[task->_row]))
+            allSameLength = false;
     }
 
     // Dummy trace set.
@@ -425,25 +251,47 @@ inline void computeSimdBatch(TTasks const & tasks,
 
     if (allSameLength)
     {
-        DPScoutState_<DPTiled<TBuffer, SimdAlignEqualLength> > simdScoutState(*state.ptrHorBuffer, *state.ptrVerBuffer);
-        _prepareSimdAlignment(stringSimdH, stringSimdV, depSetH, depSetV, simdScoutState);
-        _computeAlignment(dpContext, trace, simdScoutState, stringSimdH, stringSimdV, simdScoringScheme,
+        using TScoutState = DPScoutState_<DPTiled<TSimdBufferH, TStateThreadContext, SimdAlignEqualLength> >;
+
+        TScoutState scoutState(bufferH, bufferV, std::move(stateThreadContext));
+        _prepareSimdAlignment(stringSimdH, stringSimdV, depSetH, depSetV, scoutState);
+        _computeAlignment(dpContext, trace, scoutState, stringSimdH, stringSimdV, simdScoringScheme,
                           band, TDPConfig(), false, false);
     }
     else
     {
         using TSimdScoutTrait = SimdAlignVariableLengthTraits<TSimdVec, decltype(depSetH), decltype(depSetV)>;
-        DPScoutState_<DPTiled<TBuffer, SimdAlignVariableLength<TSimdScoutTrait> > > simdScoutState(*state.ptrHorBuffer, *state.ptrVerBuffer);
-        _prepareSimdAlignment(stringSimdH, stringSimdV, depSetH, depSetV, simdScoutState);
+        using TScoutState = DPScoutState_<DPTiled<TSimdBufferH, TStateThreadContext, SimdAlignVariableLength<TSimdScoutTrait> > >;
 
-        simdScoutState.dimV = length(stringSimdV);
-        simdScoutState.isLocalAlignment = IsLocalAlignment_<TDPConfig>::VALUE;
-        simdScoutState.right = IsFreeEndGap_<TDPConfig, DPLastColumn>::VALUE;
-        simdScoutState.bottom = IsFreeEndGap_<TDPConfig, DPLastRow>::VALUE;
+        TScoutState scoutState(bufferH, bufferV, std::move(stateThreadContext));
+        _prepareSimdAlignment(stringSimdH, stringSimdV, depSetH, depSetV, scoutState);
 
-        _computeAlignment(dpContext, trace, simdScoutState, stringSimdH, stringSimdV, simdScoringScheme,
+        scoutState.dimV = length(stringSimdV);
+        scoutState.isLocalAlignment = IsLocalAlignment_<TDPConfig>::VALUE;
+        scoutState.right = IsFreeEndGap_<TDPConfig, DPLastColumn>::VALUE;
+        scoutState.bottom = IsFreeEndGap_<TDPConfig, DPLastRow>::VALUE;
+
+        _computeAlignment(dpContext, trace, scoutState, stringSimdH, stringSimdV, simdScoringScheme,
                           band, TDPConfig(), false, false);
     }
+//
+//    if (stateThreadContext.mTask[0]->_col == 88 && stateThreadContext.mTask[0]->_row == 8)
+//    {
+//        for (unsigned j = 0; j < length(stateThreadContext.mTask); ++j)
+//        {
+//            std::cout << "\n\nSeqH ";
+//            for (unsigned i = 0; i < length(stringSimdH); ++i)
+//            {
+//                std::cout << static_cast<Dna>(stringSimdH[i][j]);
+//            }
+//            std::cout << "\nSeqV ";
+//            for (unsigned i = 0; i < length(stringSimdV); ++i)
+//            {
+//                std::cout << static_cast<Dna>(stringSimdV[i][j]);
+//            }
+//            std::cout << "\n";
+//        }
+//    }
 }
 
 }  // namespace impl

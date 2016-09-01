@@ -589,6 +589,22 @@ coordinate(DPMatrix_<TValue, FullDPMatrix, THost> const & dpMatrix,
     return coordinate(value(dpMatrix.data_host), hostPos, dimension);
 }
 
+// ----------------------------------------------------------------------------
+// Function toGlobalPosition()
+// ----------------------------------------------------------------------------
+
+// Returns the current position of the navigator within the matrix.
+template <typename TValue, typename THost,
+          typename TPosH,
+          typename TPosV>
+inline typename Position<DPMatrix_<TValue, FullDPMatrix, THost> >::Type
+toGlobalPosition(DPMatrix_<TValue, FullDPMatrix, THost> const & dpMatrix,
+                 TPosH const horizontalCoordinate,
+                 TPosV const verticalCoordinate)
+{
+    return  horizontalCoordinate * length(dpMatrix, DPMatrixDimension_::VERTICAL) + verticalCoordinate;
+}
+
 } // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_

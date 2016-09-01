@@ -313,7 +313,6 @@ typedef Tag<DynamicGaps_> DynamicGaps;
 template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy = Serial>
 struct DPProfile_ {};
 
-
 // ----------------------------------------------------------------------------
 // Tag DPFirstRow
 // ----------------------------------------------------------------------------
@@ -362,6 +361,45 @@ public:
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+enum class DPProfileTypeId : uint8_t
+{
+    ALGORITHM = 0,
+    GAP_MODEL = 1,
+    TRACE_CONFIG = 2,
+    EXEC_POLICY = 3
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction DPContextSpec
+// ----------------------------------------------------------------------------
+
+template <typename TDPProfile, DPProfileTypeId ID>
+struct DPProfileType;
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::ALGORITHM>
+{
+    using Type = TAlignment;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::GAP_MODEL>
+{
+    using Type = TGapCosts;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::TRACE_CONFIG>
+{
+    using Type = TTraceback;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::EXEC_POLICY>
+{
+    using Type = TExecPolicy;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction GapTraits
@@ -505,15 +543,16 @@ struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> >
 // ----------------------------------------------------------------------------
 
 template <typename TTraceConfig>
-struct IsSingleTrace_ : False{};
+struct IsSingleTrace_ : False
+{};
 
 template <typename TGapsPlacement>
-struct IsSingleTrace_<TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > >
-: True{};
+struct IsSingleTrace_<TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > > : True
+{};
 
 template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig, typename TExecPolicy>
-struct IsSingleTrace_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> >
-: IsSingleTrace_<TTraceConfig>{};
+struct IsSingleTrace_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> > : IsSingleTrace_<TTraceConfig>
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction IsFreeEndGap_
