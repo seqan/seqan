@@ -602,7 +602,7 @@ toGlobalPosition(DPMatrix_<TValue, FullDPMatrix, THost> const & dpMatrix,
                  TPosH const horizontalCoordinate,
                  TPosV const verticalCoordinate)
 {
-    return  horizontalCoordinate * length(dpMatrix, DPMatrixDimension_::VERTICAL) + verticalCoordinate;
+    return horizontalCoordinate * length(dpMatrix, DPMatrixDimension_::VERTICAL) + verticalCoordinate;
 }
 
 } // namespace seqan
