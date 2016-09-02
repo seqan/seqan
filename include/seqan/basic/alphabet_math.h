@@ -221,20 +221,18 @@ template <typename T> [[deprecated("Use MaxValue instead.")]] inline T const & s
 
 template <typename T>
 [[deprecated("Use MaxValue instead.")]]
-inline T const &
+inline T
 maxValue()
 {
-    T * _tag = 0;
-    return supremumValueImpl(_tag);
+    return MaxValue<T>::VALUE;
 }
 
 template <typename T>
 [[deprecated("Use MaxValue instead.")]]
-inline T const &
+inline T
 maxValue(T /*tag*/)
 {
-    T * _tag = 0;
-    return supremumValueImpl(_tag);
+    return MaxValue<T>::VALUE;
 }
 
 // ----------------------------------------------------------------------------
@@ -251,20 +249,18 @@ template <typename T> [[deprecated("Use MinValue instead.")]] inline T const & i
 
 template <typename T>
 [[deprecated("Use MinValue instead.")]]
-inline T const &
+inline T
 minValue()
 {
-    T * _tag = 0;
-    return infimumValueImpl(_tag);
+    return MinValue<T>::VALUE;
 }
 
 template <typename T>
 [[deprecated("Use MinValue instead.")]]
-inline T const &
+inline T
 minValue(T /*tag*/)
 {
-    T * _tag = 0;
-    return infimumValueImpl(_tag);
+    return MinValue<T>::VALUE;
 }
 
 // ----------------------------------------------------------------------------

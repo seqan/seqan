@@ -243,10 +243,10 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 // Forwards for Metafunctions and Functions.
 template <typename T> struct MinValue;
 template <typename T> struct MaxValue;
-template <typename T> T const & minValue();
-template <typename T> T const & minValue(T);
-template <typename T> T const & maxValue();
-template <typename T> T const & maxValue(T);
+template <typename T> T minValue();
+template <typename T> T minValue(T);
+template <typename T> T maxValue();
+template <typename T> T maxValue(T);
 
 SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Comparable))
 {
