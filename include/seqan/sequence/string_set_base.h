@@ -1345,7 +1345,7 @@ assign(StringSet<TString, TSpec> & target,
     TSourceIterator it = begin(source, Standard());
     TSourceIterator itEnd = end(source, Standard());
     for (; it != itEnd; ++it)
-        appendValue(target, getValue(it), tag);
+        appendValue(target, *it, tag);
 }
 
 template <typename TString, typename TSpec, typename TSource>
