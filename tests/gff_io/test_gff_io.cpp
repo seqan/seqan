@@ -56,5 +56,9 @@ SEQAN_BEGIN_TESTSUITE(test_gff_io)
     SEQAN_CALL_TEST(test_store_io_gff_stream_read_record_gtf);
     SEQAN_CALL_TEST(test_store_io_gff_stream_write_record_gff);
     SEQAN_CALL_TEST(test_store_io_gff_stream_write_record_gtf);
+
+    // isOpen
+    SEQAN_CALL_TEST(test_gff_io_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_gff_io_isOpen_fileOut);
 }
 SEQAN_END_TESTSUITE

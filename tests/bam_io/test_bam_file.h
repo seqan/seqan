@@ -511,4 +511,46 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     }
 }
 
+// ---------------------------------------------------------------------------
+// Test isOpen() functionality.
+// ---------------------------------------------------------------------------
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_isOpen_fileIn)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/tests/bam_io/small.sam");
+
+    // Create SequenceStream object.
+    seqan::BamFileIn bamI;
+    SEQAN_ASSERT(!isOpen(bamI));
+
+    // open file
+    open(bamI, toCString(filePath));
+    SEQAN_ASSERT(isOpen(bamI));
+
+    // close file
+    close(bamI);
+    SEQAN_ASSERT(!isOpen(bamI));
+}
+
+SEQAN_DEFINE_TEST(test_bam_io_bam_file_isOpen_fileOut)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    append(filePath, ".sam");
+
+    // Create SequenceStream object.
+    seqan::BamFileOut  bamO;
+    SEQAN_ASSERT(!isOpen(bamO));
+
+    // open files
+    open(bamO, toCString(filePath));
+    SEQAN_ASSERT(isOpen(bamO));
+
+    // close files
+    close(bamO);
+    SEQAN_ASSERT(!isOpen(bamO));
+}
+
 #endif  // #ifndef TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
