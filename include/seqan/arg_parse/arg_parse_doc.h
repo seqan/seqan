@@ -35,12 +35,12 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_DOC_H_
 #define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_DOC_H_
 
-#include <seqan/arg_parse/tool_doc.h>
-#include <seqan/arg_parse/argument_parser.h>
-
 #include <regex>
 #include <vector>
 #include <algorithm>
+
+#include <seqan/arg_parse/tool_doc.h>
+#include <seqan/arg_parse/argument_parser.h>
 
 namespace seqan {
 
@@ -751,7 +751,7 @@ inline void _seperateExtensionsForPrettyPrinting(std::vector<std::string> & file
         if (!result[4].str().empty())
         {
             comp_ext.push_back(result[4].str());
-            file_ext.push_back("." + result[2].str() + "[.x]");
+            file_ext.push_back("." + result[2].str() + "[.*]");
         }
         else
         {
@@ -796,7 +796,7 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
 
             if (compresssion_extensions.size() != 0)
             {
-                append(text, ", where x is any of the following extensions: ");
+                append(text, ", where * is any of the following extensions: ");
                 _expandList(text, compresssion_extensions);
                 append(text, " for transparent (de)compression");
             }
