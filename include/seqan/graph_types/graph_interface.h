@@ -652,8 +652,7 @@ template <typename T>
 inline T
 _getInfinity()
 {
-    T * _tag = 0;
-    return supremumValueImpl(_tag);
+    return MaxValue<T>::VALUE;
 }
 
 //////////////////////////////////////////////////////////////////////////////
