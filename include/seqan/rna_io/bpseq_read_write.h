@@ -104,7 +104,6 @@ readRecord(RnaRecord & record,
     CharString &buffer = context.buffer;
     CharString tmpStr="";
     unsigned counter = 0;
-    Rna5String rec_base;
 
     while (!atEnd(iter) && value(iter) != '#')
     {
@@ -120,9 +119,9 @@ readRecord(RnaRecord & record,
         // SEQUENCE
         clear(buffer);
         readUntil(buffer, iter, IsWhitespace());
-        appendValue(rec_base, buffer[0]);        //DONE: APPEND VALUES TO SEQUENCE WITHOUT GETTING A SEG FAULT
+        appendValue(record.sequence, buffer[0]);        //DONE: APPEND VALUES TO SEQUENCE WITHOUT GETTING A SEG FAULT
         addVertex(record.graph);                 // add base to graph
-        if (empty(rec_base))
+        if (empty(record.sequence))
             SEQAN_THROW(EmptyFieldError("SEQUENCE"));     
 
         skipUntil(iter, NextEntry());
@@ -139,7 +138,6 @@ readRecord(RnaRecord & record,
 
         ++counter;
     }
-    appendValue(record.sequence, rec_base);
     if(record.begPos != 1)      //set beginning record position
         record.endPos = counter - record.begPos + 1;
     else
@@ -185,11 +183,11 @@ writeRecord(TTarget & target,
     {
         write(target, record.begPos + i);
         writeValue(target, ' ');
-        write(target, record.sequence[0][i]);  //DONE: PRINT SEQUENCE AT POSITION I WITHOUT SEG FAULTING
+        write(target, record.sequence[i]);  //DONE: PRINT SEQUENCE AT POSITION I WITHOUT SEG FAULTING
         writeValue(target, ' ');
         if (degree(record.graph, i) != 0)
         {
-            TAdjacencyIterator adj_it(record.graph, i);
+            TRnaAdjacencyIterator adj_it(record.graph, i);
             write(target, value(adj_it) + 1);
         }
         else

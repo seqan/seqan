@@ -137,6 +137,8 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
         throw ParseError("Expected STOCKHOLM identifier in the first line.");
     skipOne(iter);
     CharString bracket_str = "";
+    StringSet<Rna5String, Owner<JournaledSet> > sequence;
+    StringSet<String<unsigned> > gapPos;
 
     while (!atEnd(iter))
     {
@@ -178,26 +180,54 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
             unsigned idx = 0;
             while (idx < length(record.seq_id) && record.seq_id[idx] != context.buffer)
                 ++idx;                                          // search sequence id
-            if (idx == length(record.seq_id))
+
+            unsigned const OFFSET = idx == length(record.seq_id) ? 0 : length(sequence[idx]);
+            if (OFFSET == 0)
+            {
                 appendValue(record.seq_id, context.buffer);
+                resize(rows(record.align), idx + 1);
+                resize(gapPos, idx + 1);
+            }
 
             clear(context.buffer);
             skipUntil(iter, NotFunctor<IsWhitespace>());
             readUntil(context.buffer, iter, IsWhitespace());    // read sequences
 
-            if (idx == length(record.sequence))
-                appendValue(record.sequence, context.buffer);
-            else
-                append(record.sequence[idx], context.buffer);
+            unsigned gap = 0;
+            while (gap < length(context.buffer))                // remove gap symbols
+            {
+                if (context.buffer[gap] != '.' && context.buffer[gap] != '-')
+                {
+                    ++gap;
+                }
+                else
+                {
+                    appendValue(gapPos[idx], gap + OFFSET);
+                    erase(context.buffer, gap);
+                }
+            }
+
+            if (OFFSET == 0)                                    // new sequence
+                appendValue(sequence, context.buffer);
+            else                                                // append to existing sequence
+                append(sequence[idx], context.buffer);
         }
         skipUntil(iter, IsNewline());
         skipOne(iter);
     }
     clear(context.buffer);
+
+    for (unsigned idx = 0; idx < length(gapPos); ++idx)
+    {
+        assignSource(row(record.align, idx), sequence[idx]);
+        for (unsigned gap = length(gapPos[idx]); gap > 0u; --gap)
+            insertGap(row(record.align, idx), gapPos[idx][gap - 1]);
+    }
+
     record.amount = length(bracket_str);
     if (record.amount == 0)
         throw ParseError("Expected a secondary structure line.");
-    if (length(record.sequence) == 0)
+    if (empty(sequence))
         throw ParseError("Expected a sequence line.");
     bracket2graph(record.graph, bracket_str);
     record.begPos = 1;
@@ -221,20 +251,30 @@ writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*
         writeValue(target, '\n');
     }
     writeValue(target, '\n');
-    SEQAN_ASSERT_EQ(length(record.seq_id), length(record.sequence));
-    unsigned maxlen = 12;
-    for (unsigned idx = 0; idx < length(record.seq_id); ++idx)  // determine indentation
-        maxlen = length(record.seq_id[idx]) > maxlen ? length(record.seq_id[idx]) : maxlen;
-    for (unsigned idx = 0; idx < length(record.sequence); ++idx)
-    {                                                           // sequences
-        CharString str = idx < length(record.seq_id) ? record.seq_id[idx] : "seq" + std::to_string(idx);
-        resize(str, maxlen, ' ');
-        write(target, str);
-        write(target, "\t");
-        write(target, record.sequence[idx]);
-        writeValue(target, '\n');
+    if (!empty(record.sequence))
+    {                                                           // single sequence
+        write(target, "single-seq  \t");
+        write(target, record.sequence);
+        write(target, "\n#=GR SS     \t");
     }
-    write(target, "#=GC SS_cons\t");                            // bracket string
+    else
+    {                                                           // alignment
+        SEQAN_ASSERT_EQ(length(record.seq_id), length(rows(record.align)));
+        unsigned maxlen = 12;                                   // determine indentation
+        for (unsigned idx = 0; idx < length(record.seq_id); ++idx)
+            maxlen = length(record.seq_id[idx]) > maxlen ? length(record.seq_id[idx]) : maxlen;
+        for (unsigned idx = 0; idx < length(record.seq_id); ++idx)
+        {
+            CharString str = record.seq_id[idx];                // write id
+            resize(str, maxlen, ' ');
+            write(target, str);
+            write(target, "\t");
+            write(target, row(record.align, idx));              // write sequence
+            writeValue(target, '\n');
+        }
+        write(target, "#=GC SS_cons\t");
+    }
+
     CharString bracket_str("");
     graph2bracket(bracket_str, record.graph);
     write(target, bracket_str);

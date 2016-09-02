@@ -152,7 +152,6 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
      N  SEQUENCE   N-1     N+1    J POSITION  N  
     */
     clear(context);
-    Rna5String rec_base;
     unsigned counter = 0;
     skipUntil(iter, NotFunctor<IsWhitespace>()); 
     while (!atEnd(iter))
@@ -176,7 +175,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         skipUntil(iter, NotFunctor<IsWhitespace>());    
 
         readUntil(context.base, iter, IsWhitespace());               //read base 
-        append(rec_base, context.base);
+        append(record.sequence, context.base);
         clear(context.base);
         addVertex(record.graph);
 
@@ -197,7 +196,6 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         skipUntil(iter, IsNewline());      //skip until newline
         counter++;
     }
-    appendValue(record.sequence, rec_base);
 
     if (record.amount == 0)
     {
@@ -236,12 +234,12 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
     int begPos = 1;
     if(record.begPos != 1)
         begPos = record.begPos;
-    for (unsigned i = 0; i < length(record.sequence[0]); i++)
+    for (unsigned i = 0; i < length(record.sequence); i++)
     {
         writeValue(target, ' ');    //All records start with a space
         appendNumber(target, i+begPos);
         writeValue(target, ' ');
-        write(target, record.sequence[0][i]);
+        write(target, record.sequence[i]);
         writeValue(target, '\t');
         appendNumber(target, i+begPos-1);
         writeValue(target, '\t');
@@ -249,7 +247,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         writeValue(target, '\t');
         if (degree(record.graph, i) != 0)
         {
-            TAdjacencyIterator adj_it(record.graph, i);
+            TRnaAdjacencyIterator adj_it(record.graph, i);
             write(target, value(adj_it) + 1);
         }
         else

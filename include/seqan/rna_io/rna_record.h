@@ -45,7 +45,7 @@ namespace seqan {
 
 typedef Graph<Undirected<double> > TRnaRecordGraph;
 
-typedef typename Iterator<TRnaRecordGraph, AdjacencyIterator>::Type TAdjacencyIterator;
+typedef typename Iterator<TRnaRecordGraph, AdjacencyIterator>::Type TRnaAdjacencyIterator;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -73,13 +73,17 @@ public:
     // Record's name.
     CharString name;
 
-    // Sequence identifier
-    StringSet<CharString> seq_id;
-    
-    //string of base at each position in Rna strand
-    StringSet<Rna5String, Owner<JournaledSet> > sequence;
+    // string of base at each position in Rna strand, ONLY SINGLE-SEQUENCE FILES
+    Rna5String sequence;
 
-    // Undirected graph for connected bases and probabilities
+    // sequence identifier for aligned sequences, ONLY MULTI-SEQUENCE FILES
+    StringSet<CharString> seq_id;
+
+    // alignment of several sequences (gaps allowed), ONLY MULTI-SEQUENCE FILES
+    Align<Rna5String, ArrayGaps> align;
+
+    // Undirected graph for base pairings
+    // vertices: sequence/alignment column index, edges: base pair with assigned probability
     TRnaRecordGraph graph;
 
     bool isInjective; // each base has at most 1 connection
@@ -109,8 +113,8 @@ public:
     //mutpos
   
     // Default constructor.
-    RnaRecord() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" "), isInjective(true),
-        offset(0), comment("")
+    RnaRecord() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" "), sequence(""),
+        isInjective(true), offset(0), comment("")
     {}                                                                                      
 
 };

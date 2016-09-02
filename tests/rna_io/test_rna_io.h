@@ -69,9 +69,9 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
-    SEQAN_ASSERT_EQ(rnaRecord.sequence[0], base);
+    SEQAN_ASSERT_EQ(rnaRecord.sequence, base);
 
-    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph, 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
 
     /* CHECK DEFAULT VALUES */
@@ -111,9 +111,9 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
-    SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
+    SEQAN_ASSERT_EQ(rnaRecord.sequence, "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
 
-    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph, 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
     
     /* CHECK DEFAULT VALUES */
@@ -152,22 +152,21 @@ SEQAN_DEFINE_TEST(test_rna_io_read_stockholm)
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 74);
     SEQAN_ASSERT_EQ(rnaRecord.name,"trna");
-    SEQAN_ASSERT_EQ(rnaRecord.sequence[0],
-                    "GCGGAUUUAGCUCAGUUGGG.AGAGCGCCAGACUGAAGAUCUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
-    SEQAN_ASSERT_EQ(rnaRecord.sequence[2],
-                    "UCCGUGAUAGUUUAAU.GGUCAGAAUGGGCGCUUGUCGCGUGCCAGA.UCGGGGUUCAAUUCCCCGUCGCGGAG");
+    SEQAN_ASSERT_EQ(stringSet(rnaRecord.align)[0],
+                    "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUCUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
+    SEQAN_ASSERT_EQ(stringSet(rnaRecord.align)[2],
+                    "UCCGUGAUAGUUUAAUGGUCAGAAUGGGCGCUUGUCGCGUGCCAGAUCGGGGUUCAAUUCCCCGUCGCGGAG");
     SEQAN_ASSERT_EQ(rnaRecord.seq_id[0], "DF6280");
     SEQAN_ASSERT_EQ(rnaRecord.seq_id[2], "DD6280");
 
-    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 10);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph, 10);
     SEQAN_ASSERT_EQ(value(adj_it), 24u);
-
 }
 
 ///////////////////BPSEQ TEST NOT COMPLETE////////////////////////
 SEQAN_DEFINE_TEST(test_rna_io_read_bpseq)
 {
-    //Path to example.ct
+/*  //Path to example.ct
     seqan::CharString rnaPath = SEQAN_PATH_TO_ROOT();
     append(rnaPath, "/tests/rna_io/example.bpseq");
 
@@ -181,12 +180,12 @@ SEQAN_DEFINE_TEST(test_rna_io_read_bpseq)
     readRecord(rnaRecord, rnaIOContext, iter, seqan::Bpseq());
 
     // CHECK BPSEQ FILE VALUES 
-/*
+
     SEQAN_ASSERT_EQ(rnaRecord.amount, 73u);
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     //SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
-    SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
+    SEQAN_ASSERT_EQ(rnaRecord.sequence, "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
     seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
 */
@@ -213,7 +212,7 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
     record.endPos = 8;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
-    appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
+    record.sequence = "GCGGAUUU";
 
     for (unsigned idx = 0; idx < record.amount; ++idx)
         addVertex(record.graph);
@@ -247,7 +246,7 @@ SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
     record.endPos = 8;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
-    appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
+    record.sequence = "GCGGAUUU";
 
     for (unsigned idx = 0; idx < record.amount; ++idx)
         addVertex(record.graph);

@@ -203,7 +203,7 @@ static inline void graph2bracket(CharString & bracket_str, TRnaRecordGraph const
             if (degree(graph, idx) == 0 || (colors[idx] > 0 && colors[idx] < col))
                 continue;                               // skip processed and unpaired entries
 
-            TAdjacencyIterator adj_it(graph, idx);
+            TRnaAdjacencyIterator adj_it(graph, idx);
             unsigned const p_end = value(adj_it);       // paired end bracket
 
             if (p_end < bracket_end && idx < p_end)     // open bracket inside previous bracket
@@ -253,7 +253,7 @@ static inline void graph2bracket(CharString & bracket_str, TRnaRecordGraph const
             continue;
         }
 
-        TAdjacencyIterator adj_it(graph, idx);
+        TRnaAdjacencyIterator adj_it(graph, idx);
         if (idx < value(adj_it))                        // open bracket
         {
             SEQAN_ASSERT(colors[idx] > 0);
@@ -318,9 +318,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     */
 
     //declare opening and closing brackets. the reason I use two diff strings is becasue I can see if we have a pair by comparing open[i]==close[i]
-    Rna5String rec_base;
-    readUntil(rec_base, iter, IsNewline());
-    appendValue(record.sequence, rec_base);
+    readUntil(record.sequence, iter, IsNewline());
 
     skipOne(iter);
     readUntil(context.buffer, iter, IsWhitespace());
@@ -377,7 +375,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
 
     writeValue(target, '\n');
     //write base
-    write(target, record.sequence[0]);
+    write(target, record.sequence);
     writeValue(target, '\n');
 
     CharString bracket_str("");
