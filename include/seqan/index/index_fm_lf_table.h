@@ -550,7 +550,7 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
 
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
-        TSAValue pos = getValue(saIt);
+        TSAValue pos = *saIt;
 
         if (pos != 0)
         {
@@ -602,7 +602,7 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
         TSAValue pos;    // = SA[i];
-        posLocalize(pos, getValue(saIt), stringSetLimits(text));
+        posLocalize(pos, *saIt, stringSetLimits(text));
 
         if (getSeqOffset(pos) != 0)
         {
