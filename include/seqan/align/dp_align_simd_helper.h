@@ -156,7 +156,7 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
                       TSequencesV const & seqV,
                       DPScoutState_<SimdAlignVariableLength<TTraits> > & state)
 {
-    using TSimdVecH = typename Value<TStringSimdH>::Type;
+    using TSimdVecH SEQAN_TYPEDEF_FOR_DEBUG = typename Value<TStringSimdH>::Type;
     SEQAN_ASSERT_EQ(length(seqH), length(seqV));
     SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<TSimdVecH>::VALUE), length(seqH));
 

@@ -66,7 +66,6 @@ public:
 
     TThreadLocalStorage * mTlsPtr       = nullptr;
     TSimdQueue *          mSimdQueuePtr = nullptr;
-    bool                  mIsLastTask   = false;
 //    std::atomic<uint8_t>                 mRefCount;
 
     // ============================================================================
@@ -260,7 +259,6 @@ createGraph(TTaskContext & context,
             graph[i][j]->_lastVBlock = (j + 1 == length(context.getSeqV()));
         }
     }
-    lastTask(graph)->mIsLastTask = true;
     return graph;
 }
 
@@ -296,6 +294,7 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
 
     bool res = lastTask(graph)->cancel_group_execution();
     SEQAN_ASSERT(res);
+    ignoreUnusedVariableWarning(res);
 
     lastTask(graph)-> template executeImpl<void>();
     tbb::task::destroy(*lastTask(graph));
