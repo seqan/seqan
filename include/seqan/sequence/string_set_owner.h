@@ -328,7 +328,7 @@ erase(StringSet<TString, Owner<Default> > & me, TPos pos, TPosEnd posEnd)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TId>
-[[deprecated("Use the subscript operator (operator[]) instead.")]]
+// [[deprecated("Use the subscript operator (operator[]) instead.")]]
 inline typename Reference<StringSet<TString, Owner<TSpec> > >::Type
 getValueById(StringSet<TString, Owner<TSpec> >& me,
             TId const id)
@@ -353,7 +353,7 @@ getValueById(StringSet<TString, Owner<TSpec> > const & me,
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TId>
-[[deprecated("Use assignValue instead.")]]
+// [[deprecated("Use assignValue instead.")]]
 inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 assignValueById(StringSet<TString, Owner<TSpec> > & me,
                 TString& obj,
@@ -374,7 +374,7 @@ assignValueById(StringSet<TString, Owner<TSpec> > & me,
 // --------------------------------------------------------------------------
 
 template<typename TString, typename TSpec, typename TId>
-[[deprecated("Use erase instead.")]]
+// [[deprecated("Use erase instead.")]]
 inline void
 removeValueById(StringSet<TString, Owner<TSpec> > & me, TId const id)
 {
@@ -388,7 +388,7 @@ removeValueById(StringSet<TString, Owner<TSpec> > & me, TId const id)
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPos>
-[[deprecated("ID is the same as the position")]]
+// [[deprecated("ID is the same as the position")]]
 inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 positionToId(StringSet<TString, Owner<TSpec> > &,
             TPos const pos)
@@ -401,7 +401,7 @@ positionToId(StringSet<TString, Owner<TSpec> > &,
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TPos>
-[[deprecated("ID is the same as the position")]]
+// [[deprecated("ID is the same as the position")]]
 inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 positionToId(StringSet<TString, Owner<TSpec> > const &,
             TPos const pos)
@@ -414,7 +414,7 @@ positionToId(StringSet<TString, Owner<TSpec> > const &,
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec, typename TId>
-[[deprecated("ID is the same as the position")]]
+// [[deprecated("ID is the same as the position")]]
 inline typename Id<StringSet<TString, Owner<TSpec> > >::Type
 idToPosition(StringSet<TString, Owner<TSpec> > const&,
             TId const id)

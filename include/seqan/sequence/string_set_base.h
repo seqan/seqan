@@ -1477,7 +1477,7 @@ return iter(me, length(me), tag);
  */
 
 template<typename TString, typename TSpec, typename TId>
-[[deprecated("Use the subscript operator (operator[]) instead.")]]
+// [[deprecated("Use the subscript operator (operator[]) instead.")]]
 inline typename Reference<StringSet<TString, TSpec> >::Type
 valueById(StringSet<TString, TSpec> & me,
         TId const id)
@@ -1515,7 +1515,7 @@ valueById(StringSet<TString, TSpec> & me,
  */
 
 template<typename TString, typename TSpec, typename TString2>
-[[deprecated("Use assignValue instead.")]]
+// [[deprecated("Use assignValue instead.")]]
 inline typename Id<StringSet<TString, TSpec> >::Type
 assignValueById(StringSet<TString, TSpec>& me,
                 TString2& obj)
@@ -1526,7 +1526,7 @@ assignValueById(StringSet<TString, TSpec>& me,
 }
 
 template<typename TString, typename TSpec1, typename TSpec2, typename TId>
-[[deprecated("Use assignValue instead.")]]
+// [[deprecated("Use assignValue instead.")]]
 inline typename Id<StringSet<TString, TSpec1> >::Type
 assignValueById(StringSet<TString, TSpec1>& dest,
                 StringSet<TString, TSpec2>& source,
