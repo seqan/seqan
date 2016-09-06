@@ -920,7 +920,7 @@ namespace seqan
             if (reader) reader->end();
             delete reader;
             reader = NULL;
-            delListener();
+            // delListener(); (deprecated)
             return true;
         }
 
@@ -971,7 +971,7 @@ namespace seqan
             writeBackBuffers = _conf.writeBackBuffers;
             writeBackBuckets = _conf.writeBackBuffers;
             _partiallyFilled = true;
-            listeners = 0;
+            listeners = 0; // (deprecated)
             reader = NULL;
             writer = NULL;
             _ownFile = true;
