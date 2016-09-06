@@ -1063,7 +1063,7 @@ arrayCopyBackward(Iter<TPackedString, Packed<TSpec> > source_begin,
             {
                 --hostIterator(source_end);
                 --hostIterator(target_begin);
-                assignValue(hostIterator(target_begin), getValue(hostIterator(source_end)));
+                *hostIterator(target_begin) = getValue(hostIterator(source_end));
             }
         }
 

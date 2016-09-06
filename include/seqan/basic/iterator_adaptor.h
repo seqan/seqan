@@ -415,7 +415,7 @@ inline void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
             TValue const & _value)
 {
-    assignValue(hostIterator(me), _value);
+    *hostIterator(me) = _value;
 }
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
@@ -423,7 +423,7 @@ inline void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
             TValue const & _value)
 {
-    assignValue(hostIterator(me), _value);
+    *hostIterator(me) = _value;
 }
 
 // ----------------------------------------------------------------------------

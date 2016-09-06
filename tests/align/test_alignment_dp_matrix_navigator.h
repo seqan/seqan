@@ -703,7 +703,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 0);
@@ -746,7 +746,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), FirstCell());
 
@@ -781,7 +781,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), FirstCell());
 
@@ -816,7 +816,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         _goNextCell(dpScoreMatrixNavigator, MetaColumnDescriptor<DPInitialColumn, FullColumn>(), FirstCell());
 
@@ -852,7 +852,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
     {
 
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         // Need to update iterator just for the test.
         dpScoreMatrixNavigator._activeColIterator += 3;
@@ -890,7 +890,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         // Need to update Iterator just for the test.
         dpScoreMatrixNavigator._activeColIterator += 2;
@@ -928,7 +928,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         // Need to update Iterator just for the test.
         dpScoreMatrixNavigator._activeColIterator += 2;
@@ -968,7 +968,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         dpScoreMatrixNavigator._activeColIterator += 2;
 
@@ -1005,7 +1005,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         dpScoreMatrixNavigator._activeColIterator += 3;
 
@@ -1042,7 +1042,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         dpScoreMatrixNavigator._activeColIterator += 2;
 
@@ -1080,7 +1080,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         dpScoreMatrixNavigator._activeColIterator += 2;
 
@@ -1119,7 +1119,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNext()
 
     {
         _init(dpScoreMatrixNavigator, dpMatrix, DPBandConfig<BandOff>());
-        assignValue(dpScoreMatrixNavigator._activeColIterator, 0);
+        *dpScoreMatrixNavigator._activeColIterator = 0;
 
         dpScoreMatrixNavigator._activeColIterator += 2;
 

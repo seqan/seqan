@@ -577,7 +577,7 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
     TSAIter saItEnd = end(sa, Standard());
     TBwtIter bwtIt = begin(bwt, Standard());
 
-    assignValue(bwtIt, back(text));
+    *bwtIt = back(text);
     ++bwtIt;
 
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
@@ -586,11 +586,11 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
 
         if (pos != 0)
         {
-            assignValue(bwtIt, getValue(text, pos - 1));
+            *bwtIt = getValue(text, pos - 1);
         }
         else
         {
-            assignValue(bwtIt, lf.sentinelSubstitute);
+            *bwtIt = lf.sentinelSubstitute;
             lf.sentinels = bwtIt - begin(bwt, Standard());
         }
     }
@@ -625,7 +625,7 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     {
         if (length(text[seqNum - i]) > 0)
         {
-            assignValue(bwtIt, back(text[seqNum - i]));
+            *bwtIt = back(text[seqNum - i]);
             setValue(lf.sentinels, bwtIt - bwtItBeg, false);
         }
     }
@@ -638,12 +638,12 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
 
         if (getSeqOffset(pos) != 0)
         {
-            assignValue(bwtIt, getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1));
+            *bwtIt = getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1);
             setValue(lf.sentinels, bwtIt - bwtItBeg, false);
         }
         else
         {
-            assignValue(bwtIt, lf.sentinelSubstitute);
+            *bwtIt = lf.sentinelSubstitute;
             setValue(lf.sentinels, bwtIt - bwtItBeg, true);
         }
     }
