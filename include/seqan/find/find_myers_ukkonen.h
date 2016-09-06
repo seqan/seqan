@@ -1047,7 +1047,7 @@ _patternInitSmallStateBanded(
 
         // adjust bitmasks (errors = number of needle chars to preprocess)
         for (; shift < errors; ++ndlIter, ++shift)
-            _myersAdjustBitmask(state, getValue(ndlIter), shift, typename MyersSmallAlphabet_<TValue>::Type());
+            _myersAdjustBitmask(state, *ndlIter, shift, typename MyersSmallAlphabet_<TValue>::Type());
 
         // initialise left column with
         //
@@ -1073,7 +1073,7 @@ _patternInitSmallStateBanded(
         //////////////////////////////////////////////////////////////////
 
         // adjust bitmask
-        _myersAdjustBitmask(state, getValue(ndlIter), shift, typename MyersSmallAlphabet_<TValue>::Type());
+        _myersAdjustBitmask(state, *ndlIter, shift, typename MyersSmallAlphabet_<TValue>::Type());
 
         /////////////////////////
         // DIAGONAL MYERS CORE
