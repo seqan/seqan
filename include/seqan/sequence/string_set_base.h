@@ -1668,7 +1668,7 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
     // Compute symbol frequencies.
     TIter itEnd = end(concat(text), Standard());
     for (TIter it = begin(concat(text), Standard()); it != itEnd; goNext(it))
-        sums[ordValue(static_cast<TValue>(value(it))) + 1]++;
+        sums[ordValue(static_cast<TValue>(*it)) + 1]++;
 
     // Cumulate symbol frequencies.
     partialSum(sums);
