@@ -35,10 +35,6 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_DOC_H_
 #define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_DOC_H_
 
-#include <regex>
-#include <vector>
-#include <algorithm>
-
 #include <seqan/arg_parse/tool_doc.h>
 #include <seqan/arg_parse/argument_parser.h>
 
