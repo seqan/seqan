@@ -584,7 +584,7 @@ struct CreateArrayStringExpand_
         }
         if (length(source) > 0)
         {
-            assignValue(begin(target, Standard()), 0); //set target length to 0
+            assign(*begin(target, Standard()), 0); //set target length to 0
             assign(begin(target, Standard()), source, Insist());
             typedef typename Iterator<TTarget>::Type TTargetIterator;
             _setEnd(target, TTargetIterator( begin(target) + source_length));
