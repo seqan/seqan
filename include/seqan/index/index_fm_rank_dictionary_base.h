@@ -255,7 +255,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
     TTextIterator textBegin = begin(text, Standard());
     TTextIterator textEnd = end(text, Standard());
     for (TTextIterator textIt = textBegin; textIt != textEnd; ++textIt)
-        setValue(dict, textIt - textBegin, value(textIt));
+        setValue(dict, textIt - textBegin, *textIt);
 
     // Update all ranks.
     updateRanks(dict);

@@ -1259,7 +1259,7 @@ read(TTarget &target, TFwdIterator &iter, TSize n)
 {
     TSize i;
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
-        writeValue(target, value(iter));
+        writeValue(target, *iter);
     return i;
 }
 

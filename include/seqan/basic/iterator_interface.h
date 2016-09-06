@@ -207,7 +207,7 @@ template <typename T>
 inline typename GetValue<T>::Type
 getValue(T & me)
 {
-    return value(me);
+    return *me;
 }
 
 template <typename T>
@@ -215,7 +215,7 @@ template <typename T>
 inline typename GetValue<T const>::Type
 getValue(T const & me)
 {
-    return value(me);
+    return *me;
 }
 
 // ---------------------------------------------------------------------------
@@ -235,7 +235,7 @@ inline void
 assignValue(T & me,
             TValue const & _value)
 {
-    assign(value(me), _value);
+    assign(*me, _value);
 }
 
 //const version for iterators as targets
@@ -245,7 +245,7 @@ inline void
 assignValue(T const & me,
             TValue const & _value)
 {
-    assign(value(me), _value);
+    assign(*me, _value);
 }
 
 // ---------------------------------------------------------------------------

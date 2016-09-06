@@ -378,14 +378,14 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    return value(hostIterator(me));
+    return *hostIterator(me);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
 inline typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    return value(hostIterator(me));
+    return *hostIterator(me);
 }
 
 // ----------------------------------------------------------------------------
