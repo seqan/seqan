@@ -305,8 +305,7 @@ template <typename TNameStore, typename TName, typename TCNameStore, typename TC
 [[deprecated("Use appendName(cache, name) instead. (nameStoreCache has a reference to the nameStore)")]]
 void appendName(TNameStore & /*nameStore*/, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
 {
-    appendValue(nameStore, name, Generous());
-    context.nameSet.insert(length(nameStore) - 1);
+    appendName(context, name);
 }
 
 // ----------------------------------------------------------------------------

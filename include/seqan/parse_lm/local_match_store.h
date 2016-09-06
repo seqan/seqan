@@ -358,16 +358,16 @@ appendLocalMatch(TLocalMatchStore & store,
 
     // Get id for subject and query sequences;  Insert sequences into name stores/caches if not already there.
     TId subjectId = 0;
-    if (!getIdByName(store.sequenceNameStore, subjectName, subjectId, store._sequenceNameStoreCache))
+    if (!getIdByName(subjectId, store.sequenceNameStore, subjectName))
     {
         subjectId = length(store.sequenceNameStore);
-        appendName(store.sequenceNameStore, subjectName, store._sequenceNameStoreCache);
+        appendName(store._sequenceNameStoreCache, subjectName);
     }
     TId queryId = 0;
-    if (!getIdByName(store.sequenceNameStore, queryName, queryId, store._sequenceNameStoreCache))
+    if (!getIdByName(queryId, store.sequenceNameStore, queryName))
     {
         queryId = length(store.sequenceNameStore);
-        appendName(store.sequenceNameStore, queryName, store._sequenceNameStoreCache);
+        appendName(store._sequenceNameStoreCache, queryName);
     }
 
     appendLocalMatch(store, subjectId, subjectBeginPos, subjectEndPos, queryId, queryBeginPos, queryEndPos);
