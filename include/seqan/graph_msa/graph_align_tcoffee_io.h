@@ -194,7 +194,7 @@ read(TFile & file,
             seq1 = value(posMap, seq1);
             seq2 = value(posMap, seq2);
         } else if (value(reader) == '!') {
-            skipUntil(reader, NotFunctor<IsWhitespace>());
+            skipLine(reader);
         } else {
             clear(buffer);
             readUntil(buffer, reader, IsWhitespace());
