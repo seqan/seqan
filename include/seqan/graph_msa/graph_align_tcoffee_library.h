@@ -541,33 +541,36 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
     TSize maxId2 = 0;
     TSize matchMismatch_length = 0;
 
-    TFragIter itFrag = begin(matches, Standard());
-    TFragIter itFragEnd = itFrag;
-    itFrag += from;
-    itFragEnd += to;
-    TId id1 = sequenceId(*itFrag, 0);
-    TId id2 = sequenceId(*itFrag, 1);
-    TSize fragLen = 0;
-    TSize beginI = 0;
-    TSize beginJ = 0;
-    for(;itFrag != itFragEnd; ++itFrag) {
-        fragLen = fragmentLength(*itFrag, id1);
-        beginI = fragmentBegin(*itFrag, id1);
-        beginJ = fragmentBegin(*itFrag, id2);
-        if (beginI < minId1) minId1 = beginI;
-        if (beginJ < minId2) minId2 = beginJ;
-        if (beginI + fragLen > maxId1) maxId1 = beginI + fragLen;
-        if (beginJ + fragLen > maxId2) maxId2 = beginJ + fragLen;
-        typedef typename Infix<TString>::Type TInfix;
-        typedef typename Iterator<TInfix, Standard>::Type TInfixIter;
-        TInfix inf1 = label(*itFrag, str, id1);
-        TInfix inf2 = label(*itFrag, str, id2);
-        TInfixIter sIt1 = begin(inf1, Standard());
-        TInfixIter sIt2 = begin(inf2, Standard());
-        TInfixIter sIt1End = end(inf1, Standard());
-        matchMismatch_length += fragLen;
-        for(;sIt1 != sIt1End; ++sIt1, ++sIt2)
-            if ( (TAlphabet) *sIt1  == (TAlphabet) *sIt2) ++matchLength;
+    if (length(matches) > 0)
+    {
+        TFragIter itFrag = begin(matches, Standard());
+        TFragIter itFragEnd = itFrag;
+        itFrag += from;
+        itFragEnd += to;
+        TId id1 = sequenceId(*itFrag, 0);
+        TId id2 = sequenceId(*itFrag, 1);
+        TSize fragLen = 0;
+        TSize beginI = 0;
+        TSize beginJ = 0;
+        for(;itFrag != itFragEnd; ++itFrag) {
+            fragLen = fragmentLength(*itFrag, id1);
+            beginI = fragmentBegin(*itFrag, id1);
+            beginJ = fragmentBegin(*itFrag, id2);
+            if (beginI < minId1) minId1 = beginI;
+            if (beginJ < minId2) minId2 = beginJ;
+            if (beginI + fragLen > maxId1) maxId1 = beginI + fragLen;
+            if (beginJ + fragLen > maxId2) maxId2 = beginJ + fragLen;
+            typedef typename Infix<TString>::Type TInfix;
+            typedef typename Iterator<TInfix, Standard>::Type TInfixIter;
+            TInfix inf1 = label(*itFrag, str, id1);
+            TInfix inf2 = label(*itFrag, str, id2);
+            TInfixIter sIt1 = begin(inf1, Standard());
+            TInfixIter sIt2 = begin(inf2, Standard());
+            TInfixIter sIt1End = end(inf1, Standard());
+            matchMismatch_length += fragLen;
+            for(;sIt1 != sIt1End; ++sIt1, ++sIt2)
+                if ( (TAlphabet) *sIt1  == (TAlphabet) *sIt2) ++matchLength;
+        }
     }
     alignLength = static_cast<TSize1>(matchMismatch_length + (len1 - matchMismatch_length) + (len2 - matchMismatch_length));
     overlapLength = alignLength -  minId1 - minId2 - (len1 + len2 - maxId1 - maxId2);
