@@ -106,9 +106,9 @@ _computeCell(TDPScout & scout,
 //    typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
 //    typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >   TMetaColumn;
 
-    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
-    activeCell = (*scout.state.ptrVerBuffer)[pos].i1;
-    assignValue(traceMatrixNavigator, (*scout.state.ptrVerBuffer)[pos].i2);
+//    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
+    activeCell = (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1;
+    assignValue(traceMatrixNavigator, (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i2);
 
 //    if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
 //    {
@@ -150,9 +150,9 @@ _computeCell(TDPScout & scout,
 //    typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
 //    typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >     TMetaColumn;
 
-    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
-    activeCell = (*scout.state.ptrHorBuffer)[pos].i1;
-    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[pos].i2);
+//    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
+    activeCell = (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1;
+    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2);
 
 //    if (TrackingEnabled_<TMetaColumn, FirstCell>::VALUE)
 //    {
@@ -194,9 +194,12 @@ _computeCell(TDPScout & scout,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
     // Copy values into horizontal buffer for the tile below this tile in vertical direction.
-    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
-    (*scout.state.ptrHorBuffer)[pos].i1 = activeCell;
-    (*scout.state.ptrHorBuffer)[pos].i2 = value(traceMatrixNavigator);
+//    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
+    (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1 = activeCell;
+    if (IsTracebackEnabled_<TTraceConfig>::VALUE)
+    {
+        (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2 = value(traceMatrixNavigator);
+    }
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
@@ -235,10 +238,13 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
-    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
-    activeCell = front(*scout.state.ptrVerBuffer).i1 = (*scout.state.ptrHorBuffer)[pos].i1;  // Copy horizontal buffer value in active cell and in
-    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[pos].i2);
-    front(*scout.state.ptrVerBuffer).i2 = value(traceMatrixNavigator);   // Store trace value in vertical buffer.
+//    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
+    activeCell = front(*scout.state.ptrVerBuffer).i1 = (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1;  // Copy horizontal buffer value in active cell and in
+    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2);
+    if (IsTracebackEnabled_<TTraceConfig>::VALUE)
+    {
+        front(*scout.state.ptrVerBuffer).i2 = value(traceMatrixNavigator);   // Store trace value in vertical buffer.
+    }
 
     if (TrackingEnabled_<TMetaColumn, FirstCell>::VALUE)
     {
@@ -280,9 +286,12 @@ _computeCell(TDPScout & scout,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, InnerCell>::Type(),
                               TDPProfile()));
     // Store values in vertical buffer.
-    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
-    (*scout.state.ptrVerBuffer)[pos].i1 = activeCell;
-    (*scout.state.ptrVerBuffer)[pos].i2 = value(traceMatrixNavigator);
+//    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
+    (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1 = activeCell;
+    if (IsTracebackEnabled_<TTraceConfig>::VALUE)
+    {
+        (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i2 = value(traceMatrixNavigator);
+    }
 
     if (TrackingEnabled_<TMetaColumn, InnerCell>::VALUE)
     {
@@ -325,10 +334,14 @@ _computeCell(TDPScout & scout,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
     // Store values in vertical and horizontal buffer.
-    auto posH = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
-    auto posV = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
-    (*scout.state.ptrHorBuffer)[posH].i1 = (*scout.state.ptrVerBuffer)[posV].i1 = activeCell;
-    (*scout.state.ptrHorBuffer)[posH].i2 = (*scout.state.ptrVerBuffer)[posV].i2 = value(traceMatrixNavigator);
+//    auto posH = coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) - 1;
+//    auto posV = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
+    (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1 = (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1 = activeCell;
+    if (IsTracebackEnabled_<TTraceConfig>::VALUE)
+    {
+        (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2 =
+            (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i2 = value(traceMatrixNavigator);
+    }
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
@@ -400,7 +413,9 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
     resize(dpScoreMatrix);
     // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
     if (IsTracebackEnabled_<TTraceFlag>::VALUE)
+    {
         resize(dpTraceMatrix);
+    }
 
     TDPScoreMatrixNavigator dpScoreMatrixNavigator;
     TDPTraceMatrixNavigator dpTraceMatrixNavigator;
@@ -416,8 +431,8 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
     else
         SEQAN_ASSERT_FAIL("Banded version not supported!");
 
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
-        return;
+//    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+//        return;
 
     // Some check to get same behavior as old module.
     if (IsTracebackEnabled_<TTraceFlag>::VALUE &&
@@ -432,7 +447,7 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
         //            maxHostPosition(dpScout); // We only have the trace value not the score value.
         _correctTraceValue(dpTraceMatrixNavigator, dpScout);
     }
-    combineMaxScore(scoutState.mThreadContext, dpScout, dpTraceMatrix);
+    combineMaxScore(scoutState.mThreadContext, dpScout, dpTraceMatrix, IsTracebackEnabled_<TTraceFlag>::VALUE);
 //    return dpScout; // Needed for local/semi-global alignment.
 }
 
@@ -502,7 +517,7 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
 
     // TODO(rrahn): Refine design. This design is based on the internal DP module and must be revised when changing the public API interface.
     typedef typename SubstituteAlignConfig_<AlignConfig<> >::Type TFreeEndGaps;
-    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> >, Parallel> TDPProfile;  // A type trait to configure the DP algorithm.
+    typedef DPProfile_<GlobalAlignment_<TFreeEndGaps>, AffineGaps, TracebackOff/*TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> >*/, Parallel> TDPProfile;  // A type trait to configure the DP algorithm.
 
     // ----------------------------------------------------------------------------
     // Initialize TileBuffer.
@@ -596,8 +611,11 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
 //    std::cout << "BlockPos: " << std::get<3>(dpMax) << '\n';
 
     // TODO(rrahn): Fix to also support local and semi-global alignment!
-    implParallelTrace(target, std::get<1>(dpMax), std::get<2>(dpMax), std::get<3>(dpMax), traceProxy,
-                      seqH, seqV, TDPProfile());
+    if (IsTracebackEnabled_<TDPProfile>::VALUE)
+    {
+        implParallelTrace(target, std::get<1>(dpMax), std::get<2>(dpMax), std::get<3>(dpMax), traceProxy,
+                          seqH, seqV, TDPProfile());
+    }
 
     return std::get<0>(dpMax);
 }

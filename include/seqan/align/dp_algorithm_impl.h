@@ -368,6 +368,7 @@ _computeTrack(TDPScout & scout,
     {
         _incVerticalPos(scout);
         // Set the iterator to the next cell within the track.
+        _incVerticalPos(scout);
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
         _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
         // Compute the inner cell.
@@ -393,6 +394,7 @@ _computeTrack(TDPScout & scout,
     }
     _incVerticalPos(scout);
     // Set the iterator to the last cell of the track.
+    _incVerticalPos(scout);
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
     _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
     // Compute the last cell.

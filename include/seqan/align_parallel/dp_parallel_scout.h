@@ -94,6 +94,8 @@ public:
     using TBase = DPScout_<TDPCell, Default>;
 
     DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state;
+    size_t   mHorizontalPos;
+    size_t   mVerticalPos;
     bool mForceTracking;
     
     DPScout_(DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state,
@@ -191,16 +193,64 @@ template <typename TThreadContext,
 inline void
 combineMaxScore(TThreadContext & pContext,
                 DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > const & dpScout,
-                TDPMatrix const & /*unused*/)
+                TDPMatrix const & /*unused*/,
+                bool const traceEnabled)
 {
     using TBaseScout = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> >::TBase;
     if (pContext.mDpLocalStore.mMaxScore < maxScore(static_cast<TBaseScout const &>(dpScout)))
     {
         pContext.mDpLocalStore.mMaxScore    = maxScore(static_cast<TBaseScout const &>(dpScout));
-        pContext.mDpLocalStore.mMaxBlockPos = maxHostPosition(static_cast<TBaseScout const &>(dpScout));
+        if (traceEnabled)
+        {
+            pContext.mDpLocalStore.mMaxBlockPos = maxHostPosition(static_cast<TBaseScout const &>(dpScout));
+        }
         pContext.mDpLocalStore.mMaxBlockHId = pContext.mTask._col;
         pContext.mDpLocalStore.mMaxBlockVId = pContext.mTask._row;
     }
+}
+
+// ----------------------------------------------------------------------------
+// Function _preInitScoutHorizontal()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
+inline void
+_preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
+{
+    scout.mHorizontalPos = 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function _preInitScoutVertical()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
+inline void
+_preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
+{
+    scout.mVerticalPos = 0;
+}
+
+// ----------------------------------------------------------------------------
+// Function _incHorizontalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
+inline void
+_incHorizontalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
+{
+    ++scout.mHorizontalPos;
+}
+
+// ----------------------------------------------------------------------------
+// Function _incVerticalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
+inline void
+_incVerticalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
+{
+    ++scout.mVerticalPos;
 }
 
 }  // namespace seqan

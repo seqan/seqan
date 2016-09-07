@@ -78,6 +78,8 @@ public:
     using TBase = DPScout_<TDPCell, SimdAlignmentScout<TSimdSpec> >;
 
     DPScoutState_<DPTiled<TBuffer, TThreadContext, TSimdSpec> > state;
+    size_t   mHorizontalPos;
+    size_t   mVerticalPos;
     bool  mForceTracking;
 
     DPScout_(DPScoutState_<DPTiled<TBuffer, TThreadContext, TSimdSpec> > & state,
@@ -122,7 +124,8 @@ template <typename TThreadContext,
 inline void
 combineMaxScore(TThreadContext & pContext,
                 DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > > & pDpScout,
-                TDPTraceMatrix const pDpMatrix)
+                TDPTraceMatrix const & pDpMatrix,
+                bool const traceEnabled)
 {
     unsigned simdLane = 0;
     for (auto const & task : pContext.mTask)
@@ -130,10 +133,13 @@ combineMaxScore(TThreadContext & pContext,
         _setSimdLane(pDpScout, simdLane);
         if (pContext.mDpLocalStore.mMaxScore < maxScore(pDpScout)[simdLane])
         {
-            pContext.mDpLocalStore.mMaxScore    = maxScore(pDpScout)[simdLane];
-            pContext.mDpLocalStore.mMaxBlockPos = toGlobalPosition(pDpMatrix,
-                                                                   maxHostCoordinate(pDpScout, DPMatrixDimension_::HORIZONTAL),
-                                                                   maxHostCoordinate(pDpScout, DPMatrixDimension_::VERTICAL));
+            pContext.mDpLocalStore.mMaxScore = maxScore(pDpScout)[simdLane];
+            if (traceEnabled)
+            {
+                pContext.mDpLocalStore.mMaxBlockPos = toGlobalPosition(pDpMatrix,
+                                                                       maxHostCoordinate(pDpScout, DPMatrixDimension_::HORIZONTAL),
+                                                                       maxHostCoordinate(pDpScout, DPMatrixDimension_::VERTICAL));
+            }
             pContext.mDpLocalStore.mMaxBlockHId = task->_col;
             pContext.mDpLocalStore.mMaxBlockVId = task->_row;
         }
@@ -233,6 +239,7 @@ _preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdA
 {
     using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
     _preInitScoutHorizontal(static_cast<TScoutBase&>(scout));
+    scout.mHorizontalPos = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -245,6 +252,7 @@ _preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAli
 {
     using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
     _preInitScoutVertical(static_cast<TScoutBase&>(scout));
+    scout.mVerticalPos = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -307,6 +315,7 @@ _incHorizontalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignme
 {
     using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
     _incHorizontalPos(static_cast<TScoutBase&>(scout));
+    ++scout.mHorizontalPos;
 }
 
 // ----------------------------------------------------------------------------
@@ -319,6 +328,7 @@ _incVerticalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignment
 {
     using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
     _incVerticalPos(static_cast<TScoutBase&>(scout));
+    ++scout.mVerticalPos;
 }
 
 }  // namespace seqan
