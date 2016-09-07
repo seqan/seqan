@@ -367,6 +367,7 @@ _computeTrack(TDPScout & scout,
     for (; iter != itEnd; ++iter)
     {
         // Set the iterator to the next cell within the track.
+        _incVerticalPos(scout);
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
         _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
         // Compute the inner cell.
@@ -389,9 +390,9 @@ _computeTrack(TDPScout & scout,
                          sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                          TColumnDescriptor(), InnerCell(), TDPProfile());
         }
-        _incVerticalPos(scout);
     }
     // Set the iterator to the last cell of the track.
+    _incVerticalPos(scout);
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
     _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
     // Compute the last cell.
@@ -470,6 +471,7 @@ _computeUnbandedAlignment(TDPScout & scout,
     TConstSeqHIterator seqHIterEnd = end(seqH, Rooted()) - 1;
     for (; seqHIter != seqHIterEnd; ++seqHIter)
     {
+        _incHorizontalPos(scout);
         // We might only select it if SIMD version is available.
         if (SEQAN_UNLIKELY(_reachedHorizontalEndPoint(scout, seqHIter)))
         {
@@ -492,13 +494,13 @@ _computeUnbandedAlignment(TDPScout & scout,
         {
             return;
         }
-        _incHorizontalPos(scout);
     }
 
     // ============================================================================
     // POSTPROCESSING
     // ============================================================================
 
+    _incHorizontalPos(scout);
     _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                   sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                   sequenceEntryForScore(scoringScheme, seqV, 0),

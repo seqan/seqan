@@ -135,7 +135,7 @@ public:
         }
         else
         {
-            if(right && posH == *nextEndsH)
+            if(right && (posH) == *nextEndsH)
                 updateMasksRight();
             if(bottom)
                 updateMasksBottom();
@@ -346,7 +346,7 @@ inline bool
 _reachedHorizontalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
                            TIter const & hIt)
 {
-    return *(scout.state->nextEndsH) == position(hIt);
+    return *(scout.state->nextEndsH) == position(hIt) + 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -358,7 +358,7 @@ inline bool
 _reachedVerticalEndPoint(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
                          TIter const & vIt)
 {
-    return *(scout.state->nextEndsV) == position(vIt);
+    return *(scout.state->nextEndsV) == position(vIt) + 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -432,7 +432,7 @@ inline auto
 _hostLengthH(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
              TSeqH const & /*seqH*/)
 {
-    return host(scout.state->sortedEndsH)[scout._simdLane] + 1;
+    return host(scout.state->sortedEndsH)[scout._simdLane];
 }
 
 // ----------------------------------------------------------------------------
@@ -452,7 +452,7 @@ inline auto
 _hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
              TSeqV const & /*seqV*/)
 {
-    return host(scout.state->sortedEndsV)[scout._simdLane] + 1;
+    return host(scout.state->sortedEndsV)[scout._simdLane]  ;
 }
 
 }  // namespace seqan

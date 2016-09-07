@@ -175,8 +175,8 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
 
     for (unsigned i = 0; i < length(seqH); ++i)
     {
-        state.lengthsH[i] = length(seqH[i]) - 1;
-        state.lengthsV[i] = length(seqV[i]) - 1;
+        state.lengthsH[i] = length(seqH[i]);
+        state.lengthsV[i] = length(seqV[i]);
         state.endsH[i] = i;
         state.endsV[i] = i;
     }
@@ -190,13 +190,13 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
     sort(state.sortedEndsH, maxLengthLambda, Serial());
     sort(state.sortedEndsV, maxLengthLambda, Serial());
 
-    size_t maxH = back(state.sortedEndsH) + 1;
-    size_t maxV = back(state.sortedEndsV) + 1;
+    size_t maxH = back(state.sortedEndsH);
+    size_t maxV = back(state.sortedEndsV);
 
     // and we have to prepare the bit masks of the DPScoutState
-    resize(state.masks,  maxV, createVector<TSimd>(0));
-    resize(state.masksV, maxV, createVector<TSimd>(0));
-    resize(state.masksH, maxH, createVector<TSimd>(0));
+    resize(state.masks,  maxV + 1, createVector<TSimd>(0));
+    resize(state.masksV, maxV + 1, createVector<TSimd>(0));
+    resize(state.masksH, maxH + 1, createVector<TSimd>(0));
 
     // Create Stringset with padded strings.
     StringSet<TPadStringH> paddedH;
@@ -262,7 +262,7 @@ _prepareAndRunSimdAlignment(TResult & results,
         DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult, TSequencesH, TSequencesV> > > state;
         _prepareSimdAlignment(stringSimdH, stringSimdV, seqH, seqV, state);
 
-        state.dimV = length(stringSimdV);
+        state.dimV = length(stringSimdV) + 1;
         state.isLocalAlignment = IsLocalAlignment_<TAlgo>::VALUE;
         state.right = IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE;
         state.bottom = IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE;

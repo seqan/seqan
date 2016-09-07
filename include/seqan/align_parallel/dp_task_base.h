@@ -317,11 +317,14 @@ public:
 //                                                            _taskContext.getTileBuffer().verticalBuffer[_row],
 //                                                            _col, _row, false};
 
-        swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localScalarTraceMatrix());
-        _taskContext.getTraceProxy().insert(std::make_pair(_col, _row),
-                                            TTraceProxyValue{&pTls.mLocalTraceStore,
-                                                             {0, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mScalarTraceVec) - 1)},
-                                                             0});
+        if (IsTracebackEnabled_<typename TTaskConfig::TDPConfig>::VALUE)
+        {
+            swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localScalarTraceMatrix());
+            _taskContext.getTraceProxy().insert(std::make_pair(_col, _row),
+                                                TTraceProxyValue{&pTls.mLocalTraceStore,
+                                                                 {0, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mScalarTraceVec) - 1)},
+                                                                  0});
+        }
         #ifdef DP_ALIGN_STATS
             ++serialCounter;
         #endif
@@ -374,16 +377,18 @@ public:
 //                               simdBufferH, simdBufferV, dpContext,
 //                               typename TTaskConfig::TDPConfig());
 
-        // Swap trace matrix into local thread store.
-        swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localSimdTraceMatrix());
-
-        uint8_t simdLane = 0;
-        for (const auto& task : tasks)
+        if (IsTracebackEnabled_<typename TTaskConfig::TDPConfig>::VALUE)
         {
-            _taskContext.getTraceProxy().insert(std::make_pair(task->_col, task->_row),
-                                                TTraceProxyValue{&pTls.mLocalTraceStore,
-                                                                {1, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mSimdTraceVec) - 1)},
-                                                                simdLane++});
+            // Swap trace matrix into local thread store.
+            swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localSimdTraceMatrix());
+            uint8_t simdLane = 0;
+            for (const auto& task : tasks)
+            {
+                _taskContext.getTraceProxy().insert(std::make_pair(task->_col, task->_row),
+                                                    TTraceProxyValue{&pTls.mLocalTraceStore,
+                                                                    {1, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mSimdTraceVec) - 1)},
+                                                                    simdLane++});
+            }
         }
 
         // Write back into buffer.
