@@ -322,6 +322,9 @@ public:
                                             TTraceProxyValue{&pTls.mLocalTraceStore,
                                                              {0, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mScalarTraceVec) - 1)},
                                                              0});
+        #ifdef DP_ALIGN_STATS
+            ++serialCounter;
+        #endif
     }
 
     template <typename TTasks, typename TScoreValue, typename TSimdVec>
@@ -387,7 +390,9 @@ public:
         impl::scatterSimdBuffer(_taskContext.getTileBuffer().horizontalBuffer, tasks, simdBufferH, [](auto& task){ return task->_col; });
         impl::scatterSimdBuffer(_taskContext.getTileBuffer().verticalBuffer, tasks, simdBufferV, [](auto& task){ return task->_row; });
 
-
+        #ifdef DP_ALIGN_STATS
+                ++simdCounter;
+        #endif
         // DEBUG: Remove!
 //        for (auto& task : tasks)
 //        {
