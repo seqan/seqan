@@ -75,7 +75,8 @@ set (SEQAN_CTD_EXECUTABLES CACHE INTERNAL "Global list of executables for workfl
 
 option (SEQAN_STATIC_APPS "Build static apps." OFF)
 option (SEQAN_ARCH_SSE4 "Build SSE optimized binaries." OFF)
-option (SEQAN_ARCH_AVX2 "Build AVX optimized binaries." OFF)
+option (SEQAN_ARCH_AVX2 "Build AVX2 optimized binaries." OFF)
+option (SEQAN_ARCH_AVX512 "Build AVX512 optimized binaries." OFF)
 option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 
 # ===========================================================================
