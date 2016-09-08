@@ -41,6 +41,12 @@
 
 namespace seqan {
 
+template <typename TSimdVector>
+struct SimdIndexVectorImpl<TSimdVector, True>
+{
+    typedef typename SimdVector<uint8_t, sizeof(TSimdVector)>::Type Type;
+};
+
 // ============================================================================
 //
 // INTERFACE FUNCTIONS

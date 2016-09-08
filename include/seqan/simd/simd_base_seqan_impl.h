@@ -147,12 +147,6 @@ struct SimdMatrixParams_
         SEQAN_CONCEPT_IMPL((TSimdVector const), (SimdVectorConcept));
 #endif  // SEQAN_SIMD_ENABLED
 
-template <typename TSimdVector>
-struct SimdIndexVectorImpl<TSimdVector, True>
-{
-    typedef typename SimdVector<uint8_t, sizeof(TSimdVector)>::Type Type;
-};
-
 } // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_H_
