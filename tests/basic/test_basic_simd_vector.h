@@ -145,6 +145,45 @@ typedef
 
 SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
 
+SEQAN_TYPED_TEST(SimdVectorTestCommon, MetaFunctions)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+
+    using TValue = typename Value<TSimdVector>::Type;
+    constexpr auto length = LENGTH<TSimdVector>::VALUE;
+    typedef typename SimdVector<TValue, length>::Type TSimdVectorNew;
+
+    bool sameType = IsSameType<TSimdVector, TSimdVectorNew>::VALUE;
+    SEQAN_ASSERT(sameType);
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, SizeOf)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a;
+
+    SEQAN_ASSERT_EQ(sizeof(a), sizeof(TValue) * length);
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, SubscriptType)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+
+    TSimdVector a, b;
+    fillVectors(a, b);
+    TValue c = a[0];
+
+    bool sameType = IsSameType<TValue, decltype(c)>::VALUE;
+    SEQAN_ASSERT(sameType);
+}
+
 SEQAN_TYPED_TEST(SimdVectorTestCommon, ClearVector)
 {
     using namespace seqan;
@@ -244,14 +283,15 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
 {
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    int zeros = 0, ones = ~0;
+    TValue zeros = 0, ones = ~0;
 
     TSimdVector a, b;
     fillVectors(a, b);
 
-    auto c = a == b;
+    TSimdVector c = a == b;
 
     for (auto i = 0; i < length; ++i)
     {
@@ -265,14 +305,15 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
 {
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    int zeros = 0, ones = ~0;
+    TValue zeros = 0, ones = ~0;
 
     TSimdVector a, b;
     fillVectors(a, b);
 
-    auto c = a > b;
+    TSimdVector c = a > b;
 
     for (auto i = 0; i < length; ++i)
     {
