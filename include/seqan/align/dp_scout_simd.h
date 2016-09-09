@@ -233,7 +233,16 @@ _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
                      SimdVector<int32_t>::Type positionNavigator)
 {
 // TODO(rrahn): Refactor!
-#if defined(__AVX2__)
+#if SEQAN_UMESIMD_ENABLED
+    using TSimdHalfVec = typename UME::SIMD::SIMDTraits<TSimdVec>::HALF_LEN_VEC_T;
+    TSimdHalfVec cmpLow, cmpHigh;
+    cmp.unpack(cmpLow, cmpHigh);
+
+    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
+                                static_cast<SimdVector<int32_t>::Type>(cmpLow));
+    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
+                                static_cast<SimdVector<int32_t>::Type>(cmpHigh));
+#elif defined(__AVX2__)
     dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
                                 _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp))));
     dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
