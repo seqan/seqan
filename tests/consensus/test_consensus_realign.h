@@ -61,7 +61,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     seqan::Score<int, seqan::WeightedConsensusScore<
                           seqan::Score<int, seqan::FractionalScore>,
                           seqan::Score<int, seqan::ConsensusScore> > > combinedScore;
-    reAlign(store, combinedScore, 0, 1, 30, false);
+    reAlignment(store, 0, 1, 30, false);
 
     layoutAlignment(layout, store);
     std::stringstream ss;
