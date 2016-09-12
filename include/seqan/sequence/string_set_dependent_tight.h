@@ -86,7 +86,7 @@ namespace seqan {
  */
 
 // Default id holder string set
-template <typename TSpec = Tight>
+template <typename TSpec = Generous>
 struct Dependent;
 
 // StringSet with individual sequences in a tight string of string pointers and corr. IDs
