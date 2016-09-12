@@ -543,7 +543,7 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
     if (length(matches) > 0)
     {
         TFragIter itFrag = begin(matches, Standard()) + from;
-        TFragIter itFragEnd = itFrag + to;
+        TFragIter itFragEnd = begin(matches, Standard()) + to;
 
         TId id1 = sequenceId(*itFrag, 0);
         TId id2 = sequenceId(*itFrag, 1);
