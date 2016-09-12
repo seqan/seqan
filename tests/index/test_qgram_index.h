@@ -211,23 +211,18 @@ void testGappedQGramIndex()
 */
 SEQAN_DEFINE_TEST(testUngappedQGramIndex)
 {
-    String<Dna> text = "CTGAACCCTAAACCCT";
-    int q = 2;
-    Shape<Dna,SimpleShape> shape;
-    resize(shape, q);
+    typedef String<Dna> TString;
+    typedef Shape<Dna, UngappedShape<2> > TShape;
+    typedef Index<TString, IndexQGram<TShape> > TIndex;
+    typedef Position<TString>::Type TPosition;
 
-    typedef Position<String<Dna> >::Type TPosition;
-    String<TPosition> pos;
-    resize(pos, length(text) - q + 1);
+    TString text("CTGAACCCTAAACCCT");
 
-    String<TPosition> dir;
-    int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, q);
-    pos_size += 1;
-    resize(dir, pos_size);
+    TIndex index(text);
+    indexCreate(index, QGramSADir());
 
-    Nothing nothing;
-    createQGramIndex(pos, dir, nothing, text, shape, 1);
-
+    String<TPosition> pos(getFibre(index, QGramSA()));
+    String<TPosition> dir(getFibre(index, QGramDir()));
 
     SEQAN_ASSERT(dir[0] == 0);
     SEQAN_ASSERT(dir[1] == 3);
