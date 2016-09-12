@@ -117,24 +117,37 @@ testBidirectionalIndex(TBiFMIndex & bifmIndex, TText & text, TText & revText, TP
     TFMIter itFwd(indexFwd);
     TFMIter itRev(indexRev);
 
-    TBiFMIter bifm1(bifmIndex);
-    TBiFMIter bifm2(bifmIndex);
+    TBiFMIter bifm(bifmIndex);
 
     bool res1 = goDown(itFwd, revPattern);
     bool res2 = goDown(itRev, pattern);
-    bool res3 = goDown(bifm1, pattern, Rev());
-    bool res4 = goDown(bifm2, revPattern, Fwd());
+
+    std::mt19937 rng(time(nullptr));
+    unsigned left = rng() % length(pattern);
+    unsigned right = left;
+
+    bool res3 = goDown(bifm, pattern[left]);
+    while (res3 && (0 < left || right < length(pattern) - 1))
+    {
+        if (rng() % 2 && 0 < left)
+        {
+            --left;
+            res3 = goDown(bifm, pattern[left], Fwd());
+        }
+        else if (right < length(pattern) - 1)
+        {
+            ++right;
+            res3 = goDown(bifm, pattern[right], Rev());
+        }
+    }
 
     SEQAN_ASSERT_EQ(res1, res2);
     SEQAN_ASSERT_EQ(res1, res3);
-    SEQAN_ASSERT_EQ(res1, res4);
 
-    if (res1) // if pattern was found in string
+    if (res1) // if pattern was found in index
     {
-        SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm1, Fwd()));
-        SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm2, Fwd()));
-        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm1, Rev()));
-        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm2, Rev()));
+        SEQAN_ASSERT(getOccurrences(itFwd) == getOccurrences(bifm, Fwd()));
+        SEQAN_ASSERT(getOccurrences(itRev) == getOccurrences(bifm, Rev()));
     }
 
     return 0;
@@ -154,7 +167,7 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInString)
 
     TIndex index(text);
 
-    for (unsigned int patternLength = 1; patternLength <= 20; ++patternLength)
+    for (unsigned patternLength = 1; patternLength <= 20; ++patternLength)
     {
         TText pattern;
         generateText(rng, pattern, patternLength);
@@ -173,11 +186,13 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
 
     std::mt19937 rng(time(nullptr));
 
+    unsigned textLength = 3947;
+
     TStringSet stringSet;
     for (unsigned stringSetSize = 1; stringSetSize <= 3; ++stringSetSize)
     {
         TText text;
-        generateText(rng, text, 3947);
+        generateText(rng, text, textLength);
         appendValue(stringSet, text);
 
         TStringSet revStringSet;
@@ -189,10 +204,13 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
         }
 
         TStringSetIndex index(stringSet);
-        for (unsigned int patternLength = 1; patternLength <= 10; ++patternLength)
+        for (unsigned patternLength = 1; patternLength <= 10; ++patternLength)
         {
             TText pattern;
-            generateText(rng, pattern, patternLength);
+            if (rng() % 2) // guaranteed hit
+                pattern = infixWithLength(text, rng() % (textLength - patternLength), patternLength);
+            else // likely to have no hits (for longer pattern and short texts)
+                generateText(rng, pattern, patternLength);
 
             testBidirectionalIndex(index, stringSet, revStringSet, pattern);
         }
