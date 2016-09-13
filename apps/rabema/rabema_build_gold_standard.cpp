@@ -827,10 +827,10 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             append(record.qName, "/1");
         // Translate read to read id.
         unsigned readId = 0;
-        if (!getIdByName(readNameStore, record.qName, readId, readNameStoreCache))
+        if (!getIdByName(readId, readNameStoreCache, record.qName))
         {
             readId = length(readNameStore);
-            appendName(readNameStore, record.qName, readNameStoreCache);
+            appendName(readNameStoreCache, record.qName);
             appendValue(readLengthStore, length(record.seq));
             if (options.oracleMode)
                 appendValue(readAlignmentDistances, -1);
