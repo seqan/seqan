@@ -1017,8 +1017,7 @@ void _fillVcfHeader(seqan::VcfHeader & vcfHeader,
         append(contigStr, ">");
         appendValue(vcfHeader, seqan::VcfHeaderRecord("contig", contigStr));
 
-        appendName(contigNames(context(vcfFileOut)), databaseIDs[i],
-                   contigNamesCache(context(vcfFileOut)));
+        appendName(contigNamesCache(context(vcfFileOut)), databaseIDs[i]);
     }
 }
 
