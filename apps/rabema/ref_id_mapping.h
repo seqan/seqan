@@ -89,7 +89,7 @@ void rebuildMapping(RefIdMapping & mapping,
     for (unsigned i = 0; i < length(sourceNameStore); ++i)
     {
         unsigned idx = 0;
-        if (getIdByName(targetNameStore, sourceNameStore[i], idx, targetNameStoreCache))
+        if (getIdByName(idx, targetNameStoreCache, sourceNameStore[i]))
             mapping.map[i] = idx;
     }
 }
