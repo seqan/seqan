@@ -36,7 +36,8 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_TBB_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_TBB_H_
 
-#include <tbb/task.h>
+//#include <tbb/task.h>
+#include <tbb/task_group.h>
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/task_scheduler_init.h>
 
@@ -53,8 +54,7 @@ namespace seqan
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy>
 class DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> :
-    public DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >,
-    public tbb::task
+    public DPTaskBase<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb> >
 {
 public:
 
@@ -64,6 +64,8 @@ public:
     // ============================================================================
     // Member variables.
 
+    std::atomic<unsigned> mRefCount;
+    tbb::task_group*      mTaskGroup    = nullptr;
     TThreadLocalStorage * mTlsPtr       = nullptr;
     TSimdQueue *          mSimdQueuePtr = nullptr;
 //    std::atomic<uint8_t>                 mRefCount;
@@ -73,7 +75,9 @@ public:
 
     DPTaskImpl() = default;
 
-    DPTaskImpl(size_t pCol, size_t pRow, TTaskContext & pConfig,
+    DPTaskImpl(size_t pCol,
+               size_t pRow,
+               TTaskContext & pConfig,
                TThreadLocalStorage & pTls) :
         TBase(pCol, pRow, pConfig, *this),
         mTlsPtr(&pTls)
@@ -84,17 +88,17 @@ public:
 
     void setRefCount(unsigned n)
     {
-        set_ref_count(n);
+        mRefCount.store(n, std::memory_order_relaxed);
     }
 
     auto decrementRefCount()
     {
-        return decrement_ref_count();
+        return --mRefCount;
     }
 
     auto incrementRefCount()
     {
-        return increment_ref_count();
+        return ++mRefCount;
     }
 
     auto& getLocalDpContext()
@@ -110,7 +114,8 @@ public:
         {
             if (task != nullptr && task->decrementRefCount() == 0)
             {
-                spawn(*task);
+                task->mTaskGroup = mTaskGroup;
+                mTaskGroup->run([&]{ task->execute(); });
             }
         }
     }
@@ -123,9 +128,10 @@ public:
         {
             if (task != nullptr && task->decrementRefCount() == 0)
             {
+                task->mTaskGroup = mTaskGroup;
                 task->mSimdQueuePtr = mSimdQueuePtr;  // Forwarding the simd queue.
                 appendValue(*mSimdQueuePtr, task);
-                spawn(*task);
+                mTaskGroup->run([&]{ task->execute(); });
             }
         }
     }
@@ -150,7 +156,7 @@ public:
         {  // Acquire scoped lock.
             std::lock_guard<decltype(TBase::_taskContext.mLock)> scopedLock(TBase::_taskContext.mLock);
 
-            if (empty(*mSimdQueuePtr) || this->is_cancelled())
+            if (empty(*mSimdQueuePtr))
             {
                 return;
             }
@@ -186,12 +192,16 @@ public:
                       });
     }
 
+    inline void
+    operator()()
+    {
+        executeImpl<TVecExecPolicy>();
+    }
     // Override of tbb::task::execute()
-    task *
+    inline void
     execute()
     {
         executeImpl<TVecExecPolicy>();
-        return nullptr;
     }
 };
 
@@ -268,10 +278,13 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
        ExecutionPolicy<ParallelExecutionPolicyTbb, TVecExecPolicy> const & execPolicy)
 {
     tbb::task_scheduler_init init(execPolicy.numThreads);
+    tbb::task_group tg;
+    firstTask(graph)->mTaskGroup = &tg;
     lastTask(graph)->incrementRefCount();
-    lastTask(graph)->spawn_and_wait_for_all(*firstTask(graph));
-    lastTask(graph)->execute();
-    tbb::task::destroy(*lastTask(graph));
+    tg.run([&]{ firstTask(graph)->execute();} );
+
+    tg.wait();
+    lastTask(graph)->operator()();
 }
 
 template <typename TTaskContext, typename TThreadLocalStorage, typename TVecExecPolicy, typename TSpec>
@@ -282,22 +295,23 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
     using DPDagTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyTbb>;
 
     tbb::task_scheduler_init init(execPolicy.numThreads);
+    tbb::task_group tg;
+    firstTask(graph)->mTaskGroup = &tg;
     ConcurrentQueue<DPDagTask*> queue;
     queue.writerCount = execPolicy.numThreads;
     firstTask(graph)->mSimdQueuePtr = &queue;
     appendValue(queue, firstTask(graph));
     lastTask(graph)->incrementRefCount();
-    lastTask(graph)->spawn_and_wait_for_all(*firstTask(graph));
+
+    tg.run([&]{ firstTask(graph)->execute();} );
+
+    tg.wait();
 
     while (queue.writerCount != 0)
         unlockWriting(queue);
 
-    bool res = lastTask(graph)->cancel_group_execution();
-    SEQAN_ASSERT(res);
-    ignoreUnusedVariableWarning(res);
 
-    lastTask(graph)-> template executeImpl<void>();
-    tbb::task::destroy(*lastTask(graph));
+    lastTask(graph)->template executeImpl<void>();
 
         
     SEQAN_ASSERT(empty(queue));
