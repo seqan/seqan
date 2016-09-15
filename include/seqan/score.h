@@ -49,7 +49,7 @@
 #include <seqan/score/score_matrix_dyn.h>
 #include <seqan/score/score_simple.h>
 
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 #include <seqan/score/score_simd_wrapper.h>
 #endif  // SEQAN_SIMD_ENABLED
 
