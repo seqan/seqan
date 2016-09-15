@@ -277,6 +277,8 @@ public:
     bool                            _lastHBlock = false;
     bool                            _lastVBlock = false;
 
+    DPTaskBase() = default;
+
     DPTaskBase(TSize pCol, TSize pRow, TTaskConfig& pContext, TDerivedTask& pTask) :
         _taskContext(pContext),
         _derivedTask(pTask),

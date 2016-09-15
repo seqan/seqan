@@ -120,32 +120,17 @@ public:
 
     template <typename TTaskQueue>
     inline void
-    updateAndSpawn(TTaskQueue & pTaskQueue)
+    updateAndSpawn(TTaskQueue* pTaskQueue)
     {
-        if (DPTaskImpl* t = TBase::successor[0])
+        for (auto t : TBase::successor)
         {
-            if (t->decrementRefCount() == 0)
+            if (t!= nullptr && t->decrementRefCount() == 0)
             {
-                appendValue(pTaskQueue, t);
-                if (TBase::_col % 4 == 0)  //only spawn new task every fourth item
+                appendValue(*pTaskQueue, t);
+                SEQAN_OMP_PRAGMA(task firstprivate(pTaskQueue) firstprivate(t) untied)
                 {
-                    SEQAN_OMP_PRAGMA(task shared(pTaskQueue) firstprivate(t) untied)
-                    {
-                        t->execute(pTaskQueue);
-                    }
-                }
-                else
-                { //use existing thread
                     t->execute(pTaskQueue);
                 }
-            }
-        }
-        if (DPTaskImpl* t = TBase::successor[1])
-        {  //use existing thread.
-            if (t->decrementRefCount() == 0)
-            {
-                appendValue(pTaskQueue, t);
-                t->execute(pTaskQueue);
             }
         }
     }
@@ -159,31 +144,30 @@ public:
     }
 
     template <typename TTaskQueue>
-    DPTaskImpl* execute(TTaskQueue& pTaskQueue)
+    DPTaskImpl* execute(TTaskQueue* pTaskQueue)
     {
+        SEQAN_ASSERT(pTaskQueue != nullptr);
         SEQAN_ASSERT(mTlsPtr != nullptr);
 
         String<DPTaskImpl*> tasks;
         {  // Acquire scoped lock.
             std::lock_guard<decltype(TBase::_taskContext.mLock)> scopedLock(TBase::_taskContext.mLock);
 
-            if (empty(pTaskQueue))
+            if (empty(*pTaskQueue))
             {
                 return nullptr;
             }
 
-            lockReading(pTaskQueue);
-            if (length(pTaskQueue) < TTaskContext::VECTOR_SIZE)
+            if (length(*pTaskQueue) < TTaskContext::VECTOR_SIZE)
             {
-                appendValue(tasks, popFront(pTaskQueue));
+                appendValue(tasks, popFront(*pTaskQueue));
             }
             else
             {
-                SEQAN_ASSERT_GEQ(length(pTaskQueue), +TTaskContext::VECTOR_SIZE);
+                SEQAN_ASSERT_GEQ(length(*pTaskQueue), +TTaskContext::VECTOR_SIZE);
                 for (auto i = 0; i < TTaskContext::VECTOR_SIZE; ++i)
-                    appendValue(tasks, popFront(pTaskQueue));
+                    appendValue(tasks, popFront(*pTaskQueue));
             }
-            unlockReading(pTaskQueue);
         }  // Release scoped lock.
 
         SEQAN_ASSERT_GT(length(tasks), 0u);
@@ -201,16 +185,6 @@ public:
         for (auto& task : tasks)
         {
             task->template updateAndSpawn(pTaskQueue);
-//            if (task->mIsLastTask)
-//            {
-//                bool res = tbb::task::self().cancel_group_execution();  // Notify, that all queued tasks can be canceled.
-//                SEQAN_ASSERT(res);
-//                {
-//                    std::lock_guard<std::mutex> lk(TBase::_taskContext.mLock);
-//                    TBase::_taskContext.mReady = true;
-//                }
-//                TBase::_taskContext.mReadyEvent.notify_all();
-//            }
         }
         return nullptr;
     }
@@ -318,7 +292,7 @@ invoke(DPTaskGraph<DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy,
         {
             // Create context and pass to execute.
             //now kick the computaion off
-            firstTask(graph)->execute(queue);
+            firstTask(graph)->execute(&queue);
         }
         SEQAN_OMP_PRAGMA(barrier)
     }
