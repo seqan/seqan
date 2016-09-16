@@ -49,6 +49,12 @@
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 
+#if defined(STDLIB_VS)
+#define UNLINK _unlink
+#else
+#define UNLINK unlink
+#endif
+
 const int MB = 1024 * 1024;
 
 using namespace seqan;
@@ -101,7 +107,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         close(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
-        unlink(filenameBuffer);
+        UNLINK(filenameBuffer);
     }
     {
         CharString tempFilename = SEQAN_TEMP_FILENAME();
@@ -118,7 +124,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         close(mmapString);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
-        unlink(filenameBuffer);
+        UNLINK(filenameBuffer);
     }
 //    {
 //        CharString tempFilename = SEQAN_TEMP_FILENAME();
@@ -133,7 +139,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
 //        fclose(file);
 //        after = sysTime();
 //        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
-//        unlink(filenameBuffer);
+//        UNLINK(filenameBuffer);
 //    }
     {
         CharString tempFilename = SEQAN_TEMP_FILENAME();
@@ -151,7 +157,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         close(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
-        unlink(filenameBuffer);
+        UNLINK(filenameBuffer);
     }
     {
         CharString tempFilename = SEQAN_TEMP_FILENAME();
@@ -168,7 +174,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         close(mmapString);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
-        unlink(filenameBuffer);
+        UNLINK(filenameBuffer);
     }
 //    {
 //        CharString tempFilename = SEQAN_TEMP_FILENAME();
@@ -183,7 +189,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
 //        fclose(file);
 //        after = sysTime();
 //        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
-//        unlink(filenameBuffer);
+//        UNLINK(filenameBuffer);
 //    }
     {
         CharString tempFilename = SEQAN_TEMP_FILENAME();
@@ -201,7 +207,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
         close(file);
         after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
-        unlink(filenameBuffer);
+        UNLINK(filenameBuffer);
     }
 }
 

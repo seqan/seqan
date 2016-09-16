@@ -224,6 +224,75 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
         return localAlignment(fragmentString, strings, scoringScheme, lowerDiag, upperDiag, LinearGaps());
 }
 
+// ============================================================================
+// Many-vs-Many align interfaces.
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function localAlignment()               [banded, SIMD version, GapsH, GapsV]
+// ----------------------------------------------------------------------------
+
+template <typename TGapSequenceH, typename TSetSpecH,
+          typename TGapSequenceV, typename TSetSpecV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+inline auto
+localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
+               StringSet<TGapSequenceV, TSetSpecV> & gapSeqSetV,
+               Score<TScoreValue, TScoreSpec> const & scoringScheme,
+               int const lowerDiag,
+               int const upperDiag,
+               TAlgoTag const & /*algoTag*/)
+{
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOn>, FreeEndGaps_<> >    TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type                     TGapModel;
+
+    return _alignWrapper(gapSeqSetH, gapSeqSetV, scoringScheme, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+}
+
+// ----------------------------------------------------------------------------
+// Function localAlignment()           [banded, SIMD version, StringSet<Align>]
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TAlignSpec, typename TSetSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+inline String<TScoreValue>
+localAlignment(StringSet<Align<TSequence, TAlignSpec>, TSetSpec> & alignSet,
+               Score<TScoreValue, TScoreSpec> const & scoringScheme,
+               int const lowerDiag,
+               int const upperDiag,
+               TAlgoTag const & algoTag)
+{
+    typedef Align<TSequence, TAlignSpec>    TAlign;
+    typedef typename Row<TAlign>::Type      TGapSequence;
+
+    StringSet<TGapSequence, Dependent<> > gapSetH;
+    StringSet<TGapSequence, Dependent<> > gapSetV;
+    reserve(gapSetH, length(alignSet));
+    reserve(gapSetV, length(alignSet));
+    
+    for (auto & align : alignSet)
+    {
+        appendValue(gapSetH, row(align, 0));
+        appendValue(gapSetV, row(align, 1));
+    }
+    
+    return localAlignment(gapSetH, gapSetV, scoringScheme, lowerDiag, upperDiag, algoTag);
+}
+
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                   int lowerDiag, int upperDiag)
+{
+   if (_usesAffineGaps(scoringScheme, source(row(align[0], 0)), source(row(align[0], 1))))
+        return localAlignment(align, scoringScheme, lowerDiag, upperDiag, AffineGaps());
+   else
+        return localAlignment(align, scoringScheme, lowerDiag, upperDiag, LinearGaps());
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_H_

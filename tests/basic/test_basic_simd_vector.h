@@ -43,6 +43,7 @@
 #include <seqan/misc/bit_twiddling.h>
 #include <seqan/basic/basic_simd_vector.h>
 
+#if SEQAN_SIMD_ENABLED
 namespace seqan {
 
 template <int ROWS, typename TVector>
@@ -82,7 +83,7 @@ inline void test_matrix_transpose()
 
 }
 
-#ifdef __SSE4_1__
+#ifdef SEQAN_SSE4
 
 SEQAN_DEFINE_TEST(test_basic_simd_shuffle)
 {
@@ -148,7 +149,7 @@ SEQAN_DEFINE_TEST(test_basic_simd_transpose_32x32)
 }
 
 #endif  // #ifdef __AVX2__
-#endif  // #ifdef __SSE4_1__
-
+#endif  // #ifdef SEQAN_SSE4
+#endif  // SEQAN_SIMD_ENABLED
 
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_

@@ -132,9 +132,9 @@ class Index<TText, BidirectionalIndex<TIndexSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TFibre>
-inline bool indexCreate(Index<TText, BidirectionalIndex<TIndexSpec> > & index, TFibre)
+inline bool indexCreate(Index<TText, BidirectionalIndex<TIndexSpec> > & index, Tag<TFibre>)
 {
-    return indexCreate(index.fwd, TFibre()) && indexCreate(index.rev, TFibre());
+    return indexCreate(index.fwd, Tag<TFibre>()) && indexCreate(index.rev, Tag<TFibre>());
 }
 
 // ----------------------------------------------------------------------------

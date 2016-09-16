@@ -79,14 +79,14 @@
 
 #include <omp.h>
 
-#if defined(PLATFORM_GCC)
+#if defined(COMPILER_MSVC) || defined(COMPILER_WINTEL)
+  // MSVC __pragma-operator
+  #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
+#else
   // GCC _Pragma operator
   #define SEQAN_DO_PRAGMA(x) _Pragma(# x)
   #define SEQAN_OMP_PRAGMA(x) SEQAN_DO_PRAGMA(omp x)
-#else  // #if defined(PLATFORM_GCC)
-  // MSVC __pragma-operator
-  #define SEQAN_OMP_PRAGMA(x) __pragma(omp x)
-#endif // #if defined(PLATFORM_GCC)
+#endif
 
 #else  // #ifdef _OPENMP
 
@@ -122,12 +122,9 @@ inline double omp_get_wtime()
 // Function getThreadId()
 // ----------------------------------------------------------------------------
 
-SEQAN_HOST_DEVICE inline unsigned getThreadId()
+inline unsigned getThreadId()
 {
-#if defined(__CUDA_ARCH__)
-    return blockIdx.x * blockDim.x + threadIdx.x;
-
-#elif defined(_OPENMP)
+#if defined(_OPENMP)
     return omp_get_thread_num();
 
 #else

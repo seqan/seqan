@@ -116,7 +116,7 @@ A character position of a :dox:`StringSet` can be one of the following:
 
 #. A local position (default), i.e. a :dox:`Pair` (seqNo, seqOfs) where seqNo identifies the string within the :dox:`StringSet` and the seqOfs identifies the position within this string.
 #. A global position, i.e. a single integer value between 0 and the sum of string lengths minus 1.
-   This integer is the position in the gapless concatenation of all strings in the :dox:`StringSet` to a single string.``
+   This integer is the position in the gapless concatenation of all strings in the :dox:`StringSet` to a single string.
 
 For indices, the meta-function :dox:`SAValue` determines, which position type (local or global) will be used for internal index tables (suffix array, q-gram array) and what type of position is returned by functions like :dox:`Finder#position` of a :dox:`Finder`.
 :dox:`SAValue` returns a :dox:`Pair` (local position) by default, but could be specialized to return an integer type (global position) for some applications.
@@ -136,7 +136,7 @@ or
       :fragment: open
 
 If you have built your q-gram index with variable shapes (i.e. :dox:`SimpleShape` :dox:`GenericShape`), you have to keep in mind that q or the shape is not stored or loaded.
-This must be done manually directly before or after loading with :dox:`Shape#resize` oder :dox:`Shape#stringToShape`.
+This must be done manually and directly before or after loading with :dox:`Shape#resize` or :dox:`Shape#stringToShape`.
 
 A newly instantiated index is initially empty.
 If you assign a text to be indexed, solely the text fibre is set.
@@ -159,7 +159,7 @@ The first thing after instantiating such an index should be associating it to a 
       :fragment: external
 
 The file association implies that any change on the index, e.g. fibre construction, is synchronized to disk.
-When instantiating and associating the index the next time, the index contains its previous state and all yet constructed fibres.
+When instantiating and associating the index the next time, the index contains its previous state and all yet to be constructed fibres.
 
 Reducing the memory consumption
 -------------------------------

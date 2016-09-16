@@ -1,19 +1,19 @@
 #ifndef APPS_RAZERS_PARALLEL_STORE_H
 #define APPS_RAZERS_PARALLEL_STORE_H
 
-#if defined(PLATFORM_GNU) && defined(_OPENMP)
+#if defined(COMPILER_GCC) && defined(_OPENMP)
 #include <parallel/algorithm>
 #include <parallel/numeric>
 #else
 #include <algorithm>
 #include <numeric>
-#endif  // #ifdef PLATFORM_GNU
+#endif  // #ifdef COMPILER_GCC
 
 #include <seqan/parallel.h>
 
 namespace seqan {
 
-#if defined(PLATFORM_GNU) && defined(_OPENMP)
+#if defined(COMPILER_GCC) && defined(_OPENMP)
 
 // use MCSTL which is part of the GCC since version 4.3
 
@@ -47,7 +47,7 @@ partialSum(TIntString & intString)
         begin(intString, Standard()));
 }
 
-#else  // #ifdef PLATFORM_GNU
+#else  // #ifdef COMPILER_GCC
 
 // sequential fallback
 
@@ -75,7 +75,7 @@ partialSum(TIntString & intString)
         begin(intString, Standard()));
 }
 
-#endif  // #ifdef PLATFORM_GNU
+#endif  // #ifdef COMPILER_GCC
 
 }
 

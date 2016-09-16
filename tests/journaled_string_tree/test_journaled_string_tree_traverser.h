@@ -338,12 +338,15 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_basic_traversal)
 
     while (!atEnd(sub))
     {
-        auto pos = position(sub);
-        for (auto p : pos)
+        auto const & pos = position(sub);
+        for (auto it = begin(pos), itEnd = end(pos); it != itEnd; ++it)
+        {
+            auto const & p = *it;
             appendValue(testSeqs[p.i1], *(impl::activeNode(sub).curEdgeIt));
+        }
 
         advance(sub, 1, SelectFirstProxy());
-        
+
     }
 
     for (unsigned i = 0; i < length(impl::buffer(sub)._journaledSet); ++i)

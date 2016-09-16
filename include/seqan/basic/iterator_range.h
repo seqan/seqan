@@ -80,19 +80,19 @@ public:
     // Range Constructors
     // ------------------------------------------------------------------------
 
-    SEQAN_HOST_DEVICE
+   
     Range():
         begin(),
         end()
     {}
 
-    SEQAN_HOST_DEVICE
+   
     Range(Range const & range) :
         begin(range.begin),
         end(range.end)
     {}
 
-    SEQAN_HOST_DEVICE
+   
     Range(TIterator const & begin, TIterator const & end):
         begin(begin),
         end(end)
@@ -103,7 +103,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TOtherContainer>
-    SEQAN_HOST_DEVICE
+   
     Range &
     operator= (TOtherContainer &other)
     {
@@ -116,7 +116,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE
+   
     typename Reference<Range>::Type
     operator[] (TPos pos)
     {
@@ -124,7 +124,7 @@ public:
     }
 
     template <typename TPos>
-    SEQAN_HOST_DEVICE
+   
     typename GetValue<Range>::Type
     operator[] (TPos pos) const
     {
@@ -228,14 +228,14 @@ struct Size<Range<TIterator> >
 // ----------------------------------------------------------------------------
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
+inline typename Iterator<Range<TIterator>, Standard>::Type
 begin(Range<TIterator> & range, Standard)
 {
     return range.begin;
 }
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
+inline typename Iterator<Range<TIterator>, Standard>::Type
 begin(Range<TIterator> const & range, Standard)
 {
     return range.begin;
@@ -246,14 +246,14 @@ begin(Range<TIterator> const & range, Standard)
 // ----------------------------------------------------------------------------
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
+inline typename Iterator<Range<TIterator>, Standard>::Type
 end(Range<TIterator> & range, Standard)
 {
     return range.end;
 }
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline typename Iterator<Range<TIterator>, Standard>::Type
+inline typename Iterator<Range<TIterator>, Standard>::Type
 end(Range<TIterator> const & range, Standard)
 {
     return range.end;
@@ -264,14 +264,14 @@ end(Range<TIterator> const & range, Standard)
 // ----------------------------------------------------------------------------
 
 template <typename TIterator, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference<Range<TIterator> >::Type
+inline typename Reference<Range<TIterator> >::Type
 value(Range<TIterator> & range, TPos pos)
 {
     return *(range.begin + pos);
 }
 
 template <typename TIterator, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference<Range<TIterator> const>::Type
+inline typename Reference<Range<TIterator> const>::Type
 value(Range<TIterator> const & range, TPos pos)
 {
     return *(range.begin + pos);
@@ -282,7 +282,7 @@ value(Range<TIterator> const & range, TPos pos)
 // ----------------------------------------------------------------------------
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline typename Size<Range<TIterator> >::Type
+inline typename Size<Range<TIterator> >::Type
 length(Range<TIterator> const & range)
 {
     return range.end - range.begin;
@@ -297,7 +297,7 @@ length(Range<TIterator> const & range)
 // and need to make sure that it has a certain length
 
 template <typename TIterator, typename TSize, typename TExpand>
-SEQAN_HOST_DEVICE inline typename Size< Range<TIterator> >::Type
+inline typename Size< Range<TIterator> >::Type
 resize(
     Range<TIterator> & me,
     TSize new_length,
@@ -314,7 +314,7 @@ resize(
 // ----------------------------------------------------------------------------
 
 template <typename TIterator, typename TContainer>
-SEQAN_HOST_DEVICE inline void
+inline void
 assign(Range<TIterator> &range, TContainer &cont)
 {
     range.begin = begin(cont, Standard());
@@ -326,7 +326,7 @@ assign(Range<TIterator> &range, TContainer &cont)
 // ----------------------------------------------------------------------------
 
 template <typename TIterator, typename TIterator2, typename TIterator3>
-SEQAN_HOST_DEVICE inline void
+inline void
 assignRange(Range<TIterator> &result, TIterator2 const &begin, TIterator3 const &end)
 {
     result.begin = begin;
@@ -334,7 +334,7 @@ assignRange(Range<TIterator> &result, TIterator2 const &begin, TIterator3 const 
 }
 
 template <typename TIterator>
-SEQAN_HOST_DEVICE inline
+inline
 Range<TIterator>
 toRange(TIterator const &begin, TIterator const &end)
 {
@@ -342,7 +342,7 @@ toRange(TIterator const &begin, TIterator const &end)
 }
 
 template <typename TContainer>
-SEQAN_HOST_DEVICE inline
+inline
 Range<typename Iterator<TContainer, Standard>::Type>
 toRange(TContainer &cont)
 {
@@ -350,7 +350,7 @@ toRange(TContainer &cont)
 }
 
 template <typename TContainer>
-SEQAN_HOST_DEVICE inline
+inline
 Range<typename Iterator<TContainer const, Standard>::Type>
 toRange(TContainer const &cont)
 {

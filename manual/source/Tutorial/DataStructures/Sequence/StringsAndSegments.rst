@@ -4,8 +4,8 @@
 
 .. _tutorial-datastructures-sequences-strings-and-segments:
 
-Stgrings and Segments
-=====================
+Strings and Segments
+====================
 
 Learning Objective
   You will learn about the SeqAn sequence concept and its main class :dox:`String` as well as the class :dox:`Segment`.

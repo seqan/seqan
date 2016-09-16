@@ -65,9 +65,8 @@ inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndex
     value(oppDirIter).repLen = value(dirIter).repLen; // do not increment in case of goRight
 }
 
-
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
-SEQAN_HOST_DEVICE inline bool
+inline bool
 _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > &it,
               TString const & string,
               TSize & lcp,
@@ -88,20 +87,16 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
         TRange _range;
         TSize2 _smaller = 0;
 
-        // NOTE(esiragusa): isLeaf() early exit is slower on CUDA.
         // NOTE(esiragusa): this should be faster only for texts over small alphabets consisting of few/long sequences.
-#ifdef __CUDA_ARCH__
-        if (!_getNodeByChar(getIter(it, TDirection()), value(getIter(it, TDirection())), _range, _smaller, value(stringIt))) break;
-#else
         if (isLeaf(_iter(it, TDirection())) || !_getNodeByChar(_iter(it, TDirection()), value(_iter(it, TDirection())), _range, _smaller, value(stringIt))) break;
-#endif
 
         value(_iter(it, TDirection())).range = _range;
         value(_iter(it, TDirection())).smaller = _smaller;
         update(it, TDirection());
     }
 
-    value(_iter(it, TDirection())).repLen += lcp;
+    value(_iter(it, Fwd())).repLen += lcp;
+    value(_iter(it, Rev())).repLen += lcp;
 
     if (lcp) value(_iter(it, TDirection())).lastChar = value(stringIt - 1);
 

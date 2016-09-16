@@ -180,9 +180,9 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_moditerators)
 
 struct ReducedFMIndexConfig_
 {
-    typedef size_t                                                 LengthSum;
-    typedef WaveletTree<void, WTRDConfig<LengthSum> >              Bwt;
-    typedef Levels<void, LevelsRDConfig<LengthSum, Alloc<>, 2> >   Sentinels;
+    typedef size_t                                                          LengthSum;
+    typedef WaveletTree<void, WTRDConfig<LengthSum, Alloc<>, 1> >           Bwt;
+    typedef Levels<void, LevelsRDConfig<LengthSum, Alloc<>, 1> >            Sentinels;
 
     static const unsigned SAMPLING = 10;
 };
@@ -223,8 +223,10 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10_modview_fmindex)
     std::vector<std::pair<uint64_t, uint64_t>> hits;
     auto callback = [&] (TIndexIt & indexIt, int)
     {
-        for (auto subjOcc : getOccurrences(indexIt))
+        auto const & occurrences = getOccurrences(indexIt);
+        for (auto it = begin(occurrences), itEnd = end(occurrences); it != itEnd; ++it)
         {
+            auto subjOcc = *it;
             // reverse positions again
             setSeqOffset(subjOcc,
                          length(origSet[getSeqNo(subjOcc)])

@@ -41,7 +41,7 @@
 #include <sys/stat.h>       //
 #include <cstdio>           // tmpnam(..)
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 # include <io.h>            // read(..) ..
 #else
 # include <cstdlib>
@@ -73,395 +73,422 @@ namespace seqan
 {
 
 
-    template <typename TSpec /* = void */>
-    struct Sync {};
+template <typename TSpec /* = void */>
+struct Sync {};
 
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Windows rtl file access
-    template <typename TSpec>
-    class File<Sync<TSpec> >
-    {
+//////////////////////////////////////////////////////////////////////////////
+// Windows rtl file access
+template <typename TSpec>
+class File<Sync<TSpec> >
+{
 //IOREV _windows_ _nodoc_
-    public:
+public:
 
-        typedef int64_t            FilePtr;
-        typedef int64_t         SizeType;   // type of file size
-        typedef unsigned int    SizeType_;  // type of transfer size (for read or write)
-        typedef int                Handle;
+    typedef int64_t         FilePtr;
+    typedef int64_t         SizeType;       // type of file size
+    typedef unsigned int    SizeType_;      // type of transfer size (for read or write)
+    typedef int             Handle;
 
-        Handle handle;
+    Handle handle;
 
-        File(void * /*dummy*/ = NULL): // to be compatible with the FILE*(NULL) constructor
-            handle(-1) {}
+    File(void * /*dummy*/ = NULL) :    // to be compatible with the FILE*(NULL) constructor
+        handle(-1) {}
+
+    virtual ~File()
+    {
+        close();
+    }
 
     //File(int posixHandle) : handle(posixHandle) {}
 
-        inline int _getOFlag(int openMode) const
+    inline int _getOFlag(int openMode) const
+    {
+        int result;
+        bool canWrite = false;
+
+        switch (openMode & OPEN_MASK)
         {
-            int result;
-            bool canWrite = false;
+        case OPEN_RDONLY:
+            result = _O_RDONLY;
+            break;
 
-            switch (openMode & OPEN_MASK) {
-                case OPEN_RDONLY:
-                    result = _O_RDONLY;
-                    break;
-                case OPEN_WRONLY:
-                    canWrite = true;
-                    result = _O_WRONLY;
-                    break;
-                case OPEN_RDWR:
-                default:
-                    canWrite = true;
-                    result = _O_RDWR;
-                    break;
-            }
+        case OPEN_WRONLY:
+            canWrite = true;
+            result = _O_WRONLY;
+            break;
 
-            if (openMode & OPEN_CREATE)     result |= _O_CREAT;
-            if (canWrite && !(openMode & OPEN_APPEND))    result |= _O_TRUNC;
-            if (openMode & OPEN_TEMPORARY)  result |= _O_TEMPORARY;
-            return result | _O_BINARY;
+        case OPEN_RDWR:
+        default:
+            canWrite = true;
+            result = _O_RDWR;
+            break;
         }
 
-        bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE)
-        {
-            handle = ::_open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
-            if (handle == -1) {
-                if (!(openMode & OPEN_QUIET))
-                    std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
-                return false;
-            }
-            SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
-            return true;
-        }
+        if (openMode & OPEN_CREATE)     result |= _O_CREAT;
+        if (canWrite && !(openMode & OPEN_APPEND))    result |= _O_TRUNC;
+        if (openMode & OPEN_TEMPORARY)  result |= _O_TEMPORARY;
+        return result | _O_BINARY;
+    }
 
-        bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE)
+    bool open(char const * fileName, int openMode = DefaultOpenMode<File>::VALUE)
+    {
+        handle = ::_open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
+        if (handle == -1)
         {
+            if (!(openMode & OPEN_QUIET))
+                std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
+            return false;
+        }
+        SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
+        return true;
+    }
+
+    bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE)
+    {
 #ifdef SEQAN_DEFAULT_TMPDIR
-            char *fileName = _tempnam(SEQAN_DEFAULT_TMPDIR, "SQN");
+        char * fileName = _tempnam(SEQAN_DEFAULT_TMPDIR, "SQN");
 #else  // #ifdef SEQAN_DEFAULT_TMPDIR
-            char *fileName = _tempnam(NULL, "SQN");
+        char * fileName = _tempnam(NULL, "SQN");
 #endif  // #ifdef SEQAN_DEFAULT_TMPDIR
-            if (!fileName) {
-                if (!(openMode & OPEN_QUIET))
-                    std::cerr << "Cannot create a unique temporary filename" << std::endl;
-                return false;
-            }
-            bool result = open(fileName, openMode | OPEN_TEMPORARY);
-            ::free(fileName);
-            return result;
-        }
-
-        inline bool close()
+        if (!fileName)
         {
-            if (_close(handle) != 0)
-                return false;
-            handle = -1;
-            SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
-            return true;
+            if (!(openMode & OPEN_QUIET))
+                std::cerr << "Cannot create a unique temporary filename" << std::endl;
+            return false;
         }
-
-        inline int read(void *buffer, SizeType_ count) const
-        {
-            SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
-            SEQAN_PROTIMESTART(tw);
-            int result = ::_read(handle, buffer, count);
-            SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-            return result;
-        }
-
-        inline int write(void const *buffer, SizeType_ count) const
-        {
-            SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
-            SEQAN_PROTIMESTART(tw);
-            int result = ::_write(handle, buffer, count);
-            SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-            return result;
-        }
-
-        inline FilePtr seek(FilePtr pos, int origin = SEEK_SET) const
-        {
-            return _lseeki64(handle, pos, origin);
-        }
-
-        inline FilePtr tell() const
-        {
-            return _telli64(handle);
-        }
-
-        static int error()
-        {
-            return errno;
-        }
-
-        operator bool () const
-        {
-            return handle != -1;
-        }
-    };
-
-    inline bool fileExists(const char *fileName)
-    {
-//IOREV _windows_ _nodoc_
-        struct _stat buf;
-        return _stat(fileName, &buf) == 0;
+        bool result = open(fileName, openMode | OPEN_TEMPORARY);
+        ::free(fileName);
+        return result;
     }
 
-    inline bool fileUnlink(const char *fileName)
+    inline bool close()
     {
-//IOREV _windows_ _nodoc_
-        return _unlink(fileName) == 0;
+        if (_close(handle) != 0)
+            return false;
+
+        handle = -1;
+        SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
+        return true;
     }
+
+    inline int read(void * buffer, SizeType_ count) const
+    {
+        SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
+        SEQAN_PROTIMESTART(tw);
+        int result = ::_read(handle, buffer, count);
+        SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
+        return result;
+    }
+
+    inline int write(void const * buffer, SizeType_ count) const
+    {
+        SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
+        SEQAN_PROTIMESTART(tw);
+        int result = ::_write(handle, buffer, count);
+        SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
+        return result;
+    }
+
+    inline FilePtr seek(FilePtr pos, int origin = SEEK_SET) const
+    {
+        return _lseeki64(handle, pos, origin);
+    }
+
+    inline FilePtr tell() const
+    {
+        return _telli64(handle);
+    }
+
+    static int error()
+    {
+        return errno;
+    }
+
+    operator bool() const
+    {
+        return handle != -1;
+    }
+};
+
+inline bool fileExists(const char * fileName)
+{
+//IOREV _windows_ _nodoc_
+    struct _stat buf;
+    return _stat(fileName, &buf) == 0;
+}
+
+inline bool fileUnlink(const char * fileName)
+{
+//IOREV _windows_ _nodoc_
+    return _unlink(fileName) == 0;
+}
 
 #else
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Unix file access
-    template <typename TSpec>
-    class File<Sync<TSpec> >
-    {
+//////////////////////////////////////////////////////////////////////////////
+// Unix file access
+template <typename TSpec>
+class File<Sync<TSpec> >
+{
 //IOREV __nodoc_
-    public:
+public:
 
-        typedef off_t            FilePtr;
-        typedef off_t           SizeType;   // type of file size
-        typedef size_t          SizeType_;  // type of transfer size (for read or write)
-        typedef int                Handle;
+    typedef off_t           FilePtr;
+    typedef off_t           SizeType;       // type of file size
+    typedef size_t          SizeType_;      // type of transfer size (for read or write)
+    typedef int             Handle;
 
-        Handle handle;
+    Handle handle;
 
-        File(void * /*dummy*/ = NULL): // to be compatible with the FILE*(NULL) constructor
-            handle(-1) {}
+    File(void * /*dummy*/ = NULL) :    // to be compatible with the FILE*(NULL) constructor
+        handle(-1) {}
 
     ///File(int posixHandle) : handle(posixHandle) {}
 
-        virtual ~File() {}
+    virtual ~File()
+    {
+        this->close();
+    }
 
-        inline int _getOFlag(int openMode) const {
-            int result = O_LARGEFILE;
+    inline int _getOFlag(int openMode) const
+    {
+        int result = O_LARGEFILE;
 
-            switch (openMode & OPEN_MASK) {
-                case OPEN_RDONLY:
-                    result |= O_RDONLY;
-                    break;
-                case OPEN_WRONLY:
-                    result |= O_WRONLY;
-                    if (!(openMode & OPEN_APPEND))    result |= O_TRUNC;
-                    break;
-                case OPEN_RDWR:
-                    result |= O_RDWR;
-                    if (!(openMode & OPEN_APPEND))    result |= O_TRUNC;
-                    break;
-            }
+        switch (openMode & OPEN_MASK)
+        {
+        case OPEN_RDONLY:
+            result |= O_RDONLY;
+            break;
 
-            if (openMode & OPEN_CREATE)     result |= O_CREAT;
+        case OPEN_WRONLY:
+            result |= O_WRONLY;
+            if (!(openMode & OPEN_APPEND))    result |= O_TRUNC;
+            break;
+
+        case OPEN_RDWR:
+            result |= O_RDWR;
+            if (!(openMode & OPEN_APPEND))    result |= O_TRUNC;
+            break;
+        }
+
+        if (openMode & OPEN_CREATE)     result |= O_CREAT;
 //            if (openMode & OPEN_TEMPORARY)  result |= O_TEMPORARY;
         #ifdef SEQAN_DIRECTIO
-            if (openMode & OPEN_ASYNC)        result |= O_DIRECT;
+        if (openMode & OPEN_ASYNC)        result |= O_DIRECT;
         #endif
-            return result;
-        }
+        return result;
+    }
 
-        virtual bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
-            handle = ::open(fileName, _getOFlag(openMode), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-            if (handle == -1 && errno == EINVAL) {    // fall back to cached access
-                #ifdef SEQAN_DEBUG_OR_TEST_
-                    if (!(openMode & OPEN_QUIET))
-                        std::cerr << "Warning: Direct access openening failed: " << fileName << "." << std::endl;
-                #endif
-                  handle = ::open(fileName, _getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-            }
-
-            if (handle == -1) {
-                if (!(openMode & OPEN_QUIET))
-                    std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
-                return false;
-            }
-
-            if (sizeof(FilePtr) < 8 && !(openMode & OPEN_QUIET))
-                // To remove this warning, you have to options:
-                // 1. include the following line before including anything in your application
-                //    #define _FILE_OFFSET_BITS 64
-                // 2. include <seqan/platform.h> or <seqan/sequence.h> before any other include
-                std::cerr << "WARNING: FilePtr is not 64bit wide" << std::endl;
-
-            SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
-            return true;
-        }
-
-        bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE)
+    virtual bool open(char const * fileName, int openMode = DefaultOpenMode<File>::VALUE)
+    {
+        handle = ::open(fileName, _getOFlag(openMode), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+        if (handle == -1 && errno == EINVAL)          // fall back to cached access
         {
-            // Construct the pattern for the temporary file.
-            //
-            // First, try to get the temporary directory from the environment
-            // variables TMPDIR, TMP.
-            std::string tmpDir;
-            if ((getuid() == geteuid()) && (getgid() == getegid()))
-            {
-                char * res;
-                if ((res = getenv("TMPDIR")) != NULL)
-                    tmpDir = res;
-                else
-                    if ((res = getenv("TMP")) != NULL)
-                        tmpDir = res;
-            }
-            // If this does not work, try to use the constant
-            // SEQAN_DEFAULT_TMPDIR, fall back to "/tmp", if this does not
-            // work.
+                #ifdef SEQAN_DEBUG_OR_TEST_
+            if (!(openMode & OPEN_QUIET))
+                std::cerr << "Warning: Direct access openening failed: " << fileName << "." << std::endl;
+                #endif
+            handle = ::open(fileName, _getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+        }
+
+        if (handle == -1)
+        {
+            if (!(openMode & OPEN_QUIET))
+                std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
+            return false;
+        }
+
+        if (sizeof(FilePtr) < 8 && !(openMode & OPEN_QUIET))
+            // To remove this warning, you have to options:
+            // 1. include the following line before including anything in your application
+            //    #define _FILE_OFFSET_BITS 64
+            // 2. include <seqan/platform.h> or <seqan/sequence.h> before any other include
+            std::cerr << "WARNING: FilePtr is not 64bit wide" << std::endl;
+
+        SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
+        return true;
+    }
+
+    bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE)
+    {
+        // Construct the pattern for the temporary file.
+        //
+        // First, try to get the temporary directory from the environment
+        // variables TMPDIR, TMP.
+        std::string tmpDir;
+        if ((getuid() == geteuid()) && (getgid() == getegid()))
+        {
+            char * res;
+            if ((res = getenv("TMPDIR")) != NULL)
+                tmpDir = res;
+            else if ((res = getenv("TMP")) != NULL)
+                tmpDir = res;
+        }
+        // If this does not work, try to use the constant
+        // SEQAN_DEFAULT_TMPDIR, fall back to "/tmp", if this does not
+        // work.
 #ifdef SEQAN_DEFAULT_TMPDIR
-            if (empty(tmpDir))
-                tmpDir = SEQAN_DEFAULT_TMPDIR;
+        if (empty(tmpDir))
+            tmpDir = SEQAN_DEFAULT_TMPDIR;
 #else  // #ifdef SEQAN_DEFAULT_TMPDIR
-            if (empty(tmpDir))
-                tmpDir = "/tmp";
+        if (empty(tmpDir))
+            tmpDir = "/tmp";
 #endif  // #ifdef SEQAN_DEFAULT_TMPDIR
 
-            // At this point, we have a temporary directory.  Now, we add the
-            // file name template to get the full path template.
-            tmpDir += "/SQNXXXXXX";
-            // Open temporary file and unlink it immediately afterwards so the
-            // memory is released when the program exits.
-            int oldMode = umask(077);  // Create with restrictive permissions.
-            if ((handle = ::mkstemp((char*)tmpDir.c_str())) == -1)
-            {
-                umask(oldMode);  // Reset umask mode.
-                if (!(openMode & OPEN_QUIET))
-                    std::cerr << "Couldn't create temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
-                return false;
-            }
-            if (!(close() && open(toCString(tmpDir), openMode)))
-            {
-                umask(oldMode);  // Reset umask mode.
-                return false;
-            }
-            umask(oldMode);  // Reset umask mode.
+        // At this point, we have a temporary directory.  Now, we add the
+        // file name template to get the full path template.
+        tmpDir += "/SQNXXXXXX";
+        // Open temporary file and unlink it immediately afterwards so the
+        // memory is released when the program exits.
+        int oldMode = umask(077);      // Create with restrictive permissions.
+        if ((handle = ::mkstemp((char *)tmpDir.c_str())) == -1)
+        {
+            umask(oldMode);      // Reset umask mode.
+            if (!(openMode & OPEN_QUIET))
+                std::cerr << "Couldn't create temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
+            return false;
+        }
+        if (!(close() && open(toCString(tmpDir), openMode)))
+        {
+            umask(oldMode);      // Reset umask mode.
+            return false;
+        }
+        umask(oldMode);      // Reset umask mode.
             #ifdef SEQAN_DEBUG
-                if (::unlink(toCString(tmpDir)) == -1 && !(openMode & OPEN_QUIET))
-                    std::cerr << "Couldn't unlink temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
+        if (::unlink(toCString(tmpDir)) == -1 && !(openMode & OPEN_QUIET))
+            std::cerr << "Couldn't unlink temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
             #else
-                ::unlink(toCString(tmpDir));
+        ::unlink(toCString(tmpDir));
             #endif
-            return true;
-        }
+        return true;
+    }
 
+    virtual bool close()
+    {
+        if (::close(this->handle) == -1) return false;
 
-        virtual bool close() {
-            if (::close(this->handle) == -1) return false;
-            handle = -1;
-            SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
-            return true;
-        }
+        handle = -1;
+        SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
+        return true;
+    }
 
-        inline ssize_t read(void *buffer, SizeType_ count) const {
-            SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
-            SEQAN_PROTIMESTART(tw);
-            ssize_t result = ::read(handle, buffer, count);
-            SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-            return result;
-        }
+    inline ssize_t read(void * buffer, SizeType_ count) const
+    {
+        SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
+        SEQAN_PROTIMESTART(tw);
+        ssize_t result = ::read(handle, buffer, count);
+        SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
+        return result;
+    }
 
-        inline ssize_t write(void const *buffer, SizeType_ count) const {
-            SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
-            SEQAN_PROTIMESTART(tw);
-            ssize_t result = ::write(handle, buffer, count);
-            SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-            return result;
-        }
+    inline ssize_t write(void const * buffer, SizeType_ count) const
+    {
+        SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
+        SEQAN_PROTIMESTART(tw);
+        ssize_t result = ::write(handle, buffer, count);
+        SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
+        return result;
+    }
 
-        inline FilePtr seek(FilePtr pos, int origin = SEEK_SET) const {
-            FilePtr result = ::lseek(handle, pos, origin);
+    inline FilePtr seek(FilePtr pos, int origin = SEEK_SET) const
+    {
+        FilePtr result = ::lseek(handle, pos, origin);
 //            #ifdef SEQAN_DEBUG
-                if (result < 0)
-                    std::cerr << "lseek returned " << result << ". (" << ::strerror(errno) << ")" << std::endl;
+        if (result < 0)
+            std::cerr << "lseek returned " << result << ". (" << ::strerror(errno) << ")" << std::endl;
 //            #endif
-            return result;
-        }
+        return result;
+    }
 
-        inline FilePtr tell() const {
-            return seek(0, SEEK_CUR);
-        }
-
-        inline bool resize(SizeType new_length) const {
-            return ftruncate(handle, new_length) == 0;
-        }
-
-        static int error() {
-            return errno;
-        }
-
-        operator bool () const {
-            return handle != -1;
-        }
-    };
-
-    inline bool fileExists(const char *fileName)
+    inline FilePtr tell() const
     {
+        return seek(0, SEEK_CUR);
+    }
+
+    inline bool resize(SizeType new_length) const
+    {
+        return ftruncate(handle, new_length) == 0;
+    }
+
+    static int error()
+    {
+        return errno;
+    }
+
+    operator bool() const {
+        return handle != -1;
+    }
+};
+
+inline bool fileExists(const char * fileName)
+{
 //IOREV _nodoc_
-        struct stat buf;
-        return stat(fileName, &buf) != -1;
-    }
+    struct stat buf;
+    return stat(fileName, &buf) != -1;
+}
 
-    inline bool fileUnlink(const char *fileName)
-    {
+inline bool fileUnlink(const char * fileName)
+{
 //IOREV _noddoc_
-        return unlink(fileName) == 0;
-    }
+    return unlink(fileName) == 0;
+}
 
-    template < typename TSpec, typename TSize >
-    inline void resize(File<Sync<TSpec> > &me, TSize new_length)
-    {
+template <typename TSpec, typename TSize>
+inline void resize(File<Sync<TSpec> > & me, TSize new_length)
+{
 //IOREV _doc_
-        if (!me.resize(new_length))
-            SEQAN_FAIL(
-                "resize(%d, %d) failed: \"%s\"",
-                me.handle, new_length, strerror(errno));
-    }
+    if (!me.resize(new_length))
+        SEQAN_FAIL(
+            "resize(%d, %d) failed: \"%s\"",
+            me.handle, new_length, strerror(errno));
+}
 
 #endif
 
-    //////////////////////////////////////////////////////////////////////////////
-    // global functions
+//////////////////////////////////////////////////////////////////////////////
+// global functions
 
-    template <typename TSpec>
-    struct Size< File<Sync<TSpec> > >
-    {
+template <typename TSpec>
+struct Size<File<Sync<TSpec> > >
+{
 //IOREV
-        typedef typename File<Sync<TSpec> >::SizeType Type;
-    };
+    typedef typename File<Sync<TSpec> >::SizeType Type;
+};
 
-    template <typename TSpec>
-    struct Position< File<Sync<TSpec> > >
-    {
+template <typename TSpec>
+struct Position<File<Sync<TSpec> > >
+{
 //IOREV
-        typedef typename File<Sync<TSpec> >::FilePtr Type;
-    };
+    typedef typename File<Sync<TSpec> >::FilePtr Type;
+};
 
-    template <typename TSpec>
-    struct Difference< File<Sync<TSpec> > >
-    {
+template <typename TSpec>
+struct Difference<File<Sync<TSpec> > >
+{
 //IOREV
-        typedef typename File<Sync<TSpec> >::FilePtr Type;
-    };
+    typedef typename File<Sync<TSpec> >::FilePtr Type;
+};
 
-    template < typename TSpec, typename TValue, typename TSize >
-    inline bool read(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
-    {
-        return (size_t)me.read(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
-    }
+template <typename TSpec, typename TValue, typename TSize>
+inline bool read(File<Sync<TSpec> > & me, TValue * memPtr, TSize const count)
+{
+    return (size_t)me.read(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
+}
 
-    template < typename TSpec, typename TValue, typename TSize >
-    inline bool write(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
-    {
-        return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
-    }
+template <typename TSpec, typename TValue, typename TSize>
+inline bool write(File<Sync<TSpec> > & me, TValue * memPtr, TSize const count)
+{
+    return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
+}
 
-    template < typename TSpec, typename TValue, typename TSize >
-    inline bool write(File<Sync<TSpec> > & me, TValue const *memPtr, TSize const count)
-    {
-        return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
-    }
+template <typename TSpec, typename TValue, typename TSize>
+inline bool write(File<Sync<TSpec> > & me, TValue const * memPtr, TSize const count)
+{
+    return (size_t)me.write(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
+}
 
 }
 

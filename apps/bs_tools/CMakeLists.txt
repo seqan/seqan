@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_bs_tools CXX)
 message (STATUS "Configuring apps/bs_tools")
 
-set (SEQAN_APP_VERSION "0.1.5")
+set (SEQAN_APP_VERSION "0.1.6")
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND ("$ENV{MODEL}" STREQUAL "Nightly"))
     message (STATUS "bs_tools skipped on FreeBSD because math.h rounding errors.")
@@ -23,18 +23,13 @@ endif ()
 
 # Search SeqAn and select dependencies.
 find_package (ZLIB)
-find_package (SeqAn REQUIRED)
 find_package (Boost)
+find_package (SeqAn REQUIRED)
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
     message (STATUS "  Boost or zlib not found: Not building bs_tools.")
     return ()
 endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
-
-if (MSVC)
-    message (STATUS "  Not building bs_tools under Visual Studio.")
-    return ()
-endif()
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -132,4 +127,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
 
   seqan_configure_cpack_app (bs_tools "bs_tools")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:bs_tools")
-

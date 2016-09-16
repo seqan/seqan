@@ -47,7 +47,7 @@ int main()
     resize(profile, length(row(align, 0)));
     for (unsigned rowNo = 0; rowNo < 4u; ++rowNo)
         for (unsigned i = 0; i < length(row(align, rowNo)); ++i)
-            profile[i].count[ordValue(row(align, rowNo)[i])] += 1;
+            profile[i].count[ordValue(getValue(row(align, rowNo), i))] += 1;
 //![profile-computation]
 
 //![consensus-calling]

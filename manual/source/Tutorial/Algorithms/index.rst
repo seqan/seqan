@@ -42,5 +42,5 @@ The algorithms are usually generic in the sense that they can be configured via 
 On the right you will find several tutorials about SeqAn's algorithms. Under :ref:`tutorial-algorithms-pattern-matching` you will find tutorials for online or indexed pattern search.
 Under :ref:`tutorial-algorithms-alignment` you will find tutorials for all versions of DP based alignments (pairwise and multiple) and as special cases consensus alignment under :ref:`tutorial-algorithms-consensus-alignment` and realignment algorithms under :ref:`tutorial-algorithms-realignment`.
 
-Under :ref:`tutorial-algorithms-seed-extension` you will find tutorials for SeqAn's seed module and various extension algorithms. And finally you can find under :ref:`tutorial-algorithms-graph-algorithms` algorithms that wok on SeqAn's graph type.
+Under :ref:`tutorial-algorithms-seed-extension` you will find tutorials for SeqAn's seed module and various extension algorithms. And finally you can find under :ref:`tutorial-algorithms-graph-algorithms` algorithms that work on SeqAn's graph type.
 

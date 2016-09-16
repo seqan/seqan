@@ -205,12 +205,12 @@ void VcfMaterializer::init()
     {
         if (!open(methFaiIndex, toCString(methFastaFileName)))
         {
-            if (!build(faiIndex, toCString(methFastaFileName)))
+            if (!build(methFaiIndex, toCString(methFastaFileName)))
                 throw MasonIOException("Could not build methylation levels FAI index.");
 
             seqan::CharString faiPath = methFastaFileName;
             append(faiPath, ".fai");
-            if (!save(faiIndex, toCString(faiPath)))
+            if (!save(methFaiIndex, toCString(faiPath)))
                 throw MasonIOException("Could not write methylation levels FAI index.");
         }
     }

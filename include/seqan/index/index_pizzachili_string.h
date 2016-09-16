@@ -44,6 +44,8 @@ namespace seqan {
 /*!
  * @class PizzaChiliString Pizza &amp; Chili String
  *
+ * @deprecated Module is outdated and is not maintained anymore. Will presumably be removed in the next major release.
+ *
  * @extends String
  *
  * @headerfile <seqan/index.h>

@@ -81,11 +81,6 @@ namespace seqan
  * @var double OpenAddressingQGramIndex::alpha
  * @brief Load factor.  Controls space/time-tradeoff and must be greater 1.  Default value is 1.6.
  */
-#ifdef PLATFORM_WINDOWS_VS
-#pragma warning( push )
-// Disable warning C4521 locally (multiple copy constructors).
-#pragma warning( disable: 4521 )
-#endif  // PLATFORM_WINDOWS_VS
 
     template < typename TObject, typename TShapeSpec >
     class Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> >
@@ -115,6 +110,19 @@ namespace seqan
         TSize            stepSize;    // store every <stepSize>'th q-gram in the index
 
         double            alpha;        // for m entries the hash map has at least size alpha*m
+
+        /*!
+         * @fn OpenAddressingQGramIndex::Index
+         * @brief Constructor
+         *
+         * @signature Index::Index();
+         * @signature Index::Index(index);
+         * @signature Index::Index(text[, shape]);
+         *
+         * @param[in] index Other Index object to copy from.
+         * @param[in] text  The text to be indexed.
+         * @param[in] shape The qgram @link Shape @endlink to be applied.
+         */
 
         Index():
             stepSize(1),
@@ -170,10 +178,6 @@ namespace seqan
             stepSize(1),
             alpha(defaultAlpha) {}
     };
-#ifdef PLATFORM_WINDOWS_VS
-// Enable warning C4521 again (multiple copy operators).
-#pragma warning( pop )
-#endif  // PLATFORM_WINDOWS_VS
 
 
     template < typename TObject, typename TShapeSpec >

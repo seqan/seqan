@@ -56,15 +56,20 @@ namespace std
         typedef typename seqan::Reference<TIter>::Type reference; // nolint
     };
 
-	// there is a bug in vc2015 stl, it doesnt check the iterator_traits correctly
-	// I have reported this bug to microsoft already (filed as DevDiv#1208117). 
-	// For now, this is a workaround.
-#if _MSC_VER == 1900
-	template<class _Ty, class Tag>
-	struct _Is_iterator<typename seqan::Iter<_Ty, Tag> >
-		: true_type
-	{
-	};
+// there is a bug in vc2015 stl, it doesnt check the iterator_traits correctly
+// I have reported this bug to microsoft already (filed as DevDiv#1208117).
+// For now, this is a workaround.
+// Bug was fixed with VS2015 Update 2 -> disable workaround for >= VS2015.2
+//
+// NOTE(marehr): Clang/c2 compiler sets _MSC_FULL_VER = 190000000 and there
+// seems to be no obvious way to detect which patch level the current STDLIB_VS
+// has.
+#if (_MSC_VER == 1900) && (_MSC_FULL_VER < 190023918) && !defined(COMPILER_CLANG)
+template<class _Ty, class Tag>
+struct _Is_iterator<typename seqan::Iter<_Ty, Tag> >
+    : true_type
+{
+};
 #endif
 }
 

@@ -46,6 +46,11 @@
 #include <seqan/score/score_matrix.h>
 #include <seqan/score/score_matrix_io.h>
 #include <seqan/score/score_matrix_data.h>
+#include <seqan/score/score_matrix_dyn.h>
 #include <seqan/score/score_simple.h>
+
+#ifdef SEQAN_SIMD_ENABLED
+#include <seqan/score/score_simd_wrapper.h>
+#endif  // SEQAN_SIMD_ENABLED
 
 #endif  // SEQAN_SH_

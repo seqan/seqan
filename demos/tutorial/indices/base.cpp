@@ -29,6 +29,12 @@ using namespace seqan;
 
 int main()
 {
+//![assignment1]
+//![save]
+    const char * tempFileName = SEQAN_TEMP_FILENAME();
+//![save]
+    {
+//![assignment1]
     String<char> text = "This is the first example";
     Index<String<char>, FMIndex<> > index(text);
 
@@ -66,7 +72,6 @@ int main()
 //![finder_position]
 
 //![save]
-    const char * tempFileName = SEQAN_TEMP_FILENAME();
     save(index, tempFileName);
 //![save]
 //![open]
@@ -95,6 +100,7 @@ int main()
     typedef FMIndexConfig<void, unsigned> TConfig;
     Index<StringSet<String<Dna> >, FMIndex<void, TConfig> > configIndex(set);
 //![config]
+    }
 
     // clean up tmp directory
     ClassTest::_deleteTempFile(ClassTest::_stripFileName(tempFileName));

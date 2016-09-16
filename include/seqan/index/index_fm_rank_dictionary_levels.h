@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+//       & Christopher Pockrandt <christopher.pockrandt@fu-berlin.de>
 // ==========================================================================
 
 #ifndef INDEX_FM_RANK_DICTIONARY_LEVELS_H_
@@ -40,13 +41,6 @@ namespace seqan {
 // ============================================================================
 // Forwards
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Metafunction RankDictionaryBitMask_
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TSpec = void>
-struct RankDictionaryBitMask_;
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryWordSize_
@@ -70,6 +64,27 @@ template <typename TValue, typename TSpec>
 struct RankDictionaryBlock_;
 
 // ----------------------------------------------------------------------------
+// Metafunction RankDictionarySuperBlock_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct RankDictionarySuperBlock_;
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryUltraBlock_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct RankDictionaryUltraBlock_;
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBitString_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct RankDictionaryBitString_;
+
+// ----------------------------------------------------------------------------
 // Metafunction RankDictionaryValues_
 // ----------------------------------------------------------------------------
 
@@ -91,11 +106,11 @@ struct RankDictionaryEntry_;
 // Tag LevelsRDConfig
 // ----------------------------------------------------------------------------
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1>
-struct LevelsRDConfig : RDConfig<TSize, TFibre>
-{
-    static const unsigned LEVELS =  LEVELS_;
-};
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 1>
+struct LevelsRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
+
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 1>
+struct LevelsPrefixRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
 
 // ----------------------------------------------------------------------------
 // Tag Levels
@@ -109,33 +124,14 @@ struct Levels {};
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction RankDictionaryBitMask_
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-struct RankDictionaryBitMask_<uint32_t, TSpec>
-{
-    static const uint32_t VALUE = 0x55555555;
-};
-
-template <typename TSpec>
-struct RankDictionaryBitMask_<uint64_t, TSpec>
-{
-    static const uint64_t VALUE = 0x5555555555555555ull;
-};
-
-// ----------------------------------------------------------------------------
 // Metafunction RankDictionaryWordSize_
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig>
-struct RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> > :
-    BitsPerValue<uint64_t> {};
-
-// NOTE(esiragusa): This is required on CUDA devices.
-//template <typename TValue, typename TSpec, typename TConfig>
-//struct RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> > :
-//    BitsPerValue<uint32_t> {};
+struct RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> > : BitsPerValue<uint64_t>
+{
+    typedef uint64_t Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBitsPerBlock_
@@ -146,30 +142,36 @@ template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> > :
     BitsPerValue<typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type> {};
 
-// NOTE(esiragusa): This lets a Dna block to have the size of one word - one popcount per block.
-//template <typename TSpec, typename TConfig>
-//struct RankDictionaryBitsPerBlock_<Dna, Levels<TSpec, TConfig> > :
-//    RankDictionaryWordSize_<Dna, Levels<TSpec, TConfig> > {};
-
 // ----------------------------------------------------------------------------
-// Metafunction RankDictionaryBlock_
+// Metafunction Size
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig>
-struct RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >
+struct Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >         TRankDictionary_;
-    typedef typename Size<TRankDictionary_>::Type                   TSize_;
-
-    typedef Tuple<TSize_, ValueSize<TValue>::VALUE>                 Type;
+    typedef typename Size<TConfig>::Type Type;
 };
 
-template <typename TSpec, typename TConfig>
-struct RankDictionaryBlock_<bool, Levels<TSpec, TConfig> >
-{
-    typedef RankDictionary<bool, Levels<TSpec, TConfig> >           TRankDictionary_;
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBitString_
+// ----------------------------------------------------------------------------
 
-    typedef typename Size<TRankDictionary_>::Type                   Type;
+template <typename TValue, typename TSpec, typename TConfig>
+struct RankDictionaryBitString_<TValue, Levels<TSpec, TConfig> >
+{
+    typedef BitPacked<> Type;
+};
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
+struct RankDictionaryBitString_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >
+{
+    typedef BitPacked<16, 16, PlusOne> Type;
+};
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
+struct RankDictionaryBitString_<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >
+{
+    typedef BitPacked<> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -179,11 +181,105 @@ struct RankDictionaryBlock_<bool, Levels<TSpec, TConfig> >
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                 TRankDictionary_;
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                             TRankDictionary_;
+    typedef typename RankDictionaryBitString_<TValue, Levels<TSpec, TConfig> >::Type    TBitString_;
 
-    typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, BitPacked<> > TValues;
-    typedef typename TValues::TBitVector                                    TWord;
-    typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>              Type;
+    typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, TBitString_>              TValues;
+    typedef typename TValues::TBitVector                                                TWord;
+    typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>                          Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryValueWithBits_
+// ----------------------------------------------------------------------------
+
+template <unsigned BITS>
+struct RankDictionaryValueWithBits_ {};
+
+template <>
+struct RankDictionaryValueWithBits_<64>
+{
+    typedef uint64_t Type;
+};
+
+template <>
+struct RankDictionaryValueWithBits_<32>
+{
+    typedef uint32_t Type;
+};
+
+template <>
+struct RankDictionaryValueWithBits_<16>
+{
+    typedef uint16_t Type;
+};
+
+template <>
+struct RankDictionaryValueWithBits_<8>
+{
+    typedef uint8_t Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBlockType_
+// ----------------------------------------------------------------------------
+
+template <typename TSize, unsigned LEVELS, unsigned LEVEL>
+struct RankDictionaryBlockType_
+{
+    static const unsigned shift = Max<LEVEL, LEVELS>::VALUE - Min<LEVEL, LEVELS>::VALUE;
+    typedef typename RankDictionaryValueWithBits_<BitsPerValue<TSize>::VALUE/(1 << shift)>::Type Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBlock_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig>
+struct RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >
+{
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 1>::Type   TSize_;
+    typedef Tuple<TSize_, ValueSize<TValue>::VALUE>     Type;
+};
+
+template <typename TSpec, typename TConfig>
+struct RankDictionaryBlock_<bool, Levels<TSpec, TConfig> >
+{
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 1>::Type   Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionarySuperBlock_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig>
+struct RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >
+{
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 2>::Type   TSize_;
+    typedef Tuple<TSize_, ValueSize<TValue>::VALUE>     Type;
+};
+
+template <typename TSpec, typename TConfig>
+struct RankDictionarySuperBlock_<bool, Levels<TSpec, TConfig> >
+{
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 2>::Type   Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction RankDictionaryUltraBlock_
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig>
+struct RankDictionaryUltraBlock_<TValue, Levels<TSpec, TConfig> >
+{
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 3>::Type   TSize_;
+    typedef Tuple<TSize_, ValueSize<TValue>::VALUE>     Type;
+};
+
+template <typename TSpec, typename TConfig>
+struct RankDictionaryUltraBlock_<bool, Levels<TSpec, TConfig> >
+{
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 3>::Type   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -198,6 +294,26 @@ struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>
     typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type TFibreSpec_;
 
     typedef String<TEntry_, TFibreSpec_>                            Type;
+};
+
+template <typename TValue, typename TSpec, typename TConfig>
+struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreSuperBlocks>
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                             TRankDictionary_;
+    typedef typename RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >::Type   TSuperBlocks_;
+    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type                     TFibreSpec_;
+
+    typedef String<TSuperBlocks_, TFibreSpec_>                                          Type;
+};
+
+template <typename TValue, typename TSpec, typename TConfig>
+struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreUltraBlocks>
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                             TRankDictionary_;
+    typedef typename RankDictionaryUltraBlock_<TValue, Levels<TSpec, TConfig> >::Type   TUltraBlocks_;
+    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type                     TFibreSpec_;
+
+    typedef String<TUltraBlocks_, TFibreSpec_>                                          Type;
 };
 
 // ============================================================================
@@ -226,6 +342,41 @@ struct RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction RankDictionaryBitMask_
+// ----------------------------------------------------------------------------
+
+// TODO(cpockrandt): simplify
+template <typename TWord>
+constexpr TWord _bitmask2(unsigned const bitsTotal, unsigned blocks, unsigned const constBlocks, unsigned const blocksize, TWord const value)
+{
+    return (blocks == constBlocks) ?
+           _bitmask2<TWord>(bitsTotal, blocks - 1, constBlocks, blocksize, value << (bitsTotal - blocksize)) :
+           (
+               (blocks == 0) ?
+               value >> (bitsTotal % blocksize) :
+               _bitmask2<TWord>(bitsTotal, blocks - 1, constBlocks, blocksize, value | (value >> blocksize))
+           );
+}
+
+template <typename TWord, typename TValue, typename TSpec, typename TConfig>
+constexpr TWord _bitmaskWrapper(RankDictionary<TValue, Levels<TSpec, TConfig> > & /*dict*/, unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const vDefault, TWord const /*vPrefix*/)
+{
+    return _bitmask2<TWord>(bitsTotal, blocks, blocks, blocksize, vDefault);
+}
+
+template <typename TWord, typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
+constexpr TWord _bitmaskWrapper(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > &, unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const /*vDefault*/, TWord const vPrefix)
+{
+    return _bitmask2<TWord>(bitsTotal, blocks, blocks, blocksize, vPrefix);
+}
+
+template <typename TWord, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
+constexpr TWord _bitmaskWrapper(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > &, unsigned const bitsTotal, unsigned blocks, unsigned const blocksize, TWord const vDefault, TWord const /*vPrefix*/)
+{
+    return _bitmask2<TWord>(bitsTotal, blocks, blocks, blocksize, vDefault);
+}
+
+// ----------------------------------------------------------------------------
 // Class Levels RankDictionary
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): update doc
@@ -248,6 +399,24 @@ struct RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >
  * leads to constant rank dictionary look ups.
  */
 
+template <typename TValue, typename TConfig>
+struct BitsPerValue_
+{
+    static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE;
+};
+
+template <typename TValue, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
+struct BitsPerValue_<TValue, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> >
+{
+    static const typename BitsPerValue<TValue>::Type VALUE = BitsPerValue<TValue>::VALUE + 1;
+};
+
+template <typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
+struct BitsPerValue_<bool, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> >
+{
+    static const typename BitsPerValue<bool>::Type VALUE = BitsPerValue<bool>::VALUE;
+};
+
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionary<TValue, Levels<TSpec, TConfig> >
 {
@@ -255,19 +424,32 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
     // Constants
     // ------------------------------------------------------------------------
 
-    static const unsigned _BITS_PER_VALUE   = BitsPerValue<TValue>::VALUE;
-    static const unsigned _BITS_PER_BLOCK   = RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> >::VALUE;
+    static const unsigned _BITS_PER_VALUE   = BitsPerValue_<TValue, TConfig>::VALUE;
+    static const unsigned _BITS_PER_BLOCK   = (TConfig::WORDS_PER_BLOCK == 0 ? BitsPerValue<typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type>::VALUE : RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE * TConfig::WORDS_PER_BLOCK);
     static const unsigned _BITS_PER_WORD    = Min<RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::VALUE, _BITS_PER_BLOCK>::VALUE;
-    static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD  / _BITS_PER_VALUE;
-    static const unsigned _VALUES_PER_BLOCK = _BITS_PER_BLOCK / _BITS_PER_VALUE;
+    static const unsigned _VALUES_PER_WORD  = _BITS_PER_WORD / _BITS_PER_VALUE;
     static const unsigned _WORDS_PER_BLOCK  = _BITS_PER_BLOCK / _BITS_PER_WORD;
+    static const unsigned _VALUES_PER_BLOCK = _VALUES_PER_WORD * _WORDS_PER_BLOCK;
+    static const uint64_t _VALUES_PER_SUPERBLOCK = Max<1, (((1ull << (BitsPerValue<typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 2>::Type>::VALUE/2)) - 1) / _VALUES_PER_BLOCK) * _VALUES_PER_BLOCK>::VALUE; // 2^x - 1 values
+    static const uint64_t _VALUES_PER_ULTRABLOCK = Max<1, (((1ull << (BitsPerValue<typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 3>::Type>::VALUE/2)) - 1) / Max<_VALUES_PER_SUPERBLOCK, 1>::VALUE) * _VALUES_PER_SUPERBLOCK>::VALUE; // MAX: workaround for intel & clang: division is not constexpr since divisor could be 0
+
+    typedef typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 1>::Type   Type;
+    static_assert(BitsPerValue<typename RankDictionaryBlockType_<typename TConfig::Size, TConfig::LEVELS, 1>::Type>::VALUE >= LogN<_VALUES_PER_BLOCK + 1, 2>::VALUE,
+        "The datatype of the lowest level has to be larger or the number of words per block smaller. See the online documentation for more information.");
+
+    typedef typename RankDictionaryWordSize_<TValue, Levels<TSpec, TConfig> >::Type TWordType;
+
+    static TWordType _CHAR_BITMASKS[ValueSize<TValue>::VALUE]; // filter by character
+    static TWordType _TRUNC_BITMASKS[_VALUES_PER_WORD]; // truncate the last values in a word that shell not be counted
 
     // ------------------------------------------------------------------------
     // Fibres
     // ------------------------------------------------------------------------
 
-    typename Fibre<RankDictionary, FibreRanks>::Type    ranks;
-    typename Size<RankDictionary>::Type                 _length;
+    typename Fibre<RankDictionary, FibreUltraBlocks>::Type  ultrablocks;
+    typename Fibre<RankDictionary, FibreSuperBlocks>::Type  superblocks;
+    typename Fibre<RankDictionary, FibreRanks>::Type        blocks;
+    typename Size<RankDictionary>::Type                     _length;
     // TODO(esiragusa): open/save _length or remove it.
 
     // ------------------------------------------------------------------------
@@ -276,128 +458,114 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
 
     RankDictionary() :
         _length(0)
-    {}
+    {
+        // TODO(cpockrandt): no code duplication. make it a const-expr?
+        static const unsigned maxValue = (1 << _BITS_PER_VALUE) - 1;
+        for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
+            _CHAR_BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, i + (1 << (_BITS_PER_VALUE-1)));
+        for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
+            _TRUNC_BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, _BITS_PER_VALUE, 1, 1 << (_BITS_PER_VALUE-1));
+    }
 
     template <typename TText>
     RankDictionary(TText const & text) :
         _length(0)
     {
+        static const unsigned maxValue = (1 << _BITS_PER_VALUE) - 1;
+        for (unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
+            _CHAR_BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue-i, i + (1 << (_BITS_PER_VALUE-1)));
+        for (unsigned i = 0; i < _VALUES_PER_WORD; ++i)
+            _TRUNC_BITMASKS[i] = _bitmaskWrapper<TWordType>(*this, _BITS_PER_WORD, i+1, _BITS_PER_VALUE, 1, 1 << (_BITS_PER_VALUE-1));
+
         createRankDictionary(*this, text);
     }
 };
+
+template <typename TValue, typename TSpec, typename TConfig>
+typename RankDictionary<TValue, Levels<TSpec, TConfig> >::TWordType RankDictionary<TValue, Levels<TSpec, TConfig> >::_CHAR_BITMASKS[ValueSize<TValue>::VALUE];
+
+template <typename TValue, typename TSpec, typename TConfig>
+typename RankDictionary<TValue, Levels<TSpec, TConfig> >::TWordType RankDictionary<TValue, Levels<TSpec, TConfig> >::_TRUNC_BITMASKS[RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD];
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function loadAndCache()
+// Function getFibre()
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): move loadAndCache() in misc_cuda.h
 
-template <typename TValue>
-SEQAN_HOST_DEVICE inline TValue
-loadAndCache(TValue const & value)
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>::Type &
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, FibreRanks)
 {
-#if __CUDA_ARCH__ >= 350
-    return __ldg(&value);
-#else
-    return value;
-#endif
+    return dict.blocks;
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>::Type const &
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, FibreRanks)
+{
+    return dict.blocks;
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreSuperBlocks>::Type &
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, FibreSuperBlocks)
+{
+    return dict.superblocks;
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreSuperBlocks>::Type const &
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, FibreSuperBlocks)
+{
+    return dict.superblocks;
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreUltraBlocks>::Type &
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, FibreUltraBlocks)
+{
+    return dict.ultrablocks;
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreUltraBlocks>::Type const &
+getFibre(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, FibreUltraBlocks)
+{
+    return dict.ultrablocks;
 }
 
 // ----------------------------------------------------------------------------
-// Function loadAndCache()                                              [Tuple]
+// Function empty()
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): move loadAndCache() in misc_cuda.h
 
-template <typename TValue, unsigned SIZE, typename TSpec, typename TConfig>
-SEQAN_HOST_DEVICE inline Tuple<TValue, SIZE, TSpec>
-loadAndCache(Tuple<TValue, SIZE, TSpec> const & tuple)
+template <typename TValue, typename TSpec, typename TConfig>
+inline bool empty(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict)
 {
-#if __CUDA_ARCH__ >= 350
-    typedef Tuple<TValue, SIZE, TSpec>  TTuple;
-
-    const unsigned UINTS = BytesPerValue<TTuple>::VALUE / 4;
-
-    union { TTuple x; uint4 y[UINTS]; } tmp;
-
-    for (unsigned u = 0; u < UINTS; ++u)
-        tmp.y[u] = __ldg(reinterpret_cast<uint4 const *>(&tuple) + u);
-
-    return tmp.x;
-#else
-    return tuple;
-#endif
+    return empty(getFibre(dict, FibreRanks())) && empty(getFibre(dict, FibreSuperBlocks())) && empty(getFibre(dict, FibreUltraBlocks()));
 }
 
 // ----------------------------------------------------------------------------
-// Function loadAndCache()                               [RankDictionaryEntry_]
+// Function clear()
 // ----------------------------------------------------------------------------
-//
-//template <typename TValue, typename TSpec, typename TConfig>
-//SEQAN_HOST_DEVICE inline RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >
-//loadAndCache(RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> > const & entry)
-//{
-//#if __CUDA_ARCH__ >= 350
-//    typedef RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >   TEntry;
-//
-//    const unsigned UINTS = BytesPerValue<TEntry>::VALUE / 4;
-//
-//    union { TEntry x; uint4 y[UINTS]; } tmp;
-//
-//    for (unsigned u = 0; u < UINTS; ++u)
-//        tmp.y[u] = __ldg(reinterpret_cast<uint4 const *>(&entry) + u);
-//
-//    return tmp.x;
-//#else
-//    return entry;
-//#endif
-//}
 
-//template <unsigned SIZE, typename TSpec, typename TConfig>
-//SEQAN_HOST_DEVICE inline Tuple<Tuple<Dna, SIZE, BitPacked<> >, 4, TSpec>
-//loadAndCache(Tuple<Tuple<Dna, SIZE, BitPacked<> >, 4, TSpec> const & values)
-//{
-//#if __CUDA_ARCH__ >= 350
-//    Tuple<Tuple<Dna, SIZE, BitPacked<> >, 4, TSpec> tmp;
-//
-//    uint4 t = __ldg((uint4 *)values.i);
-//    tmp.i[0].i = t.x;
-//    tmp.i[1].i = t.y;
-//    tmp.i[2].i = t.z;
-//    tmp.i[3].i = t.w;
-//
-//    return tmp;
-//#else
-//    return values;
-//#endif
-//}
-
-//template <unsigned SIZE, typename TSpec, typename TConfig>
-//SEQAN_HOST_DEVICE inline Tuple<Tuple<bool, SIZE, BitPacked<> >, 1, TSpec>
-//loadAndCache(Tuple<Tuple<bool, SIZE, BitPacked<> >, 1, TSpec> const & values)
-//{
-//#if __CUDA_ARCH__ >= 350
-//    Tuple<Tuple<bool, SIZE, BitPacked<> >, 1, TSpec> tmp;
-//
-//    uint2 t = __ldg((uint2 *)values.i);
-//    tmp.i[0].i = t.x;
-//    tmp.i[1].i = t.y;
-//
-//    return tmp;
-//#else
-//    return values;
-//#endif
-//}
+template <typename TValue, typename TSpec, typename TConfig>
+inline void clear(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
+{
+    clear(dict.blocks);
+    clear(dict.superblocks);
+    clear(dict.ultrablocks);
+}
 
 // ----------------------------------------------------------------------------
 // Function _toPosInWord()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-_toPosInWord(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos posInBlock)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toPosInWord(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const posInBlock)
 {
     return posInBlock % RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD;
 }
@@ -407,8 +575,8 @@ _toPosInWord(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-_toWordPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos posInBlock)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toWordPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const posInBlock)
 {
     return posInBlock / RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD;
 }
@@ -418,10 +586,32 @@ _toWordPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, T
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-_toPosInBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos pos)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toPosInBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const pos)
 {
     return pos % RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK;
+}
+
+// ----------------------------------------------------------------------------
+// Function _toPosInSuperBlock()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toPosInSuperBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const pos)
+{
+    return pos % RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_SUPERBLOCK;
+}
+
+// ----------------------------------------------------------------------------
+// Function _toPosInUltraBlock()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toPosInUltraBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const pos)
+{
+    return pos % RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_ULTRABLOCK;
 }
 
 // ----------------------------------------------------------------------------
@@ -429,10 +619,32 @@ _toPosInBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-_toBlockPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos pos)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toBlockPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const pos)
 {
     return pos / RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK;
+}
+
+// ----------------------------------------------------------------------------
+// Function _toSuperBlockPos()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toSuperBlockPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const pos)
+{
+    return pos / RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_SUPERBLOCK;
+}
+
+// ----------------------------------------------------------------------------
+// Function _toUltraBlockPos()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+_toUltraBlockPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TPos const pos)
+{
+    return pos / RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_ULTRABLOCK;
 }
 
 // ----------------------------------------------------------------------------
@@ -441,7 +653,7 @@ _toBlockPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, 
 
 template <typename TValue, typename TSpec, typename TConfig, typename TBlockPos>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-_toPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TBlockPos blockPos)
+_toPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TBlockPos const blockPos)
 {
     return blockPos * RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK;
 }
@@ -451,17 +663,17 @@ _toPos(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TBloc
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TBlockPos, typename TWordPos>
-SEQAN_HOST_DEVICE inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::TValues &
-_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TBlockPos blockPos, TWordPos wordPos)
+inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::TValues &
+_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TBlockPos const blockPos, TWordPos const wordPos)
 {
-    return dict.ranks[blockPos].values[wordPos];
+    return dict.blocks[blockPos].values[wordPos];
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TBlockPos, typename TWordPos>
-SEQAN_HOST_DEVICE inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::TValues const &
-_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TBlockPos blockPos, TWordPos wordPos)
+inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::TValues const &
+_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TBlockPos const blockPos, TWordPos const wordPos)
 {
-    return dict.ranks[blockPos].values[wordPos];
+    return dict.blocks[blockPos].values[wordPos];
 }
 
 // ----------------------------------------------------------------------------
@@ -469,17 +681,17 @@ _valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TBlockPo
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::Type &
-_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
+inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::Type &
+_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
 {
-    return dict.ranks[_toBlockPos(dict, pos)].values;
+    return dict.blocks[_toBlockPos(dict, pos)].values;
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::Type const &
-_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
+inline typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::Type const &
+_valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos)
 {
-    return dict.ranks[_toBlockPos(dict, pos)].values;
+    return dict.blocks[_toBlockPos(dict, pos)].values;
 }
 
 // ----------------------------------------------------------------------------
@@ -487,24 +699,59 @@ _valuesAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type &
-_blockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
+inline typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type &
+_blockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
 {
-    return dict.ranks[_toBlockPos(dict, pos)].block;
+    return dict.blocks[_toBlockPos(dict, pos)].block;
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type const &
-_blockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
+inline typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type const &
+_blockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos)
 {
-    return dict.ranks[_toBlockPos(dict, pos)].block;
+    return dict.blocks[_toBlockPos(dict, pos)].block;
+}
+
+// ----------------------------------------------------------------------------
+// Function _superBlockAt()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >::Type &
+_superBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
+{
+    return dict.superblocks[_toSuperBlockPos(dict, pos)];
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >::Type const &
+_superBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos)
+{
+    return dict.superblocks[_toSuperBlockPos(dict, pos)];
+}
+
+// ----------------------------------------------------------------------------
+// Function _ultraBlockAt()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename RankDictionaryUltraBlock_<TValue, Levels<TSpec, TConfig> >::Type &
+_ultraBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
+{
+    return dict.ultrablocks[_toUltraBlockPos(dict, pos)];
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename RankDictionaryUltraBlock_<TValue, Levels<TSpec, TConfig> >::Type const &
+_ultraBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos)
+{
+    return dict.ultrablocks[_toUltraBlockPos(dict, pos)];
 }
 
 // ----------------------------------------------------------------------------
 // Function _padValues()
 // ----------------------------------------------------------------------------
 // Set values beyond length(dict) but still within the end of the ranks fibre.
-
 template <typename TValue, typename TSpec, typename TConfig>
 inline void _padValues(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
 {
@@ -512,7 +759,7 @@ inline void _padValues(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
     typedef typename Size<TRankDictionary>::Type                    TSize;
 
     TSize beginPos = length(dict);
-    TSize endPos   = length(dict.ranks) * TRankDictionary::_VALUES_PER_BLOCK;
+    TSize endPos   = length(dict.blocks) * TRankDictionary::_VALUES_PER_BLOCK;
 
     for (TSize pos = beginPos; pos < endPos; ++pos)
         setValue(dict, pos, TValue());
@@ -523,141 +770,253 @@ inline void _padValues(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-inline void _clearBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
+inline void _clearBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
 {
     clear(_blockAt(dict, pos));
 }
 
-// ----------------------------------------------------------------------------
-// Function _clearBlockAt(bool)
-// ----------------------------------------------------------------------------
-
 template <typename TSpec, typename TConfig, typename TPos>
-inline void _clearBlockAt(RankDictionary<bool, Levels<TSpec, TConfig> > & dict, TPos pos)
+inline void _clearBlockAt(RankDictionary<bool, Levels<TSpec, TConfig> > & dict, TPos const pos)
 {
     _blockAt(dict, pos) = 0u;
 }
+
+// ----------------------------------------------------------------------------
+// Function _clearSuperBlockAt()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS >= 2, void>
+_clearSuperBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
+{
+    clear(_superBlockAt(dict, pos));
+}
+
+template <typename TSpec, typename TConfig, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS >= 2, void>
+_clearSuperBlockAt(RankDictionary<bool, Levels<TSpec, TConfig> > & dict, TPos const pos)
+{
+    _superBlockAt(dict, pos) = 0u;
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 1, void>
+_clearSuperBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & /* dict */, TPos const /* pos */) {}
+
+// ----------------------------------------------------------------------------
+// Function _clearUltraBlockAt()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 3, void>
+_clearUltraBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
+{
+    clear(_ultraBlockAt(dict, pos));
+}
+
+template <typename TSpec, typename TConfig, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 3, void>
+_clearUltraBlockAt(RankDictionary<bool, Levels<TSpec, TConfig> > & dict, TPos const pos)
+{
+    _ultraBlockAt(dict, pos) = 0u;
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS <= 2, void>
+_clearUltraBlockAt(RankDictionary<TValue, Levels<TSpec, TConfig> > & /* dict */, TPos const /* pos */) {}
 
 // ----------------------------------------------------------------------------
 // Function _getBlockRank()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TBlock, typename TPos, typename TChar>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-_getBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TBlock const & block, TPos /* pos */, TChar c)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+_getBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TBlock const & block, TPos const /* pos */, TChar const c)
 {
-    return loadAndCache(block[ordValue(c)]);
-//    return block[ordValue(c)];
+    return block[ordValue(c)];
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TBlock, typename TPos, typename TChar, typename TSmaller>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & /* dict */, TBlock const & block, TPos const /* pos */, TChar const c, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    TSmaller _smaller = block[ordValue(c)-1];
+    smaller += _smaller; // NOTE: _smaller cannot be removed. order of evaluation is not defined!
+    return block[ordValue(c)] - _smaller;
+}
+
+template <typename TSpec, typename TConfig, typename TBlock, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 1, typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type>
+_getBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TBlock const & block, TPos const pos, bool const c)
+{
+    // If c == false then return the complementary rank.
+    return c ? block : pos - _toPosInBlock(dict, pos) - block;
+}
+
+template <typename TSpec, typename TConfig, typename TBlock, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS >= 2, typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type>
+_getBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TBlock const & block, TPos const pos, bool const c)
+{
+    // If c == false then return the complementary rank.
+    return c ? block : _toPosInSuperBlock(dict, pos) - _toPosInBlock(dict, pos) - block;
+}
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TBlock, typename TPos, typename TSmaller>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TBlock const & block, TPos const pos, bool const /* c */, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    smaller += _getBlockRank(dict, block, pos, false);
+    return _getBlockRank(dict, block, pos, true);
 }
 
 // ----------------------------------------------------------------------------
-// Function _getBlockRank(bool)
+// Function _getSuperBlockRank()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TBlock, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
-_getBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TBlock const & block, TPos pos, bool c)
+template <typename TValue, typename TSpec, typename TConfig, typename TSuperBlock, typename TPos, typename TChar>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+_getSuperBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TSuperBlock const & superblock, TPos const /* pos */, TChar const c)
 {
-    TBlock rank = loadAndCache(block);
+    return superblock[ordValue(c)];
+}
 
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TSuperBlock, typename TPos, typename TChar, typename TSmaller>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getSuperBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & /* dict */, TSuperBlock const & superblock, TPos const /* pos */, TChar const c, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    TSmaller _smaller = superblock[ordValue(c)-1];
+    smaller += _smaller; // NOTE: _smaller cannot be removed. order of evaluation is not defined!
+    return superblock[ordValue(c)] - _smaller;
+}
+
+template <typename TSpec, typename TConfig, typename TSuperBlock, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 2, typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type>
+_getSuperBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TSuperBlock const & superblock, TPos const pos, bool const c)
+{
     // If c == false then return the complementary rank.
-    return c ? rank : pos - _toPosInBlock(dict, pos) - rank;
+    return c ? superblock : pos - _toPosInSuperBlock(dict, pos) - superblock;
+}
 
-//    return c ? block : pos - _toPosInBlock(dict, pos) - block;
+template <typename TSpec, typename TConfig, typename TSuperBlock, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 3, typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type>
+_getSuperBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TSuperBlock const & superblock, TPos const pos, bool const c)
+{
+    // If c == false then return the complementary rank.
+    return c ? superblock : _toPosInUltraBlock(dict, pos) - _toPosInSuperBlock(dict, pos) - superblock;
+}
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TSuperBlock, typename TPos, typename TSmaller>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getSuperBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TSuperBlock const & superblock, TPos const pos, bool const /*c*/, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    smaller += _getSuperBlockRank(dict, superblock, pos, false);
+    return _getSuperBlockRank(dict, superblock, pos, true);
+}
+
+// ----------------------------------------------------------------------------
+// Function _getUltraBlockRank()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TConfig, typename TUltraBlock, typename TPos, typename TChar>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+_getUltraBlockRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TUltraBlock const & ultrablock, TPos const /* pos */, TChar const c)
+{
+    return ultrablock[ordValue(c)];
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TUltraBlock, typename TPos, typename TChar, typename TSmaller>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getUltraBlockRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & /* dict */, TUltraBlock const & ultrablock, TPos const /* pos */, TChar const c, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    TSmaller _smaller = ultrablock[ordValue(c)-1];
+    smaller += _smaller; // NOTE: _smaller cannot be removed. order of evaluation is not defined!
+    return ultrablock[ordValue(c)] - _smaller;
+}
+
+template <typename TSpec, typename TConfig, typename TUltraBlock, typename TPos>
+inline typename std::enable_if_t<TConfig::LEVELS == 3, typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type>
+_getUltraBlockRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TUltraBlock const & ultrablock, TPos const pos, bool const c)
+{
+    // If c == false then return the complementary rank.
+    return c ? ultrablock : pos - _toPosInUltraBlock(dict, pos) - ultrablock;
+}
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TUltraBlock, typename TPos, typename TSmaller>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getUltraBlockRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TUltraBlock const & ultrablock, TPos const pos, bool const /*c*/, TSmaller & smaller)
+{
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    smaller += _getUltraBlockRank(dict, ultrablock, pos, false);
+    return _getUltraBlockRank(dict, ultrablock, pos, true);
 }
 
 // ----------------------------------------------------------------------------
 // Function _getWordRank()
 // ----------------------------------------------------------------------------
-// NOTE(esiragusa): This version is generic but absymally slow - only for testing purposes.
 
 template <typename TValue, typename TSpec, typename TConfig, typename TWord, typename TPosInWord>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
-             TWord const & word,
-             TPosInWord posInWord,
-             TValue c)
+_getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */, TWord const & word, TPosInWord const posInWord, TValue const c)
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                           TRankDictionary;
-    typedef typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::TValues  TRankDictionaryValues;
-    typedef typename Size<TRankDictionary>::Type                                TSize;
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                TRankDictionary;
 
-    TRankDictionaryValues values;
-    values.i = word;
-
-    TSize valueRank = 0;
-
-    for (TSize i = 0; i <= posInWord; ++i)
-        valueRank += isEqual(values[i], c);
-
-    return valueRank;
+    TWord mask = word ^ TRankDictionary::_CHAR_BITMASKS[ordValue(c)];
+    // NOTE: actually it should be: mask & (mask >> 1) & (mask >> 2) & ... but this is shorter and equivalent
+    for (TWord i = 1; i < TRankDictionary::_BITS_PER_VALUE; ++i)
+        mask &= mask >> 1;
+    return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & mask);
 }
 
-// ----------------------------------------------------------------------------
-// Function _getWordRank(Dna)
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TConfig, typename TWord, typename TPosInWord>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<Dna, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<Dna, Levels<TSpec, TConfig> > const & /* dict */,
-             TWord const & values,
-             TPosInWord posInWord,
-             Dna c)
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TWord, typename TPosInWord>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const &, TWord const & word, TPosInWord const posInWord, TValue const c)
 {
-    typedef RankDictionary<Dna, Levels<TSpec, TConfig> >                TRankDictionary;
-    typedef typename Size<TRankDictionary>::Type                        TSize;
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >    TRankDictionary;
 
-    // Clear the last positions.
-    TWord word = hiBits(values, TRankDictionary::_BITS_PER_VALUE * (posInWord + 1));
-
-    // And matches when c == G|T.
-    TWord odd  = ((ordValue(c) & ordValue(Dna('G'))) ? word : ~word) >> 1;
-
-    // And matches when c == C|T.
-    TWord even = ((ordValue(c) & ordValue(Dna('C'))) ? word : ~word);
-
-    // Apply the interleaved mask.
-    TWord mask = odd & even & RankDictionaryBitMask_<TWord>::VALUE;
-
-    // The rank is the sum of the bits on.
-    TSize valueRank = popCount(mask);
-
-    // If c == A then masked character positions must be subtracted from the count.
-    if (c == Dna('A')) valueRank -= TRankDictionary::_VALUES_PER_WORD - (posInWord + 1);
-
-    return valueRank;
+    return popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)] - word) & TRankDictionary::_TRUNC_BITMASKS[posInWord]);
 }
 
-// ----------------------------------------------------------------------------
-// Function _getWordRank(bool)
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TConfig, typename TWord, typename TPosInWord>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & /* dict */,
-             TWord const & values,
-             TPosInWord posInWord,
-             bool c)
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TWord, typename TPosInWord, typename TPos>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getWordRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TWord const & word, TPosInWord const posInWord, TValue const c, TPos & smaller)
 {
-    // Negate the values to compute the rank of zero.
-    TWord word = c ? values : ~values;
+    // can only be called if ordValue(c) > 0. smaller has to be initialized by the caller!
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >            TRankDictionary;
 
-    // Clear the last positions.
-    TWord mask = hiBits(word, posInWord + 1);
-
-    // Get the sum of the bits on.
-    return popCount(mask);
+    TPos _smaller = _getWordRank(dict, word, posInWord, static_cast<TValue>(ordValue(c) - 1));
+    smaller += _smaller;
+    return popCount((TRankDictionary::_CHAR_BITMASKS[ordValue(c)] - word) & TRankDictionary::_TRUNC_BITMASKS[posInWord]) - _smaller;
 }
-
-// ----------------------------------------------------------------------------
-// Function _getWordRank()
-// ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TWord>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-_getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TWord const & values, TValue c)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+_getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TWord const & word, TValue const c)
 {
-    return _getWordRank(dict, values, RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD - 1, c);
+    return _getWordRank(dict, word, RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_WORD - 1, c);
+}
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TWord, typename TPosInWord>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getWordRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const &, TWord const & word, TPosInWord const posInWord, bool const c)
+{
+    typedef RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >    TRankDictionary;
+
+    return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & (word ^ TRankDictionary::_CHAR_BITMASKS[ordValue(c)]));
+}
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TWord, typename TPosInWord, typename TPos>
+inline typename Size<RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getWordRank(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TWord const & word, TPosInWord const posInWord, bool const /* c */, TPos & smaller)
+{
+    typedef RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >    TRankDictionary;
+
+    smaller += _getWordRank(dict, word, posInWord, false);
+    return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & (word ^ TRankDictionary::_CHAR_BITMASKS[1]));
 }
 
 // ----------------------------------------------------------------------------
@@ -665,11 +1024,8 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TWord
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TValues, typename TPosInBlock>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-_getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
-              TValues const & values,
-              TPosInBlock posInBlock,
-              TValue c)
+inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+_getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TValues const & values, TPosInBlock const posInBlock, TValue const c)
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDictionary;
     typedef typename Size<TRankDictionary>::Type            TSize;
@@ -684,9 +1040,34 @@ _getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
 //      valueRank += _getWordRank(dict, values[wordPrevPos].i, c);
 
     for (TSize wordPrevPos = 0; wordPrevPos < TRankDictionary::_WORDS_PER_BLOCK; ++wordPrevPos)
-      if (wordPrevPos < wordPos) valueRank += _getWordRank(dict, values[wordPrevPos].i, c);
+        if (wordPrevPos < wordPos)
+            valueRank += _getWordRank(dict, values[wordPrevPos].i, c);
 
     valueRank += _getWordRank(dict, values[wordPos].i, posInWord, c);
+
+    return valueRank;
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TValues, typename TPosInBlock, typename TSmaller>
+inline typename Size<RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const>::Type
+_getValueRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TValues const & values, TPosInBlock const posInBlock, TValue const c, TSmaller & smaller)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > TRankDictionary;
+
+    TSize wordPos    = _toWordPos(dict, posInBlock);
+    TSize posInWord  = _toPosInWord(dict, posInBlock);
+
+    TSize valueRank = 0;
+
+    // NOTE(esiragusa): writing the loop in this form prevents the compiler from unrolling it.
+    //    for (TSize wordPrevPos = 0; wordPrevPos < wordPos; ++wordPrevPos)
+    //      valueRank += _getWordRank(dict, values[wordPrevPos].i, c);
+
+    for (TSize wordPrevPos = 0; wordPrevPos < TRankDictionary::_WORDS_PER_BLOCK; ++wordPrevPos)
+        if (wordPrevPos < wordPos)
+            valueRank += _getWordRank(dict, values[wordPrevPos].i, TRankDictionary::_VALUES_PER_WORD - 1, c, smaller);
+
+    valueRank += _getWordRank(dict, values[wordPos].i, posInWord, c, smaller);
 
     return valueRank;
 }
@@ -695,10 +1076,11 @@ _getValueRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict,
 // Function _getValuesRanks()
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): Specialize _getValuesRanks() for Dna.
+// TODO(cpockrandt): why could that be beneficial?
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
 inline typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type
-_getValuesRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
+_getValuesRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos)
 {
     typedef typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type    TBlock;
     typedef typename ValueSize<TValue>::Type                                        TValueSize;
@@ -711,13 +1093,41 @@ _getValuesRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TP
     return blockRank;
 }
 
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos>
+inline typename RankDictionaryBlock_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >::Type
+_getValuesRanks(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos)
+{
+    typedef typename RankDictionaryBlock_<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >::Type    TBlock;
+    typedef typename ValueSize<TValue>::Type                                        TValueSize;
+
+    TBlock blockRank;
+    TPos rank = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(0));
+    assignValue(blockRank, 0, rank);
+
+    for (TValueSize c = 1; c < ValueSize<TValue>::VALUE; ++c)
+    {
+        TPos smaller = 0;
+        rank = _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), TValue(c), smaller);
+        assignValue(blockRank, c, rank + smaller);
+    }
+
+    return blockRank;
+}
+
 // ----------------------------------------------------------------------------
 // Function _getValuesRanks(bool)
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TPos>
 inline typename RankDictionaryBlock_<bool, Levels<TSpec, TConfig> >::Type
-_getValuesRanks(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos pos)
+_getValuesRanks(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos const pos)
+{
+    return _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), true);
+}
+
+template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos>
+inline typename RankDictionaryBlock_<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > >::Type
+_getValuesRanks(RankDictionary<bool, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos)
 {
     return _getValueRank(dict, _valuesAt(dict, pos), _toPosInBlock(dict, pos), true);
 }
@@ -725,37 +1135,153 @@ _getValuesRanks(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos
 // ----------------------------------------------------------------------------
 // Function getRank()
 // ----------------------------------------------------------------------------
-template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos, TChar c)
-{
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > const           TRankDictionary;
-    typedef typename Fibre<TRankDictionary, FibreRanks>::Type               TFibreRanks;
-    typedef typename Value<TFibreRanks>::Type                               TRankEntry;
-//    typedef typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type  TRankBlock;
-    typedef typename RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >::Type TRankValues;
-    typedef typename Size<TRankDictionary>::Type                            TSize;
 
-    TSize blockPos   = _toBlockPos(dict, pos);
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline std::enable_if_t<TConfig::LEVELS == 3, typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type>
+getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos, TChar const c)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > const                           TRankDictionary;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreUltraBlocks>::Type>::Type   TFibreUltraBlocks;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreSuperBlocks>::Type>::Type   TFibreSuperBlocks;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreRanks>::Type>::Type         TFibreBlocks;
+    typedef typename Size<TRankDictionary>::Type                                            TSize;
+
     TSize posInBlock = _toPosInBlock(dict, pos);
 
-//    TRankEntry entry = loadAndCache(dict.ranks[blockPos]);
-    TRankEntry const & entry = dict.ranks[blockPos];
+    TFibreUltraBlocks const & ultraBlock(_ultraBlockAt(dict, pos));
+    TFibreSuperBlocks const & superBlock(_superBlockAt(dict, pos));
+    TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
 
-//    TRankBlock block = loadAndCache(entry.block);
-    TRankValues values = loadAndCache(entry.values);
-
-    return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c)) +
-           _getValueRank(dict, values, posInBlock, static_cast<TValue>(c));
+    return _getUltraBlockRank(dict, ultraBlock, pos, static_cast<TValue>(c))
+         + _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c))
+         + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
 }
 
-// ----------------------------------------------------------------------------
-// Function getRank(bool)
-// ----------------------------------------------------------------------------
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline typename std::enable_if_t<TConfig::LEVELS == 2, typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type>
+getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos, TChar const c)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > const                           TRankDictionary;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreSuperBlocks>::Type>::Type   TFibreSuperBlocks;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreRanks>::Type>::Type         TFibreBlocks;
+    typedef typename Size<TRankDictionary>::Type                                            TSize;
+
+    TSize posInBlock = _toPosInBlock(dict, pos);
+
+    TFibreSuperBlocks const & superBlock(_superBlockAt(dict, pos));
+    TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
+
+    return _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c))
+         + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline typename std::enable_if_t<TConfig::LEVELS == 1, typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type>
+getRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos, TChar const c)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > const                           TRankDictionary;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreRanks>::Type>::Type         TFibreBlocks;
+    typedef typename Size<TRankDictionary>::Type                                            TSize;
+
+    TSize posInBlock = _toPosInBlock(dict, pos);
+
+    TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
+
+    return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
+inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c)
+{
+    TPos smaller;
+    return getRank(dict, pos, static_cast<TValue>(c), smaller);
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
+inline TSize getRank(RankDictionary<TValue, Levels<TSpec, LevelsRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & /*smaller*/)
+{
+    return getRank(dict, pos, static_cast<TValue>(c));
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
+inline typename std::enable_if_t<LEVELS == 3, TSize>
+getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & smaller)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const   TRankDictionary;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreUltraBlocks>::Type>::Type           TFibreUltraBlocks;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreSuperBlocks>::Type>::Type           TFibreSuperBlocks;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreRanks>::Type>::Type                 TFibreBlocks;
+
+    TSize posInBlock = _toPosInBlock(dict, pos);
+
+    TFibreUltraBlocks const & ultraBlock(_ultraBlockAt(dict, pos));
+    TFibreSuperBlocks const & superBlock(_superBlockAt(dict, pos));
+    TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
+
+    // TODO(cpockrandt): remove if-statement for an additional block/superblock/ultrablock with value 0
+    smaller = 0;
+    if (SEQAN_LIKELY(ordValue(c) > 0))
+        return _getUltraBlockRank(dict, ultraBlock, pos, static_cast<TValue>(c), smaller)
+             + _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c), smaller)
+             + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
+             + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
+
+    return _getUltraBlockRank(dict, ultraBlock, pos, static_cast<TValue>(c))
+         + _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c))
+         + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
+inline typename std::enable_if_t<LEVELS == 2, TSize>
+getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & smaller)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const   TRankDictionary;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreSuperBlocks>::Type>::Type           TFibreSuperBlocks;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreRanks>::Type>::Type                 TFibreBlocks;
+
+    TSize posInBlock = _toPosInBlock(dict, pos);
+
+    TFibreSuperBlocks const & superBlock(_superBlockAt(dict, pos));
+    TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
+
+    smaller = 0;
+    if (SEQAN_LIKELY(ordValue(c) > 0))
+        return _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c), smaller)
+             + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
+             + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
+
+    return _getSuperBlockRank(dict, superBlock, pos, static_cast<TValue>(c))
+         + _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
+}
+
+template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB, typename TPos, typename TChar>
+inline typename std::enable_if_t<LEVELS == 1, TSize>
+getRank(RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const & dict, TPos const pos, TChar const c, TPos & smaller)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> > > const   TRankDictionary;
+    typedef typename Value<typename Fibre<TRankDictionary, FibreRanks>::Type>::Type                 TFibreBlocks;
+
+    TSize posInBlock = _toPosInBlock(dict, pos);
+
+    TFibreBlocks const & entry(dict.blocks[_toBlockPos(dict, pos)]);
+
+    smaller = 0;
+    if (SEQAN_LIKELY(ordValue(c) > 0))
+        return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c), smaller)
+             + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c), smaller);
+
+    return _getBlockRank(dict, entry.block, pos, static_cast<TValue>(c))
+         + _getValueRank(dict, entry.values, posInBlock, static_cast<TValue>(c));
+}
 
 template <typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
-getRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos pos)
+inline typename Size<RankDictionary<bool, Levels<TSpec, TConfig> > const>::Type
+getRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos const pos)
 {
     return getRank(dict, pos, true);
 }
@@ -764,8 +1290,8 @@ getRank(RankDictionary<bool, Levels<TSpec, TConfig> > const & dict, TPos pos)
 // Function getValue()
 // ----------------------------------------------------------------------------
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
+inline typename Value<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos)
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >             TRankDictionary;
     typedef typename Size<TRankDictionary>::Type                        TSize;
@@ -779,8 +1305,8 @@ getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos)
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
-getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
+inline typename Value<RankDictionary<TValue, Levels<TSpec, TConfig> > const>::Type
+getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos const pos)
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >             TRankDictionary;
     typedef typename Size<TRankDictionary>::Type                        TSize;
@@ -798,7 +1324,7 @@ getValue(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, TPos pos)
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
-inline void setValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos pos, TChar c)
+inline void setValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPos const pos, TChar const c)
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >             TRankDictionary;
     typedef typename Size<TRankDictionary>::Type                        TSize;
@@ -815,9 +1341,9 @@ inline void setValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TPo
 // Function appendValue()
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Better not to have appendValue() - it is not efficient - and thus neither length().
-
+// TODO(cpockrandt): try to remove this (it is currently still used by wavelet trees)
 template <typename TValue, typename TSpec, typename TConfig, typename TChar, typename TExpand>
-inline void appendValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TChar c, Tag<TExpand> const tag)
+inline void appendValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TChar const c, Tag<TExpand> const tag)
 {
     resize(dict, length(dict) + 1, tag);
     setValue(dict, length(dict) - 1, c);
@@ -827,33 +1353,84 @@ inline void appendValue(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, 
 // Function updateRanks()
 // ----------------------------------------------------------------------------
 
+template <typename TValue, typename TSpec, typename TConfig, typename TSize>
+inline typename std::enable_if_t<TConfig::LEVELS < 3, void>
+_updateUltraBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > & /* dict */, TSize const /* blockPos */) {}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TSize>
+inline typename std::enable_if_t<TConfig::LEVELS == 3, void>
+_updateUltraBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const blockPos)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDictionary;
+    static const unsigned blocks_per_ultrablock = TRankDictionary::_VALUES_PER_ULTRABLOCK / TRankDictionary::_VALUES_PER_BLOCK;
+
+    if (blockPos % blocks_per_ultrablock == 0)
+    {
+        TSize curr   = _toPos(dict, blockPos);
+        TSize prevUB = _toPos(dict, blockPos - blocks_per_ultrablock);
+
+        _ultraBlockAt(dict, curr) = _ultraBlockAt(dict, prevUB) + _superBlockAt(dict, curr);
+        _clearSuperBlockAt(dict, curr);
+    }
+}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TSize>
+inline typename std::enable_if_t<TConfig::LEVELS == 1, void>
+_updateSuperBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > & /* dict */, TSize const /* blockPos */) {}
+
+template <typename TValue, typename TSpec, typename TConfig, typename TSize>
+inline typename std::enable_if_t<TConfig::LEVELS >= 2, void>
+_updateSuperBlock(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const blockPos)
+{
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDictionary;
+    static const unsigned blocks_per_superblock = TRankDictionary::_VALUES_PER_SUPERBLOCK / TRankDictionary::_VALUES_PER_BLOCK;
+
+    if (blockPos % blocks_per_superblock == 0)
+    {
+        TSize curr   = _toPos(dict, blockPos);
+        TSize prevSB = _toPos(dict, blockPos - blocks_per_superblock);
+
+        _superBlockAt(dict, curr) = _superBlockAt(dict, prevSB) + _blockAt(dict, curr);
+        _clearBlockAt(dict, curr);
+    }
+}
+
 template <typename TValue, typename TSpec, typename TConfig>
-inline void updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
+inline void
+updateRanks(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >         TRankDictionary;
     typedef typename Size<TRankDictionary>::Type                    TSize;
     typedef typename Fibre<TRankDictionary, FibreRanks>::Type       TFibreRanks;
-    typedef typename Iterator<TFibreRanks, Standard>::Type          TFibreRanksIter;
+    typedef typename Iterator<TFibreRanks, Standard>::Type          TBlockIter;
 
     if (empty(dict)) return;
 
-    TFibreRanksIter ranksBegin = begin(dict.ranks, Standard());
-    TFibreRanksIter ranksEnd = end(dict.ranks, Standard());
-
-    // Insures the first block ranks start from zero.
+    // Insures the first block/superbock/ultrablock ranks start from zero.
+    _clearUltraBlockAt(dict, 0u);
+    _clearSuperBlockAt(dict, 0u);
     _clearBlockAt(dict, 0u);
 
     // Clear the uninitialized values.
     _padValues(dict);
 
-    // Iterate through the blocks.
-    for (TFibreRanksIter ranksIt = ranksBegin; ranksIt != ranksEnd - 1; ++ranksIt)
+    TBlockIter blocksBegin = begin(dict.blocks, Standard());
+    TBlockIter blocksEnd = end(dict.blocks, Standard());
+
+    for (TBlockIter blocksIt = blocksBegin; blocksIt != blocksEnd; ++blocksIt)
     {
-        TSize blockPos = ranksIt - ranksBegin;
+        TSize blockPos = blocksIt - blocksBegin;
         TSize curr = _toPos(dict, blockPos);
         TSize next = _toPos(dict, blockPos + 1);
 
-        _blockAt(dict, next) = _blockAt(dict, curr) + _getValuesRanks(dict, next - 1);
+        if (blockPos > 0)
+        {
+            _updateSuperBlock(dict, blockPos);
+            _updateUltraBlock(dict, blockPos);
+        }
+
+        if (blocksIt != blocksEnd - 1)
+            _blockAt(dict, next) = _blockAt(dict, curr) + _getValuesRanks(dict, next - 1);
     }
 }
 
@@ -874,10 +1451,15 @@ length(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict)
 
 template <typename TValue, typename TSpec, typename TConfig, typename TSize, typename TExpand>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-reserve(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize newCapacity, Tag<TExpand> const tag)
+reserve(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const newCapacity, Tag<TExpand> const tag)
 {
-    return reserve(dict.ranks, (newCapacity + RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK - 1) /
-                               RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK, tag);
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDict_;
+
+    if (TConfig::LEVELS > 1)
+        reserve(dict.superblocks, (newCapacity + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK, tag);
+    if (TConfig::LEVELS > 2)
+        reserve(dict.ultrablocks, (newCapacity + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK, tag);
+    return reserve(dict.blocks, (newCapacity + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -886,11 +1468,68 @@ reserve(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize newCapacit
 
 template <typename TValue, typename TSpec, typename TConfig, typename TSize, typename TExpand>
 inline typename Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
-resize(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize newLength, Tag<TExpand> const tag)
+resize(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const newLength, Tag<TExpand> const tag)
 {
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDict_;
+
     dict._length = newLength;
-    return resize(dict.ranks, (newLength + RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK - 1) /
-                              RankDictionary<TValue, Levels<TSpec, TConfig> >::_VALUES_PER_BLOCK, tag);
+    if (TConfig::LEVELS > 1)
+        resize(dict.superblocks, (newLength + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK, tag);
+    if (TConfig::LEVELS > 2)
+        resize(dict.ultrablocks, (newLength + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK, tag);
+    return resize(dict.blocks, (newLength + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline bool save(RankDictionary<TValue, Levels<TSpec, TConfig> > const & dict, const char * fileName, int const openMode)
+{
+    String<char> name;
+    bool result = true;
+
+    result &= save(getFibre(dict, FibreRanks()), toCString(fileName), openMode);
+
+    if (TConfig::LEVELS > 1)
+    {
+        name = fileName;
+        append(name, ".sbl");
+        result &= save(getFibre(dict, FibreSuperBlocks()), toCString(name), openMode);
+    }
+
+    if (TConfig::LEVELS > 2)
+    {
+        name = fileName;
+        append(name, ".ubl");
+        result &= save(getFibre(dict, FibreUltraBlocks()), toCString(name), openMode);
+    }
+
+    return result;
+}
+
+template <typename TValue, typename TSpec, typename TConfig>
+inline bool open(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, const char * fileName, int const openMode)
+{
+    String<char> name;
+    bool result = true;
+
+    name = fileName;
+    append(name, "");
+    result &= open(getFibre(dict, FibreRanks()), toCString(name), openMode);
+
+    if (TConfig::LEVELS > 1)
+    {
+        name = fileName;
+        append(name, ".sbl");
+        result &= open(getFibre(dict, FibreSuperBlocks()), toCString(name), openMode);
+    }
+
+    if (TConfig::LEVELS > 2)
+    {
+        name = fileName;
+        append(name, ".ubl");
+        result &= open(getFibre(dict, FibreUltraBlocks()), toCString(name), openMode);
+    }
+
+    return result;
 }
 
 }

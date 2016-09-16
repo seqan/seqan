@@ -73,11 +73,10 @@ set (SEQAN_CTD_EXECUTABLES CACHE INTERNAL "Global list of executables for workfl
 # Build System Configuration Variables
 # ===========================================================================
 
-# Setting SEQAN_ENABLE_CUDA to ON through the command line or CMakeCache.txt
-# enables CUDA, provided the CUDA toolkit is found.
-option (SEQAN_ENABLE_CUDA
-        "Enable CUDA, if the toolkit is available."
-	OFF)
+option (SEQAN_STATIC_APPS "Build static apps." OFF)
+option (SEQAN_ARCH_SSE4 "Build SSE optimized binaries." OFF)
+option (SEQAN_ARCH_AVX2 "Build AVX optimized binaries." OFF)
+option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 
 # ===========================================================================
 # Setup Modules and Find Packages.

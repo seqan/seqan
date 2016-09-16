@@ -73,16 +73,10 @@ public:
     typedef typename Pointer_<TDPMatrix_>::Type TDPMatrixPointer_;
     typedef typename Iterator<TDPMatrix_, Standard>::Type TDPMatrixIterator;
 
-    TDPMatrixPointer_ _ptrDataContainer;        // The pointer to the underlying Matrix.
-    int _laneLeap;                              // Keeps track of the jump size from one column to another.
-    TDPMatrixIterator _activeColIterator;       // The current column iterator.
-
-
-    DPMatrixNavigator_() :
-        _ptrDataContainer(TDPMatrixPointer_(0)),
-        _laneLeap(0),
-        _activeColIterator()
-    {}
+    TDPMatrixPointer_   _ptrDataContainer  = nullptr;  // The pointer to the underlying Matrix.
+    int                 _laneLeap          = 0;  // Keeps track of the jump size from one column to another.
+    unsigned            _simdLane          = 0;  // Used for tracing the correct cell in case of simd vectors.
+    TDPMatrixIterator   _activeColIterator = TDPMatrixIterator();  // The current column iterator.
 };
 
 // ============================================================================
@@ -346,6 +340,8 @@ _setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;
 
+    SEQAN_ASSERT_LT(hostPosition, static_cast<TPosition>(length(container(dpNavigator))));
+
     dpNavigator._activeColIterator = begin(*dpNavigator._ptrDataContainer, Standard()) + hostPosition;
 }
 
@@ -361,6 +357,8 @@ _setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPTraceMatrix
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;
+    SEQAN_ASSERT_LT(horizontalPosition, static_cast<TPositionH>(length(container(dpNavigator), +DPMatrixDimension_::HORIZONTAL)));
+    SEQAN_ASSERT_LT(verticalPosition, static_cast<TPositionV>(length(container(dpNavigator), +DPMatrixDimension_::VERTICAL)));
 
     TPositionH  hostPosition = horizontalPosition * _dataFactors(container(dpNavigator))[+DPMatrixDimension_::HORIZONTAL] + verticalPosition;
     dpNavigator._activeColIterator = begin(*dpNavigator._ptrDataContainer, Standard()) + hostPosition;
@@ -382,9 +380,43 @@ assignValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigation
 }
 
 // ----------------------------------------------------------------------------
+// Function scalarValue(); Helper to switch between simd and scalar.
+// ----------------------------------------------------------------------------
+
+// SIMD Version. Returns always a copy and never a reference.
+template <typename TValue, typename TPos>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TValue> >, typename Value<TValue>::Type)
+_scalarValue(TValue const & vec,
+             TPos const pos)
+{
+    return value(vec, pos);
+}
+
+// Non-simd variant. Identity version.
+template <typename TValue, typename TPos>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TValue> > >, TValue &)
+_scalarValue(TValue & val,
+             TPos const /*pos*/)
+{
+    return val;
+}
+
+// Wrapper to get the scalar value.
+template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
+inline auto
+scalarValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator)
+{
+    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+        SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
+
+    return _scalarValue(*dpNavigator._activeColIterator, dpNavigator._simdLane);
+}
+
+// ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
 
+// Current position.
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
 inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> >::Type
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> & dpNavigator)
@@ -392,39 +424,40 @@ value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> 
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
-    return value(dpNavigator._activeColIterator);
+    return *dpNavigator._activeColIterator;
 }
 
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const>::Type
+inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const >::Type
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
-    return value(dpNavigator._activeColIterator);
+    return *dpNavigator._activeColIterator;
 }
 
+// At specified position.
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec, typename TPosition>
 inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> >::Type
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> & dpNavigator,
-      TPosition const & postition)
+      TPosition const & position)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
-    return value(begin(*dpNavigator._ptrDataContainer) + postition);
+    return *(begin(*dpNavigator._ptrDataContainer) + position);
 }
 
 template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec, typename TPosition>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const>::Type
+inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const >::Type
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator,
       TPosition const & position)
 {
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
-    return value(begin(*dpNavigator._ptrDataContainer) + position);
+    return *(begin(*dpNavigator._ptrDataContainer) + position);
 }
 
 // ----------------------------------------------------------------------------
@@ -463,6 +496,20 @@ position(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpe
         return 0;
 
     return position(dpNavigator._activeColIterator, *dpNavigator._ptrDataContainer);
+}
+
+// ----------------------------------------------------------------------------
+// Function _setSimdLane()
+// ----------------------------------------------------------------------------
+
+template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec, typename TPos>
+inline void
+_setSimdLane(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> & dpNavigator,
+             TPos const pos)
+{
+    SEQAN_ASSERT_LT(pos, static_cast<TPos>(LENGTH<typename Value<TDPMatrix>::Type>::VALUE));
+
+    dpNavigator._simdLane = pos;
 }
 
 }  // namespace seqan

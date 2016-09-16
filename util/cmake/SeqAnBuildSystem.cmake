@@ -47,30 +47,40 @@
 include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
 
+set (COMPILER_CLANG FALSE)
+set (COMPILER_GCC FALSE)
+set (COMPILER_LINTEL FALSE)
+set (COMPILER_WINTEL FALSE)
+set (COMPILER_MSVC FALSE)
+set (STDLIB_VS ${MSVC})
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set (COMPILER_CLANG TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
+  set (COMPILER_WINTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_LINTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set (COMPILER_GCC TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_MSVC TRUE)
+endif ()
+
 # ---------------------------------------------------------------------------
 # Enable /bigobj flag on Windows.
 # ---------------------------------------------------------------------------
 
 # We need the /bigobj switch on windows (for 64 bit builds only actually).
 # Set target system to be Windows Vista and later.
-if (MSVC)
-  add_definitions (/bigobj /D_WIN32_WINNT=0x0600 /DWINVER=0x0600)
-elseif (MINGW)
-  add_definitions (-D_WIN32_WINNT=0x0600 -DWINVER=0x0600)
-endif (MSVC)
+if (COMPILER_MSVC OR COMPILER_WINTEL)
+    # Set /bigobj for COMPILER_MSVC and COMPILER_WINTEL, but COMPILER_CLANG on
+    # windows (clang/c2 3.7) can not handle it.
+    add_definitions (/bigobj)
+endif()
 
-# ---------------------------------------------------------------------------
-# Set architecture for MinGW.
-#
-# If we do not set i586 as the architecture for MinGW then generating atomic
-# expressions will fail.
-# ---------------------------------------------------------------------------
-
-if (MINGW)
-	if ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
-	    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
-	endif ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
-endif (MINGW)
+if (STDLIB_VS)
+    add_definitions (-D_WIN32_WINNT=0x0600 -DWINVER=0x0600)
+endif ()
 
 # ---------------------------------------------------------------------------
 # Is it a 32 bit platform?
@@ -90,7 +100,7 @@ endif()
 # ---------------------------------------------------------------------------
 
 if (CMAKE_GENERATOR STREQUAL Xcode)
-  add_definitions (-DSEQAN_NO_TERMINAL)
+    add_definitions (-DSEQAN_NO_TERMINAL)
 endif (CMAKE_GENERATOR STREQUAL Xcode)
 
 # ---------------------------------------------------------------------------
@@ -133,9 +143,9 @@ macro (seqan_register_apps)
         set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
         if (APPLE)
             # static build not supported on apple, but at least we can include gcc libs
-            if (CMAKE_COMPILER_IS_GNUCXX)
+            if (COMPILER_GCC)
                 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-            endif (CMAKE_COMPILER_IS_GNUCXX)
+            endif (COMPILER_GCC)
         else (APPLE)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 
@@ -196,85 +206,103 @@ macro (seqan_build_system_init)
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
 
+    if (STDLIB_VS)
+        # Disable warnings about unsecure (although standard) functions
+        # @see https://msdn.microsoft.com/en-us/library/aa985974.aspx
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_SCL_SECURE_NO_WARNINGS)
+
+        # 'strcpy' is deprecated: This function or variable may be unsafe.
+        # Consider using strcpy_s instead. To disable deprecation, use
+        # @see https://msdn.microsoft.com/en-us/library/8ef0s5kh.aspx
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_CRT_SECURE_NO_WARNINGS)
+    endif()
+
     # Set Warnings
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
-        set (CMAKE_CXX_WARNING_LEVEL 4)
+    # NOTE(marehr): COMPILER_CLANG on windows uses the same flags as on linux,
+    # whereas COMPILER_WINTEL uses on windows the same flags as COMPILER_MSVC.
+    if (COMPILER_MSVC)
+        # TODO(h-2): raise this to W4
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
+    elseif (COMPILER_WINTEL)
+        # TODO(h-2): raise this to W4
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3")
+    else()
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
-    endif ()
-    if (COMPILER_IS_INTEL)
+
         # disable some warnings on ICC
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
-    endif (COMPILER_IS_INTEL)
-    if (MSVC)
-        # Use the /W2 warning level for visual studio.
-        set (CMAKE_CXX_WARNING_LEVEL 2) # TODO(h-2): raise this to W4
-        # Disable warnings about unsecure (although standard) functions.
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /D_SCL_SECURE_NO_WARNINGS")
+        if (COMPILER_LINTEL)
+            # warning #3373: nonstandard use of "auto" to both deduce the type
+            # from an initializer and to announce a trailing return type
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
+        endif ()
     endif ()
 
-    # DEFFAULT BUILD SYSTEM
     if (NOT SEQAN_BUILD_SYSTEM)
         set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
     endif (NOT SEQAN_BUILD_SYSTEM)
     set (SEQAN_APP_VERSION "0.0.0" CACHE STRING "Version of the application.")
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
-    # STANDARD BUILD FLAGS
-
-    # OpenBSD just can't handle it
-    if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
-        set (SEQAN_NO_NATIVE TRUE)
-        set (SEQAN_OFFICIAL_PKGS FALSE)
+    ## options
+    if (NOT SEQAN_64BIT_TARGET_PLATFORM)
+        set (SEQAN_ARCH_SSE4 FALSE)
+        set (SEQAN_ARCH_AVX2 FALSE)
     endif ()
 
-    # packages for distribution
-    if ((SEQAN_OFFICIAL_PKGS) AND
-        (NOT MSVC) AND
-        (SEQAN_BUILD_SYSTEM MATCHES "APP")) # either APP:$app or SEQAN_RELEASE_APPS
+    if (COMPILER_MSVC)
+        set (SEQAN_STATIC_APPS FALSE)
+        set (SEQAN_ARCH_SSE4 FALSE)
+        set (SEQAN_ARCH_AVX2 FALSE)
+        set (SEQAN_ARCH_NATIVE FALSE)
+    endif ()
 
-        # static linkage
-        set (SEQAN_STATIC_APPS TRUE CACHE INTERNAL "Create static app binaries")
-        message (STATUS "Building static binaries.")
-
-        # machine specific optimizations
-        if (SEQAN_64BIT_TARGET_PLATFORM)
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -mpopcnt")
-            message (STATUS "Release binaries built with optimizations for SSE3, SSE4 and POPCNT.")
+    if (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+        set (SEQAN_STATIC_APPS FALSE)
+        if (SEQAN_ARCH_NATIVE)
+            set (SEQAN_ARCH_NATIVE FALSE)
+            set (SEQAN_ARCH_SSE4 TRUE)
+            message (STATUS "OpenBSD does not support native, but SSE4 was activated instead.")
         endif ()
     endif ()
 
-    # settings for development mode
-    if ((SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
-        (NOT MSVC) AND
-        (NOT SEQAN_NO_NATIVE) AND
-        (NOT SEQAN_32BIT_TARGET_PLATFORM))
+    # Enable SSE4 if AVX2 is set.
+    if (SEQAN_ARCH_AVX2)
+        set (SEQAN_ARCH_SSE4 TRUE)
+    endif ()
 
-        # SeqAn has conflicts with -march=native and -m32 build on 64 bit source
-        # platforms, thus disabling -march=native for 32bit target platforms
+    if (SEQAN_STATIC_APPS)
+        message (STATUS "Building static apps.")
+        # implementation in seqan_register_apps()
+    endif ()
+
+    # machine specific optimizations
+    if (SEQAN_ARCH_NATIVE)
+        message (STATUS "Building binaries optimized for this specific CPU. They might not work elsewhere.")
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -march=native")
-        if (COMPILER_IS_INTEL)
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -xHOST -ipo -no-prec-div -fp-model fast=2")
-        endif (COMPILER_IS_INTEL)
-
-        message (STATUS "CPU-optimized binaries that may not work on other computers. If you plan to distribute binaries, call cmake with -DSEQAN_BUILD_SYTEM=SEQAN_RELEASE_APPS or with -DSEQAN_NO_NATIVE=1.")
+        if (COMPILER_LINTEL)
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2 -xHOST")
+        endif ()
+    else ()
+        if (SEQAN_ARCH_SSE4)
+            if (SEQAN_ARCH_AVX2)
+                message (STATUS "Building optimized binaries up to AVX2 and POPCNT.")
+                set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mavx -mavx2")
+            else ()
+                message (STATUS "Building optimized binaries up to SSE4 and POPCNT.")
+            endif ()
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4")
+            if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+                set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mpopcnt")
+            endif ()
+            if (COMPILER_LINTEL)
+                set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2")
+            endif ()
+        endif ()
     endif ()
+    # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
+    #            find out whether clang/c2 takes - or / options
 
-    # automatic c++ standard detection/selection
-    if (NOT MSVC)
-        # find the highest c++ standard and select it
-        check_cxx_compiler_flag("-std=c++11" CXX11_DETECTED)
-        check_cxx_compiler_flag("-std=c++14" CXX14_DETECTED)
-    endif ()
-
-    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
-    set (CXX14_FOUND ${CXX14_DETECTED} CACHE INTERNAL "Availability of c++14")
-
-    if (CXX14_FOUND)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    elseif (CXX11_FOUND)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    endif ()
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -398,6 +426,85 @@ macro (seqan_setup_install_vars APP_NAME)
 endmacro (seqan_setup_install_vars)
 
 # ---------------------------------------------------------------------------
+# Macro seqan_install_required_system_libraries ()
+#
+# When packaging apps copy needed dlls
+# ---------------------------------------------------------------------------
+
+macro(INTEL_FILES_FOR_VERSION version)
+  # version can be 2016
+  set(v "${version}")
+
+  # set intel architecture
+  if (CMAKE_MSVC_ARCH STREQUAL "x64")
+    set(CMAKE_INTEL_ARCH "intel64")
+  else ()
+    set(CMAKE_INTEL_ARCH "ia32")
+  endif()
+
+  # Find the runtime library redistribution directory.
+  set(programfilesx86 "ProgramFiles(x86)")
+  find_path(INTEL${v}_REDIST_DIR NAMES ${CMAKE_INTEL_ARCH}/compiler
+    PATHS
+      "$ENV{ProgramFiles}/IntelSWTools/compilers_and_libraries_${v}/windows/redist"
+      "$ENV{${programfilesx86}}/IntelSWTools/compilers_and_libraries_${v}/windows/redist"
+    )
+  mark_as_advanced(INTEL${v}_REDIST_DIR)
+  set(INTEL${v}_FILES_DIR "${INTEL${v}_REDIST_DIR}/${CMAKE_INTEL_ARCH}/compiler")
+
+  if(NOT CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY)
+    set(__install__libs
+      "${INTEL${v}_FILES_DIR}/libmmd.dll"
+      )
+
+    if(CMAKE_INSTALL_OPENMP_LIBRARIES)
+      set(__install__libs ${__install__libs}
+        "${INTEL${v}_FILES_DIR}/libiomp5md.dll"
+        )
+    endif()
+  else()
+    set(__install__libs)
+  endif()
+
+  if(CMAKE_INSTALL_DEBUG_LIBRARIES)
+    set(__install__libs ${__install__libs}
+      "${INTEL${v}_FILES_DIR}/libmmdd.dll"
+      )
+  endif()
+
+  foreach(lib
+      ${__install__libs}
+      )
+    if(EXISTS ${lib})
+      set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
+        ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} ${lib})
+    else()
+      if(NOT CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+        message(WARNING "system runtime library file does not exist: '${lib}'")
+        # This warning indicates an incomplete Visual Studio installation
+        # or a bug somewhere above here in this file.
+        # If you would like to avoid this warning, fix the real problem, or
+        # set CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS before including
+        # this file.
+      endif()
+    endif()
+  endforeach()
+endmacro()
+
+macro (seqan_install_required_system_libraries)
+  set (CMAKE_INSTALL_OPENMP_LIBRARIES ${OPENMP_FOUND})
+
+  # include intel dll's
+  if(COMPILER_WINTEL)
+    INTEL_FILES_FOR_VERSION(2016)
+  endif()
+
+  # The following include automates the MS Redistributable installer.
+  set (CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+  include (InstallRequiredSystemLibraries)
+endmacro()
+
+# ---------------------------------------------------------------------------
 # Macro seqan_configure_cpack_app (APP_NAME APP_DIR)
 #
 # Setup variables for install, depending on build mode.
@@ -406,15 +513,20 @@ endmacro (seqan_setup_install_vars)
 # ---------------------------------------------------------------------------
 
 macro (seqan_configure_cpack_app APP_NAME APP_DIR)
-  # The following include automates the MS Redistributable installer.
-  include (InstallRequiredSystemLibraries)
+  seqan_install_required_system_libraries()
 
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set (CPACK_GENERATOR "ZIP")
+    set(CPACK_GENERATOR "ZIP;NSIS")
+  elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set(CPACK_GENERATOR "ZIP;DragNDrop")
   elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
-    set (CPACK_GENERATOR "ZIP;TBZ2")
-  else ()
-    set (CPACK_GENERATOR "ZIP;TXZ")
+    set(CPACK_GENERATOR "TBZ2")
+  else()
+    set(CPACK_GENERATOR "TXZ")
+  endif ()
+
+  if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(CPACK_GENERATOR "${CPACK_GENERATOR};DEB;RPM")
   endif ()
 
   # Set defaults for CPACK_PACKAGE_DESCRIPTION_FILE and CPACK_RESOURCE_FILE_LICENSE
@@ -468,65 +580,6 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
 
   include (CPack)
 endmacro (seqan_configure_cpack_app)
-
-
-# ---------------------------------------------------------------------------
-# Macro seqan_setup_cuda_vars ([DISABLE_WARNINGS] [DEBUG_DEVICE]
-#                              [ARCH sm_xx] [FLAGS flags ...])
-#
-# Setup CUDA variables.
-# ---------------------------------------------------------------------------
-
-macro (seqan_setup_cuda_vars)
-  cmake_parse_arguments(_SEQAN_CUDA
-                        "DISABLE_WARNINGS;DEBUG_DEVICE"
-                        "ARCH"
-                        "FLAGS"
-                        ${ARGN})
-  if (SEQAN_HAS_CUDA)
-    # Wrap nvcc to make cudafe output gcc-like.
-    find_program (COLOR_NVCC colornvcc PATHS ${CMAKE_SOURCE_DIR}/util NO_DEFAULT_PATH)
-    set (CUDA_NVCC_EXECUTABLE ${COLOR_NVCC})
-
-    # Build CUDA targets from the given architecture upwards.
-    set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch ${_SEQAN_CUDA_ARCH} ${_SEQAN_CUDA_FLAGS}")
-
-    # Add debug symbols to device code.
-    if (_SEQAN_CUDA_DISABLE_WARNINGS)
-      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -G")
-    endif ()
-
-    # Add flags for the CUDA compiler.
-    list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
-    list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
-    list (APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "-O3 -g -lineinfo")
-    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -lineinfo")
-
-    if (_SEQAN_CUDA_DISABLE_WARNINGS)
-      # Disable all CUDA warnings.
-      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --disable-warnings")
-    else ()
-      # Disable only Thrust warnings.
-      string (REGEX REPLACE "-Wall" ""
-              SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
-      string (REGEX REPLACE "-pedantic" ""
-              SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
-      if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
-      endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-    endif ()
-
-    # Fix CUDA on OSX.
-    if (APPLE AND COMPILER_IS_CLANG)
-      # (weese:) I had to deactivate the C compiler override to make it compile again
-      # NVCC mistakes /usr/bin/cc as gcc.
-      #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
-      # NVCC does not support libc++.
-#(h-2): deactivated the following line because it affects non-cude, too; also this should work with modern nvcc
-#       set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
-    endif ()
-  endif ()
-endmacro (seqan_setup_cuda_vars)
 
 
 # ---------------------------------------------------------------------------
@@ -668,9 +721,9 @@ function (seqan_register_demos PREFIX)
     find_package (SeqAn REQUIRED)
 
     # Supress unused parameter warnings for demos.
-    if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+    if (COMPILER_GCC OR COMPILER_CLANG)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
-    endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+    endif (COMPILER_GCC OR COMPILER_CLANG)
 
     # Add SeqAn flags to CXX and NVCC flags.
     # Set to PARENT_SCOPE since this macro is executed from within a function which declares it's own scope.
@@ -685,13 +738,13 @@ function (seqan_register_demos PREFIX)
         # workaround a bug in llvm35 on FreeBSD
         if ((ENTRY MATCHES "zip") AND
             (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
-            (COMPILER_IS_CLANG) AND
+            (COMPILER_CLANG) AND
             (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5.0) AND
             (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
             set (SKIP TRUE)
         # bug in visual studio
         elseif ((ENTRY MATCHES "queue_example.cpp") AND
-                COMPILER_IS_MSVC)
+                COMPILER_MSVC)
             set (SKIP TRUE)
         endif ()
 
@@ -703,20 +756,9 @@ function (seqan_register_demos PREFIX)
             get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
 
             get_filename_component (FILE_NAME "${ENTRY}" NAME)
-            if ("${FILE_NAME}" MATCHES "\\.cu$")
-                if (SEQAN_HAS_CUDA)
-                    cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
-                    target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
-                    if (APPLE AND COMPILER_IS_CLANG)
-                        set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
-                    endif ()
-                    _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
-                endif ()
-            else ()
-                add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
-                target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
-                _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
-            endif ()
+            add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
+            target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+            _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
         endif (SKIP)
     endforeach (ENTRY ${ENTRIES})
 endfunction (seqan_register_demos)
@@ -748,16 +790,16 @@ macro (seqan_register_tests)
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
-        if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        if (COMPILER_GCC OR COMPILER_CLANG)
             set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
             set (LDFLAGS "${LDFLAGS} -fprofile-arcs -ftest-coverage")
-        endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        endif (COMPILER_GCC OR COMPILER_CLANG)
     endif (MODEL STREQUAL "NightlyCoverage")
     if (MODEL STREQUAL "ExperimentalCoverage")
-        if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        if (COMPILER_GCC OR COMPILER_CLANG)
             set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
             set (LDFLAGS "${LDFLAGS} -fprofile-arcs -ftest-coverage")
-        endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        endif (COMPILER_GCC OR COMPILER_CLANG)
     endif (MODEL STREQUAL "ExperimentalCoverage")
 
     # Add all subdirectories that have a CMakeLists.txt inside them.
@@ -772,4 +814,3 @@ macro (seqan_register_tests)
         endif (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
     endforeach (ENTRY ${ENTRIES})
 endmacro (seqan_register_tests)
-

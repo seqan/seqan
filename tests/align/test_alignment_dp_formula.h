@@ -46,7 +46,7 @@ void testDPFormulaNoTraceLocalLinearDiagonalDirection(TBand const &)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -62,7 +62,7 @@ void testDPFormulaNoTraceLocalLinearDiagonalDirection(TBand const &)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionDiagonal(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 4);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -71,7 +71,7 @@ void testDPFormulaNoTraceLocalLinearDiagonalDirection(TBand const &)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                scoringScheme, RecursionDirectionDiagonal(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 0);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -101,7 +101,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -110,7 +110,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -121,7 +121,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -130,7 +130,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -142,7 +142,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_horizontal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -159,7 +159,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_horizontal_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -168,7 +168,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_horizontal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -179,7 +179,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_vertical_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -196,13 +196,13 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_vertical_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
 
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
 }
 
@@ -210,7 +210,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -228,7 +228,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -237,7 +237,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -249,7 +249,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -10);
@@ -258,7 +258,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -10);
@@ -270,7 +270,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -4);
@@ -279,7 +279,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -4);
@@ -291,7 +291,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -309,7 +309,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -318,7 +318,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -330,7 +330,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -339,7 +339,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -351,7 +351,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -360,7 +360,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -372,7 +372,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -390,7 +390,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -399,8 +399,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | +TraceBitMap_::HORIZONTAL |
-                        TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::HORIZONTAL |
+                        TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -412,7 +412,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 0);
@@ -421,7 +421,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 0);
@@ -433,7 +433,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, -4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 0);
@@ -442,7 +442,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, -4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 0);
@@ -454,7 +454,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -4);
@@ -463,7 +463,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -4);
@@ -475,7 +475,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -12);
@@ -484,7 +484,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -12);
@@ -496,7 +496,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -12);
@@ -505,7 +505,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -12);
@@ -517,7 +517,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -8);
@@ -526,8 +526,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | +TraceBitMap_::HORIZONTAL |
-                                     TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::HORIZONTAL |
+                                     TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -8);
@@ -539,7 +539,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -563,7 +563,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -572,7 +572,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -583,7 +583,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -592,7 +592,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, -12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -604,7 +604,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -628,7 +628,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -637,7 +637,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -649,7 +649,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -658,7 +658,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -670,7 +670,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -694,7 +694,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -703,7 +703,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -715,7 +715,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -724,7 +724,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -736,7 +736,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -760,7 +760,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -769,7 +769,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -781,7 +781,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -790,7 +790,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -802,7 +802,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -811,7 +811,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -823,7 +823,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -832,8 +832,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL |
-                                     TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL |
+                                     TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -845,7 +845,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 18);
@@ -854,8 +854,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX |
-                                     +TraceBitMap_::HORIZONTAL | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX |
+                                     +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 18);
@@ -867,7 +867,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 18);
@@ -876,8 +876,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL_OPEN |
-                                     +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL_OPEN |
+                                     +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 18);
@@ -889,7 +889,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -913,7 +913,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -922,7 +922,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -934,7 +934,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -943,7 +943,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -955,7 +955,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -964,7 +964,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -976,7 +976,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -985,7 +985,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -997,7 +997,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -1006,8 +1006,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX |
-                                     +TraceBitMap_::VERTICAL | TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX |
+                                     +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -1019,7 +1019,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -1028,8 +1028,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN |
-                                     +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN |
+                                     +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -1041,7 +1041,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     // We need to distinguish between all traces and single trace.
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
@@ -1066,7 +1066,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -10);
@@ -1075,7 +1075,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, -10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -10);
@@ -1087,7 +1087,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -10);
@@ -1096,7 +1096,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 10);
         SEQAN_ASSERT_EQ(prevHorizontal._score, -10);
@@ -1108,7 +1108,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1119,7 +1119,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1133,7 +1133,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1144,8 +1144,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL |
-                                     TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL |
+                                     TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1159,7 +1159,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1170,8 +1170,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::VERTICAL_OPEN |
-                                     TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::VERTICAL_OPEN |
+                                     TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1185,8 +1185,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN |
-                                     TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN |
+                                     TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1197,8 +1197,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL_OPEN |
-                                     TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL_OPEN |
+                                     TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 12);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -14);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1212,8 +1212,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL_OPEN |
-                                     TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL_OPEN |
+                                     TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1224,8 +1224,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL_OPEN |
-                                     TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL_OPEN |
+                                     TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1239,8 +1239,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | +TraceBitMap_::HORIZONTAL |
-                                     +TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | +TraceBitMap_<>::HORIZONTAL |
+                                     +TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1251,8 +1251,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | +TraceBitMap_::HORIZONTAL |
-                                     +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | +TraceBitMap_<>::HORIZONTAL |
+                                     +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 12);
@@ -1266,8 +1266,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX |
-                                     TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX |
+                                     TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 16);
@@ -1278,8 +1278,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX |
-                                     TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX |
+                                     TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 16);
@@ -1293,8 +1293,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL |
-                                     +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL |
+                                     +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 16);
@@ -1305,9 +1305,9 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL |
-                                     +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN |
-                                     TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL |
+                                     +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN |
+                                     TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 16);
@@ -1321,7 +1321,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL | TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 16);
@@ -1332,10 +1332,10 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL |
-                                     TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::VERTICAL_OPEN |
-                                     TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX |
-                                     TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL |
+                                     TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::VERTICAL_OPEN |
+                                     TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX |
+                                     TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 16);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 16);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 16);
@@ -1349,7 +1349,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -1367,7 +1367,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), -8);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevDiagonal), -10);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevHorizontal), 10);
@@ -1376,7 +1376,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), -8);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevDiagonal), -10);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevHorizontal), 10);
@@ -1387,7 +1387,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), -12);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevDiagonal), -10);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevHorizontal), 10);
@@ -1396,7 +1396,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), -12);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevDiagonal), -10);
         SEQAN_ASSERT_EQ(_scoreOfCell(prevHorizontal), 10);
@@ -1408,7 +1408,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
     typedef DPCell_<int, DynamicGaps> TDPCell;
@@ -1426,7 +1426,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
     SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), 6);
     SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
     SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1434,7 +1434,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                            scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
     SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), 6);
     SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
     SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1443,7 +1443,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                            scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
     SEQAN_ASSERT_EQ(_scoreOfCell(activeCell), 8);
     SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
     SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1453,7 +1453,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_vertical_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
     typedef DPCell_<int, DynamicGaps> TCell;
@@ -1471,20 +1471,20 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_vertical_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
 
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
 
     _setBit(prevVertical, True(), DynamicGapExtensionVertical());
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
     SEQAN_ASSERT_EQ(activeCell._score, 8);
 }
 
@@ -1492,7 +1492,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
     typedef DPCell_<int, DynamicGaps> TDPCell;
@@ -1511,20 +1511,20 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
 
         _setBit(prevHorizontal, True(), DynamicGapExtensionHorizontal());
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 8);
     }
 
@@ -1533,13 +1533,13 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
     }
 
@@ -1549,19 +1549,19 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         prevHorizontal._score = -6;
@@ -1569,19 +1569,19 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                        scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
     }
 }
@@ -1590,7 +1590,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
     typedef DPCell_<int, DynamicGaps> TDPCell;
@@ -1609,20 +1609,20 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
 
         _setBit(prevVertical, True(), DynamicGapExtensionVertical());
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 8);
     }
 
@@ -1631,13 +1631,13 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
     }
 
@@ -1647,19 +1647,19 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         prevVertical._score = -6;
@@ -1667,19 +1667,19 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                        scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, -8);
     }
 }
@@ -1688,7 +1688,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
     typedef DPCell_<int, DynamicGaps> TDPCell;
@@ -1708,14 +1708,14 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
 
         // Complete trace.
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -8);
     }
 
@@ -1725,14 +1725,14 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -4);
 
         // Complete Trace + horizontal open.
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -4);
 
         // Single Trace + horizontal extend.
@@ -1740,14 +1740,14 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -2);
 
         // Complete Trace + horizontal extend.
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_::VERTICAL_OPEN);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<>::VERTICAL_OPEN);
         SEQAN_ASSERT_EQ(activeCell._score, -2);
     }
 
@@ -1757,14 +1757,14 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
 
         // Complete Trace + horizontal open.
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
 
         // Single Trace + horizontal extend.
@@ -1772,14 +1772,14 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 2);
 
         // Complete Trace + horizontal extend.
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL);
         SEQAN_ASSERT_EQ(activeCell._score, 2);
     }
 
@@ -1790,7 +1790,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1799,7 +1799,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1810,7 +1810,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1819,7 +1819,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1831,7 +1831,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1840,7 +1840,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1851,7 +1851,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1860,7 +1860,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1871,7 +1871,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1880,7 +1880,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1891,7 +1891,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1900,7 +1900,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'C',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1913,7 +1913,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1922,7 +1922,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::VERTICAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::VERTICAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1933,7 +1933,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1942,7 +1942,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1954,7 +1954,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1963,7 +1963,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1974,7 +1974,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -1983,7 +1983,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -1994,7 +1994,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -2003,7 +2003,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL_OPEN | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL_OPEN | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -2014,7 +2014,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL | TraceBitMap_::HORIZONTAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL | TraceBitMap_<>::HORIZONTAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), false);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), false);
@@ -2023,7 +2023,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionHorizontal()), true);
         SEQAN_ASSERT_EQ(isGapExtension(activeCell, DynamicGapExtensionVertical()), true);
@@ -2034,7 +2034,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2051,7 +2051,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
     SEQAN_ASSERT_EQ(activeCell._score, 4);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2060,7 +2060,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
     SEQAN_ASSERT_EQ(activeCell._score, 4);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2069,7 +2069,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 0);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2078,7 +2078,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 0);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2089,7 +2089,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2107,7 +2107,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2116,7 +2116,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2127,7 +2127,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2136,7 +2136,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2147,7 +2147,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2165,7 +2165,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2174,7 +2174,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX);
         SEQAN_ASSERT_EQ(activeCell._score, 6);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2185,7 +2185,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2194,7 +2194,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2205,7 +2205,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2223,7 +2223,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 8);
@@ -2232,7 +2232,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 8);
@@ -2243,7 +2243,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2252,7 +2252,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2263,7 +2263,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2281,7 +2281,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2290,7 +2290,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::VERTICAL | TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2301,7 +2301,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2310,7 +2310,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2322,7 +2322,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2340,7 +2340,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 8);
@@ -2349,8 +2349,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::DIAGONAL | +TraceBitMap_::HORIZONTAL | +TraceBitMap_::VERTICAL |
-                                     TraceBitMap_::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::VERTICAL |
+                                     TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 8);
@@ -2363,7 +2363,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 0);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2372,7 +2372,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 0);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2384,7 +2384,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2409,7 +2409,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
@@ -2420,7 +2420,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::DIAGONAL);
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
@@ -2436,7 +2436,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2447,7 +2447,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2462,7 +2462,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2487,7 +2487,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 4);
@@ -2498,7 +2498,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | TraceBitMap_::HORIZONTAL_OPEN | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::HORIZONTAL_OPEN | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 4);
@@ -2513,7 +2513,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2524,7 +2524,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionHorizontal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2538,7 +2538,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2563,7 +2563,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
@@ -2574,7 +2574,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | +TraceBitMap_::VERTICAL_OPEN | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::VERTICAL_OPEN | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
@@ -2589,7 +2589,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2600,7 +2600,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionVertical(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2614,7 +2614,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2639,7 +2639,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
@@ -2650,8 +2650,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX |
-                                     +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX |
+                                     +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
@@ -2666,7 +2666,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2677,7 +2677,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
@@ -2691,7 +2691,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2716,7 +2716,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 4);
@@ -2727,8 +2727,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX |
-                                     +TraceBitMap_::DIAGONAL | TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX |
+                                     +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 4);
@@ -2743,7 +2743,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
@@ -2754,7 +2754,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
@@ -2768,7 +2768,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TDPProfileCompleteTrace;
 
@@ -2792,7 +2792,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                                scoringScheme, RecursionDirectionAll(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | TraceBitMap_::VERTICAL | TraceBitMap_::DIAGONAL));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::VERTICAL | TraceBitMap_<>::DIAGONAL));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 4);
@@ -2803,10 +2803,10 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                    scoringScheme, RecursionDirectionAll(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_::HORIZONTAL | +TraceBitMap_::MAX_FROM_HORIZONTAL_MATRIX |
-                                     +TraceBitMap_::VERTICAL | +TraceBitMap_::MAX_FROM_VERTICAL_MATRIX |
-                                     +TraceBitMap_::DIAGONAL | TraceBitMap_::HORIZONTAL_OPEN |
-                                     TraceBitMap_::VERTICAL_OPEN));
+        SEQAN_ASSERT_EQ(traceValue, (+TraceBitMap_<>::HORIZONTAL | +TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX |
+                                     +TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX |
+                                     +TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL_OPEN |
+                                     TraceBitMap_<>::VERTICAL_OPEN));
         SEQAN_ASSERT_EQ(activeCell._score, 4);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, 4);
         SEQAN_ASSERT_EQ(activeCell._verticalScore, 4);
@@ -2823,7 +2823,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
         TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileSingleTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
@@ -2832,7 +2832,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+        SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
@@ -2844,7 +2844,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_diagonal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -2860,7 +2860,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_diagonal_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionDiagonal(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 4);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2871,7 +2871,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_horizontal_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -2887,7 +2887,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_horizontal_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionHorizontal(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2898,7 +2898,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_vertical_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -2914,7 +2914,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_vertical_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionVertical(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2925,7 +2925,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_upper_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -2941,7 +2941,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_upper_band_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 4);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2952,7 +2952,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_lower_band_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -2968,7 +2968,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_lower_band_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 4);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2979,7 +2979,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_all_direction)
 {
     using namespace seqan;
 
-    typedef TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
 
     DPCell_<int, LinearGaps> activeCell;
@@ -2995,7 +2995,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_all_direction)
     TTraceValue traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'A', 'A',
                                            scoringScheme, RecursionDirectionAll(), TDPProfile());
 
-    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_::NONE);
+    SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
     SEQAN_ASSERT_EQ(activeCell._score, 6);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 4);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);

@@ -73,7 +73,7 @@ struct MMap;
 
     struct Dynamic;
 
-    template <size_t PAGESIZE>
+    template <size_t SEQAN_PAGESIZE>
     struct Fixed;
 
     template <typename TFile, typename TSpec = Dynamic>
@@ -160,11 +160,11 @@ struct MMap;
         return me.pageSize;
     }
 
-    template <typename TValue, typename TFile, size_t PAGESIZE>
-    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > >::Type
-    capacity(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > const &)
+    template <typename TValue, typename TFile, size_t SEQAN_PAGESIZE>
+    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > > >::Type
+    capacity(Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > > const &)
     {
-        return PAGESIZE;
+        return SEQAN_PAGESIZE;
     }
 
     template <typename TValue, typename TSpec, typename TSize>
@@ -181,11 +181,11 @@ struct MMap;
         return me.end - me.begin;
     }
 
-    template <typename TValue, typename TFile, size_t PAGESIZE>
-    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > >::Type
-    length(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > const &)
+    template <typename TValue, typename TFile, size_t SEQAN_PAGESIZE>
+    inline typename Size<Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > > >::Type
+    length(Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > > const &)
     {
-        return PAGESIZE;
+        return SEQAN_PAGESIZE;
     }
 
     template <typename TValue, typename TSpec, typename TSize>
@@ -397,14 +397,14 @@ struct MMap;
 
     template < typename TValue,
                typename TFile,
-               size_t PAGESIZE_ >
-    struct Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > >
+               size_t SEQAN_PAGESIZE_ >
+    struct Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE_> > >
     {
         typedef TFile                                       File;
         typedef typename AsyncRequest<TFile>::Type          AsyncRequest;
         typedef    typename Iterator<Buffer, Standard>::Type   TIterator;
 
-        enum            { PAGESIZE = PAGESIZE_ };
+        enum            { SEQAN_PAGESIZE = SEQAN_PAGESIZE_ };
         enum DataStatus    { ON_DISK = -1, UNINITIALIZED = -2 };
         enum Priority    { NORMAL_LEVEL = 0, PREFETCH_LEVEL = 1, ITERATOR_LEVEL = 2, PERMANENT_LEVEL = 3 };
 
@@ -470,17 +470,17 @@ struct MMap;
 
     template < typename TValue,
                typename TFile,
-               size_t PAGESIZE_ >
-    struct HasMoveConstructor<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > > : True {};
+               size_t SEQAN_PAGESIZE_ >
+    struct HasMoveConstructor<Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE_> > > > : True {};
 
 
     template < typename TValue,
                typename TFile,
-               size_t PAGESIZE_ >
+               size_t SEQAN_PAGESIZE_ >
     inline void
-    clear(Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > &me)
+    clear(Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE_> > > &me)
     {
-        typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > TPageFrame;
+        typedef Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE_> > > TPageFrame;
         me.status = READY;
         me.dataStatus = TPageFrame::UNINITIALIZED;
         me.priority = TPageFrame::NORMAL_LEVEL;
@@ -513,14 +513,14 @@ struct MMap;
     //////////////////////////////////////////////////////////////////////////////
     // meta-function interface
 
-    template <typename TValue, typename TFile, size_t PAGESIZE>
-    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > >, Standard >
+    template <typename TValue, typename TFile, size_t SEQAN_PAGESIZE>
+    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > >, Standard >
     {
         typedef VolatilePtr<TValue> Type;
     };
 
-    template <typename TValue, typename TFile, size_t PAGESIZE>
-    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > > const, Standard >
+    template <typename TValue, typename TFile, size_t SEQAN_PAGESIZE>
+    struct Iterator<Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > > const, Standard >
     {
         typedef VolatilePtr<TValue> const Type;
     };
@@ -638,7 +638,7 @@ struct MMap;
     {
         if (pf.begin)
         {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #else
             munmap(pf.begin, length(pf) * sizeof(TValue));
 #endif
@@ -655,7 +655,7 @@ struct MMap;
         pf.status = READY;
         SEQAN_ASSERT_GT(size, 0);
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #if 0
         DWORD prot = 0;
         DWORD access = 0;
@@ -718,7 +718,7 @@ struct MMap;
         pf.status = READY;
         SEQAN_ASSERT_GT(size, 0u);
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #else
         pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue));
 

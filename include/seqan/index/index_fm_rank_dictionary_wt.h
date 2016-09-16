@@ -48,10 +48,10 @@ namespace seqan {
 // Tag WaveletTreeConfig
 // --------------------------------------------------------------------------
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned ARITY_ = 2>
-struct WTRDConfig : LevelsRDConfig<TSize, TFibre, LEVELS>
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 0/*, unsigned ARITY_ = 2*/>
+struct WTRDConfig : LevelsRDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_>
 {
-    static const unsigned ARITY = ARITY_;
+    //static const unsigned ARITY = ARITY_;
 };
 
 // --------------------------------------------------------------------------
@@ -278,13 +278,14 @@ inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Typ
 getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character)
 {
     TPos smaller;
-    return getCumulativeRank(dict, pos, character, smaller);
+    return getRank(dict, pos, character, smaller);
 }
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
-getCumulativeRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
+getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar character, TPos & smaller)
 {
+    // smaller has to be initiliazed by the caller!
     typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type  TWaveletTreeStructure;
     typedef typename Fibre<TWaveletTreeStructure, FibreTreeStructureEncoding>::Type                         TWaveletTreeStructureString;
     typedef typename Value<TWaveletTreeStructureString>::Type                                               TWaveletTreeStructureEntry;

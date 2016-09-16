@@ -1,5 +1,5 @@
-.. image:: https://readthedocs.org/projects/seqan/badge/?version=develop
-   :target: https://seqan.readthedocs.org/en/develop?badge=develop
+.. image:: https://readthedocs.io/projects/seqan/badge/?version=develop
+   :target: https://seqan.readthedocs.io/en/develop?badge=develop
    :alt: Documentation Status
 
 SeqAn - The Library for Sequence Analysis
@@ -23,9 +23,12 @@ Prerequisites
 
 Linux, Mac OSX, FreeBSD:
   * GCC ≥ 4.9
-  * LLVM / Clang ≥ 3.5
+  * Clang/LLVM ≥ 3.5
+  * Intel Compiler ≥ 16.0.2
 Windows:
   * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
+  * Intel Compiler ≥ 16.0.3 / Visual Studio ≥ 2015u2
+  * Clang/C2 ≥ 3.8.0 / Visual Studio ≥ 2015u3 [experimental, requires CMake ≥ 3.6]
 
 We test on 32-bit and 64-bit Intel/AMD architectures, although we highly recommend 64-bit platforms.
 
@@ -37,12 +40,11 @@ Some of the official applications might have additional requirements or work onl
 Documentation Resources
 -----------------------
 
-* `Getting Started <http://seqan.readthedocs.org/en/master/Tutorial/GettingStarted.html>`_
-* `Manual <http://seqan.readthedocs.org/en/master>`_
-* `Tutorial <http://seqan.readthedocs.org/en/master/Tutorial.html>`_
-* `How-Tos <http://seqan.readthedocs.org/en/master/HowTo.html>`_
+* `Getting Started <http://seqan.readthedocs.io/en/master/Tutorial/GettingStarted>`_
+* `Manual <http://seqan.readthedocs.io/en/master>`_
+* `Tutorial <http://seqan.readthedocs.io/en/master/index.html#tutorials>`_
+* `How-Tos <http://seqan.readthedocs.io/en/master/Tutorial/HowTo>`_
 * `API Documentation (stable) <http://docs.seqan.de/seqan/master/>`_
-
 
 Contact
 =======
