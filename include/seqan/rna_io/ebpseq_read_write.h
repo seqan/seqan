@@ -158,8 +158,10 @@ readHeader(RnaHeader & header,
             else
                 readUntil(record.key, iter, EqualsChar<':'>());
         }
-        //YET TO DO: T1 AND T2 READ IN
     }
+
+
+    appendValue(header, record);
 
     
 }
