@@ -161,32 +161,38 @@ inline bool empty(Index<TText, BidirectionalIndex<TIndexSpec> > const & index)
     return empty(index.fwd) || empty(index.rev);
 }
 
-// This function can be used to open a previously saved index.
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
 template <typename TText, typename TIndexSpec>
-inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const char * fileName)
+inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
 
     name = fileName;
-    if (open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
+    if (open(index.fwd, toCString(name), openMode))
     {
         name = fileName;    append(name, ".rev");
-        return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
+        return open(index.rev, toCString(name), openMode);
     }
     return false;
 }
 
-// This function can be used to save an index on disk.
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
 template <typename TText, typename TIndexSpec>
-inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, const char * fileName)
+inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, const char * fileName, int openMode)
 {
     String<char> name;
 
     name = fileName;
-    if (save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
+    if (save(index.fwd, toCString(name), openMode))
     {
         name = fileName;    append(name, ".rev");
-        return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
+        return save(index.rev, toCString(name), openMode);
     }
     return false;
 }

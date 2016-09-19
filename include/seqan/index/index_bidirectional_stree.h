@@ -155,6 +155,37 @@ inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDow
 }
 
 // ----------------------------------------------------------------------------
+// Function goDown() directional interface for unidirectional indexes[Iterator]
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+inline bool
+goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
+       Tag<TDirection> const &)
+{
+    return goDown(it);
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TObject, typename TDirection>
+inline bool
+goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
+       TObject const & obj,
+       Tag<TDirection> const &)
+{
+    return goDown(it, obj);
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
+inline bool
+goDown(Iter<Index<TText, TIndexSpec>, VSTree< TopDown<TSpec> > > & it,
+       TString const & pattern,
+       TSize & lcp,
+       Tag<TDirection> const &)
+{
+    return _goDownString(it, pattern, lcp);
+}
+
+// ----------------------------------------------------------------------------
 // Function goDown()                                                 [Iterator]
 // ----------------------------------------------------------------------------
 
@@ -385,6 +416,25 @@ inline typename Size<Index<TText, BidirectionalIndex<TIndexSpec> > >::Type
 countOccurrences(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TSpec> > const &it)
 {
     return countOccurrences(it.fwdIter);
+}
+
+// ----------------------------------------------------------------------------
+// Function representative()                                         [Iterator]
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+inline auto
+representative(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
+               Tag<TDirection> const &)
+{
+    return representative(_iter(it, Tag<TDirection>()));
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec>
+inline auto
+representative(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it)
+{
+    return representative(it, Fwd());
 }
 
 }
