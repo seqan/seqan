@@ -34,9 +34,6 @@
 
 #define SEQAN_DEBUG
 
-#include <seqan/basic.h>
-#include <seqan/stream.h>
-
 #include "test_arg_parse_version_check.h"
 
 using namespace seqan;

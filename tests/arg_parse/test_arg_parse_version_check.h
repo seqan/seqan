@@ -35,7 +35,6 @@
 #ifndef SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_VERSION_CHECK_H_
 #define SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_VERSION_CHECK_H_
 
-#include <seqan/basic.h>
 #include <seqan/arg_parse.h>
 
 #include <iostream>
