@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                 arg_parse
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -33,7 +33,6 @@
 // ==========================================================================
 
 #define SEQAN_DEBUG
-
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
