@@ -1,0 +1,11 @@
+##fileformat=VCFv4.2
+##fileDate=20160603
+##source=Seqan-SnpStoreV1.3.3
+##reference=../../../apps/snp_store/tests/human-chr22-inf2.fa
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth">
+##INFO=<ID=FR,Number=1,Type=Float,Description="Fraction of reads supporting ALT">
+##INFO=<ID=ZYG,Number=1,Type=String,Description="Estimated zygosity of indel">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT
+22	6880	.	A	AA	24	.	DP=37;FR=0.945946;ZYG=hom
+22	8882	.	A	A,AGACAC	8	.	DP=11;FR=0.345455;ZYG=het
+22	8962	.	GA	G	28	.	DP=21;FR=1;ZYG=hom
