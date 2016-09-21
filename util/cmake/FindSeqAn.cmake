@@ -107,6 +107,13 @@ endif ()
 # SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
 
 # ----------------------------------------------------------------------------
+# Deactivate verbosity if package detection is quite
+# ----------------------------------------------------------------------------
+
+# deactivate messages in check_* if quiet
+set (CMAKE_REQUIRED_QUIET ${SeqAn_FIND_QUIETLY})
+
+# ----------------------------------------------------------------------------
 # Determine compiler.
 # ----------------------------------------------------------------------------
 
@@ -445,13 +452,15 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
   set (SEQAN_VERSION_PATCH "${_SEQAN_VERSION_PATCH}" CACHE INTERNAL "SeqAn patch version.")
   set (SEQAN_VERSION_PRE_RELEASE "${_SEQAN_VERSION_PRE_RELEASE}" CACHE INTERNAL "Whether version is a pre-release version version.")
   set (SEQAN_VERSION_STRING "${_SEQAN_VERSION_STRING}" CACHE INTERNAL "SeqAn version string.")
-
-  message (STATUS "  Determined version is ${SEQAN_VERSION_STRING}")
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
+
+if (NOT SeqAn_FIND_QUIETLY)
+    message (STATUS "Found Seqan: ${SEQAN_INCLUDE_DIRS_MAIN} (found version \"${SEQAN_VERSION_STRING}\")")
+endif ()
 
 if (SEQAN_FIND_DEBUG)
   message("Result for ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
