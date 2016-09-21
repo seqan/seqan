@@ -66,19 +66,7 @@ class BidirectionalIndex;
 template <typename TText>
 struct RevTextFibre
 {
-    typedef ModifiedString<TText, ModReverse> Type;
-};
-
-template <typename TText>
-struct RevTextFibre<ModifiedString<TText, ModReverse> >
-{
     typedef TText Type;
-};
-
-template <typename TText, typename TTextConfig>
-struct RevTextFibre<StringSet<TText, TTextConfig> >
-{
-    typedef StringSet<typename RevTextFibre<TText>::Type, TTextConfig> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -120,7 +108,9 @@ class Index<TText, BidirectionalIndex<TIndexSpec> >
         revText(text),
         rev(revText),
         fwd(text)
-    {}
+    {
+        reverse(revText);
+    }
 };
 
 // ============================================================================
