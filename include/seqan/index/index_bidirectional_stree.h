@@ -161,7 +161,7 @@ inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDow
 template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
-       Tag<TDirection> const &)
+       Fwd const &)
 {
     return goDown(it);
 }
@@ -170,19 +170,47 @@ template <typename TText, typename TIndexSpec, typename TSpec, typename TObject,
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        TObject const & obj,
-       Tag<TDirection> const &)
+       Fwd const &)
 {
     return goDown(it, obj);
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
 inline bool
-goDown(Iter<Index<TText, TIndexSpec>, VSTree< TopDown<TSpec> > > & it,
+goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        TString const & pattern,
        TSize & lcp,
-       Tag<TDirection> const &)
+       Fwd const &)
 {
     return _goDownString(it, pattern, lcp);
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+inline bool
+goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > &,
+       Rev const &)
+{
+    SEQAN_ASSERT_MSG(false, "ERROR: Cannot goDown(it, Rev) on uni-directional index");
+    return false;
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TObject, typename TDirection>
+inline bool
+goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
+       TObject const &,
+       Rev const &)
+{
+    return goDown(it, Rev()); // fail above
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
+inline bool
+goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
+       TString const &,
+       TSize &,
+       Rev const &)
+{
+    return goDown(it, Rev()); // fail above
 }
 
 // ----------------------------------------------------------------------------
