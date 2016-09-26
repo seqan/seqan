@@ -1404,7 +1404,7 @@ typename TBucketMap,
 typename TText,
 typename TShape,
 typename TStepSize >
-[[deprecated("Use createQGramIndex(index) instead.")]]
+/*[[deprecated("Use createQGramIndex(index) instead.")]]*/
 void createQGramIndex(
                       TSA &sa,
                       TDir &dir,
@@ -1438,7 +1438,7 @@ typename TBucketMap,
 typename TText,
 typename TShape,
 typename TStepSize >
-[[deprecated("Use createQGramIndex(index) instead.")]]
+/*[[deprecated("Use createQGramIndex(index) instead.")]]*/
 void createQGramIndex(
                       TSA &sa,
                       TDir &dir,
