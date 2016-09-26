@@ -991,7 +991,7 @@ int main(int argc, char const ** argv)
     bool error = false;
 
     // Format recognition tag used for sequence file I/O.
-    seqan::AutoSeqFormat seqFormatTag;
+    // seqan::AutoSeqFormat seqFormatTag; // deprecated
 
     uint64_t chunksLeftToRead = options.maxChunks;
     --chunksLeftToRead;
