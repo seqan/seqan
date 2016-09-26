@@ -247,7 +247,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
 
     // store sequence length and secondary structure graph
     record.seqLen = length(bracketStr);
-    bracket2graph(record.graph, bracketStr);
+    bracket2graph(record.fixedGraphs, bracketStr);
 }
 
 
@@ -259,7 +259,7 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*/)     
 {
-    if (length(record.graph) != 1)
+    if (length(record.fixedGraphs) != 1)
         throw std::runtime_error("ERROR: Cannot deal with multiple structure graphs.");
 
     write(target, "# STOCKHOLM 1.0\n");                         // header
@@ -301,7 +301,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*
         write(target, "#=GC SS_cons\t");
     }
 
-    write(target, graph2bracket(record.graph[0]));
+    write(target, graph2bracket(record.fixedGraphs[0].inter));
     write(target, "\n//\n");                                    // closing
 }
 

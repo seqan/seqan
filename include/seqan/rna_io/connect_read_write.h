@@ -204,7 +204,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         clear(buffer);
         skipUntil(iter, IsNewline());
     }
-    append(record.graph, graph);
+    append(record.fixedGraphs, RnaInterGraph(graph));
     SEQAN_ASSERT_EQ(record.seqLen, length(record.sequence));
 }
 
@@ -219,7 +219,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
 {
     if (empty(record.sequence) && length(rows(record.align)) != 1)
         throw std::runtime_error("ERROR: Connect formatted file cannot contain an alignment.");
-    if (length(record.graph) != 1)
+    if (length(record.fixedGraphs) != 1)
         throw std::runtime_error("ERROR: Connect formatted file cannot contain multiple structure graphs.");
 
     Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
@@ -246,9 +246,9 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         writeValue(target, '\t');
         appendNumber(target, i + offset + 1);
         writeValue(target, '\t');
-        if (degree(record.graph[0], i) != 0)
+        if (degree(record.fixedGraphs[0].inter, i) != 0)
         {
-            TRnaAdjacencyIterator adjIter(record.graph[0], i);
+            TRnaAdjacencyIterator adjIter(record.fixedGraphs[0].inter, i);
             write(target, value(adjIter) + offset);
         }
         else

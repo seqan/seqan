@@ -131,7 +131,7 @@ constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
 // ----------------------------------------------------------------------------
 // Helper Function for converting a bracket string to an undirected graph
 // ----------------------------------------------------------------------------
-inline void bracket2graph(String<TRnaRecordGraph> & graphSet, CharString const & bracketStr)
+inline void bracket2graph(String<RnaInterGraph> & graphSet, CharString const & bracketStr)
 {
     TRnaRecordGraph graph;
     for (unsigned idx = 0; idx < length(bracketStr); ++idx)
@@ -181,7 +181,7 @@ inline void bracket2graph(String<TRnaRecordGraph> & graphSet, CharString const &
         if(!stack[idx].empty())
             throw ParseError("Invalid bracket notation: unpaired opening bracket");
 
-    append(graphSet, graph);
+    append(graphSet, RnaInterGraph(graph));
 }
 
 // ----------------------------------------------------------------------------
@@ -312,7 +312,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     readUntil(buffer, iter, IsWhitespace());
     if (length(buffer) != record.seqLen)
         throw std::runtime_error("ERROR: Bracket string must be as long as sequence.");
-    bracket2graph(record.graph, buffer);
+    bracket2graph(record.fixedGraphs, buffer);
     clear(buffer);
 
     // read energy if present
@@ -341,7 +341,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
 {
     if (empty(record.sequence) && length(rows(record.align)) != 1)
         throw std::runtime_error("ERROR: DotBracket formatted file cannot contain an alignment.");
-    if (length(record.graph) != 1)
+    if (length(record.fixedGraphs) != 1)
         throw std::runtime_error("ERROR: DotBracket formatted file cannot contain multiple structure graphs.");
 
     Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
@@ -362,7 +362,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     writeValue(target, '\n');
 
     // write bracket string
-    write(target, graph2bracket(record.graph[0]));
+    write(target, graph2bracket(record.fixedGraphs[0].inter));
 
     // write energy
     if (record.energy != 0.0f)

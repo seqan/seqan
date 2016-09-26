@@ -52,6 +52,22 @@ typedef typename Iterator<TRnaRecordGraph, AdjacencyIterator>::Type TRnaAdjacenc
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class RnaInterGraph
+// ----------------------------------------------------------------------------
+
+class RnaInterGraph {
+public:
+    // Specs of the Method used to compute the bpp matrix or the structure
+    CharString specs;
+    // graph storing the weight of the RNA structure interactions
+    TRnaRecordGraph inter;
+    // Default constructor.
+    RnaInterGraph() : specs("") {}
+    // Constructor with given TRnaRecordGraph
+    RnaInterGraph(TRnaRecordGraph const & _inter) : specs(""), inter(_inter) {}
+};
+
+// ----------------------------------------------------------------------------
 // Class RnaRecord
 // ----------------------------------------------------------------------------
 
@@ -81,7 +97,12 @@ public:
 
     // Undirected graph for base pairings
     // vertices: sequence/alignment column index, edges: base pair with assigned probability
-    String<TRnaRecordGraph> graph;
+    //String<TRnaRecordGraph> graph;
+
+    // Vector of base pair probability graphs extracted from the input files
+    String<RnaInterGraph> bppMatrGraphs;
+    // Vector of fixed structure graphs extracted from the input files
+    String<RnaInterGraph> fixedGraphs;
 
     String<int> graphType; // index to structure computation tool (see header), negative values for M, positive for F
 
@@ -133,7 +154,8 @@ inline void clear(RnaRecord & record)
     clear(record.sequence);
     clear(record.seqID);
     clearGaps(record.align);
-    clear(record.graph);
+    clear(record.fixedGraphs);
+    clear(record.bppMatrGraphs);
     clear(record.graphType);
     clear(record.quality);
     clear(record.comment);

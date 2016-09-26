@@ -62,12 +62,12 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
 
     SEQAN_ASSERT_EQ(rnaRecord.seqLen, 73u);
     SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50f);
-    SEQAN_ASSERT_EQ(rnaRecord.offset, 1);
+    SEQAN_ASSERT_EQ(rnaRecord.offset, 1u);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
     SEQAN_ASSERT_EQ(rnaRecord.sequence, base);
 
-    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph[0], 0);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.fixedGraphs[0].inter, 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
 
     /* CHECK DEFAULT VALUES */
@@ -104,11 +104,11 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
 
     SEQAN_ASSERT_EQ(rnaRecord.seqLen, 73u);
     SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50f);
-    SEQAN_ASSERT_EQ(rnaRecord.offset, 1);
+    SEQAN_ASSERT_EQ(rnaRecord.offset, 1u);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE M10740");
     SEQAN_ASSERT_EQ(rnaRecord.sequence, "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
 
-    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph[0], 0);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.fixedGraphs[0].inter, 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
     
     /* CHECK DEFAULT VALUES */
@@ -144,7 +144,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_stockholm)
     /*CHECK STOCKHOLM FILE VALUES */
 
     SEQAN_ASSERT_EQ(rnaRecord.seqLen, 74u);
-    SEQAN_ASSERT_EQ(rnaRecord.offset, 1);
+    SEQAN_ASSERT_EQ(rnaRecord.offset, 1u);
     SEQAN_ASSERT_EQ(rnaRecord.name,"trna");
     SEQAN_ASSERT_EQ(stringSet(rnaRecord.align)[0],
                     "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUCUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
@@ -153,7 +153,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_stockholm)
     SEQAN_ASSERT_EQ(rnaRecord.seqID[0], "DF6280");
     SEQAN_ASSERT_EQ(rnaRecord.seqID[2], "DD6280");
 
-    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph[0], 10);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.fixedGraphs[0].inter, 10);
     SEQAN_ASSERT_EQ(value(adj_it), 24u);
 }
 
@@ -202,7 +202,7 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
     seqan::RnaRecord record;
     //set values
     record.seqLen = 8u;
-    record.offset = 1;
+    record.offset = 1u;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5f;
     record.sequence = "GCGGAUUU";
@@ -212,7 +212,7 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
         addVertex(graph);
     for (unsigned idx = 0; idx < 4; ++idx)
         addEdge(graph, idx, 7u - idx, 1.);
-    append(record.graph, graph);
+    append(record.fixedGraphs, seqan::RnaInterGraph(graph));
 
 
     // Write Connect records to string stream.String<char> out;
@@ -237,7 +237,7 @@ SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
     seqan::RnaRecord record;
     //set values
     record.seqLen = 8u;
-    record.offset = 1;
+    record.offset = 1u;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
     record.sequence = "GCGGAUUU";
@@ -247,7 +247,7 @@ SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
         addVertex(graph);
     for (unsigned idx = 0; idx < 4; ++idx)
         addEdge(graph, idx, 7u - idx, 1.);
-    append(record.graph, graph);
+    append(record.fixedGraphs, seqan::RnaInterGraph(graph));
 
     // Write Connect records to string stream.String<char> out;
     seqan::String<char> out;
