@@ -34,8 +34,8 @@
 // Class for reading/writing files in Connect (.ct) files
 // ==========================================================================
 
-#ifndef SEQAN_CONNECT_IO_FILE_H_
-#define SEQAN_CONNECT_IO_FILE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_FILE_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_FILE_H_
 
 
 namespace seqan {
@@ -64,7 +64,7 @@ namespace seqan {
  *
  * @see RnaRecord
  */
-typedef FormattedFile<Connect, Input>   ConnectFileIn;
+typedef FormattedFile<Connect, Input> ConnectFileIn;
 
 // ----------------------------------------------------------------------------
 // Typedef ConnectFileOut
@@ -80,7 +80,7 @@ typedef FormattedFile<Connect, Input>   ConnectFileIn;
  * @see RnaRecord
  */
 
-typedef FormattedFile<Connect, Output>  ConnectFileOut;
+typedef FormattedFile<Connect, Output> ConnectFileOut;
 
 // ----------------------------------------------------------------------------
 // Metafunction FormattedFileContext
@@ -101,8 +101,6 @@ struct FileFormat<FormattedFile<Connect, TDirection, TSpec> >
 {
     typedef Connect Type;
 };
-
-
 
 // ----------------------------------------------------------------------------
 // Function readRecord(); RnaHeader, Connect File
@@ -128,7 +126,6 @@ writeRecord(FormattedFile<Connect, Output, TSpec> & file, RnaRecord & record)
     writeRecord(file.iter, record, file.format);
 }
 
-
 } //seqan namespace
 
-#endif  //SEQAN_CONNECT_IO_FILE_H
+#endif  //SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_FILE_H_

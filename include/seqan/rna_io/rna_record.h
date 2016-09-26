@@ -58,14 +58,11 @@ typedef typename Iterator<TRnaRecordGraph, AdjacencyIterator>::Type TRnaAdjacenc
 class RnaRecord
 {
 public:
-    static const int INVALID_POS = -1;
-
     // Amount of records.
-    unsigned amount;
+    unsigned seqLen;
 
-    //beginning and ending positions of the sequence
-    int begPos;
-    int endPos;
+    // Start position of the sequence
+    unsigned offset;
 
     // Energy
     float energy;
@@ -73,29 +70,29 @@ public:
     // Record's name.
     CharString name;
 
-    // string of base at each position in Rna strand, ONLY SINGLE-SEQUENCE FILES
+    // string of base at each position in Rna strand, ONLY SINGLE-SEQUENCE RECORDS
     Rna5String sequence;
 
-    // sequence identifier for aligned sequences, ONLY MULTI-SEQUENCE FILES
-    StringSet<CharString> seq_id;
+    // sequence identifier for aligned sequences, ONLY ALIGNMENT RECORDS
+    StringSet<CharString> seqID;
 
-    // alignment of several sequences (gaps allowed), ONLY MULTI-SEQUENCE FILES
+    // alignment of several sequences (gaps allowed), ONLY ALIGNMENT RECORDS
     Align<Rna5String, ArrayGaps> align;
 
     // Undirected graph for base pairings
     // vertices: sequence/alignment column index, edges: base pair with assigned probability
-    TRnaRecordGraph graph;
+    String<TRnaRecordGraph> graph;
 
-    bool isInjective; // each base has at most 1 connection
+    String<int> graphType; // index to structure computation tool (see header), negative values for M, positive for F
+
+    CharString quality;
 
     ////////RDAT FILES
-    CharString qual; //I think?
+    //CharString qual; //I think?
 
-    int offset;
+    //String<CharString> seqpos;
 
-    String<CharString> seqpos;
-
-    String<CharString> annotation;
+    //String<CharString> annotation;
 
     CharString comment;
 
@@ -104,17 +101,16 @@ public:
 
     String<float> reactivity;
 
-    String<float> reactivity_error;
+    String<float> reactError;
 
-    String<float> xsel;
+    //String<float> xsel;
 
-    String<float> xsel_refine;
+    //String<float> xsel_refine;
 
     //mutpos
   
     // Default constructor.
-    RnaRecord() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" "), sequence(""),
-        isInjective(true), offset(0), comment("")
+    RnaRecord() : seqLen(0), offset(1), energy(0.0f), name(""), sequence(""), quality(""), comment("")
     {}                                                                                      
 
 };
@@ -130,18 +126,19 @@ public:
 
 inline void clear(RnaRecord & record)
 {
+    record.seqLen = 0;
+    record.offset = 1;
+    record.energy = 0.0f;
     clear(record.name);
     clear(record.sequence);
+    clear(record.seqID);
+    clearGaps(record.align);
     clear(record.graph);
-    clear(record.qual);
-
-    clear(record.seqpos);
-    clear(record.annotation);
+    clear(record.graphType);
+    clear(record.quality);
     clear(record.comment);
     clear(record.reactivity);
-    clear(record.reactivity_error);
-    clear(record.xsel);    
-    clear(record.xsel_refine);
+    clear(record.reactError);
 }
 
 }  // namespace seqan

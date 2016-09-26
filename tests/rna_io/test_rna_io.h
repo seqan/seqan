@@ -29,12 +29,9 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer <lily.shellhammer@gmail.com>
+// Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
+//          Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
-
-/* TO DO: Need to get rid of warnings for test. Not sure how to get rid of all of them, but I haven't looked
-into it a ton just yet.
-*/
 
 #ifndef TESTS_RNA_IO_TEST_RNA_IO_H_
 #define TESTS_RNA_IO_TEST_RNA_IO_H_
@@ -63,15 +60,14 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
 
     /*CHECK CONNECT FILE VALUES */
 
-    SEQAN_ASSERT_EQ(rnaRecord.amount, 73u);
-    SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50);
-    SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
-    SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
+    SEQAN_ASSERT_EQ(rnaRecord.seqLen, 73u);
+    SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50f);
+    SEQAN_ASSERT_EQ(rnaRecord.offset, 1);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
     SEQAN_ASSERT_EQ(rnaRecord.sequence, base);
 
-    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph[0], 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
 
     /* CHECK DEFAULT VALUES */
@@ -106,14 +102,13 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
 
     /*CHECK DOTBRACKET FILE VALUES */
 
-    SEQAN_ASSERT_EQ(rnaRecord.amount, 73u);
-    SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50);
-    SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
-    SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
-    SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
+    SEQAN_ASSERT_EQ(rnaRecord.seqLen, 73u);
+    SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50f);
+    SEQAN_ASSERT_EQ(rnaRecord.offset, 1);
+    SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE M10740");
     SEQAN_ASSERT_EQ(rnaRecord.sequence, "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
 
-    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph[0], 0);
     SEQAN_ASSERT_EQ(value(adj_it), 71u);
     
     /* CHECK DEFAULT VALUES */
@@ -148,18 +143,17 @@ SEQAN_DEFINE_TEST(test_rna_io_read_stockholm)
 
     /*CHECK STOCKHOLM FILE VALUES */
 
-    SEQAN_ASSERT_EQ(rnaRecord.amount, 74u);
-    SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
-    SEQAN_ASSERT_EQ(rnaRecord.endPos, 74);
+    SEQAN_ASSERT_EQ(rnaRecord.seqLen, 74u);
+    SEQAN_ASSERT_EQ(rnaRecord.offset, 1);
     SEQAN_ASSERT_EQ(rnaRecord.name,"trna");
     SEQAN_ASSERT_EQ(stringSet(rnaRecord.align)[0],
                     "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUCUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
     SEQAN_ASSERT_EQ(stringSet(rnaRecord.align)[2],
                     "UCCGUGAUAGUUUAAUGGUCAGAAUGGGCGCUUGUCGCGUGCCAGAUCGGGGUUCAAUUCCCCGUCGCGGAG");
-    SEQAN_ASSERT_EQ(rnaRecord.seq_id[0], "DF6280");
-    SEQAN_ASSERT_EQ(rnaRecord.seq_id[2], "DD6280");
+    SEQAN_ASSERT_EQ(rnaRecord.seqID[0], "DF6280");
+    SEQAN_ASSERT_EQ(rnaRecord.seqID[2], "DD6280");
 
-    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph, 10);
+    seqan::TRnaAdjacencyIterator adj_it(rnaRecord.graph[0], 10);
     SEQAN_ASSERT_EQ(value(adj_it), 24u);
 }
 
@@ -207,58 +201,60 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
 {
     seqan::RnaRecord record;
     //set values
-    record.amount = 8u;
-    record.begPos = 1;
-    record.endPos = 8;
+    record.seqLen = 8u;
+    record.offset = 1;
     record.name = "S.cerevisiae_tRNA-PHE";
-    record.energy = -17.5;
+    record.energy = -17.5f;
     record.sequence = "GCGGAUUU";
+    seqan::TRnaRecordGraph graph;
 
-    for (unsigned idx = 0; idx < record.amount; ++idx)
-        addVertex(record.graph);
+    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+        addVertex(graph);
     for (unsigned idx = 0; idx < 4; ++idx)
-        addEdge(record.graph, idx, 7u - idx, 1.);
+        addEdge(graph, idx, 7u - idx, 1.);
+    append(record.graph, graph);
 
 
     // Write Connect records to string stream.String<char> out;
-    seqan::String<char> out;
-    writeRecord(out, record, seqan::Connect());
+    seqan::String<char> outstr;
+    writeRecord(outstr, record, seqan::Connect());
 
     // Compare string stream to expected value.
-    seqan::String<char> expected = "8 ENERGY = \t-17.5\tS.cerevisiae_tRNA-PHE\n";
-     append(expected, " 1 G\t0\t2\t8\t1\n");
-     append(expected, " 2 C\t1\t3\t7\t2\n");
-     append(expected, " 3 G\t2\t4\t6\t3\n");
-     append(expected, " 4 G\t3\t5\t5\t4\n");
-     append(expected, " 5 A\t4\t6\t4\t5\n");
-     append(expected, " 6 U\t5\t7\t3\t6\n");
-     append(expected, " 7 U\t6\t8\t2\t7\n");
-     append(expected, " 8 U\t7\t9\t1\t8\n");
-    SEQAN_ASSERT_EQ(out, expected);
+    seqan::String<char> expected = "8\tENERGY = -17.5\tS.cerevisiae_tRNA-PHE\n";
+     append(expected, " 1\tG\t0\t2\t8\t1\n");
+     append(expected, " 2\tC\t1\t3\t7\t2\n");
+     append(expected, " 3\tG\t2\t4\t6\t3\n");
+     append(expected, " 4\tG\t3\t5\t5\t4\n");
+     append(expected, " 5\tA\t4\t6\t4\t5\n");
+     append(expected, " 6\tU\t5\t7\t3\t6\n");
+     append(expected, " 7\tU\t6\t8\t2\t7\n");
+     append(expected, " 8\tU\t7\t9\t1\t8\n");
+    SEQAN_ASSERT_EQ(outstr, expected);
 }
 
 SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
 {
     seqan::RnaRecord record;
     //set values
-    record.amount = 8u;
-    record.begPos = 1;
-    record.endPos = 8;
+    record.seqLen = 8u;
+    record.offset = 1;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
     record.sequence = "GCGGAUUU";
+    seqan::TRnaRecordGraph graph;
 
-    for (unsigned idx = 0; idx < record.amount; ++idx)
-        addVertex(record.graph);
+    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+        addVertex(graph);
     for (unsigned idx = 0; idx < 4; ++idx)
-        addEdge(record.graph, idx, 7u - idx, 1.);
+        addEdge(graph, idx, 7u - idx, 1.);
+    append(record.graph, graph);
 
     // Write Connect records to string stream.String<char> out;
     seqan::String<char> out;
     writeRecord(out, record, seqan::DotBracket());
 
     // Compare string stream to expected value.
-    seqan::String<char> expected = ">S.cerevisiae_tRNA-PHE /1-8\n";
+    seqan::String<char> expected = ">S.cerevisiae_tRNA-PHE/1-8\n";
     append(expected, "GCGGAUUU\n");
     append(expected, "(((()))) (-17.5)\n");
     SEQAN_ASSERT_EQ(out, expected);

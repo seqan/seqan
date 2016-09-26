@@ -131,39 +131,40 @@ constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
 // ----------------------------------------------------------------------------
 // Helper Function for converting a bracket string to an undirected graph
 // ----------------------------------------------------------------------------
-static inline void bracket2graph(TRnaRecordGraph & graph, CharString const & bracket_str)
+inline void bracket2graph(String<TRnaRecordGraph> & graphSet, CharString const & bracketStr)
 {
-    for (unsigned idx = 0; idx < length(bracket_str); ++idx)
+    TRnaRecordGraph graph;
+    for (unsigned idx = 0; idx < length(bracketStr); ++idx)
         addVertex(graph);
 
     // declare stacks for different bracket pairs
     std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
 
-    for(unsigned idx = 0; idx < length(bracket_str); ++idx)
+    for(unsigned idx = 0; idx < length(bracketStr); ++idx)
     {
         // skip unpaired
-        auto elem = std::find(DotBracketArgs<>::UNPAIRED.begin(), DotBracketArgs<>::UNPAIRED.end(), bracket_str[idx]);
+        auto elem = std::find(DotBracketArgs<>::UNPAIRED.begin(), DotBracketArgs<>::UNPAIRED.end(), bracketStr[idx]);
         if (elem != std::end(DotBracketArgs<>::UNPAIRED))
             continue;
 
         // search opening bracket
-        elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), bracket_str[idx]);
+        elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), bracketStr[idx]);
         if (elem != std::end(DotBracketArgs<>::OPEN))
         {
-            std::size_t br_index = elem - DotBracketArgs<>::OPEN.begin();
-            stack[br_index].push(idx);
+            std::size_t brIndex = elem - DotBracketArgs<>::OPEN.begin();
+            stack[brIndex].push(idx);
             continue;
         }
 
         // search closing bracket
-        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), bracket_str[idx]);
+        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), bracketStr[idx]);
         if (elem != std::end(DotBracketArgs<>::CLOSE))
         {
-            std::size_t br_index = elem - DotBracketArgs<>::CLOSE.begin();
-            if (!stack[br_index].empty())
+            std::size_t brIndex = elem - DotBracketArgs<>::CLOSE.begin();
+            if (!stack[brIndex].empty())
             {
-                addEdge(graph, idx, stack[br_index].top(), 1.);
-                stack[br_index].pop();
+                addEdge(graph, idx, stack[brIndex].top(), 1.);
+                stack[brIndex].pop();
             }
             else
             {
@@ -179,18 +180,20 @@ static inline void bracket2graph(TRnaRecordGraph & graph, CharString const & bra
     for(unsigned idx = 0; idx < length(DotBracketArgs<>::OPEN); ++idx)
         if(!stack[idx].empty())
             throw ParseError("Invalid bracket notation: unpaired opening bracket");
+
+    append(graphSet, graph);
 }
 
 // ----------------------------------------------------------------------------
 // Helper Function for converting a bracket string to an undirected graph
 // ----------------------------------------------------------------------------
-static inline void graph2bracket(CharString & bracket_str, TRnaRecordGraph const & graph)
+inline CharString const graph2bracket(TRnaRecordGraph const & graph)
 {
+    CharString bracketStr{};
     std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
     String<unsigned> colors;                            // colors for bracket pairs
     resize(colors, numVertices(graph), 0);              // color 0 means 'not set'
-    clear(bracket_str);
-    resize(bracket_str, numVertices(graph), ' ');
+    resize(bracketStr, numVertices(graph), ' ');
 
     unsigned unprocessed = 1; /* any value > 0 */
     for (unsigned col = 1; unprocessed > 0; ++col)
@@ -249,7 +252,7 @@ static inline void graph2bracket(CharString & bracket_str, TRnaRecordGraph const
         if (degree(graph, idx) == 0)                    // unpaired
         {
             SEQAN_ASSERT(colors[idx] == 0);
-            bracket_str[idx] = '.';
+            bracketStr[idx] = '.';
             continue;
         }
 
@@ -257,14 +260,15 @@ static inline void graph2bracket(CharString & bracket_str, TRnaRecordGraph const
         if (idx < value(adj_it))                        // open bracket
         {
             SEQAN_ASSERT(colors[idx] > 0);
-            bracket_str[idx] = DotBracketArgs<>::OPEN[colors[idx]-1];
+            bracketStr[idx] = DotBracketArgs<>::OPEN[colors[idx]-1];
         }
         else                                            // close bracket
         {
             SEQAN_ASSERT(colors[idx] > 0);
-            bracket_str[idx] = DotBracketArgs<>::CLOSE[colors[idx]-1];
+            bracketStr[idx] = DotBracketArgs<>::CLOSE[colors[idx]-1];
         }
     }
+    return bracketStr;
 }
 
 // ----------------------------------------------------------------------------
@@ -274,67 +278,54 @@ template <typename TForwardIter>
 inline void 
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotBracket const & /*tag*/)
 {
-    clear(context);
+    std::string buffer;
     clear(record);
-    //read beginning
-    //>S.cerevisiae_tRna-PHE M10740/1-73
-    skipOne(iter);
+    clear(context);
 
-    readUntil(record.name, iter, IsWhitespace());
-    //Check that this line doesn't end after name
-    if(*iter != '\n')
+    // read name (and offset)
+    skipOne(iter);                                                      // ">" symbol
+    readUntil(buffer, iter, IsNewline());
+    std::string::size_type pos = buffer.find_last_of('/');
+    if (pos == std::string::npos)
     {
-        skipUntil(iter, EqualsChar<'/'>());
-        skipOne(iter);
-        if(*iter != '\n')
-        {
-            readUntil(context.buffer, iter, EqualsChar<'-'>());
-            if (!lexicalCast(record.begPos, context.buffer))
-                throw BadLexicalCast(record.begPos, context.buffer);    //Read in beginning index position
-            clear(context.buffer);
-            skipOne(iter);
-            readUntil(context.buffer, iter, IsNewline());
-            if (!lexicalCast(record.endPos, context.buffer))
-                throw BadLexicalCast(record.endPos, context.buffer);    //Read in ending index position
-            clear(context.buffer);
-            skipOne(iter);
-
-            if (record.endPos >= record.begPos)
-            {
-                record.amount = record.endPos - record.begPos + 1;     //Set record.amount
-            }
-            else
-            {
-                std::cerr << "ERROR: End position is greater than beginning position";
-            }
+        record.name = buffer;
+    }
+    else
+    {
+        record.name = buffer.substr(0, pos);
+        std::string posStr{buffer.substr(pos + 1)};
+        pos = posStr.find('-');
+        if (pos == std::string::npos || !lexicalCast(record.offset, posStr.substr(0, pos))) {
+            record.name = buffer;
+            record.offset = 1;
         }
     }
+    clear(buffer);
 
-    /*
-    End part of record:
-    
-    GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
-    (((((((..((((........)))).((((.........)))).....(((((.......)))))))))))). (-17.50)
-    */
-
-    //declare opening and closing brackets. the reason I use two diff strings is becasue I can see if we have a pair by comparing open[i]==close[i]
-    readUntil(record.sequence, iter, IsNewline());
-
+    // read sequence
     skipOne(iter);
-    readUntil(context.buffer, iter, IsWhitespace());
+    readUntil(record.sequence, iter, IsNewline());
+    record.seqLen = length(record.sequence);
 
-    bracket2graph(record.graph, context.buffer);
-    clear(context.buffer);
+    // read bracket string and build graph
+    skipOne(iter);
+    readUntil(buffer, iter, IsWhitespace());
+    if (length(buffer) != record.seqLen)
+        throw std::runtime_error("ERROR: Bracket string must be as long as sequence.");
+    bracket2graph(record.graph, buffer);
+    clear(buffer);
+
+    // read energy if present
     if(!atEnd(iter))
     {
         skipUntil(iter, NotFunctor<IsWhitespace>());
         if(*iter == '(')
         {
             skipOne(iter);    
-            readUntil(context.buffer, iter, EqualsChar<')'>());
-            if (!lexicalCast(record.energy, context.buffer))
-                throw BadLexicalCast(record.energy, context.buffer);
-            clear(context.buffer);
+            readUntil(buffer, iter, EqualsChar<')'>());
+            if (!lexicalCast(record.energy, buffer))
+                throw BadLexicalCast(record.energy, buffer);
+            clear(buffer);
         }
     }
 }
@@ -348,44 +339,38 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag*/)     
 {
-    //write opening character for new record entry
+    if (empty(record.sequence) && length(rows(record.align)) != 1)
+        throw std::runtime_error("ERROR: DotBracket formatted file cannot contain an alignment.");
+    if (length(record.graph) != 1)
+        throw std::runtime_error("ERROR: DotBracket formatted file cannot contain multiple structure graphs.");
+
+    Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
+    
+    // write opening character for new record entry
     writeValue(target, '>');
-    //write name
+    // write name
     write(target, record.name);
-    writeValue(target, ' ');
-    //write index beg/end
+    // write index beg-end
     writeValue(target, '/');
-    if(record.begPos == -1)
-    {
-        write(target, "1-");
-        if(record.amount != 0)  
-            write(target, record.amount);
-        else
-        {
-            std::cerr << "ERROR: There is no amount provided." << std::endl;
-            return;
-        }
-    }
-    else if(record.endPos >= record.begPos)
-    {
-        write(target, record.begPos);
-        writeValue(target, '-');
-        write(target, record.endPos);
-    }
-
-    writeValue(target, '\n');
-    //write base
-    write(target, record.sequence);
+    write(target, record.offset);
+    writeValue(target, '-');
+    write(target, record.offset + record.seqLen - 1);
     writeValue(target, '\n');
 
-    CharString bracket_str("");
-    graph2bracket(bracket_str, record.graph);
-    write(target, bracket_str);
-    writeValue(target, ' ');
-    writeValue(target, '(');
-    write(target, record.energy);
-    writeValue(target, ')');
+    // write sequence
+    write(target, sequence);
     writeValue(target, '\n');
+
+    // write bracket string
+    write(target, graph2bracket(record.graph[0]));
+
+    // write energy
+    if (record.energy != 0.0f)
+    {
+        write(target, " (");
+        write(target, record.energy);
+        write(target, ")\n");
+    }
 }
 
 }

@@ -32,8 +32,8 @@
 // Author: Gianvito Urgese <gianvito.urgese@polito.it>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_SEQAN_BPSEQ_READ_BPSEQ_H_
-#define SEQAN_INCLUDE_SEQAN_BPSEQ_READ_BPSEQ_H_
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_
 
 namespace seqan {
 
@@ -71,20 +71,21 @@ readHeader(RnaHeader & header,
            TForwardIter & iter,
            Bpseq const & /*tag*/)
 {
+    std::string buffer;
     clear(header);
-    CharString buffer;
-    RnaHeaderRecord record;
+    clear(context);
 
     while (!atEnd(iter) && value(iter) == '#') // All the information stored in the # lines are saved in a single line
     {
+        RnaHeaderRecord record;
         skipOne(iter);
         clear(buffer);
         // Write header key.
         record.key = "Info";
         // Read header value.
         readLine(record.value, iter);
+        appendValue(header, record);
     }
-    appendValue(header, record);
 }
 
 // ----------------------------------------------------------------------------
@@ -94,55 +95,61 @@ readHeader(RnaHeader & header,
 
 template <typename TForwardIter>
 inline void
-readRecord(RnaRecord & record,
-           RnaIOContext & context,
-           TForwardIter & iter,
-           Bpseq const & /*tag*/)
+readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpseq const & /*tag*/)
 {
     typedef OrFunctor<IsSpace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bpseq> > NextEntry;
+    std::string buffer;
     clear(record);
-    CharString &buffer = context.buffer;
-    CharString tmpStr="";
-    unsigned counter = 0;
+    clear(context);
+
+    CharString tmpStr{};
+    unsigned currPos{0};
+    TRnaRecordGraph graph;
 
     while (!atEnd(iter) && value(iter) != '#')
     {
-        // 
+        // read index position
+        if (currPos == 0)
+        {
+            readUntil(buffer, iter, NextEntry());
+            if (empty(buffer))
+                SEQAN_THROW(EmptyFieldError("BEGPOS"));
+            if (!lexicalCast(record.offset, buffer))
+                throw BadLexicalCast(record.offset, buffer);
+            currPos = record.offset;
+        }
+        else
+        {
+            skipUntil(buffer, iter, NextEntry());
+            ++currPos;
+        }
         clear(buffer);
-        readUntil(buffer, iter, NextEntry());
-        if (empty(buffer))
-            SEQAN_THROW(EmptyFieldError("BEGPOS"));
-        if(counter == 0)
-            record.begPos = lexicalCast<__int32>(buffer);
-        skipUntil(iter, NextEntry());
 
-        // SEQUENCE
-        clear(buffer);
+        // read nucleotide
+        skipUntil(iter, NextEntry());
         readUntil(buffer, iter, IsWhitespace());
-        appendValue(record.sequence, buffer[0]);        //DONE: APPEND VALUES TO SEQUENCE WITHOUT GETTING A SEG FAULT
-        addVertex(record.graph);                 // add base to graph
+        appendValue(record.sequence, buffer[0]);
+        addVertex(graph);                 // add base to graph
         if (empty(record.sequence))
-            SEQAN_THROW(EmptyFieldError("SEQUENCE"));     
-
-        skipUntil(iter, NextEntry());
-
-        // PAIR
+            SEQAN_THROW(EmptyFieldError("SEQUENCE"));
         clear(buffer);
+
+        // read paired index
+        skipUntil(iter, NextEntry());
         readUntil(buffer, iter, OrFunctor<IsSpace, IsNewline>());
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
-        context.number = lexicalCast<unsigned>(buffer);
-        if (context.number != 0 && counter > context.number - 1)    // add edge if base is connected
-            addEdge(record.graph, context.number - 1, counter, 1.);
-        skipLine(iter);
+        unsigned pairPos;
+        if (!lexicalCast(pairPos, buffer))
+            throw BadLexicalCast(pairPos, buffer);
+        if (pairPos != 0 && currPos > pairPos)    // add edge if base is connected
+            addEdge(graph, pairPos - record.offset, currPos - record.offset, 1.);
+        clear(buffer);
 
-        ++counter;
+        skipLine(iter);
     }
-    if(record.begPos != 1)      //set beginning record position
-        record.endPos = counter - record.begPos + 1;
-    else
-        record.endPos = counter;    //set end record position
-    record.amount = counter;  //set amount of records
+    append(record.graph, graph);
+    record.seqLen = currPos;  //set amount of records
 
     return;
 }
@@ -158,6 +165,7 @@ writeHeader(TTarget & target,
             RnaIOContext & context,
             Bpseq const & /*tag*/)
 {
+    clear(context);
     for (unsigned i = 0; i < length(header); ++i)
     {
         write(target, "#");
@@ -179,16 +187,36 @@ writeRecord(TTarget & target,
             RnaIOContext & context,
             Bpseq const & /*tag*/)
 {
-    for (unsigned i = 0; i < record.amount; ++i)
+    if (empty(record.sequence) && length(rows(record.align)) != 1)
+        throw std::runtime_error("ERROR: Connect formatted file cannot contain an alignment.");
+    if (length(record.graph) != 1)
+        throw std::runtime_error("ERROR: Connect formatted file cannot contain multiple structure graphs.");
+
+    clear(context);
+    if (!empty(record.name))
     {
-        write(target, record.begPos + i);
+        write(target, "# ");
+        write(target, record.name);
+        writeValue(target, '\n');
+    }
+    if (!empty(record.comment))
+    {
+        write(target, "# ");
+        write(target, record.comment);
+        writeValue(target, '\n');
+    }
+
+    unsigned offset = record.offset > 0 ? record.offset : 1;
+    for (unsigned i = 0; i < record.seqLen; ++i)
+    {
+        write(target, offset + i);
         writeValue(target, ' ');
-        write(target, record.sequence[i]);  //DONE: PRINT SEQUENCE AT POSITION I WITHOUT SEG FAULTING
+        write(target, record.sequence[i]);
         writeValue(target, ' ');
-        if (degree(record.graph, i) != 0)
+        if (degree(record.graph[0], i) != 0)
         {
-            TRnaAdjacencyIterator adj_it(record.graph, i);
-            write(target, value(adj_it) + 1);
+            TRnaAdjacencyIterator adj_it(record.graph[0], i);
+            write(target, value(adj_it) + offset);
         }
         else
         {
@@ -200,4 +228,4 @@ writeRecord(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BPSEQ_READ_BPSEQ_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_

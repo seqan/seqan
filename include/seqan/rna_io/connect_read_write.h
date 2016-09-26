@@ -119,31 +119,32 @@ template <typename TForwardIter>
 inline void 
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
 {
-    //First line record example:
-    //  73 ENERGY =     -17.50    S.cerevisiae_tRna-PHE
-
+    std::string buffer;
     clear(record);
-    clear(context.buffer); 
-    skipUntil(iter, NotFunctor<IsWhitespace>()); 
-    readUntil(context.buffer, iter, IsWhitespace());
-    if (!lexicalCast(record.amount, context.buffer))
-        throw BadLexicalCast(record.amount, context.buffer);
-    clear(context.buffer);
+    clear(context);
 
+    // read number of entries (sequence length)
+    skipUntil(iter, NotFunctor<IsWhitespace>());
+    readUntil(buffer, iter, IsWhitespace());
+    if (!lexicalCast(record.seqLen, buffer))
+        throw BadLexicalCast(record.seqLen, buffer);
+    clear(buffer);
+
+    //read energy
     skipUntil(iter, NotFunctor<IsWhitespace>());
     skipUntil(iter, IsWhitespace());
     skipUntil(iter, EqualsChar<'='>());
     skipOne(iter);
     skipUntil(iter, NotFunctor<IsWhitespace>());
-    
-    readUntil(context.buffer, iter, IsWhitespace());
-    if (!lexicalCast(record.energy, context.buffer))
-        throw BadLexicalCast(record.energy, context.buffer);
-    clear(context.buffer);
+    readUntil(buffer, iter, IsWhitespace());
+    if (!lexicalCast(record.energy, buffer))
+        throw BadLexicalCast(record.energy, buffer);
+    clear(buffer);
 
-    readUntil(context.buffer, iter, NotFunctor<IsWhitespace>());
-
-    readUntil(record.name,  iter, IsNewline());  
+    // read name
+    readUntil(buffer, iter, NotFunctor<IsWhitespace>());
+    readUntil(record.name,  iter, IsNewline());
+    clear(buffer);
 
     /* 
     Example records:
@@ -151,59 +152,60 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
      3  G           2       4       70          3
      N  SEQUENCE   N-1     N+1    J POSITION  N  
     */
-    clear(context);
-    unsigned counter = 0;
-    skipUntil(iter, NotFunctor<IsWhitespace>()); 
+
+    // read nucleotides with pairs
+    TRnaRecordGraph graph;
+    unsigned currPos {0};
     while (!atEnd(iter))
     {
-        skipUntil(iter, NotFunctor<IsWhitespace>());          //skip beginning positiona and whitespace
-        
-
-        readUntil(context.buffer, iter, IsWhitespace());
-        if (!lexicalCast(context.number, context.buffer))
-            throw BadLexicalCast(context.number, context.buffer);
-        clear(context.buffer);
-        if (counter == 0)
+        // offset
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        if (currPos > 0)
         {
-            record.begPos = context.number;
-            if(record.amount != 0)  //in case amount is zero, leave it blank until counter is finshed
-                record.endPos = record.amount - record.begPos + 1;
+            skipUntil(iter, IsWhitespace());
+            ++currPos;
+        }
+        else
+        {
+            readUntil(buffer, iter, IsWhitespace());
+            if (!lexicalCast(record.offset, buffer))
+                throw BadLexicalCast(record.offset, buffer);
+            currPos = record.offset;
+            clear(buffer);
+        }
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+
+        // nucleotide
+        readUntil(buffer, iter, IsWhitespace());
+        append(record.sequence, buffer);
+        clear(buffer);
+        addVertex(graph);
+
+        // skip redundant indices
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        skipUntil(iter, IsWhitespace());
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        skipUntil(iter, IsWhitespace());
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+
+        // paired position: add undirected edge (weight=1.0) if connected
+        unsigned pairPos;
+        readUntil(buffer, iter, IsWhitespace());
+        if (!lexicalCast(pairPos, buffer))
+            throw BadLexicalCast(pairPos, buffer);
+        if (pairPos != 0 && currPos > pairPos)
+        {
+            if (pairPos >= record.offset)
+                addEdge(graph, pairPos - record.offset, currPos - record.offset, 1.0);
+            else
+                throw std::runtime_error("ERROR: Incompatible pairing position in input file.");
         }
 
-
-
-        skipUntil(iter, NotFunctor<IsWhitespace>());    
-
-        readUntil(context.base, iter, IsWhitespace());               //read base 
-        append(record.sequence, context.base);
-        clear(context.base);
-        addVertex(record.graph);
-
-        skipUntil(iter, NotFunctor<IsWhitespace>());    //skip whitespace
-        skipUntil(iter, IsWhitespace());
-        skipUntil(iter, NotFunctor<IsWhitespace>());
-        skipUntil(iter, IsWhitespace());
-        skipUntil(iter, NotFunctor<IsWhitespace>());
-        
-        readUntil(context.buffer, iter, IsWhitespace());  //read pair position
-        if (!lexicalCast(context.number, context.buffer))
-            throw BadLexicalCast(context.number, context.buffer);
-        clear(context.buffer);
-        if (context.number != 0 && counter > context.number - 1)        // add edge if base is connected
-            addEdge(record.graph, context.number - 1, counter, 1.);
-        clear(context.pair);
-
-        skipUntil(iter, IsNewline());      //skip until newline
-        counter++;
+        clear(buffer);
+        skipUntil(iter, IsNewline());
     }
-
-    if (record.amount == 0)
-    {
-        record.amount = counter;
-        if (record.begPos != 1)
-            record.endPos = record.amount - record.begPos + 1;
-    }
-
+    append(record.graph, graph);
+    SEQAN_ASSERT_EQ(record.seqLen, length(record.sequence));
 }
 
 
@@ -215,52 +217,49 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)     
 {
+    if (empty(record.sequence) && length(rows(record.align)) != 1)
+        throw std::runtime_error("ERROR: Connect formatted file cannot contain an alignment.");
+    if (length(record.graph) != 1)
+        throw std::runtime_error("ERROR: Connect formatted file cannot contain multiple structure graphs.");
+
+    Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
+    
     //write old "header"
-    if(record.amount != 0)
-        appendNumber(target, record.amount);
-    else
-    {
-        std::cerr << "ERROR. No amount of records specified";
-        return;
-    }
-    writeValue(target, ' ');
-    write(target, "ENERGY = ");
+    appendNumber(target, record.seqLen);
     writeValue(target, '\t');
+    write(target, "ENERGY = ");
     appendNumber(target, record.energy);
     writeValue(target, '\t');
     write(target, record.name);
     writeValue(target, '\n');
+
     //write "body"
-    int begPos = 1;
-    if(record.begPos != 1)
-        begPos = record.begPos;
-    for (unsigned i = 0; i < length(record.sequence); i++)
+    unsigned offset = record.offset > 0 ? record.offset : 1;
+    for (unsigned i = 0; i < length(sequence); ++i)
     {
         writeValue(target, ' ');    //All records start with a space
-        appendNumber(target, i+begPos);
-        writeValue(target, ' ');
-        write(target, record.sequence[i]);
+        appendNumber(target, i + offset);
         writeValue(target, '\t');
-        appendNumber(target, i+begPos-1);
+        write(target, sequence[i]);
         writeValue(target, '\t');
-        appendNumber(target, i+begPos+1);
+        appendNumber(target, i + offset - 1);
         writeValue(target, '\t');
-        if (degree(record.graph, i) != 0)
+        appendNumber(target, i + offset + 1);
+        writeValue(target, '\t');
+        if (degree(record.graph[0], i) != 0)
         {
-            TRnaAdjacencyIterator adj_it(record.graph, i);
-            write(target, value(adj_it) + 1);
+            TRnaAdjacencyIterator adjIter(record.graph[0], i);
+            write(target, value(adjIter) + offset);
         }
         else
         {
             writeValue(target, '0');
         }
         writeValue(target, '\t');
-        appendNumber(target, i+begPos);
+        appendNumber(target, i + offset);
         writeValue(target, '\n');
     }
 }
- 
-
 
 } //namespace seqan
 

@@ -129,109 +129,125 @@ template <typename TForwardIter>
 inline void 
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stockholm const & /*tag*/)
 {
+    std::string buffer;
     clear(record);
-    clear(context.buffer);
+    clear(context);
+
+    // read intro: # STOCKHOLM 1.0
     skipUntil(iter, NotFunctor<IsWhitespace>());
-    readUntil(context.buffer, iter, IsNewline());               // Intro # STOCKHOLM 1.0
-    if (std::string(toCString(context.buffer)).find("STOCKHOLM") == std::string::npos)
+    readUntil(buffer, iter, IsNewline());
+    if (buffer.find("STOCKHOLM") == std::string::npos)
         throw ParseError("Expected STOCKHOLM identifier in the first line.");
     skipOne(iter);
-    CharString bracket_str = "";
+    clear(buffer);
+
+    CharString bracketStr{};
     StringSet<Rna5String, Owner<JournaledSet> > sequence;
     StringSet<String<unsigned> > gapPos;
 
     while (!atEnd(iter))
     {
-        clear(context.buffer);
-        readUntil(context.buffer, iter, IsWhitespace());        // read line until first whitespace
-
-        if (context.buffer == "//")
+        // read tags and their values
+        readUntil(buffer, iter, IsWhitespace());                // read line until first whitespace
+        if (buffer == "//")
         {                                                       // found terminal symbols
+            clear(buffer);
             break;
         }
-        else if (context.buffer == "#=GC" || context.buffer == "#=GR")
-        {                                                       // found a tag
-            skipOne(iter);                                      // skip whitespace
-            clear(context.buffer);
-            readUntil(context.buffer, iter, IsWhitespace());    // read tag
-            if (context.buffer == "SS" || context.buffer == "SS_cons")
+        else if (buffer == "#=GC" || buffer == "#=GR")
+        {                                                       // found a GC or GR tag
+            clear(buffer);
+            skipOne(iter);
+            readUntil(buffer, iter, IsWhitespace());            // read tag
+            if (buffer == "SS" || buffer == "SS_cons")
             {                                                   // found secondary structure
-                clear(context.buffer);
+                clear(buffer);
                 skipUntil(iter, NotFunctor<IsWhitespace>());
-                readUntil(context.buffer, iter, IsWhitespace());
-                append(bracket_str, context.buffer);
+                readUntil(buffer, iter, IsWhitespace());
+                append(bracketStr, buffer);
             }
         }
-        else if (context.buffer == "#=GF")
-        {                                                       // found a tag
-            skipOne(iter);                                      // skip whitespace
-            clear(context.buffer);
-            readUntil(context.buffer, iter, IsWhitespace());    // read tag
-            if (context.buffer == "ID")
-            {                                                   // found identification tag
-                clear(context.buffer);
+        else if (buffer == "#=GF")
+        {                                                       // found a GF tag
+            clear(buffer);
+            skipOne(iter);
+            readUntil(buffer, iter, IsWhitespace());            // read tag
+            if (buffer == "ID")
+            {                                                   // found identification
+                clear(buffer);
                 skipUntil(iter, NotFunctor<IsWhitespace>());
-                readUntil(context.buffer, iter, IsWhitespace());
-                record.name = context.buffer;
+                readUntil(buffer, iter, IsWhitespace());
+                record.name = buffer;
+            }
+            else if (buffer == "DE")
+            {                                                   // found description
+                clear(buffer);
+                skipUntil(iter, NotFunctor<IsWhitespace>());
+                readUntil(buffer, iter, IsWhitespace());
+                record.comment = buffer;
             }
         }
-        else if (length(context.buffer) > 0 && context.buffer[0] != '#')
-        {                                                       // found sequence id
-            unsigned idx = 0;
-            while (idx < length(record.seq_id) && record.seq_id[idx] != context.buffer)
-                ++idx;                                          // search sequence id
+        else if (length(buffer) > 0 && buffer[0] != '#')
+        {                                                       // found a sequence id
+            unsigned idx = 0;                                   // search for index of this seq id
+            while (idx < length(record.seqID) && record.seqID[idx] != buffer)
+                ++idx;
 
-            unsigned const OFFSET = idx == length(record.seq_id) ? 0 : length(sequence[idx]);
+            // determine length of stored sequence belonging to idx
+            unsigned const OFFSET = idx == length(record.seqID) ? 0 : length(sequence[idx]);
             if (OFFSET == 0)
-            {
-                appendValue(record.seq_id, context.buffer);
-                resize(rows(record.align), idx + 1);
+            {                                                   // sequence id is new
+                appendValue(record.seqID, buffer);
                 resize(gapPos, idx + 1);
             }
+            clear(buffer);
 
-            clear(context.buffer);
+            // read sequence
             skipUntil(iter, NotFunctor<IsWhitespace>());
-            readUntil(context.buffer, iter, IsWhitespace());    // read sequences
+            readUntil(buffer, iter, IsWhitespace());
 
-            unsigned gap = 0;
-            while (gap < length(context.buffer))                // remove gap symbols
+            // remove gap symbols from sequence and store their positions in gapPos list
+            unsigned pos = 0;
+            while (pos < length(buffer))
             {
-                if (context.buffer[gap] != '.' && context.buffer[gap] != '-')
+                if (buffer[pos] != '.' && buffer[pos] != '-')
                 {
-                    ++gap;
+                    ++pos;
                 }
                 else
                 {
-                    appendValue(gapPos[idx], gap + OFFSET);
-                    erase(context.buffer, gap);
+                    appendValue(gapPos[idx], pos + OFFSET);
+                    erase(buffer, pos);
                 }
             }
 
-            if (OFFSET == 0)                                    // new sequence
-                appendValue(sequence, context.buffer);
-            else                                                // append to existing sequence
-                append(sequence[idx], context.buffer);
+            if (OFFSET == 0)
+                appendValue(sequence, buffer);                  // store new sequence
+            else
+                append(sequence[idx], buffer);                  // append to existing sequence
         }
         skipUntil(iter, IsNewline());
         skipOne(iter);
+        clear(buffer);
     }
-    clear(context.buffer);
-
-    for (unsigned idx = 0; idx < length(gapPos); ++idx)
-    {
-        assignSource(row(record.align, idx), sequence[idx]);
-        for (unsigned gap = length(gapPos[idx]); gap > 0u; --gap)
-            insertGap(row(record.align, idx), gapPos[idx][gap - 1]);
-    }
-
-    record.amount = length(bracket_str);
-    if (record.amount == 0)
+    if (empty(bracketStr))
         throw ParseError("Expected a secondary structure line.");
     if (empty(sequence))
         throw ParseError("Expected a sequence line.");
-    bracket2graph(record.graph, bracket_str);
-    record.begPos = 1;
-    record.endPos = record.amount;
+    SEQAN_ASSERT_EQ(length(sequence), length(gapPos));
+
+    // store the alignment with gaps in record
+    resize(rows(record.align), length(sequence));
+    for (unsigned seq = 0; seq < length(sequence); ++seq)
+    {
+        assignSource(row(record.align, seq), sequence[seq]);
+        for (unsigned pos = length(gapPos[seq]); pos > 0u; --pos)
+            insertGap(row(record.align, seq), gapPos[seq][pos - 1]);
+    }
+
+    // store sequence length and secondary structure graph
+    record.seqLen = length(bracketStr);
+    bracket2graph(record.graph, bracketStr);
 }
 
 
@@ -243,11 +259,20 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*/)     
 {
+    if (length(record.graph) != 1)
+        throw std::runtime_error("ERROR: Cannot deal with multiple structure graphs.");
+
     write(target, "# STOCKHOLM 1.0\n");                         // header
-    if (record.name != " ")
-    {                                                           // record name
+    if (!empty(record.name))
+    {                                                           // name
         write(target, "#=GF ID      ");
         write(target, record.name);
+        writeValue(target, '\n');
+    }
+    if (!empty(record.comment))
+    {                                                           // description
+        write(target, "#=GF DE      ");
+        write(target, record.comment);
         writeValue(target, '\n');
     }
     writeValue(target, '\n');
@@ -259,25 +284,24 @@ writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*
     }
     else
     {                                                           // alignment
-        SEQAN_ASSERT_EQ(length(record.seq_id), length(rows(record.align)));
+        SEQAN_ASSERT_EQ(length(record.seqID), length(rows(record.align)));
         unsigned maxlen = 12;                                   // determine indentation
-        for (unsigned idx = 0; idx < length(record.seq_id); ++idx)
-            maxlen = length(record.seq_id[idx]) > maxlen ? length(record.seq_id[idx]) : maxlen;
-        for (unsigned idx = 0; idx < length(record.seq_id); ++idx)
+        for (unsigned idx = 0; idx < length(record.seqID); ++idx)
+            maxlen = length(record.seqID[idx]) > maxlen ? length(record.seqID[idx]) : maxlen;
+
+        for (unsigned idx = 0; idx < length(record.seqID); ++idx)
         {
-            CharString str = record.seq_id[idx];                // write id
+            CharString str = record.seqID[idx];                 // write id
             resize(str, maxlen, ' ');
             write(target, str);
-            write(target, "\t");
+            writeValue(target, '\t');
             write(target, row(record.align, idx));              // write sequence
             writeValue(target, '\n');
         }
         write(target, "#=GC SS_cons\t");
     }
 
-    CharString bracket_str("");
-    graph2bracket(bracket_str, record.graph);
-    write(target, bracket_str);
+    write(target, graph2bracket(record.graph[0]));
     write(target, "\n//\n");                                    // closing
 }
 
