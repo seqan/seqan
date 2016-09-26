@@ -119,6 +119,15 @@ public:
     using TSimdVector = TSimdVector_;
 };
 
+template <typename TSimdVector_>
+class SimdVectorTestGather : public seqan::Test
+{
+public:
+    using TValue = typename seqan::Value<TSimdVector_>::Type;
+    constexpr static auto const LENGTH = seqan::LENGTH<TSimdVector_>::VALUE;
+    using TSimdVector = TSimdVector_;
+};
+
 typedef
         seqan::TagList<seqan::SimdVector<int8_t, 16>::Type,
         seqan::TagList<seqan::SimdVector<int16_t, 8>::Type,
@@ -144,6 +153,7 @@ typedef
         SimdVectorCommonCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
+SEQAN_TYPED_TEST_CASE(SimdVectorTestGather, SimdVectorCommonCommonTypes);
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, MetaFunctions)
 {
@@ -713,6 +723,105 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Shuffle)
         SEQAN_ASSERT_EQ(c[i], a[idx[i]]);
         SEQAN_ASSERT_EQ(c[i], a[length - i - 1]);
     }
+}
+
+template <typename TSimdVector, typename TValue, typename TArrayValue>
+inline void test_gather_array()
+{
+    using namespace seqan;
+    constexpr auto length = LENGTH<TSimdVector>::VALUE;
+
+    TSimdVector idx;
+    reverseIndexSequence(idx, length);
+
+    TArrayValue a[2*length];
+
+    // fill gather array
+    for (auto i = 0; i < 2*length; ++i)
+    {
+        a[i] = (i-1)*3;
+    }
+
+    auto c = gather(a, idx);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (TValue)c[i] << " = " << (TValue)a[idx[i]] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[idx[i]]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[length - i - 1]));
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, CharArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        int8_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, ShortArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        int16_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, IntArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        int32_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, LongArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        int64_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, UCharArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        uint8_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, UShortArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        uint16_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, UIntArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        uint32_t
+    >();
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestGather, ULongArray)
+{
+    test_gather_array<
+        typename TestFixture::TSimdVector,
+        typename TestFixture::TValue,
+        uint64_t
+    >();
 }
 
 #ifdef __SSE4_1__
