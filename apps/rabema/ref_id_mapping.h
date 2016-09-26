@@ -79,7 +79,7 @@ inline unsigned length(RefIdMapping const & mapping)
 
 template <typename TTargetNameStore, typename TTargetNameStoreCache, typename TSourceNameStore>
 void rebuildMapping(RefIdMapping & mapping,
-                    TTargetNameStore const & targetNameStore,
+                    TTargetNameStore const & /*targetNameStore*/,
                     TTargetNameStoreCache const & targetNameStoreCache,
                     TSourceNameStore const & sourceNameStore)
 {
