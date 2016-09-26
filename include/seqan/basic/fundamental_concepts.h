@@ -683,7 +683,7 @@ template <typename T>
 struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsInteger : Is< IntegerConcept<T> > {};
 
 template <typename T>
-struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsIntegral : IsInteger<T> {};
+struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsIntegral : Is< IntegerConcept<T> > {};
 
 // ============================================================================
 // Concepts for integers

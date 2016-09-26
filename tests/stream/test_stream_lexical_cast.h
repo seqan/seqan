@@ -197,7 +197,7 @@ SEQAN_TYPED_TEST(LexicalCastTest, FloatingPointSource)
 
     assign(this->source, "-123.45");
     bool success = lexicalCast(this->target, this->source);
-    SEQAN_ASSERT(success ^ IsIntegral<typename TestFixture::TTarget>::VALUE);
+    SEQAN_ASSERT(success ^ Is<IntegerConcept<typename TestFixture::TTarget> >::Type::VALUE);
     if (success) SEQAN_ASSERT_LT(this->target + reciprocal, epsilon);
 }
 
