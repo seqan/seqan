@@ -90,7 +90,7 @@ public:
     Rational() : num(0), den(1) {}
 
     template <typename T>
-    Rational(T const & n, SEQAN_CTOR_ENABLE_IF( IsInteger<T> ) ) : num(n), den(1) { (void)dummy; }
+    Rational(T const & n, SEQAN_CTOR_ENABLE_IF( Is<IntegerConcept<T> > ) ) : num(n), den(1) { (void)dummy; }
     Rational(param_type n, param_type d) : num(n), den(d) { normalize(); }
 
     // Default copy constructor and assignment are fine
