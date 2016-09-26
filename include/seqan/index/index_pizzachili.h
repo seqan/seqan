@@ -95,7 +95,7 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
  */
 
 template <typename TText, typename TSpec>
-class [[deprecated("This Module is outdated and is not maintained anymore.")]] Index<TText, PizzaChili<TSpec> > {
+class Index<TText, PizzaChili<TSpec> > {
 public:
     typedef typename Value<TText>::Type TValue;
     typedef typename PizzaChiliCodeProvider<TSpec>::Type TCodeProvider;
@@ -274,6 +274,7 @@ indexSolveDependencies(Index<TText, PizzaChili<TSpec> >& me, PizzaChiliCompresse
 
 namespace impl {
     template <typename TText, typename TSpec>
+    [[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
     inline bool
     createPizzaChiliIndex(
         Index<TText, PizzaChili<TSpec> >& me,
@@ -301,6 +302,7 @@ namespace impl {
 } // namespace impl
 
 template <typename TText, typename TSpec>
+[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool
 indexCreate(Index<TText, PizzaChili<TSpec> >& me, PizzaChiliCompressed const) {
     typedef
@@ -351,6 +353,7 @@ setIndexText(Index<TText, PizzaChili<TSpec> >& me, TOtherText& text) {
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TText, typename TSpec>
+[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool open(
     Index<TText, PizzaChili<TSpec> >& me,
     char const* filename
@@ -368,6 +371,7 @@ inline bool open(
 }
 
 template <typename TText, typename TSpec>
+[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool save(
     Index<TText, PizzaChili<TSpec> >& me,
     char const* filename
