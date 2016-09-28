@@ -80,6 +80,26 @@ SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
 };
 
 template <typename TSimdVector, typename TIsSimdVec>
+struct SimdMaskVectorImpl;
+
+/**
+ * SimdMaskVector is the return type of all logical operations of simd vectors
+ * like comparisons.
+ *
+ * ```
+ * using TSimdVector = SimdVector<uint32_t, 4>::Type;
+ * using TSimdMaskVector = SimdMaskVector<TSimdVector>::Type;
+ *
+ * TSimdVector vec1 {2, 4, 8, 16}, vec2 {16, 8, 4, 2};
+ * TSimdMaskVector cmp = vec1 > vec2; // cmp = {false, false, true, true}
+ * ```
+ */
+template <typename TSimdVector>
+struct SimdMaskVector : SimdMaskVectorImpl<TSimdVector, typename Is<SimdVectorConcept<TSimdVector> >::Type >
+{
+};
+
+template <typename TSimdVector, typename TIsSimdVec>
 struct SimdSwizzleVectorImpl;
 
 /**

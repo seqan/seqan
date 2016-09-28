@@ -43,6 +43,12 @@ namespace seqan
 {
 
 template <typename TSimdVector>
+struct SimdMaskVectorImpl<TSimdVector, True>
+{
+    using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::MASK_T;
+};
+
+template <typename TSimdVector>
 struct SimdSwizzleVectorImpl<TSimdVector, True>
 {
     using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::SWIZZLE_T;
