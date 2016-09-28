@@ -47,7 +47,7 @@ namespace seqan
 {
 
 template <typename TSimdVector>
-struct SimdIndexVectorImpl<TSimdVector, True>
+struct SimdSwizzleVectorImpl<TSimdVector, True>
 {
     using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::SWIZZLE_T;
 };

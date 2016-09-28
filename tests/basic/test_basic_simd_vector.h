@@ -94,8 +94,8 @@ void fillVectors(TSimdVector & a, TSimdVector & b)
     }
 }
 
-template <typename TSimdIndexVector, typename TSize>
-void reverseIndexSequence(TSimdIndexVector & idx, TSize length)
+template <typename TSimdVector, typename TSize>
+void reverseIndexSequence(TSimdVector & idx, TSize length)
 {
     for (auto i = 0; i < length; ++i)
     {
@@ -666,10 +666,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant1)
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
     constexpr auto length = TestFixture::LENGTH;
-    typedef typename SimdIndexVector<TSimdVector>::Type TSimdIndexVector;
+    typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
 
     TSimdVector a, b;
-    auto idx = createVector<TSimdIndexVector>(1);
+    auto idx = createVector<TSimdSwizzleVector>(1);
     fillVectors(a, b);
 
     auto c = shuffleVector(a, idx);
@@ -687,10 +687,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant2)
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
     constexpr auto length = TestFixture::LENGTH;
-    typedef typename SimdIndexVector<TSimdVector>::Type TSimdIndexVector;
+    typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
 
     TSimdVector a, b;
-    auto idx = createVector<TSimdIndexVector>(length - 2);
+    auto idx = createVector<TSimdSwizzleVector>(length - 2);
     fillVectors(a, b);
 
     auto c = shuffleVector(a, idx);
@@ -708,10 +708,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Shuffle)
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
     constexpr auto length = TestFixture::LENGTH;
-    typedef typename SimdIndexVector<TSimdVector>::Type TSimdIndexVector;
+    typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
 
     TSimdVector a, b;
-    TSimdIndexVector idx;
+    TSimdSwizzleVector idx;
     fillVectors(a, b);
     reverseIndexSequence(idx, length);
 

@@ -82,10 +82,10 @@ SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
 };
 
 template <typename TSimdVector, typename TIsSimdVec>
-struct SimdIndexVectorImpl;
+struct SimdSwizzleVectorImpl;
 
 template <typename TSimdVector>
-struct SimdIndexVector : SimdIndexVectorImpl<TSimdVector, typename Is<SimdVectorConcept<TSimdVector> >::Type >
+struct SimdSwizzleVector : SimdSwizzleVectorImpl<TSimdVector, typename Is<SimdVectorConcept<TSimdVector> >::Type >
 {
 };
 
