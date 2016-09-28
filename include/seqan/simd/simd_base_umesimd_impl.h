@@ -45,7 +45,7 @@ namespace seqan
 template <typename TSimdVector>
 struct SimdMaskVectorImpl<TSimdVector, True>
 {
-    using Type = TSimdVector;
+    using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::MASK_T;
 };
 
 template <typename TSimdVector>
@@ -336,10 +336,7 @@ template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpeq(b), ~TValue(0));
-    return retval;
+    return a.cmpeq(b);
 }
 
 // --------------------------------------------------------------------------
@@ -350,10 +347,7 @@ template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator==(TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpeq(b), ~TValue(0));
-    return retval;
+    return a.cmpeq(b);
 }
 
 // --------------------------------------------------------------------------
@@ -364,10 +358,7 @@ template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpgt(b), ~TValue(0));
-    return retval;
+    return a.cmpgt(b);
 }
 
 // --------------------------------------------------------------------------
@@ -378,10 +369,7 @@ template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator>(TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpgt(b), ~TValue(0));
-    return retval;
+    return a.cmpgt(b);
 }
 
 // --------------------------------------------------------------------------
@@ -525,13 +513,7 @@ template <typename TSimdVector, typename TSimdVectorMask>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 blend(TSimdVector const & a, TSimdVector const & b, TSimdVectorMask const & mask)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    const TSimdVector truemask(~TValue(0));
-
-    return a.blend(
-        mask.cmpeq(truemask), // convert mask into umesimd's mask type
-        b
-    );
+    return a.blend(mask, b);
 }
 
 // --------------------------------------------------------------------------
