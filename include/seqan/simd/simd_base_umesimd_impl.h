@@ -294,7 +294,9 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 cmpEq (TSimdVector const &a, TSimdVector const &b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    return UME::SIMD::SCALAR_EMULATION::xtoy<TSimdVector, TValue>(a.cmpeq(b));
+    TSimdVector retval(0);
+    retval.assign(a.cmpeq(b), ~TValue(0));
+    return retval;
 }
 
 // --------------------------------------------------------------------------
@@ -306,7 +308,9 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 operator == (TSimdVector const &a, TSimdVector const &b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    return UME::SIMD::SCALAR_EMULATION::xtoy<TSimdVector, TValue>(a.cmpeq(b));
+    TSimdVector retval(0);
+    retval.assign(a.cmpeq(b), ~TValue(0));
+    return retval;
 }
 
 // --------------------------------------------------------------------------
@@ -318,7 +322,9 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 cmpGt (TSimdVector const &a, TSimdVector const &b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    return UME::SIMD::SCALAR_EMULATION::xtoy<TSimdVector, TValue>(a.cmpgt(b));
+    TSimdVector retval(0);
+    retval.assign(a.cmpgt(b), ~TValue(0));
+    return retval;
 }
 
 // --------------------------------------------------------------------------
@@ -330,7 +336,9 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 operator > (TSimdVector const &a, TSimdVector const &b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    return UME::SIMD::SCALAR_EMULATION::xtoy<TSimdVector, TValue>(a.cmpgt(b));
+    TSimdVector retval(0);
+    retval.assign(a.cmpgt(b), ~TValue(0));
+    return retval;
 }
 
 // --------------------------------------------------------------------------
@@ -474,10 +482,11 @@ template <typename TSimdVector, typename TSimdVectorMask>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask)
 {
-    using TMaskType = typename UME::SIMD::SIMDTraits<TSimdVector>::MASK_T;
+    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
+    const TSimdVector truemask(~TValue(0));
 
     return a.blend(
-        UME::SIMD::SCALAR_EMULATION::xtoy<TMaskType, bool>(mask),
+        mask.cmpeq(truemask), // convert mask into umesimd's mask type
         b
     );
 }
