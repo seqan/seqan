@@ -52,7 +52,6 @@
 // ===========================================================================
 
 #include <seqan/rna_io/rna_record.h>
-#include <seqan/rna_io/rna_header_record.h>
 #include <seqan/rna_io/rna_header.h>
 
 #include <seqan/rna_io/rna_io_context.h>
@@ -61,10 +60,12 @@
 #include <seqan/rna_io/dot_bracket_read_write.h>
 #include <seqan/rna_io/bpseq_read_write.h>
 #include <seqan/rna_io/stockholm_read_write.h>
+#include <seqan/rna_io/ebpseq_read_write.h>
 
 #include <seqan/rna_io/connect_file.h>
 #include <seqan/rna_io/dot_bracket_file.h>
 #include <seqan/rna_io/bpseq_file.h>
 #include <seqan/rna_io/stockholm_file.h>
+#include <seqan/rna_io/ebpseq_file.h>
 
 #endif  // INCLUDE_SEQAN_RNA_IO_H_

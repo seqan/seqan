@@ -52,11 +52,8 @@ namespace seqan {
 class RnaIOContext
 {
 public:
-    unsigned amount {0};            // number of records
-    CharString description;         // free text for file description
-    StringSet<CharString> method;   // list of fixed structure comp. methods
-    StringSet<CharString> probmat;  // list of probability matrix comp. methods
-    StringSet<CharString> type;     // list of types of biol. validated data
+    RnaHeader * header;
+    String<RnaRecord * > record;
 };
 
 // ============================================================================
@@ -72,11 +69,8 @@ public:
 
 inline void clear(RnaIOContext & context)
 {
-    context.amount = 0;
-	clear(context.description);
-    clear(context.method);
-    clear(context.probmat);
-    clear(context.type);
+    context.header = NULL;
+    clear(context.record);
 }
 
 }  // namespace seqan

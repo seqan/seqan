@@ -29,11 +29,12 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Gianvito Urgese <gianvito.urgese@polito.it>
+// Authors: Joerg Winkler <j.winkler@fu-berlin.de>
+//          Gianvito Urgese <gianvito.urgese@polito.it>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_SEQAN_RNA_HEADER_H_
-#define SEQAN_INCLUDE_SEQAN_RNA_HEADER_H_
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_HEADER_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_HEADER_H_
 
 namespace seqan {
 
@@ -45,18 +46,38 @@ namespace seqan {
 // Class rnaHeader
 // ----------------------------------------------------------------------------
 
-/*!
- * @class BbseqHeader
- * @implements FormattedFileHeaderConcept
- * @headerfile <seqan/rna_io.h>
- * @brief Store rna Header information.
- *
- * @signature typedef String<rnaHeaderRecord> rnaHeader;
- */
+class RnaHeader
+{
+public:
+    unsigned amount {0};            // number of records
+    CharString description;         // free text for file description
+    StringSet<CharString> seqname;  // list of sequence names
+    StringSet<CharString> method;   // list of fixed structure comp. methods
+    StringSet<CharString> probmat;  // list of probability matrix comp. methods
+    StringSet<CharString> type;     // list of types of biol. validated data
+};
 
-// Records for the meta information lines.
-typedef String<RnaHeaderRecord> RnaHeader;
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ============================================================================
+// Functions
+// ============================================================================
+// ----------------------------------------------------------------------------
+// Function clear()
+// ----------------------------------------------------------------------------
+
+inline void clear(RnaHeader & header)
+{
+    header.amount = 0;
+    clear(header.description);
+    clear(header.seqname);
+    clear(header.method);
+    clear(header.probmat);
+    clear(header.type);
+}
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_INCLUDE_SEQAN_RNA_HEADER_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_HEADER_H_

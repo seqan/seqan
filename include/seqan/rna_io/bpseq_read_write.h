@@ -66,26 +66,9 @@ typedef Tag<Bpseq_> Bpseq;
 
 template <typename TForwardIter>
 inline void
-readHeader(RnaHeader & header,
-           RnaIOContext & context,
-           TForwardIter & iter,
-           Bpseq const & /*tag*/)
+readHeader(RnaHeader & header, RnaIOContext & context, TForwardIter & iter, Bpseq const & /*tag*/)
 {
-    std::string buffer;
-    clear(header);
-    clear(context);
-
-    while (!atEnd(iter) && value(iter) == '#') // All the information stored in the # lines are saved in a single line
-    {
-        RnaHeaderRecord record;
-        skipOne(iter);
-        clear(buffer);
-        // Write header key.
-        record.key = "Info";
-        // Read header value.
-        readLine(record.value, iter);
-        appendValue(header, record);
-    }
+    // bpseq has no header
 }
 
 // ----------------------------------------------------------------------------
@@ -102,12 +85,25 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
     clear(record);
     clear(context);
 
-    CharString tmpStr{};
     unsigned currPos{0};
     TRnaRecordGraph graph;
 
-    while (!atEnd(iter) && value(iter) != '#')
+    while (!atEnd(iter) && value(iter) == '#') // All the information stored in the # lines are saved in a single line
     {
+        skipOne(iter);
+        readLine(buffer, iter);
+        append(record.comment, buffer);
+        clear(buffer);
+    }
+
+    while (!atEnd(iter))
+    {
+        if (value(iter) == '#')
+        {
+            skipLine(iter);
+            continue;
+        }
+
         // read index position
         if (currPos == 0)
         {
@@ -117,16 +113,16 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
             if (!lexicalCast(record.offset, buffer))
                 throw BadLexicalCast(record.offset, buffer);
             currPos = record.offset;
+            clear(buffer);
         }
         else
         {
-            skipUntil(buffer, iter, NextEntry());
+            skipUntil(iter, NextEntry());
             ++currPos;
         }
-        clear(buffer);
 
         // read nucleotide
-        skipUntil(iter, NextEntry());
+        skipUntil(iter, NotFunctor<IsWhitespace>());
         readUntil(buffer, iter, IsWhitespace());
         appendValue(record.sequence, buffer[0]);
         addVertex(graph);                 // add base to graph
@@ -135,8 +131,8 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
         clear(buffer);
 
         // read paired index
-        skipUntil(iter, NextEntry());
-        readUntil(buffer, iter, OrFunctor<IsSpace, IsNewline>());
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        readUntil(buffer, iter, IsWhitespace());
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
         unsigned pairPos;
@@ -165,15 +161,7 @@ writeHeader(TTarget & target,
             RnaIOContext & context,
             Bpseq const & /*tag*/)
 {
-    clear(context);
-    for (unsigned i = 0; i < length(header); ++i)
-    {
-        write(target, "#");
-        write(target, header[i].key);
-        writeValue(target, '=');
-        write(target, header[i].value);
-        writeValue(target, '\n');
-    }
+    // bpseq has no header
 }
 
 // ----------------------------------------------------------------------------

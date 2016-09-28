@@ -29,14 +29,14 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Gianvito Urgese <gianvito.urgese@polito.it>
+// Authors: Joerg Winkler <j.winkler@fu-berlin.de>
+//          Gianvito Urgese <gianvito.urgese@polito.it>
 // ==========================================================================
-// Class for reading/writing files in Bpseq format.
+// Class for reading/writing files in Ebpseq format.
 // ==========================================================================
-// TODO(weese:) add Bcf I/O and integrate it
 
-#ifndef SEQAN_BPSEQ_IO_BPSEQ_FILE_H_
-#define SEQAN_BPSEQ_IO_BPSEQ_FILE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_EBPSEQ_FILE_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_EBPSEQ_FILE_H_
 
 namespace seqan {
 
@@ -44,49 +44,46 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct Bpseq_;
-typedef Tag<Bpseq_> Bpseq;
-
-//struct Bcf_;
-//typedef Tag<Bcf_> Bcf;
+struct Ebpseq_;
+typedef Tag<Ebpseq_> Ebpseq;
 
 // ============================================================================
 // Typedefs
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Typedef BpseqFileIn
+// Typedef EbpseqFileIn
 // ----------------------------------------------------------------------------
 
 /*!
- * @class BpseqFileIn
- * @signature typedef FormattedFile<Bpseq, Input> BpseqFileIn;
+ * @class EbpseqFileIn
+ * @signature typedef FormattedFile<Ebpseq, Input> EbpseqFileIn;
  * @extends FormattedFileIn
  * @headerfile <seqan/bpseq_io.h>
  * @brief Class for reading BPSEQ files.
  *
- * @see BpseqHeader
- * @see BpseqRecord
+ * @see EbpseqHeader
+ * @see EbpseqRecord
  */
 
-typedef FormattedFile<Bpseq, Input>   BpseqFileIn;
+typedef FormattedFile<Ebpseq, Input>   EbpseqFileIn;
 
 // ----------------------------------------------------------------------------
-// Typedef BpseqFileOut
+// Typedef EbpseqFileOut
 // ----------------------------------------------------------------------------
 
 /*!
- * @class BpseqFileOut
- * @signature typedef FormattedFile<Bpseq, Output> BpseqFileOut;
+ * @class EbpseqFileOut
+ * @signature typedef FormattedFile<Ebpseq, Output> EbpseqFileOut;
  * @extends FormattedFileOut
  * @headerfile <seqan/vcf_io.h>
  * @brief Class for writing BPSEQ files.
  *
- * @see BpseqHeader
- * @see BpseqRecord
+ * @see EbpseqHeader
+ * @see EbpseqRecord
  */
 
-typedef FormattedFile<Bpseq, Output>  BpseqFileOut;
+typedef FormattedFile<Ebpseq, Output>  EbpseqFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -97,141 +94,99 @@ typedef FormattedFile<Bpseq, Output>  BpseqFileOut;
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct MagicHeader<Bpseq, T>
+struct MagicHeader<Ebpseq, T>
 {
-    static unsigned char const VALUE[18];
+    static unsigned char const VALUE[19];
 };
 
 template <typename T>
-unsigned char const MagicHeader<Bpseq, T>::VALUE[18] =
+unsigned char const MagicHeader<Ebpseq, T>::VALUE[19] =
 {
-    '#', '#', 'f', 'i', 'l', 'e', 'f', 'o', 'r', 'm', 'a', 't', '=', 'B', 'P', 'S', 'E', 'Q'  // BPSEQ's magic header
+    '#', '#', 'f', 'i', 'l', 'e', 'f', 'o', 'r', 'm', 'a', 't', '=', 'E', 'B', 'P', 'S', 'E', 'Q'
 };
-
-//template <typename T>
-//struct MagicHeader<Bcf, T>
-//{
-//    static unsigned char const VALUE[5];
-//};
-//
-//template <typename T>
-//unsigned char const MagicHeader<Bcf, T>::VALUE[5] = { 'B', 'C', 'F', '\2', '\1' };  // BCF2's magic header
 
 // ----------------------------------------------------------------------------
 // Class FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileExtensions<Bpseq, T>
+struct FileExtensions<Ebpseq, T>
 {
     static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
-char const * FileExtensions<Bpseq, T>::VALUE[1] =
+char const * FileExtensions<Ebpseq, T>::VALUE[1] =
 {
-    ".bpseq"     // default output extension
+    ".ebpseq"     // default output extension
 };
-
-//template <typename T>
-//struct FileExtensions<Bcf, T>
-//{
-//    static char const * VALUE[1];    // default is one extension
-//};
-//
-//template <typename T>
-//char const * FileExtensions<Bcf, T>::VALUE[1] =
-//{
-//    ".bcf"     // default output extension
-//};
 
 // ----------------------------------------------------------------------------
 // Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<Bpseq, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Ebpseq, TDirection, TSpec>, TStorageSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
-    //typedef BpseqIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
+    //typedef EbpseqIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
     typedef RnaIOContext                                             Type;
 };
 
 // ----------------------------------------------------------------------------
 // Metafunction FileFormats
 // ----------------------------------------------------------------------------
-// Riferirsi al file top chiamato sequence_file.h nel modulo seq_io per generare il sistema chiamato rna_io
 template <typename TDirection, typename TSpec>
-struct FileFormat<FormattedFile<Bpseq, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Ebpseq, TDirection, TSpec> >
 {
-// TODO(weese:) Enable this, as soon as someone implements BCF
-
-//#if SEQAN_HAS_ZLIB
-//    typedef TagSelector<
-//                TagList<Bcf, /// TODO aggiungere il tag selector con gli altri file format
-//                TagList<Bpseq
-//                > >
-//            > Type;
-//#else
-    typedef Bpseq Type;
-//#endif
+    typedef Ebpseq Type;
 };
 
-// --------------------------------------------------------------------------
-// Function _mapBamFormatToCompressionFormat()
-// --------------------------------------------------------------------------
-
-//inline BgzfFile
-//_mapFileFormatToCompressionFormat(Bcf)
-//{
-//    return BgzfFile();
-//}
-
 // ----------------------------------------------------------------------------
-// Function readHeader(); BpseqHeader
+// Function readHeader(); EbpseqHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-readHeader(RnaHeader & header, FormattedFile<Bpseq, Input, TSpec> & file)
+readHeader(RnaHeader & header, FormattedFile<Ebpseq, Input, TSpec> & file)
 {
     readHeader(header, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); BpseqRecord
+// Function readRecord(); EbpseqRecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-readRecord(RnaRecord & record, FormattedFile<Bpseq, Input, TSpec> & file)
+readRecord(RnaRecord & record, FormattedFile<Ebpseq, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeHeader(); BpseqHeader
+// Function writeHeader(); EbpseqHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeHeader(FormattedFile<Bpseq, Output, TSpec> & file, RnaHeader & header)
+writeHeader(FormattedFile<Ebpseq, Output, TSpec> & file, RnaHeader & header)
 {
     writeHeader(file.iter, header, context(file), file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); BpseqRecord
+// Function writeRecord(); EbpseqRecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeRecord(FormattedFile<Bpseq, Output, TSpec> & file, RnaRecord & record)
+writeRecord(FormattedFile<Ebpseq, Output, TSpec> & file, RnaRecord & record)
 {
     writeRecord(file.iter, record, context(file), file.format);
 }
 
 }  // namespace seqan
 
-#endif // SEQAN_BPSEQ_IO_BPSEQ_FILE_H_
+#endif // SEQAN_INCLUDE_SEQAN_RNA_IO_EBPSEQ_FILE_H_

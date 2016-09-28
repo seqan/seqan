@@ -37,6 +37,8 @@
 #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 #define SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 
+#include <climits>
+
 namespace seqan {
 
 // ============================================================================
@@ -74,6 +76,11 @@ public:
 class RnaRecord
 {
 public:
+    unsigned const UNDEF = UINT_MAX;
+
+    // identification of record
+    unsigned recordID;
+
     // Amount of records.
     unsigned seqLen;
 
@@ -104,9 +111,10 @@ public:
     // Vector of fixed structure graphs extracted from the input files
     String<RnaInterGraph> fixedGraphs;
 
-    String<int> graphType; // index to structure computation tool (see header), negative values for M, positive for F
-
     CharString quality;
+
+    // indices for type attribute (see header)
+    String<unsigned> typeID;
 
     ////////RDAT FILES
     //CharString qual; //I think?
@@ -120,9 +128,9 @@ public:
     //Annotation data 1
     //annotation data 2
 
-    String<float> reactivity;
+    StringSet<String<float> > reactivity;
 
-    String<float> reactError;
+    StringSet<String<float> > reactError;
 
     //String<float> xsel;
 
@@ -131,7 +139,7 @@ public:
     //mutpos
   
     // Default constructor.
-    RnaRecord() : seqLen(0), offset(1), energy(0.0f), name(""), sequence(""), quality(""), comment("")
+    RnaRecord() : recordID(UNDEF), seqLen(0), offset(1), energy(0.0f), name(""), sequence(""), quality(""), comment("")
     {}                                                                                      
 
 };
@@ -147,6 +155,7 @@ public:
 
 inline void clear(RnaRecord & record)
 {
+    record.recordID = 0;
     record.seqLen = 0;
     record.offset = 1;
     record.energy = 0.0f;
@@ -156,8 +165,8 @@ inline void clear(RnaRecord & record)
     clearGaps(record.align);
     clear(record.fixedGraphs);
     clear(record.bppMatrGraphs);
-    clear(record.graphType);
     clear(record.quality);
+    clear(record.typeID);
     clear(record.comment);
     clear(record.reactivity);
     clear(record.reactError);
