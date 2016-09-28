@@ -38,7 +38,8 @@
 #include <boost/math/distributions.hpp>
 #endif
 
-namespace seqan {
+namespace seqan
+{
 
 //////////////////////////////////////////////////////////////////////////////
 // Default options
@@ -2017,15 +2018,7 @@ bool loadPositions(TPositions & positions,
     return 1;
 }
 
-<<<<<<< 1c86e03f210ba09c558fd61c1e6b2f8ee643b51e
-
-
-
-
-#ifdef STDLIB_VS
-=======
 #ifdef PLATFORM_WINDOWS
->>>>>>> Reformated snp_store.cpp and snp_store.h for better compliance with SeqAn style guide. No functional changes.
 
 template <typename TVal>
 double lgamma(TVal x)
@@ -4953,7 +4946,7 @@ void dumpVariantsRealignBatch(
             while (candidateViewPos < refStart + (TContigPos)length(referenceGaps) && // shouldnt happen actually
                    ((indelConsens[candidateViewPos].i1 & 7) < 5 ||       // insertion in consensus
                     ((indelConsens[candidateViewPos].i1 & 7) == 6  &&
-                     candidatePos == positionGapToSeq(referenceGaps, candidateViewPos - refStart)))
+                  candidatePos == positionGapToSeq(referenceGaps, candidateViewPos - refStart)))
                    ) //position in consensus is the same as in ref and ref is a gap (same candidatePosition as before)
             {
 #ifdef SNPSTORE_DEBUG
