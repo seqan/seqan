@@ -84,6 +84,19 @@ SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
 template <typename TSimdVector, typename TIsSimdVec>
 struct SimdSwizzleVectorImpl;
 
+/**
+ * SimdSwizzleVector is needed for shuffleVector() as index type.
+ *
+ * ```
+ * using TSimdVector = SimdVector<uint32_t, 4>::Type;
+ * using TSimdSwizzleVector = SimdSwizzleVector<TSimdVector>::Type;
+ *
+ * TSimdVector vec {2, 4, 8, 16}, res;
+ * TSimdSwizzleVector swizzle {3, 2, 0, 2};
+ *
+ * res = shuffleVector(vec, swizzle); // res = {16, 8, 2, 8}
+ * ```
+ */
 template <typename TSimdVector>
 struct SimdSwizzleVector : SimdSwizzleVectorImpl<TSimdVector, typename Is<SimdVectorConcept<TSimdVector> >::Type >
 {
