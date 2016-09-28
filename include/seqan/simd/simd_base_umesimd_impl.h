@@ -45,7 +45,7 @@ namespace seqan
 template <typename TSimdVector>
 struct SimdMaskVectorImpl<TSimdVector, True>
 {
-    using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::MASK_T;
+    using Type = TSimdVector;
 };
 
 template <typename TSimdVector>
@@ -333,7 +333,7 @@ fillVector(TSimdVector & vector, TValue const... args)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
@@ -347,7 +347,7 @@ cmpEq (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator==(TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
@@ -361,7 +361,7 @@ operator==(TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
@@ -375,7 +375,7 @@ cmpGt (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator>(TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;

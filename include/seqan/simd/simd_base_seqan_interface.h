@@ -123,7 +123,7 @@ fillVector(TSimdVector & vector, TValue const... args)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -135,7 +135,7 @@ cmpEq (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator==(TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -147,7 +147,7 @@ operator==(TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -159,7 +159,7 @@ cmpGt (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator>(TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;

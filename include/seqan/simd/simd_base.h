@@ -80,7 +80,9 @@ SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
 };
 
 template <typename TSimdVector, typename TIsSimdVec>
-struct SimdMaskVectorImpl;
+struct SimdMaskVectorImpl {
+    using Type = Nothing;
+};
 
 /**
  * SimdMaskVector is the return type of all logical operations of simd vectors
@@ -208,36 +210,59 @@ fillVector(TSimdVector & vector, TValue const... args);
 
 /**
  * ```
- * c = cmpEq(a, b);
+ * auto c = cmpEq(a, b);
  *
  * // same as
  *
- * c = a == b;
+ * auto c = a == b;
+ * ```
+ *
+ * NOTE:
+ * The type of c might change from unsigned to signed if auto is used
+ *
+ * ```
+ * using TSimdVector = SimdVector<uint32_t, 4>::Type;
+ * TSimdVector a, b;
+ *
+ * auto c = a == b; // type of c might change to SimdVector<int32_t, 4>::Type
+ * TSimdVector d = a == b; // has the same type
  * ```
  */
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpEq (TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator==(TSimdVector const & a, TSimdVector const & b);
 
 /**
  * ```
- * c = cmpGt(a, b);
+ * auto c = cmpGt(a, b);
  *
  * // same as
  *
- * c = a > b;
+ * auto c = a > b;
+ * ```
+ *
+ * NOTE:
+ * The type of c might change from unsigned to signed if auto is used
+ *
+ * ```
+ * using TSimdVector = SimdVector<uint32_t, 4>::Type;
+ * using TSimdMaskVector = SimdMaskVector<TSimdVector>::Type;
+ * TSimdVector a, b;
+ *
+ * auto c = a > b; // type of c might change to SimdVector<int32_t, 4>::Type
+ * TSimdMaskVector d = a > b; // has the same type
  * ```
  */
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpGt (TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator>(TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
