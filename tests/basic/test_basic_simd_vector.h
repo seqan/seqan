@@ -148,12 +148,24 @@ typedef
         , // Extension of the list above
         seqan::TagList<seqan::SimdVector<int8_t,  32>::Type,
         seqan::TagList<seqan::SimdVector<int16_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<int32_t, 8>::Type,
-        seqan::TagList<seqan::SimdVector<int64_t, 4>::Type,
+        seqan::TagList<seqan::SimdVector<int32_t,  8>::Type,
+        seqan::TagList<seqan::SimdVector<int64_t,  4>::Type,
         seqan::TagList<seqan::SimdVector<uint8_t,  32>::Type,
         seqan::TagList<seqan::SimdVector<uint16_t, 16>::Type,
         seqan::TagList<seqan::SimdVector<uint32_t,  8>::Type,
         seqan::TagList<seqan::SimdVector<uint64_t,  4>::Type
+        #if SEQAN_SIZEOF_MAX_VECTOR >= 64
+        , // Extension of the list above
+        seqan::TagList<seqan::SimdVector<int8_t,  64>::Type,
+        seqan::TagList<seqan::SimdVector<int16_t, 32>::Type,
+        seqan::TagList<seqan::SimdVector<int32_t, 16>::Type,
+        seqan::TagList<seqan::SimdVector<int64_t,  8>::Type,
+        seqan::TagList<seqan::SimdVector<uint8_t,  64>::Type,
+        seqan::TagList<seqan::SimdVector<uint16_t, 32>::Type,
+        seqan::TagList<seqan::SimdVector<uint32_t, 16>::Type,
+        seqan::TagList<seqan::SimdVector<uint64_t,  8>::Type
+        > > > > > > > >
+        #endif
         > > > > > > > >
         #endif
         > > > > > > > >
@@ -279,6 +291,17 @@ test_fill_vector(TSimdVector & a, seqan::SimdParams_<32, L>)
                16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
 }
 
+template <typename TSimdVector, int L>
+inline void
+test_fill_vector(TSimdVector & a, seqan::SimdParams_<64, L>)
+{
+    using namespace seqan;
+    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+               32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+               48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63);
+}
+
 SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
 {
     using namespace seqan;
@@ -314,9 +337,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " == " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] == b[i] ? true_ : false_);
-        SEQAN_ASSERT_EQ(c[i], (i * 3) == (length - i) ? true_ : false_);
+        SEQAN_ASSERT_EQ(c[i], a_i == b_i ? true_ : false_);
     }
 }
 
@@ -338,9 +362,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? true_ : false_);
-        SEQAN_ASSERT_EQ(c[i], (i * 3) > (length - i) ? true_ : false_);
+        SEQAN_ASSERT_EQ(c[i], a_i > b_i ? true_ : false_);
     }
 }
 
@@ -358,9 +383,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = max (" << (int)a[i] << ", " << (int)b[i] << ")" << std::endl;
         SEQAN_ASSERT_EQ(c[i], std::max(a[i], b[i]));
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(std::max(i * 3, length - i)));
+        SEQAN_ASSERT_EQ(c[i], std::max(a_i, b_i));
     }
 }
 
@@ -540,9 +566,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Division)
 
     for (auto i = 0; i < length; ++i)
     {
-        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " * " << (int)b[i] << std::endl;
+        TValue a_i = i * 3, b_i = length - i;
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " / " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] / b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3 / (length - i)));
+        SEQAN_ASSERT_EQ(c[i], a_i / b_i);
     }
 }
 
@@ -580,9 +607,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShiftRightLogical)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = i * 3;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " >> " << (int)2 << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] >> 2);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) >> 2));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i >> 2));
     }
 }
 
@@ -600,9 +628,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << " ? " << (int)a[i] << " : " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? (TValue)a[i] : (TValue)b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) > (length - i) ? (i * 3) : (length - i)));
+        SEQAN_ASSERT_EQ(c[i], a_i > b_i ? a_i : b_i);
     }
 }
 

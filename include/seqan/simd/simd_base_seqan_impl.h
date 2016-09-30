@@ -96,7 +96,10 @@ assignValue(TSimdVector &vector, TPosition const pos, TValue2 const value)      
 }
 
 // Define maximal size of vector in byte.
-#if defined(__AVX2__)
+#if defined(__AVX512F__)
+    #define SEQAN_SSE4
+    #define SEQAN_SIZEOF_MAX_VECTOR 64
+#elif defined(__AVX2__)
     #define SEQAN_SSE4
     #define SEQAN_SIZEOF_MAX_VECTOR 32
 #elif defined(__SSE4_1__) && defined(__SSE4_2__)
