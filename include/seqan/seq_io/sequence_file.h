@@ -102,7 +102,7 @@ typedef
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
 
-// deprecated
+[[deprecated]]
 typedef SeqInFormat AutoSeqFormat;
 
 // ============================================================================

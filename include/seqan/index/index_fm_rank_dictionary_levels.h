@@ -291,7 +291,7 @@ struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >         TRankDictionary_;
     typedef RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >   TEntry_;
-    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type TFibreSpec_;
+    typedef typename StringSpec<TRankDictionary_>::Type             TFibreSpec_;
 
     typedef String<TEntry_, TFibreSpec_>                            Type;
 };
@@ -301,7 +301,7 @@ struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreSuperBlocks>
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                             TRankDictionary_;
     typedef typename RankDictionarySuperBlock_<TValue, Levels<TSpec, TConfig> >::Type   TSuperBlocks_;
-    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type                     TFibreSpec_;
+    typedef typename StringSpec<TRankDictionary_>::Type                                 TFibreSpec_;
 
     typedef String<TSuperBlocks_, TFibreSpec_>                                          Type;
 };
@@ -311,7 +311,7 @@ struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreUltraBlocks>
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                             TRankDictionary_;
     typedef typename RankDictionaryUltraBlock_<TValue, Levels<TSpec, TConfig> >::Type   TUltraBlocks_;
-    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type                     TFibreSpec_;
+    typedef typename StringSpec<TRankDictionary_>::Type                                 TFibreSpec_;
 
     typedef String<TUltraBlocks_, TFibreSpec_>                                          Type;
 };

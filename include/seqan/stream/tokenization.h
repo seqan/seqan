@@ -623,7 +623,7 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor
     }
 
     for (TIter it = itBeg; it != itEnd; ++it)
-        if (sep(getValue(it)))
+        if (sep(*it))
         {
             if (allowEmptyStrings || itFrom != it)
             {
@@ -632,7 +632,7 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor
                 {
                     if (!allowEmptyStrings)
                     {
-                        while (it != itEnd && sep(getValue(it)))
+                        while (it != itEnd && sep(*it))
                             ++it;
                     }
                     else

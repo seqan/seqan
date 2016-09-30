@@ -362,10 +362,10 @@ public:
         {
             if (empty(ss[i]))
                 continue;
-            if (!getIdByName(contigNames, ss[i], idx, cache))
+            if (!getIdByName(idx, cache, ss[i]))
             {
                 appendValue(tIDs, length(contigNames));
-                appendName(contigNames, ss[i], cache);
+                appendName(cache, ss[i]);
             }
             else
             {

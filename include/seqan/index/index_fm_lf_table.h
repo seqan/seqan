@@ -125,7 +125,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 //    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>          Type;
 
     typedef typename Size<LF<TText, TSpec, TConfig> >::Type TSize_;
-    typedef typename DefaultIndexStringSpec<TText>::Type    TSpec_;
+    typedef typename StringSpec<TText>::Type                TSpec_;
     typedef String<TSize_,  TSpec_>                         Type;
 };
 
@@ -550,7 +550,7 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
 
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
-        TSAValue pos = getValue(saIt);
+        TSAValue pos = *saIt;
 
         if (pos != 0)
         {
@@ -602,7 +602,7 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
         TSAValue pos;    // = SA[i];
-        posLocalize(pos, getValue(saIt), stringSetLimits(text));
+        posLocalize(pos, *saIt, stringSetLimits(text));
 
         if (getSeqOffset(pos) != 0)
         {

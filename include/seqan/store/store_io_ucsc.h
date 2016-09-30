@@ -58,7 +58,7 @@ _storeAnnotationRecord(
     TId transId = TAnnotation::INVALID_ID;
     _storeAppendAnnotationName(fragStore, transId, record.transName, (TId) TFragmentStore::ANNO_MRNA);
     TId cdsId = length(fragStore.annotationStore);
-    appendName(fragStore.annotationNameStore, record.proteinName, fragStore.annotationNameStoreCache);
+    appendName(fragStore.annotationNameStoreCache, record.proteinName);
 
     resize(fragStore.annotationStore, cdsId + 1 + length(record.exonBegin), Generous());
     resize(fragStore.annotationNameStore, cdsId + 1 + length(record.exonBegin), Generous());

@@ -343,7 +343,7 @@ struct Fibre< Index<TText, TSpec>, FibreCounts> {
     typename Size< TText >::Type,
     typename Size< Index<TText, TSpec> >::Type
     >,
-    typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type
+    typename StringSpec< Index<TText, TSpec> >::Type
     > Type;
 };
 
@@ -1404,6 +1404,7 @@ typename TBucketMap,
 typename TText,
 typename TShape,
 typename TStepSize >
+/*[[deprecated("Use createQGramIndex(index) instead.")]]*/
 void createQGramIndex(
                       TSA &sa,
                       TDir &dir,
@@ -1437,6 +1438,7 @@ typename TBucketMap,
 typename TText,
 typename TShape,
 typename TStepSize >
+/*[[deprecated("Use createQGramIndex(index) instead.")]]*/
 void createQGramIndex(
                       TSA &sa,
                       TDir &dir,

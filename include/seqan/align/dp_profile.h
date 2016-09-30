@@ -110,7 +110,7 @@ typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
 
 // Use macro expansion to define all possible SIMD initialization types.
 
-template <typename TVector, __uint8 FILL_VALUE, unsigned SIZE>
+template <typename TVector, uint8_t FILL_VALUE, unsigned SIZE>
 struct InitSimdTrace_;
 
 #define SEQAN_SIMD_INIT_FILL_VALUE_2_ FILL_VALUE, FILL_VALUE
@@ -120,13 +120,13 @@ struct InitSimdTrace_;
 #define SEQAN_SIMD_INIT_FILL_VALUE_32_ SEQAN_SIMD_INIT_FILL_VALUE_16_, SEQAN_SIMD_INIT_FILL_VALUE_16_
 
 #define SEQAN_SIMD_TRACE_SETUP_2_(SIZE, ...)                                                        \
-template <typename TVector, __uint8 FILL_VALUE>                                                     \
+template <typename TVector, uint8_t FILL_VALUE>                                                     \
 struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                                    \
 {                                                                                                   \
     static const TVector VALUE;                                                                     \
 };                                                                                                  \
                                                                                                     \
-template <typename TVector, __uint8 FILL_VALUE>                                                     \
+template <typename TVector, uint8_t FILL_VALUE>                                                     \
 const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE = TVector{__VA_ARGS__};
 
 #define SEQAN_SIMD_TRACE_SETUP_1_(SIZE, MACRO) SEQAN_SIMD_TRACE_SETUP_2_(SIZE, MACRO)
@@ -176,7 +176,7 @@ struct TraceValue_<TVector, True>
 
 #define SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(TRACE_VALUE)                             \
     template <typename TVector>                                                      \
-    const TVector TraceValue_<TVector, True>::TRACE_VALUE = InitSimdTrace_<TVector, TraceValue_<__uint8, False>::TRACE_VALUE, LENGTH<TVector>::VALUE>::VALUE;
+    const TVector TraceValue_<TVector, True>::TRACE_VALUE = InitSimdTrace_<TVector, TraceValue_<uint8_t, False>::TRACE_VALUE, LENGTH<TVector>::VALUE>::VALUE;
 
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NONE)
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(DIAGONAL)
@@ -190,7 +190,7 @@ SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_HORIZONTAL_TRACEBACK)
 SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_VERTICAL_TRACEBACK)
 
 // Type alias to choose between scalar and simd version of trace value.
-template <typename TValue = __uint8>
+template <typename TValue = uint8_t>
 using TraceBitMap_ = TraceValue_<TValue, typename Is<SimdVectorConcept<TValue> >::Type >;
 
 // ----------------------------------------------------------------------------

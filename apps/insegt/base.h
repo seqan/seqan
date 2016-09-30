@@ -70,7 +70,7 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, co
 		itSetEnd = end(tempTupleSet);
 		for ( ; itSet != itSetEnd; goNext(itSet))
 		{
-			appendValue(tupleSet, getValue(itSet), Generous());
+			appendValue(tupleSet, *itSet, Generous());
 		}
 	}
 }
@@ -98,7 +98,7 @@ create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, con
 		itEnd = end(tempTupleSet);
 		for ( ; it != itEnd; goNext(it))
 		{
-			appendValue(tupleSet, getValue(it), Generous());
+			appendValue(tupleSet, *it, Generous());
 		}
 	}
 }
@@ -124,7 +124,7 @@ createCombinations(TStringSet &tupleSet, TStringSet &annoIds)
 		unsigned n = 1;
 		for ( ; itStrSet != itStrSetEnd; goNext(itStrSet))
 		{
-			n = n * length(getValue(itStrSet));
+			n = n * length(*itStrSet);
 		}
 	
 		clear(tupleSet);

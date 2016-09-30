@@ -318,6 +318,7 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
 
 // NOTE(h-2): this interface is deprecated. Don't use it.
 template <typename TGaps, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+[[deprecated]]
 TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
                                 Score<TScoreVal, TScoreSpec> const & scoringScheme)
 {

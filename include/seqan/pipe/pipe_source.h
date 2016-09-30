@@ -74,7 +74,7 @@ namespace seqan
             in(_cont), cur(), val() {}
 
         inline typename Value<TInput>::Type const & operator*()
-        { return val = getValue(cur); }
+        { return val = *cur; }
 
         inline Pipe& operator++()
         {

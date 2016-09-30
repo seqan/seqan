@@ -79,7 +79,7 @@ inline unsigned length(RefIdMapping const & mapping)
 
 template <typename TTargetNameStore, typename TTargetNameStoreCache, typename TSourceNameStore>
 void rebuildMapping(RefIdMapping & mapping,
-                    TTargetNameStore const & targetNameStore,
+                    TTargetNameStore const & /*targetNameStore*/,
                     TTargetNameStoreCache const & targetNameStoreCache,
                     TSourceNameStore const & sourceNameStore)
 {
@@ -89,7 +89,7 @@ void rebuildMapping(RefIdMapping & mapping,
     for (unsigned i = 0; i < length(sourceNameStore); ++i)
     {
         unsigned idx = 0;
-        if (getIdByName(targetNameStore, sourceNameStore[i], idx, targetNameStoreCache))
+        if (getIdByName(idx, targetNameStoreCache, sourceNameStore[i]))
             mapping.map[i] = idx;
     }
 }
