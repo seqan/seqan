@@ -148,7 +148,7 @@ inline void clear(Index<TText, BidirectionalIndex<TIndexSpec> > & index)
 template <typename TText, typename TIndexSpec>
 inline bool empty(Index<TText, BidirectionalIndex<TIndexSpec> > const & index)
 {
-    return empty(index.fwd) || empty(index.rev);
+    return empty(index.fwd) && empty(index.rev);
 }
 
 // This function can be used to open a previously saved index.
@@ -191,6 +191,7 @@ inline typename Fibre<Index<TText, TSpec>, FibreText>::Type &
 getFibre(Index<TText, BidirectionalIndex<TSpec> > &index, FibreText) {
     return value(index.fwd.text);
 }
+
 template <typename TText, typename TSpec>
 inline typename Fibre<Index<TText, TSpec>, const FibreText>::Type &
 getFibre(Index<TText, BidirectionalIndex<TSpec> > const &index, FibreText) {
