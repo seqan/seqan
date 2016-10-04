@@ -103,9 +103,9 @@ inline typename Value<TSequence>::Type
 _sumIgnoreDisabled(TSequence const &seq, Tag<TParallelTag>)
 {
     typedef typename Value<TSequence>::Type TValue;
-    register typename Iterator<TSequence const>::Type it = begin(seq, Standard());
-    register typename Iterator<TSequence const>::Type itEnd = end(seq, Standard());
-    register TValue sum = 0;
+    typename Iterator<TSequence const>::Type it = begin(seq, Standard());
+    typename Iterator<TSequence const>::Type itEnd = end(seq, Standard());
+    TValue sum = 0;
     for (; it != itEnd; ++it)
         if (*it != (TValue)-1)
             sum += *it;
@@ -257,16 +257,16 @@ _qgramCummulativeSum(TDir &dir, TWithConstraints, TKeepDisabledBuckets, Unsigned
     SEQAN_OMP_PRAGMA(parallel for)
     for (int job = 0; job < (int)length(splitter); ++job)
     {
-        register TConstIterator itBegin = begin(dir, Standard()) + splitter[job];
-        register TIterator dstIt = begin(dir, Standard()) + splitter[job + 1];
-        register TValue sum = localSums[job];
+        TConstIterator itBegin = begin(dir, Standard()) + splitter[job];
+        TIterator dstIt = begin(dir, Standard()) + splitter[job + 1];
+        TValue sum = localSums[job];
 
         // read over our subinterval
         {
-            register TConstIterator it = begin(dir, Standard()) + splitter[job + 1] - SHIFT;
+            TConstIterator it = begin(dir, Standard()) + splitter[job + 1] - SHIFT;
             while (it != itBegin)
             {
-                register TValue counter = *(--it);
+                TValue counter = *(--it);
                 if (!TWithConstraints::VALUE || counter != (TValue)-1)
                     sum -= counter;
                 else
@@ -282,10 +282,10 @@ _qgramCummulativeSum(TDir &dir, TWithConstraints, TKeepDisabledBuckets, Unsigned
         // read suffix of the previous subinterval
         if (SHIFT != 0u)
         {
-            register TConstBufferIterator it = begin(prevCounts, Standard()) + (job + 1) * SHIFT;
+            TConstBufferIterator it = begin(prevCounts, Standard()) + (job + 1) * SHIFT;
             while (dstIt != itBegin)
             {
-                register TValue counter = *(--it);
+                TValue counter = *(--it);
                 if (!TWithConstraints::VALUE || counter != (TValue)-1)
                     sum -= counter;
                 else
@@ -348,13 +348,13 @@ _qgramFillSuffixArray(
             TIterator itText = begin(text, Standard()) + pos;
 
             // first hash
-            register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
+            TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
             if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)       // ignore disabled buckets
                 sa[atomicPostInc(*bktPtr, parallelTag)] = pos;          
 
             for (++pos; pos != posEnd; ++pos)
             {
-                register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hashNext(shape, ++itText));
+                TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hashNext(shape, ++itText));
                 if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)   // ignore disabled buckets
                     sa[atomicPostInc(*bktPtr, parallelTag)] = pos;
             }
@@ -371,7 +371,7 @@ _qgramFillSuffixArray(
 
             for (; pos != posEnd; pos += stepSize, itText += stepSize)
             {
-                register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
+                TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
                 if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)   // ignore disabled buckets
                     sa[atomicPostInc(*bktPtr, parallelTag)] = pos;
             }
@@ -429,14 +429,14 @@ _qgramFillSuffixArray(
 				assignValueI2(localPos, 0);
 
                 // first hash
-                register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
+                TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
                 if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)       // ignore disabled buckets
                     sa[atomicPostInc(*bktPtr, parallelTag)] = localPos;          
 
                 for (++itText; itText != itTextEnd; ++itText)
                 {
                     posInc(localPos);
-                    register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hashNext(shape, itText));
+                    TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hashNext(shape, itText));
                     if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)   // ignore disabled buckets
                         sa[atomicPostInc(*bktPtr, parallelTag)] = localPos;
                 }
@@ -463,7 +463,7 @@ _qgramFillSuffixArray(
                 for (; itText != itTextEnd; ++itText)
                 {
                     posInc(localPos, stepSize);
-                    register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
+                    TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
                     if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)   // ignore disabled buckets
                         sa[atomicPostInc(*bktPtr, parallelTag)] = localPos;
                 }
@@ -489,9 +489,9 @@ _qgramPostprocessBuckets(TDir &dir, Tag<TParallelTag> parallelTag)
     SEQAN_OMP_PRAGMA(parallel for)
     for (int job = 0; job < (int)length(splitter); ++job)
     {
-        register TDirIterator it = splitter[job];
-        register TDirIterator itEnd = splitter[job + 1];
-        register TSize prev = (job == 0)? 0: (TSize)-1;
+        TDirIterator it = splitter[job];
+        TDirIterator itEnd = splitter[job + 1];
+        TSize prev = (job == 0)? 0: (TSize)-1;
         for (; it != itEnd; ++it)
             if (*it == (TSize)-1)
                 *it = prev;
@@ -507,9 +507,9 @@ _qgramPostprocessBuckets(TDir &dir, Tag<TParallelTag> parallelTag)
     SEQAN_OMP_PRAGMA(parallel for)
     for (int job = 1; job < (int)length(splitter); ++job)
     {
-        register TDirIterator it = splitter[job];
-        register TDirIterator itEnd = splitter[job + 1];
-        register TSize prev = last[job - 1];
+        TDirIterator it = splitter[job];
+        TDirIterator itEnd = splitter[job + 1];
+        TSize prev = last[job - 1];
         for (; it != itEnd && *it == (TSize)-1; ++it)
             *it = prev;
     }
