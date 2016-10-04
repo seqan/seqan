@@ -189,19 +189,15 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
     unsigned textLength = 3947;
 
     TStringSet stringSet;
+    TStringSet revStringSet;
     for (unsigned stringSetSize = 1; stringSetSize <= 3; ++stringSetSize)
     {
         TText text;
         generateText(rng, text, textLength);
-        appendValue(stringSet, text);
+        ModifiedString<TText, ModReverse> revText(text);
 
-        TStringSet revStringSet;
-        for (unsigned i = 0; i < stringSetSize; ++i)
-        {
-            TText revText(stringSet[stringSetSize - i - 1]);
-            reverse(revText);
-            appendValue(revStringSet, revText);
-        }
+        appendValue(stringSet, text);
+        appendValue(revStringSet, revText);
 
         TStringSetIndex index(stringSet);
         for (unsigned patternLength = 1; patternLength <= 10; ++patternLength)

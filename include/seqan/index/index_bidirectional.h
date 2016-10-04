@@ -66,19 +66,7 @@ class BidirectionalIndex;
 template <typename TText>
 struct RevTextFibre
 {
-    typedef ModifiedString<TText, ModReverse> Type;
-};
-
-template <typename TText>
-struct RevTextFibre<ModifiedString<TText, ModReverse> >
-{
     typedef TText Type;
-};
-
-template <typename TText, typename TTextConfig>
-struct RevTextFibre<StringSet<TText, TTextConfig> >
-{
-    typedef StringSet<typename RevTextFibre<TText>::Type, TTextConfig> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -120,7 +108,9 @@ class Index<TText, BidirectionalIndex<TIndexSpec> >
         revText(text),
         rev(revText),
         fwd(text)
-    {}
+    {
+        reverse(revText);
+    }
 };
 
 // ============================================================================
@@ -158,7 +148,7 @@ inline void clear(Index<TText, BidirectionalIndex<TIndexSpec> > & index)
 template <typename TText, typename TIndexSpec>
 inline bool empty(Index<TText, BidirectionalIndex<TIndexSpec> > const & index)
 {
-    return empty(index.fwd) || empty(index.rev);
+    return empty(index.fwd) && empty(index.rev);
 }
 
 // ----------------------------------------------------------------------------
@@ -207,6 +197,7 @@ inline typename Fibre<Index<TText, TSpec>, FibreText>::Type &
 getFibre(Index<TText, BidirectionalIndex<TSpec> > &index, FibreText) {
     return value(index.fwd.text);
 }
+
 template <typename TText, typename TSpec>
 inline typename Fibre<Index<TText, TSpec>, const FibreText>::Type &
 getFibre(Index<TText, BidirectionalIndex<TSpec> > const &index, FibreText) {

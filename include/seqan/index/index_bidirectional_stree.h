@@ -61,13 +61,11 @@ class Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> 
 public:
     typedef Index<TText, BidirectionalIndex<TIndexSpec> > TBiIndex;
 
-    typedef typename RevTextFibre<TText>::Type                                                      TRevText;
-
-    typedef Index<TText, TIndexSpec>     TFwdIndex;
-    typedef Index<TRevText, TIndexSpec>  TRevIndex;
-
-    typedef Iter<TFwdIndex, VSTree<TopDown<TSpec> > >                                                   TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree<TopDown<TSpec> > >                                                   TRevIndexIter;
+    typedef typename RevTextFibre<TText>::Type          TRevText;
+    typedef Index<TText, TIndexSpec>                    TFwdIndex;
+    typedef Index<TRevText, TIndexSpec>                 TRevIndex;
+    typedef Iter<TFwdIndex, VSTree<TopDown<TSpec> > >   TFwdIndexIter;
+    typedef Iter<TRevIndex, VSTree<TopDown<TSpec> > >   TRevIndexIter;
 
     TFwdIndexIter    fwdIter;
     TRevIndexIter    revIter;
@@ -97,13 +95,11 @@ class Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<ParentL
 public:
     typedef Index<TText, BidirectionalIndex<TIndexSpec> >  TBiIndex;
 
-    typedef typename RevTextFibre<TText>::Type                                                            TRevText;
-
-    typedef Index<TText, TIndexSpec>           TFwdIndex;
-    typedef Index<TRevText, TIndexSpec>        TRevIndex;
-
-    typedef Iter<TFwdIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                           TFwdIndexIter;
-    typedef Iter<TRevIndex, VSTree<TopDown<ParentLinks<TSpec> > > >                                           TRevIndexIter;
+    typedef typename RevTextFibre<TText>::Type                      TRevText;
+    typedef Index<TText, TIndexSpec>                                TFwdIndex;
+    typedef Index<TRevText, TIndexSpec>                             TRevIndex;
+    typedef Iter<TFwdIndex, VSTree<TopDown<ParentLinks<TSpec> > > > TFwdIndexIter;
+    typedef Iter<TRevIndex, VSTree<TopDown<ParentLinks<TSpec> > > > TRevIndexIter;
 
     TFwdIndexIter    fwdIter;
     TRevIndexIter    revIter;
