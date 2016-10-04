@@ -189,17 +189,6 @@ struct FileFormat<FormattedFile<Bpseq, TDirection, TSpec> >
 //}
 
 // ----------------------------------------------------------------------------
-// Function readHeader(); BpseqHeader
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline void
-readHeader(RnaHeader & header, FormattedFile<Bpseq, Input, TSpec> & file)
-{
-    readHeader(header, context(file), file.iter, file.format);
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecord(); BpseqRecord
 // ----------------------------------------------------------------------------
 
@@ -208,17 +197,6 @@ inline void
 readRecord(RnaRecord & record, FormattedFile<Bpseq, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function writeHeader(); BpseqHeader
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline void
-writeHeader(FormattedFile<Bpseq, Output, TSpec> & file, RnaHeader & header)
-{
-    writeHeader(file.iter, header, context(file), file.format);
 }
 
 // ----------------------------------------------------------------------------

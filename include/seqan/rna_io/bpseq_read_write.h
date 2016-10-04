@@ -29,7 +29,8 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Gianvito Urgese <gianvito.urgese@polito.it>
+// Authors: Gianvito Urgese <gianvito.urgese@polito.it>
+//          Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_
@@ -60,18 +61,6 @@ typedef Tag<Bpseq_> Bpseq;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [BpseqHeader]
-// ----------------------------------------------------------------------------
-
-
-template <typename TForwardIter>
-inline void
-readHeader(RnaHeader & header, RnaIOContext & context, TForwardIter & iter, Bpseq const & /*tag*/)
-{
-    // bpseq has no header
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecord()                                            [BpseqRecord]
 // ----------------------------------------------------------------------------
 // Read record, updating list of known sequences if new one occurs.
@@ -88,19 +77,16 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
     unsigned currPos{0};
     TRnaRecordGraph graph;
 
-    while (!atEnd(iter) && value(iter) == '#') // All the information stored in the # lines are saved in a single line
-    {
-        skipOne(iter);
-        readLine(buffer, iter);
-        append(record.comment, buffer);
-        clear(buffer);
-    }
-
     while (!atEnd(iter))
     {
         if (value(iter) == '#')
-        {
-            skipLine(iter);
+        {                                       // All the information stored in the # lines are saved in a single line
+            skipOne(iter);
+            skipUntil(iter, NotFunctor<IsWhitespace>());
+            readLine(buffer, iter);
+            appendValue(record.comment, ' ');
+            append(record.comment, buffer);
+            clear(buffer);
             continue;
         }
 
@@ -122,17 +108,17 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
         }
 
         // read nucleotide
-        skipUntil(iter, NotFunctor<IsWhitespace>());
-        readUntil(buffer, iter, IsWhitespace());
+        skipUntil(iter, NotFunctor<IsBlank>());
+        readUntil(buffer, iter, NextEntry());
         appendValue(record.sequence, buffer[0]);
         addVertex(graph);                 // add base to graph
-        if (empty(record.sequence))
+        if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("SEQUENCE"));
         clear(buffer);
 
         // read paired index
-        skipUntil(iter, NotFunctor<IsWhitespace>());
-        readUntil(buffer, iter, IsWhitespace());
+        skipUntil(iter, NotFunctor<IsBlank>());
+        readUntil(buffer, iter, NextEntry());
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
         unsigned pairPos;
@@ -143,25 +129,12 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
         clear(buffer);
 
         skipLine(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
     }
     append(record.fixedGraphs, RnaInterGraph(graph));
     record.seqLen = currPos;  //set amount of records
 
     return;
-}
-
-// ----------------------------------------------------------------------------
-// Function writeHeader()                                           [BpseqHeader]
-// ----------------------------------------------------------------------------
-
-template <typename TTarget>
-inline void
-writeHeader(TTarget & target,
-            RnaHeader const & header,
-            RnaIOContext & context,
-            Bpseq const & /*tag*/)
-{
-    // bpseq has no header
 }
 
 // ----------------------------------------------------------------------------
@@ -189,7 +162,7 @@ writeRecord(TTarget & target,
     }
     if (!empty(record.comment))
     {
-        write(target, "# ");
+        writeValue(target, '#');
         write(target, record.comment);
         writeValue(target, '\n');
     }
@@ -198,9 +171,9 @@ writeRecord(TTarget & target,
     for (unsigned i = 0; i < record.seqLen; ++i)
     {
         write(target, offset + i);
-        writeValue(target, ' ');
+        writeValue(target, '\t');
         write(target, record.sequence[i]);
-        writeValue(target, ' ');
+        writeValue(target, '\t');
         if (degree(record.fixedGraphs[0].inter, i) != 0)
         {
             TRnaAdjacencyIterator adj_it(record.fixedGraphs[0].inter, i);
