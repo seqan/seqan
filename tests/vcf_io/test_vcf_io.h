@@ -467,4 +467,42 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 
+SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileIn)
+{
+    // Build path to file.
+    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
+    append(vcfPath, "/tests/vcf_io/example.vcf");
+
+    // Create SequenceStream object.
+    seqan::VcfFileIn vcfI;
+    SEQAN_ASSERT(!isOpen(vcfI));
+
+    // open file
+    open(vcfI, toCString(vcfPath));
+    SEQAN_ASSERT(isOpen(vcfI));
+
+    // close file
+    close(vcfI);
+    SEQAN_ASSERT(!isOpen(vcfI));
+}
+
+SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileOut)
+{
+    // Build path to file.
+    seqan::CharString vcfPath = SEQAN_TEMP_FILENAME();
+    append(vcfPath, ".vcf");
+
+    // Create SequenceStream object.
+    seqan::VcfFileOut  vcfO;
+    SEQAN_ASSERT(!isOpen(vcfO));
+
+    // open files
+    open(vcfO, toCString(vcfPath));
+    SEQAN_ASSERT(isOpen(vcfO));
+
+    // close files
+    close(vcfO);
+    SEQAN_ASSERT(!isOpen(vcfO));
+}
+
 #endif  // SEQAN_TESTS_VCF_TEST_VCF_IO_H_

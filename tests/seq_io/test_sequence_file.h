@@ -346,4 +346,46 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual)
     SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
+// ---------------------------------------------------------------------------
+// Test isOpen() functionality.
+// ---------------------------------------------------------------------------
+
+SEQAN_DEFINE_TEST(test_seq_io_sequence_file_isOpen_fileIn)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/tests/seq_io/test_dna.fa");
+
+    // Create SequenceStream object.
+    SeqFileIn seqI;
+    SEQAN_ASSERT(!isOpen(seqI));
+
+    // open file
+    open(seqI, toCString(filePath));
+    SEQAN_ASSERT(isOpen(seqI));
+
+    // close file
+    close(seqI);
+    SEQAN_ASSERT(!isOpen(seqI));
+}
+
+SEQAN_DEFINE_TEST(test_seq_io_sequence_file_isOpen_fileOut)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    append(filePath, ".fa");
+
+    // Create SequenceStream object.
+    SeqFileOut  seqO;
+    SEQAN_ASSERT(!isOpen(seqO));
+
+    // open files
+    open(seqO, toCString(filePath));
+    SEQAN_ASSERT(isOpen(seqO));
+
+    // close files
+    close(seqO);
+    SEQAN_ASSERT(!isOpen(seqO));
+}
+
 #endif  // TESTS_SEQ_IO_TEST_EASY_SEQ_IO_H_
