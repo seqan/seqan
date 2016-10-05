@@ -94,6 +94,15 @@ void fillVectors(TSimdVector & a, TSimdVector & b)
     }
 }
 
+template <typename TSimdIndexVector, typename TSize>
+void reverseIndexSequence(TSimdIndexVector & idx, TSize length)
+{
+    for (auto i = 0; i < length; ++i)
+    {
+        idx[i] = length - i - 1;
+    }
+}
+
 } // namespace seqan
 
 // ----------------------------------------------------------------------------
@@ -123,8 +132,6 @@ typedef
         SimdVectorCommonCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
-
-#ifdef __SSE4_1__
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, ClearVector)
 {
@@ -577,9 +584,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
 
     TSimdVector a, idx;
     fillVectors(a, idx);
-
-    for (auto i = 0u; i < length; ++i)
-        idx[i] = length - i - 1;
+    reverseIndexSequence(idx, length);
 
     TValue b[length];
     storeu(b, a);
@@ -593,6 +598,71 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
     }
 }
 
+SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant1)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    constexpr auto length = TestFixture::LENGTH;
+    typedef typename SimdIndexVector<TSimdVector>::Type TSimdIndexVector;
+
+    TSimdVector a, b;
+    auto idx = createVector<TSimdIndexVector>(1);
+    fillVectors(a, b);
+
+    auto c = shuffleVector(a, idx);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[idx[i]] << ", idx: " << (int)idx[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[idx[i]]);
+        SEQAN_ASSERT_EQ(c[i], a[1]);
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant2)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    constexpr auto length = TestFixture::LENGTH;
+    typedef typename SimdIndexVector<TSimdVector>::Type TSimdIndexVector;
+
+    TSimdVector a, b;
+    auto idx = createVector<TSimdIndexVector>(length - 2);
+    fillVectors(a, b);
+
+    auto c = shuffleVector(a, idx);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[idx[i]] << ", idx: " << (int)idx[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[idx[i]]);
+        SEQAN_ASSERT_EQ(c[i], a[length-2]);
+    }
+}
+
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Shuffle)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    constexpr auto length = TestFixture::LENGTH;
+    typedef typename SimdIndexVector<TSimdVector>::Type TSimdIndexVector;
+
+    TSimdVector a, b;
+    TSimdIndexVector idx;
+    fillVectors(a, b);
+    reverseIndexSequence(idx, length);
+
+    auto c = shuffleVector(a, idx);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[idx[i]] << ", idx: " << (int)idx[i] << std::endl;
+        SEQAN_ASSERT_EQ(c[i], a[idx[i]]);
+        SEQAN_ASSERT_EQ(c[i], a[length - i - 1]);
+    }
+}
+
+#ifdef __SSE4_1__
 
 SEQAN_DEFINE_TEST(test_basic_simd_transpose_8x8)
 {
