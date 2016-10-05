@@ -593,22 +593,6 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
     }
 }
 
-SEQAN_DEFINE_TEST(test_basic_simd_shuffle)
-{
-    seqan::SimdVector<unsigned short, 8>::Type vec;
-    seqan::SimdVector<unsigned char, 8>::Type  indices;
-
-    for (int i = 0; i < 8; ++i)
-        vec[i] = i * 259 + 3;
-
-    for (int i = 0; i < 8; ++i)
-        indices[i] = 7 - i;
-
-    vec = seqan::shuffleVector(vec, indices);
-
-    for (int i = 0; i < 8; ++i)
-        SEQAN_ASSERT_EQ(vec[i], (7 - i) * 259 + 3);
-}
 
 SEQAN_DEFINE_TEST(test_basic_simd_transpose_8x8)
 {

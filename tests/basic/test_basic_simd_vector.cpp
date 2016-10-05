@@ -41,7 +41,7 @@
 SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
 {
 #ifdef __SSE4_1__
-    SEQAN_CALL_TEST(test_basic_simd_shuffle);
+    // SEQAN_CALL_TEST(test_basic_simd_shuffle);
     SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
     SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
 #endif  // #ifdef __SSE4_1__
