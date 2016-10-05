@@ -286,12 +286,12 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TValue zeros = 0, ones = ~0;
+    TValue zeros = 0, ones = 1;
 
     TSimdVector a, b;
     fillVectors(a, b);
 
-    TSimdVector c = a == b;
+    auto c = a == b;
 
     for (auto i = 0; i < length; ++i)
     {
@@ -308,12 +308,12 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TValue zeros = 0, ones = ~0;
+    TValue zeros = 0, ones = 1;
 
     TSimdVector a, b;
     fillVectors(a, b);
 
-    TSimdVector c = a > b;
+    auto c = a > b;
 
     for (auto i = 0; i < length; ++i)
     {
@@ -580,7 +580,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
     for (auto i = 0; i < length; ++i)
     {
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << " ? " << (int)a[i] << " : " << (int)b[i] << std::endl;
-        SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? a[i] : b[i]);
+        SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? (TValue)a[i] : (TValue)b[i]);
         SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) > (length - i) ? (i * 3) : (length - i)));
     }
 }
@@ -729,34 +729,6 @@ SEQAN_DEFINE_TEST(test_basic_simd_transpose_16x16)
 
 #endif  // #ifdef __SSE4_1__
 #ifdef __AVX2__
-
-SEQAN_DEFINE_TEST(test_basic_simd_shuffle_avx)
-{
-    seqan::SimdVector<unsigned short, 16>::Type vec;
-    seqan::SimdVector<unsigned char, 16>::Type  indices;
-
-    const int perm[] = {1,4,2,6,3,5,0,7};
-
-    for (int i = 0; i < 8; ++i)
-    {
-        vec[i]   = i * 259 + 3;
-        vec[i+8] = i * 432 + 9;
-    }
-
-    for (int i = 0; i < 8; ++i)
-    {
-        indices[i]   = 7 - i;
-        indices[i+8] = perm[i];
-    }
-
-    vec = seqan::shuffleVector(vec, indices);
-
-    for (int i = 0; i < 8; ++i)
-    {
-        SEQAN_ASSERT_EQ(vec[i],   (7 - i) * 259 + 3);
-        SEQAN_ASSERT_EQ(vec[i+8], perm[i] * 432 + 9);
-    }
-}
 
 SEQAN_DEFINE_TEST(test_basic_simd_transpose_32x32)
 {
