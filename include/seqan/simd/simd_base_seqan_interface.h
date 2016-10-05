@@ -93,6 +93,13 @@ template <typename TSimdVector, typename ...TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
 fillVector(TSimdVector &vector, TValue const... args)
 {
+    // On clang (<= 4.0)
+    // std::make_tuple(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17) reaches the
+    // template recursion limit of 256 (e.g. -ftemplate-depth=256 is default)
+    //
+    // See same issue asked on http://stackoverflow.com/q/23374953
+    // See also discussion to increase -ftemplate-depth to 1024 by default in
+    // clang https://llvm.org/bugs/show_bug.cgi?id=18417
     typedef typename Value<TSimdVector>::Type TIVal;
     _fillVector(vector, std::make_tuple(args...),
                 std::make_index_sequence<sizeof...(args)>{},

@@ -128,6 +128,9 @@ add_executable (
   test_basic_simd_vector.cpp
   test_basic_simd_vector.h)
 target_link_libraries (test_basic_simd_vector ${SEQAN_LIBRARIES})
+if (COMPILER_CLANG)
+  target_compile_options(test_basic_simd_vector PRIVATE -ftemplate-depth=1024)
+endif()
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
