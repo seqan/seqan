@@ -474,29 +474,6 @@ inline TSimdVector _load(T const * memAddr, SimdParams_<32, L>)
 }
 
 // --------------------------------------------------------------------------
-// _shuffleVector (256bit)
-// --------------------------------------------------------------------------
-
-template <typename TSimdVector1, typename TSimdVector2>
-inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
-{
-    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
-                                                                SEQAN_VECTOR_CAST_(const __m256i &, indices)));
-}
-template <typename TSimdVector1, typename TSimdVector2>
-inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 16>, SimdParams_<16, 16>)
-{
-    // copy 2nd 64bit word to 3rd, compute 2*idx
-    __m256i idx = _mm256_slli_epi16(_mm256_permute4x64_epi64(_mm256_castsi128_si256(SEQAN_VECTOR_CAST_(const __m128i &, indices)), 0x50), 1);
-
-    // interleave with 2*idx+1 and call shuffle
-    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
-                                                                _mm256_unpacklo_epi8(idx, _mm256_add_epi8(idx, _mm256_set1_epi8(1)))));
-}
-
-// --------------------------------------------------------------------------
 // _shiftRightLogical (256bit)
 // --------------------------------------------------------------------------
 
@@ -555,6 +532,29 @@ inline TSimdVector _gather(TValue const * memAddr,
         )
       )
     );
+}
+
+// --------------------------------------------------------------------------
+// _shuffleVector (256bit)
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
+                                                                SEQAN_VECTOR_CAST_(const __m256i &, indices)));
+}
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 16>, SimdParams_<16, 16>)
+{
+    // copy 2nd 64bit word to 3rd, compute 2*idx
+    __m256i idx = _mm256_slli_epi16(_mm256_permute4x64_epi64(_mm256_castsi128_si256(SEQAN_VECTOR_CAST_(const __m128i &, indices)), 0x50), 1);
+
+    // interleave with 2*idx+1 and call shuffle
+    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
+                                                                _mm256_unpacklo_epi8(idx, _mm256_add_epi8(idx, _mm256_set1_epi8(1)))));
 }
 
 // --------------------------------------------------------------------------

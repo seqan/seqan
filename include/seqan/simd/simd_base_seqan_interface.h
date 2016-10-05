@@ -280,23 +280,6 @@ andNot(TSimdVector const &a, TSimdVector const &b)
 }
 
 // --------------------------------------------------------------------------
-// Function shuffleVector()
-// --------------------------------------------------------------------------
-
-template <typename TSimdVector1, typename TSimdVector2>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
-shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices)
-{
-    typedef typename Value<TSimdVector1>::Type TValue1;
-    typedef typename Value<TSimdVector2>::Type TValue2;
-    return _shuffleVector(
-                vector,
-                indices,
-                SimdParams_<sizeof(TSimdVector1), sizeof(TSimdVector1) / sizeof(TValue1)>(),
-                SimdParams_<sizeof(TSimdVector2), sizeof(TSimdVector2) / sizeof(TValue2)>());
-}
-
-// --------------------------------------------------------------------------
 // Function shiftRightLogical()
 // --------------------------------------------------------------------------
 
@@ -354,6 +337,23 @@ gather(TValue const * memAddr, TSimdVector const & idx)
 {
     typedef typename Value<TSimdVector>::Type TInnerValue;
     return _gather(memAddr, idx, std::integral_constant<size_t, sizeof(TValue)>(), SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TInnerValue)>());
+}
+
+// --------------------------------------------------------------------------
+// Function shuffleVector()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
+shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices)
+{
+    typedef typename Value<TSimdVector1>::Type TValue1;
+    typedef typename Value<TSimdVector2>::Type TValue2;
+    return _shuffleVector(
+                vector,
+                indices,
+                SimdParams_<sizeof(TSimdVector1), sizeof(TSimdVector1) / sizeof(TValue1)>(),
+                SimdParams_<sizeof(TSimdVector2), sizeof(TSimdVector2) / sizeof(TValue2)>());
 }
 
 // --------------------------------------------------------------------------

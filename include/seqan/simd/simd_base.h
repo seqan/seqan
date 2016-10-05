@@ -259,10 +259,6 @@ template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 andNot(TSimdVector const &a, TSimdVector const &b);
 
-template <typename TSimdVector1, typename TSimdVector2>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
-shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices);
-
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 shiftRightLogical(TSimdVector const &vector, const int imm);
@@ -282,6 +278,10 @@ load(T const * memAddr);
 template <typename TValue, typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 gather(TValue const * memAddr, TSimdVector const & idx);
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
+shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices);
 
 // NOTE(rmaerker): Make this function available, also if SIMD is not enabled.
 template <typename TSimdVector, typename TValue>

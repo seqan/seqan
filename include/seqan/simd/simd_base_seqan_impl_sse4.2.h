@@ -479,6 +479,31 @@ inline TSimdVector _load(T const * memAddr, SimdParams_<16, L>)
 }
 
 // --------------------------------------------------------------------------
+// _shiftRightLogical (128bit)
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector>
+inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 16>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi16(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm) & _mm_set1_epi8(0xff >> imm));
+}
+template <typename TSimdVector>
+inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 8>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi16(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm));
+}
+template <typename TSimdVector>
+inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 4>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi32(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm));
+}
+template <typename TSimdVector>
+inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 2>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi64(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm));
+}
+
+// --------------------------------------------------------------------------
 // _shuffleVector (128bit)
 // --------------------------------------------------------------------------
 
@@ -502,31 +527,6 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 #endif  // SEQAN_IS_32_BIT
     return SEQAN_VECTOR_CAST_(TSimdVector1, _mm_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m128i &, vector),
                                                              _mm_unpacklo_epi8(idx, _mm_add_epi8(idx, _mm_set1_epi8(1)))));
-}
-
-// --------------------------------------------------------------------------
-// _shiftRightLogical (128bit)
-// --------------------------------------------------------------------------
-
-template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 16>)
-{
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi16(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm) & _mm_set1_epi8(0xff >> imm));
-}
-template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 8>)
-{
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi16(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm));
-}
-template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 4>)
-{
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi32(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm));
-}
-template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<16, 2>)
-{
-    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_srli_epi64(SEQAN_VECTOR_CAST_(const __m128i &, vector), imm));
 }
 
 // --------------------------------------------------------------------------
