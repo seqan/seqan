@@ -99,7 +99,8 @@ void reverseIndexSequence(TSimdIndexVector & idx, TSize length)
 {
     for (auto i = 0; i < length; ++i)
     {
-        idx[i] = length - i - 1;
+        // note: umesimd swizzle interface has no a[i] = i; support.
+        assignValue(idx, i, length - i - 1);
     }
 }
 
