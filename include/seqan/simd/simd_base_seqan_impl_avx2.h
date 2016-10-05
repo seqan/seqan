@@ -506,72 +506,459 @@ inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, 
 }
 
 // --------------------------------------------------------------------------
+// Extend sign from integer types 256bit
+// --------------------------------------------------------------------------
+
+inline __m256i
+seqan_mm256_i16sign_extend_epis8(__m256i const & v)
+{
+    return _mm256_or_si256( // extend sign (v | hi-bits)
+        v,
+        _mm256_and_si256( // select hi-bits (hi-bits = msk & 0xff00)
+            _mm256_sub_epi16( // msk = msb - 1
+                _mm256_andnot_si256( //msb = ~v & 0x80 (select msb)
+                    v,
+                    _mm256_set1_epi16(0x80)
+                ),
+                _mm256_set1_epi16(1)
+            ),
+            _mm256_set1_epi16(static_cast<uint16_t>(0xff00u))
+        )
+    );
+}
+
+inline __m256i
+seqan_mm256_i32sign_extend_epis8(__m256i const & v)
+{
+    return _mm256_or_si256( // extend sign (v | hi-bits)
+        v,
+        _mm256_and_si256( // select hi-bits (hi-bits = msk & 0xffffff00u)
+            _mm256_sub_epi32( // msk = msb - 1
+                _mm256_andnot_si256( //msb = ~v & 0x80 (select msb)
+                    v,
+                    _mm256_set1_epi32(0x80)
+                ),
+                _mm256_set1_epi32(1)
+            ),
+            _mm256_set1_epi32(static_cast<uint32_t>(0xffffff00u))
+        )
+    );
+}
+
+inline __m256i
+seqan_mm256_i32sign_extend_epis16(__m256i const & v)
+{
+    return _mm256_or_si256( // extend sign (v | hi-bits)
+        v,
+        _mm256_and_si256( // select hi-bits (hi-bits = msk & 0xffff0000u)
+            _mm256_sub_epi32( // msk = msb - 1
+                _mm256_andnot_si256( //msb = ~v & 0x8000 (select msb)
+                    v,
+                    _mm256_set1_epi32(0x8000)
+                ),
+                _mm256_set1_epi32(1)
+            ),
+            _mm256_set1_epi32(static_cast<uint32_t>(0xffff0000u))
+        )
+    );
+}
+
+inline __m256i
+seqan_mm256_i64sign_extend_epis8(__m256i const & v)
+{
+    return _mm256_or_si256( // extend sign (v | hi-bits)
+        v,
+        _mm256_and_si256( // select hi-bits (hi-bits = msk & 0xffffffffffffff00ul)
+            _mm256_sub_epi64( // msk = msb - 1
+                _mm256_andnot_si256( //msb = ~v & 0x80 (select msb)
+                    v,
+                    _mm256_set1_epi64x(0x80)
+                ),
+                _mm256_set1_epi64x(1)
+            ),
+            _mm256_set1_epi64x(static_cast<uint64_t>(0xffffffffffffff00ul))
+        )
+    );
+}
+
+inline __m256i
+seqan_mm256_i64sign_extend_epis16(__m256i const & v)
+{
+    return _mm256_or_si256( // extend sign (v | hi-bits)
+        v,
+        _mm256_and_si256( // select hi-bits (hi-bits = msk & 0xffffffffffff0000ul)
+            _mm256_sub_epi64( // msk = msb - 1
+                _mm256_andnot_si256( //msb = ~v & 0x8000 (select msb)
+                    v,
+                    _mm256_set1_epi64x(0x8000)
+                ),
+                _mm256_set1_epi64x(1)
+            ),
+            _mm256_set1_epi64x(static_cast<uint64_t>(0xffffffffffff0000ul))
+        )
+    );
+}
+
+inline __m256i
+seqan_mm256_i64sign_extend_epis32(__m256i const & v)
+{
+    return _mm256_or_si256( // extend sign (v | hi-bits)
+        v,
+        _mm256_and_si256( // select hi-bits (hi-bits = msk & 0xffffffffffff0000ul)
+            _mm256_sub_epi64( // msk = msb - 1
+                _mm256_andnot_si256( //msb = ~v & 0x80000000 (select msb)
+                    v,
+                    _mm256_set1_epi64x(0x80000000)
+                ),
+                _mm256_set1_epi64x(1)
+            ),
+            _mm256_set1_epi64x(static_cast<uint64_t>(0xffffffff00000000ul))
+        )
+    );
+}
+
+// --------------------------------------------------------------------------
 // _gather (256bit)
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * /*memAddr*/,
-                           TSimdVector const & /*idx*/,
-                           std::integral_constant<TSize, SCALE> const & /*scale*/,
-                           SimdParams_<32, 32>)
+template <typename TValue, typename TSize, TSize SCALE>
+inline __m256i
+seqan_mm256_i8gather_epi(TValue const * memAddr,
+                         __m256i const & idx,
+                         std::integral_constant<TSize, SCALE> const & /*scale*/)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for gather 8 bit values not implemented!");
-    return createVector<TSimdVector>(0);
+    // mem:    ( 0,  3,  6,  9 | 12, 15, 18, 21 | 24, 27, 30, 33 | 36, 39, 42, 45 || 48, 51, 54, 57 | 60, 63, 66, 69 | 72, 75, 78, 81 | 84, 87, 90, 93)
+    // idx:    (31, 30, 29, 28 | 27, 26, 25, 24 | 23, 22, 21, 20 | 19, 18, 17, 16 || 15, 14, 13, 12 | 11, 10,  9,  8 |  7,  6,  5,  4 |  3,  2,  1,  0)
+    // pack:   (93, 90, 87, 84 | 81, 78, 75, 72 | 69, 66, 63, 60 | 57, 54, 51, 48 || 45, 42, 39, 36 | 33, 30, 27, 24 | 21, 18, 15, 12 |  9,  6,  3,  0)
+    return _mm256_packus_epi16(
+        // pckLow: (93,  0, 90,  0 | 87,  0, 84,  0 | 81,  0, 78,  0 | 75,  0, 72,  0 || 45,  0, 42,  0 | 39,  0, 36,  0 | 33,  0, 30,  0 | 27,  0, 24,  0)
+        _mm256_packus_epi16(
+            // mskLL:  (93,  0,  0,  0 | 90,  0,  0,  0 | 87,  0,  0,  0 | 84,  0,  0,  0 || 45,  0,  0,  0 | 42,  0,  0,  0 | 39,  0,  0,  0 | 36,  0,  0,  0)
+            _mm256_and_si256(
+                // gtrLL:  (93, 31, 30, 29 | 90, 93, 31, 30 | 87, 90, 93, 31 | 84, 87, 90, 93 || 45, 48, 51, 54 | 42, 45, 48, 51 | 39, 42, 45, 48 | 36, 39, 42, 45)
+                _mm256_i32gather_epi32(
+                    memAddr,
+                    // lowlow: (31,  0,  0,  0 | 30,  0,  0,  0 | 29,  0,  0,  0 | 28,  0,  0,  0 || 15,  0,  0,  0 | 14,  0,  0,  0 | 13,  0,  0,  0 | 12,  0,  0,  0)
+                    _mm256_shuffle_epi8(idx, __m256i {
+                        ~0xFF000000FFl | 0x0100000000, ~0xFF000000FFl | 0x0300000002,
+                        ~0xFF000000FFl | 0x0100000000, ~0xFF000000FFl | 0x0300000002
+                    }),
+                    SCALE
+                ),
+                _mm256_set1_epi32(0xFF)
+            ),
+            // mskLH:  (81,  0,  0,  0 | 78,  0,  0,  0 | 75,  0,  0,  0 | 72,  0,  0,  0 || 33,  0,  0,  0 | 30,  0,  0,  0 | 27,  0,  0,  0 | 24,  0,  0,  0)
+            _mm256_and_si256(
+                // gtrLH:  (81, 84, 87, 90 | 78, 81, 84, 87 | 75, 78, 81, 84 | 72, 75, 78, 81 || 33, 36, 39, 42 | 30, 33, 36, 39 | 27, 30, 33, 36 | 24, 27, 30, 33)
+                _mm256_i32gather_epi32(
+                    memAddr,
+                    // lowhig: (27,  0,  0,  0 | 26,  0,  0,  0 | 25,  0,  0,  0 | 24,  0,  0,  0 || 11,  0,  0,  0 | 10,  0,  0,  0 |  9,  0,  0,  0 |  8,  0,  0,  0)
+                    _mm256_shuffle_epi8(idx, __m256i {
+                        ~0xFF000000FFl | 0x0500000004, ~0xFF000000FFl | 0x0700000006,
+                        ~0xFF000000FFl | 0x0500000004, ~0xFF000000FFl | 0x0700000006
+                    }),
+                    SCALE
+                ),
+                _mm256_set1_epi32(0xFF)
+            )
+        ),
+        // pckHih: (69,  0, 66,  0 | 63,  0, 60,  0 | 57,  0, 54,  0 | 51,  0, 48,  0 || 21,  0, 18,  0 | 15,  0, 12,  0 |  9,  0,  6,  0 |  3,  0,  0,  0)
+        _mm256_packus_epi16(
+            // mskHL:  (69,  0,  0,  0 | 66,  0,  0,  0 | 63,  0,  0,  0 | 60,  0,  0,  0 || 21,  0,  0,  0 | 18,  0,  0,  0 | 15,  0,  0,  0 | 12,  0,  0,  0)
+            _mm256_and_si256(
+                // gtrHL:  (69, 72, 75, 78 | 66, 69, 72, 75 | 63, 66, 69, 72 | 60, 63, 66, 69 || 21, 24, 27, 30 | 18, 21, 24, 27 | 15, 18, 21, 24 | 12, 15, 18, 21)
+                _mm256_i32gather_epi32(
+                    memAddr,
+                    // higlow: (23,  0,  0,  0 | 22,  0,  0,  0 | 21,  0,  0,  0 | 20,  0,  0,  0 ||  7,  0,  0,  0 |  6,  0,  0,  0 |  5,  0,  0,  0 |  4,  0,  0,  0)
+                    _mm256_shuffle_epi8(idx, __m256i {
+                        ~0xFF000000FFl | 0x0900000008, ~0xFF000000FFl | 0x0B0000000A,
+                        ~0xFF000000FFl | 0x0900000008, ~0xFF000000FFl | 0x0B0000000A
+                    }),
+                    SCALE
+                ),
+                _mm256_set1_epi32(0xFF)
+            ),
+            // mskHH:  (57,  0,  0,  0 | 54,  0,  0,  0 | 51,  0,  0,  0 | 48,  0,  0,  0 ||  9,  0,  0,  0 |  6,  0,  0,  0 |  3,  0,  0,  0 |  0,  0,  0,  0)
+            _mm256_and_si256(
+                // gtrHH:  (57, 60, 63, 66 | 54, 57, 60, 63 | 51, 54, 57, 60 | 48, 51, 54, 57 ||  9, 12, 15, 18 |  6,  9, 12, 15 |  3,  6,  9, 12 |  0,  3,  6,  9)
+                _mm256_i32gather_epi32(
+                    memAddr,
+                    // highig: (19,  0,  0,  0 | 18,  0,  0,  0 | 17,  0,  0,  0 | 16,  0,  0,  0 ||  3,  0,  0,  0 |  2,  0,  0,  0 |  1,  0,  0,  0 |  0,  0,  0,  0)
+                    _mm256_shuffle_epi8(idx, __m256i {
+                        ~0xFF000000FFl | 0x0D0000000C, ~0xFF000000FFl | 0x0F0000000E,
+                        ~0xFF000000FFl | 0x0D0000000C, ~0xFF000000FFl | 0x0F0000000E
+                    }),
+                    SCALE
+                ),
+                _mm256_set1_epi32(0xFF)
+            )
+        )
+    );
+}
+
+template <typename TValue, typename TSize, TSize SCALE>
+inline __m256i
+seqan_mm256_i16gather_epi(TValue const * memAddr,
+                          __m256i const & idx,
+                          std::integral_constant<TSize, SCALE> const & /*scale*/)
+{
+    using TUnsignedValue = typename MakeUnsigned<TValue>::Type;
+
+    // The cast makes sure that the max value of TValue = (u)int64_t and
+    // (u)int32_t will be max value of int16_t (i.e. `~0` in int16_t), because
+    // the resulting __m256i can only hold int16_t values.
+    //
+    // NOTE(marehr): the masking is only needed for TValue = (u)int8_t and
+    // (u)int16_t. It could be omitted if _mm256_packus_epi32 would be exchanged
+    // by _mm256_packs_epi32, because for (u)int32_t and (u)int64_t the masking
+    // operations are basically the identity function.
+    constexpr int const mask = static_cast<uint16_t>(MaxValue<TUnsignedValue>::VALUE);
+
+    // 1. Unpack low idx values and interleave with 0 and gather from memAddr.
+    // 2. Unpack high idx values and interleave with 0, than gather from memAddr.
+    // 3. Merge 2 8x32 vectors into 1x16 vector by signed saturation. This operation reverts the interleave by the unpack operations above.
+    //
+    // The following is an example for SimdVector<uint16_t, 16> idx and uint16_t
+    // const * memAddr:
+    // mem:    ( 0,  0,  3,  0 |  6,  0,  9,  0 | 12,  0, 15,  0 | 18,  0, 21,  0 || 24,  0, 27,  0 | 30,  0, 33,  0 | 36,  0, 39,  0 | 42,  0, 45,  0)
+    // idx:    (15,  0, 14,  0 | 13,  0, 12,  0 | 11,  0, 10,  0 |  9,  0,  8,  0 ||  7,  0,  6,  0 |  5,  0,  4,  0 |  3,  0,  2,  0 |  1,  0,  0,  0)
+    // pack:   (45,  0, 42,  0 | 39,  0, 36,  0 | 33,  0, 30,  0 | 27,  0, 24,  0 || 21,  0, 18,  0 | 15,  0, 12,  0 |  9,  0,  6,  0 |  3,  0,  0,  0)
+    return _mm256_packus_epi32(
+        // mskLow: (45,  0,  0,  0 | 42,  0,  0,  0 | 39,  0,  0,  0 | 36,  0,  0,  0 || 21,  0,  0,  0 | 18,  0,  0,  0 | 15,  0,  0,  0 | 12,  0,  0,  0)
+        _mm256_and_si256(
+            // gtrLow: (45,  0, 15,  0 | 42,  0, 45,  0 | 39,  0, 42,  0 | 36,  0, 39,  0 || 21,  0, 24,  0 | 18,  0, 21,  0 | 15,  0, 18,  0 | 12,  0, 15,  0)
+            _mm256_i32gather_epi32(
+                memAddr,
+                // low:    (15,  0,  0,  0 | 14,  0,  0,  0 | 13,  0,  0,  0 | 12,  0,  0,  0 ||  7,  0,  0,  0 |  6,  0,  0,  0 |  5,  0,  0,  0 |  4,  0,  0,  0)
+                _mm256_unpacklo_epi16(
+                    idx, _mm256_set1_epi16(0)
+                ),
+                SCALE
+            ),
+            _mm256_set1_epi32(mask)
+        ),
+        // mskHih: (33,  0,  0,  0 | 30,  0,  0,  0 | 27,  0,  0,  0 | 24,  0,  0,  0 ||  9,  0,  0,  0 |  6,  0,  0,  0 |  3,  0,  0,  0 |  0,  0,  0,  0)
+        _mm256_and_si256(
+            // gtrHih: (33,  0, 36,  0 | 30,  0, 33,  0 | 27,  0, 30,  0 | 24,  0, 27,  0 ||  9,  0, 12,  0 |  6,  0,  9,  0 |  3,  0,  6,  0 |  0,  0,  3,  0)
+            _mm256_i32gather_epi32(
+                memAddr,
+                // high:   (11,  0,  0,  0 | 10,  0,  0,  0 |  9,  0,  0,  0 |  8,  0,  0,  0 ||  3,  0,  0,  0 |  2,  0,  0,  0 |  1,  0,  0,  0 |  0,  0,  0,  0)
+                _mm256_unpackhi_epi16(
+                    idx, _mm256_set1_epi16(0)
+                ),
+                SCALE
+            ),
+            _mm256_set1_epi32(mask)
+        )
+    );
+}
+
+template <typename TValue, typename TSize, TSize SCALE>
+inline __m256i
+seqan_mm256_i32gather_epi(TValue const * memAddr,
+                            __m256i const & idx,
+                            std::integral_constant<TSize, SCALE> const & /*scale*/)
+{
+    using TUnsignedValue = typename MakeUnsigned<TValue>::Type;
+    constexpr auto const mask = static_cast<uint32_t>(MaxValue<TUnsignedValue>::VALUE);
+
+    return _mm256_and_si256(
+        _mm256_i32gather_epi32(memAddr, idx, SCALE),
+        _mm256_set1_epi32(mask)
+    );
+}
+
+template <typename TValue, typename TSize, TSize SCALE>
+inline __m256i
+seqan_mm256_i64gather_epi(TValue const * memAddr,
+                          __m256i const & idx,
+                          std::integral_constant<TSize, SCALE> const & /*scale*/)
+{
+    using TUnsignedValue = typename MakeUnsigned<TValue>::Type;
+    constexpr auto const mask = static_cast<uint64_t>(MaxValue<TUnsignedValue>::VALUE);
+
+    return _mm256_and_si256(
+        _mm256_i64gather_epi64(memAddr, idx, SCALE),
+        _mm256_set1_epi64x(mask)
+    );
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
 inline TSimdVector _gather(TValue const * memAddr,
                            TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 32>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+        seqan_mm256_i8gather_epi(
+            memAddr,
+            SEQAN_VECTOR_CAST_(__m256i const &, idx),
+            scale
+        )
+    );
+}
+
+template <typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(int8_t const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
                            SimdParams_<32, 16>)
 {
-    // 1. Unpack low idx values and interleave with 0 and gather from memAddr.
-    // 2. Unpack high idx values and interleave with 0, than gather from memAddr.
-    // 3. Merge 2 8x32 vectors into 1x16 vector by signed saturation. This operation reverts the interleave by the unpack operations above.
+    // Note that memAddr is a signed integer type, thus a cast would extend the
+    // sign. E.g., -3 = 253 in 8 bit, but would be 65533 in 16 bit.
+    // Use _gather(uint8_t) and extend the sign to [u]int16_t.
     return SEQAN_VECTOR_CAST_(
-      TSimdVector,
-      _mm256_packs_epi32(
-        _mm256_i32gather_epi32(
-          static_cast<int32_t const *>(memAddr),
-          _mm256_unpacklo_epi16(
-            SEQAN_VECTOR_CAST_(__m256i const &, idx),
-            _mm256_set1_epi16(0)
-          ),
-          SCALE
-        ),
-        _mm256_i32gather_epi32(
-          static_cast<int32_t const *>(memAddr),
-          _mm256_unpackhi_epi16(
-            SEQAN_VECTOR_CAST_(__m256i const &, idx),
-            _mm256_set1_epi16(0)
-          ),
-          SCALE
+        TSimdVector,
+        seqan_mm256_i16sign_extend_epis8(
+            seqan_mm256_i16gather_epi(
+                memAddr,
+                SEQAN_VECTOR_CAST_(__m256i const &, idx),
+                scale
+            )
         )
-      )
     );
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * /*memAddr*/,
-                           TSimdVector const & /*idx*/,
-                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+inline TSimdVector _gather(TValue const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 16>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i16gather_epi(
+            memAddr,
+            SEQAN_VECTOR_CAST_(__m256i const &, idx),
+            scale
+        )
+    );
+}
+
+template <typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(int8_t const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
                            SimdParams_<32, 8>)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for gather 32 bit values not implemented!");
-    return createVector<TSimdVector>(0);
+    // Note that memAddr is a signed integer type, thus a cast would extend the
+    // sign.
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i32sign_extend_epis8(
+            seqan_mm256_i32gather_epi(
+                memAddr,
+                SEQAN_VECTOR_CAST_(__m256i const &, idx),
+                scale
+            )
+        )
+    );
+}
+
+template <typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(int16_t const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 8>)
+{
+    // Note that memAddr is a signed integer type, thus a cast would extend the
+    // sign.
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i32sign_extend_epis16(
+            seqan_mm256_i32gather_epi(
+                memAddr,
+                SEQAN_VECTOR_CAST_(__m256i const &, idx),
+                scale
+            )
+        )
+    );
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * /*memAddr*/,
-                           TSimdVector const & /*idx*/,
-                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+inline TSimdVector _gather(TValue const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 8>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i32gather_epi(
+            memAddr,
+            SEQAN_VECTOR_CAST_(__m256i const &, idx),
+            scale
+        )
+    );
+}
+
+template <typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(int8_t const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
                            SimdParams_<32, 4>)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for gather 64 bit values not implemented!");
-    return createVector<TSimdVector>(0);
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i64sign_extend_epis8(
+            seqan_mm256_i64gather_epi(
+                memAddr,
+                SEQAN_VECTOR_CAST_(__m256i const &, idx),
+                scale
+            )
+        )
+    );
+}
+
+template <typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(int16_t const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 4>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i64sign_extend_epis16(
+            seqan_mm256_i64gather_epi(
+                memAddr,
+                SEQAN_VECTOR_CAST_(__m256i const &, idx),
+                scale
+            )
+        )
+    );
+}
+
+template <typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(int32_t const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 4>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i64sign_extend_epis32(
+            seqan_mm256_i64gather_epi(
+                memAddr,
+                SEQAN_VECTOR_CAST_(__m256i const &, idx),
+                scale
+            )
+        )
+    );
+}
+
+template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(TValue const * memAddr,
+                           TSimdVector const & idx,
+                           std::integral_constant<TSize, SCALE> const & scale,
+                           SimdParams_<32, 4>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector,
+        seqan_mm256_i64gather_epi(
+            memAddr,
+            SEQAN_VECTOR_CAST_(__m256i const &, idx),
+            scale
+        )
+    );
 }
 
 // --------------------------------------------------------------------------
