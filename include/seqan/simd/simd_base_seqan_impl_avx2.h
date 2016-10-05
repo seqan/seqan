@@ -376,8 +376,9 @@ inline TSimdVector _sub(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32>)
+inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<32, 32>)
 {
+    SEQAN_SKIP_TEST;
     SEQAN_ASSERT_FAIL("AVX2 intrinsics for multiplying 8 bit values not implemented!");
     return a;
 }
@@ -399,8 +400,9 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
 }
 
 template <typename TSimdVector>
-inline TSimdVector _mult(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
+inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<32, 4>)
 {
+    SEQAN_SKIP_TEST;
     SEQAN_ASSERT_FAIL("AVX2 intrinsics for multiplying 64 bit values not implemented!");
     return a;
 }
@@ -434,8 +436,9 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
 }
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
+inline TSimdVector _max(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<32, 4>)
 {
+    SEQAN_SKIP_TEST;
     SEQAN_ASSERT_FAIL("AVX2 intrinsics for max on 64 bit values not implemented!");
     return a;
 }
@@ -503,6 +506,17 @@ inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, 
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(TValue const * /*memAddr*/,
+                           TSimdVector const & /*idx*/,
+                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+                           SimdParams_<32, 32>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for gather 8 bit values not implemented!");
+    return createVector<TSimdVector>(0);
+}
+
+template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
 inline TSimdVector _gather(TValue const * memAddr,
                            TSimdVector const & idx,
                            std::integral_constant<TSize, SCALE> const & /*scale*/,
@@ -534,6 +548,28 @@ inline TSimdVector _gather(TValue const * memAddr,
     );
 }
 
+template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(TValue const * /*memAddr*/,
+                           TSimdVector const & /*idx*/,
+                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+                           SimdParams_<32, 8>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for gather 32 bit values not implemented!");
+    return createVector<TSimdVector>(0);
+}
+
+template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
+inline TSimdVector _gather(TValue const * /*memAddr*/,
+                           TSimdVector const & /*idx*/,
+                           std::integral_constant<TSize, SCALE> const & /*scale*/,
+                           SimdParams_<32, 4>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for gather 64 bit values not implemented!");
+    return createVector<TSimdVector>(0);
+}
+
 // --------------------------------------------------------------------------
 // _shuffleVector (256bit)
 // --------------------------------------------------------------------------
@@ -542,9 +578,12 @@ template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
 _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
 {
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 8 bit values not working!");
     return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
                                                                 SEQAN_VECTOR_CAST_(const __m256i &, indices)));
 }
+
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
 _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 16>, SimdParams_<16, 16>)
@@ -555,6 +594,33 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
     // interleave with 2*idx+1 and call shuffle
     return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
                                                                 _mm256_unpacklo_epi8(idx, _mm256_add_epi8(idx, _mm256_set1_epi8(1)))));
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &/*indices*/, SimdParams_<32, 16>, SimdParams_<32, 32>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 16 bit values not implemented!");
+    return vector;
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &/*indices*/, SimdParams_<32, 8>, SimdParams_<32, 32>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 32 bit values not implemented!");
+    return vector;
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &/*indices*/, SimdParams_<32, 4>, SimdParams_<32, 32>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 64 bit values not implemented!");
+    return vector;
 }
 
 // --------------------------------------------------------------------------
