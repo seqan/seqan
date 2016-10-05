@@ -122,13 +122,24 @@ typedef
         seqan::TagList<seqan::SimdVector<int8_t, 16>::Type,
         seqan::TagList<seqan::SimdVector<int16_t, 8>::Type,
         seqan::TagList<seqan::SimdVector<int32_t, 4>::Type,
-        // seqan::TagList<seqan::SimdVector<int64_t, 2>::Type,
+        seqan::TagList<seqan::SimdVector<int64_t, 2>::Type,
         seqan::TagList<seqan::SimdVector<uint8_t, 16>::Type,
         seqan::TagList<seqan::SimdVector<uint16_t, 8>::Type,
-        seqan::TagList<seqan::SimdVector<uint32_t, 4>::Type
-        // seqan::TagList<seqan::SimdVector<uint64_t, 2>::Type
-        > > > > > >
-        // > >
+        seqan::TagList<seqan::SimdVector<uint32_t, 4>::Type,
+        seqan::TagList<seqan::SimdVector<uint64_t, 2>::Type
+        #if SEQAN_SIZEOF_MAX_VECTOR >= 32
+        , // Extension of the list above
+        seqan::TagList<seqan::SimdVector<int8_t,  32>::Type,
+        seqan::TagList<seqan::SimdVector<int16_t, 16>::Type,
+        seqan::TagList<seqan::SimdVector<int32_t, 8>::Type,
+        seqan::TagList<seqan::SimdVector<int64_t, 4>::Type,
+        seqan::TagList<seqan::SimdVector<uint8_t,  32>::Type,
+        seqan::TagList<seqan::SimdVector<uint16_t, 16>::Type,
+        seqan::TagList<seqan::SimdVector<uint32_t,  8>::Type,
+        seqan::TagList<seqan::SimdVector<uint64_t,  4>::Type
+        > > > > > > > >
+        #endif
+        > > > > > > > >
         SimdVectorCommonCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
