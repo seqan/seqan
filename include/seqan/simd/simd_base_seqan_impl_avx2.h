@@ -574,14 +574,177 @@ inline TSimdVector _gather(TValue const * /*memAddr*/,
 // _shuffleVector (256bit)
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector1, typename TSimdVector2>
-inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
+inline __m256i
+seqan_m256_shuffle_epi8(__m256i const &vector, __m256i const &indices)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 8 bit values not working!");
-    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
-                                                                SEQAN_VECTOR_CAST_(const __m256i &, indices)));
+    return _mm256_xor_si256(
+        // shuffle bytes from the lower bytes of vector
+        _mm256_shuffle_epi8(
+            // repeat twice the low bytes of vector in a new __m256i vector i.e.
+            //   vh[127:0] = v[127:0]
+            //   vh[255:128] = v[127:0]
+            _mm256_broadcastsi128_si256(
+                 _mm256_extracti128_si256(vector, 0)
+            ),
+            // ((indices[i] << 3) & 0b1000 0000) ^ indices[i]:
+            //   Adds the 5th bit of indices[i] as most significant bit. If the
+            //   5th bit is set, that means that indices[i] >= 16.
+            //   r = _mm256_shuffle_epi8(vl, indices) will set r[i] = 0 if the
+            //   most significant bit of indices[i] is 1. Since this bit is the
+            //   5th bit, r[i] = 0 if indices[i] >= 16 and r[i] = vl[indices[i]]
+            //   if indices[i] < 16.
+            _mm256_xor_si256(
+                _mm256_and_si256(
+                    _mm256_slli_epi16(indices, 3),
+                    _mm256_set1_epi8(-127) // 0b1000 0000
+                ),
+                indices
+            )
+        ),
+        // shuffle bytes from the higher bytes of vector
+        _mm256_shuffle_epi8(
+            // repeat twice the higher bytes of vector in a new __m256i vector
+            // i.e.
+            //   vh[127:0] = v[255:128]
+            //   vh[255:128] = v[255:128]
+            _mm256_broadcastsi128_si256(
+                 _mm256_extracti128_si256(vector, 1)
+            ),
+            // indices[i] - 16:
+            //   r = _mm256_shuffle_epi8(vh, indices)
+            //   will return r[i] = 0 if the most significant bit of the byte
+            //   indices[i] is 1. Thus, indices[i] - 16 will select all high
+            //   bytes in vh, i.e. r[i] = vh[indices[i] - 16], if indices[i] >=
+            //   16 and r[i] = 0 if indices[i] < 16.
+            _mm256_sub_epi8(
+                indices,
+                _mm256_set1_epi8(16)
+            )
+        )
+    );
+}
+
+inline __m256i
+seqan_m256_shuffle_epi16(const __m256i a, const __m256i b)
+{
+    // multiply by 2
+    __m256i idx = _mm256_slli_epi16(
+        _mm256_permute4x64_epi64(b, 0b01010000),
+        1
+    );
+    // _print(_mm256_add_epi8(idx, _mm256_set1_epi8(1)));
+    // _print(        _mm256_unpacklo_epi8(
+    //             idx,
+    //             _mm256_add_epi8(idx, _mm256_set1_epi8(1))
+    //         ));
+    return seqan_m256_shuffle_epi8(
+        a,
+        // interleave idx[15:0]   = 2*indices[15],   ..., 2*indices[0]
+        // with       idx[15:0]+1 = 2*indices[15]+1, ..., 2*indices[0]+1
+        // => 2*indices[15]+1, 2*indices[15], ..., 2*indices[0]+1, 2*indices[0]
+        _mm256_unpacklo_epi8(
+            idx,
+            _mm256_add_epi8(idx, _mm256_set1_epi8(1))
+        )
+    );
+}
+
+inline __m256i
+seqan_m256_shuffle_epi32(const __m256i a, const __m256i b)
+{
+    // multiply by 4
+    __m256i idx = _mm256_slli_epi16(
+        _mm256_permutevar8x32_epi32(b, __m256i {0x0, 0x0, 0x1, 0x0}),
+        2
+    );
+    return seqan_m256_shuffle_epi8(
+        a,
+        // interleave 4*indices[7]+1, 4*indices[7]+0; ..., 4*indices[0]+1, 4*indices[0]+0
+        // with       4*indices[7]+3, 4*indices[7]+2; ..., 4*indices[0]+3, 4*indices[0]+2
+        // => 4*indices[7]+3, 4*indices[7]+2; 4*indices[7]+1, 4*indices[7]+0;
+        //    ...
+        //    4*indices[0]+3, 4*indices[0]+2; 4*indices[0]+1, 4*indices[0]+0
+        _mm256_unpacklo_epi16(
+            // interleave idx[7:0]+0 = 4*indices[7]+0; ...; 4*indices[0]+0
+            // with       idx[7:0]+1 = 4*indices[7]+1; ...; 4*indices[0]+1
+            // => 4*indices[7]+1; 4*indices[7]+0; ...; 4*indices[0]+1; 4*indices[0]+0
+            _mm256_unpacklo_epi8(
+                idx,
+                _mm256_add_epi8(idx, _mm256_set1_epi8(1))
+            ),
+            // interleave idx[7:0]+2 = 4*indices[7]+2; ...; 4*indices[0]+2
+            // with       idx[7:0]+3 = 4*indices[7]+3; ...; 4*indices[0]+3
+            // => 4*indices[7]+3; 4*indices[7]+2; ...; 4*indices[0]+3; 4*indices[0]+2
+            _mm256_unpacklo_epi8(
+                _mm256_add_epi8(idx, _mm256_set1_epi8(2)),
+                _mm256_add_epi8(idx, _mm256_set1_epi8(3))
+            )
+    ));
+}
+
+#define seqan_mm256_set_m128i(v0, v1) _mm256_insertf128_si256(_mm256_castsi128_si256(v1), (v0), 1)
+
+inline __m256i
+seqan_m256_shuffle_epi64(const __m256i a, const __m256i b)
+{
+    __m128i lowidx = _mm256_extracti128_si256(
+        // multiply by 8
+        _mm256_slli_epi16(b, 3),
+        0
+    );
+
+    __m256i idx = seqan_mm256_set_m128i(
+        _mm_srli_si128(lowidx, 2),
+        lowidx
+    );
+
+    return seqan_m256_shuffle_epi8(
+        a,
+        _mm256_unpacklo_epi32(
+            // interleave 8*indices[3]+1, 8*indices[3]+0; ..., 8*indices[0]+1, 8*indices[0]+0
+            // with       8*indices[3]+3, 8*indices[3]+2; ..., 8*indices[0]+3, 8*indices[0]+2
+            // => 8*indices[3]+3, 8*indices[3]+2; 8*indices[3]+1, 8*indices[3]+0;
+            //    ...
+            //    8*indices[0]+3, 8*indices[0]+2; 8*indices[0]+1, 8*indices[0]+0
+            _mm256_unpacklo_epi16(
+                // interleave idx[3:0]+0 = 8*indices[3]+0; ...; 8*indices[0]+0
+                // with       idx[3:0]+1 = 8*indices[3]+1; ...; 8*indices[0]+1
+                // => 8*indices[3]+1; 8*indices[3]+0; ...; 8*indices[0]+1; 8*indices[0]+0
+               _mm256_unpacklo_epi8(
+                   idx,
+                   _mm256_add_epi8(idx, _mm256_set1_epi8(1))
+               ),
+               // interleave idx[3:0]+2 = 8*indices[3]+2; ...; 8*indices[0]+2
+               // with       idx[3:0]+3 = 8*indices[3]+3; ...; 8*indices[0]+3
+               // => 8*indices[3]+3; 8*indices[3]+2; ...; 8*indices[0]+3; 8*indices[0]+2
+               _mm256_unpacklo_epi8(
+                   _mm256_add_epi8(idx, _mm256_set1_epi8(2)),
+                   _mm256_add_epi8(idx, _mm256_set1_epi8(3))
+               )
+           ),
+           // interleave 8*indices[3]+5, 8*indices[3]+4; ..., 8*indices[0]+5, 8*indices[0]+4
+           // with       8*indices[3]+7, 8*indices[3]+6; ..., 8*indices[0]+7, 8*indices[0]+6
+           // => 8*indices[3]+7, 8*indices[3]+6; 8*indices[3]+5, 8*indices[3]+4;
+           //    ...
+           //    8*indices[0]+7, 8*indices[0]+6; 8*indices[0]+5, 8*indices[0]+4
+            _mm256_unpacklo_epi16(
+                // interleave idx[3:0]+4 = 8*indices[3]+4; ...; 8*indices[0]+4
+                // with       idx[3:0]+5 = 8*indices[3]+5; ...; 8*indices[0]+5
+                // => 8*indices[3]+5; 8*indices[3]+4; ...; 8*indices[0]+5; 8*indices[0]+4
+                _mm256_unpacklo_epi8(
+                    _mm256_add_epi8(idx, _mm256_set1_epi8(4)),
+                    _mm256_add_epi8(idx, _mm256_set1_epi8(5))
+                ),
+                // interleave idx[3:0]+6 = 8*indices[3]+6; ...; 8*indices[0]+6
+                // with       idx[3:0]+7 = 8*indices[3]+7; ...; 8*indices[0]+7
+                // => 8*indices[3]+7; 8*indices[3]+6; ...; 8*indices[0]+7; 8*indices[0]+6
+                _mm256_unpacklo_epi8(
+                    _mm256_add_epi8(idx, _mm256_set1_epi8(6)),
+                    _mm256_add_epi8(idx, _mm256_set1_epi8(7))
+                )
+            )
+        )
+    );
 }
 
 template <typename TSimdVector1, typename TSimdVector2>
@@ -592,35 +755,57 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
     __m256i idx = _mm256_slli_epi16(_mm256_permute4x64_epi64(_mm256_castsi128_si256(SEQAN_VECTOR_CAST_(const __m128i &, indices)), 0x50), 1);
 
     // interleave with 2*idx+1 and call shuffle
-    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm256_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m256i &, vector),
-                                                                _mm256_unpacklo_epi8(idx, _mm256_add_epi8(idx, _mm256_set1_epi8(1)))));
+    return SEQAN_VECTOR_CAST_(TSimdVector1,
+        _mm256_shuffle_epi8(
+            SEQAN_VECTOR_CAST_(const __m256i &, vector),
+            _mm256_unpacklo_epi8(
+                idx,
+                _mm256_add_epi8(
+                    idx, _mm256_set1_epi8(1)
+                )
+            )
+        )
+    );
 }
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &/*indices*/, SimdParams_<32, 16>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 16 bit values not implemented!");
-    return vector;
+    return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi8(
+        SEQAN_VECTOR_CAST_(const __m256i &, vector),
+        SEQAN_VECTOR_CAST_(const __m256i &, indices)
+    ));
 }
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &/*indices*/, SimdParams_<32, 8>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 16>, SimdParams_<32, 32>)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 32 bit values not implemented!");
-    return vector;
+    return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi16(
+        SEQAN_VECTOR_CAST_(const __m256i &, vector),
+        SEQAN_VECTOR_CAST_(const __m256i &, indices)
+    ));
 }
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &/*indices*/, SimdParams_<32, 4>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 8>, SimdParams_<32, 32>)
 {
-    SEQAN_SKIP_TEST;
-    SEQAN_ASSERT_FAIL("SSE intrinsics for shuffling 64 bit values not implemented!");
-    return vector;
+    return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi32(
+        SEQAN_VECTOR_CAST_(const __m256i &, vector),
+        SEQAN_VECTOR_CAST_(const __m256i &, indices)
+    ));
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 4>, SimdParams_<32, 32>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi64(
+        SEQAN_VECTOR_CAST_(const __m256i &, vector),
+        SEQAN_VECTOR_CAST_(const __m256i &, indices)
+    ));
 }
 
 // --------------------------------------------------------------------------
