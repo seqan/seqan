@@ -1734,7 +1734,7 @@ inline void fail()
 #define SEQAN_SKIP_TEST                         \
     do {                                        \
         ::seqan::ClassTest::skipCurrentTest();  \
-        return;                                 \
+        throw ::seqan::ClassTest::AssertionFailedException(); \
     } while (false)
 #endif  // #if SEQAN_ENABLE_TESTING
 
