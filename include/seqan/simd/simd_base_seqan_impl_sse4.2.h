@@ -422,14 +422,6 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<16, 2>)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 8>)
-{
-    return SEQAN_VECTOR_CAST_(TSimdVector,
-                              _mm_max_epi16(SEQAN_VECTOR_CAST_(const __m128i&, a),
-                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
-}
-
-template <typename TSimdVector>
 inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 16>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
@@ -438,11 +430,31 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 16>)
 }
 
 template <typename TSimdVector>
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 8>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_max_epi16(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
 inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm_max_epi32(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
+{
+#if defined(__AVX512F__)
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_max_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+#else // defined(__AVX512F__)
+    return blend(a, b, a < b);
+#endif // defined(__AVX512F__)
 }
 
 // --------------------------------------------------------------------------
