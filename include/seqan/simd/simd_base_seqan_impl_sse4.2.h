@@ -519,15 +519,109 @@ inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, 
 // _shuffleVector (128bit)
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector1, typename TSimdVector2>
-inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 16>, SimdParams_<16, 16>)
+inline __m128i
+seqan_mm_shuffle_epi16(const __m128i a, const __m128i b)
 {
-    return SEQAN_VECTOR_CAST_(TSimdVector1, _mm_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m128i &, vector),
-                                                             SEQAN_VECTOR_CAST_(const __m128i &, indices)));
+    // multiply by 2
+    __m128i idx = _mm_slli_epi16(b, 1);
+    return _mm_shuffle_epi8(
+        a,
+        // interleave idx[7:0]   = 2*indices[7],   ..., 2*indices[0]
+        // with       idx[7:0]+1 = 2*indices[7]+1, ..., 2*indices[0]+1
+        // => 2*indices[7]+1, 2*indices[7], ..., 2*indices[0]+1, 2*indices[0]
+        _mm_unpacklo_epi8(
+            idx,
+            _mm_add_epi8(idx, _mm_set1_epi8(1))
+        )
+    );
+}
+
+inline __m128i
+seqan_mm_shuffle_epi32(const __m128i a, const __m128i b)
+{
+    // multiply by 4
+    __m128i idx = _mm_slli_epi16(b, 2);
+    return _mm_shuffle_epi8(
+        a,
+        // interleave 4*indices[3]+1, 4*indices[3]+0; ..., 4*indices[0]+1, 4*indices[0]+0
+        // with       4*indices[3]+3, 4*indices[3]+2; ..., 4*indices[0]+3, 4*indices[0]+2
+        // => 4*indices[3]+3, 4*indices[3]+2; 4*indices[3]+1, 4*indices[3]+0;
+        //    ...
+        //    4*indices[0]+3, 4*indices[0]+2; 4*indices[0]+1, 4*indices[0]+0
+        _mm_unpacklo_epi16(
+            // interleave idx[3:0]+0 = 4*indices[3]+0; ...; 4*indices[0]+0
+            // with       idx[3:0]+1 = 4*indices[3]+1; ...; 4*indices[0]+1
+            // => 4*indices[3]+1; 4*indices[3]+0; ...; 4*indices[0]+1; 4*indices[0]+0
+            _mm_unpacklo_epi8(
+                idx,
+                _mm_add_epi8(idx, _mm_set1_epi8(1))
+            ),
+            // interleave idx[3:0]+2 = 4*indices[3]+2; ...; 4*indices[0]+2
+            // with       idx[3:0]+3 = 4*indices[3]+3; ...; 4*indices[0]+3
+            // => 4*indices[3]+3; 4*indices[3]+2; ...; 4*indices[0]+3; 4*indices[0]+2
+            _mm_unpacklo_epi8(
+                _mm_add_epi8(idx, _mm_set1_epi8(2)),
+                _mm_add_epi8(idx, _mm_set1_epi8(3))
+            )
+    ));
+}
+
+inline __m128i
+seqan_mm_shuffle_epi64(const __m128i a, const __m128i b)
+{
+    // multiply by 8
+    __m128i idx = _mm_slli_epi16(b, 3);
+    return _mm_shuffle_epi8(
+        a,
+        _mm_unpacklo_epi32(
+            // interleave 8*indices[1]+1, 8*indices[1]+0; ..., 8*indices[0]+1, 8*indices[0]+0
+            // with       8*indices[1]+3, 8*indices[1]+2; ..., 8*indices[0]+3, 8*indices[0]+2
+            // => 8*indices[1]+3, 8*indices[1]+2; 8*indices[1]+1, 8*indices[1]+0;
+            //    ...
+            //    8*indices[0]+3, 8*indices[0]+2; 8*indices[0]+1, 8*indices[0]+0
+            _mm_unpacklo_epi16(
+                // interleave idx[1:0]+0 = 8*indices[1]+0; ...; 8*indices[0]+0
+                // with       idx[1:0]+1 = 8*indices[1]+1; ...; 8*indices[0]+1
+                // => 8*indices[1]+1; 8*indices[1]+0; ...; 8*indices[0]+1; 8*indices[0]+0
+                _mm_unpacklo_epi8(
+                    idx,
+                    _mm_add_epi8(idx, _mm_set1_epi8(1))
+                ),
+                // interleave idx[1:0]+2 = 8*indices[1]+2; ...; 8*indices[0]+2
+                // with       idx[1:0]+3 = 8*indices[1]+3; ...; 8*indices[0]+3
+                // => 8*indices[1]+3; 8*indices[1]+2; ...; 8*indices[0]+3; 8*indices[0]+2
+                _mm_unpacklo_epi8(
+                    _mm_add_epi8(idx, _mm_set1_epi8(2)),
+                    _mm_add_epi8(idx, _mm_set1_epi8(3))
+                )
+            ),
+            // interleave 8*indices[1]+5, 8*indices[1]+4; ..., 8*indices[0]+5, 8*indices[0]+4
+            // with       8*indices[1]+7, 8*indices[1]+6; ..., 8*indices[0]+7, 8*indices[0]+6
+            // => 8*indices[1]+7, 8*indices[1]+6; 8*indices[1]+5, 8*indices[1]+4;
+            //    ...
+            //    8*indices[0]+7, 8*indices[0]+6; 8*indices[0]+5, 8*indices[0]+4
+            _mm_unpacklo_epi16(
+                // interleave idx[1:0]+4 = 8*indices[1]+4; ...; 8*indices[0]+4
+                // with       idx[1:0]+5 = 8*indices[1]+5; ...; 8*indices[0]+5
+                // => 8*indices[1]+5; 8*indices[1]+4; ...; 8*indices[0]+5; 8*indices[0]+4
+                _mm_unpacklo_epi8(
+                    _mm_add_epi8(idx, _mm_set1_epi8(4)),
+                    _mm_add_epi8(idx, _mm_set1_epi8(5))
+                ),
+                // interleave idx[1:0]+6 = 8*indices[1]+6; ...; 8*indices[0]+6
+                // with       idx[1:0]+7 = 8*indices[1]+7; ...; 8*indices[0]+7
+                // => 8*indices[1]+7; 8*indices[1]+6; ...; 8*indices[0]+7; 8*indices[0]+6
+                _mm_unpacklo_epi8(
+                    _mm_add_epi8(idx, _mm_set1_epi8(6)),
+                    _mm_add_epi8(idx, _mm_set1_epi8(7))
+                )
+            )
+        )
+    );
 }
 
 template <typename TSimdVector1, typename TSimdVector2>
+[[deprecated("Here be dragons")]]
 inline TSimdVector1
 _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 8>, SimdParams_<8, 8>)
 {
@@ -539,6 +633,54 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 #endif  // SEQAN_IS_32_BIT
     return SEQAN_VECTOR_CAST_(TSimdVector1, _mm_shuffle_epi8(SEQAN_VECTOR_CAST_(const __m128i &, vector),
                                                              _mm_unpacklo_epi8(idx, _mm_add_epi8(idx, _mm_set1_epi8(1)))));
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 16>, SimdParams_<16, 16>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector1,
+        _mm_shuffle_epi8(
+            SEQAN_VECTOR_CAST_(const __m128i &, vector),
+            SEQAN_VECTOR_CAST_(const __m128i &, indices)
+    ));
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 8>, SimdParams_<16, 16>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector1,
+        seqan_mm_shuffle_epi16(
+            SEQAN_VECTOR_CAST_(const __m128i &, vector),
+            SEQAN_VECTOR_CAST_(const __m128i &, indices)
+    ));
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 4>, SimdParams_<16, 16>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector1,
+        seqan_mm_shuffle_epi32(
+            SEQAN_VECTOR_CAST_(const __m128i &, vector),
+            SEQAN_VECTOR_CAST_(const __m128i &, indices)
+    ));
+}
+
+template <typename TSimdVector1, typename TSimdVector2>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<16, 2>, SimdParams_<16, 16>)
+{
+    return SEQAN_VECTOR_CAST_(
+        TSimdVector1,
+        seqan_mm_shuffle_epi64(
+            SEQAN_VECTOR_CAST_(const __m128i &, vector),
+            SEQAN_VECTOR_CAST_(const __m128i &, indices)
+    ));
 }
 
 // --------------------------------------------------------------------------
