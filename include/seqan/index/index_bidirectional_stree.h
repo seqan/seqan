@@ -43,8 +43,8 @@ struct BidirectionalDirection {};
 
 struct BidirectionalFwd_ : BidirectionalDirection {};
 struct BidirectionalRev_ : BidirectionalDirection {};
-typedef Tag<BidirectionalFwd_> const         Fwd;
-typedef Tag<BidirectionalRev_> const         Rev;
+typedef Tag<BidirectionalFwd_> Fwd;
+typedef Tag<BidirectionalRev_> Rev;
 
 // ==========================================================================
 // Classes
@@ -154,7 +154,7 @@ inline Iter<Index<typename RevTextFibre<TText>::Type, TIndexSpec>, VSTree<TopDow
 // Function goDown() directional interface for unidirectional indexes[Iterator]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        Fwd const &)
@@ -162,7 +162,7 @@ goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
     return goDown(it);
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TObject, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec, typename TObject>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        TObject const & obj,
@@ -171,7 +171,7 @@ goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
     return goDown(it, obj);
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        TString const & pattern,
@@ -181,7 +181,7 @@ goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
     return _goDownString(it, pattern, lcp);
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > &,
        Rev const &)
@@ -190,7 +190,7 @@ goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > &,
     return false;
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TObject, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec, typename TObject>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        TObject const &,
@@ -199,7 +199,7 @@ goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
     return goDown(it, Rev()); // fail above
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize>
 inline bool
 goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
        TString const &,
@@ -214,20 +214,31 @@ goDown(Iter<Index<TText, TIndexSpec>, VSTree<TopDown<TSpec> > > & it,
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TSpec>
-inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it)
+inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, Fwd const &)
 {
-    return goDown(it, Fwd());
-}
-
-template <typename TText, typename TIndexSpec, typename TSpec, typename TDirection>
-inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it, Tag<TDirection>)
-{
-    if (goDown(_iter(it, Tag<TDirection>())))
+    if (goDown(_iter(it, Fwd())))
     {
-        update(it, Tag<TDirection>());
+        update(it, Fwd());
         return true;
     }
     return false;
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec>
+inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it, Rev const &)
+{
+    if (goDown(_iter(it, Rev())))
+    {
+        update(it, Rev());
+        return true;
+    }
+    return false;
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec>
+inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > & it)
+{
+    return goDown(it, Fwd());
 }
 
 //------------------------------------------------------------------------------------
@@ -261,7 +272,7 @@ _goDownObject(
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TObject>
-inline bool
+inline std::enable_if_t<!(std::is_same<TObject, Fwd>::value || std::is_same<TObject, Rev>::value),  bool>
 goDown(
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it,
     TObject const &obj)
@@ -269,30 +280,40 @@ goDown(
     return goDown(it, obj, Fwd());
 }
 
-template <typename TText, typename TIndexSpec, typename TSpec, typename TObject, typename TDirection>
+template <typename TText, typename TIndexSpec, typename TSpec, typename TObject>
 inline bool
 goDown(
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it,
     TObject const &obj,
-    Tag<TDirection>)
+    Rev const &)
 {
-    return _goDownObject(it, obj, typename IsSequence<TObject>::Type(), Tag<TDirection>());
+    return _goDownObject(it, obj, typename IsSequence<TObject>::Type(), Rev());
+}
+
+template <typename TText, typename TIndexSpec, typename TSpec, typename TObject>
+inline bool
+goDown(
+    Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<TSpec> > > &it,
+    TObject const &obj,
+    Fwd const &)
+{
+    return _goDownObject(it, obj, typename IsSequence<TObject>::Type(), Fwd());
 }
 
 //------------------------------------------------------------------------------------
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize>
-inline bool
+inline std::enable_if_t<std::is_integral<TSize>::value,  bool>
 goDown(
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
     TString const &pattern,
-    TSize &lcp)
+    TSize const & lcp)
 {
     return _goDownString(it, pattern, lcp, Fwd());
 }
 
 template <typename TText, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
-inline bool
+inline std::enable_if_t<std::is_integral<TSize>::value,  bool>
 goDown(
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
     TString const &pattern,
