@@ -149,9 +149,9 @@ writeRecord(TTarget & target,
             Bpseq const & /*tag*/)
 {
     if (empty(record.sequence) && length(rows(record.align)) != 1)
-        throw std::runtime_error("ERROR: Connect formatted file cannot contain an alignment.");
+        throw std::runtime_error("ERROR: Bpseq formatted file cannot contain an alignment.");
     if (length(record.fixedGraphs) != 1)
-        throw std::runtime_error("ERROR: Connect formatted file cannot contain multiple structure graphs.");
+        throw std::runtime_error("ERROR: Bpseq formatted file cannot contain multiple structure graphs.");
 
     clear(context);
     if (!empty(record.name))

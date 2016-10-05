@@ -49,12 +49,11 @@ namespace seqan {
 class RnaHeader
 {
 public:
-    unsigned amount {0};            // number of records
-    CharString description;         // free text for file description
-    StringSet<CharString> seqname;  // list of sequence names
-    StringSet<CharString> method;   // list of fixed structure comp. methods
-    StringSet<CharString> probmat;  // list of probability matrix comp. methods
-    StringSet<CharString> type;     // list of types of biol. validated data
+    CharString description;             // free text for file description
+    StringSet<CharString> seqLabels;    // list of sequence names
+    StringSet<CharString> fixLabels;    // list of fixed structure comp. methods
+    StringSet<CharString> bppLabels;    // list of probability matrix comp. methods
+    StringSet<CharString> typeLabels;   // list of types of biol. validated data
 };
 
 // ============================================================================
@@ -70,12 +69,11 @@ public:
 
 inline void clear(RnaHeader & header)
 {
-    header.amount = 0;
     clear(header.description);
-    clear(header.seqname);
-    clear(header.method);
-    clear(header.probmat);
-    clear(header.type);
+    clear(header.seqLabels);
+    clear(header.fixLabels);
+    clear(header.bppLabels);
+    clear(header.typeLabels);
 }
 
 }  // namespace seqan

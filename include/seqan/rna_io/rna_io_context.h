@@ -52,8 +52,11 @@ namespace seqan {
 class RnaIOContext
 {
 public:
-    RnaHeader * header;
-    String<RnaRecord * > record;
+    StringSet<CharString> seqLabels;
+    StringSet<CharString> seqIdent;
+    StringSet<CharString> fixIdent;
+    StringSet<CharString> bppIdent;
+    StringSet<CharString> typIdent;
 };
 
 // ============================================================================
@@ -69,8 +72,10 @@ public:
 
 inline void clear(RnaIOContext & context)
 {
-    context.header = NULL;
-    clear(context.record);
+    clear(context.seqIdent);
+    clear(context.fixIdent);
+    clear(context.bppIdent);
+    clear(context.typIdent);
 }
 
 }  // namespace seqan
