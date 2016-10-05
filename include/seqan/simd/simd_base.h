@@ -84,6 +84,14 @@ SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
     }
 };
 
+template <typename TSimdVector, typename TIsSimdVec>
+struct SimdIndexVectorImpl;
+
+template <typename TSimdVector>
+struct SimdIndexVector : SimdIndexVectorImpl<TSimdVector, typename Is<SimdVectorConcept<TSimdVector> >::Type >
+{
+};
+
 /**
  * ```
  * getValue(a, pos);
