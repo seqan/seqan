@@ -19,7 +19,7 @@ Table of Contents
 1. Overview
 ------------------------------------------------------------------------------
 
-Mason Splicing allows to construct transcripts from a GFF/GTF file, a
+Mason Splicing allows one to construct transcripts from a GFF/GTF file, a
 reference sequence and an optional variant file.
 
 ------------------------------------------------------------------------------

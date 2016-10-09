@@ -72,7 +72,7 @@ enum SearchingType
 struct SgipOption
 {
     // I/O options.
-    CharString orginalFile;        // name of orginal file(first graph)
+    CharString originalFile;        // name of original file(first graph)
     CharString comparFile;         // name of comparisive file(second graph)
     CharString outputFile;         // name of result file
     CharString compareFolder;
@@ -82,8 +82,8 @@ struct SgipOption
     FileOption activeFile;
     SearchingType searchingType;
     CharString algorithm;          // Search strategy for metric dimension,e.g. Greedy, genetic etc.
-    unsigned odimension;           // metric dimension of orginal graph specified by user
-    unsigned cdimension;           // metric dimension of comparitive graph specified by user
+    unsigned odimension;           // metric dimension of original graph specified by user
+    unsigned cdimension;           // metric dimension of comparative graph specified by user
     bool showHelp;
     bool showVersion;
     bool isoCheck;                //to check whether two input graphs are isomorphic
@@ -127,7 +127,7 @@ int _sgip(TOption & options)
     char const * file1, * file2;
     if (!options.isoCheck)
     {
-        file1 = toCString(options.orginalFile);
+        file1 = toCString(options.originalFile);
         if (!_createGraph(g1, SivaLab(), file1))
             return 1;
 
@@ -137,7 +137,7 @@ int _sgip(TOption & options)
     }
     else
     {
-        file1 = toCString(options.orginalFile);
+        file1 = toCString(options.originalFile);
         file2 = toCString(options.comparFile);
         if (!_createGraph(g1, SivaLab(), file1))
             return 1;
@@ -169,9 +169,9 @@ void _setupParser(TParser & parser)
 {
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     addDescription(parser, " SGIP - Solution of Graph Isomorphism Problem");
-    addUsageLine(parser, "-o <orginal graph> [Option]");    
+    addUsageLine(parser, "-o <original graph> [Option]");    
     addSection(parser, "Mandatory Options");
-    addOption(parser, ArgParseOption("o", "orginal", "File containing orginal graph", ArgParseArgument::INPUT_FILE,"IN"));
+    addOption(parser, ArgParseOption("o", "original", "File containing original graph", ArgParseArgument::INPUT_FILE,"IN"));
     setRequired(parser, "o");
     addSection(parser, "Main Options");
     addOption(parser, ArgParseOption("a", "algorithm", "Algorithm used for searching metric dimension", ArgParseArgument::STRING));
@@ -179,10 +179,10 @@ void _setupParser(TParser & parser)
     addOption(parser, ArgParseOption("s", "searching", "Searching algorithm used for detecting resolving set,heuristic 0 bruteforce 1.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "searching", "0");
     addOption(parser, ArgParseOption("i", "isomorphism", "To check whether two given graphs are isomorphic"));
-    addOption(parser, ArgParseOption("c", "comparitive", "File containing comparitive graph", ArgParseArgument::INPUT_FILE,"IN"));
-    addOption(parser, ArgParseOption("od", "odimension", "Specified initial dimension of orginal graph by user", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("c", "comparative", "File containing comparative graph", ArgParseArgument::INPUT_FILE,"IN"));
+    addOption(parser, ArgParseOption("od", "odimension", "Specified initial dimension of original graph by user", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "odimension", "3");
-    addOption(parser, ArgParseOption("cd", "cdimension", "Specified initial dimension of comparitive graph by user", ArgParseArgument::INTEGER));
+    addOption(parser, ArgParseOption("cd", "cdimension", "Specified initial dimension of comparative graph by user", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "cdimension", "3");
     addOption(parser, ArgParseOption("ad", "directory", "test for all graphs in a specified directory", ArgParseArgument::STRING));
     addOption(parser, ArgParseOption("v", "verbose", "control the level of output files ", ArgParseArgument::INTEGER));
@@ -212,14 +212,14 @@ ArgumentParser::ParseResult _parseOptions(TOption & options,
         return res;
         
     // Extract option value.
-    getOptionValue(options.orginalFile, parser, "o");
+    getOptionValue(options.originalFile, parser, "o");
     if (isSet(parser, "i"))
     {
         if (!isSet(parser, "c"))
         {
             if (!isSet(parser, "ad"))
             {
-                std::cerr << "sgip" << ":comparitive file has not been specified!" << std::endl;
+                std::cerr << "sgip" << ":comparative file has not been specified!" << std::endl;
                 printShortHelp(parser, std::cerr);
                 return ArgumentParser::PARSE_ERROR;
             }

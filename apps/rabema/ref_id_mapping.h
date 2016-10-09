@@ -24,7 +24,7 @@
 // file.  The order in the BAM file might not be the same as in the FASTA
 // file.
 //
-// The function rebuildMapping() allows to rebuild the mapping from two
+// The function rebuildMapping() allows one to rebuild the mapping from two
 // name store caches.
 // ==========================================================================
 

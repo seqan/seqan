@@ -194,7 +194,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
         ++sizeCount[length(stellarMatches[i].matches)];
     }
     for(unsigned i = 0; i < length(sizeCount); ++ i){
-        std::cout << "Number of occurences for matches " << i << " : " << sizeCount[i] << std::endl;
+        std::cout << "Number of occurrences for matches " << i << " : " << sizeCount[i] << std::endl;
     }
     for(unsigned i = 0; i < length(distanceScores); ++i){
         TScoreAlloc scores = distanceScores[i];

@@ -496,7 +496,7 @@ Assignment 5
     Complete Solution (and more explanations)
       .. container:: foldable
 
-         Write the `main` body of the program with type definition and initalization of the used data structures.
+         Write the `main` body of the program with type definition and initialization of the used data structures.
 
          .. includefrags:: demos/tutorial/pairwise_sequence_alignment/assignment5.cpp
             :fragment: main

@@ -252,7 +252,7 @@ struct DisableIf2<true, T> {};
  * @param TCondition Boolean type, one of <tt>True</tt> and <tt>False</tt> or a metafunction returning such a tag
  *                   type.  If <tt>True</tt> then the constructor is visible, otherwise, it is not.
  *
- * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * This macro allows one to bind the visibility of a construtor to a boolean expression by using the <a
  * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must be used as the last dummy-argument of a constructor.
  *
  * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
@@ -280,7 +280,7 @@ struct DisableIf2<true, T> {};
  * @param TCondition Boolean type, one of <tt>True</tt> and <tt>False</tt> or a metafunction returning such a tag
  *                   type.  If <tt>False</tt> then the constructor is visible, otherwise, it is not.
  *
- * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * This macro allows one to bind the visibility of a construtor to a boolean expression by using the <a
  * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must be used as the last dummy-argument of a constructor.
  *
  * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
@@ -309,7 +309,7 @@ struct DisableIf2<true, T> {};
  *                   type.  If <tt>True</tt> then the function is visible, otherwise, it is not.
  * @param TResult    The type that the function should have as the return type in case it is enabled.
  *
- * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * This macro allows one to bind the visibility of a construtor to a boolean expression by using the <a
  * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must occur as the return type definition of the function.
  *
  * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
@@ -338,7 +338,7 @@ struct DisableIf2<true, T> {};
  *                   type.  If <tt>False</tt> then the function is visible, otherwise, it is not.
  * @param TResult    The type that the function should have as the return type in case it is enabled.
  *
- * This macro allows to bind the visibility of a construtor to a boolean expression by using the <a
+ * This macro allows one to bind the visibility of a construtor to a boolean expression by using the <a
  * href="http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a> principle for an optional argument with default value.  The macro call must occur as the return type definition of the function.
  *
  * To avoid an unused argument warning, call <tt>ignoreUnusedVariableWarning(dummy)</tt> in the constructor's body.
