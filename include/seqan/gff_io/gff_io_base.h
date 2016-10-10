@@ -403,13 +403,18 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
     // read column 8: phase
     readOne(record.phase, iter, OrFunctor<EqualsChar<'.'>, IsInRange<'0', '2'> >());
 
+    
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
     {
         skipLine(iter);
         return;
     }
+
     skipOne(iter, IsTab());
+    // There is often a space character between phase and attribute columns.
+    // We can safely skip that!
+    skipUntil(iter, NotFunctor<IsSpace>());  //skip empty lines
 
     // read column 9: attributes
     while (!atEnd(iter))
