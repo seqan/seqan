@@ -395,14 +395,13 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
     if (buffer != ".")
         record.score = lexicalCast<float>(buffer);
     skipOne(iter, IsTab());
-
+    
     // read column 7: strand
     readOne(record.strand, iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
     skipOne(iter, IsTab());
-
+    
     // read column 8: phase
     readOne(record.phase, iter, OrFunctor<EqualsChar<'.'>, IsInRange<'0', '2'> >());
-
     
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))
@@ -410,16 +409,15 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
         skipLine(iter);
         return;
     }
-
     skipOne(iter, IsTab());
     // There is often a space character between phase and attribute columns.
     // We can safely skip that!
     skipUntil(iter, NotFunctor<IsSpace>());  //skip empty lines
-
+    
     // read column 9: attributes
     while (!atEnd(iter))
     {
-
+        
         CharString _key;
         CharString _value;
         // Read next key/value pair.
