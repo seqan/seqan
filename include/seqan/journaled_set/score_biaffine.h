@@ -52,40 +52,40 @@ template <typename TScoreValue>
 class Score<TScoreValue, BiAffine>
 {
     public:
-    TScoreValue data_match;
-    TScoreValue data_mismatch;
+    TScoreValue _match;
+    TScoreValue _mismatch;
     TScoreValue _gapExtendHorizontal;
     TScoreValue _gapOpenHorizontal;
     TScoreValue _gapExtendVertical;
     TScoreValue _gapOpenVertical;
 
 
-    Score() : data_match(0),
-              data_mismatch(0),
+    Score() : _match(0),
+              _mismatch(0),
               _gapExtendHorizontal(0),
               _gapOpenHorizontal(0),
               _gapExtendVertical(0),
               _gapOpenVertical(0) {}
 
     Score(TScoreValue match, TScoreValue mismatch, TScoreValue gap) :
-                                    data_match(match),
-                                    data_mismatch(mismatch),
+                                    _match(match),
+                                    _mismatch(mismatch),
                                     _gapExtendHorizontal(gap),
                                     _gapOpenHorizontal(gap),
                                     _gapExtendVertical(gap),
                                     _gapOpenVertical(gap) {}
 
     Score(TScoreValue match, TScoreValue mismatch, TScoreValue gapExtend, TScoreValue gapOpen) :
-                                    data_match(match),
-                                    data_mismatch(mismatch),
+                                    _match(match),
+                                    _mismatch(mismatch),
                                     _gapExtendHorizontal(gapExtend),
                                     _gapOpenHorizontal(gapOpen),
                                     _gapExtendVertical(gapExtend),
                                     _gapOpenVertical(gapOpen) {}
 
     Score(TScoreValue match, TScoreValue mismatch, TScoreValue gapExtendHorizontal, TScoreValue gapOpenHorizontal,
-          TScoreValue gapExtendVertical, TScoreValue gapOpenVertical) : data_match(match),
-                                                                        data_mismatch(mismatch),
+          TScoreValue gapExtendVertical, TScoreValue gapOpenVertical) : _match(match),
+                                                                        _mismatch(mismatch),
                                                                         _gapExtendHorizontal(gapExtendHorizontal),
                                                                         _gapOpenHorizontal(gapOpenHorizontal),
                                                                         _gapExtendVertical(gapExtendVertical),
@@ -112,8 +112,8 @@ score(Score<TScoreValue, BiAffine> const & me,
       TSeqEntry2 const & seqEntry2)
 {
     if (seqEntry1 == static_cast<TSeqEntry1>(seqEntry2))
-        return me.data_match;
-    return me.data_mismatch;
+        return me._match;
+    return me._mismatch;
 }
 
 // ----------------------------------------------------------------------------
@@ -176,7 +176,18 @@ template <typename TScoreValue>
 inline void
 setScoreMatch(Score<TScoreValue, BiAffine> & scoringScheme, TScoreValue const & score)
 {
-    scoringScheme.data_match = score;
+    scoringScheme._match = score;
+}
+
+// ----------------------------------------------------------------------------
+// Function scoreMatch()
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TScoreValue
+scoreMatch(Score<TScoreValue, BiAffine> const & scoringScheme)
+{
+    return scoringScheme._match;
 }
 
 // ----------------------------------------------------------------------------
@@ -185,9 +196,20 @@ setScoreMatch(Score<TScoreValue, BiAffine> & scoringScheme, TScoreValue const & 
 
 template <typename TScoreValue>
 inline void
-setScoreMismatch(Score<TScoreValue, BiAffine>  & scoringScheme, TScoreValue const & score)
+setScoreMismatch(Score<TScoreValue, BiAffine> & scoringScheme, TScoreValue const & score)
 {
-    scoringScheme.data_mismatch = score;
+    scoringScheme._mismatch = score;
+}
+
+// ----------------------------------------------------------------------------
+// Function scoreMismatch()
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue>
+inline TScoreValue
+scoreMismatch(Score<TScoreValue, BiAffine> const & scoringScheme)
+{
+    return scoringScheme._mismatch;
 }
 
 // ----------------------------------------------------------------------------
