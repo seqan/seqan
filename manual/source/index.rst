@@ -141,7 +141,7 @@ The API documentation can be found :dox:`mainpage here`.
 
     SeqAn Project <http://seqan.de>
     GitHub <http://github.com/seqan>
-    Twitter <http://twitter.com/seqan>
+    Twitter <http://twitter.com/SeqAnLib>
     RSS Feeds <http://www.seqan.de/feed/>
     SeqAn Mailinglist <https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe>
 

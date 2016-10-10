@@ -2609,20 +2609,20 @@ double medianLevel(Iter<TIndex, VSTree<TSpec> > iter){
 	double median = 0.0;
 	double mediumTotalOccs = 0.0;
 
-  std::map<unsigned, unsigned> vectorOccurences;
+  std::map<unsigned, unsigned> vectorOccurrences;
 
 	goBegin(iter);
 	for (; !atEnd(iter); ++iter)
 	{
 		unsigned numOccs = countOccurrences(iter);
-		++vectorOccurences[numOccs];
+		++vectorOccurrences[numOccs];
 		totalOccs += numOccs;
 	}
 
 	mediumTotalOccs = totalOccs / 2.0;
 
   std::map<unsigned,unsigned>::iterator iterMap;
-	for (iterMap = vectorOccurences.begin (); iterMap != vectorOccurences.end (); ++iterMap)
+	for (iterMap = vectorOccurrences.begin (); iterMap != vectorOccurrences.end (); ++iterMap)
 	{
 		sumMedian += iterMap->second*iterMap->first;
 		if (sumMedian >= mediumTotalOccs)
@@ -4199,7 +4199,7 @@ unsigned correctReads(
         String<double> sd;
         standardDeviation(sd, store.readSeqStore, options.genomeLength);
 
-        /*The strictness value allows to estimate the confidence intervall*/
+        /*The strictness value allows one to estimate the confidence intervall*/
         for (unsigned i = 0; i < length(options.expectedTheoretical); ++i)
         {
             double expectedTemporary = options.expectedTheoretical[i] - options.strictness * sd[i];
@@ -5268,7 +5268,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     // Parallelization Options.
     addSection(parser, "Parallelization Options");
 
-    addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threds to use (default 1).",
+    addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threads to use (default 1).",
                                             seqan::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "num-threads", "1");
     setDefaultValue(parser, "num-threads", options.numThreads);

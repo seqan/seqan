@@ -475,7 +475,7 @@
  * @param[in] character  The character.
  * @param[in] pos        The position (which is included in the counting).
  *
- * @return TSize The number of occurences  (Metafunction: @link Index#Size @endlink).
+ * @return TSize The number of occurrences  (Metafunction: @link Index#Size @endlink).
  */
 
 /*!

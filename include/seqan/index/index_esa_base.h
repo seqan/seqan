@@ -169,7 +169,7 @@ namespace seqan
             typedef MaxRepeats_<void>        MaxRepeats;    // maximal repeat
             struct    MaxRepeatOccurrences;
             typedef MaxRepeats_<MultiMems_> MultiMems;    // Multiple Maximal Exact Match
-            struct    MultiMemOccurences;                    // i.e. maximal match over different sequences
+            struct    MultiMemOccurrences;                    // i.e. maximal match over different sequences
 
 
 /*!
@@ -197,7 +197,7 @@ namespace seqan
     template <typename TSize>
     struct VertexEsa {
         Pair<TSize> range;            // current SA interval of hits (unique node identifier)
-        TSize        parentRight;    // right boundary of parent node's range (allows to go right)
+        TSize        parentRight;    // right boundary of parent node's range (allows one to go right)
 
        
         VertexEsa() : range(0, 0), parentRight(0) {}

@@ -92,7 +92,7 @@ int main(int argc, char const ** argv)
     }
     catch (std::runtime_error & e)
     {
-        std::cerr << "\nERROR: An error occured during the program's execution:\n"
+        std::cerr << "\nERROR: An error occurred during the program's execution:\n"
                   << "  " << e.what() << "\n";
         return 1;
     }

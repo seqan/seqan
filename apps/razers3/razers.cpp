@@ -437,7 +437,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addOption(parser, ArgParseOption("mf", "mismatch-file", "Write mismatch patterns to \\fIFILE\\fP.", ArgParseOption::STRING, "FILE"));
 
     addSection(parser, "Misc Options");
-    addOption(parser, ArgParseOption("cm", "compact-mult", "Multiply compaction treshold by this value after reaching and compacting.", ArgParseOption::DOUBLE));
+    addOption(parser, ArgParseOption("cm", "compact-mult", "Multiply compaction threshold by this value after reaching and compacting.", ArgParseOption::DOUBLE));
     setMinValue(parser, "compact-mult", "0");
     setDefaultValue(parser, "compact-mult", options.compactMult);
     addOption(parser, ArgParseOption("ncf", "no-compact-frac", "Don't compact if in this last fraction of genome.", ArgParseOption::DOUBLE));

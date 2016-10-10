@@ -568,7 +568,7 @@ public:
  *
  * @section Remarks
  *
- * This class is generally not used directly by the user but through @link ArgumentParser @endlink. It allows to store
+ * This class is generally not used directly by the user but through @link ArgumentParser @endlink. It allows one to store
  * and represent all information related to a command line tool that would normally go into a man page. It can be
  * printed to STL streams in different formats, currently plain text, HTML and man pages are supported.
  *

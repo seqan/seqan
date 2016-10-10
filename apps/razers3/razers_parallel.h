@@ -1163,7 +1163,7 @@ int _mapSingleReadsParallel(
         std::cerr << std::endl;
         std::cerr << "___FILTRATION_STATS____" << std::endl;
         std::cerr << "Filtration counter:      " << options.countFiltration << std::endl;
-        std::cerr << "Successful verfications: " << options.countVerification << std::endl;
+        std::cerr << "Successful verifications: " << options.countVerification << std::endl;
     }
 
     // Restore global state.
