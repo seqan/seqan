@@ -122,7 +122,7 @@ void SeqConsOptions::print(std::ostream & out) const
         << "OVERLAP WINDOW SIZE    \t" << overlapWindowSize << "\n"
         << "\n"
         << "K-MER SIZE             \t" << kMerSize << "\n"
-        << "K-MER MAX OCCURRENCES   \t" << kMerMaxOcc << "\n"
+        << "K-MER MAX OCCURRENCES  \t" << kMerMaxOcc << "\n"
         << "\n"
         << "REALIGNMENT BANDWIDTH  \t" << reAlignmentBandwidth << "\n"
         << "REALIGNMENT ENVIRONMENT\t" << reAlignmentEnvironment << "\n";
