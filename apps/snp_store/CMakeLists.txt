@@ -17,6 +17,7 @@ set (SEQAN_APP_VERSION "1.3.4")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
+find_package (OpenMP)
 find_package (ZLIB)
 find_package (Boost)
 find_package (SeqAn REQUIRED)
