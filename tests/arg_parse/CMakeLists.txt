@@ -29,13 +29,13 @@ add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
 add_executable (test_arg_parse
-               test_arg_parse.cpp
-               test_extensions.h
-               test_arg_parse.h
-               test_arg_parse_argument.h
-               test_arg_parse_option.h
-               test_argument_parser.h
-               test_arg_parse_ctd_support.h)
+                test_arg_parse.cpp
+                test_extensions.h
+                test_arg_parse.h
+                test_arg_parse_argument.h
+                test_arg_parse_option.h
+                test_argument_parser.h
+                test_arg_parse_ctd_support.h)
 
 set (SEQAN_VERSION_CHECK ON FORCE)
 add_executable (test_arg_parse_version_check

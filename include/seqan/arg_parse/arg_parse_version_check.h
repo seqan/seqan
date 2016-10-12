@@ -264,7 +264,11 @@ inline bool _checkWritability(std::string const & path)
         return false;
 
     CloseHandle(dummyFile);
-    DeleteFile(fileName.c_str());
+    bool successful_deletion = DeleteFile(fileName.c_str());
+    SEQAN_ASSERT(successful_deletion);
+    if (!successful_deletion)
+        return false;
+
     return true;
 }
 #else
@@ -341,7 +345,6 @@ inline double _getFileTimeDiff(std::string const & timestamp_filename)
         lexicalCast(d_time, str_time);
         return curr - d_time;
     }
-
     return curr;
 }
 
@@ -355,7 +358,9 @@ inline String<int> _getNumbersFromString(std::string const & str)
     StringSet<std::string> set;
     strSplit(set, str, EqualsChar<'.'>(), false);
     for (auto & num : set)
+    {
         appendValue(numbers, lexicalCast<int>(num));
+    }
     return numbers;
 }
 
@@ -382,7 +387,6 @@ inline std::string _readVersionString(VersionCheck & me, std::string const & ver
         }
         myfile.close();
     }
-
     return line; // line is an empty string on failure
 }
 

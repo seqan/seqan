@@ -72,5 +72,4 @@
 
 #include <seqan/arg_parse/arg_parse_version_check.h>
 
-
 #endif  // SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_
