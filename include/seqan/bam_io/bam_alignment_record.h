@@ -254,7 +254,7 @@ public:
     static int32_t const INVALID_LEN = 0;
     static uint32_t const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
-    BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
+    BamAlignmentRecord() : _qID(std::numeric_limits<unsigned>::max()) { clear(*this); }
 };
 
 // ============================================================================
@@ -281,7 +281,7 @@ clear(BamAlignmentRecord & record)
 {
     clear(record.qName);
     record.flag = 0;
-    record._qID = MaxValue<uint32_t>::VALUE;
+    record._qID = std::numeric_limits<uint32_t>::max();
     record.rID = BamAlignmentRecord::INVALID_REFID;
     record.beginPos = BamAlignmentRecord::INVALID_POS;
     record.mapQ = 255;

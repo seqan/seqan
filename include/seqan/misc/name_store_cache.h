@@ -71,15 +71,15 @@ struct NameStoreLess_
     template <typename TId>
     inline bool operator() (TId a, TId b) const
     {
-        if (a != maxValue(a))
+        if (a != std::numeric_limits<TId>::max())
         {
-            if (b != maxValue(b))
+            if (b != std::numeric_limits<TId>::max())
                 return (*nameStore)[a] < (*nameStore)[b];
             else
                 return (*nameStore)[a] < *name;
         } else
         {
-            if (b != maxValue(b))
+            if (b != std::numeric_limits<TId>::max())
                 return *name < (*nameStore)[b];
             else
                 return false;
@@ -365,7 +365,7 @@ getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TNa
     {
 
         context.name = name;
-        it = set.find(maxValue<TId>());
+        it = set.find(std::numeric_limits<TId>::max());
     }
 
     if (it != set.end())

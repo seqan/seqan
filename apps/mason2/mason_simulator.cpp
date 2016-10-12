@@ -237,7 +237,7 @@ public:
         setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
         setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
-        getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
+        getCigarString(record.cigar, gapsContig, gapsRead, std::numeric_limits<int>::max());
         getMDString(mdString, gapsContig, gapsRead);
     }
 
@@ -558,7 +558,7 @@ public:
         setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
         setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
-        getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
+        getCigarString(record.cigar, gapsContig, gapsRead, std::numeric_limits<int>::max());
         getMDString(mdString, gapsContig, gapsRead);
     }
 

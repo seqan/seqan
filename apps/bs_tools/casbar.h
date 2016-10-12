@@ -180,7 +180,7 @@ struct SNPCallingOptions
         pHomoSnp(0.0005),
         //
         maxHitLength(1),
-        minCoord(maxValue<unsigned>()),
+        minCoord(std::numeric_limits<unsigned>::max()),
         maxCoord(0),
         windowSize(100000),  // 10000?
         windowBuff(70)
@@ -684,7 +684,7 @@ int readMatchesFromSamBam(
                 options.maxHitLength = endPos - beginPos;
 
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
+            if(beginPos < (TContigPos)options.minCoord || options.minCoord == numeric_limits<unsigned>::max()) options.minCoord = (unsigned)beginPos;
             if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
 
             // alignedReadStoreElement

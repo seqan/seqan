@@ -1318,13 +1318,13 @@ template <
 
     template <typename TValue>
     inline void _setSizeInval(TValue &v) {
-        v = MaxValue<TValue>::VALUE;
+        v = std::numeric_limits<TValue>::max();
     }
 
     template <typename TValue>
     inline bool _isSizeInval(TValue const &v) {
 //IOREV _notio_
-        return v == MaxValue<TValue>::VALUE;
+        return v == std::numeric_limits<TValue>::max();
     }
 
 //////////////////////////////////////////////////////////////////////////////

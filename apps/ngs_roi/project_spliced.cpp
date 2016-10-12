@@ -77,7 +77,7 @@ void ProjectSplicedRoi::beginContig()
     clear(ranges);
 
     // Set current group to invalid.
-    currentGroup = seqan::maxValue<unsigned>();
+    currentGroup = std::numeric_limits<unsigned>::max();
 }
 
 // ---------------------------------------------------------------------------

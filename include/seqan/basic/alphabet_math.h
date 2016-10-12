@@ -211,7 +211,7 @@ unsigned char toUpperValue(unsigned char c)
 // Function supremumValueImpl
 // ----------------------------------------------------------------------------
 
-template <typename T> [[deprecated("Use MaxValue instead.")]] inline T const & supremumValueImpl(T *);
+template <typename T> [[deprecated("Use std::numeric_limits<T>::max() instead.")]] inline T const & supremumValueImpl(T *);
 
 // ----------------------------------------------------------------------------
 // Function maxValue
@@ -220,26 +220,26 @@ template <typename T> [[deprecated("Use MaxValue instead.")]] inline T const & s
 // Forward to supremumValueImpl() only.
 
 template <typename T>
-[[deprecated("Use MaxValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline T
 maxValue()
 {
-    return MaxValue<T>::VALUE;
+    return std::numeric_limits<T>::max();
 }
 
 template <typename T>
-[[deprecated("Use MaxValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline T
 maxValue(T /*tag*/)
 {
-    return MaxValue<T>::VALUE;
+    return std::numeric_limits<T>::max();
 }
 
 // ----------------------------------------------------------------------------
 // Function infimumValueImpl
 // ----------------------------------------------------------------------------
 
-template <typename T> [[deprecated("Use MinValue instead.")]] inline T const & infimumValueImpl(T *);
+template <typename T> [[deprecated("Use std::numeric_limits<T>::min() instead.")]] inline T const & infimumValueImpl(T *);
 
 // ----------------------------------------------------------------------------
 // Function minValue
@@ -248,19 +248,19 @@ template <typename T> [[deprecated("Use MinValue instead.")]] inline T const & i
 // Forward to infimumValueImpl() only.
 
 template <typename T>
-[[deprecated("Use MinValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline T
 minValue()
 {
-    return MinValue<T>::VALUE;
+    return std::numeric_limits<T>::min();
 }
 
 template <typename T>
-[[deprecated("Use MinValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline T
 minValue(T /*tag*/)
 {
-    return MinValue<T>::VALUE;
+    return std::numeric_limits<T>::min();
 }
 
 // ----------------------------------------------------------------------------

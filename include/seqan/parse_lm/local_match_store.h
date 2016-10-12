@@ -103,13 +103,13 @@ public:
     TPosition queryEndPos;
 
     LocalMatch() :
-            id(MaxValue<TId>::VALUE),
-            subjectId(MaxValue<TId>::VALUE),
-            subjectBeginPos(MaxValue<TPosition>::VALUE),
-            subjectEndPos(MaxValue<TPosition>::VALUE),
-            queryId(MaxValue<TId>::VALUE),
-            queryBeginPos(MaxValue<TPosition>::VALUE),
-            queryEndPos(MaxValue<TPosition>::VALUE)
+            id(std::numeric_limits<TId>::max()),
+            subjectId(std::numeric_limits<TId>::max()),
+            subjectBeginPos(std::numeric_limits<TPosition>::max()),
+            subjectEndPos(std::numeric_limits<TPosition>::max()),
+            queryId(std::numeric_limits<TId>::max()),
+            queryBeginPos(std::numeric_limits<TPosition>::max()),
+            queryEndPos(std::numeric_limits<TPosition>::max())
     {}
 
     LocalMatch(TId id_,

@@ -134,7 +134,7 @@ public:
         colEnd(3),
         meta('#'),
         skip(0),
-        unalignedCount(maxValue<uint64_t>()),
+        unalignedCount(std::numeric_limits<uint64_t>::max()),
         _nameStoreCache(_nameStore)
     {}
 
@@ -145,7 +145,7 @@ public:
         colEnd(3),
         meta('#'),
         skip(0),
-        unalignedCount(maxValue<uint64_t>()),
+        unalignedCount(std::numeric_limits<uint64_t>::max()),
         _nameStoreCache(_nameStore)
     {
         if (!open(*this, fileName))
@@ -281,7 +281,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
     // ------------------------------------------------------------------------
     // Compute offset in BGZF file.
     // ------------------------------------------------------------------------
-    uint64_t offset = MaxValue<uint64_t>::VALUE;
+    uint64_t offset = std::numeric_limits<uint64_t>::max();
 
     // Retrieve the candidate bin identifiers for [posBeg, posEnd).
     String<uint16_t> candidateBins;
@@ -377,7 +377,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
             break;  // Cannot find overlapping any more.
     }
 
-    if (offset != MaxValue<uint64_t>::VALUE)
+    if (offset != std::numeric_limits<uint64_t>::max())
     {
         setPosition(fileIn, offset);
         
@@ -522,7 +522,7 @@ open(TabixIndex & index, char const * filename)
     if (!atEnd(iter))
         readRawPod(index.unalignedCount, iter);
     else
-        index.unalignedCount = maxValue<uint64_t>();
+        index.unalignedCount = std::numeric_limits<uint64_t>::max();
 
     return true;
 }

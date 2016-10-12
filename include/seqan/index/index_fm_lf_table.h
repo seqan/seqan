@@ -537,7 +537,7 @@ _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
     typedef typename Value<TPrefixSums>::Type           TValue;
     typedef typename Size<TPrefixSums>::Type            TSize;
 
-    TValue minOcc = MaxValue<TValue>::VALUE;
+    TValue minOcc = std::numeric_limits<TValue>::max();
     TSize ordVal = 0;
 
     for (TSize i = 0; i < length(lf.sums) - 1; ++i)

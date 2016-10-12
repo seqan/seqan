@@ -138,7 +138,7 @@ chainSeedsGlobally(
         // sparse chaining algorithm expects.
         // std::cout << "| " << **it << std::endl;
         qualityOfChainEndingIn[i] = seedSize(seeds[i]);
-        predecessor[i] = maxValue<unsigned>();
+        predecessor[i] = std::numeric_limits<unsigned>::max();
         appendValue(intervalPoints, TIntervalPoint(beginPositionH(seeds[i]), true, i));
         appendValue(intervalPoints, TIntervalPoint(endPositionH(seeds[i]), false, i));
     }
@@ -177,7 +177,7 @@ chainSeedsGlobally(
             // *first* one that compares greater than the reference
             // one.  Searching for the this one and decrementing the
             // result iterator gives the desired result.
-            TIntermediateSolution referenceSolution(beginPositionV(seedK), maxValue<TSize>(), maxValue<unsigned>());
+            TIntermediateSolution referenceSolution(beginPositionV(seedK), std::numeric_limits<TSize>::max(), std::numeric_limits<unsigned>::max());
             // std::cout << "    intermediateSolutions.upper_bound(" << beginPositionV(seedK) << ")" << std::endl;
             TIntermediateSolutionsIterator itJ = intermediateSolutions.upper_bound(referenceSolution);
             if (itJ == intermediateSolutions.begin()) {
@@ -210,7 +210,7 @@ chainSeedsGlobally(
             // value that is > so we have to work around this to get
             // >= again...
             SEQAN_ASSERT_GT(endPositionV(seedK), 0u);
-            TIntermediateSolution referenceSolution(endPositionV(seedK), 0, maxValue<unsigned>());
+            TIntermediateSolution referenceSolution(endPositionV(seedK), 0, std::numeric_limits<unsigned>::max());
             TIntermediateSolutionsIterator itSol = intermediateSolutions.upper_bound(referenceSolution);
             if (itSol == intermediateSolutions.end()) {
                 // None found.  Insert a new triple for seed k.
@@ -256,7 +256,7 @@ chainSeedsGlobally(
     // TODO(holtgrew): We could use two different algorithms for target containers that are strings and those that are lists.
     clear(target);
     unsigned next = intermediateSolutions.rbegin()->i3;
-    while (next != maxValue<unsigned>())
+    while (next != std::numeric_limits<unsigned>::max())
     {
         appendValue(target, seeds[next]);
         next = predecessor[next];

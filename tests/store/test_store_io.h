@@ -55,10 +55,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue(getAnnotation(it).parentId));
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<decltype(getAnnotation(it).parentId)>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -178,10 +178,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes_and_isoforms)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue(getAnnotation(it).parentId));
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<decltype(getAnnotation(it).parentId)>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -354,10 +354,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue<TId>());
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<TId>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -416,10 +416,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue<TId>());
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<TId>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 

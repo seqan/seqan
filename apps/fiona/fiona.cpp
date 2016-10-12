@@ -994,7 +994,7 @@ inline void fillCorrection(TCorrection &newCorrection,
 {
     //TValue empty=maxValue(readLength);
     //fill Correction struct
-    newCorrection.nextCorrection = maxValue<unsigned>();  // it will be the last correction in the linked list
+    newCorrection.nextCorrection = std::numeric_limits<unsigned>::max();  // it will be the last correction in the linked list
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
     newCorrection.correctReadId = correctReadId;        // only for debugging purposes
     newCorrection.correctPos = correctPos;
@@ -1246,7 +1246,7 @@ getFoundCorrections(
     unsigned numCorrections = 0;
 
     TValue currentPos = firstCorrectionForRead[erroneousReadId];
-    while (currentPos != maxValue<TValue>())
+    while (currentPos != std::numeric_limits<TValue>::max())
     {
         if (correctionList[currentPos].errorPos == errorPos)
         {
@@ -1302,9 +1302,9 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
     //TValue empty=maxValue(erroneousReadId);
     //first check if a Correction for erroneousReadId exists already
 
-    TValue insertLinkAt = maxValue<TValue>();
+    TValue insertLinkAt = std::numeric_limits<TValue>::max();
     TValue currentPos = firstCorrectionForRead[erroneousReadId];
-    while (currentPos != maxValue<TValue>())
+    while (currentPos != std::numeric_limits<TValue>::max())
     {
         TCorrection &corr = correctionList[currentPos];
         if (existsCorrectionAtPos(
@@ -1354,7 +1354,7 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
     }
     appendValue(correctionList, newCorrection);
 
-    if (insertLinkAt == maxValue<TValue>())
+    if (insertLinkAt == std::numeric_limits<TValue>::max())
         firstCorrectionForRead[erroneousReadId] = length(correctionList) - 1;
     else
         correctionList[insertLinkAt].nextCorrection = length(correctionList) - 1;
@@ -1423,7 +1423,7 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
         inline void  _testCorrectionStruct(String<TCorrection> &correctionList, String<TValue> &firstCorrectionForRead,TReadStore &store)
 	{
 		// we assume we work with three reads here
-		TValue empty = maxValue<TValue>();
+		TValue empty = std::numeric_limits<TValue>::max();
 		appendValue(firstCorrectionForRead,empty);
 		appendValue(firstCorrectionForRead,empty);
 		appendValue(firstCorrectionForRead,empty);
@@ -1574,12 +1574,12 @@ inline void _dumpCorrectionList(
     for (unsigned int i =0;i< length(firstCorrectionForRead);i++)
     {
         std::cerr << "Found "<<length(correctionList)<<" corrections. Look at readID: " <<i<<std::endl;
-        if (firstCorrectionForRead[i] != maxValue<TValue>())
+        if (firstCorrectionForRead[i] != std::numeric_limits<TValue>::max())
         {
             std::cerr << "found Correction for read "<<i<< " at pos (in String<corrections>) "<< firstCorrectionForRead[i] << std::endl;
             _dumpCorrectionIndelPos(correctionList[firstCorrectionForRead[i]],i,store);
             TValue next = correctionList[firstCorrectionForRead[i]].nextCorrection;
-            while (next != maxValue<TValue>())
+            while (next != std::numeric_limits<TValue>::max())
             {
                 std::cerr << "found Correction for read "<<i<< " at pos (in String<corrections>) "<< next << std::endl;
                 _dumpCorrectionIndelPos(correctionList[next],i,store);
@@ -1699,7 +1699,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
     {
         // descend if correction exists
         TValue corrId = firstCorrectionForRead[readId];
-        if (corrId == maxValue<TValue>())
+        if (corrId == std::numeric_limits<TValue>::max())
             continue;
 
         // step through linked list and collect corrections
@@ -1717,7 +1717,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 #endif
             //_dumpCorrectionIndelPos(correction, readId);
             corrId = correction.nextCorrection;
-        } while (corrId != maxValue<TValue>());
+        } while (corrId != std::numeric_limits<TValue>::max());
 
         //sorting by Position first to get the best correction per Position
         //sorting is done arbitrarily from large to small(right to left)
@@ -2346,7 +2346,7 @@ void computeCutoffRepeats(
 	TGenomeLen genomelength)
 {
 	clear(thresholds);
-	resize(thresholds, kmax + 1, maxValue<typename Value<TCuttoffs>::Type>());
+	resize(thresholds, kmax + 1, std::numeric_limits<typename Value<TCuttoffs>::Type>::max());
 	for (int i = kmin; i <= kmax; i++)
 		thresholds[i] = OddsRepeatCutoff(odds, expected[i], errorrate, i, genomelength); // Dave: I added "/ 3", otherwise this cutoff seems to have no effect
 }
@@ -3743,11 +3743,11 @@ if (LOOP_LEVEL != 0)
                             if (ordValue(*itE) == 4) continue;
                         #endif
                             if (*itE != *itCLeft)
-                                if (--acceptedMismatchesLeft == MaxValue<unsigned>::VALUE) break;
+                                if (--acceptedMismatchesLeft == std::numeric_limits<unsigned>::max()) break;
                         }
                         
                         // too many mismatches left of the common prefix?
-                        if (acceptedMismatchesLeft == MaxValue<unsigned>::VALUE)
+                        if (acceptedMismatchesLeft == std::numeric_limits<unsigned>::max())
                             continue;
                     #endif
 
@@ -3834,12 +3834,12 @@ if (LOOP_LEVEL != 0)
                                 if (ordValue(*itE) == 4) continue;
                             #endif
                                 if (*itE != *itC)
-                                    if (--acceptedMismatches == MaxValue<unsigned>::VALUE)
+                                    if (--acceptedMismatches == std::numeric_limits<unsigned>::max())
                                         break;
                             }
 
                             // too many mismatches right of the common prefix?
-                            if (acceptedMismatches == MaxValue<unsigned>::VALUE)
+                            if (acceptedMismatches == std::numeric_limits<unsigned>::max())
                                 continue;
 
                             errorsRight = acceptedMismatchesLeft - acceptedMismatches;
@@ -4216,7 +4216,7 @@ unsigned correctReads(
     // if no occurrence exists set the enrty to maxINt Value
     String<unsigned int> firstCorrectionForRead; // should this really be always created anew for different cycles, could be created outside correctReads?
     // we assume we work with three reads here
-    resize(firstCorrectionForRead, readCount, maxValue<unsigned>(), Exact());
+    resize(firstCorrectionForRead, readCount, std::numeric_limits<unsigned>::max(), Exact());
 
     // Determine the number of allowed corrections per round per read, depending on the read length and the
     // configuration in options.relativeErrorsToCorrect.  We set a hard lower limit of 2.
@@ -4356,7 +4356,7 @@ unsigned correctReads(
 	}
     else
     {
-        resize(options.repeatCutoffs, options.toLevel + 2, maxValue<unsigned>());
+        resize(options.repeatCutoffs, options.toLevel + 2, std::numeric_limits<unsigned>::max());
     }
 
     if (options.verbosity >= 2)
@@ -4969,7 +4969,7 @@ unsigned correctReads(
 	unsigned readCorrections=0;
     for (unsigned a = 0; a < length(firstCorrectionForRead); ++a)
     {
-        if (firstCorrectionForRead[a] == maxValue<unsigned>()) continue;
+        if (firstCorrectionForRead[a] == std::numeric_limits<unsigned>::max()) continue;
         ++readCorrections;
     }
 

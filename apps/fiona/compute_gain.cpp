@@ -956,7 +956,7 @@ int main(int argc, char const ** argv)
     }
 
     String<unsigned> idMap;
-    resize(idMap, length(contigNames(context(inPre))), maxValue<unsigned>());
+    resize(idMap, length(contigNames(context(inPre))), std::numeric_limits<unsigned>::max());
     for (unsigned i = 0; i < length(ids); ++i)
     {
         trimSeqHeaderToId(ids[i]);

@@ -652,7 +652,7 @@ template <typename T>
 inline T
 _getInfinity()
 {
-    return MaxValue<T>::VALUE;
+    return std::numeric_limits<T>::max();
 }
 
 //////////////////////////////////////////////////////////////////////////////

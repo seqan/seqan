@@ -84,7 +84,7 @@ void rebuildMapping(RefIdMapping & mapping,
                     TSourceNameStore const & sourceNameStore)
 {
     clear(mapping.map);
-    resize(mapping.map, length(sourceNameStore), maxValue<unsigned>());
+    resize(mapping.map, length(sourceNameStore), std::numeric_limits<unsigned>::max());
 
     for (unsigned i = 0; i < length(sourceNameStore); ++i)
     {

@@ -701,7 +701,7 @@ struct ClearSpaceStringPacked2_
         typename Size<T>::Type start,
         typename Size<T>::Type end)
     {
-        return _clearSpace_(seq, size, start, end, maxValue<typename Size<T>::Type >());
+        return _clearSpace_(seq, size, start, end, std::numeric_limits<typename Size<T>::Type >::max());
     }
 
     template <typename T>

@@ -302,7 +302,7 @@ inline void
 _assignSourceLength(TSize & size, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me)
 {
     if (IsSameType<TSource, Nothing>::VALUE)
-        size = maxValue<TSize>() / 2;
+        size = std::numeric_limits<TSize>::max() / 2;
     else
         size = length(value(me.data_source));
 }
@@ -345,13 +345,13 @@ _getAnchor(TAnchor & anchor, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me,
             {
                 // if there is no sequence but anchors -> assume infinite sequence
                 if (anchor.seqPos == 0)
-                    anchor.seqPos = maxValue(anchor.gapPos);
+                    anchor.seqPos = std::numeric_limits<decltype(anchor.gapPos)>::max();
                 // if the sequence has a length > 0, but there is an anchor behind the end
                 // -> elongate sequence
                 else if ((int64_t)anchor.seqPos < (int64_t)back(_dataAnchors(me)).seqPos)
                     anchor.seqPos = back(_dataAnchors(me)).seqPos;
             }
-            anchor.gapPos = maxValue(anchor.gapPos);
+            anchor.gapPos = std::numeric_limits<decltype(anchor.gapPos)>::max();
         }
     }
     else if (idx > 0)
@@ -362,7 +362,7 @@ _getAnchor(TAnchor & anchor, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me,
         if (idx == 0)
             anchor.gapPos = 0;
         else
-            anchor.gapPos = minValue(anchor.gapPos);
+            anchor.gapPos = std::numeric_limits<decltype(anchor.gapPos)>::min();
     }
 }
 

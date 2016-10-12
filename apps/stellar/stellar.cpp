@@ -187,7 +187,7 @@ _stellarOnAll(StringSet<TSequence> & databases,
     std::cout << std::endl;
 
     // file output
-    if (options.disableThresh != seqan::maxValue<unsigned>())
+    if (options.disableThresh != std::numeric_limits<unsigned>::max())
     {
         if (!_outputMatches(matches, queries, queryIDs, databases, options.verbose,
                             options.outputFile, options.outputFormat, options.disabledQueriesFile))
@@ -637,7 +637,7 @@ int mainWithOptions(TOptions & options, String<TAlphabet>)
     }
     file.close();
 
-    if (options.disableThresh != seqan::maxValue<unsigned>())
+    if (options.disableThresh != std::numeric_limits<unsigned>::max())
     {
         std::ofstream daFile;
         daFile.open(toCString(options.disabledQueriesFile));

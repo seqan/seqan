@@ -255,11 +255,11 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
     SEQAN_CONCEPT_USAGE(OrderedAlphabetConcept)
     {
         // type consistency checks
-        sameType(minValue(val), val);
-        sameType(minValue<TValue>(), val);
+        // sameType(minValue(val), val);      // minValue() is deprecated
+        // sameType(minValue<TValue>(), val); // minValue() is deprecated
         sameType(MinValue<TValue>::VALUE, val);
-        sameType(maxValue(val), val);
-        sameType(maxValue<TValue>(), val);
+        // sameType(maxValue(val), val);      // maxValue() is deprecated
+        // sameType(maxValue<TValue>(), val); // maxValue() is deprecated
         sameType(MaxValue<TValue>::VALUE, val);
 
         // TODO(holtgrew): This does not work in C++98, we need C++11 with constexpr.

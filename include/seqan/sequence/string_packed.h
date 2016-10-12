@@ -1246,7 +1246,7 @@ struct ClearSpaceStringPacked_
         typename Size<T>::Type start,
         typename Size<T>::Type end)
     {
-        return _clearSpace_(seq, size, start, end, maxValue<typename Size<T>::Type >());
+        return _clearSpace_(seq, size, start, end, std::numeric_limits<typename Size<T>::Type >::max());
     }
 
     template <typename T>
@@ -1753,7 +1753,7 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     typedef typename THostValue::TBitVector TBitVector;
 
     if (empty(host(obj)))
-        return MaxValue<TPosition>::VALUE;
+        return std::numeric_limits<TPosition>::max();
 
     TConstPackedHostIterator it = end(host(obj), Standard()) - 1;
     TConstPackedHostIterator itBegin = begin(host(obj), Standard());
@@ -1792,7 +1792,7 @@ bitScanForward(String<bool, Packed<THostSpec> > const & obj)
     typedef typename THostValue::TBitVector TBitVector;
 
     if (empty(host(obj)))
-        return MaxValue<TPosition>::VALUE;
+        return std::numeric_limits<TPosition>::max();
 
     TConstPackedHostIterator itBegin = begin(host(obj), Standard()) + 1;
     TConstPackedHostIterator it = itBegin;

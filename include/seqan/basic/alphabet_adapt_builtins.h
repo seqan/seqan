@@ -171,15 +171,15 @@ unknownValueImpl(char const *)
 // ----------------------------------------------------------------------------
 
 template <typename T>
-[[deprecated("Use MaxValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline T const &
 supremumValueImpl(T *)
 {
-    static T const x = MaxValue<T>::VALUE;
+    static T const x = std::numeric_limits<T>::max();
     return x;
 }
 
-[[deprecated("Use MaxValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline long double const &
 supremumValueImpl(long double *)
 {
@@ -187,7 +187,7 @@ supremumValueImpl(long double *)
     return _value;
 }
 
-[[deprecated("Use MaxValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline double const &
 supremumValueImpl(double *)
 {
@@ -195,7 +195,7 @@ supremumValueImpl(double *)
     return _value;
 }
 
-[[deprecated("Use MaxValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline float const &
 supremumValueImpl(float *)
 {
@@ -208,15 +208,15 @@ supremumValueImpl(float *)
 // ----------------------------------------------------------------------------
 
 template <typename T>
-[[deprecated("Use MinValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline T const &
 infimumValueImpl(T *)
 {
-    static T const x = MinValue<T>::VALUE;
+    static T const x = std::numeric_limits<T>::min();
     return x;
 }
 
-[[deprecated("Use MinValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline float const &
 infimumValueImpl(float *)
 {
@@ -224,7 +224,7 @@ infimumValueImpl(float *)
     return _value;
 }
 
-[[deprecated("Use MinValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline double const &
 infimumValueImpl(double *)
 {
@@ -232,7 +232,7 @@ infimumValueImpl(double *)
     return _value;
 }
 
-[[deprecated("Use MinValue instead.")]]
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline long double const &
 infimumValueImpl(long double *)
 {

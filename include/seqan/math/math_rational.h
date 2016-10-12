@@ -503,8 +503,8 @@ std::istream& operator>> (std::istream& is, Rational<TInt>& r)
         c = is.get();
         // read digits as long we can store them
         while ('0' <= c && c <= '9' &&
-                (n < (TInt)MaxValue<TInt>::VALUE / (TInt)10 - (TInt)9) &&
-                (d < (TInt)MaxValue<TInt>::VALUE / (TInt)10))
+                (n < (TInt)std::numeric_limits<TInt>::max() / (TInt)10 - (TInt)9) &&
+                (d < (TInt)std::numeric_limits<TInt>::max() / (TInt)10))
         {
             n = 10 * n + (c - '0');
             d *= 10;

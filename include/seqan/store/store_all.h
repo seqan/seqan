@@ -842,7 +842,7 @@ _storeAppendAnnotationName (
         do
         {
             // allow different annotations to have the same name (but different typeId)
-            if (typeId == maxValue<TTypeId>() || fragStore.annotationStore[annotationId].typeId == typeId)
+            if (typeId == std::numeric_limits<TTypeId>::max() || fragStore.annotationStore[annotationId].typeId == typeId)
                 return;
             ++annotationId;
         } while (annotationId < length(fragStore.annotationNameStore) && fragStore.annotationNameStore[annotationId] == annotationName);
@@ -864,7 +864,7 @@ _storeAppendAnnotationName (
     TId & annotationId,
     TName & annotationName)
 {
-    _storeAppendAnnotationName(fragStore, annotationId, annotationName, maxValue<TId>());
+    _storeAppendAnnotationName(fragStore, annotationId, annotationName, std::numeric_limits<TId>::max());
 }
 
 template <typename TSpec, typename TConfig, typename TId, typename TName>

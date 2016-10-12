@@ -84,16 +84,14 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_math_min_value)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT_EQ(minValue<MyNumber_>().value, -1);
-    SEQAN_ASSERT_EQ(minValue(MyNumber_()).value,  -1);
+    SEQAN_ASSERT_EQ(MinValue<MyNumber_>::VALUE.value, -1);
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_max_value)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT_EQ(maxValue<MyNumber_>().value, 1);
-    SEQAN_ASSERT_EQ(maxValue(MyNumber_()).value,  1);
+    SEQAN_ASSERT_EQ(MaxValue<MyNumber_>::VALUE.value, 1);
 }
 
 #endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_
