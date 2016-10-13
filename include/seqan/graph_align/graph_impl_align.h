@@ -666,6 +666,18 @@ getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
+template<typename TVector, typename TStringSet, typename TCargo, typename TSpec, typename TVertex>
+inline void
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
+{
+    getVertexAdjacencyVector(vectIn, vectOut, g.data_align, vertex);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 findEdge(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
