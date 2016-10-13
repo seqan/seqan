@@ -209,7 +209,7 @@ namespace seqan
 
             case INSERT_EOS_:
                 state = INSERT_;
-                SEQAN_FALLTHROUGH;
+                SEQAN_FALLTHROUGH
             case INSERT_:
             case INSERT_LAST_:
                 // before INSERT_ (prev=orig, ++in; tmp=prev) holds
