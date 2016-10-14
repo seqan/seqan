@@ -218,6 +218,18 @@ value(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
     return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? value(host(me), pos) : cargo(me)._paddedValue;
 }
 
+// ----------------------------------------------------------------------------
+// Function getValue()
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TPosition>
+inline typename GetValue<THost>::Type
+getValue(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
+{
+    SEQAN_ASSERT_LT(pos, static_cast<TPosition>(length(me)));
+    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? host(me)[pos] : cargo(me)._paddedValue;
+}
+
 // --------------------------------------------------------------------------
 // Function begin()                               [ModReverse ModifiedString]
 // --------------------------------------------------------------------------

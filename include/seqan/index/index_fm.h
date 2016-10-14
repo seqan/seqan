@@ -63,26 +63,26 @@ namespace seqan {
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
  *        @link CompressedSA @endlink.
  *
- * @typedef FMIndexConfig::TValuesSpec
- * @signature typedef WaveletTree<TSpec, TConfig> TValuesSpec;
- * @brief The <tt>TValuesSpec</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
- *        @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
+ * @typedef FMIndexConfig::Bwt
+ * @signature typedef WaveletTree<TSpec, TConfig> Bwt;
+ * @brief The <tt>Bwt</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
+ *        @endlink object the type of <tt>Bwt</tt> is a wavelet tree (@link WaveletTree @endlink).
  *
- * @typedef FMIndexConfig::TSentinelsSpec
- * @signature typedef Levels<TSpec, TConfig> TSentinelsSpec;
- * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink.  In the
- *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
+ * @typedef FMIndexConfig::Sentinels
+ * @signature typedef Levels<TSpec, TConfig> Sentinels;
+ * @brief The <tt>Sentinels</tt> determines the type of the sentinels in the @link FMIndex @endlink. In the
+ *        default @link FMIndexConfig @endlink object the type of <tt>Sentinels</tt> is a two level
  *        @link RankDictionary @endlink.
  */
 
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfig
 {
-    typedef TLengthSum                                  LengthSum;
-    typedef WaveletTree<TSpec, WTRDConfig<LengthSum> >  Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Sentinels;
+    typedef TLengthSum                                                  LengthSum;
+    typedef WaveletTree<TSpec, WTRDConfig<LengthSum, Alloc<>, 1, 0> >   Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, 1, 0> >    Sentinels;
 
-    static const unsigned SAMPLING =                    10;
+    static const unsigned SAMPLING =                                    10;
 };
 
 // ============================================================================
@@ -199,6 +199,16 @@ public:
     typename Member<Index, FibreText>::Type         text;
     typename Fibre<Index, FibreLF>::Type            lf;
     typename Fibre<Index, FibreSA>::Type            sa;
+
+    /*!
+     * @fn FMIndex::Index
+     * @brief Constructor
+     *
+     * @signature Index::Index();
+     * @signature Index::Index(text);
+     *
+     * @param[in] text The text to be indexed.
+     */
 
     Index() {};
 

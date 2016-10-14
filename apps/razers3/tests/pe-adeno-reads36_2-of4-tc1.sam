@@ -1,5 +1,5 @@
 @HD	VN:1.4	SO:coordinate
-@PG	ID:razers3	VN:3.2[fffb824I	PN:razers3	CL:-tc 1 adeno-genome.fa adeno-reads36_1.fa adeno-reads36_2.fa -o pe-adeno-reads36_2-of4-tc1.sam
+@PG	ID:razers3	VN:3.3	PN:razers3	CL:-tc 1 adeno-genome.fa adeno-reads36_1.fa adeno-reads36_2.fa -o pe-adeno-reads36_2-of4-tc1.sam
 @SQ	SN:gi|9632547|ref|NC_002077.1|	LN:4718
 adeno-reads36.fasta.000000018	99	gi|9632547|ref|NC_002077.1|	4089	255	36M	=	4319	266	CCTCACACAGATGGACACTTTCACCCGTCTCCTCTT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	NM:i:0	MD:Z:36
 adeno-reads36.fasta.000000018	147	gi|9632547|ref|NC_002077.1|	4319	255	36M	=	4089	-266	GCAGTACACATCCAATTATGCAAAATCTGCCAACGT	IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII	NM:i:0	MD:Z:36

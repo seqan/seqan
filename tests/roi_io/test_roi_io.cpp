@@ -167,6 +167,44 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 
+SEQAN_DEFINE_TEST(test_roi_io_isOpen_fileIn)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/tests/roi_io/example.roi");
+
+    // Create SequenceStream object.
+    seqan::RoiFileIn roiI;
+    SEQAN_ASSERT(!isOpen(roiI));
+
+    // open file
+    open(roiI, toCString(filePath));
+    SEQAN_ASSERT(isOpen(roiI));
+
+    // close file
+    close(roiI);
+    SEQAN_ASSERT(!isOpen(roiI));
+}
+
+SEQAN_DEFINE_TEST(test_roi_io_isOpen_fileOut)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    append(filePath, ".roi");
+
+    // Create SequenceStream object.
+    seqan::RoiFileOut  roiO;
+    SEQAN_ASSERT(!isOpen(roiO));
+
+    // open files
+    open(roiO, toCString(filePath));
+    SEQAN_ASSERT(isOpen(roiO));
+
+    // close files
+    close(roiO);
+    SEQAN_ASSERT(!isOpen(roiO));
+}
+
 SEQAN_BEGIN_TESTSUITE(test_roi_io)
 {
     // Reading of ROI records.
@@ -178,5 +216,9 @@ SEQAN_BEGIN_TESTSUITE(test_roi_io)
     // RoiFile
     SEQAN_CALL_TEST(test_roi_roi_file_read);
     SEQAN_CALL_TEST(test_roi_roi_file_write);
+
+    // isOpen
+    SEQAN_CALL_TEST(test_roi_io_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_roi_io_isOpen_fileOut);
 }
 SEQAN_END_TESTSUITE

@@ -9,18 +9,64 @@ Release 2.2.0
 Library Features
 ^^^^^^^^^^^^^^^^
 
+- Indices:
+    - FM index now has several options to reduce space consumption or improve running time
+        - up to three level rank dictionaries
+        - size of blocks on the lowest level (referred to as ``WORDS_PER_BLOCK``)
+    - Bidirectional FM index with constant running time using EPR-dictionaries
+    - Please see the `manual <seqan.readthedocs.io/en/master/Tutorial/DataStructures/Indices/FMIndex.html>`_ for more information
+
 - Alignment:
     - Vectorized DP-Alignment algorithms using SSE3/AVX2. Allows for inter-parallel alignment computation in a many-vs-many or one-vs-many mode.
+    - add a scoring matrix type that can be specified at runtime (e.g. BLOSSUM62, BLOSSUM50)
 
 - Modifier:
     - ModifiedString ModPadding: Expand a string with padding symbols, without changing the source.
 
+- Other:
+    - Replace pthread implementation with STLs thread support library. Increases performance and fixes rare bugs in bam_io.
+
+App Updates
+^^^^^^^^^^^
+
+- SAK (Swiss Army Knife):
+    - fixed sequence filters.
+- Yara:
+    - verifying seeds
+    - fixes CIGARs and secondary records.
+
 Selected Bug Fixes
 ^^^^^^^^^^^^^^^^^^
 
+- Alignments:
+    - fixes MyersHirschberg implementation.
+    - accept '=' operations in CIGAR string
 - Split Alignment:
-    - compute correct trace from split position.
+    - computes correct trace from split position.
     - allows flexible free-end gaps configuration.
+- close Fasta file after FAI-Index is built.
+- fixes Character to AminoAcid conversion.
+- remove temporary files created during tests on Windows.
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Build System:
+    - The Intel Compiler is now fully supported on Linux and Windows, both 32bit and 64bit; it builds faster binaries and supports some functionality not available in MSVC.
+    - On Windows there is now experimental support for Clang/C2, the Microsoft version of the clang compiler.
+    - Please see the `manual <http://seqan.readthedocs.io/en/master/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
+    - support deb/rpm/exe/dmg packages and SSE4+POPCNT binaries
+
+- Platforms:
+    - full FreeBSD support
+    - Ship UCRT, OPENMP and Intel DLLs for apps on windows
+    - more apps available on Windows and some packaging fixes
+
+Documentation Updates
+^^^^^^^^^^^^^^^^^^^^^
+
+- Api Docs:
+    - Tree-View by Module
 
 Release 2.1.1
 ~~~~~~~~~~~~~
@@ -156,7 +202,7 @@ Infrastructure Updates
     - Major improvements to build system resulting in cleanup and dropped dependencies
     - C++11 is now required and many datatypes now have move cosntructors and -assignment operators
     - added support for new compiler versions, but dropped support for older compilers
-    - requirements are now GCC ≥ 4.8 or LLVM / Clang ≥ 3.4 (for Linux, Mac OSX, FreeBSD) and Visual C++ ≥ 10.0 / Visual Studio ≥ 2010 (for Windows)
+    - requirements are now GCC ≥ 4.9 or LLVM / Clang ≥ 3.5 (for Linux, Mac OSX, FreeBSD) and Visual C++ ≥ 14.0 / Visual Studio ≥ 2015 (for Windows)
 
 
 Release 2.0.2

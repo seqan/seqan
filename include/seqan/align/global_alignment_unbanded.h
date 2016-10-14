@@ -34,7 +34,7 @@
 // Global alignment interface for the unbanded Needleman-Wunsch and Gotoh
 // algorithms.
 //
-// We define the interface functions pretty explicitely (versus just TAlign,
+// We define the interface functions pretty explicitly (versus just TAlign,
 // TFragments etc.) so the candidates the compiler gives when resolution to
 // the globalFunction() fails is actually meaningful.
 // ==========================================================================

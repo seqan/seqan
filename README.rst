@@ -23,9 +23,12 @@ Prerequisites
 
 Linux, Mac OSX, FreeBSD:
   * GCC ≥ 4.9
-  * LLVM / Clang ≥ 3.5
+  * Clang/LLVM ≥ 3.5
+  * Intel Compiler ≥ 16.0.2
 Windows:
   * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
+  * Intel Compiler ≥ 16.0.3 / Visual Studio ≥ 2015u2
+  * Clang/C2 ≥ 3.8.0 / Visual Studio ≥ 2015u3 [experimental, requires CMake ≥ 3.6]
 
 We test on 32-bit and 64-bit Intel/AMD architectures, although we highly recommend 64-bit platforms.
 

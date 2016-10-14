@@ -71,6 +71,10 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual);
     SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual);
 
+    // Test isOpen functionality
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_isOpen_fileOut);
+
     // Test parsing for GenomicRegion.
     SEQAN_CALL_TEST(test_seq_io_genomic_region_default_constructed);
     SEQAN_CALL_TEST(test_seq_io_genomic_region_from_string);

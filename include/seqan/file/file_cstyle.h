@@ -45,7 +45,7 @@
  * Tested by tests/file
  * documentation non-existent
  * relation to cstream.h not clear
- * Metafunctions supposedly moved hereto from file_cstyle.h are commented here awell
+ * Metafunctions supposedly moved here to from file_cstyle.h are commented here as well
  */
 
 //////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ namespace seqan
     template <>
     struct Difference< FILE* >
     {
-//IOREV shouldnt this be ulong, as the file can be ulong bytes big?
+//IOREV shouldn't this be ulong, as the file can be ulong bytes big?
         typedef long Type;
     };
 
@@ -93,7 +93,7 @@ namespace seqan
     inline const char *
     _getCStyleOpenMode(int openMode)
     {
-//IOREV double check whether this translates FileOpenMode correctly (doesnt look like it)
+//IOREV double check whether this translates FileOpenMode correctly (doesn't look like it)
         switch (openMode & OPEN_MASK) {
             case OPEN_WRONLY:
                 if (!(openMode & OPEN_APPEND))
@@ -150,7 +150,7 @@ namespace seqan
     inline unsigned
     sectorSize(FILE* const &)
     {
-//IOREV _duplicate_ _nodoc_ duplicate or identical spec. in file_base.h should'nt this be variable
+//IOREV _duplicate_ _nodoc_ duplicate or identical spec. in file_base.h shouldn't this be variable
         return 4096;
     }
 

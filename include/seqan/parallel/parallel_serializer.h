@@ -69,7 +69,7 @@ public:
     typedef ResourcePool<TItem>             TPool;
     typedef typename Size<Serializer>::Type TSize;
 
-    CriticalSection     cs;
+    std::mutex          cs;
     TWorker             worker;
     TItemPtr            first;
     TItemPtr            last;
@@ -149,7 +149,7 @@ aquireValue(Serializer<TValue, TWorker> & me)
 
     // add item to the end of our linked list
     {
-        ScopedLock<CriticalSection> lock(me.cs);
+        std::lock_guard<std::mutex> lock(me.cs);
         if (me.first == NULL)
             me.first = item;
         else
@@ -177,7 +177,7 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
 
     // change our ready flag and test if me.first->ready became true
     {
-        ScopedLock<CriticalSection> lock(me.cs);
+        std::lock_guard<std::mutex> lock(me.cs);
         item->ready = true;
         if (item != me.first)
             return true;
@@ -195,7 +195,7 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
 
         // remove item from linked list
         {
-            ScopedLock<CriticalSection> lock(me.cs);
+            std::lock_guard<std::mutex> lock(me.cs);
             me.first = item->next;
 
             // recycle released items

@@ -260,7 +260,11 @@ inline T _atomicCas(T volatile &x, ConstInt<sizeof(short)>, S cmp, U y) { return
 template <typename T>
 inline T _atomicInc(T volatile &x, ConstInt<sizeof(LONG)>) { return InterlockedIncrement(reinterpret_cast<LONG volatile *>(&x)); }
 template <typename T>
+inline T* _atomicInc(T* volatile &x, ConstInt<sizeof(LONG)>) { InterlockedExchangeAdd(reinterpret_cast<LONG volatile *>(&x), sizeof(LONG)); return x; }
+template <typename T>
 inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONG)>) { return InterlockedDecrement(reinterpret_cast<LONG volatile *>(&x)); }
+template <typename T>
+inline T* _atomicDec(T* volatile &x, ConstInt<sizeof(LONG)>) { InterlockedExchangeAdd(reinterpret_cast<LONG volatile *>(&x), -sizeof(LONG)); return x; }
 template <typename T, typename S>
 inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONG)>, S y) { return InterlockedExchangeAdd(reinterpret_cast<LONG volatile *>(&x), y); }
 template <typename T, typename S>
@@ -274,7 +278,11 @@ inline T _atomicCas(T volatile &x, ConstInt<sizeof(long)>, S cmp, U y) { return 
 template <typename T>
 inline T _atomicInc(T volatile &x, ConstInt<sizeof(LONGLONG)>) { return InterlockedIncrement64(reinterpret_cast<LONGLONG volatile *>(&x)); }
 template <typename T>
+inline T* _atomicInc(T* volatile &x, ConstInt<sizeof(LONGLONG)>) { InterlockedExchangeAdd64(reinterpret_cast<LONGLONG volatile *>(&x), sizeof(LONGLONG)); return x; }
+template <typename T>
 inline T _atomicDec(T volatile &x, ConstInt<sizeof(LONGLONG)>) { return InterlockedDecrement64(reinterpret_cast<LONGLONG volatile *>(&x)); }
+template <typename T>
+inline T* _atomicDec(T* volatile &x, ConstInt<sizeof(LONGLONG)>) { InterlockedExchangeAdd64(reinterpret_cast<LONGLONG volatile *>(&x), -sizeof(LONGLONG)); return x; }
 template <typename T, typename S>
 inline T _atomicAdd(T volatile &x, ConstInt<sizeof(LONGLONG)>, S y) { return InterlockedExchangeAdd64(reinterpret_cast<LONGLONG volatile *>(&x), y); }
 template <typename T, typename S>

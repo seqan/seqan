@@ -401,6 +401,18 @@ namespace seqan
         typename Fibre<Index, EsaBwt>::Type         bwt;        // burrows-wheeler table
         typename Cargo<Index>::Type                 cargo;        // user-defined cargo
 
+        /*!
+         * @fn IndexEsa::Index
+         * @brief Constructor
+         *
+         * @signature Index::Index();
+         * @signature Index::Index(index);
+         * @signature Index::Index(text);
+         *
+         * @param[in] index Other Index object to copy from.
+         * @param[in] text  The text to be indexed.
+         */
+
         Index() {}
 
         Index(Index &other):

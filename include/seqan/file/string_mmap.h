@@ -48,7 +48,7 @@
  *
  * relation to file_format_mmap.h unclear
  *
- * relation to string_external unclear, what benifit does string_mmap provide?
+ * relation to string_external unclear, what benefit does string_mmap provide?
  *
  */
 

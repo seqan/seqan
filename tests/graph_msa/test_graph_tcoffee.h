@@ -201,7 +201,7 @@ void Test_ExternalLibraries() {
     strmRead.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
     read(strmRead,seqSet,nameSet,TCoffeeLib());
     strmRead.close();
-    std::cout << g << std::endl;
+    //std::cout << g << std::endl;
 
 
     // Blast format

@@ -98,7 +98,10 @@ typedef Tag<Pack_> Pack;
  * BITSIZE2 The number of bits for the second entry.
  */
 
-template <unsigned BITSIZE1 = 16, unsigned BITSIZE2 = 16>
+struct PlusOne_;
+typedef Tag<PlusOne_> PlusOne;
+
+template <unsigned BITSIZE1 = 16, unsigned BITSIZE2 = 16, typename TSpec = void>
 struct BitPacked;
 
 // ============================================================================

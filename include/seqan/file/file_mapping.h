@@ -601,9 +601,9 @@ cancelFileSegment(FileMapping<TSpec> &, void *addr, TPos fileOfs, TSize size)
  *
  * @signature bool adviseFileSegment(fileMapping, advise, addr, fileOfs, size);
  *
- * @param[in,out] fileMapping The FileMapping object to adsive segment in.
+ * @param[in,out] fileMapping The FileMapping object to advise segment in.
  * @param[in]     advise      The advise type.  Type: @link FileMappingAdvise @endlink.
- * @param[in]     addr        A pointer t othe beginning of the memory-mapped segment in memory (returned by a
+ * @param[in]     addr        A pointer to the beginning of the memory-mapped segment in memory (returned by a
  *                            prior call of @link FileMapping#mapFileSegment @endlink).
  * @param[in]     fileOfs     The absolute start address of the segment in bytes.
  * @param[in]     size        The segment length in bytes.
@@ -640,7 +640,7 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
  * @param[in,out] fileMapping A FileMapping object.
  * @param[in]     fileOfs     The absolute start address of the segment in bytes.
  * @param[in]     size        The segment length in bytes.
- * @param[in]     mode        The mapping access mode.  Default rread/write open mode of the underlying file.
+ * @param[in]     mode        The mapping access mode.  Default read/write open mode of the underlying file.
  *                            Type: @link FileMappingMode @endlink.
  *
  * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  TPtr is

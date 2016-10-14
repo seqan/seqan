@@ -714,7 +714,7 @@ deallocate(T const &,
     }
 }
 
-#else
+#else  //  #if STDLIB_VS
 
 
 template <typename TSpec>
@@ -1206,7 +1206,7 @@ inline void resize(File<Async<TSpec> > & me, TSize new_length)
             me.handle, new_length, strerror(errno));
 }
 
-#endif
+#endif  // #ifdef STDLIB_VS
 
 //////////////////////////////////////////////////////////////////////////////
 // global functions
@@ -1256,4 +1256,4 @@ deallocate(File<Async<TSpec> > const & me,
 
 }
 
-#endif
+#endif  // SEQAN_HEADER_FILE_ASYNC_H

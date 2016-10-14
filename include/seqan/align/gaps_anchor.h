@@ -79,7 +79,7 @@ inline void _reinitAnchorGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps);
  * @signature template <typename TSource, typename TGapAnchors = String<GapAnchor<unsigned> > >
  *            class Gaps<TSource, AnchorGaps<TGapAnchors> >;
  *
- * @tparam TSource     The type of the underling sequence.
+ * @tparam TSource     The type of the underlying sequence.
  * @tparam TGapAnchors The type of the string of @link GapAnchor @endlink objects.
  */
 
@@ -92,7 +92,7 @@ inline void _reinitAnchorGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps);
  * @signature Gaps::Gaps(anchors);
  *
  * @param[in] other   Another @link AnchorGaps @endlink object to copy from.
- * @param[in] source  The underling sequence to construct the Gaps object from.
+ * @param[in] source  The underlying sequence to construct the Gaps object from.
  * @param[in] anchors The string of anchors to construct with.
  *
  * An AnchorGaps object has a default constructor, can be constructed from the underlying source, and/or a string of
@@ -691,7 +691,7 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  *
  * @return TPos Position in sequence space (Metafunction: @link ContainerConcept#Position @endlink).
  *
- * See the example below to construct the Gaps ojbect.  Note that this construction is fast since it ionly a thing wrapper
+ * See the example below to construct the Gaps object.  Note that this construction is fast since it is only a thin wrapper
  * around underlying objects.
  *
  * @section Examples
@@ -793,7 +793,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
  * @signature TPos positionSeqToGap(gaps, pos);
  *
  * @param[in] gaps The AnchorGaps object to use for the translation.
- * @param[in] pos  The gap space position to conver to sequence space.
+ * @param[in] pos  The gap space position to convert to sequence space.
  *
  * @return TPos The resulting position in sequence space (Metafunction: @link ContainerConcept#Position @endlink).
  *

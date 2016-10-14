@@ -102,7 +102,8 @@ struct ParamChooserOptions
         // global input parameters
         totalN = 32;                // sequence length
         totalK = 2;                 // errors
-        optionLossRate = (TFloat)0.01;      // in
+//         optionLossRate = (TFloat)0.01;      // in
+        optionLossRate = (TFloat)0.0;       // in
         chosenLossRate = (TFloat)0.0;       // out
         optionErrorRate = (TFloat)0.05;     //
         optionHammingOnly = false;
