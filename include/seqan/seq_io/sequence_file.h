@@ -38,7 +38,8 @@
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 #define SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 
-namespace seqan {
+namespace seqan
+{
 
 // ============================================================================
 // Classes
@@ -84,20 +85,20 @@ typedef FormattedFile<Fastq, Output>    SeqFileOut;
  */
 
 typedef
-    TagList<Fastq,
-    TagList<Fasta,
-    TagList<Embl,
-    TagList<GenBank,
-    TagList<Raw
-    > > > > >
-    SeqInFormats;
+TagList<Fastq,
+        TagList<Fasta,
+                TagList<Embl,
+                        TagList<GenBank,
+                                TagList<Raw
+                                        > > > > >
+SeqInFormats;
 
 typedef
-    TagList<Fastq,
-    TagList<Fasta,
-    TagList<Raw
-    > > >
-    SeqOutFormats;
+TagList<Fastq,
+        TagList<Fasta,
+                TagList<Raw
+                        > > >
+SeqOutFormats;
 
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
@@ -194,7 +195,7 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
-readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>&file)
 {
     readRecord(meta, seq, file.iter, file.format);
 }
@@ -206,7 +207,7 @@ readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 HasQualities<typename Value<TSeqString>::Type> >, void)
-readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>&file)
 {
     readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
     assignQualities(seq, context(file).buffer[2]);
@@ -218,7 +219,7 @@ readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec>&file)
 {
     readRecord(meta, seq, qual, file.iter, file.format);
 }
@@ -236,9 +237,10 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile
 
 template <typename TPtrA, typename TPtrB>
 inline void
-swapPtr(TPtrA &a, TPtrB &b)
+swapPtr(TPtrA & a, TPtrB & b)
 {
-    union {
+    union
+    {
         TPtrA a;
         TPtrB b;
     } tmp1, tmp2;
@@ -356,7 +358,7 @@ inline void readRecords(TIdStringSet & meta,
 
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
+writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
             TIdString const & meta,
             TSeqString const & seq)
 {
@@ -369,7 +371,7 @@ writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
+writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
             TIdString const & meta,
             TSeqString const & seq,
             TQualString const & qual)
