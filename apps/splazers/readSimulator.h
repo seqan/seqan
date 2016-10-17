@@ -308,6 +308,7 @@ void simulateReads(
 	
 					case SEQAN_DELETE:
 						++del;
+						SEQAN_FALLTHROUGH
 		
 					case SEQAN_INSERT:
 						++err;
@@ -334,6 +335,7 @@ void simulateReads(
 		
 						case SEQAN_DELETE:
 							++del;
+							SEQAN_FALLTHROUGH
 			
 						case SEQAN_INSERT:
 							++err;
