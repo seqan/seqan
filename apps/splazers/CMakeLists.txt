@@ -17,7 +17,9 @@ set (SEQAN_APP_VERSION "1.3.4")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message (STATUS "  Not building splazers on 32bit architectures.")
