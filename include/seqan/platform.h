@@ -403,7 +403,7 @@ typedef int8_t __int8;     // nolint
 #if defined(__has_cpp_attribute)
     #if __has_cpp_attribute(fallthrough)
         #undef SEQAN_FALLTHROUGH
-        #if __cplusplus < 201500
+        #if __cplusplus < 201500 && defined(COMPILER_GCC)
             #define SEQAN_FALLTHROUGH [[gnu::fallthrough]];
         #else
             #define SEQAN_FALLTHROUGH [[fallthrough]];
