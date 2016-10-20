@@ -218,7 +218,7 @@ yieldProcessor()
 #elif defined(__arm__) || defined(__aarch64__)  // ARM.
     __asm__ __volatile__ ("yield" ::: "memory");
 #elif defined(__sparc) || defined(__sparc__)  // SPARC
-#if definde(__SUNPRO_C)
+#if defined(__SUNPRO_C)
     __asm __volatile__ ("rd %%ccr, %%g0\n\t"
                         "rd %%ccr, %%g0\n\t"
                         "rd %%ccr, %%g0")
