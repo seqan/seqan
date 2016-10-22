@@ -134,7 +134,7 @@ struct Breakpoint
         INSERTION,          // 1
         DELETION,           // 2
         INVERSION,          // 3
-        TANDEM,             // 4
+        SEQAN_TANDEM,       // 4  TANDEM is an IOCTL numeric constant in Hurd
         DISPDUPLICATION,    // 5
         INTERTRANSLOCATION, // 6
         TRANSLOCATION,      // 7
@@ -696,7 +696,7 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
         case TBreakpoint::INVERSION:
         out << "SVType: inversion";
         break;
-        case TBreakpoint::TANDEM:
+        case TBreakpoint::SEQAN_TANDEM:
         out << "SVType: tandem";
         break;
         case TBreakpoint::DISPDUPLICATION:
