@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_DIRECTED_H
 #define SEQAN_HEADER_GRAPH_IMPL_DIRECTED_H
 
-// TODO(holtgrew): The graph uses linked lists for storing edges. Thus, the graphs are not guaranteed to have good cache locality. We should also have a forward star/adjacency array implementation.
+// TODO(holtgrew): The graph uses linked lists for storing edges. Thus, the graphs are not guaranteed to have good cache locality.
 
 namespace seqan
 {
@@ -888,6 +888,68 @@ getAdjacencyMatrix(Graph<Directed<TCargo, TSpec> > const & g,
             current = getNextT(current);
         }
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TVector, typename TGraph, typename TVertex>
+inline void
+_getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         TGraph const & g,
+                         TVertex const & vertex)
+{
+    typedef typename Size<TGraph>::Type TGraphSize;
+    typedef typename EdgeType<TGraph>::Type TEdgeStump;
+    typedef typename Size<TVector>::Type TSize;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Iterator<String<TEdgeStump*> const, Standard>::Type TIterConst;
+    typedef typename Value<TVector>::Type TMatValue;
+
+    TSize lenVectIn = inDegree(g, vertex);
+    TSize lenVectOut = outDegree(g, vertex);
+    clear(vectIn);
+    clear(vectOut);
+    resize(vectIn, lenVectIn, 0);
+    resize(vectOut, lenVectOut, 0);
+    TIterConst itIn = begin(g.data_vertex, Standard());
+    TIterConst itEndIn = end(g.data_vertex, Standard());
+    TSize count = 0;
+    for(; itIn != itEndIn; ++itIn)
+    {
+        TEdgeStump * currentIn = *itIn;
+        while(currentIn != 0)
+        {
+            if ((TVertexDescriptor) getTarget(currentIn) == vertex)
+            {
+                TVertexDescriptor source = sourceVertex(g, currentIn);
+                vectIn[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectIn[count]) + source);
+                ++count;
+            }
+            currentIn = getNextT(currentIn);
+        }
+    }
+    count = 0;
+    TEdgeStump * currentOut = getValue(g.data_vertex, vertex);
+    while(currentOut != 0)
+    {
+        TVertexDescriptor target = targetVertex(g, currentOut);
+        vectOut[count] = static_cast<TMatValue>(static_cast<TGraphSize>(vectOut[count]) + target);
+        currentOut = getNextT(currentOut);
+        ++count;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TVector, typename TCargo, typename TSpec, typename TVertex>
+inline void
+getVertexAdjacencyVector(TVector & vectIn,
+                         TVector & vectOut,
+                         Graph<Directed<TCargo, TSpec> > const & g,
+                         TVertex const & vertex)
+{
+    _getVertexAdjacencyVector(vectIn, vectOut, g, vertex);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -17,9 +17,11 @@ set (SEQAN_APP_VERSION "2.0.5")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (OpenMP)
-find_package (ZLIB)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (SeqAn REQUIRED)
+endif ()
 
 if (NOT ZLIB_FOUND)
   message (STATUS "  ZLIB not found: MASON2 will not be built.")

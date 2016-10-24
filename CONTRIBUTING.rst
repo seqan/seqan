@@ -7,7 +7,7 @@ If you submit any issues or pull requests to SeqAn it implies that you have read
 Copyright
 ---------
 
-SeqAn is an free and open source software library, released to the public under the terms described in the `license file <./COPYING.rst>`__, but to stay safe we require that all contributors `sign the contributor license agreement <https://www.clahub.com/agreements/seqan/seqan>`__. Really, it's just a few clicks.
+SeqAn is an free and open source software library, released to the public under the terms described in the `license file <./LICENSE>`__, but to stay safe we require that all contributors `sign the contributor license agreement <https://www.clahub.com/agreements/seqan/seqan>`__. Really, it's just a few clicks.
 
 Without signing the agreement, you cannot create pull requests.
 

@@ -548,6 +548,7 @@ _readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
             break;
         case BlastMatchField<>::Enum::P_POS:
             match.alignStats.alignmentSimilarity = lexicalCast<double>(context._stringBuffer);
+            break;
         case BlastMatchField<>::Enum::FRAMES:
         {
             clear(context._setBuffer2);

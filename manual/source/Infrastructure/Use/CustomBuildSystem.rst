@@ -45,6 +45,10 @@ GNU/Linux
 
 Add ``-lrt -lpthread`` to the compiler call.
 
+Note static linking against pthread might cause issues on some linux distributions.
+In this case you need to explicitly link against the whole archive like: ``-Wl,--whole-archive -lpthread -Wl,--no-whole-archive``.
+You can read more about this issue `here <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52590>`_.
+
 BSD
 ^^^
 
