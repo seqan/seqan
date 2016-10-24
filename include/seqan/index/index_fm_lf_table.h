@@ -557,9 +557,7 @@ template <typename TText, typename TSpec, typename TConfig>
 inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::value, void>
 _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
 {
-    // TODO(cpockrandt): check whether it is a problem
-    // in case the smallest character does not occur in the BWT at all
-    lf.sentinelSubstitute = 0;//ordVal;
+    lf.sentinelSubstitute = 0;
 }
 
 // ----------------------------------------------------------------------------

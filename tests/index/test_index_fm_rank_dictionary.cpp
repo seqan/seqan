@@ -79,23 +79,28 @@ typedef
     TagList<RankDictionary<bool,            Prefix1Level>,
     TagList<RankDictionary<Dna,             Prefix1Level>,
     TagList<RankDictionary<Dna5,            Prefix1Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix1Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix1Level>,
     TagList<RankDictionary<AminoAcid,       Prefix1Level>,
     TagList<RankDictionary<bool,            Prefix2Level>,
     TagList<RankDictionary<Dna,             Prefix2Level>,
     TagList<RankDictionary<Dna5,            Prefix2Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix2Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix2Level>,
     TagList<RankDictionary<AminoAcid,       Prefix2Level>,
     TagList<RankDictionary<bool,            Prefix3Level>,
     TagList<RankDictionary<Dna,             Prefix3Level>,
     TagList<RankDictionary<Dna5,            Prefix3Level>,
+    TagList<RankDictionary<Dna5Q,           Prefix3Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix3Level>,
     TagList<RankDictionary<AminoAcid,       Prefix3Level>,
     TagList<RankDictionary<bool,            WaveletTree<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
     TagList<RankDictionary<Dna5,            WaveletTree<> >,
+    TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
+    TagList<RankDictionary<ReducedMurphy10, WaveletTree<> >,
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >
-    > > > > > > > > > > > > > > > > > > >
+    > > > > > > > > > > > > > > > > > > > > > > > >
     RankDictionaryPrefixSumTypes;
 
 typedef
