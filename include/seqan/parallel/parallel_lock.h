@@ -217,7 +217,7 @@ yieldProcessor()
     YieldProcessor();
 #elif defined(__arm__) || defined(__aarch64__)  // ARM.
     __asm__ __volatile__ ("yield" ::: "memory");
-#elif defined(__sparc) || defined(__sparc__)  // SPARC
+#elif defined(__sparc) // SPARC
 #if defined(__SUNPRO_C)
     __asm __volatile__ ("rd %%ccr, %%g0\n\t"
                         "rd %%ccr, %%g0\n\t"
@@ -227,7 +227,7 @@ yieldProcessor()
                         "rd %ccr, %g0\n\t"
                         "rd %ccr, %g0")
 #endif  // defined(__SUNPRO_C)
-#elif defined(__ppc__) || defined(__ppc64__) || defined(_ARCH_PPC)  || defined(_ARCH_PPC64)  // PowerPC
+#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC
     __asm__ __volatile__ ("or 27,27,27" ::: "memory");
 #elif defined(__SSE2__)  // AMD and Intel
     _mm_pause();
