@@ -294,8 +294,13 @@ endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 
 # librt, libpthread -- implicit, on Linux only
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CMAKE_SYSTEM_NAME} STREQUAL "kFreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "GNU"))
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
+  if ((CMAKE_CXX_FLAGS MATCHES "-static") OR (SEQAN_CXX_FLAGS MATCHES "-static") OR (CMAKE_EXE_LINKER_FLAGS MATCHES "-static"))
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+  else ()
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
+  endif ()
 elseif ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-D_GLIBCXX_USE_C99=1")

@@ -17,8 +17,10 @@ set (SEQAN_APP_VERSION "1.2.6")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (ZLIB)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (ZLIB)
+    find_package (SeqAn REQUIRED)
+endif ()
 
 if (NOT ZLIB_FOUND)
   message (STATUS "  ZLIB not found: RABEMA will not be built.")

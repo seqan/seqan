@@ -303,6 +303,16 @@ macro (seqan_build_system_init)
     # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
     #            find out whether clang/c2 takes - or / options
 
+    # search dependencies once, globally, if in DEVELOP
+    if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
+        message (STATUS "Scanning dependencies once in DEVELOP mode...")
+        find_package(OpenMP)
+        find_package(ZLIB)
+        find_package(BZip2)
+        find_package(Boost)
+        find_package(SeqAn REQUIRED)
+    endif ()
+
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -714,11 +724,8 @@ function (seqan_register_demos PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
-    # Find SeqAn with all dependencies.
-    find_package (OpenMP)
-    find_package (ZLIB)
-    find_package (BZip2)
-    find_package (SeqAn REQUIRED)
+    # NOTE(h-2): we do not need to search for dependencies, because this is
+    # done globally for DEVELOP (and demos are only built with DEVELOP)
 
     # Supress unused parameter warnings for demos.
     if (COMPILER_GCC OR COMPILER_CLANG)

@@ -1075,6 +1075,23 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_band_extensions_affine)
     testBandedChainAlignmentBandExtension(seqan::AffineGaps());
 }
 
+SEQAN_DEFINE_TEST(test_banded_chain_score_overflow_detection)
+{
+    using namespace seqan;
+    Score<int8_t> score(2, -5, -2);
+    SEQAN_ASSERT(!_checkScoreOverflow(127, score));
+    SEQAN_ASSERT(_checkScoreOverflow(50, score));
+    SEQAN_ASSERT(_checkScoreOverflow(24, score));
+    SEQAN_ASSERT(_checkScoreOverflow(15, score));
+
+    Score<int32_t> score2(2, -5, -2);
+    SEQAN_ASSERT(_checkScoreOverflow(655536, score2));
+    SEQAN_ASSERT(_checkScoreOverflow(127, score2));
+    SEQAN_ASSERT(_checkScoreOverflow(50, score2));
+    SEQAN_ASSERT(_checkScoreOverflow(24, score2));
+    SEQAN_ASSERT(_checkScoreOverflow(15, score2));
+}
+
 SEQAN_BEGIN_TESTSUITE(test_banded_chain_impl)
 {
     SEQAN_CALL_TEST(test_banded_chain_alignment_empty_set_linear);
@@ -1090,5 +1107,6 @@ SEQAN_BEGIN_TESTSUITE(test_banded_chain_impl)
     SEQAN_CALL_TEST(test_banded_chain_alignment_band_extensions_linear);
     SEQAN_CALL_TEST(test_banded_chain_alignment_band_extensions_affine);
     SEQAN_CALL_TEST(test_banded_chain_alignment_issue_1020);
+    SEQAN_CALL_TEST(test_banded_chain_score_overflow_detection);
 }
 SEQAN_END_TESTSUITE

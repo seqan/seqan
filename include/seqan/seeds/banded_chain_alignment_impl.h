@@ -81,6 +81,20 @@ struct BandedChainTracking
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function _checkScoreOverflow()
+// ----------------------------------------------------------------------------
+
+template <typename TDist,
+          typename TScoreValue, typename TScoreSpec>
+inline bool _checkScoreOverflow(TDist const distance,
+                                Score<TScoreValue, TScoreSpec> const & score)
+{
+    auto mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
+    return static_cast<decltype(BitsPerValue<TScoreValue>::VALUE)>(bitScanReverse(mxScore) + bitScanReverse(distance))
+            <= BitsPerValue<TScoreValue>::VALUE - 1;
+}
+
+// ----------------------------------------------------------------------------
 // Function _isLastSeed()
 // ----------------------------------------------------------------------------
 
@@ -769,7 +783,6 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     // The first anchor does not cross the first row or column. Hence we have to fill the gap first.
     if (horizontalNextGridOrigin != 0u || verticalNextGridOrigin != 0u)
     {
-
         // INITIALIZATION
         _initiaizeBeginningOfBandedChain(scoutState, upperDiagonal(band) + 1, 1 - lowerDiagonal(band), scoreSchemeGap,
                                          dpProfile);
@@ -802,6 +815,8 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
     TGridPoint gridEnd;
     gridEnd.i1 = _min(length(seqH), endPositionH(seed) + bandExtension);
     gridEnd.i2 = _min(length(seqV), endPositionV(seed) + bandExtension);
+
+    SEQAN_ASSERT(_checkScoreOverflow(gridEnd.i1 - gridBegin.i1 + gridEnd.i2 - gridBegin.i2, scoreSchemeGap));
 
     // Define area covering the infixes.
     infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
@@ -903,6 +918,8 @@ _computeGapArea(TTraceSet & globalTraceSet,
     // TODO(rmaerker): Change _verticalBandShift to _verticalBandShiftBeginPoint
     TGridPoint gridEnd(beginPositionH(currentSeed) + 1 + bandExtension + _horizontalBandShiftBeginPoint(currentSeed),
                        beginPositionV(currentSeed) + 1 + bandExtension + _verticalBandShiftBeginPoint(currentSeed));
+
+    SEQAN_ASSERT(_checkScoreOverflow(gridEnd.i1 - gridBegin.i1 + gridEnd.i2 - gridBegin.i2, scoreScheme));
 
     // Define infix area for alignment.
     TInfixH infixH = infix(seqH, gridBegin.i1, gridEnd.i1);
