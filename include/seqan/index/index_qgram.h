@@ -1395,8 +1395,9 @@ void createQGramIndex(TIndex &index)
     _qgramRefineSuffixArray(sa, text, shape, dir);
 }
 
-// DEPRECATED
-// better use createQGramIndex(index) (above)
+// DEPRECATED: Use createQGramIndex(index) instead. (above)
+// NOTE: This function is currently still used in the app search join (status 25.10.2016) so the deprecation macro
+// can't be used yet. As soon as the app is altered accordingly the macro shall be applied.
 template <
 typename TSA,
 typename TDir,
@@ -1429,8 +1430,9 @@ void createQGramIndex(
     _qgramFillSuffixArray(sa, text, shape, dir, bucketMap, stepSize, False());
 }
 
-// DEPRECATED
-// better use createQGramIndex(index) (above)
+// DEPRECATED: Use createQGramIndex(index) instead.
+// NOTE: This function is currently still used in the app search join (status 25.10.2016) so the deprecation macro
+// can't be used yet. As soon as the app is altered accordingly the macro shall be applied.
 template <
 typename TSA,
 typename TDir,

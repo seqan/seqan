@@ -1400,27 +1400,6 @@ std::cout << __LINE__ << std::endl;
 std::cout << __LINE__ << std::endl;
 }
 
-// Test of getValue(). DEPRECATED
-//template <typename TString>
-//void testSequenceGetValue(TString & /*Tag*/)
-//{
-//    typedef typename Value<TString>::Type TValue;
-//
-//     // In contrast to value(), getValue() does not return a reference but a copy.
-//     // We test this using the variable value_.
-//    TString string;
-//    assign(string, "ACGT");
-//    TValue dummy_ = 'T';
-//    TValue & value_ = dummy_;
-//    SEQAN_ASSERT_EQ(value_, TValue('T'));
-//
-//    value_ = getValue(string, 0);
-//    SEQAN_ASSERT_EQ(value_, TValue('A'));
-//
-//    value_ = 'T';
-//    SEQAN_ASSERT_EQ(getValue(string, 0), TValue('A'));
-//}
-
 SEQAN_TYPED_TEST(StringTestCommon, GetValue)
 {
     SEQAN_SKIP_TEST; // getValue() is deprecated.

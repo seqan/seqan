@@ -1353,39 +1353,6 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Front)
 //    testConstructDeconstruct(strSet);
 }
 
-// Test of getValue(). DEPRECATED
-//template <typename TStringSet>
-//void testStringSetGetValue(TStringSet & /*Tag*/)
-//{
-//    using namespace seqan;
-//
-//    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-//    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-//
-//     // In contrast to value(), getValue() does not return a reference but a copy.
-//     // We test this using the variable value_.
-//    TString str("CG");
-//    TString str2("ACGT");
-//    TString str3("CGACGT");
-//
-//    TNonConstStringSet nonConstStringSet;
-//    appendValue(nonConstStringSet, str);
-//    appendValue(nonConstStringSet, str2);
-//    appendValue(nonConstStringSet, str3);
-//    TStringSet stringSet(nonConstStringSet);
-//    SEQAN_ASSERT(TString(getValue(stringSet, 1)) == TString(str2));
-//}
-//
-//// TODO(singer): No appendValue for string sets of packed strings
-//template <typename TValue, typename TStringSetSpec>
-//void testStringSetGetValue(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-//template <typename TValue, typename TStringSetSpec>
-//void testStringSetGetValue(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-//template <typename TValue, typename TStringSetSpec>
-//void testStringSetGetValue(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-//template <typename TValue, typename TStringSetSpec>
-//void testStringSetGetValue(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-
 SEQAN_TYPED_TEST(StringSetTestCommon, GetValue)
 {
     SEQAN_SKIP_TEST; // getValue() is deprecated.

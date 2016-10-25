@@ -192,13 +192,11 @@ struct ContigFile
     static const TId INVALID_ID;
 
     CharString        fileName;
-    //AutoSeqFormat    format; // is deprecated
     TId                firstContigId;    // first sequence of the file corresponds to this contigId
 
     inline bool operator==(ContigFile const & other) const
     {
         return fileName == other.fileName &&
-                //format == other.format &&
                 firstContigId == other.firstContigId;
     }
 };

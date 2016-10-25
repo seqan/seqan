@@ -187,16 +187,16 @@ struct DisableIf<False, T>
 //    }
 
 template <bool b, typename T>
-struct /*[[deprecated("Will be renamed to EnableIfC.")]]*/ EnableIf2;
+struct EnableIf2;
 
 template <bool b, typename T = void>
-struct /*[[deprecated("Will be renamed to EnableIfC.")]]*/ EnableIf2
+struct EnableIf2
 {
     typedef T Type;
 };
 
 template <typename T>
-struct /*[[deprecated("Will be renamed to EnableIfC.")]]*/ EnableIf2<false, T> {};
+struct EnableIf2<false, T> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction DisableIf2
@@ -225,16 +225,16 @@ struct /*[[deprecated("Will be renamed to EnableIfC.")]]*/ EnableIf2<false, T> {
  */
 
 template <bool b, typename T>
-struct /*[[deprecated("Will be renamed to DisableIfC.")]]*/ DisableIf2;
+struct DisableIf2;
 
 template <bool b, typename T = void>
-struct /*[[deprecated("Will be renamed to DisableIfC.")]]*/ DisableIf2
+struct DisableIf2
 {
     typedef T Type;
 };
 
 template <typename T>
-struct /*[[deprecated("Will be renamed to DisableIfC.")]]*/ DisableIf2<true, T> {};
+struct DisableIf2<true, T> {};
 
 }  // namespace seqan
 
