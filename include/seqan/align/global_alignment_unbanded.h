@@ -148,7 +148,7 @@ class Fragment;
  *
  * @include demos/dox/align/global_alignment_banded.cpp.stdout
  *
- * https://seqan.readthedocs.io/en/master/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  *
  * @section References
  *
