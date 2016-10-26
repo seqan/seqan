@@ -59,7 +59,7 @@ namespace seqan {
 /*!
  * @tag FileCompressionTags#GZFile
  * @headerfile <seqan/stream.h>
- * @brief File compression using the popular <a href="http://gzip.org">gzip</a> format.
+ * @brief File compression using the popular <a href="http://www.gzip.org">gzip</a> format.
  * @signature typedef Tag<GZFile_> GZFile;
  */
 
