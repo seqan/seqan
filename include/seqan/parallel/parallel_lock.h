@@ -221,11 +221,11 @@ yieldProcessor()
 #if defined(__SUNPRO_C)
     __asm __volatile__ ("rd %%ccr, %%g0\n\t"
                         "rd %%ccr, %%g0\n\t"
-                        "rd %%ccr, %%g0")
+                        "rd %%ccr, %%g0");
 #else
     __asm __volatile__ ("rd %ccr, %g0\n\t"
                         "rd %ccr, %g0\n\t"
-                        "rd %ccr, %g0")
+                        "rd %ccr, %g0");
 #endif  // defined(__SUNPRO_C)
 #elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC
     __asm__ __volatile__ ("or 27,27,27" ::: "memory");
