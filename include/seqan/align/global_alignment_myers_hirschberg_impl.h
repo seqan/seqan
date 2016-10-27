@@ -597,7 +597,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                          VP[currentBlock] = temp | ~(X | D0);
                     }
 
-                    _printBinary(std::cout, HP);
                     /* update score */
                     if (HP & fScoreMask)
                         score--;

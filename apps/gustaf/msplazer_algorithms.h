@@ -493,7 +493,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     // Double overlap check (not handled jet)
                     // std::cerr << "double overlap in reference and read called from read overlap" << std::endl;
                     // std::cout << "Translocation double overlap" << std::endl;
-                    bp.svtype = TBreakpoint::TANDEM;
+                    bp.svtype = TBreakpoint::SEQAN_TANDEM;
                 }
 
                 //std::cout << "Breakpoint " << bp << std::endl;

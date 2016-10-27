@@ -134,18 +134,17 @@ char const * FileExtensions<GZFile, T>::VALUE[1] =
 template <typename T>
 struct FileExtensions<BgzfFile, T>
 {
-    static char const * VALUE[4];
+    static char const * VALUE[5];
 };
 
 template <typename T>
-char const * FileExtensions<BgzfFile, T>::VALUE[4] =
+char const * FileExtensions<BgzfFile, T>::VALUE[5] =
 {
     ".bgzf",      // default output extension
     ".bam",       // BAM files are bgzf compressed
-    ".vcf.gz",    // Compressed and indexed VCF files are actually bgzf compressed
+    ".vcf.gz",    // Compressed and indexed VCF files are bgzf compressed
+    ".bed.gz",    // Compressed and indexed BED files are bgzf compressed
     ".tbi"        // Tabix index files are bgzf compressed
-
-    // if you add extensions here, extend getBasename() below
 };
 
 

@@ -66,19 +66,7 @@ class BidirectionalIndex;
 template <typename TText>
 struct RevTextFibre
 {
-    typedef ModifiedString<TText, ModReverse> Type;
-};
-
-template <typename TText>
-struct RevTextFibre<ModifiedString<TText, ModReverse> >
-{
     typedef TText Type;
-};
-
-template <typename TText, typename TTextConfig>
-struct RevTextFibre<StringSet<TText, TTextConfig> >
-{
-    typedef StringSet<typename RevTextFibre<TText>::Type, TTextConfig> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -120,7 +108,9 @@ class Index<TText, BidirectionalIndex<TIndexSpec> >
         revText(text),
         rev(revText),
         fwd(text)
-    {}
+    {
+        reverse(revText);
+    }
 };
 
 // ============================================================================
@@ -158,35 +148,41 @@ inline void clear(Index<TText, BidirectionalIndex<TIndexSpec> > & index)
 template <typename TText, typename TIndexSpec>
 inline bool empty(Index<TText, BidirectionalIndex<TIndexSpec> > const & index)
 {
-    return empty(index.fwd) || empty(index.rev);
+    return empty(index.fwd) && empty(index.rev);
 }
 
-// This function can be used to open a previously saved index.
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
 template <typename TText, typename TIndexSpec>
-inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const char * fileName)
+inline bool open(Index<TText, BidirectionalIndex<TIndexSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
 
     name = fileName;
-    if (open(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
+    if (open(index.fwd, toCString(name), openMode))
     {
         name = fileName;    append(name, ".rev");
-        return open(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
+        return open(index.rev, toCString(name), openMode);
     }
     return false;
 }
 
-// This function can be used to save an index on disk.
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
 template <typename TText, typename TIndexSpec>
-inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, const char * fileName)
+inline bool save(Index<TText, BidirectionalIndex<TIndexSpec> > const & index, const char * fileName, int openMode)
 {
     String<char> name;
 
     name = fileName;
-    if (save(index.fwd, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE))
+    if (save(index.fwd, toCString(name), openMode))
     {
         name = fileName;    append(name, ".rev");
-        return save(index.rev, toCString(name), DefaultOpenMode<Index<TText, TIndexSpec> >::VALUE);
+        return save(index.rev, toCString(name), openMode);
     }
     return false;
 }
@@ -201,6 +197,7 @@ inline typename Fibre<Index<TText, TSpec>, FibreText>::Type &
 getFibre(Index<TText, BidirectionalIndex<TSpec> > &index, FibreText) {
     return value(index.fwd.text);
 }
+
 template <typename TText, typename TSpec>
 inline typename Fibre<Index<TText, TSpec>, const FibreText>::Type &
 getFibre(Index<TText, BidirectionalIndex<TSpec> > const &index, FibreText) {

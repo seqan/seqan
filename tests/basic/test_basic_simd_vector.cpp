@@ -39,7 +39,8 @@
 
 SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
 {
-#ifdef __SSE4_1__
+#ifdef SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SSE4
     SEQAN_CALL_TEST(test_basic_simd_shuffle);
     SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
     SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
@@ -47,7 +48,8 @@ SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
     SEQAN_CALL_TEST(test_basic_simd_shuffle_avx);
     SEQAN_CALL_TEST(test_basic_simd_transpose_32x32);
 #endif  // #ifdef __AVX2__
-#endif  // #ifdef __SSE4_1__
+#endif  // #ifdef SEQAN_SSE4
+#endif
 }
 SEQAN_END_TESTSUITE
 

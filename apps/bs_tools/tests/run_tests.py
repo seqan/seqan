@@ -12,6 +12,7 @@ Usage:  run_tests.py SOURCE_ROOT_PATH BINARY_ROOT_PATH
 import logging
 import os.path
 import sys
+import platform
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
@@ -209,7 +210,8 @@ def main(source_base, binary_base):
     # ============================================================
     # 0
 
-    if not (sys.platform.startswith('freebsd') or sys.platform.startswith('win')):
+    if platform.system() == 'Linux' and \
+        (platform.machine() == 'amd64' or platform.machine() == 'x86_64' or platform.machine() == 'i386'):
         conf = app_tests.TestConf(
             program=path_to_casbar,
             redir_stdout=ph.outFile('other.stdout'),
@@ -224,7 +226,7 @@ def main(source_base, binary_base):
                     ph.outFile('meths_pe_0.bed'))])
         conf_list.append(conf)
     else:
-        print "One test not executed on FreeBSD, because of lower math precision."
+        print "Some tests only run on Linux+x86/amd64 because of rounding differences."
 
 
     # ============================================================
