@@ -39,7 +39,7 @@
 
 #include <seqan/stream.h>
 #include <stack>
-
+#include <string>
 
 /* IMPLEMENTATION NOTES
 
@@ -134,11 +134,11 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
 
     resize(record.pair, length(record.base));
 
-    CharString const open = "({<[a";
-    CharString const close = ")}>]A";
+    std::string const SEQAN_DOTBRACKET_OPEN  = "({<[abcdefghijklmnopqrstuvwxyz";
+    std::string const SEQAN_DOTBRACKET_CLOSE = ")}>]ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     group holder;
     //declare vector as stack
-    std::stack<group> v[5];
+    std::stack<group> v[30];
 
     readUntil(context.buffer, iter, IsWhitespace());
     for(unsigned i = 0; i < length(record.base); ++i)
@@ -150,26 +150,29 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             continue;
         }
         
-        for(unsigned j = 0; j < length(open); ++j)
+        std::size_t br_index = SEQAN_DOTBRACKET_OPEN.find(context.buffer[i]);   // search opening bracket
+        if (br_index != std::string::npos)
         {
-            if(context.buffer[i] == close[j] && !v[j].empty() && v[j].top().bracket == open[j])
-            {
-                holder = v[j].top();
-                record.pair[i] = holder.position;
-                std::cout << "record.pair[" << i << "] = " << holder.position-1 << std::endl;
-                record.pair[holder.position-1] = i+1;
-                //string at i gets holder.position for pair
-                //position of holder gets i for pair
-                v[j].pop();
-                break;
-            }
-            else if (context.buffer[i] == open[j])
-            {
-                holder.position = i+1;    //holder gets position
-                holder.bracket = context.buffer[i]; //holder gets opening or closing
-                v[j].push(holder);
-                break;
-            }
+            holder.position = i+1;              //holder gets position
+            holder.bracket = context.buffer[i]; //holder gets opening or closing
+            v[br_index].push(holder);
+            continue;
+        }
+        
+        br_index = SEQAN_DOTBRACKET_CLOSE.find(context.buffer[i]);              // search closing bracket
+        if (br_index != std::string::npos && !v[br_index].empty())
+        {
+            holder = v[br_index].top();
+            record.pair[i] = holder.position;
+            std::cout << "record.pair[" << i << "] = " << holder.position-1 << std::endl;
+            record.pair[holder.position-1] = i+1;
+            //string at i gets holder.position for pair
+            //position of holder gets i for pair
+            v[br_index].pop();
+        }
+        else
+        {
+            throw ParseError("Invalid bracket notation");
         }
     }
 }
@@ -258,17 +261,17 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         }
     }
     
-    CharString const open = "({<[a";
-    CharString const close = ")}>]A";
+    std::string const SEQAN_DOTBRACKET_OPEN  = "({<[abcdefghijklmnopqrstuvwxyz";
+    std::string const SEQAN_DOTBRACKET_CLOSE = ")}>]ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     
     for (unsigned i = 0; i < NUM; ++i)
     {
         if (record.pair[i] == 0)
             writeValue(target, '.');
         else if (i+1 < record.pair[i])
-            write(target, open[colors[i]-1]);
+            write(target, SEQAN_DOTBRACKET_OPEN[colors[i]-1]);
         else
-            write(target, close[colors[i]-1]);
+            write(target, SEQAN_DOTBRACKET_CLOSE[colors[i]-1]);
     }
     writeValue(target, '\n');
 }
