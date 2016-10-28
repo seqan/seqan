@@ -145,25 +145,29 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     {
         for(unsigned j = 0; j < 4; ++j){
             if(v.size() > 0){
-                if(context.buffer[i] == close[j] && v.end()->bracket == open[j]){
-                    holder = *(v.end());
+                if(context.buffer[i] == close[j] && v.back().bracket == open[j]){
+                    holder = v.back();
                     record.pair[i] = holder.position;
                     std::cout << "record.pair[" << i << "] = " << holder.position << std::endl;
                     record.pair[holder.position-1] = i+1;
                     //string at i gets holder.position for pair
                     //position of holder gets i for pair
                     v.pop_back();
+                    break;
                 }
 
             }
-            else if (context.buffer[i] == open[j]){
-                    holder.position = i;    //holder gets position 
+            if (context.buffer[i] == open[j]){
+                    holder.position = i+1;    //holder gets position
                     holder.bracket = context.buffer[i]; //holder gets opening or closing
                     v.push_back(holder);
+                break;
                 }
-            else if (context.buffer[i] != '.')
-                    record.pair[i] = 0;
-                //take position i and add 0 to pair   
+            else if (context.buffer[i] == '.') {
+                record.pair[i] = 0;
+                //take position i and add 0 to pair
+                break;
+            }
 
         }
             
@@ -202,15 +206,68 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     //write base
     write(target, record.base);
     writeValue(target, '\n');
+    
     //write pairs
-    for(unsigned i = 0; i < length(record.pair); ++i)
+    const unsigned NUM = length(record.pair);
+    std::stack<unsigned> endpos_stack;    // store endpos of outer bracket
+    String<unsigned> colors;     // contains colors for bracket pairs
+    resize(colors, NUM, 0);
+    
+    unsigned cnt = NUM;                 // count number of unprocessed entries
+    for (unsigned col = 1; cnt > 0; ++col) {
+        int bracket_end = -1;           // end position of current bracket
+        cnt = 0;
+        
+        for (unsigned idx = 0; idx < NUM; ++idx) {
+            const unsigned p_end = record.pair[idx];
+            
+            if (colors[idx] != 0 || p_end == 0) {
+                continue;               // skip processed and unpaired entries
+            } else if (p_end < bracket_end) {   // bracket inside another bracket
+                endpos_stack.push(bracket_end);
+                bracket_end = p_end;
+                colors[idx] = colors[p_end-1] = col;
+            } else if (idx > bracket_end) {     // bracket behind another bracket
+                if (endpos_stack.empty()) {
+                    bracket_end = p_end;
+                    colors[idx] = colors[p_end-1] = col;
+                } else {
+                    bracket_end = endpos_stack.top();
+                    endpos_stack.pop();
+                }
+            } else {
+                ++cnt;      // idx receives different color
+            }
+        }
+        // reset stack for next color
+        while (!endpos_stack.empty()) {
+            endpos_stack.pop();
+        }
+    }
+    
+    CharString open = "({<[a";
+    CharString close = ")}>]A";
+    
+    for (unsigned i = 0; i < NUM; ++i)
     {
-        write(target, record.pair);
-        writeValue(target, ' ');
-   }
-   writeValue(target, '\n');
+        if (record.pair[i] == 0)
+            writeValue(target, '.');
+        else if (i+1 < record.pair[i])
+            write(target, open[colors[i]-1]);
+        else
+            write(target, close[colors[i]-1]);
+    }
+    writeValue(target, '\n');
 }
 
 
 }
 #endif // SEQAN_DOTBRACKET_FORMAT_IO_H
+
+
+
+
+
+
+
+
