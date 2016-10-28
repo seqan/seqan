@@ -449,6 +449,23 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function _getArgumentType()
+// ----------------------------------------------------------------------------
+inline std::string const _getArgumentType(ArgParseArgument const & me)
+{
+    // infer from argument type
+    if (isInputFileArgument(me) || isOutputFileArgument(me))
+        return "FILE";
+    else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
+        return "PREFIX";
+    else if (isStringArgument(me))
+        return "STRING";
+    else if (isIntegerArgument(me) || isDoubleArgument(me))
+        return "NUMBER";
+    return "";
+}
+
+// ----------------------------------------------------------------------------
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
 
@@ -466,41 +483,10 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 
 inline std::string const getArgumentLabel(ArgParseArgument const & me)
 {
-    if (me._argumentLabel != "")
-    {
+    if (me._argumentLabel.empty())
         return me._argumentLabel;
-    }
     else
-    {
-        // infer from argument type
-        std::string baseLabel = "";
-        if (isInputFileArgument(me) || isOutputFileArgument(me))
-            baseLabel = "FILE";
-        else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
-            baseLabel = "PREFIX";
-        else if (isStringArgument(me))
-            baseLabel = "STR";
-        else if (isIntegerArgument(me) || isDoubleArgument(me))
-            baseLabel = "NUM";
-
-        std::string finalLabel;
-
-        if (me._numberOfValues != 1)
-        {
-            for (unsigned i = 0; i < me._numberOfValues; ++i)
-            {
-                if (i != 0)
-                    append(finalLabel, " ");
-                append(finalLabel, baseLabel);
-            }
-        }
-        else if (isListArgument(me))
-            finalLabel = baseLabel;                         // maybe we want to customize list labels
-        else
-            finalLabel = baseLabel;
-
-        return finalLabel;
-    }
+        return _getArgumentType(me);
 }
 
 // ----------------------------------------------------------------------------
@@ -1084,6 +1070,16 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
     if (dotPos == std::string::npos)
         return "";
     return value.substr(dotPos + 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function isBooleanOption()
+// ----------------------------------------------------------------------------
+
+// needed for easy printing of the help page
+constexpr bool isBooleanOption(ArgParseArgument const & /*me*/)
+{
+    return false;
 }
 
 } // namespace seqan
