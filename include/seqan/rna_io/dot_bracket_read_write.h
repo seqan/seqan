@@ -155,11 +155,12 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             clear(context.buffer);
             skipOne(iter);
 
-            if(record.endPos >= record.begPos)
+            if (record.endPos >= record.begPos)
             {
-                record.amount = record.endPos-record.begPos +1;     //Set record.amount
+                record.amount = record.endPos-record.begPos + 1;     //Set record.amount
             }
-            else{
+            else
+            {
                 std::cerr << "ERROR: End position is greater than beginning position";
             }
         }
@@ -199,7 +200,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
         if (elem != std::end(DotBracketArgs<>::OPEN))
         {
             std::size_t br_index = elem - DotBracketArgs<>::OPEN.begin();
-            stack[br_index].push(i+1);
+            stack[br_index].push(i + 1);
             continue;
         }
         
@@ -212,7 +213,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             {
                 unsigned position = stack[br_index].top();
                 record.pair[i] = position;
-                record.pair[position-1] = i+1;
+                record.pair[position-1] = i + 1;
                 stack[br_index].pop();
             }
 			else
@@ -338,16 +339,15 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
             endpos_stack.pop();
         }
     }
-    int holder = 0;     //This just got rid of all my warnings in the rna_io testing, so I'm keeping this here
+
     for (unsigned i = 0; i < length(colors); ++i)       // write pairs in bracket notation
     {
-        holder = i+1;
         if (record.pair[i] == 0)                        // unpaired
         {
             SEQAN_ASSERT(colors[i] == 0);
             writeValue(target, '.');
         }
-        else if (holder < record.pair[i])                  // open bracket
+        else if (i + 1 < record.pair[i])                  // open bracket
         {
             SEQAN_ASSERT(colors[i] > 0);
             write(target, DotBracketArgs<>::OPEN[colors[i]-1]);

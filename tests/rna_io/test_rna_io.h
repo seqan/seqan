@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
     SEQAN_ASSERT_EQ(rnaRecord.sequence[0], base);
-    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72);
+    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
 
     /* CHECK DEFAULT VALUES */
 
@@ -109,7 +109,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
-    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72);
+    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
 
     /* CHECK DEFAULT VALUES */
 
@@ -136,14 +136,14 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
     record.energy = -17.5;
     appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
     
-    append(record.pair, 8);
-    append(record.pair, 7);
-    append(record.pair, 6);
-    append(record.pair, 5);
-    append(record.pair, 4);
-    append(record.pair, 3);
-    append(record.pair, 2);
-    append(record.pair, 1);
+    append(record.pair, 8u);
+    append(record.pair, 7u);
+    append(record.pair, 6u);
+    append(record.pair, 5u);
+    append(record.pair, 4u);
+    append(record.pair, 3u);
+    append(record.pair, 2u);
+    append(record.pair, 1u);
 
 
     // Write Connect records to string stream.String<char> out;
@@ -174,14 +174,14 @@ SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
     record.energy = -17.5;
     appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
     
-    append(record.pair, 8);
-    append(record.pair, 7);
-    append(record.pair, 6);
-    append(record.pair, 5);
-    append(record.pair, 4);
-    append(record.pair, 3);
-    append(record.pair, 2);
-    append(record.pair, 1);
+    append(record.pair, 8u);
+    append(record.pair, 7u);
+    append(record.pair, 6u);
+    append(record.pair, 5u);
+    append(record.pair, 4u);
+    append(record.pair, 3u);
+    append(record.pair, 2u);
+    append(record.pair, 1u);
 
 
     // Write Connect records to string stream.String<char> out;

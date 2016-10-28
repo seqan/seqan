@@ -65,7 +65,7 @@ public:
     StringSet<Rna5String, Owner<JournaledSet> > sequence;
 
     // Position of n base's pair.
-    String<int>  pair;
+    String<unsigned>  pair;
 
 
     ////////RDAT FILES
