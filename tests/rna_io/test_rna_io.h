@@ -130,6 +130,40 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
 
 }
 
+// A test for Stockholm rna file reading.
+SEQAN_DEFINE_TEST(test_rna_io_read_stockholm)
+{
+    //Path to example.sth
+    seqan::CharString rnaPath = SEQAN_PATH_TO_ROOT();
+    append(rnaPath, "/tests/rna_io/example.sth");
+
+    seqan::String<char, seqan::MMap<> > mmapString;
+    SEQAN_ASSERT(open(mmapString, toCString(rnaPath)));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
+
+    seqan::RnaIOContext rnaIOContext;
+    seqan::RnaRecord rnaRecord;
+
+    readRecord(rnaRecord, rnaIOContext, iter, seqan::Stockholm());
+
+    /*CHECK STOCKHOLM FILE VALUES */
+
+    SEQAN_ASSERT_EQ(rnaRecord.amount, 74u);
+    SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
+    SEQAN_ASSERT_EQ(rnaRecord.endPos, 74);
+    SEQAN_ASSERT_EQ(rnaRecord.name,"trna");
+    SEQAN_ASSERT_EQ(rnaRecord.sequence[0],
+                    "GCGGAUUUAGCUCAGUUGGG.AGAGCGCCAGACUGAAGAUCUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
+    SEQAN_ASSERT_EQ(rnaRecord.sequence[2],
+                    "UCCGUGAUAGUUUAAU.GGUCAGAAUGGGCGCUUGUCGCGUGCCAGA.UCGGGGUUCAAUUCCCCGUCGCGGAG");
+    SEQAN_ASSERT_EQ(rnaRecord.seq_id[0], "DF6280");
+    SEQAN_ASSERT_EQ(rnaRecord.seq_id[2], "DD6280");
+
+    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 10);
+    SEQAN_ASSERT_EQ(value(adj_it), 24u);
+
+}
+
 ///////////////////BPSEQ TEST NOT COMPLETE////////////////////////
 SEQAN_DEFINE_TEST(test_rna_io_read_bpseq)
 {

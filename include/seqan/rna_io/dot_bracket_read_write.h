@@ -104,13 +104,15 @@ template <typename T = void>
 struct DotBracketArgs
 {
     constexpr static std::array<char, 30> const OPEN = {{
-        '(', '{', '<', '[', 'a', 'b', 'c', 'd', 'e', 'f',
-        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-        'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}};
-    constexpr static std::array<char, 30> const CLOSE = {{
-        ')', '}', '>', ']', 'A', 'B', 'C', 'D', 'E', 'F',
+        '(', '{', '<', '[', 'A', 'B', 'C', 'D', 'E', 'F',
         'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}};
+    constexpr static std::array<char, 30> const CLOSE = {{
+        ')', '}', '>', ']', 'a', 'b', 'c', 'd', 'e', 'f',
+        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+        'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}};
+    constexpr static std::array<char, 6> const UNPAIRED = {{
+        '.', ',', ':', '_', '-', '='}};
 };
 
 template <typename T>
@@ -119,9 +121,65 @@ constexpr std::array<char, 30> const DotBracketArgs<T>::OPEN;
 template <typename T>
 constexpr std::array<char, 30> const DotBracketArgs<T>::CLOSE;
 
+template <typename T>
+constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
+
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Helper Function for converting a bracket string to an undirected graph
+// ----------------------------------------------------------------------------
+static inline void bracket2graph(TRnaRecordGraph & graph, CharString & bracket_str)
+{
+    for (unsigned idx = 0; idx < length(bracket_str); ++idx)
+        addVertex(graph);
+
+    // declare stacks for different bracket pairs
+    std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
+
+    for(unsigned idx = 0; idx < length(bracket_str); ++idx)
+    {
+        // skip unpaired
+        auto elem = std::find(DotBracketArgs<>::UNPAIRED.begin(), DotBracketArgs<>::UNPAIRED.end(), bracket_str[idx]);
+        if (elem != std::end(DotBracketArgs<>::UNPAIRED))
+            continue;
+
+        // search opening bracket
+        elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), bracket_str[idx]);
+        if (elem != std::end(DotBracketArgs<>::OPEN))
+        {
+            std::size_t br_index = elem - DotBracketArgs<>::OPEN.begin();
+            stack[br_index].push(idx);
+            continue;
+        }
+
+        // search closing bracket
+        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), bracket_str[idx]);
+        if (elem != std::end(DotBracketArgs<>::CLOSE))
+        {
+            std::size_t br_index = elem - DotBracketArgs<>::CLOSE.begin();
+            if (!stack[br_index].empty())
+            {
+                addEdge(graph, idx, stack[br_index].top(), 1.);
+                stack[br_index].pop();
+            }
+            else
+            {
+                throw ParseError("Invalid bracket notation: unpaired closing bracket");
+            }
+        }
+        else
+        {
+            throw ParseError("Invalid bracket notation: unknown symbol");
+        }
+    }
+
+    for(unsigned idx = 0; idx < length(DotBracketArgs<>::OPEN); ++idx)
+        if(!stack[idx].empty())
+            throw ParseError("Invalid bracket notation: unpaired opening bracket");
+}
 
 // ----------------------------------------------------------------------------
 // Function readRecord(); RnaRecord, DotBracket
@@ -157,7 +215,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
 
             if (record.endPos >= record.begPos)
             {
-                record.amount = record.endPos-record.begPos + 1;     //Set record.amount
+                record.amount = record.endPos - record.begPos + 1;     //Set record.amount
             }
             else
             {
@@ -178,54 +236,10 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     readUntil(rec_base, iter, IsNewline());
     appendValue(record.sequence, rec_base);
 
-    for (unsigned idx = 0; idx < length(rec_base); ++idx)
-        addVertex(record.graph);
-
-    // declare stacks for different bracket pairs
-    std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
-
     skipOne(iter);
     readUntil(context.buffer, iter, IsWhitespace());
 
-    for(unsigned i = 0; i < length(context.buffer); ++i)
-    {
-        if (context.buffer[i] == '.')
-            continue;
-        
-        // search opening bracket
-        auto elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), context.buffer[i]);
-        if (elem != std::end(DotBracketArgs<>::OPEN))
-        {
-            std::size_t br_index = elem - DotBracketArgs<>::OPEN.begin();
-            stack[br_index].push(i + 1);
-            continue;
-        }
-        
-        // search closing bracket
-        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), context.buffer[i]);
-        if (elem != std::end(DotBracketArgs<>::CLOSE))
-        {
-            std::size_t br_index = elem - DotBracketArgs<>::CLOSE.begin();
-            if (!stack[br_index].empty())
-            {
-                addEdge(record.graph, i, stack[br_index].top() - 1, 1.);
-                stack[br_index].pop();
-            }
-			else
-            {
-                throw ParseError("Invalid bracket notation: unpaired closing bracket");
-            }
-        }
-        else
-        {
-            throw ParseError("Invalid bracket notation: unknown symbol");
-        }
-    }
-
-    for(unsigned i = 0; i < length(DotBracketArgs<>::OPEN); ++i)
-		if(!stack[i].empty())
-            throw ParseError("Invalid bracket notation: unpaired opening bracket");
-
+    bracket2graph(record.graph, context.buffer);
     clear(context.buffer);
     if(!atEnd(iter))
     {

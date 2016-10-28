@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Lily Shellhammer
 // ==========================================================================
-// Facade header for module bed_io.
+// Facade header for module rna_io.
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_RNA_IO_H_
@@ -60,9 +60,11 @@
 #include <seqan/rna_io/connect_read_write.h>
 #include <seqan/rna_io/dot_bracket_read_write.h>
 #include <seqan/rna_io/bpseq_read_write.h>
+#include <seqan/rna_io/stockholm_read_write.h>
 
 #include <seqan/rna_io/connect_file.h>
 #include <seqan/rna_io/dot_bracket_file.h>
 #include <seqan/rna_io/bpseq_file.h>
+#include <seqan/rna_io/stockholm_file.h>
 
-#endif  // INCLUDE_SEQAN_BED_IO_H_
+#endif  // INCLUDE_SEQAN_RNA_IO_H_

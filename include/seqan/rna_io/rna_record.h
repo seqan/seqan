@@ -62,13 +62,19 @@ public:
 
     // Amount of records.
     unsigned amount;
+
     //beginning and ending positions of the sequence
     int begPos;
     int endPos;
-    //energy
-    float energy;    
+
+    // Energy
+    float energy;
+
     // Record's name.
     CharString name;
+
+    // Sequence identifier
+    StringSet<CharString> seq_id;
     
     //string of base at each position in Rna strand
     StringSet<Rna5String, Owner<JournaledSet> > sequence;

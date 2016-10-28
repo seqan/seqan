@@ -43,6 +43,7 @@ SEQAN_BEGIN_TESTSUITE(test_rna_io)
     // Call tests.
     SEQAN_CALL_TEST(test_rna_io_read_connect);
 	SEQAN_CALL_TEST(test_rna_io_read_dot_bracket);
+    SEQAN_CALL_TEST(test_rna_io_read_stockholm);
     SEQAN_CALL_TEST(test_rna_io_read_bpseq);
 	SEQAN_CALL_TEST(test_rna_write_connect_record);
 	SEQAN_CALL_TEST(test_rna_write_dot_bracket_record);
