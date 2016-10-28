@@ -233,6 +233,11 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); Qualities inside seq
 // ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFwdIterator, typename TTag>
+inline void
+readRecord(TIdString & /* meta */, TSeqString & /* seq */, TFwdIterator & /* iter */,
+           TTag const & /* format */)
+{}
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void
@@ -255,6 +260,12 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, TagSelector<
 // ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); Qualities inside qual
 // ----------------------------------------------------------------------------
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator, typename TTag>
+inline void
+readRecord(TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */, TFwdIterator & /* iter */,
+           TTag const & /* format */)
+{}
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
 inline void
@@ -486,7 +497,7 @@ writeRecord(TTarget & target,
 
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(Fastq); Qualities inside qual
+// Function writeRecord(Fastq); Separate Qualities
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
@@ -534,6 +545,11 @@ writeRecord(TTarget & target,
 // ----------------------------------------------------------------------------
 // Function writeRecord(TagSelector); Qualities inside seq
 // ----------------------------------------------------------------------------
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TTag>
+inline void
+writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */,
+            TTag const & /* format */, SequenceOutputOptions const & /* options */)
+{}
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString>
 inline void
@@ -557,6 +573,11 @@ writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq,
 // ----------------------------------------------------------------------------
 // Function writeRecord(TagSelector); Qualities inside qual
 // ----------------------------------------------------------------------------
+template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString, typename TTag>
+inline void
+writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */, TQualString const & /* qual */,
+            TTag const & /* format */, SequenceOutputOptions const & /* options */)
+{}
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
 inline void

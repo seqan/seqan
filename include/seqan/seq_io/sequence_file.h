@@ -84,21 +84,27 @@ typedef FormattedFile<Fastq, Output>    SeqFileOut;
  * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
  */
 
+
 typedef
 TagList<Fastq,
-        TagList<Fasta,
-                TagList<Embl,
-                        TagList<GenBank,
-                                TagList<Raw
-                                        > > > > >
+TagList<Fasta,
+TagList<Embl,
+TagList<GenBank,
+TagList<Raw,
+TagList<Bam,
+TagList<Sam
+> > > > > > >
 SeqInFormats;
 
 typedef
 TagList<Fastq,
-        TagList<Fasta,
-                TagList<Raw
-                        > > >
+TagList<Fasta,
+TagList<Raw,
+TagList<Bam,
+TagList<Sam
+> > > > >
 SeqOutFormats;
+
 
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
@@ -135,12 +141,17 @@ struct SeqFileContext_<Input>
 {
     Tuple<CharString, 3>    buffer;
     Dna5QString             hybrid;
+    CharString              prevId;
+    bool                    hasReadHeader;
+    BamIOContext<StringSet<CharString> >          bamIOContext;
 };
 
 template <>
 struct SeqFileContext_<Output>
 {
     SequenceOutputOptions   options;
+    bool                    hasWritenHeader;
+    BamIOContext<StringSet<CharString> >          bamIOContext;
 };
 
 // ----------------------------------------------------------------------------
@@ -194,23 +205,19 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
-                                Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
+                            HasQualities<typename Value<TSeqString>::Type> >, void)
 readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>&file)
 {
-    readRecord(meta, seq, file.iter, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord(); No qualities in seq string
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
-                                HasQualities<typename Value<TSeqString>::Type> >, void)
-readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>&file)
-{
-    readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
-    assignQualities(seq, context(file).buffer[2]);
+    if (isEqual(file.format, Sam()) || isEqual(file.format, Bam()))
+    {
+        readRecord(meta, seq, context(file).buffer[2], file, Sam());
+        assignQualities(seq, context(file).buffer[2]);
+    }
+    else
+    {
+        readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
+        assignQualities(seq, context(file).buffer[2]);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -221,9 +228,34 @@ template <typename TSpec, typename TIdString, typename TSeqString, typename TQua
 inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec>&file)
 {
-    readRecord(meta, seq, qual, file.iter, file.format);
+    if (isEqual(file.format, Sam()) || isEqual(file.format, Bam()))
+    {
+        readRecord(meta, seq, qual, file, Sam());
+    }
+    else
+    {
+        readRecord(meta, seq, qual, file.iter, file.format);
+    }
 }
 
+// ----------------------------------------------------------------------------
+// Function readRecord(); No qualities in seq string
+// ----------------------------------------------------------------------------
+template <typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
+                            Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>&file)
+{
+    if (isEqual(file.format, Sam()) || isEqual(file.format, Bam()))
+    {
+        readRecord(meta, seq, context(file).buffer[2], file, Sam());
+    }
+    else
+    {
+        readRecord(meta, seq, file.iter, file.format);
+    }
+}
+    
 // ----------------------------------------------------------------------------
 // Function readRecords()
 // ----------------------------------------------------------------------------
@@ -362,7 +394,25 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
             TIdString const & meta,
             TSeqString const & seq)
 {
-    writeRecord(file.iter, meta, seq, file.format, context(file).options);
+    if (isEqual(file.format, Sam()) || isEqual(file.format, Bam()))
+    {
+        typedef typename Value<TSeqString>::Type             TAlphabet;
+        if (HasQualities<TAlphabet>::VALUE)
+        {
+            typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
+            ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
+            CharString qual = quals;
+            writeRecord(file, meta, seq, qual, Sam());
+        }
+        else
+        {
+            writeRecord(file, meta, seq, "*", Sam());
+        }
+    }
+    else
+    {
+        writeRecord(file.iter, meta, seq, file.format, context(file).options);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -376,7 +426,15 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
             TSeqString const & seq,
             TQualString const & qual)
 {
-    writeRecord(file.iter, meta, seq, qual, file.format, context(file).options);
+
+    if (isEqual(file.format, Sam()) || isEqual(file.format, Bam()))
+    {
+        writeRecord(file, meta, seq, qual, Sam());
+    }
+    else
+    {
+        writeRecord(file.iter, meta, seq, qual, file.format, context(file).options);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -414,7 +472,7 @@ writeRecords(FormattedFile<Fastq, Output, TSpec> & file,
     for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
         writeRecord(file, meta[i], seq[i], qual[i]);
 }
-
+    
 }  // namespace seqan
 
 #endif // SEQAN_SEQ_IO_SEQUENCE_FILE_H_

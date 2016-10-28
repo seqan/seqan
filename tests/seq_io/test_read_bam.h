@@ -31,6 +31,7 @@
 // ==========================================================================
 // Author: Anton Komissarov <anton.komissarov@fu-berlin.de>
 // Author: Sebastian Proft <sebastian.proft@fu-berlin.de>
+// Author: Temesgen Dadi <temesgen.dadi@fu-berlin.de>
 // ==========================================================================
 
 #ifndef TESTS_SEQ_IO_TEST_READ_BAM_H_
@@ -38,7 +39,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-
 #include <seqan/seq_io.h>
 
 // ---------------------------------------------------------------------------
@@ -50,18 +50,15 @@ void testSeqIOBamFileReadSequences(char const * pathFragment)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::BamFileIn bamIO(toCString(filePath));
-    seqan::BamHeader header;
-
-    readHeader(header, bamIO);
+    seqan::SeqFileIn seqFileIn(toCString(filePath));
 
     seqan::String<seqan::CharString> metas;
     seqan::String<seqan::Dna5String> seqs;
-    while (!atEnd(bamIO))
+    while (!atEnd(seqFileIn))
     {
         resize(metas, length(metas) + 1);
         resize(seqs, length(seqs) + 1);
-        readRecord(back(metas), back(seqs), bamIO);
+        readRecord(back(metas), back(seqs), seqFileIn);
     }
     SEQAN_ASSERT_EQ(length(metas), 3u);
     SEQAN_ASSERT_EQ(length(seqs), 3u);
@@ -95,21 +92,18 @@ void testSeqIOBamFileReadSequencesAndQualities(char const * pathFragment)
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::BamFileIn bamIO(toCString(filePath));
-    seqan::BamHeader header;
-
-    readHeader(header, bamIO);
+    seqan::SeqFileIn seqFileIn(toCString(filePath));
 
     seqan::String<seqan::CharString> metas;
     seqan::String<seqan::Dna5String> seqs;
     seqan::String<seqan::CharString> quals;
 
-    while (!atEnd(bamIO))
+    while (!atEnd(seqFileIn))
     {
         resize(metas, length(metas) + 1);
         resize(seqs, length(seqs) + 1);
         resize(quals, length(quals) + 1);
-        readRecord(back(metas), back(seqs), back(quals), bamIO);
+        readRecord(back(metas), back(seqs), back(quals), seqFileIn);
     }
     SEQAN_ASSERT_EQ(length(metas), 3u);
     SEQAN_ASSERT_EQ(length(seqs), 3u);

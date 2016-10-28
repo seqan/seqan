@@ -31,6 +31,7 @@
 // ==========================================================================
 // Author: Sebastian Proft <sebastian.proft@fu-berlin.de>
 // Author: Anton Komissarov <anton.komissarov@fu-berlin.de>
+// Author: Temesgen Dadi <temesgen.dadi@fu-berlin.de>
 // ==========================================================================
 // Input on BAM and SAM files.
 // ==========================================================================
@@ -42,113 +43,83 @@
 
 namespace seqan
 {
+//    typedef
+//    TagList<Bam,
+//    TagList<Sam
+//    > >
+//    BamLikeFormats;
+//    typedef TagSelector<BamLikeFormats>  BamLikeFormat;
+
+// ----------------------------------------------------------------------------
+// Class SamIgnoreFunctor_
+// ----------------------------------------------------------------------------
+
+template <typename TAlphabet>
+struct SamIgnoreFunctor_
+{
+    typedef typename If<Or<IsSameType<TAlphabet, char>,
+    Or<IsSameType<TAlphabet, signed char>,
+    IsSameType<TAlphabet, unsigned char> > >,
+    IsNewline, // ignore only newline if the target alphabet is a char
+    IsWhitespace // ignore whitespace as well for all other alphabets
+    >::Type Type;
+};
+
+template <typename TAlphabet>
+struct SamIgnoreOrAssertFunctor_
+{
+    typedef typename SamIgnoreFunctor_<TAlphabet>::Type               TIgnore;
+    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Sam>   TAsserter;
+
+    typedef typename If<Or<IsSameType<TAlphabet, char>,
+    Or<IsSameType<TAlphabet, signed char>,
+    IsSameType<TAlphabet, unsigned char> > >,
+    TIgnore,   // don't assert in case of char alphabets
+    OrFunctor<TIgnore, TAsserter> // assert being part of the alphabet for other alphabets
+    >::Type Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord(TagSelector);                    SAM/BAM without quality
+// Function skipHeader()                                              SamHeader
 // ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TForwardIter,
-          typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void
-readRecord(TIdString & /*meta*/,
-           TSeqString & /*seq*/,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /*context*/,
-           TForwardIter & /*iter*/,
-           TagSelector<> const & /*format*/)
+template <typename TFile>
+inline void skipHeader(TFile & file)
 {
-    SEQAN_FAIL("BamFileIn: File format not specified.");
-}
-
-template <typename TIdString, typename TSeqString, typename TForwardIter,
-          typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
-inline void
-readRecord(TIdString & meta,
-           TSeqString & seq,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-    if (isEqual(format, TFormat()))
-        readRecord(meta, seq, context, iter, TFormat());
-    else
-        readRecord(meta, seq, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+    if (isEqual(file.format, Sam()))
+    {
+        while (nextIs(file.iter, SamHeader()))
+        {
+            skipLine(file.iter);
+        }
+    }
+    else if(isEqual(file.format, Bam()))
+    {
+        BamHeader header;
+        BamFileIn bamIn;
+        open(bamIn, file.stream);
+        file.context.bamIOContext = context(bamIn);
+        readHeader(header, file.context.bamIOContext, file.iter, Bam());
+    }
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(TagSelector);                       SAM/BAM with quality
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TQualString, typename TForwardIter,
-          typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void
-readRecord(TIdString & /*meta*/,
-           TSeqString & /*seq*/,
-           TQualString & /*qual*/,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /*context*/,
-           TForwardIter & /*iter*/,
-           TagSelector<void> const & /*format*/)
-{
-    SEQAN_FAIL("BamFileIn: File format not specified.");
-}
-
-template <typename TIdString, typename TSeqString, typename TQualString, typename TForwardIter,
-          typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
-inline void
-readRecord(TIdString & meta,
-           TSeqString & seq,
-           TQualString & qual,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-    if (isEqual(format, TFormat()))
-        readRecord(meta, seq, qual, context, iter, TFormat());
-    else
-        readRecord(meta, seq, qual, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord(BamFileIn);                      SAM/BAM without quality
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TSpec>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> & file)
-{
-    readRecord(meta, seq, context(file), file.iter, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord(BamFileIn);                         SAM/BAM with quality
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & fileIn)
-{
-    readRecord(meta, seq, qual, context(fileIn), fileIn.iter, fileIn.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord(BamFileIn);                          Bam without quality
+// Function readRecord                                                     Bam
 // ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString,
-          typename TCharIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+          typename TCharIter>
 inline int32_t
 _readRecord(TIdString & meta,
             TSeqString & seq,
-            CharString & prevQName,
-            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+            TIdString & prevQName,
             int32_t & remainingBytes,
             TCharIter & it,
             Bam const & /* tag */)
 {
-    typedef typename Iterator<TSeqString, Standard>::Type SEQAN_RESTRICT             TSeqIter;
+    typedef typename Iterator<TSeqString, Standard>::Type             TSeqIter;
 
     // BamAlignmentRecordCore.
     BamAlignmentRecordCore recordCore;
@@ -161,18 +132,6 @@ _readRecord(TIdString & meta,
     remainingBytes -= sizeof(BamAlignmentRecordCore) + recordCore._l_qname +
                       recordCore._n_cigar * 4 + (recordCore._l_qseq + 1) / 2 + recordCore._l_qseq;
     SEQAN_ASSERT_GEQ(remainingBytes, 0);
-
-    // Translate file local rID into a global rID that is compatible with the context contigNames.
-    if (recordCore.rID >= 0 && !empty(context.translateFile2GlobalRefId))
-        recordCore.rID = context.translateFile2GlobalRefId[recordCore.rID];
-    if (recordCore.rID >= 0)
-        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rID), length(contigNames(context)));
-
-    // ... the same for rNextId
-    if (recordCore.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
-        recordCore.rNextId = context.translateFile2GlobalRefId[recordCore.rNextId];
-    if (recordCore.rNextId >= 0)
-        SEQAN_ASSERT_LT(static_cast<uint64_t>(recordCore.rNextId), length(contigNames(context)));
 
     // query name.
     resize(meta, recordCore._l_qname - 1, Exact());
@@ -203,128 +162,9 @@ _readRecord(TIdString & meta,
     return recordCore._l_qseq; // returns length of query sequence. Needed for reading quality
 }
 
-template <typename TIdString, typename TSeqString,
-          typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void
-readRecord(TIdString & meta,
-           TSeqString & seq,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Bam const & tag)
-{
-    typedef typename Iterator<TIdString, Standard>::Type                             TCharIter;
-
-    //save previous sequence name
-    CharString prevQName = context.buffer;
-
-    clear(context.buffer);
-
-    // Read size and data of the remaining block in one chunk (fastest).
-    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
-    TCharIter it = begin(context.buffer, Standard());
-
-    if (_readRecord(meta, seq, prevQName, context, remainingBytes, it, tag))
-    {
-        clear(context.buffer);
-        context.buffer = meta;
-    }
-    else
-    {
-        clear(context.buffer);
-        context.buffer = meta;
-        clear(meta);
-    }
-
-    // skip phred quality and tags
-    it += remainingBytes;
-}
 
 // ----------------------------------------------------------------------------
-// Function readRecord(BamFileIn)                              BAM with quality
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TQualString,
-          typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline void
-readRecord(TIdString & meta,
-           TSeqString & seq,
-           TQualString & qual,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Bam const & tag)
-{
-    typedef typename Iterator<TIdString, Standard>::Type                              TCharIter;
-    typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
-
-    CharString prevQName = context.buffer;
-
-    clear(context.buffer);
-    clear(qual);
-
-    // Read size and data of the remaining block in one chunk (fastest).
-    int32_t remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
-    TCharIter it = begin(context.buffer, Standard());
-
-    if (int32_t l_qseq = _readRecord(meta, seq, prevQName, context, remainingBytes, it, tag))
-    {
-        // phred quality
-        resize(qual, l_qseq, Exact());
-        TQualIter qitEnd = end(qual, Standard());
-        for (TQualIter qit = begin(qual, Standard()); qit != qitEnd; )
-            *qit++ = '!' + *it++;
-
-        // Handle case of missing quality: throw parse exception if there is no quality.
-        // there is another version of readRecord that doesn't use quality
-        // If qual is a sequence of 0xff (heuristic same as samtools: Only look at first byte) then we stop the program
-
-        if (!empty(qual) && qual[0] == '\xff')
-            throw ParseError("This BAM file doesn't provide PHRED quality string. "
-                             "Consider using another version of readRecord without quality");
-        clear(context.buffer);
-        context.buffer = meta;
-    }
-    else
-    {
-        clear(context.buffer);
-        context.buffer = meta;
-        clear(meta);
-    }
-
-    // skip tags
-    it += remainingBytes;
-}
-
-// ----------------------------------------------------------------------------
-// Class SamIgnoreFunctor_
-// ----------------------------------------------------------------------------
-
-template <typename TAlphabet>
-struct SamIgnoreFunctor_
-{
-    typedef typename If<Or<IsSameType<TAlphabet, char>,
-                           Or<IsSameType<TAlphabet, signed char>,
-                              IsSameType<TAlphabet, unsigned char> > >,
-                        IsNewline, // ignore only newline if the target alphabet is a char
-                        IsWhitespace // ignore whitespace as well for all other alphabets
-                        >::Type Type;
-};
-
-template <typename TAlphabet>
-struct SamIgnoreOrAssertFunctor_
-{
-    typedef typename SamIgnoreFunctor_<TAlphabet>::Type               TIgnore;
-    typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Sam>   TAsserter;
-
-    typedef typename If<Or<IsSameType<TAlphabet, char>,
-                           Or<IsSameType<TAlphabet, signed char>,
-                              IsSameType<TAlphabet, unsigned char> > >,
-                        TIgnore,   // don't assert in case of char alphabets
-                        OrFunctor<TIgnore, TAsserter> // assert being part of the alphabet for other alphabets
-                        >::Type Type;
-};
-
-// ----------------------------------------------------------------------------
-// Function readRecord(BamFileIn)                           SAM without quality
+// Function readRecord
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString,
@@ -332,7 +172,7 @@ template <typename TIdString, typename TSeqString,
 inline bool
 _readRecord(TIdString & meta,
             TSeqString & seq,
-            CharString & prevQName,
+            TIdString & prevQName,
             TForwardIter & iter,
             Sam const & /*tag*/)
 {
@@ -372,72 +212,144 @@ _readRecord(TIdString & meta,
     return true;
 }
 
-template <typename TIdString, typename TSeqString,
-          typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
-          typename TForwardIter>
-inline void
-readRecord(TIdString & meta,
-           TSeqString & seq,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Sam const & tag)
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
+inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec>&file, Sam)
 {
-    CharString prevQName = context.buffer;
-    clear(context.buffer);
+    if (!(context(file).hasReadHeader))
+    {
+        skipHeader(file);
+        file.context.hasReadHeader = true;
+    }
+    TIdString pId = toCString(file.context.prevId);
+    if (isEqual(file.format, Sam()))
+    {
+        typedef typename Value<TQualString>::Type TQualAlphabet;
+        typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type TQualIgnoreOrAssert;
+        clear(qual);
 
-    if (_readRecord(meta, seq, prevQName, iter, tag))
-    {
-        context.buffer = meta;
+        if (_readRecord(meta, seq, pId, file.iter, Sam()))
+        {
+            // QUAL
+            readUntil(qual, file.iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
+            clear(file.context.prevId);
+            file.context.prevId = meta;
+        }
+        else
+        {
+            clear(file.context.prevId);
+            file.context.prevId = meta;
+            clear(meta);
+        }
+        skipLine(file.iter);
     }
-    else
+    else if (isEqual(file.format, Bam()))
     {
-        context.buffer = meta;
-        clear(meta);
+        typedef typename Iterator<CharString, Standard>::Type                             TCharIter;
+        typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
+
+        clear(qual);
+
+        // Read size and data of the remaining block in one chunk (fastest).
+        int32_t remainingBytes = _readBamRecordWithoutSize(file.context.bamIOContext.buffer, file.iter);
+        TCharIter it = begin(file.context.bamIOContext.buffer, Standard());
+
+
+        if (int32_t l_qseq = _readRecord(meta, seq, pId, remainingBytes, it, Bam()))
+        {
+            // phred quality
+            resize(qual, l_qseq, Exact());
+            TQualIter qitEnd = end(qual, Standard());
+            for (TQualIter qit = begin(qual, Standard()); qit != qitEnd; )
+                *qit++ = '!' + *it++;
+
+            clear(file.context.prevId);
+            file.context.prevId = meta;
+        }
+        else
+        {
+            clear(file.context.prevId);
+            file.context.prevId = meta;
+            clear(meta);
+        }
+        
+        // skip tags
+        it += remainingBytes;
     }
-    skipLine(iter);
 }
 
-// ----------------------------------------------------------------------------
-// Function readRecord(BamFileIn)                              SAM with quality
-// ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TQualString,
-          typename TNameStore, typename  TNameStoreCache, typename TStorageSpec,
-          typename TForwardIter>
+//// ----------------------------------------------------------------------------
+//// Function writeRecord(BAM/SAM); Separate Qualities
+//// ----------------------------------------------------------------------------
+//
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
 inline void
-readRecord(TIdString & meta,
-           TSeqString & seq,
-           TQualString & qual,
-           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
-           TForwardIter & iter,
-           Sam const & tag)
+writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            TQualString const & qual,
+            Sam)
 {
-    typedef typename Value<TQualString>::Type TQualAlphabet;
-    typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type TQualIgnoreOrAssert;
-
-    clear(qual);
-    CharString prevQName = context.buffer;
-    clear(context.buffer);
-
-    if (_readRecord(meta, seq, prevQName, iter, tag))
+    if (!(context(file).hasWritenHeader))
     {
-        // QUAL
-        readUntil(qual, iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
+        typedef BamHeaderRecord::TTag   TTag;
+        BamHeader header;
 
-        // Handle case of missing quality: throw parse exception if there is no quality.
-        // there is another version of readRecord that doesn't use quality
-        if (qual == '*')
+        StringSet<CharString> contigNameStore;
+        appendValue(contigNameStore, "*");
+        NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
+        BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
+
+        file.context.bamIOContext = bamIOContext;
+        BamHeaderRecord seqRecord;
+
+        // Fill first header line.
+        BamHeaderRecord firstRecord;
+        firstRecord.type = BAM_HEADER_FIRST;
+        appendValue(firstRecord.tags, TTag("VN", "2.3"));
+        appendValue(firstRecord.tags, TTag("SO", "sorted"));
+        appendValue(header, firstRecord);
+
+        // Fill program header line.
+        BamHeaderRecord pgRecord;
+        pgRecord.type = BAM_HEADER_PROGRAM;
+        appendValue(pgRecord.tags, TTag("ID", "SeqAn_IO"));
+        appendValue(pgRecord.tags, TTag("PN", "SeqAn_IO"));
+        appendValue(header, pgRecord);
+
+        // Fill read group header line.
+        BamHeaderRecord rgRecord;
+        rgRecord.type = BAM_HEADER_READ_GROUP;
+        appendValue(rgRecord.tags, TTag("ID", "none"));
+        appendValue(rgRecord.tags, TTag("SM", "none"));
+        appendValue(rgRecord.tags, TTag("PG", "SeqAn_IO"));
+        appendValue(header, rgRecord);
+
+        if (isEqual(file.format, Sam()))
         {
-            throw ParseError("This SAM file doesn't provide PHRED quality string. "
-                             "Consider using another version of readRecord without quality");
+            write(file.iter, header, context(file).bamIOContext, Sam());
         }
-        context.buffer = meta;
+        else if (isEqual(file.format, Bam()))
+        {
+            write(file.iter, header, context(file).bamIOContext, Bam());
+        }
+        file.context.hasWritenHeader = true;
     }
-    else
+
+    BamAlignmentRecord rec;
+    clear(rec);
+    rec.qName = meta;
+    rec.seq = seq;
+    rec.qual = qual;
+    rec.flag = BAM_FLAG_UNMAPPED;
+
+    if (isEqual(file.format, Sam()))
     {
-        context.buffer = meta;
-        clear(meta);
+        write(file.iter, rec, context(file).bamIOContext, Sam());
     }
-    skipLine(iter);
+    else if (isEqual(file.format, Bam()))
+    {
+        write(file.iter, rec, context(file).bamIOContext, Bam());
+    }
 }
 
 } // namespace seqan
