@@ -30,7 +30,7 @@
 //
 // ==========================================================================
 // Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
-//          Jörg Winkler <>
+//          Jörg Winkler <winkler@molgen.mpg.de>
 // ==========================================================================
 // This file contains routines to write to DotBracket format files (.ct)
 // ==========================================================================
@@ -40,7 +40,7 @@
 
 #include <seqan/stream.h>
 #include <stack>
-#include <string>
+#include <array>
 
 /* IMPLEMENTATION NOTES
 
@@ -96,6 +96,28 @@ char const * FileExtensions<DotBracket, T>::VALUE[1] =
 {
     ".dt"      // default output extension
 };
+
+// ----------------------------------------------------------------------------
+// Metafunction DotBracketArgs
+// ----------------------------------------------------------------------------
+template <typename T = void>
+struct DotBracketArgs
+{
+    constexpr static std::array<char, 30> const OPEN = {{
+        '(', '{', '<', '[', 'a', 'b', 'c', 'd', 'e', 'f',
+        'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+        'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}};
+    constexpr static std::array<char, 30> const CLOSE = {{
+        ')', '}', '>', ']', 'A', 'B', 'C', 'D', 'E', 'F',
+        'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+        'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}};
+};
+
+template <typename T>
+constexpr std::array<char, 30> const DotBracketArgs<T>::OPEN;
+
+template <typename T>
+constexpr std::array<char, 30> const DotBracketArgs<T>::CLOSE;
 
 // ============================================================================
 // Functions
@@ -157,10 +179,8 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     resize(record.pair, length(record.base));
     resize(record.index, length(record.base));
 
-    std::string const SEQAN_DOTBRACKET_OPEN  = "({<[abcdefghijklmnopqrstuvwxyz";
-    std::string const SEQAN_DOTBRACKET_CLOSE = ")}>]ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    //declare vector as stack
-    std::stack<unsigned> v[30];
+    // declare stacks for different bracket pairs
+    std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
 
     readUntil(context.buffer, iter, IsWhitespace());
 
@@ -173,38 +193,41 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             continue;
         }
         
-        std::size_t br_index = SEQAN_DOTBRACKET_OPEN.find(context.buffer[i]);   // search opening bracket
-        if (br_index != std::string::npos)
+        // search opening bracket
+        auto elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), context.buffer[i]);
+        if (elem != std::end(DotBracketArgs<>::OPEN))
         {
-            v[br_index].push(i+1);
+            std::size_t br_index = elem - DotBracketArgs<>::OPEN.begin();
+            stack[br_index].push(i+1);
             continue;
         }
         
-        br_index = SEQAN_DOTBRACKET_CLOSE.find(context.buffer[i]);              // search closing bracket
-        if (br_index != std::string::npos && !v[br_index].empty())
+        // search closing bracket
+        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), context.buffer[i]);
+        if (elem != std::end(DotBracketArgs<>::CLOSE))
         {
-			unsigned position = v[br_index].top();
-            record.pair[i] = position;
-            //std::cout << "record.pair[" << i << "] = " << holder.position-1 << std::endl;
-            record.pair[position-1] = i+1;
-            //string at i gets holder.position for pair
-            //position of holder gets i for pair
-            v[br_index].pop();
+            std::size_t br_index = elem - DotBracketArgs<>::CLOSE.begin();
+            if (!stack[br_index].empty())
+            {
+                unsigned position = stack[br_index].top();
+                record.pair[i] = position;
+                record.pair[position-1] = i+1;
+                stack[br_index].pop();
+            }
+			else
+            {
+                throw ParseError("Invalid bracket notation: unpaired closing bracket");
+            }
         }
         else
         {
-            throw ParseError("Invalid bracket notation");
+            throw ParseError("Invalid bracket notation: unknown symbol");
         }
     }
 
-    for(unsigned i = 0; i < 30; ++i)
-	{
-		if(!v[i].empty())
-    	{
-        	std::cerr << "ERROR: Imperfectly paired brackets" << std::endl;
-			return;
-    	}
-	}
+    for(unsigned i = 0; i < length(DotBracketArgs<>::OPEN); ++i)
+		if(!stack[i].empty())
+            throw ParseError("Invalid bracket notation: unpaired opening bracket");
 
     clear(context.buffer);
     if(!atEnd(iter))
@@ -215,12 +238,10 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             skipOne(iter);    
             readUntil(context.buffer, iter, EqualsChar<')'>());
             if (!lexicalCast(record.energy, context.buffer))
-             throw BadLexicalCast(record.energy, context.buffer);
+                throw BadLexicalCast(record.energy, context.buffer);
             clear(context.buffer);
         }
     }
-
-    
 }
 
 
@@ -262,7 +283,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     write(target, record.base);
     writeValue(target, '\n');
     
-    //write pairs
+    //compute colours
     std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
     String<unsigned> colors;                            // colors for bracket pairs
     resize(colors, length(record.pair), 0);             // color 0 means 'not set'
@@ -276,9 +297,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         for (unsigned idx = 0; idx < length(record.pair); ++idx)
         {
             if (record.pair[idx] == 0 || (colors[idx] > 0 && colors[idx] < col))
-            {
                 continue;                               // skip processed and unpaired entries
-            }
             
             unsigned const p_end = record.pair[idx] - 1;// paired end bracket (zero-based index)
             if (p_end < bracket_end && idx < p_end)     // open bracket inside previous bracket
@@ -319,10 +338,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         }
     }
     
-    std::string const SEQAN_DOTBRACKET_OPEN  = "({<[abcdefghijklmnopqrstuvwxyz";
-    std::string const SEQAN_DOTBRACKET_CLOSE = ")}>]ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
-    for (unsigned i = 0; i < length(colors); ++i)
+    for (unsigned i = 0; i < length(colors); ++i)       // write pairs in bracket notation
     {
         if (record.pair[i] == 0)                        // unpaired
         {
@@ -332,22 +348,20 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         else if (i+1 < record.pair[i])                  // open bracket
         {
             SEQAN_ASSERT(colors[i] > 0);
-            write(target, SEQAN_DOTBRACKET_OPEN[colors[i]-1]);
+            write(target, DotBracketArgs<>::OPEN[colors[i]-1]);
         }
         else                                            // close bracket
         {
             SEQAN_ASSERT(colors[i] > 0);
-            write(target, SEQAN_DOTBRACKET_CLOSE[colors[i]-1]);
+            write(target, DotBracketArgs<>::CLOSE[colors[i]-1]);
         }
     }
-   writeValue(target, ' ');
-   writeValue(target, '(');
-   write(target, record.energy);
-   writeValue(target, ')');
-
-
+    writeValue(target, ' ');
+    writeValue(target, '(');
+    write(target, record.energy);
+    writeValue(target, ')');
+    writeValue(target, '\n');
 }
-
 
 }
 #endif // SEQAN_DOTBRACKET_FORMAT_IO_H
