@@ -249,51 +249,57 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     writeValue(target, '\n');
     
     //write pairs
-    unsigned const NUM = length(record.pair);
-    std::stack<unsigned> endpos_stack;    // store endpos of outer bracket
-    String<unsigned> colors;     // contains colors for bracket pairs
-    resize(colors, NUM, 0);
+    std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
+    String<unsigned> colors;                            // colors for bracket pairs
+    resize(colors, length(record.pair), 0);             // color 0 means 'not set'
     
-    unsigned cnt = NUM;                 // count number of unprocessed entries
-    for (unsigned col = 1; cnt > 0; ++col)
+    unsigned unprocessed = 1; /* any value > 0 */
+    for (unsigned col = 1; unprocessed > 0; ++col)
     {
-        int bracket_end = -1;           // end position of current bracket
-        cnt = 0;
+        unsigned bracket_end = 0;                       // end position of current bracket
+        unprocessed = 0;
         
-        for (unsigned idx = 0; idx < NUM; ++idx)
+        for (unsigned idx = 0; idx < length(record.pair); ++idx)
         {
-            unsigned const p_end = record.pair[idx];
-            
-            if (colors[idx] != 0 || p_end == 0 || idx > p_end)
+            if (record.pair[idx] == 0 || (colors[idx] > 0 && colors[idx] < col))
             {
-                continue;               // skip processed and unpaired entries
+                continue;                               // skip processed and unpaired entries
             }
-            else if (p_end < bracket_end)
-            {   // bracket inside another bracket
+            
+            unsigned const p_end = record.pair[idx] - 1;// paired end bracket (zero-based index)
+            if (p_end < bracket_end && idx < p_end)     // open bracket inside previous bracket
+            {
                 endpos_stack.push(bracket_end);
                 bracket_end = p_end;
-                colors[idx] = colors[p_end-1] = col;
+                colors[idx] = colors[p_end] = col;
             }
-            else if (idx > bracket_end)
-            {     // bracket behind another bracket
+            else if (idx >= bracket_end)                // bracket behind previous bracket
+            {
                 if (endpos_stack.empty())
                 {
-                    bracket_end = p_end;
-                    colors[idx] = colors[p_end-1] = col;
+                    if (idx < p_end)                    // open bracket on base level
+                    {
+                        bracket_end = p_end;
+                        colors[idx] = colors[p_end] = col;
+                    }
+                    else                                // close bracket on base level
+                    {
+                        bracket_end = idx;
+                    }
                 }
-                else
+                else                                    // close bracket, recover endpos from stack
                 {
                     bracket_end = endpos_stack.top();
                     endpos_stack.pop();
                 }
             }
-            else
+            else                                        // bracket will get different color
             {
-                ++cnt;      // idx receives different color
+                ++unprocessed;
             }
         }
-        // reset stack for next color
-        while (!endpos_stack.empty())
+        
+        while (!endpos_stack.empty())                   // reset stack for next color
         {
             endpos_stack.pop();
         }
@@ -302,14 +308,23 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     std::string const SEQAN_DOTBRACKET_OPEN  = "({<[abcdefghijklmnopqrstuvwxyz";
     std::string const SEQAN_DOTBRACKET_CLOSE = ")}>]ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     
-    for (unsigned i = 0; i < NUM; ++i)
+    for (unsigned i = 0; i < length(colors); ++i)
     {
-        if (record.pair[i] == 0)
+        if (record.pair[i] == 0)                        // unpaired
+        {
+            SEQAN_ASSERT(colors[i] == 0);
             writeValue(target, '.');
-        else if (i+1 < record.pair[i])
+        }
+        else if (i+1 < record.pair[i])                  // open bracket
+        {
+            SEQAN_ASSERT(colors[i] > 0);
             write(target, SEQAN_DOTBRACKET_OPEN[colors[i]-1]);
-        else
+        }
+        else                                            // close bracket
+        {
+            SEQAN_ASSERT(colors[i] > 0);
             write(target, SEQAN_DOTBRACKET_CLOSE[colors[i]-1]);
+        }
     }
     writeValue(target, '\n');
 }
