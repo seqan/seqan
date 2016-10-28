@@ -59,7 +59,7 @@ public:
     CharString name;
 
     // Default constructor.
-    RnaHeader() : energy(0), begPos(INVALID_POS), endPos(INVALID_POS), name(" "), amount(0)
+    RnaHeader() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" ")
     {}
 
     // Construct directly with amount/name.

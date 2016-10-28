@@ -98,7 +98,7 @@ public:
     //mutpos
   
     // Default constructor.
-    RnaRecord() : energy(0), offset(0), comment(""), begPos(INVALID_POS), endPos(INVALID_POS), name(" "), amount(0)
+    RnaRecord() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" "), offset(0), comment("")
     {}                                                                                      
 
 };
