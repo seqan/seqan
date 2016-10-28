@@ -44,23 +44,23 @@ Rna FORMAT example:
 => record START : number of bases in the sequence
 => record END: title of the structure
 => Each line has information about a base pair in the sequence
-	Each line is a base, with this order of information:
-		- Base number: index n
-		- Base (A, C, G, T, U, X)
-		- Index n-1
-		- Index n+1
-		- Number of the base to which n is paired. No pairing is indicated by 0 (zero).
-		- Natural numbering. Rnastructure ignores the actual value given in natural numbering,
-			so it is easiest to repeat n here.
+    Each line is a base, with this order of information:
+        - Base number: index n
+        - Base (A, C, G, T, U, X)
+        - Index n-1
+        - Index n+1
+        - Number of the base to which n is paired. No pairing is indicated by 0 (zero).
+        - Natural numbering. RnaStructure ignores the actual value given in natural numbering,
+            so it is easiest to repeat n here.
 
 CT Files can hold multiple structures of a single sequence.
 This is done by repeating the format for each structure without any blank lines between structures.
 
 record
- N  SEQUENCE   N-1  	 N+1	J POSITION  N
- 1 	G       	0    	2   	72    		1
- 2 	C       	1    	3   	71    		2
- 3 	G       	2    	4   	70    		3
+ N  SEQUENCE    N-1     N+1     J POSITION      N
+ 1  G           0       2       72              1
+ 2  C           1       3       71              2
+ 3  G           2       4       70              3
 
 */
 

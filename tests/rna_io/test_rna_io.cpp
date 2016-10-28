@@ -42,13 +42,13 @@ SEQAN_BEGIN_TESTSUITE(test_rna_io)
 {
     // Call tests.
     SEQAN_CALL_TEST(test_rna_io_read_connect);
-	SEQAN_CALL_TEST(test_rna_io_read_dot_bracket);
+    SEQAN_CALL_TEST(test_rna_io_read_dot_bracket);
     SEQAN_CALL_TEST(test_rna_io_read_vienna);
     SEQAN_CALL_TEST(test_rna_io_read_stockholm);
     SEQAN_CALL_TEST(test_rna_io_read_bpseq);
     SEQAN_CALL_TEST(test_rna_io_read_ebpseq);
-	SEQAN_CALL_TEST(test_rna_io_write_connect);
-	SEQAN_CALL_TEST(test_rna_io_write_dot_bracket);
+    SEQAN_CALL_TEST(test_rna_io_write_connect);
+    SEQAN_CALL_TEST(test_rna_io_write_dot_bracket);
     SEQAN_CALL_TEST(test_rna_io_write_vienna);
     SEQAN_CALL_TEST(test_rna_io_write_stockholm);
     SEQAN_CALL_TEST(test_rna_io_write_bpseq);

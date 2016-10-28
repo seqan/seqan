@@ -87,6 +87,13 @@ public:
      * @brief List of types of biological validated data.
      */
     StringSet<CharString> typeLabels;
+
+    /*!
+     * @fn RnaHeader::RnaHeader
+     * @brief The constructor.
+     * @signature RnaHeader::RnaHeader()
+     */
+    RnaHeader() : description("") {}
 };
 
 // ============================================================================

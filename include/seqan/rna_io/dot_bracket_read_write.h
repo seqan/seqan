@@ -300,7 +300,8 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
         record.name = buffer.substr(0, pos);
         std::string posStr{buffer.substr(pos + 1)};
         pos = posStr.find('-');
-        if (pos == std::string::npos || !lexicalCast(record.offset, posStr.substr(0, pos))) {
+        if (pos == std::string::npos || !lexicalCast(record.offset, posStr.substr(0, pos)))
+        {
             record.name = buffer;
             record.offset = 1;
         }
