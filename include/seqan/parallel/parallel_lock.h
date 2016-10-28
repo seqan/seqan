@@ -213,14 +213,26 @@ struct ScopedWriteLock<TLock, Serial>
 inline void
 yieldProcessor()
 {
-#if defined(__arm__) || defined(_M_ARM)
-    asm volatile ("yield" ::: "memory");
-#elif defined(STDLIB_VS)
+#if defined(STDLIB_VS)  // Visual Studio - all platforms.
     YieldProcessor();
-#elif defined(__SSE2__)
-    _mm_pause();
+#elif defined(__arm__) || defined(__aarch64__)  // ARM.
+    __asm__ __volatile__ ("yield" ::: "memory");
+#elif defined(__sparc) // SPARC
+#if defined(__SUNPRO_C)
+    __asm __volatile__ ("rd %%ccr, %%g0\n\t"
+                        "rd %%ccr, %%g0\n\t"
+                        "rd %%ccr, %%g0");
 #else
-    __asm__ __volatile__("rep; nop" : : );
+    __asm __volatile__ ("rd %ccr, %g0\n\t"
+                        "rd %ccr, %g0\n\t"
+                        "rd %ccr, %g0");
+#endif  // defined(__SUNPRO_C)
+#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC
+    __asm__ __volatile__ ("or 27,27,27" ::: "memory");
+#elif defined(__SSE2__)  // AMD and Intel
+    _mm_pause();
+#else  // everything else.
+    asm volatile ("nop" ::: "memory");  // default operation - does nothing => Might lead to passive spinning.
 #endif
 }
 

@@ -416,9 +416,9 @@ getSortOrder(BamHeader const & header)
         {
             if (soString == "unsorted")
                 return BAM_SORT_UNSORTED;
-            else if (soString == "")
+            else if (soString == "queryname")
                 return BAM_SORT_QUERYNAME;
-            else if (soString == "")
+            else if (soString == "coordinate")
                 return BAM_SORT_COORDINATE;
             else
                 return BAM_SORT_UNKNOWN;

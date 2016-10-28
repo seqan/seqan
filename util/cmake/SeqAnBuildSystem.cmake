@@ -176,9 +176,10 @@ macro (seqan_register_apps)
     foreach (ENTRY ${ENTRIES})
         if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
             if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
-                if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
+                if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
                     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS") OR
-                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}"))
+                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}")) AND
+                    (NOT (${${ENTRY}_NO_BUILD})))
                     add_subdirectory(${ENTRY})
                 endif ()
             endif (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
