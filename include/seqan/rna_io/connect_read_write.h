@@ -152,6 +152,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
      N  SEQUENCE   N-1     N+1    J POSITION  N  
     */
     clear(context);
+    Rna5String rec_base;
     unsigned counter = 0;
     skipUntil(iter, NotFunctor<IsWhitespace>()); 
     while (!atEnd(iter))
@@ -175,7 +176,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         skipUntil(iter, NotFunctor<IsWhitespace>());    
 
         readUntil(context.base, iter, IsWhitespace());               //read base 
-        append(record.base, context.base);
+        append(rec_base, context.base);
         clear(context.base);
 
         skipUntil(iter, NotFunctor<IsWhitespace>());    //skip whitespace
@@ -194,6 +195,8 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         skipUntil(iter, IsNewline());      //skip until newline
         counter++;
     }
+    appendValue(record.sequence, rec_base);
+
     if(record.amount == 0)
     {
         record.amount = counter;
@@ -231,13 +234,13 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
     int begPos = 1;
     if(record.begPos != 1)
         begPos = record.begPos;
-    for (unsigned i = 0; i < length(record.base); i++)
+    for (unsigned i = 0; i < length(record.sequence[0]); i++)
     {
 
         writeValue(target, ' ');    //All records start with a space
         appendNumber(target, i+begPos);
         writeValue(target, ' ');
-        write(target, record.base[i]);
+        write(target, record.sequence[0][i]);
         writeValue(target, '\t');
         appendNumber(target, i+begPos-1);
         writeValue(target, '\t');

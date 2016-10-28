@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
-    SEQAN_ASSERT_EQ(rnaRecord.base, base);
+    SEQAN_ASSERT_EQ(rnaRecord.sequence[0], base);
     SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72);
 
     /* CHECK DEFAULT VALUES */
@@ -108,7 +108,7 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
-    SEQAN_ASSERT_EQ(rnaRecord.base, "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
+    SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
     SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72);
 
     /* CHECK DEFAULT VALUES */
@@ -134,7 +134,7 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
     record.endPos = 8;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
-    record.base = "GCGGAUUU";
+    appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
     
     append(record.pair, 8);
     append(record.pair, 7);
@@ -172,7 +172,7 @@ SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
     record.endPos = 8;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
-    record.base = "GCGGAUUU";
+    appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
     
     append(record.pair, 8);
     append(record.pair, 7);

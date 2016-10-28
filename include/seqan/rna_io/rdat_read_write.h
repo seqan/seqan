@@ -123,7 +123,9 @@ readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, Rdat
 
     skipUntil(iter, IsWhitespace());
     skipUntil(iter, NextEntry());
-    readUntil(record.base, iter, IsWhitespace());
+    Rna5String rec_base;
+    readUntil(rec_base, iter, IsWhitespace());
+    appendValue(record.sequence, rec_base);
     skipUntil(iter, IsNewline());
 
     skipUntil(iter, IsWhitespace());

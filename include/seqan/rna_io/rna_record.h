@@ -49,8 +49,7 @@ namespace seqan {
 class RnaRecord
 {
 public:
-        static const int INVALID_POS = -1;
-
+    static const int INVALID_POS = -1;
 
     // Amount of records.
     int32_t amount;    
@@ -63,7 +62,7 @@ public:
     CharString name;
     
     //string of base at each position in Rna strand
-    Rna5String base;   
+    StringSet<Rna5String, Owner<JournaledSet> > sequence;
 
     // Position of n base's pair.
     String<int>  pair;
@@ -111,7 +110,7 @@ public:
 inline void clear(RnaRecord & record)
 {
     clear(record.name);
-    clear(record.base);
+    clear(record.sequence);
     clear(record.pair);
     clear(record.qual);
 

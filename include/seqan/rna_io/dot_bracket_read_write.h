@@ -173,10 +173,12 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     */
 
     //declare opening and closing brackets. the reason I use two diff strings is becasue I can see if we have a pair by comparing open[i]==close[i]
-    readUntil(record.base, iter, IsNewline());
+    Rna5String rec_base;
+    readUntil(rec_base, iter, IsNewline());
+    appendValue(record.sequence, rec_base);
     skipOne(iter);
 
-    resize(record.pair, length(record.base));
+    resize(record.pair, length(rec_base));
 
     // declare stacks for different bracket pairs
     std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
@@ -279,7 +281,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
 
     writeValue(target, '\n');
     //write base
-    write(target, record.base);
+    write(target, record.sequence[0]);
     writeValue(target, '\n');
     
     //compute colours
