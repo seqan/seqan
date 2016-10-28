@@ -30,13 +30,13 @@
 //
 // ==========================================================================
 // Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
-//          Jörg Winkler <winkler@molgen.mpg.de>
+//          Joerg Winkler <winkler@molgen.mpg.de>
 // ==========================================================================
 // This file contains routines to write to DotBracket format files (.ct)
 // ==========================================================================
 
-#ifndef SEQAN_DOTBRACKET_FORMAT_IO_H
-#define SEQAN_DOTBRACKET_FORMAT_IO_H
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_DOT_BRACKET_READ_WRITE_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_DOT_BRACKET_READ_WRITE_H_
 
 #include <seqan/stream.h>
 #include <stack>
@@ -177,23 +177,20 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
     Rna5String rec_base;
     readUntil(rec_base, iter, IsNewline());
     appendValue(record.sequence, rec_base);
-    skipOne(iter);
 
-    resize(record.pair, length(rec_base));
+    for (unsigned idx = 0; idx < length(rec_base); ++idx)
+        addVertex(record.graph);
 
     // declare stacks for different bracket pairs
     std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
 
+    skipOne(iter);
     readUntil(context.buffer, iter, IsWhitespace());
 
     for(unsigned i = 0; i < length(context.buffer); ++i)
     {
         if (context.buffer[i] == '.')
-        {
-            //take position i and add 0 to pair
-            record.pair[i] = 0;
             continue;
-        }
         
         // search opening bracket
         auto elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), context.buffer[i]);
@@ -211,9 +208,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, DotB
             std::size_t br_index = elem - DotBracketArgs<>::CLOSE.begin();
             if (!stack[br_index].empty())
             {
-                unsigned position = stack[br_index].top();
-                record.pair[i] = position;
-                record.pair[position-1] = i + 1;
+                addEdge(record.graph, i, stack[br_index].top() - 1, 1.);
                 stack[br_index].pop();
             }
 			else
@@ -288,7 +283,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     //compute colours
     std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
     String<unsigned> colors;                            // colors for bracket pairs
-    resize(colors, length(record.pair), 0);             // color 0 means 'not set'
+    resize(colors, record.amount, 0);                   // color 0 means 'not set'
     
     unsigned unprocessed = 1; /* any value > 0 */
     for (unsigned col = 1; unprocessed > 0; ++col)
@@ -296,12 +291,14 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         unsigned bracket_end = 0;                       // end position of current bracket
         unprocessed = 0;
         
-        for (unsigned idx = 0; idx < length(record.pair); ++idx)
+        for (unsigned idx = 0; idx < record.amount; ++idx)
         {
-            if (record.pair[idx] == 0 || (colors[idx] > 0 && colors[idx] < col))
+            if (degree(record.graph, idx) == 0 || (colors[idx] > 0 && colors[idx] < col))
                 continue;                               // skip processed and unpaired entries
-            
-            unsigned const p_end = record.pair[idx] - 1;// paired end bracket (zero-based index)
+
+            TAdjacencyIterator adj_it(record.graph, idx);
+            unsigned const p_end = value(adj_it);       // paired end bracket
+
             if (p_end < bracket_end && idx < p_end)     // open bracket inside previous bracket
             {
                 endpos_stack.push(bracket_end);
@@ -340,22 +337,25 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
         }
     }
 
-    for (unsigned i = 0; i < length(colors); ++i)       // write pairs in bracket notation
+    for (unsigned idx = 0; idx < length(colors); ++idx) // write pairs in bracket notation
     {
-        if (record.pair[i] == 0)                        // unpaired
+        if (degree(record.graph, idx) == 0)             // unpaired
         {
-            SEQAN_ASSERT(colors[i] == 0);
+            SEQAN_ASSERT(colors[idx] == 0);
             writeValue(target, '.');
+            continue;
         }
-        else if (i + 1 < record.pair[i])                  // open bracket
+
+        TAdjacencyIterator adj_it(record.graph, idx);
+        if (idx < value(adj_it))                        // open bracket
         {
-            SEQAN_ASSERT(colors[i] > 0);
-            write(target, DotBracketArgs<>::OPEN[colors[i]-1]);
+            SEQAN_ASSERT(colors[idx] > 0);
+            write(target, DotBracketArgs<>::OPEN[colors[idx]-1]);
         }
         else                                            // close bracket
         {
-            SEQAN_ASSERT(colors[i] > 0);
-            write(target, DotBracketArgs<>::CLOSE[colors[i]-1]);
+            SEQAN_ASSERT(colors[idx] > 0);
+            write(target, DotBracketArgs<>::CLOSE[colors[idx]-1]);
         }
     }
     writeValue(target, ' ');
@@ -366,5 +366,4 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
 }
 
 }
-#endif // SEQAN_DOTBRACKET_FORMAT_IO_H
-
+#endif // SEQAN_INCLUDE_SEQAN_RNA_IO_DOT_BRACKET_READ_WRITE_H_

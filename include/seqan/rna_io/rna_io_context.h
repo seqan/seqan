@@ -56,7 +56,7 @@ public:
     CharString base;
     CharString pair;
     CharString qual;
-    int number;
+    unsigned number;
 };
 
 // ============================================================================

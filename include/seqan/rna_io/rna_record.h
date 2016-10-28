@@ -29,14 +29,23 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer <lily.shellhammer@gmail.com>
+// Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
+//          Joerg Winkler <winkler@molgen.mpg.de>
 // ==========================================================================
 
 
-#ifndef SEQAN_RNA_FORMAT_RECORD_H_
-#define SEQAN_RNA_FORMAT_RECORD_H_
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 
 namespace seqan {
+
+// ============================================================================
+// Typedefs
+// ============================================================================
+
+typedef Graph<Undirected<double> > TRnaRecordGraph;
+
+typedef typename Iterator<TRnaRecordGraph, AdjacencyIterator>::Type TAdjacencyIterator;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -52,10 +61,10 @@ public:
     static const int INVALID_POS = -1;
 
     // Amount of records.
-    int32_t amount;    
+    unsigned amount;
     //beginning and ending positions of the sequence
-    int32_t begPos;
-    int32_t endPos;
+    int begPos;
+    int endPos;
     //energy
     float energy;    
     // Record's name.
@@ -64,9 +73,10 @@ public:
     //string of base at each position in Rna strand
     StringSet<Rna5String, Owner<JournaledSet> > sequence;
 
-    // Position of n base's pair.
-    String<unsigned>  pair;
+    // Undirected graph for connected bases and probabilities
+    TRnaRecordGraph graph;
 
+    bool isInjective; // each base has at most 1 connection
 
     ////////RDAT FILES
     CharString qual; //I think?
@@ -93,7 +103,8 @@ public:
     //mutpos
   
     // Default constructor.
-    RnaRecord() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" "), offset(0), comment("")
+    RnaRecord() : amount(0), begPos(INVALID_POS), endPos(INVALID_POS), energy(0), name(" "), isInjective(true),
+        offset(0), comment("")
     {}                                                                                      
 
 };
@@ -111,7 +122,7 @@ inline void clear(RnaRecord & record)
 {
     clear(record.name);
     clear(record.sequence);
-    clear(record.pair);
+    clear(record.graph);
     clear(record.qual);
 
     clear(record.seqpos);
@@ -125,4 +136,4 @@ inline void clear(RnaRecord & record)
 
 }  // namespace seqan
 
-#endif  //SEQAN_RNA_FORMAT_RECORD_H_
+#endif  //SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_

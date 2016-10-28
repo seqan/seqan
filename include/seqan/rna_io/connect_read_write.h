@@ -34,8 +34,8 @@
 // This file contains routines to read and write to connect format files (.ct)
 // ==========================================================================
 
-#ifndef SEQAN_CONNECT_FORMAT_READ_WRITE_H
-#define SEQAN_CONNECT_FORMAT_READ_WRITE_H
+#ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_READ_WRITE_H_
+#define SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_READ_WRITE_H_
 
 #include <seqan/stream.h>
 
@@ -164,11 +164,11 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         if (!lexicalCast(context.number, context.buffer))
             throw BadLexicalCast(context.number, context.buffer);
         clear(context.buffer);
-        if(counter == 0)
+        if (counter == 0)
         {
             record.begPos = context.number;
             if(record.amount != 0)  //in case amount is zero, leave it blank until counter is finshed
-                record.endPos = record.amount-record.begPos+1;
+                record.endPos = record.amount - record.begPos + 1;
         }
 
 
@@ -178,6 +178,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         readUntil(context.base, iter, IsWhitespace());               //read base 
         append(rec_base, context.base);
         clear(context.base);
+        addVertex(record.graph);
 
         skipUntil(iter, NotFunctor<IsWhitespace>());    //skip whitespace
         skipUntil(iter, IsWhitespace());
@@ -187,9 +188,10 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         
         readUntil(context.buffer, iter, IsWhitespace());  //read pair position
         if (!lexicalCast(context.number, context.buffer))
-        throw BadLexicalCast(context.number, context.buffer);
+            throw BadLexicalCast(context.number, context.buffer);
         clear(context.buffer);
-        append(record.pair, context.number);
+        if (context.number != 0 && counter > context.number - 1)        // add edge if base is connected
+            addEdge(record.graph, context.number - 1, counter, 1.);
         clear(context.pair);
 
         skipUntil(iter, IsNewline());      //skip until newline
@@ -197,11 +199,11 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
     }
     appendValue(record.sequence, rec_base);
 
-    if(record.amount == 0)
+    if (record.amount == 0)
     {
         record.amount = counter;
-        if(record.begPos != 1)
-            record.endPos = record.amount-record.begPos+1;
+        if (record.begPos != 1)
+            record.endPos = record.amount - record.begPos + 1;
     }
 
 }
@@ -236,7 +238,6 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         begPos = record.begPos;
     for (unsigned i = 0; i < length(record.sequence[0]); i++)
     {
-
         writeValue(target, ' ');    //All records start with a space
         appendNumber(target, i+begPos);
         writeValue(target, ' ');
@@ -246,7 +247,15 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         writeValue(target, '\t');
         appendNumber(target, i+begPos+1);
         writeValue(target, '\t');
-        write(target, record.pair[i]);
+        if (degree(record.graph, i) != 0)
+        {
+            TAdjacencyIterator adj_it(record.graph, i);
+            write(target, value(adj_it) + 1);
+        }
+        else
+        {
+            writeValue(target, '0');
+        }
         writeValue(target, '\t');
         appendNumber(target, i+begPos);
         writeValue(target, '\n');
@@ -257,4 +266,4 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
 
 } //namespace seqan
 
-#endif // SEQAN_CONNECT_FORMAT_READ_WRITE_H
+#endif // SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_READ_WRITE_H_

@@ -104,6 +104,8 @@ readRecord(RnaRecord & record,
     CharString &buffer = context.buffer;
     CharString tmpStr="";
     unsigned counter = 0;
+    Rna5String rec_base;
+
     while (!atEnd(iter) && value(iter) != '#')
     {
         // 
@@ -118,8 +120,9 @@ readRecord(RnaRecord & record,
         // SEQUENCE
         clear(buffer);
         readUntil(buffer, iter, IsWhitespace());
-        appendValue(record.sequence, buffer[0]);        //TO DO: APPEND VALUES TO SEQUENCE WITHOUT GETTING A SEG FAULT
-        if (empty(record.sequence))
+        appendValue(rec_base, buffer[0]);        //DONE: APPEND VALUES TO SEQUENCE WITHOUT GETTING A SEG FAULT
+        addVertex(record.graph);                 // add base to graph
+        if (empty(rec_base))
             SEQAN_THROW(EmptyFieldError("SEQUENCE"));     
 
         skipUntil(iter, NextEntry());
@@ -129,16 +132,19 @@ readRecord(RnaRecord & record,
         readUntil(buffer, iter, OrFunctor<IsSpace, IsNewline>());
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
-        appendValue(record.pair, lexicalCast<unsigned>(buffer));
+        context.number = lexicalCast<unsigned>(buffer);
+        if (context.number != 0 && counter > context.number - 1)    // add edge if base is connected
+            addEdge(record.graph, context.number - 1, counter, 1.);
         skipLine(iter);
 
-        counter++;
+        ++counter;
     }
+    appendValue(record.sequence, rec_base);
     if(record.begPos != 1)      //set beginning record position
         record.endPos = counter - record.begPos + 1;
     else
         record.endPos = counter;    //set end record position
-    record.amount = record.endPos - record.begPos + 1;  //set amount of records
+    record.amount = counter;  //set amount of records
 
     return;
 }
@@ -179,9 +185,17 @@ writeRecord(TTarget & target,
     {
         write(target, record.begPos + i);
         writeValue(target, ' ');
-        write(target, record.sequence[0][i]);  //TO DO: PRINT SEQUENCE AT POSITION I WITHOUT SEG FAULTING
+        write(target, record.sequence[0][i]);  //DONE: PRINT SEQUENCE AT POSITION I WITHOUT SEG FAULTING
         writeValue(target, ' ');
-        write(target, record.pair[i]);
+        if (degree(record.graph, i) != 0)
+        {
+            TAdjacencyIterator adj_it(record.graph, i);
+            write(target, value(adj_it) + 1);
+        }
+        else
+        {
+            writeValue(target, '0');
+        }
         writeValue(target, '\n');
     }
 }

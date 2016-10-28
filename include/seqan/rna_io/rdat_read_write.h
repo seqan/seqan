@@ -130,7 +130,7 @@ readRecord(RNARecord & record, RNAIOContext & context, TForwardIter & iter, Rdat
 
     skipUntil(iter, IsWhitespace());
     skipUntil(iter, NextEntry());
-    readUntil(record.pair, iter, IsWhitespace());
+    readUntil(record.pair, iter, IsWhitespace()); // TODO: read connections properly, create graph
     skipUntil(iter, IsNewline());
     // OFFSET
     readUntil(context.buffer, iter, IsWhitespace());

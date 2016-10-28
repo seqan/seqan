@@ -45,6 +45,7 @@
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 #include <seqan/journaled_set.h>
+#include <seqan/graph_types.h>
 
 // ===========================================================================
 // First Header Group.

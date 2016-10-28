@@ -43,6 +43,7 @@ into it a ton just yet.
 #include <seqan/stream.h>
 #include <seqan/sequence.h>
 #include <seqan/rna_io.h>
+#include <seqan/graph_types.h>
 
 // A test for connect file reading
 SEQAN_DEFINE_TEST(test_rna_io_read_connect)
@@ -62,14 +63,16 @@ SEQAN_DEFINE_TEST(test_rna_io_read_connect)
 
     /*CHECK CONNECT FILE VALUES */
 
-    SEQAN_ASSERT_EQ(rnaRecord.amount, 73);
+    SEQAN_ASSERT_EQ(rnaRecord.amount, 73u);
     SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50);
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     seqan::Rna5String base = "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA";
     SEQAN_ASSERT_EQ(rnaRecord.sequence[0], base);
-    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
+
+    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    SEQAN_ASSERT_EQ(value(adj_it), 71u);
 
     /* CHECK DEFAULT VALUES */
 
@@ -101,16 +104,18 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
 
     readRecord(rnaRecord, rnaIOContext, iter, seqan::DotBracket());
 
-    /*CHECK CONNECT FILE VALUES */
+    /*CHECK DOTBRACKET FILE VALUES */
 
-    SEQAN_ASSERT_EQ(rnaRecord.amount, 73);
+    SEQAN_ASSERT_EQ(rnaRecord.amount, 73u);
     SEQAN_ASSERT_EQ(rnaRecord.energy, -17.50);
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
-    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
 
+    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    SEQAN_ASSERT_EQ(value(adj_it), 71u);
+    
     /* CHECK DEFAULT VALUES */
 
     //SEQAN_ASSERT_EQ(rnaRecord.qual, /**/);
@@ -126,7 +131,6 @@ SEQAN_DEFINE_TEST(test_rna_io_read_dot_bracket)
 }
 
 ///////////////////BPSEQ TEST NOT COMPLETE////////////////////////
-/*
 SEQAN_DEFINE_TEST(test_rna_io_read_bpseq)
 {
     //Path to example.ct
@@ -142,15 +146,16 @@ SEQAN_DEFINE_TEST(test_rna_io_read_bpseq)
     //readHeader(rnaHeader, rnaIOCOntext, iter, seqan::Bpseq());
     readRecord(rnaRecord, rnaIOContext, iter, seqan::Bpseq());
 
-    // CHECK CONNECT FILE VALUES 
-
-    SEQAN_ASSERT_EQ(rnaRecord.amount, 73);
+    // CHECK BPSEQ FILE VALUES 
+/*
+    SEQAN_ASSERT_EQ(rnaRecord.amount, 73u);
     SEQAN_ASSERT_EQ(rnaRecord.begPos, 1);
     SEQAN_ASSERT_EQ(rnaRecord.endPos, 73);
     //SEQAN_ASSERT_EQ(rnaRecord.name,"S.cerevisiae_tRNA-PHE");
     SEQAN_ASSERT_EQ(rnaRecord.sequence[0], "GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA");
-    SEQAN_ASSERT_EQ(rnaRecord.pair[0], 72u);
-
+    seqan::TAdjacencyIterator adj_it(rnaRecord.graph, 0);
+    SEQAN_ASSERT_EQ(value(adj_it), 71u);
+*/
     // CHECK DEFAULT VALUES 
 
     //SEQAN_ASSERT_EQ(rnaRecord.qual, /**/ //);
@@ -169,21 +174,17 @@ SEQAN_DEFINE_TEST(test_rna_write_connect_record)
 {
     seqan::RnaRecord record;
     //set values
-    record.amount = 8;
+    record.amount = 8u;
     record.begPos = 1;
     record.endPos = 8;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
     appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
-    
-    append(record.pair, 8u);
-    append(record.pair, 7u);
-    append(record.pair, 6u);
-    append(record.pair, 5u);
-    append(record.pair, 4u);
-    append(record.pair, 3u);
-    append(record.pair, 2u);
-    append(record.pair, 1u);
+
+    for (unsigned idx = 0; idx < record.amount; ++idx)
+        addVertex(record.graph);
+    for (unsigned idx = 0; idx < 4; ++idx)
+        addEdge(record.graph, idx, 7u - idx, 1.);
 
 
     // Write Connect records to string stream.String<char> out;
@@ -207,22 +208,17 @@ SEQAN_DEFINE_TEST(test_rna_write_dot_bracket_record)
 {
     seqan::RnaRecord record;
     //set values
-    record.amount = 8;
+    record.amount = 8u;
     record.begPos = 1;
     record.endPos = 8;
     record.name = "S.cerevisiae_tRNA-PHE";
     record.energy = -17.5;
     appendValue(record.sequence, (seqan::Rna5String)"GCGGAUUU");
-    
-    append(record.pair, 8u);
-    append(record.pair, 7u);
-    append(record.pair, 6u);
-    append(record.pair, 5u);
-    append(record.pair, 4u);
-    append(record.pair, 3u);
-    append(record.pair, 2u);
-    append(record.pair, 1u);
 
+    for (unsigned idx = 0; idx < record.amount; ++idx)
+        addVertex(record.graph);
+    for (unsigned idx = 0; idx < 4; ++idx)
+        addEdge(record.graph, idx, 7u - idx, 1.);
 
     // Write Connect records to string stream.String<char> out;
     seqan::String<char> out;
