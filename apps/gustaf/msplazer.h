@@ -609,7 +609,7 @@ inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPo
     if (bp1.endSeqId != bp2.endSeqId)
         return false;
 
-    if (bp1.svtype == TBreakpoint::DELETION || TBreakpoint::INVERSION)
+    if (bp1.svtype == TBreakpoint::DELETION || bp1.svtype == TBreakpoint::INVERSION)
         return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range) && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
     if (bp1.svtype == TBreakpoint::INSERTION)
         return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
