@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,9 +37,6 @@
 #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_READ_WRITE_H_
 #define SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_READ_WRITE_H_
 
-#include <seqan/stream.h>
-
-
 /* IMPLEMENTATION NOTES
 
 Rna FORMAT example:
@@ -53,14 +50,14 @@ Rna FORMAT example:
 		- Index n-1
 		- Index n+1
 		- Number of the base to which n is paired. No pairing is indicated by 0 (zero).
-		- Natural numbering. Rnastructure ignores the actual value given in natural numbering, 
+		- Natural numbering. Rnastructure ignores the actual value given in natural numbering,
 			so it is easiest to repeat n here.
 
 CT Files can hold multiple structures of a single sequence.
-This is done by repeating the format for each structure without any blank lines between structures. 
+This is done by repeating the format for each structure without any blank lines between structures.
 
 record
- N  SEQUENCE   N-1  	 N+1	J POSITION  N  
+ N  SEQUENCE   N-1  	 N+1	J POSITION  N
  1 	G       	0    	2   	72    		1
  2 	C       	1    	3   	71    		2
  3 	G       	2    	4   	70    		3
@@ -73,23 +70,31 @@ namespace seqan{
 // Tags, Classes, Enums
 // ==========================================================================
 
-// ============================================================================
-// Forwards
-// ============================================================================
 // --------------------------------------------------------------------------
 // Tag Connect
 // --------------------------------------------------------------------------
 
+/*!
+ * @tag FileFormats#Connect
+ * @headerfile <seqan/rna_io.h>
+ * @brief Connect format for RNA structures (*.ct).
+ * @signature typedef Tag<Connect_> Connect;
+ * @see FileFormats#RnaStruct
+ */
 struct Connect_;
 typedef Tag<Connect_> Connect;
+
+// --------------------------------------------------------------------------
+// Class MagicHeader
+// --------------------------------------------------------------------------
 
 template <typename T>
 struct MagicHeader<Connect, T> :
     public MagicHeader<Nothing, T> {};
 
-// ============================================================================
+// ==========================================================================
 // Metafunctions
-// ============================================================================
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Metafunction FileExtensions
@@ -100,63 +105,72 @@ struct FileExtensions<Connect, T>
 {
     static char const * VALUE[1];
 };
+
 template <typename T>
 char const * FileExtensions<Connect, T>::VALUE[1] =
-{
-    ".ct"      // default output extension
-};
-
+    {
+        ".ct"      // default output extension
+    };
 
 // ==========================================================================
 // Functions
 // ==========================================================================
 
-
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 // Function readRecord(); RnaRecord, Connect
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
+
 template <typename TForwardIter>
-inline void 
-readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Connect const & /*tag*/)
+inline void
+readRecord(RnaRecord & record, TForwardIter & iter, Connect const & /*tag*/)
 {
+    RnaStructureGraph graph;
     std::string buffer;
     clear(record);
-    clear(context);
 
     // read number of entries (sequence length)
     skipUntil(iter, NotFunctor<IsWhitespace>());
     readUntil(buffer, iter, IsWhitespace());
     if (!lexicalCast(record.seqLen, buffer))
-        throw BadLexicalCast(record.seqLen, buffer);
+        SEQAN_THROW(BadLexicalCast(record.seqLen, buffer));
     clear(buffer);
 
     //read energy
     skipUntil(iter, NotFunctor<IsWhitespace>());
-    skipUntil(iter, IsWhitespace());
-    skipUntil(iter, EqualsChar<'='>());
-    skipOne(iter);
-    skipUntil(iter, NotFunctor<IsWhitespace>());
-    readUntil(buffer, iter, IsWhitespace());
-    if (!lexicalCast(record.energy, buffer))
-        throw BadLexicalCast(record.energy, buffer);
+    readUntil(buffer, iter, OrFunctor<IsWhitespace, EqualsChar<'='> >());
+    if (startsWith(buffer, "ENERGY"))
+    {
+        skipUntil(iter, EqualsChar<'='>());
+        skipOne(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        clear(buffer);
+        readUntil(buffer, iter, IsWhitespace());
+        if (!lexicalCast(graph.energy, buffer))
+            SEQAN_THROW(BadLexicalCast(graph.energy, buffer));
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+    }
+    else
+    {
+        record.name = buffer;
+    }
     clear(buffer);
 
     // read name
-    readUntil(buffer, iter, NotFunctor<IsWhitespace>());
-    readUntil(record.name,  iter, IsNewline());
+    readUntil(buffer, iter, IsNewline());
+    append(record.name, buffer);
     clear(buffer);
 
-    /* 
+    /*
     Example records:
 
      3  G           2       4       70          3
-     N  SEQUENCE   N-1     N+1    J POSITION  N  
+     N  SEQUENCE   N-1     N+1    J POSITION  N
     */
 
     // read nucleotides with pairs
-    TRnaRecordGraph graph;
     unsigned currPos {0};
-    while (!atEnd(iter))
+    record.offset = 1;
+    while (!atEnd(iter) && currPos < record.seqLen + record.offset - 1)
     {
         // offset
         skipUntil(iter, NotFunctor<IsWhitespace>());
@@ -169,7 +183,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         {
             readUntil(buffer, iter, IsWhitespace());
             if (!lexicalCast(record.offset, buffer))
-                throw BadLexicalCast(record.offset, buffer);
+                SEQAN_THROW(BadLexicalCast(record.offset, buffer));
             currPos = record.offset;
             clear(buffer);
         }
@@ -179,7 +193,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         readUntil(buffer, iter, IsWhitespace());
         append(record.sequence, buffer);
         clear(buffer);
-        addVertex(graph);
+        addVertex(graph.inter);
 
         // skip redundant indices
         skipUntil(iter, NotFunctor<IsWhitespace>());
@@ -192,22 +206,28 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
         unsigned pairPos;
         readUntil(buffer, iter, IsWhitespace());
         if (!lexicalCast(pairPos, buffer))
-            throw BadLexicalCast(pairPos, buffer);
+            SEQAN_THROW(BadLexicalCast(pairPos, buffer));
         if (pairPos != 0 && currPos > pairPos)
         {
             if (pairPos >= record.offset)
-                addEdge(graph, pairPos - record.offset, currPos - record.offset, 1.0);
+                addEdge(graph.inter, pairPos - record.offset, currPos - record.offset, 1.0);
             else
-                throw std::runtime_error("ERROR: Incompatible pairing position in input file.");
+                SEQAN_THROW(ParseError("ERROR: Incompatible pairing position in input file."));
         }
 
         clear(buffer);
-        skipUntil(iter, IsNewline());
+        skipLine(iter);
     }
-    append(record.fixedGraphs, RnaInterGraph(graph));
+    append(record.fixedGraphs, graph);
     SEQAN_ASSERT_EQ(record.seqLen, length(record.sequence));
 }
 
+template <typename TForwardIter>
+inline void
+readRecord(RnaRecord & record, SEQAN_UNUSED RnaIOContext &, TForwardIter & iter, Connect const & /*tag*/)
+{
+    readRecord(record, iter, Connect());
+}
 
 // ----------------------------------------------------------------------------
 // Function writeRecord(); RnaRecord, Connect
@@ -215,20 +235,24 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Conn
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)     
+writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
 {
     if (empty(record.sequence) && length(rows(record.align)) != 1)
-        throw std::runtime_error("ERROR: Connect formatted file cannot contain an alignment.");
+        SEQAN_THROW(ParseError("ERROR: Connect formatted file cannot contain an alignment."));
     if (length(record.fixedGraphs) != 1)
-        throw std::runtime_error("ERROR: Connect formatted file cannot contain multiple structure graphs.");
+        SEQAN_THROW(ParseError("ERROR: Connect formatted file cannot contain multiple structure graphs."));
 
     Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
-    
-    //write old "header"
+    RnaStructureGraph const & graph = record.fixedGraphs[0];
+
+    //write "header"
     appendNumber(target, record.seqLen);
-    writeValue(target, '\t');
-    write(target, "ENERGY = ");
-    appendNumber(target, record.energy);
+    if (graph.energy != 0.0f)
+    {
+        writeValue(target, '\t');
+        write(target, "ENERGY = ");
+        appendNumber(target, graph.energy);
+    }
     writeValue(target, '\t');
     write(target, record.name);
     writeValue(target, '\n');
@@ -246,9 +270,9 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         writeValue(target, '\t');
         appendNumber(target, i + offset + 1);
         writeValue(target, '\t');
-        if (degree(record.fixedGraphs[0].inter, i) != 0)
+        if (degree(graph.inter, i) != 0)
         {
-            TRnaAdjacencyIterator adjIter(record.fixedGraphs[0].inter, i);
+            RnaAdjacencyIterator adjIter(graph.inter, i);
             write(target, value(adjIter) + offset);
         }
         else
@@ -259,6 +283,13 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         appendNumber(target, i + offset);
         writeValue(target, '\n');
     }
+}
+
+template <typename TTarget>
+inline void
+writeRecord(TTarget & target, RnaRecord const & record, SEQAN_UNUSED RnaIOContext &, Connect const & /*tag*/)
+{
+    writeRecord(target, record, Connect());
 }
 
 } //namespace seqan

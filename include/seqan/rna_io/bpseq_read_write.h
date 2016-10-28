@@ -36,60 +36,95 @@
 #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_
 #define SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_
 
+#include <seqan/rna_io.h>
+
 namespace seqan {
 
-// ============================================================================
+// ==========================================================================
 // Tags, Classes, Enums
-// ============================================================================
+// ==========================================================================
 
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 // Tag Bpseq
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
 /*!
  * @tag FileFormats#Bpseq
- * @headerfile <seqan/bpseq_io.h>
- * @brief Variant callinf format file.
- *
+ * @headerfile <seqan/rna_io.h>
+ * @brief Bpseq format for RNA structures (*.bpseq).
  * @signature typedef Tag<Bpseq_> Bpseq;
+ * @see FileFormats#RnaStruct
  */
 struct Bpseq_;
 typedef Tag<Bpseq_> Bpseq;
+
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Bpseq, T> :
+    public MagicHeader<Nothing, T> {};
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction FileExtensions
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct FileExtensions<Bpseq, T>
+{
+    static char const * VALUE[1];    // default is one extension
+};
+
+template <typename T>
+char const * FileExtensions<Bpseq, T>::VALUE[1] =
+    {
+        ".bpseq"     // default output extension
+    };
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [BpseqRecord]
+// Function readRecord()                                          [BpseqRecord]
 // ----------------------------------------------------------------------------
-// Read record, updating list of known sequences if new one occurs.
 
 template <typename TForwardIter>
 inline void
-readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpseq const & /*tag*/)
+readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
 {
     typedef OrFunctor<IsSpace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bpseq> > NextEntry;
     std::string buffer;
     clear(record);
-    clear(context);
 
-    unsigned currPos{0};
-    TRnaRecordGraph graph;
-
-    while (!atEnd(iter))
-    {
-        if (value(iter) == '#')
-        {                                       // All the information stored in the # lines are saved in a single line
-            skipOne(iter);
-            skipUntil(iter, NotFunctor<IsWhitespace>());
-            readLine(buffer, iter);
+    skipUntil(iter, NotFunctor<IsWhitespace>());
+    while (!atEnd(iter) && value(iter) == '#')
+    {                                       // All the information stored in the # lines are saved in a single line
+        skipOne(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        readLine(buffer, iter);
+        if (empty(record.name))
+        {
+            record.name = buffer;
+        }
+        else
+        {
             appendValue(record.comment, ' ');
             append(record.comment, buffer);
-            clear(buffer);
-            continue;
         }
+        clear(buffer);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+    }
 
+    RnaStructureGraph graph;
+    unsigned currPos{0};
+    while (!atEnd(iter) && value(iter) != '#')
+    {
         // read index position
         if (currPos == 0)
         {
@@ -97,7 +132,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
             if (empty(buffer))
                 SEQAN_THROW(EmptyFieldError("BEGPOS"));
             if (!lexicalCast(record.offset, buffer))
-                throw BadLexicalCast(record.offset, buffer);
+                SEQAN_THROW(BadLexicalCast(record.offset, buffer));
             currPos = record.offset;
             clear(buffer);
         }
@@ -111,30 +146,35 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
         skipUntil(iter, NotFunctor<IsBlank>());
         readUntil(buffer, iter, NextEntry());
         appendValue(record.sequence, buffer[0]);
-        addVertex(graph);                 // add base to graph
+        addVertex(graph.inter);                 // add base to graph
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("SEQUENCE"));
         clear(buffer);
 
         // read paired index
         skipUntil(iter, NotFunctor<IsBlank>());
-        readUntil(buffer, iter, NextEntry());
+        readUntil(buffer, iter, IsWhitespace());
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
         unsigned pairPos;
         if (!lexicalCast(pairPos, buffer))
-            throw BadLexicalCast(pairPos, buffer);
+            SEQAN_THROW(BadLexicalCast(pairPos, buffer));
         if (pairPos != 0 && currPos > pairPos)    // add edge if base is connected
-            addEdge(graph, pairPos - record.offset, currPos - record.offset, 1.);
+            addEdge(graph.inter, pairPos - record.offset, currPos - record.offset, 1.);
         clear(buffer);
 
         skipLine(iter);
         skipUntil(iter, NotFunctor<IsWhitespace>());
     }
-    append(record.fixedGraphs, RnaInterGraph(graph));
+    append(record.fixedGraphs, graph);
     record.seqLen = currPos;  //set amount of records
+}
 
-    return;
+template <typename TForwardIter>
+inline void
+readRecord(RnaRecord & record, SEQAN_UNUSED RnaIOContext &, TForwardIter & iter, Bpseq const & /*tag*/)
+{
+    readRecord(record, iter, Bpseq());
 }
 
 // ----------------------------------------------------------------------------
@@ -143,17 +183,13 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Bpse
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target,
-            RnaRecord const & record,
-            RnaIOContext & context,
-            Bpseq const & /*tag*/)
+writeRecord(TTarget & target, RnaRecord const & record, Bpseq const & /*tag*/)
 {
     if (empty(record.sequence) && length(rows(record.align)) != 1)
-        throw std::runtime_error("ERROR: Bpseq formatted file cannot contain an alignment.");
+        SEQAN_THROW(ParseError("ERROR: Bpseq formatted file cannot contain an alignment."));
     if (length(record.fixedGraphs) != 1)
-        throw std::runtime_error("ERROR: Bpseq formatted file cannot contain multiple structure graphs.");
+        SEQAN_THROW(ParseError("ERROR: Bpseq formatted file cannot contain multiple structure graphs."));
 
-    clear(context);
     if (!empty(record.name))
     {
         write(target, "# ");
@@ -176,7 +212,7 @@ writeRecord(TTarget & target,
         writeValue(target, '\t');
         if (degree(record.fixedGraphs[0].inter, i) != 0)
         {
-            TRnaAdjacencyIterator adj_it(record.fixedGraphs[0].inter, i);
+            RnaAdjacencyIterator adj_it(record.fixedGraphs[0].inter, i);
             write(target, value(adj_it) + offset);
         }
         else
@@ -185,6 +221,13 @@ writeRecord(TTarget & target,
         }
         writeValue(target, '\n');
     }
+}
+
+template <typename TTarget>
+inline void
+writeRecord(TTarget & target, RnaRecord const & record, SEQAN_UNUSED RnaIOContext &, Bpseq const & /*tag*/)
+{
+    writeRecord(target, record, Bpseq());
 }
 
 }  // namespace seqan

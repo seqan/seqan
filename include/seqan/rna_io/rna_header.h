@@ -46,14 +46,47 @@ namespace seqan {
 // Class rnaHeader
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class RnaHeader
+ * @headerfile <seqan/rna_io.h>
+ * @brief A container for labels of several RNA structures.
+ *
+ * @signature class RnaHeader;
+ *
+ * The container stores all kinds of data that can be obtained by reading RNA structure file headers.
+ */
 class RnaHeader
 {
 public:
-    CharString description;             // free text for file description
-    StringSet<CharString> seqLabels;    // list of sequence names
-    StringSet<CharString> fixLabels;    // list of fixed structure comp. methods
-    StringSet<CharString> bppLabels;    // list of probability matrix comp. methods
-    StringSet<CharString> typeLabels;   // list of types of biol. validated data
+    /*!
+     * @var CharString RnaHeader::description
+     * @brief Free text for file description.
+     */
+    CharString description;
+
+    /*!
+     * @var StringSet<CharString> RnaHeader::seqLabels
+     * @brief List of sequence names.
+     */
+    StringSet<CharString> seqLabels;
+
+    /*!
+     * @var StringSet<CharString> RnaHeader::fixLabels
+     * @brief List of fixed structure computation methods.
+     */
+    StringSet<CharString> fixLabels;
+
+    /*!
+     * @var StringSet<CharString> RnaHeader::bppLabels
+     * @brief List of base pair probability matrix computation methods.
+     */
+    StringSet<CharString> bppLabels;
+
+    /*!
+     * @var StringSet<CharString> RnaHeader::typeLabels
+     * @brief List of types of biological validated data.
+     */
+    StringSet<CharString> typeLabels;
 };
 
 // ============================================================================

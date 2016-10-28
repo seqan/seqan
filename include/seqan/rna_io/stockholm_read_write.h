@@ -38,6 +38,8 @@
 #define SEQAN_INCLUDE_SEQAN_RNA_IO_STOCKHOLM_READ_WRITE_H_
 
 #include <seqan/stream.h>
+// for bracket-graph transformation
+#include <seqan/rna_io/dot_bracket_read_write.h>
 
 /* IMPLEMENTATION NOTES
 
@@ -83,23 +85,31 @@ namespace seqan{
 // Tags, Classes, Enums
 // ==========================================================================
 
-// ============================================================================
-// Forwards
-// ============================================================================
 // --------------------------------------------------------------------------
 // Tag Connect
 // --------------------------------------------------------------------------
 
+/*!
+ * @tag FileFormats#Stockholm
+ * @headerfile <seqan/rna_io.h>
+ * @brief Stockholm format for RNA structures (*.sth).
+ * @signature typedef Tag<Stockholm_> Stockholm;
+ * @see FileFormats#RnaStruct
+ */
 struct Stockholm_;
 typedef Tag<Stockholm_> Stockholm;
+
+// --------------------------------------------------------------------------
+// Class MagicHeader
+// --------------------------------------------------------------------------
 
 template <typename T>
 struct MagicHeader<Stockholm, T> :
     public MagicHeader<Nothing, T> {};
 
-// ============================================================================
+// ==========================================================================
 // Metafunctions
-// ============================================================================
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Metafunction FileExtensions
@@ -110,12 +120,12 @@ struct FileExtensions<Stockholm, T>
 {
     static char const * VALUE[1];
 };
+
 template <typename T>
 char const * FileExtensions<Stockholm, T>::VALUE[1] =
 {
     ".sth"      // default output extension
 };
-
 
 // ==========================================================================
 // Functions
@@ -126,18 +136,17 @@ char const * FileExtensions<Stockholm, T>::VALUE[1] =
 // Function readRecord(); RnaRecord, Stockholm
 // ----------------------------------------------------------------------------
 template <typename TForwardIter>
-inline void 
-readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stockholm const & /*tag*/)
+inline void
+readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
 {
     std::string buffer;
     clear(record);
-    clear(context);
 
     // read intro: # STOCKHOLM 1.0
     skipUntil(iter, NotFunctor<IsWhitespace>());
     readUntil(buffer, iter, IsNewline());
     if (buffer.find("STOCKHOLM") == std::string::npos)
-        throw ParseError("Expected STOCKHOLM identifier in the first line.");
+        SEQAN_THROW(ParseError("Expected STOCKHOLM identifier in the first line."));
     skipOne(iter);
     clear(buffer);
 
@@ -151,6 +160,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
         readUntil(buffer, iter, IsWhitespace());                // read line until first whitespace
         if (buffer == "//")
         {                                                       // found terminal symbols
+            skipLine(iter);
             clear(buffer);
             break;
         }
@@ -231,9 +241,9 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
         clear(buffer);
     }
     if (empty(bracketStr))
-        throw ParseError("Expected a secondary structure line.");
+        SEQAN_THROW(ParseError("Expected a secondary structure line."));
     if (empty(sequence))
-        throw ParseError("Expected a sequence line.");
+        SEQAN_THROW(ParseError("Expected a sequence line."));
     SEQAN_ASSERT_EQ(length(sequence), length(gapPos));
 
     // store the alignment with gaps in record
@@ -250,6 +260,12 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
     bracket2graph(record.fixedGraphs, bracketStr);
 }
 
+template <typename TForwardIter>
+inline void
+readRecord(RnaRecord & record, SEQAN_UNUSED RnaIOContext &, TForwardIter & iter, Stockholm const & /*tag*/)
+{
+    readRecord(record, iter, Stockholm());
+}
 
 // ----------------------------------------------------------------------------
 // Function writeRecord(); RnaRecord, Stockholm
@@ -257,10 +273,10 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Stoc
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*/)     
+writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*/)
 {
     if (length(record.fixedGraphs) != 1)
-        throw std::runtime_error("ERROR: Cannot deal with multiple structure graphs.");
+        SEQAN_THROW(ParseError("ERROR: Cannot deal with multiple structure graphs."));
 
     write(target, "# STOCKHOLM 1.0\n");                         // header
     if (!empty(record.name))
@@ -301,8 +317,15 @@ writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*
         write(target, "#=GC SS_cons\t");
     }
 
-    write(target, graph2bracket(record.fixedGraphs[0].inter));
+    write(target, graph2bracket(record.fixedGraphs[0]));
     write(target, "\n//\n");                                    // closing
+}
+
+template <typename TTarget>
+inline void
+writeRecord(TTarget & target, RnaRecord const & record, SEQAN_UNUSED RnaIOContext &, Stockholm const & /*tag*/)
+{
+    writeRecord(target, record, Stockholm());
 }
 
 } //namespace seqan

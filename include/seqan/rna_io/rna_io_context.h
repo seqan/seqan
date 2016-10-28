@@ -49,13 +49,59 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class RnaIOContext
+ * @headerfile <seqan/rna_io.h>
+ * @brief File context for sharing information between @link RnaRecord @endlink and @link RnaHeader @endlink.
+ *
+ * @signature class RnaIOCOntext;
+ *
+ * As the labels and identifiers defined in the header are needed for parsing the record data,
+ * this container stores all the shared information.
+ */
 class RnaIOContext
 {
 public:
+    /*!
+     * @var StringSet<CharString> RnaIOContext::seqLabels
+     * @brief Descriptions for the sequences (value of S.. field).
+     */
     StringSet<CharString> seqLabels;
+
+    /*!
+     * @var StringSet<CharString> RnaIOContext::fixLabels
+     * @brief Descriptions for the fixed structure graphs (value of F.. field).
+     */
+    StringSet<CharString> fixLabels;
+
+    /*!
+     * @var StringSet<CharString> RnaIOContext::bppLabels
+     * @brief Descriptions for the base pair probability structure graphs (value of M.. field).
+     */
+    StringSet<CharString> bppLabels;
+
+    /*!
+     * @var StringSet<CharString> RnaIOContext::seqIdent
+     * @brief Identifiers for the sequences (starting with S).
+     */
     StringSet<CharString> seqIdent;
+
+    /*!
+     * @var StringSet<CharString> RnaIOContext::fixIdent
+     * @brief Identifiers for the fixed structure graphs (starting with F).
+     */
     StringSet<CharString> fixIdent;
+
+    /*!
+     * @var StringSet<CharString> RnaIOContext::bppIdent
+     * @brief Identifiers for the base pair probability structure graphs (starting with M).
+     */
     StringSet<CharString> bppIdent;
+
+    /*!
+     * @var StringSet<CharString> RnaIOContext::typIdent
+     * @brief Identifiers for the types of biological data.
+     */
     StringSet<CharString> typIdent;
 };
 
@@ -72,6 +118,9 @@ public:
 
 inline void clear(RnaIOContext & context)
 {
+    clear(context.seqLabels);
+    clear(context.fixLabels);
+    clear(context.bppLabels);
     clear(context.seqIdent);
     clear(context.fixIdent);
     clear(context.bppIdent);

@@ -45,102 +45,216 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
-typedef Graph<Undirected<double> > TRnaRecordGraph;
-
-typedef typename Iterator<TRnaRecordGraph, AdjacencyIterator>::Type TRnaAdjacencyIterator;
+/*!
+ * @typedef RnaAdjacencyIterator
+ * @headerfile <seqan/rna_io.h>
+ * @brief Iterator for adjacent vertices in a @link RnaStructureGraph @endlink.
+ * @signature typename Iterator<Graph<Undirected<double> >, AdjacencyIterator>::Type RnaAdjacencyIterator;
+ */
+typedef typename Iterator<Graph<Undirected<double> >, AdjacencyIterator>::Type RnaAdjacencyIterator;
 
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class RnaInterGraph
+// Class RnaStructureGraph
 // ----------------------------------------------------------------------------
 
-class RnaInterGraph {
+/*!
+ * @class RnaStructureGraph
+ * @headerfile <seqan/rna_io.h>
+ * @brief An undirected graph representing an RNA structure.
+ *
+ * @signature class RnaStructureGraph;
+ *
+ * Storage of a graph that contains base pairs and their probabilities of an RNA structure.
+ * The associated <i>specs</i> string describes the method that was used to obtain the RNA structure.
+ */
+class RnaStructureGraph {
 public:
-    // Specs of the Method used to compute the bpp matrix or the structure
+    /*!
+     * @var Graph<Undirected<double>> RnaStructureGraph::inter
+     * @brief Undirected graph for base pairings of the RNA structure.
+     *
+     * The vertices denote the sequence/alignment column index.
+     * Edges are drawn among all pairing nucleotides.
+     * An edge's cargo represents the probability for the respective pairing.
+     */
+    Graph<Undirected<double> > inter;
+
+    /*!
+     * @var CharString RnaStructureGraph::specs
+     * @brief Specs of the Method used to compute the bpp matrix or the structure.
+     */
     CharString specs;
-    // graph storing the weight of the RNA structure interactions
-    TRnaRecordGraph inter;
-    // Default constructor.
-    RnaInterGraph() : specs("") {}
-    // Constructor with given TRnaRecordGraph
-    RnaInterGraph(TRnaRecordGraph const & _inter) : specs(""), inter(_inter) {}
+
+    /*!
+     * @var float RnaStructureGraph::energy
+     * @brief Energy of the RNA structure.
+     */
+    float energy;
+
+    /*!
+     * @fn RnaStructureGraph::RnaStructureGraph
+     * @brief The constructor.
+     * @signature RnaStructureGraph::RnaStructureGraph()
+     */
+    RnaStructureGraph() : specs(""), energy(0.0f) {}
 };
 
 // ----------------------------------------------------------------------------
 // Class RnaRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class RnaRecord
+ * @headerfile <seqan/rna_io.h>
+ * @brief A container for RNA structure data.
+ *
+ * @signature class RnaRecord;
+ *
+ * The container stores all kinds of data that can be obtained by reading RNA structure file records.
+ */
 class RnaRecord
 {
-public:
-    unsigned const UNDEF = UINT_MAX;
+private:
+    // Constant for an undefined ID.
+    static unsigned const UNDEF = UINT_MAX;
 
-    // identification of record
+public:
+    /*!
+     * @var unsigned RnaRecord::recordID
+     * @brief Identification of the record.
+     *
+     * In an RNA structure file the first record gets ID 0, the following ID 1 and so on.
+     */
     unsigned recordID;
 
-    // Amount of records.
+    /*!
+     * @var unsigned RnaRecord::seqLen
+     * @brief Length of the sequence or alignment stored in this record.
+     */
     unsigned seqLen;
 
-    // Start position of the sequence
+    /*!
+     * @var unsigned RnaRecord::offset
+     * @brief Start index of the sequence.
+     */
     unsigned offset;
 
-    // Energy
-    float energy;
-
-    // Record's name.
+    /*!
+     * @var CharString RnaRecord::name
+     * @brief Sequence name.
+     */
     CharString name;
 
-    // string of base at each position in Rna strand, ONLY SINGLE-SEQUENCE RECORDS
-    Rna5String sequence;
-
-    // sequence identifier for aligned sequences, ONLY ALIGNMENT RECORDS
-    StringSet<CharString> seqID;
-
-    // alignment of several sequences (gaps allowed), ONLY ALIGNMENT RECORDS
-    Align<Rna5String, ArrayGaps> align;
-
-    // Undirected graph for base pairings
-    // vertices: sequence/alignment column index, edges: base pair with assigned probability
-    //String<TRnaRecordGraph> graph;
-
-    // Vector of base pair probability graphs extracted from the input files
-    String<RnaInterGraph> bppMatrGraphs;
-    // Vector of fixed structure graphs extracted from the input files
-    String<RnaInterGraph> fixedGraphs;
-
+    /*!
+     * @var CharString RnaRecord::quality
+     * @brief Quality values for the sequence.
+     */
     CharString quality;
 
-    // indices for type attribute (see header)
-    String<unsigned> typeID;
+    /*!
+     * @var String<RnaStructureGraph> RnaRecord::bppMatrGraphs
+     * @brief Vector of base pair probability graphs extracted from the input files.
+     */
+    String<RnaStructureGraph> bppMatrGraphs;
 
-    ////////RDAT FILES
-    //CharString qual; //I think?
+    /*!
+     * @var String<RnaStructureGraph> RnaRecord::fixedGraphs
+     * @brief Vector of fixed structure graphs extracted from the input files.
+     */
+    String<RnaStructureGraph> fixedGraphs;
 
-    //String<CharString> seqpos;
-
-    //String<CharString> annotation;
-
+    /*!
+     * @var CharString RnaRecord::comment
+     * @brief Comment to be stored together with the record.
+     */
     CharString comment;
 
-    //Annotation data 1
-    //annotation data 2
-
+    /*!
+     * @var StringSet<String<float>> RnaRecord::reactivity
+     * @brief The area peak/likelihood estimate that represents the <b>reactivity</b> at each position.
+     *
+     * This member variable is used only if biological validated data is found (T.. fields in EBPSEQ are set).
+     */
     StringSet<String<float> > reactivity;
 
+    /*!
+     * @var StringSet<String<float>> RnaRecord::reactError
+     * @brief Error of the @link RnaRecord::reactivity @endlink.
+     *
+     * This member variable is used only if biological validated data is found (T.. fields in EBPSEQ are set).
+     *
+     * If @link RnaRecord::reactivity @endlink was derived as a consensus of different replicates,
+     * this indicates the standard error between samples used.
+     * If only one experiment was done, this may be some measure of variation between the data in that experiment,
+     * e.g. 0.2 of the standard deviation.
+     */
     StringSet<String<float> > reactError;
 
-    //String<float> xsel;
+    /*!
+     * @var String<unsigned> RnaRecord::typeID
+     * @brief Indices of the assigned type (T..) attributes records from EBPSEQ files.
+     *
+     * This member variable is used only if biological validated data is found (T.. fields in EBPSEQ are set).
+     */
+    String<unsigned> typeID;
 
-    //String<float> xsel_refine;
+    /*!
+     * @var Rna5String RnaRecord::sequence
+     * @brief String of bases in RNA strand.
+     *
+     * This member variable is only used in sequence-based records (from CT, DBN, DBV, BPSEQ, EBPSEQ files).
+     */
+    Rna5String sequence;
 
-    //mutpos
-  
-    // Default constructor.
-    RnaRecord() : recordID(UNDEF), seqLen(0), offset(1), energy(0.0f), name(""), sequence(""), quality(""), comment("")
-    {}                                                                                      
+    /*!
+     * @var StringSet<CharString> RnaRecord::seqID
+     * @brief Sequence identifier for aligned sequences.
+     *
+     * This member variable is only used in alignment-based records (from STH files).
+     */
+    StringSet<CharString> seqID;
+
+    /*!
+     * @var Align<Rna5String,ArrayGaps> RnaRecord::align
+     * @brief Alignment of several sequences (including gaps).
+     *
+     * This member variable is only used in alignment-based records (from STH files).
+     */
+    Align<Rna5String, ArrayGaps> align;
+
+    /*!
+     * @fn RnaRecord::hasUndefinedID()
+     * @brief Test for an undefined @link RnaRecord::recordID @endlink value.
+     * @return bool True if @link RnaRecord::recordID @endlink is not set.
+     * @signature bool RnaRecord::hasUndefinedID()
+     */
+    bool hasUndefinedID()
+    {
+        return recordID == UNDEF;
+    }
+
+    /*!
+     * @fn RnaRecord::clearID()
+     * @brief Clear value of @link RnaRecord::recordID @endlink and set to undefined.
+     * @signature void RnaRecord::clearID()
+     */
+    void clearID()
+    {
+        recordID = UNDEF;
+    }
+
+    /*!
+     * @fn RnaRecord::RnaRecord
+     * @brief The constructor.
+     * @signature RnaRecord::RnaRecord()
+     */
+    RnaRecord() : recordID(UNDEF), seqLen(0u), offset(1u), name(""), quality(""),
+                  comment(""), sequence("")
+    {}
 
 };
 
@@ -152,13 +266,11 @@ public:
 // Function clear()
 // ----------------------------------------------------------------------------
 
-
 inline void clear(RnaRecord & record)
 {
-    record.recordID = 0;
+    record.clearID();
     record.seqLen = 0;
     record.offset = 1;
-    record.energy = 0.0f;
     clear(record.name);
     clear(record.sequence);
     clear(record.seqID);
