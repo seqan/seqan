@@ -172,7 +172,7 @@ nextIs(TFwdIterator & iter, GenBankSequence)
 
 template <typename TSeqString, typename TFwdIterator>
 inline void
-readRecord(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
+readSequence(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
 {
     typedef typename Value<TSeqString>::Type TSeqAlphabet;
     typedef OrFunctor<OrFunctor<IsBlank, IsDigit>,
@@ -202,7 +202,7 @@ readRecord(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void
-readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
+_readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
 {
     IsWhitespace isWhite;
     IsBlank isBlank;
@@ -232,15 +232,27 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
         }
     }
 
-    readRecord(seq, iter, GenBankSequence());
+    readSequence(seq, iter, GenBankSequence());
 }
 
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, GenBank)
+// ----------------------------------------------------------------------------
+// Function readRecord(GenBank)
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFile>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TFile & file, GenBank)
+{
+    _readRecord(meta, seq, file.iter, GenBank());
+}
+// ----------------------------------------------------------------------------
+// Function readRecord(GenBank)
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, GenBank)
 {
     clear(qual);
-    readRecord(meta, seq, iter, GenBank());
+    _readRecord(meta, seq, file.iter, GenBank());
 }
 
 }  // namespace seqan

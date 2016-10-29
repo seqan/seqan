@@ -66,7 +66,7 @@ void write(TTarget & target,
     // appendValue(context.buffer, '\0');
 
     // Write text header.
-    appendRawPod(target, (int32_t)length(context.buffer));
+    appendRawPod(target,  static_cast<int32_t>(length(context.buffer)));
     write(target, context.buffer);
 
     // Write references.
@@ -79,12 +79,12 @@ void write(TTarget & target,
         {
             if (i < (int32_t)length(contigNames(context)))
             {
-                appendRawPod(target, (int32_t)(length(contigNames(context)[i]) + 1));
+                appendRawPod(target, static_cast<int32_t>(length(contigNames(context)[i]) + 1));
                 write(target, contigNames(context)[i]);
             }
             else
             {
-                appendRawPod(target, (int32_t)1);
+                appendRawPod(target, static_cast<int32_t>(1));
             }
             writeValue(target, '\0');
             int32_t lRef = 0;
@@ -244,6 +244,7 @@ void write(TTarget & target,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            Bam const & tag)
 {
+#ifdef SEQAN_DEBUG_OR_TEST_
     // Check for valid IO Context.
     if (record.rID != BamAlignmentRecord::INVALID_REFID)
     {
@@ -255,6 +256,7 @@ void write(TTarget & target,
         SEQAN_ASSERT_LT_MSG(record.rNextId, static_cast<int32_t>(length(contigNames(context))),
                             "BAM IO Assertion: Unknown NEXT REF ID!");
     }
+#endif
     ignoreUnusedVariableWarning(context);
 
     // Update internal lengths

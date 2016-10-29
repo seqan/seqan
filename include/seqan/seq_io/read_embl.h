@@ -157,7 +157,7 @@ nextIs(TFwdIterator & iter, EmblSequence)
 
 template <typename TSeqString, typename TFwdIterator>
 inline void
-readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
+readSequence(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 {
     typedef typename Value<TSeqString>::Type TSeqAlphabet;
     typedef OrFunctor<OrFunctor<IsBlank, IsDigit>,
@@ -186,7 +186,7 @@ readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void
-readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
+_readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
 {
     IsBlank isBlank;
     IsWhitespace isWhite;
@@ -206,16 +206,27 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
             readUntil(meta, iter, IsNewline());
         }
     }
-
-    readRecord(seq, iter, EmblSequence());
+    readSequence(seq, iter, EmblSequence());
 }
 
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Embl)
+// ----------------------------------------------------------------------------
+// Function readRecord(Embl)
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFile>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TFile & file, Embl)
+{
+    _readRecord(meta, seq, file.iter, Embl());
+}
+// ----------------------------------------------------------------------------
+// Function readRecord(Embl)
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, Embl)
 {
     clear(qual);
-    readRecord(meta, seq, iter, Embl());
+    readRecord(meta, seq, file, Embl());
 }
 
 }  // namespace seqan

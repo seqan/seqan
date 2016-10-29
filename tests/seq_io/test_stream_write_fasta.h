@@ -168,8 +168,8 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fastq_linebreaks_qualmeta)
     CharString qual1 = "!!!!!";
     CharString qual2 = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 
-    writeRecord(outStream, meta1, seq1, qual1, Fastq(), SequenceOutputOptions(70, true));
-    writeRecord(outStream, meta2, seq2, qual2, Fastq(), SequenceOutputOptions(70, true));
+    writeRecord(outStream, meta1, seq1, qual1, Fastq());
+    writeRecord(outStream, meta2, seq2, qual2, Fastq());
 
     char const * EXPECTED =
             "@meta1\n"

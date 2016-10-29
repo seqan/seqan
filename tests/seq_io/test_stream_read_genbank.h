@@ -331,7 +331,7 @@ void testHelperReadGenBankSingle(TRecordReader & reader)
     // Read GENBANK sequence.
     SEQAN_ASSERT(nextIs(reader, GenBankSequence()));
     DnaString seq;
-    readRecord(seq, reader, GenBankSequence());
+    readSequence(seq, reader, GenBankSequence());
     SEQAN_ASSERT_EQ(length(seq), 5028u);
 
     // Second record.
@@ -345,7 +345,7 @@ void testHelperReadGenBankSingle(TRecordReader & reader)
 
     // Read GENBANK sequence.
     SEQAN_ASSERT(nextIs(reader, GenBankSequence()));
-    readRecord(seq, reader, GenBankSequence());
+    readSequence(seq, reader, GenBankSequence());
     SEQAN_ASSERT_EQ(length(seq), 2487u);
 
     SEQAN_ASSERT(atEnd(reader));
@@ -359,11 +359,11 @@ void testHelperReadGenBankRecord(TRecordReader & reader)
     CharString id;
     Dna5String seq;
 
-    readRecord(id, seq, reader, GenBank());
+    _readRecord(id, seq, reader, GenBank());
     SEQAN_ASSERT_EQ(id, CharString("U49845.1  GI:1293613"));
     SEQAN_ASSERT_EQ(length(seq), 5028u);
 
-    readRecord(id, seq, reader, GenBank());
+    _readRecord(id, seq, reader, GenBank());
     SEQAN_ASSERT_EQ(id, CharString("AB031069.1  GI:8100074"));
     SEQAN_ASSERT_EQ(length(seq), 2487u);
 }

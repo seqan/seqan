@@ -43,26 +43,19 @@
 
 namespace seqan
 {
-//    typedef
-//    TagList<Bam,
-//    TagList<Sam
-//    > >
-//    BamLikeFormats;
-//    typedef TagSelector<BamLikeFormats>  BamLikeFormat;
 
 // ----------------------------------------------------------------------------
 // Class SamIgnoreFunctor_
 // ----------------------------------------------------------------------------
-
 template <typename TAlphabet>
 struct SamIgnoreFunctor_
 {
+    // ignore only newline if the target alphabet is a char
+    // ignore whitespace as well for all other alphabets
     typedef typename If<Or<IsSameType<TAlphabet, char>,
-    Or<IsSameType<TAlphabet, signed char>,
-    IsSameType<TAlphabet, unsigned char> > >,
-    IsNewline, // ignore only newline if the target alphabet is a char
-    IsWhitespace // ignore whitespace as well for all other alphabets
-    >::Type Type;
+                           Or<IsSameType<TAlphabet, signed char>,
+                                IsSameType<TAlphabet, unsigned char> > >,
+                                    IsNewline, IsWhitespace >::Type Type;
 };
 
 template <typename TAlphabet>
@@ -71,12 +64,12 @@ struct SamIgnoreOrAssertFunctor_
     typedef typename SamIgnoreFunctor_<TAlphabet>::Type               TIgnore;
     typedef AssertFunctor<IsInAlphabet<TAlphabet>, ParseError, Sam>   TAsserter;
 
+    // don't assert in case of char alphabets
+    // assert being part of the alphabet for other alphabets
     typedef typename If<Or<IsSameType<TAlphabet, char>,
-    Or<IsSameType<TAlphabet, signed char>,
-    IsSameType<TAlphabet, unsigned char> > >,
-    TIgnore,   // don't assert in case of char alphabets
-    OrFunctor<TIgnore, TAsserter> // assert being part of the alphabet for other alphabets
-    >::Type Type;
+                            Or<IsSameType<TAlphabet, signed char>,
+                                IsSameType<TAlphabet, unsigned char> > >,
+                                    TIgnore, OrFunctor<TIgnore, TAsserter> >::Type Type;
 };
 
 // ============================================================================
@@ -87,37 +80,35 @@ struct SamIgnoreOrAssertFunctor_
 // Function skipHeader()                                              SamHeader
 // ----------------------------------------------------------------------------
 template <typename TFile>
-inline void skipHeader(TFile & file)
+inline void skipHeader(TFile & file, Sam const & /* format */)
 {
-    if (isEqual(file.format, Sam()))
+    while (nextIs(file.iter, SamHeader()))
     {
-        while (nextIs(file.iter, SamHeader()))
-        {
-            skipLine(file.iter);
-        }
+        skipLine(file.iter);
     }
-    else if(isEqual(file.format, Bam()))
-    {
-        BamHeader header;
-        BamFileIn bamIn;
-        open(bamIn, file.stream);
-        file.context.bamIOContext = context(bamIn);
-        readHeader(header, file.context.bamIOContext, file.iter, Bam());
-    }
+}
+// ----------------------------------------------------------------------------
+// Function skipHeader()                                              BamHeader
+// ----------------------------------------------------------------------------
+template <typename TFile>
+inline void skipHeader(TFile & file, Bam const & /* format */)
+{
+    BamHeader header;
+    BamFileIn bamIn;
+    open(bamIn, file.stream);
+    file.context.bamIOContext = context(bamIn);
+    readHeader(header, file.context.bamIOContext, file.iter, Bam());
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord                                                     Bam
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString,
-          typename TCharIter>
-inline int32_t
-_readRecord(TIdString & meta,
-            TSeqString & seq,
-            TIdString & prevQName,
-            int32_t & remainingBytes,
-            TCharIter & it,
-            Bam const & /* tag */)
+template <typename TIdString, typename TSeqString, typename TCharIter>
+inline int32_t readBamRecord(TIdString & meta,
+                             TSeqString & seq,
+                             TIdString & prevQName,
+                             int32_t & remainingBytes,
+                             TCharIter & it)
 {
     typedef typename Iterator<TSeqString, Standard>::Type             TSeqIter;
 
@@ -167,17 +158,14 @@ _readRecord(TIdString & meta,
 // Function readRecord
 // ----------------------------------------------------------------------------
 
-template <typename TIdString, typename TSeqString,
-          typename TForwardIter>
-inline bool
-_readRecord(TIdString & meta,
-            TSeqString & seq,
-            TIdString & prevQName,
-            TForwardIter & iter,
-            Sam const & /*tag*/)
+template <typename TIdString, typename TSeqString, typename TForwardIter>
+inline bool readSamRecord(TIdString & meta,
+                          TSeqString & seq,
+                          TIdString & prevQName,
+                          TForwardIter & iter)
 {
-    typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
-    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type          TSeqIgnoreOrAssert;
+    typedef typename Value<TSeqString>::Type                            TSeqAlphabet;
+    typedef typename SamIgnoreOrAssertFunctor_<TSeqAlphabet>::Type      TSeqIgnoreOrAssert;
 
     // fail, if we read "@" (did you miss to call readRecord(header, bamFile) first?)
     if (nextIs(iter, SamHeader()))
@@ -212,87 +200,178 @@ _readRecord(TIdString & meta,
     return true;
 }
 
-template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec>&file, Sam)
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline void _readRecord(TIdString & meta,
+                        TSeqString & seq,
+                        TQualString & qual,
+                        TFile & file,
+                        Sam const & /* format */)
 {
-    if (!(context(file).hasReadHeader))
+    typedef typename Value<TQualString>::Type TQualAlphabet;
+    typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type TQualIgnoreOrAssert;
+
+    if (SEQAN_UNLIKELY(!(context(file).headerWasRead)))
     {
-        skipHeader(file);
-        file.context.hasReadHeader = true;
+        skipHeader(file, Sam());
+        file.context.headerWasRead = true;
     }
     TIdString pId = toCString(file.context.prevId);
-    if (isEqual(file.format, Sam()))
+    clear(qual);
+
+    if (readSamRecord(meta, seq, pId, file.iter))
     {
-        typedef typename Value<TQualString>::Type TQualAlphabet;
-        typedef typename SamIgnoreOrAssertFunctor_<TQualAlphabet>::Type TQualIgnoreOrAssert;
-        clear(qual);
-
-        if (_readRecord(meta, seq, pId, file.iter, Sam()))
-        {
-            // QUAL
-            readUntil(qual, file.iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
-            clear(file.context.prevId);
-            file.context.prevId = meta;
-        }
-        else
-        {
-            clear(file.context.prevId);
-            file.context.prevId = meta;
-            clear(meta);
-        }
-        skipLine(file.iter);
+        // QUAL
+        readUntil(qual, file.iter, OrFunctor<IsTab, IsNewline>(), TQualIgnoreOrAssert());
+        clear(file.context.prevId);
+        file.context.prevId = meta;
     }
-    else if (isEqual(file.format, Bam()))
+    else
     {
-        typedef typename Iterator<CharString, Standard>::Type                             TCharIter;
-        typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
-
-        clear(qual);
-
-        // Read size and data of the remaining block in one chunk (fastest).
-        int32_t remainingBytes = _readBamRecordWithoutSize(file.context.bamIOContext.buffer, file.iter);
-        TCharIter it = begin(file.context.bamIOContext.buffer, Standard());
-
-
-        if (int32_t l_qseq = _readRecord(meta, seq, pId, remainingBytes, it, Bam()))
-        {
-            // phred quality
-            resize(qual, l_qseq, Exact());
-            TQualIter qitEnd = end(qual, Standard());
-            for (TQualIter qit = begin(qual, Standard()); qit != qitEnd; )
-                *qit++ = '!' + *it++;
-
-            clear(file.context.prevId);
-            file.context.prevId = meta;
-        }
-        else
-        {
-            clear(file.context.prevId);
-            file.context.prevId = meta;
-            clear(meta);
-        }
-        
-        // skip tags
-        it += remainingBytes;
+        clear(file.context.prevId);
+        file.context.prevId = meta;
+        clear(meta);
     }
+    skipLine(file.iter);
 }
 
-//// ----------------------------------------------------------------------------
-//// Function writeRecord(BAM/SAM); Separate Qualities
-//// ----------------------------------------------------------------------------
-//
-template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline void
-writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
-            TIdString const & meta,
-            TSeqString const & seq,
-            TQualString const & qual,
-            Sam)
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline void _readRecord(TIdString & meta,
+                        TSeqString & seq,
+                        TQualString & qual,
+                        TFile & file,
+                        Bam const & /* format */)
 {
-    if (!(context(file).hasWritenHeader))
+    typedef typename Iterator<CharString, Standard>::Type                             TCharIter;
+    typedef typename Iterator<TQualString, Standard>::Type SEQAN_RESTRICT             TQualIter;
+
+    if (SEQAN_UNLIKELY(!(context(file).headerWasRead)))
     {
-        typedef BamHeaderRecord::TTag   TTag;
+        skipHeader(file, Bam());
+        file.context.headerWasRead = true;
+    }
+    TIdString pId = toCString(file.context.prevId);
+
+    clear(qual);
+
+    // Read size and data of the remaining block in one chunk (fastest).
+    int32_t remainingBytes = _readBamRecordWithoutSize(file.context.bamIOContext.buffer, file.iter);
+    TCharIter it = begin(file.context.bamIOContext.buffer, Standard());
+
+
+    if (int32_t l_qseq = readBamRecord(meta, seq, pId, remainingBytes, it))
+    {
+        // phred quality
+        resize(qual, l_qseq, Exact());
+        TQualIter qitEnd = end(qual, Standard());
+        for (TQualIter qit = begin(qual, Standard()); qit != qitEnd; )
+            *qit++ = '!' + *it++;
+
+            clear(file.context.prevId);
+            file.context.prevId = meta;
+            }
+    else
+    {
+        clear(file.context.prevId);
+        file.context.prevId = meta;
+        clear(meta);
+    }
+
+    // skip tags
+    it += remainingBytes;
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(SAM); With qualities
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline void readRecord(TIdString & meta,
+                       TSeqString & seq,
+                       TQualString & qual,
+                       TFile & file,
+                       Sam const & /* format */)
+{
+    clear(qual);
+    _readRecord(meta, seq, qual, file, Sam());
+}
+// ----------------------------------------------------------------------------
+// Function readRecord(SAM); Without qualities
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFile>
+inline void readRecord(TIdString & meta,
+                       TSeqString & seq,
+                       TFile & file,
+                       Sam const & /* format */)
+{
+    readRecord(meta, seq, context(file).buffer[2], file, Sam());
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(BAM); With qualities
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline void readRecord(TIdString & meta,
+                       TSeqString & seq,
+                       TQualString & qual, TFile & file,
+                       Bam const & /* format */)
+{
+    clear(qual);
+    _readRecord(meta, seq, qual, file, Bam());
+}
+// ----------------------------------------------------------------------------
+// Function readRecord(BAM); Without qualities
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFile>
+inline void readRecord(TIdString & meta,
+                       TSeqString & seq,
+                       TFile & file,
+                       Bam const & /* format */)
+{
+    readRecord(meta, seq, context(file).buffer[2], file, Bam());
+}
+
+inline void fillHeader(BamHeader & header)
+{
+    typedef BamHeaderRecord::TTag   TTag;
+
+    BamHeaderRecord seqRecord;
+
+    // Fill first header line.
+    BamHeaderRecord firstRecord;
+    firstRecord.type = BAM_HEADER_FIRST;
+    appendValue(firstRecord.tags, TTag("VN", "2.3"));
+    appendValue(firstRecord.tags, TTag("SO", "sorted"));
+    appendValue(header, firstRecord);
+
+    // Fill program header line.
+    BamHeaderRecord pgRecord;
+    pgRecord.type = BAM_HEADER_PROGRAM;
+    appendValue(pgRecord.tags, TTag("ID", "SeqAn_IO"));
+    appendValue(pgRecord.tags, TTag("PN", "SeqAn_IO"));
+    appendValue(header, pgRecord);
+
+    // Fill read group header line.
+    BamHeaderRecord rgRecord;
+    rgRecord.type = BAM_HEADER_READ_GROUP;
+    appendValue(rgRecord.tags, TTag("ID", "none"));
+    appendValue(rgRecord.tags, TTag("SM", "none"));
+    appendValue(rgRecord.tags, TTag("PG", "SeqAn_IO"));
+    appendValue(header, rgRecord);
+
+}
+// ----------------------------------------------------------------------------
+// Function _writeRecord(SAM);
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
+inline void _writeRecord(TFile & file,
+                         TIdString const & meta,
+                         TSeqString const & seq,
+                         TQualString const & qual,
+                         Sam const & /* format */)
+{
+    if (SEQAN_UNLIKELY(!(context(file).headerWasWriten)))
+    {
         BamHeader header;
+        fillHeader(header);
 
         StringSet<CharString> contigNameStore;
         appendValue(contigNameStore, "*");
@@ -300,39 +379,8 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
         BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
 
         file.context.bamIOContext = bamIOContext;
-        BamHeaderRecord seqRecord;
-
-        // Fill first header line.
-        BamHeaderRecord firstRecord;
-        firstRecord.type = BAM_HEADER_FIRST;
-        appendValue(firstRecord.tags, TTag("VN", "2.3"));
-        appendValue(firstRecord.tags, TTag("SO", "sorted"));
-        appendValue(header, firstRecord);
-
-        // Fill program header line.
-        BamHeaderRecord pgRecord;
-        pgRecord.type = BAM_HEADER_PROGRAM;
-        appendValue(pgRecord.tags, TTag("ID", "SeqAn_IO"));
-        appendValue(pgRecord.tags, TTag("PN", "SeqAn_IO"));
-        appendValue(header, pgRecord);
-
-        // Fill read group header line.
-        BamHeaderRecord rgRecord;
-        rgRecord.type = BAM_HEADER_READ_GROUP;
-        appendValue(rgRecord.tags, TTag("ID", "none"));
-        appendValue(rgRecord.tags, TTag("SM", "none"));
-        appendValue(rgRecord.tags, TTag("PG", "SeqAn_IO"));
-        appendValue(header, rgRecord);
-
-        if (isEqual(file.format, Sam()))
-        {
-            write(file.iter, header, context(file).bamIOContext, Sam());
-        }
-        else if (isEqual(file.format, Bam()))
-        {
-            write(file.iter, header, context(file).bamIOContext, Bam());
-        }
-        file.context.hasWritenHeader = true;
+        write(file.iter, header, context(file).bamIOContext, Sam());
+        file.context.headerWasWriten = true;
     }
 
     BamAlignmentRecord rec;
@@ -341,15 +389,126 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>&file,
     rec.seq = seq;
     rec.qual = qual;
     rec.flag = BAM_FLAG_UNMAPPED;
+    
+    write(file.iter, rec, context(file).bamIOContext, Sam());
+}
 
-    if (isEqual(file.format, Sam()))
+// ----------------------------------------------------------------------------
+// Function _writeRecord(BAM);
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
+inline void _writeRecord(TFile & file,
+                         TIdString const & meta,
+                         TSeqString const & seq,
+                         TQualString const & qual,
+                         Bam const & /* format */)
+{
+    if (SEQAN_UNLIKELY(!(context(file).headerWasWriten)))
     {
-        write(file.iter, rec, context(file).bamIOContext, Sam());
+        BamHeader header;
+        fillHeader(header);
+
+        StringSet<CharString> contigNameStore;
+        appendValue(contigNameStore, "*");
+        NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
+        BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
+
+        file.context.bamIOContext = bamIOContext;
+        write(file.iter, header, context(file).bamIOContext, Bam());
+        file.context.headerWasWriten = true;
     }
-    else if (isEqual(file.format, Bam()))
-    {
-        write(file.iter, rec, context(file).bamIOContext, Bam());
-    }
+
+    BamAlignmentRecord rec;
+    clear(rec);
+    rec.qName = meta;
+    rec.seq = seq;
+    rec.qual = qual;
+    rec.flag = BAM_FLAG_UNMAPPED;
+    
+    write(file.iter, rec, context(file).bamIOContext, Bam());
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(SAM); Separate Qualities
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
+inline void writeRecord(TFile & file,
+                        TIdString const & meta,
+                        TSeqString const & seq,
+                        TQualString const & qual,
+                        Sam const & tag)
+{
+    _writeRecord(file, meta, seq, qual, tag);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(SAM); Qualities inside seq
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(HasQualities<typename Value<TSeqString>::Type> , void)
+writeRecord(TFile & file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Sam const & tag)
+{
+    typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
+    ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
+    CharString qual = quals;
+    writeRecord(file, meta, seq, quals, tag);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(SAM); Without qualities inside seq
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Not<HasQualities<typename Value<TSeqString>::Type> >, void)
+writeRecord(TFile & file,
+                        TIdString const & meta,
+                        TSeqString const & seq,
+                        Sam const & tag)
+{
+        writeRecord(file, meta, seq, "*", tag);
+}
+// ----------------------------------------------------------------------------
+// Function writeRecord(BAM); Separate Qualities
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
+inline void writeRecord(TFile & file,
+                        TIdString const & meta,
+                        TSeqString const & seq,
+                        TQualString const & qual,
+                        Bam const & tag)
+{
+    _writeRecord(file, meta, seq, qual, tag);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(BAM); Qualities inside seq
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(HasQualities<typename Value<TSeqString>::Type> , void)
+writeRecord(TFile & file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Bam const & tag)
+{
+    typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
+    ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
+    CharString qual = quals;
+    writeRecord(file, meta, seq, quals, tag);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(BAM); Without qualities inside seq
+// ----------------------------------------------------------------------------
+template <typename TFile, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Not<HasQualities<typename Value<TSeqString>::Type> >, void)
+writeRecord(TFile & file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Bam const & tag)
+{
+    writeRecord(file, meta, seq, "*", tag);
 }
 
 } // namespace seqan
