@@ -148,7 +148,7 @@ class Fragment;
  *
  * @include demos/dox/align/global_alignment_banded.cpp.stdout
  *
- * http://seqan.readthedocs.io/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  *
  * @section References
  *
@@ -483,7 +483,7 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * The same limitations to algorithms as in @link globalAlignment @endlink apply.  Furthermore, the
  * <tt>MyersBitVector</tt> and <tt>MyersHirschberg</tt> variants can only be used without any other parameter.
  *
- * @see http://seqan.readthedocs.io/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see globalAlignment
  */
 
