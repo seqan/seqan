@@ -441,7 +441,7 @@ _getPrefixSum(LF<TText, TSpec, TConfig> const & lf, TValue val)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
-inline std::enable_if_t<!isLevelsPrefixRD<typename TConfig::Bwt>::value, typename Size<LF<TText, TSpec, TConfig> >::Type>
+inline std::enable_if_t<!isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, typename Size<LF<TText, TSpec, TConfig> >::Type>
 _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, TPos & smaller)
 {
     typedef LF<TText, TSpec, TConfig> const                TLF;
@@ -466,7 +466,7 @@ _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val
 }
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
-inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::value, typename Size<LF<TText, TSpec, TConfig> >::Type>
+inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, typename Size<LF<TText, TSpec, TConfig> >::Type>
 _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, TPos & smaller)
 {
     typedef LF<TText, TSpec, TConfig> const                TLF;
@@ -529,7 +529,7 @@ _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)
 // The character with the smallest number of occurrences greater 0 is chosen.
 
 template <typename TText, typename TSpec, typename TConfig>
-inline std::enable_if_t<!isLevelsPrefixRD<typename TConfig::Bwt>::value, void>
+inline std::enable_if_t<!isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, void>
 _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
 {
     typedef LF<TText, TSpec, TConfig>                   TLF;
@@ -554,7 +554,7 @@ _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
 }
 
 template <typename TText, typename TSpec, typename TConfig>
-inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::value, void>
+inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, void>
 _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
 {
     lf.sentinelSubstitute = 0;

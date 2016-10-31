@@ -421,28 +421,14 @@ _bitmask(unsigned const bitsTotal, unsigned const blocks, unsigned const blocksi
 template <typename T>
 struct isLevelsPrefixRD
 {
-    static const bool value = false;
+    static const bool VALUE = false;
 };
 
 template <typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
 struct isLevelsPrefixRD<TPREFIXLEVELS>
 {
-    static const bool value = true;
+    static const bool VALUE = true;
 };
-
-template <typename TDict>
-constexpr bool
-isPRDict(TDict &)
-{
-    return false;
-}
-
-template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB>
-constexpr bool
-isPRDict(RankDictionary<TValue, TPREFIXLEVELS> &)
-{
-    return true;
-}
 
 // ----------------------------------------------------------------------------
 // Class Levels RankDictionary
@@ -520,7 +506,7 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         const unsigned maxValue = (1 << _BITS_PER_VALUE) - 1;
         const unsigned padding = _BITS_PER_WORD % _BITS_PER_VALUE;
         const TWordType paddingWord = (padding > 0) ? (1ull << (_BITS_PER_WORD - padding)) : 0ull;
-        if (isPRDict(*this) && !std::is_same<TValue, bool>::value)
+        if (isLevelsPrefixRD<Levels<TSpec, TConfig> >::VALUE && !std::is_same<TValue, bool>::value)
         {
             if (padding > 0)
                 _SELECT_BITMASK = _bitmask<TWordType>(_BITS_PER_WORD, _VALUES_PER_WORD, _BITS_PER_VALUE, maxValue, 0u);
@@ -1138,13 +1124,13 @@ _getWordRank(RankDictionary<TValue, Levels<TSpec, TConfig> > const & /* dict */,
              TPosInWord const posInWord,
              TValue const c)
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                TRD;
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> > TRankDictionary;
 
-    TWord mask = word ^ TRD::_CHAR_BITMASKS[ordValue(c)];
+    TWord mask = word ^ TRankDictionary::_CHAR_BITMASKS[ordValue(c)];
     // NOTE: actually it should be: mask & (mask >> 1) & (mask >> 2) & ... but this is shorter and equivalent
-    for (TWord i = 1; i < TRD::_BITS_PER_VALUE; ++i)
+    for (TWord i = 1; i < TRankDictionary::_BITS_PER_VALUE; ++i)
         mask &= mask >> 1;
-    return popCount(TRD::_TRUNC_BITMASKS[posInWord] & mask);
+    return popCount(TRankDictionary::_TRUNC_BITMASKS[posInWord] & mask);
 }
 
 template <typename TValue, typename TSpec, typename TSize, typename TFibre, unsigned LEVELS, unsigned WPB,
@@ -1155,10 +1141,10 @@ _getWordRank(RankDictionary<TValue, TPREFIXLEVELS> const &,
              TPosInWord const posInWord,
              TValue const c)
 {
-    typedef RankDictionary<TValue, TPREFIXLEVELS>    TRD;
+    typedef RankDictionary<TValue, TPREFIXLEVELS> TRD;
 
-    TWord erg1 = (TRD::_CHAR_BITMASKS[ordValue(c)] - (word & TRD::_SELECT_BITMASK)) & TRD::_TRUNC_BITMASKS[(posInWord + 1)/2];
-    TWord erg2 = (TRD::_CHAR_BITMASKS[ordValue(c)] - ((word >> TRD::_BITS_PER_VALUE) & TRD::_SELECT_BITMASK)) & TRD::_TRUNC_BITMASKS[(posInWord/2) + 1];
+    TWord const erg1 = (TRD::_CHAR_BITMASKS[ordValue(c)] - (word & TRD::_SELECT_BITMASK)) & TRD::_TRUNC_BITMASKS[(posInWord + 1)/2];
+    TWord const erg2 = (TRD::_CHAR_BITMASKS[ordValue(c)] - ((word >> TRD::_BITS_PER_VALUE) & TRD::_SELECT_BITMASK)) & TRD::_TRUNC_BITMASKS[(posInWord/2) + 1];
 
     return popCount(erg1 | (erg2 << 1));
 }
@@ -1729,14 +1715,14 @@ reserve(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict, TSize const newC
     if (TConfig::LEVELS > 1)
     {
         reserve(dict.superblocks,
-               (newCapacity + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK,
-               tag);
+                (newCapacity + TRankDict_::_VALUES_PER_SUPERBLOCK - 1) / TRankDict_::_VALUES_PER_SUPERBLOCK,
+                tag);
     }
     if (TConfig::LEVELS > 2)
     {
         reserve(dict.ultrablocks,
-               (newCapacity + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK,
-               tag);
+                (newCapacity + TRankDict_::_VALUES_PER_ULTRABLOCK - 1) / TRankDict_::_VALUES_PER_ULTRABLOCK,
+                tag);
     }
     return reserve(dict.blocks, (newCapacity + TRankDict_::_VALUES_PER_BLOCK - 1) / TRankDict_::_VALUES_PER_BLOCK, tag);
 }
