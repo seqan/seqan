@@ -289,10 +289,19 @@ inline void _readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter,
 }
 
 // ----------------------------------------------------------------------------
+// Function readRecord(Fasta)  -> Directly from an iterator
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TIterator & iter, Fasta)
+{
+    _readRecord(meta, seq, iter, Fasta());
+}
+// ----------------------------------------------------------------------------
 // Function readRecord(Fasta)
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TFile>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFile & file, Fasta)
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>& file, Fasta)
 {
     _readRecord(meta, seq, file.iter, Fasta());
 }
@@ -398,21 +407,49 @@ inline void _readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, 
         throw ParseError("Fastq quality string is expected to be of the same "
                          "length as the sequence! But was not.");
 }
+//    // ----------------------------------------------------------------------------
+//    // Function readRecord(Fasta)
+//    // ----------------------------------------------------------------------------
+//    template <typename TIdString, typename TSeqString, typename TSpec>
+//    inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+//    readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>& file, Fasta)
+//    {
+//        _readRecord(meta, seq, file.iter, Fasta());
+//    }
 
+// ----------------------------------------------------------------------------
+// Function readRecord(Fastq)  Separate Qualities -> Directly from an iterator
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TIterator & iter, Fastq)
+{
+    _readRecord(meta, seq, qual, iter, Fastq());
+}
 // ----------------------------------------------------------------------------
 // Function readRecord(Fastq); Separate Qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
-inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, Fastq)
+template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec>& file, Fastq)
 {
     _readRecord(meta, seq, qual, file.iter, Fastq());
 }
 
 // ----------------------------------------------------------------------------
+// Function readRecord(Fastq)  ignoring qualities -> Directly from an iterator
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TIterator & iter, Fastq)
+{
+    CharString tempQual;
+    _readRecord(meta, seq, tempQual, iter, Fastq());
+}
+// ----------------------------------------------------------------------------
 // Function readRecord(Fastq) ignoring qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TFile>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFile & file, Fastq)
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>& file, Fastq)
 {
     _readRecord(meta, seq, context(file).buffer[2], file.iter, Fastq());
 }
@@ -477,10 +514,23 @@ _writeRecord(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
+// Function writeRecord(Fasta); Separate Qualities -> Directly to an iterator
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void writeRecord(TIterator & iter,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Fasta const & tag,
+            SequenceOutputOptions const & options = SequenceOutputOptions())
+{
+    _writeRecord(iter, meta, seq, tag, options);
+}
+// ----------------------------------------------------------------------------
 // Function writeRecord(Fasta); Without Qualities
 // ----------------------------------------------------------------------------
-template <typename TFile, typename TIdString, typename TSeqString>
-inline void writeRecord(TFile & file,
+template <typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         Fasta const & tag,
@@ -502,7 +552,6 @@ inline void writeRecord(TFile & file,
 {
     writeRecord(file, meta, seq, tag, options);
 }
-
 
 // ----------------------------------------------------------------------------
 // Function writeRecord(Fastq); Separate Qualities
@@ -535,10 +584,25 @@ _writeRecord(TTarget & target,
 }
 
 // ----------------------------------------------------------------------------
+// Function writeRecord(Fastq); Separate Qualities -> Directly to an iterator
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TIterator>
+inline void writeRecord(TIterator & iter,
+                        TIdString const & meta,
+                        TSeqString const & seq,
+                        TQualString const & qual,
+                        Fastq const & tag,
+                        SequenceOutputOptions const & options = SequenceOutputOptions())
+{
+    _writeRecord(iter, meta, seq, qual, tag, options);
+}
+
+// ----------------------------------------------------------------------------
 // Function writeRecord(Fastq); Separate Qualities
 // ----------------------------------------------------------------------------
-template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
-inline void writeRecord(TFile & file,
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         TQualString const & qual,
