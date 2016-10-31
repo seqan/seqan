@@ -226,7 +226,7 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file,
 
 /*!
  * @fn SeqFileIn#readRecord
- * @brief Read one @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink or @link BamFileIn @endlink object.
+ * @brief Read one @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink object.
  *
  * @signature void readRecord(meta, seq[, qual], fileIn);
  *
@@ -388,6 +388,20 @@ inline void readRecords(TIdStringSet & meta,
 // ----------------------------------------------------------------------------
 // Function writeRecord(TagSelector); Without separate qualities
 // ----------------------------------------------------------------------------
+/*!
+ * @fn SeqFileOut#writeRecord
+ * @brief Write one @link FormattedFileRecordConcept @endlink into a @link SeqFileOut @endlink object.
+ *
+ * @signature void writeRecord(fileOut, meta, seq, qual);
+ *
+ * @param[in,out] fileOut   The @link SeqFileOut @endlink object to write into.
+ * @param[in] meta          The @link StringConcept @endlink object where to read the meta information from.
+ * @param[in] seq           The @link StringConcept @endlink object where to read the sequence information from.
+ * @param[in] qual          The @link StringConcept @endlink object where to read the quality information from.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
 
 template <typename TFile, typename TIdString, typename TSeqString>
 inline void
