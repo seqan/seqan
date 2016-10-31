@@ -172,7 +172,7 @@ nextIs(TFwdIterator & iter, GenBankSequence)
 
 template <typename TSeqString, typename TFwdIterator>
 inline void
-readSequence(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
+readRecord(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
 {
     typedef typename Value<TSeqString>::Type TSeqAlphabet;
     typedef OrFunctor<OrFunctor<IsBlank, IsDigit>,
@@ -232,14 +232,23 @@ _readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
         }
     }
 
-    readSequence(seq, iter, GenBankSequence());
+    readRecord(seq, iter, GenBankSequence());
 }
 
+// ----------------------------------------------------------------------------
+// Function readRecord(GenBank)  from String
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TIterator & iter, GenBank)
+{
+    _readRecord(meta, seq, iter, GenBank());
+}
 // ----------------------------------------------------------------------------
 // Function readRecord(GenBank)
 // ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString, typename TFile>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename TFile::TStream> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TFile & file, GenBank)
 {
     _readRecord(meta, seq, file.iter, GenBank());
@@ -248,7 +257,7 @@ readRecord(TIdString & meta, TSeqString & seq, TFile & file, GenBank)
 // Function readRecord(GenBank)
 // ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename TFile::TStream> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, GenBank)
 {
     clear(qual);

@@ -251,11 +251,20 @@ inline void _readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter,
 // ----------------------------------------------------------------------------
 // Function readRecord(Raw)
 // ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFile>
+inline void readRecord(TIdString & meta, TSeqString & seq, TFile & file, Raw)
+{
+    _readRecord(meta, seq, file.iter, Raw());
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecord(Raw) 
+// ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
 inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, Raw)
 {
     clear(qual);
-    _readRecord(meta, seq, file.iter, Raw());
+    readRecord(meta, seq, file, Raw());
 }
 
 // ----------------------------------------------------------------------------
@@ -474,9 +483,10 @@ template <typename TFile, typename TIdString, typename TSeqString>
 inline void writeRecord(TFile & file,
                         TIdString const & meta,
                         TSeqString const & seq,
-                        Fasta const & tag)
+                        Fasta const & tag,
+                        SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    _writeRecord(file.iter, meta, seq, tag, context(file).options);
+    _writeRecord(file.iter, meta, seq, tag, options);
 }
 
 // ----------------------------------------------------------------------------
@@ -487,9 +497,10 @@ inline void writeRecord(TFile & file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         TQualString const & /*qual*/,
-                        Fasta const & tag)
+                        Fasta const & tag,
+                        SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    writeRecord(file, meta, seq, tag);
+    writeRecord(file, meta, seq, tag, options);
 }
 
 
@@ -531,9 +542,10 @@ inline void writeRecord(TFile & file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         TQualString const & qual,
-                        Fastq const & tag)
+                        Fastq const & tag,
+                        SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    _writeRecord(file.iter, meta, seq, qual, tag, context(file).options);
+    _writeRecord(file.iter, meta, seq, qual, tag, options);
 }
 
 // ----------------------------------------------------------------------------

@@ -157,7 +157,7 @@ nextIs(TFwdIterator & iter, EmblSequence)
 
 template <typename TSeqString, typename TFwdIterator>
 inline void
-readSequence(TSeqString & seq, TFwdIterator & iter, EmblSequence)
+readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 {
     typedef typename Value<TSeqString>::Type TSeqAlphabet;
     typedef OrFunctor<OrFunctor<IsBlank, IsDigit>,
@@ -206,14 +206,23 @@ _readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
             readUntil(meta, iter, IsNewline());
         }
     }
-    readSequence(seq, iter, EmblSequence());
+    readRecord(seq, iter, EmblSequence());
+}
+// ----------------------------------------------------------------------------
+// Function readRecord(Embl)  from String
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TIterator & iter, Embl)
+{
+    _readRecord(meta, seq, iter, Embl());
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord(Embl)
 // ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString, typename TFile>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename TFile::TStream> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TFile & file, Embl)
 {
     _readRecord(meta, seq, file.iter, Embl());
@@ -222,7 +231,7 @@ readRecord(TIdString & meta, TSeqString & seq, TFile & file, Embl)
 // Function readRecord(Embl)
 // ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<TFile> >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename TFile::TStream> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, Embl)
 {
     clear(qual);

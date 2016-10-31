@@ -69,21 +69,6 @@ typedef FormattedFile<Fastq, Input>     SeqFileIn;
 
 typedef FormattedFile<Fastq, Output>    SeqFileOut;
 
-// --------------------------------------------------------------------------
-// Tag AutoSeqFormat
-// --------------------------------------------------------------------------
-// if TagSelector is set to -1, the file format is auto-detected
-
-/*!
- * @class AutoSeqFormat
- * @extends TagSelector
- * @headerfile <seqan/file.h>
- * @brief Auto-detects and stores a file format.
- *
- * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
- * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
- */
-
 
 typedef
 TagList<Fastq,
@@ -107,6 +92,20 @@ TagList<Fastq,
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
 
+// --------------------------------------------------------------------------
+// Tag AutoSeqFormat
+// --------------------------------------------------------------------------
+// if TagSelector is set to -1, the file format is auto-detected
+
+/*!
+ * @class AutoSeqFormat
+ * @extends TagSelector
+ * @headerfile <seqan/file.h>
+ * @brief Auto-detects and stores a file format.
+ *
+ * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
+ * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
+ */
 // deprecated
 typedef SeqInFormat AutoSeqFormat;
 
@@ -184,11 +183,6 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 // ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); Without qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TFile, typename TTag>
-inline void
-readRecord(TIdString & /* meta */, TSeqString & /* seq */, TFile & /* file */,
-           TTag const & /* format */)
-{}
 
 template <typename TIdString, typename TSeqString, typename TFile>
 inline void
@@ -211,12 +205,6 @@ readRecord(TIdString & meta, TSeqString & seq, TFile & file, TagSelector<TTagLis
 // ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); With qualities
 // ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFile, typename TTag>
-inline void
-readRecord(TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */, TFile & /* file */,
-           TTag const & /* format */)
-{}
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
 inline void
@@ -400,11 +388,6 @@ inline void readRecords(TIdStringSet & meta,
 // ----------------------------------------------------------------------------
 // Function writeRecord(TagSelector); Without separate qualities
 // ----------------------------------------------------------------------------
-template <typename TFile, typename TIdString, typename TSeqString, typename TTag>
-inline void
-writeRecord(TFile & /* file */, TIdString const & /* meta */, TSeqString const & /* seq */,
-            TTag const & /* format */, SequenceOutputOptions const & /* options */)
-{}
 
 template <typename TFile, typename TIdString, typename TSeqString>
 inline void
@@ -439,14 +422,6 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
 // ----------------------------------------------------------------------------
 // Function writeRecord(TagSelector); With separate qualities
 // ----------------------------------------------------------------------------
-template <typename TFile, typename TIdString, typename TSeqString, typename TQualString, typename TTag>
-inline void
-writeRecord(TFile & /* file */,
-            TIdString const & /* meta */,
-            TSeqString const & /* seq */,
-            TQualString const & /* qual */,
-            TTag const & /* format */)
-{}
 
 template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
 inline void
