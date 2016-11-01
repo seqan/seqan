@@ -230,9 +230,10 @@ public:
 
         addOption(*this, ArgParseOption("",
                                         "version-check",
-                                        "Choose OFF if you don't want any notifications. "
-                                        "Choose APP_ONLY if you don't want any notification about a new SeqAn version. "
-                                        "DEV is the default value and will check for both versions.",
+                                        "Choose OFF to disable any update notifications. "
+                                        "With APP_ONLY you'll receive update notifications about new versions of your app. "
+                                        "In DEV mode you'll receive update notifications regarding new versions of your app "
+                                        "and new versions of the SeqAn library.",
                                         ArgParseArgument::STRING,
                                         "OPTION"));
         setValidValues(*this, "version-check", VersionControlTags_<>::OPTIONS);
