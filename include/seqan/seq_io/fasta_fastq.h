@@ -230,8 +230,6 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // Functions
 // ============================================================================
 
-
-
 // ----------------------------------------------------------------------------
 // Function readRecord(Raw);
 // ----------------------------------------------------------------------------
@@ -249,10 +247,20 @@ inline void _readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter,
 }
 
 // ----------------------------------------------------------------------------
+// Function readRecord(Fasta)  -> Directly from an iterator
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & meta, TSeqString & seq, TIterator & iter, Raw)
+{
+    _readRecord(meta, seq, iter, Raw());
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord(Raw)
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TFile>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFile & file, Raw)
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec>& file, Raw)
 {
     _readRecord(meta, seq, file.iter, Raw());
 }

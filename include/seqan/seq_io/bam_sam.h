@@ -283,12 +283,13 @@ inline void _readRecord(TIdString & meta,
 // ----------------------------------------------------------------------------
 // Function readRecord(SAM); With qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
-inline void readRecord(TIdString & meta,
-                       TSeqString & seq,
-                       TQualString & qual,
-                       TFile & file,
-                       Sam const & /* format */)
+template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           TQualString & qual,
+           FormattedFile<Fastq, Input, TSpec> & file,
+           Sam const & /* format */)
 {
     clear(qual);
     _readRecord(meta, seq, qual, file, Sam());
@@ -296,11 +297,12 @@ inline void readRecord(TIdString & meta,
 // ----------------------------------------------------------------------------
 // Function readRecord(SAM); Without qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TFile>
-inline void readRecord(TIdString & meta,
-                       TSeqString & seq,
-                       TFile & file,
-                       Sam const & /* format */)
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           FormattedFile<Fastq, Input, TSpec> & file,
+           Sam const & /* format */)
 {
     readRecord(meta, seq, context(file).buffer[2], file, Sam());
 }
@@ -308,11 +310,13 @@ inline void readRecord(TIdString & meta,
 // ----------------------------------------------------------------------------
 // Function readRecord(BAM); With qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
-inline void readRecord(TIdString & meta,
-                       TSeqString & seq,
-                       TQualString & qual, TFile & file,
-                       Bam const & /* format */)
+template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           TQualString & qual,
+           FormattedFile<Fastq, Input, TSpec> & file,
+           Bam const & /* format */)
 {
     clear(qual);
     _readRecord(meta, seq, qual, file, Bam());
@@ -320,14 +324,39 @@ inline void readRecord(TIdString & meta,
 // ----------------------------------------------------------------------------
 // Function readRecord(BAM); Without qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TFile>
-inline void readRecord(TIdString & meta,
-                       TSeqString & seq,
-                       TFile & file,
-                       Bam const & /* format */)
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           FormattedFile<Fastq, Input, TSpec> & file,
+           Bam const & /* format */)
 {
     readRecord(meta, seq, context(file).buffer[2], file, Bam());
 }
+// ----------------------------------------------------------------------------
+// Function readRecord(Bam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & /* meta */, TSeqString & /* seq */, TIterator & /* iter */, Bam)
+{}
+// ----------------------------------------------------------------------------
+// Function readRecord(Bam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TIterator>
+inline void readRecord(TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */, TIterator & /* iter */, Bam)
+{}
+// ----------------------------------------------------------------------------
+// Function readRecord(Sam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & /* meta */, TSeqString & /* seq */, TIterator & /* iter */, Sam)
+{}
+// ----------------------------------------------------------------------------
+// Function readRecord(Sam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TIterator>
+inline void readRecord(TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */, TIterator & /* iter */, Sam)
+{}
 
 inline void fillHeader(BamHeader & header)
 {
