@@ -872,7 +872,7 @@ inline void printHelp(ArgumentParser const & me,
 
     // Add arguments to arguments section
     if (length(me.argumentList) != 0)
-        addSection(toolDoc, "Arguments");
+        addSection(toolDoc, "Required Arguments");
 
     for (unsigned i = 0; i < length(me.argumentList); ++i)
     {
@@ -882,13 +882,14 @@ inline void printHelp(ArgumentParser const & me,
         std::string term;
         if (!empty(arg._argumentLabel))
         {
-            term = "\\fB-";
-            append(term, arg._argumentLabel);
+            std::regex space(" ");
+            term = "\\fB";
+            append(term, std::regex_replace(arg._argumentLabel, space,"_"));
             append(term, "\\fP");
         }
         else
         {
-            term = "\\fB-ARGUMENT ";
+            term = "\\fBARGUMENT ";
             append(term, std::to_string(i));
             append(term, "\\fP");
         }
