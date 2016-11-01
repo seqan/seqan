@@ -457,7 +457,7 @@ inline std::string _getArgumentType(ArgParseArgument const & me)
     if (isInputFileArgument(me) || isOutputFileArgument(me))
         return "FILE";
     else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
-        return "PREFIX";
+        return "FILENAME_PREFIX";
     else if (isStringArgument(me))
         return "STRING";
     else if (isIntegerArgument(me) || isDoubleArgument(me))
