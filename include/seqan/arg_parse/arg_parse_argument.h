@@ -451,7 +451,7 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 // ----------------------------------------------------------------------------
 // Function _getArgumentType()
 // ----------------------------------------------------------------------------
-inline std::string const _getArgumentType(ArgParseArgument const & me)
+inline std::string _getArgumentType(ArgParseArgument const & me)
 {
     // infer from argument type
     if (isInputFileArgument(me) || isOutputFileArgument(me))
@@ -481,7 +481,7 @@ inline std::string const _getArgumentType(ArgParseArgument const & me)
  * @return std::string The argument label as a STL string.
  */
 
-inline std::string const getArgumentLabel(ArgParseArgument const & me)
+inline std::string getArgumentLabel(ArgParseArgument const & me)
 {
     if (me._argumentLabel != "")
     {
