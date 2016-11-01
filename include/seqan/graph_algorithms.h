@@ -36,6 +36,8 @@
 // External / STL
 #include <set>
 #include <queue>
+#include <vector>
+#include <utility>
 
 // Seqan
 #include <seqan/graph_types.h>

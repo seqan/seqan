@@ -41,10 +41,8 @@
 #include <xmmintrin.h>  // _mm_pause()
 #endif
 
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
 #include <Windows.h>
-#else
-#include <sched.h>
 #endif
 
 namespace seqan {
@@ -53,7 +51,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct Mutex;
 inline void yieldProcessor();
 
 // ============================================================================
@@ -88,13 +85,7 @@ waitFor(SpinDelay & me)
     }
     else
     {
-#ifdef PLATFORM_WINDOWS
-#if _WIN32_WINNT >= 0x0400
-        SwitchToThread();
-#endif
-#else
-        sched_yield();
-#endif
+        std::this_thread::yield();
     }
 }
 
@@ -146,37 +137,6 @@ public:
     ReadWriteLock() :
         readers(0),
         writers(0)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class ScopedLock
-// ----------------------------------------------------------------------------
-
-template <typename TMutex = Mutex, typename TParallel = Parallel>
-struct ScopedLock
-{
-    TMutex & mutex;
-
-    explicit
-    ScopedLock(TMutex & mutex) :
-        mutex(mutex)
-    {
-        lock(mutex);
-    }
-
-    ~ScopedLock()
-    {
-        unlock(mutex);
-    }
-
-};
-
-template <typename TLock>
-struct ScopedLock<TLock, Serial>
-{
-    explicit
-    ScopedLock(TLock &)
     {}
 };
 
@@ -253,12 +213,26 @@ struct ScopedWriteLock<TLock, Serial>
 inline void
 yieldProcessor()
 {
-#if defined(PLATFORM_WINDOWS_VS)
+#if defined(STDLIB_VS)  // Visual Studio - all platforms.
     YieldProcessor();
-#elif defined(__SSE2__)
-    _mm_pause();
+#elif defined(__arm__) || defined(__aarch64__)  // ARM.
+    __asm__ __volatile__ ("yield" ::: "memory");
+#elif defined(__sparc) // SPARC
+#if defined(__SUNPRO_C)
+    __asm __volatile__ ("rd %%ccr, %%g0\n\t"
+                        "rd %%ccr, %%g0\n\t"
+                        "rd %%ccr, %%g0");
 #else
-    __asm__ __volatile__("rep; nop" : : );
+    __asm __volatile__ ("rd %ccr, %g0\n\t"
+                        "rd %ccr, %g0\n\t"
+                        "rd %ccr, %g0");
+#endif  // defined(__SUNPRO_C)
+#elif defined(__powerpc__) || defined(__ppc__) || defined(__PPC__) // PowerPC
+    __asm__ __volatile__ ("or 27,27,27" ::: "memory");
+#elif defined(__SSE2__)  // AMD and Intel
+    _mm_pause();
+#else  // everything else.
+    asm volatile ("nop" ::: "memory");  // default operation - does nothing => Might lead to passive spinning.
 #endif
 }
 

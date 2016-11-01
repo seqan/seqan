@@ -34,7 +34,7 @@
 // Global alignment interface for the unbanded Needleman-Wunsch and Gotoh
 // algorithms.
 //
-// We define the interface functions pretty explicitely (versus just TAlign,
+// We define the interface functions pretty explicitly (versus just TAlign,
 // TFragments etc.) so the candidates the compiler gives when resolution to
 // the globalFunction() fails is actually meaningful.
 // ==========================================================================
@@ -148,7 +148,7 @@ class Fragment;
  *
  * @include demos/dox/align/global_alignment_banded.cpp.stdout
  *
- * http://seqan.readthedocs.org/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  *
  * @section References
  *
@@ -483,7 +483,7 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * The same limitations to algorithms as in @link globalAlignment @endlink apply.  Furthermore, the
  * <tt>MyersBitVector</tt> and <tt>MyersHirschberg</tt> variants can only be used without any other parameter.
  *
- * @see http://seqan.readthedocs.org/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see globalAlignment
  */
 
@@ -620,6 +620,220 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
 
     AlignConfig<> alignConfig;
     return globalAlignmentScore(strings[0], strings[1], scoringScheme, alignConfig);
+}
+
+// ----------------------------------------------------------------------------
+// Function globalAlignmentScore()       [unbanded, SIMD version, 2x StringSet]
+// ----------------------------------------------------------------------------
+
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                         TAlgoTag const & /*algoTag*/)
+{
+    SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    return _alignWrapper(stringsH, stringsV, scoringScheme, TAlignConfig2(), TGapModel());
+}
+
+// Interface without AlignConfig<>.
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, NeedlemanWunsch());
+    else
+        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig);
+}
+
+// --------------------------------------------------------------------------------
+// Function globalAlignmentScore()    [unbanded, SIMD version, String vs StringSet]
+// --------------------------------------------------------------------------------
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                                         TAlgoTag const & /*algoTag*/)
+{
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    return _alignWrapper(stringH, stringsV, scoringScheme, TAlignConfig2(), TGapModel());
+}
+
+// Interface without AlignConfig<>.
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, NeedlemanWunsch());
+    else
+        return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TString1, typename TString2, typename TSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
+                                         StringSet<TString2, TSpec> const & stringsV,
+                                         Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignmentScore(stringH, stringsV, scoringScheme, alignConfig);
+}
+
+// ============================================================================
+// Many-vs-Many align interfaces.
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function globalAlignment()            [unbanded, SIMD version, GapsH, GapsV]
+// ----------------------------------------------------------------------------
+
+template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
+          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec, 
+          typename TAlgoTag>
+inline auto
+globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
+                StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+                Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                TAlgoTag const & /*algoTag*/)
+{
+    typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec>              TAlignConfig;
+    typedef typename SubstituteAlignConfig_<TAlignConfig>::Type         TFreeEndGaps;
+    typedef AlignConfig2<DPGlobal, DPBandConfig<BandOff>, TFreeEndGaps> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type                 TGapModel;
+
+    return _alignWrapper(gapSeqSetH, gapSeqSetV, scoringScheme, TAlignConfig2(), TGapModel());
+}
+
+// ----------------------------------------------------------------------------
+// Function globalAlignment()        [unbanded, SIMD version, StringSet<Align>]
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TAlignSpec, typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec, typename TAlgoTag>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & alignSet,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                                    TAlgoTag const & algoTag)
+{
+    typedef Align<TSequence, TAlignSpec> TAlign;
+    typedef typename Row<TAlign>::Type TGapSequence;
+
+    StringSet<TGapSequence, Dependent<> > gapSetH;
+    StringSet<TGapSequence, Dependent<> > gapSetV;
+    reserve(gapSetH, length(alignSet));
+    reserve(gapSetV, length(alignSet));
+
+    for (auto & align : alignSet)
+    {
+        appendValue(gapSetH, row(align, 0));
+        appendValue(gapSetV, row(align, 1));
+    }
+
+    return globalAlignment(gapSetH, gapSetV, scoringScheme, alignConfig, algoTag);
+}
+
+// Interface without AlignConfig<>.
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(align, scoringScheme, alignConfig, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                                    AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return globalAlignment(align, scoringScheme, alignConfig, NeedlemanWunsch());
+    else
+        return globalAlignment(align, scoringScheme, alignConfig, Gotoh());
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TSequence, typename TAlignSpec,
+          typename TScoreValue, typename TScoreSpec>
+String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & align,
+                                    Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(align, scoringScheme, alignConfig);
 }
 
 }  // namespace seqan

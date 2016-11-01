@@ -56,6 +56,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > > 
 template <typename TText, typename TSpec, typename TConfig>
 inline bool indexCreate(Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > > & index)
 {
+    indexText(index.rev) = indexText(index.fwd);
+    reverse(indexText(index.rev));
     return indexCreate(index.fwd, FibreSALF()) && indexCreate(index.rev, FibreSALF());
 }
 

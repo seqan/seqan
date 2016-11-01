@@ -836,6 +836,7 @@ int main(int argc, const char *argv[])
 				case 1: return runDFI<PredMinFreq, PredMaxFreq, AminoAcid> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal, options);
 				case 2: return runDFI<PredMinFreq, PredMaxFreq, Dna> (getArgumentValues(parser, 0), options.minFreq, options.maxFreq, options.maximal, options);
 			}
+			break;
 		case 1:
 			switch (options.alphabet)
 			{
@@ -843,6 +844,7 @@ int main(int argc, const char *argv[])
 				case 1: return runDFI<PredMinSupp, PredEmerging, AminoAcid> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal, options);
 				case 2: return runDFI<PredMinSupp, PredEmerging, Dna> (getArgumentValues(parser, 0), options.minSupp, options.growthRate, options.maximal, options);
 			}
+			break;
 		case 2:
 			switch (options.alphabet)
 			{

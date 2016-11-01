@@ -59,7 +59,7 @@ namespace seqan {
 /*!
  * @tag FileCompressionTags#GZFile
  * @headerfile <seqan/stream.h>
- * @brief File compression using the popular <a href="http://gzip.org">gzip</a> format.
+ * @brief File compression using the popular <a href="http://www.gzip.org">gzip</a> format.
  * @signature typedef Tag<GZFile_> GZFile;
  */
 
@@ -134,18 +134,17 @@ char const * FileExtensions<GZFile, T>::VALUE[1] =
 template <typename T>
 struct FileExtensions<BgzfFile, T>
 {
-    static char const * VALUE[4];
+    static char const * VALUE[5];
 };
 
 template <typename T>
-char const * FileExtensions<BgzfFile, T>::VALUE[4] =
+char const * FileExtensions<BgzfFile, T>::VALUE[5] =
 {
     ".bgzf",      // default output extension
     ".bam",       // BAM files are bgzf compressed
-    ".vcf.gz",    // Compressed and indexed VCF files are actually bgzf compressed
+    ".vcf.gz",    // Compressed and indexed VCF files are bgzf compressed
+    ".bed.gz",    // Compressed and indexed BED files are bgzf compressed
     ".tbi"        // Tabix index files are bgzf compressed
-
-    // if you add extensions here, extend getBasename() below
 };
 
 
@@ -172,7 +171,7 @@ char const * FileExtensions<BZ2File, T>::VALUE[1] =
 inline bool
 _isPipe(const char * fileName)
 {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     struct _stat buf;
     if (_stat(fileName, &buf) == 0)
         if ((buf.st_mode & _S_IFMT) == _S_IFCHR)

@@ -436,6 +436,44 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_write)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 
+SEQAN_DEFINE_TEST(test_bed_io_isOpen_fileIn)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/tests/bed_io/example.bed");
+
+    // Create SequenceStream object.
+    seqan::BedFileIn bedI;
+    SEQAN_ASSERT(!isOpen(bedI));
+
+    // open file
+    open(bedI, toCString(filePath));
+    SEQAN_ASSERT(isOpen(bedI));
+
+    // close file
+    close(bedI);
+    SEQAN_ASSERT(!isOpen(bedI));
+}
+
+SEQAN_DEFINE_TEST(test_bed_io_isOpen_fileOut)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    append(filePath, ".bed");
+
+    // Create SequenceStream object.
+    seqan::BedFileOut  bedO;
+    SEQAN_ASSERT(!isOpen(bedO));
+
+    // open files
+    open(bedO, toCString(filePath));
+    SEQAN_ASSERT(isOpen(bedO));
+
+    // close files
+    close(bedO);
+    SEQAN_ASSERT(!isOpen(bedO));
+}
+
 SEQAN_BEGIN_TESTSUITE(test_bed_io)
 {
     // Reading of BED records.
@@ -455,6 +493,10 @@ SEQAN_BEGIN_TESTSUITE(test_bed_io)
     // BED Stream
     SEQAN_CALL_TEST(test_bed_bed_file_read);
     SEQAN_CALL_TEST(test_bed_bed_file_write);
+
+    // isOpen
+    SEQAN_CALL_TEST(test_bed_io_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_bed_io_isOpen_fileOut);
 }
 
 SEQAN_END_TESTSUITE

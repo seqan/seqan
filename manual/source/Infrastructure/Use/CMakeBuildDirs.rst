@@ -70,16 +70,11 @@ Debug and release builds:
 
 Of course the above can also be combined to have ``debug_clang37`` et cetera.
 
-.. caution::
-
-    **SeqAn requires C++11**
-
-    Depending on your setup you might get an error related to C++11 support. In this case you need to tell the compiler explicitly to use modern C++ standards by adding ``-DCMAKE_CXX_FLAGS=-std=c++11`` or ``-DCMAKE_CXX_FLAGS=-std=c++14``.
-
 Visual Studio
 ^^^^^^^^^^^^^
 
 Different versions (please note that versions older than 2015 are not supported any longer):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
@@ -94,6 +89,7 @@ Different versions (please note that versions older than 2015 are not supported 
 
 
 32Bit and 64Bit:
+~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
@@ -111,6 +107,49 @@ Different versions (please note that versions older than 2015 are not supported 
     **64Bit builds on Windows**
 
     You almost always want 64Bit builds when using SeqAn, so don't forget to specify a generator that ends in "Win64". It is not the default, even on 64Bit Windows installations.
+
+Different Compilers:
+~~~~~~~~~~~~~~~~~~~~
+
+`Intel Compiler 2016
+<https://software.intel.com/en-us/articles/intel-parallel-studio-xe-2016-release-notes>`_:
+
+.. code-block:: console
+
+    # mkdir -p ~/devel/my_project-build/intel_32
+    # cd ~/devel/my_project-build/intel_32
+    # cmake ../../my_project -G "Visual Studio 14 2015" -T "Intel C++ Compiler 16.0"
+    [...]
+
+    # mkdir -p ~/devel/my_project-build/intel_64
+    # cd ~/devel/my_project-build/intel_64
+    # cmake ../../my_project -G "Visual Studio 14 2015 Win64" -T "Intel C++ Compiler 16.0"
+    [...]
+
+`Clang/C2 3.7 or 3.8
+<https://blogs.msdn.microsoft.com/vcblog/2015/12/04/clang-with-microsoft-codegen-in-vs-2015-update-1/>`_
+(requires CMake ≥ 3.6):
+
+.. code-block:: console
+
+    # mkdir -p ~/devel/my_project-build/clang_c2_32
+    # cd ~/devel/my_project-build/clang_c2_32
+    # cmake ../../my_project -G "Visual Studio 14 2015" -T "v140_clang_3_7"
+    [...]
+
+    # mkdir -p ~/devel/my_project-build/clang_c2_64
+    # cd ~/devel/my_project-build/clang_c2_64
+    # cmake ../../my_project -G "Visual Studio 14 2015 Win64" -T "v140_clang_3_7"
+    [...]
+
+.. note::
+
+    If Clang/C2 3.8 is installed, the tool-chain name in Visual Studio 14 is
+    still "v140_clang_3_7" even though the name says otherwise.
+
+.. caution::
+
+    Clang/C2 is currently experimental and shouldn't be used in production.
 
 XCode
 ^^^^^

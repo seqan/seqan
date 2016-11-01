@@ -93,29 +93,14 @@ template <typename TDPCell, typename TSpec>
 class DPScout_
 {
 public:
-    typedef typename Value<TDPCell>::Type TScoreValue;
-//    TScoreValue _maxScore;          // The maximal score.
-    TDPCell _maxScore;
-    unsigned int _maxHostPosition;  // The corresponding host position within the underlying dp-matrix.
+    using TScoreValue = typename Value<TDPCell>::Type;
 
-    DPScout_() : _maxScore(), _maxHostPosition(0) {}
+    TDPCell _maxScore         = TDPCell();
+    uint32_t _maxHostPosition = DPCellDefaultInfinity<TScoreValue>::VALUE; // The corresponding host position within the underlying dp-matrix.
 
-    DPScout_(DPScoutState_<Default> const & /*state*/) :
-        _maxScore(), _maxHostPosition(0) {}
+    DPScout_() = default;
 
-    DPScout_(DPScout_ const & other) :
-        _maxScore(other._maxScore), _maxHostPosition(other._maxHostPosition) {}
-
-    DPScout_ & operator=(DPScout_ const & other)
-    {
-        if (this != &other)
-        {
-            _maxScore = other._maxScore;
-            _maxHostPosition = other._maxHostPosition;
-        }
-        return *this;
-    }
-
+    DPScout_(DPScoutState_<Default> const & /*state*/) {}
 };
 
 // Terminator_ Specialization
@@ -125,37 +110,16 @@ class DPScout_<TDPCell, Terminator_<TSpec> >
 {
 public:
     typedef DPScout_<TDPCell, Default>  TParent;
-    bool terminationCriteriumMet;
-    DPScoutState_<Terminator_<TSpec> > * state;
 
-    DPScout_()
-        : TParent(),
-          terminationCriteriumMet(false),
-          state(0)
+    DPScoutState_<Terminator_<TSpec> > * state = nullptr;
+    bool terminationCriteriumMet               = false;
+
+    DPScout_() = default;
+
+    DPScout_(DPScoutState_<Terminator_<TSpec> > & pState) :
+        DPScout_<TDPCell, Default>(),
+        state(&pState)
     {}
-
-    DPScout_(DPScoutState_<Terminator_<TSpec> > & state)
-        : TParent(),
-          terminationCriteriumMet(false),
-          state(&state)
-    {}
-
-    DPScout_(DPScout_ const & other)
-        : TParent(static_cast<TParent const &>(other)),
-          terminationCriteriumMet(other.terminationCriteriumMet),
-          state(other.state)
-    {}
-
-    DPScout_ & operator=(DPScout_ const & other)
-    {
-        if (this != &other)
-        {
-            *static_cast<TParent*>(this) = other;
-            terminationCriteriumMet = other.terminationCriteriumMet;
-            state = other.state;
-        }
-        return *this;
-    }
 };
 
 // ============================================================================
@@ -169,7 +133,7 @@ public:
 // Given an alignment algorithm tag such as GlobalAlignment_ or LocalAlignment_, returns the specialization tag for the
 // corresponding DPScout_ specialization.
 
-template <typename TAlignmentAlgorithm>
+template <typename TAlignmentAlgorithm, typename TScoutState>
 struct ScoutSpecForAlignmentAlgorithm_
 {
     typedef If<HasTerminationCriterium_<TAlignmentAlgorithm>,
@@ -207,7 +171,6 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TIsLastColumn const & /**/,
                 TIsLastRow const & /**/)
 {
-
     if (_scoreOfCell(activeCell) > _scoreOfCell(dpScout._maxScore))
     {
         dpScout._maxScore = activeCell;
@@ -223,8 +186,7 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TTraceMatrixNavigator const & navigator,
                 TIsLastColumn const & /**/)
 {
-    return _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(),
-                           False());
+    _scoutBestScore(dpScout, activeCell, navigator, TIsLastColumn(), False());
 }
 
 // TODO(rmaerker): Why is this needed?
@@ -234,7 +196,7 @@ _scoutBestScore(DPScout_<TDPCell, TSpec> & dpScout,
                 TDPCell const & activeCell,
                 TTraceMatrixNavigator const & navigator)
 {
-    return _scoutBestScore(dpScout, activeCell, navigator, False(), False());
+    _scoutBestScore(dpScout, activeCell, navigator, False(), False());
 }
 
 // ----------------------------------------------------------------------------
@@ -283,7 +245,95 @@ terminateScout(DPScout_<TDPCell, Terminator_<TSpec> > & scout)
     scout.terminationCriteriumMet = true;
 }
 
+// ----------------------------------------------------------------------------
+// Function _preInitScoutHorizontal()
+// ----------------------------------------------------------------------------
 
+template <typename TDPCell, typename TSpec>
+inline void
+_preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _reachedHorizontalEndPoint()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec, typename TIter>
+constexpr inline bool
+_reachedHorizontalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
+                           TIter const & /*hIt*/)
+{
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function _preInitScoutVertical()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _reachedVerticalEndPoint()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec, typename TIter>
+constexpr inline bool
+_reachedVerticalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
+                         TIter const & /*iter*/)
+{
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextHorizontalEndPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_nextHorizontalEndPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _nextVerticalEndPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_nextVerticalEndPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _incHorizontalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_incHorizontalPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
+
+// ----------------------------------------------------------------------------
+// Function _incVerticalPos()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TSpec>
+inline void
+_incVerticalPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
+{
+    // no-op.
+}
 
 }  // namespace seqan
 

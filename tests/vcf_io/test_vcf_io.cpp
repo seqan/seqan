@@ -47,5 +47,8 @@ SEQAN_BEGIN_TESTSUITE(test_vcf_io)
     SEQAN_CALL_TEST(test_vcf_io_write_vcf_header);
     SEQAN_CALL_TEST(test_vcf_io_write_vcf_record);
     SEQAN_CALL_TEST(test_vcf_io_vcf_file_write_record);
+
+    SEQAN_CALL_TEST(test_vcf_io_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_vcf_io_isOpen_fileOut);
 }
 SEQAN_END_TESTSUITE

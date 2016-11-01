@@ -353,9 +353,11 @@ inline typename Value<String<TValue, Alloc<TSpec> > >::Type *
 _allocateStorage(String<TValue, Alloc<TSpec> > & me,
                  TSize new_capacity)
 {
+    typedef typename If<IsSameType<TSpec, OverAligned>, TagAllocateAlignedMalloc, TagAllocateStorage>::Type AllocTag;
+
     typename Size<String<TValue, Alloc<TSpec> > >::Type size = _computeSizeForCapacity(me, new_capacity);
     typename Value<String<TValue, Alloc<TSpec> > >::Type * _returnValue = me.data_begin;
-    allocate(me, me.data_begin, size, TagAllocateStorage());
+    allocate(me, me.data_begin, size, AllocTag());
     me.data_capacity = new_capacity;
     return _returnValue;
 }
@@ -370,8 +372,10 @@ _deallocateStorage(String<TValue, Alloc<TSpec> > & me,
                    TPtr * ptr,
                    TSize capacity)
 {
+    typedef typename If<IsSameType<TSpec, OverAligned>, TagAllocateAlignedMalloc, TagAllocateStorage>::Type AllocTag;
+
     typename Size<String<TValue, Alloc<TSpec> > >::Type size = _computeSizeForCapacity(me, capacity);
-    deallocate(me, ptr, size, TagAllocateStorage());
+    deallocate(me, ptr, size, AllocTag());
 }
 
 // ----------------------------------------------------------------------------

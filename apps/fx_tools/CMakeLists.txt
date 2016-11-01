@@ -10,14 +10,16 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fx_tools CXX)
 message (STATUS "Configuring apps/fx_tools")
 
-set (SEQAN_APP_VERSION "0.2.5")
+set (SEQAN_APP_VERSION "0.2.6")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup

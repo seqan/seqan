@@ -43,7 +43,7 @@ void IdSplitter::open()
     close();
     for (unsigned i = 0; i < numContigs; ++i)
     {
-#if defined(PLATFORM_WINDOWS)
+#if defined(STDLIB_VS)
         char fileNameBuffer[1000];
         char filePathBuffer[1000];
         //  Gets the temp path env string (no guarantee it's a valid path).
@@ -123,9 +123,9 @@ void IdSplitter::close()
         if (files[i])
         {
             delete files[i];
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
             DeleteFile(fileNames[i].c_str());
-#endif  // #ifdef PLATFORM_WINDOWS
+#endif  // #ifdef STDLIB_VS
             files[i] = 0;
         }
     files.clear();

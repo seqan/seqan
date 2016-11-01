@@ -451,7 +451,7 @@ _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val
 
     if (pos > 0)
     {
-        ret += getCumulativeRank(lf.bwt, pos - 1, val, smaller);
+        ret += getRank(lf.bwt, pos - 1, val, smaller);
 
         if (!ordLess(lf.sentinelSubstitute, val)) // lf.sentinelSubstitute >= val
         {

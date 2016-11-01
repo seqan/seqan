@@ -59,16 +59,16 @@ namespace seqan
  * @headerfile <seqan/file.h>
  * @brief Standard configuration for the @link ExternalString @endlink.
  *
- * @signature template <[typename TFile[, unsigned PAGESIZE[, unsigned FRAMES]]>
+ * @signature template <[typename TFile[, unsigned SEQAN_PAGESIZE[, unsigned FRAMES]]>
  *            struct ExternalConfig;
  *
- * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
- * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
- *                   calculations.  Default: 2<sup>20</sup>.
- * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
- *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ * @tparam TFile     The @link File @endlink type to use. Default: <tt>File&lt;&gt;</tt>.
+ * @tparam SEQAN_PAGESIZE The number of values in one page. This should be a power of 2 to speed up transfer and
+ *                   calculations. Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  *
- * When using this configuration, the Size type of the ExternalString is <tt>unsigned</tt>.  Thus, with this configuration at
+ * When using this configuration, the <tt>Size</tt> type of the ExternalString is <tt>unsigned</tt>. Thus, with this configuration at
  * most 4.294.967.296 values can be stored in an ExternalString on a 32 bit system.
  *
  * For a larger size type use @link ExternalConfigLarge @endlink.
@@ -81,23 +81,23 @@ namespace seqan
  * @headerfile <seqan/file.h>
  * @brief Large size type configuration for the @link ExternalString @endlink.
  *
- * @signature template <[typename TFile[, unsigned PAGESIZE[, unsigned FRAMES]]>
+ * @signature template <[typename TFile[, unsigned SEQAN_PAGESIZE[, unsigned FRAMES]]>
  *            struct ExternalConfigLarge;
  *
- * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
- * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
- *                   calculations.  Default: 2<sup>20</sup>.
- * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
- *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ * @tparam TFile     The @link File @endlink type to use. Default: <tt>File&lt;&gt;</tt>.
+ * @tparam SEQAN_PAGESIZE The number of values in one page. This should be a power of 2 to speed up transfer and
+ *                   calculations. Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  *
  * @see ExternalConfig
  *
  * @section Remarks
  *
- * When using this configuration ,th eSize type o fthe ExternalString is Size type of <tt>TFile</tt>.  Normally, this is
- * a 64 bit integer.  For a smaller size type use ExternalConfig.
+ * When using this configuration ,the <tt>Size</tt> type of the ExternalString is <tt>Size</tt> type of <tt>TFile</tt>. Normally, this is
+ * a 64 bit integer. For a smaller size type use ExternalConfig.
  *
- * Some data structures store size types values (e.g. suffix arrays in indices).  To save memory, you should think o
+ * Some data structures store size types values (e.g. suffix arrays in indices). To save memory, you should think o
  * fusing ExternalConfig.
  */
 
@@ -106,15 +106,15 @@ namespace seqan
  * @headerfile <seqan/file.h>
  * @brief Arbitrary size type configuration for @link ExternalString @endlink.
  *
- * @signature template <typename TSize[, typename TFile[, unsigned PAGESIZE[, unsigned FRAMEs]]]>
+ * @signature template <typename TSize[, typename TFile[, unsigned SEQAN_PAGESIZE[, unsigned FRAMEs]]]>
  *            class ExternalConfigSize;
  *
  * @tparam TSize The size type of the ExternalString.
- * @tparam TFile Type of file the ExternalString will be based on.  Defaults to <tt>File&lt;&gt;</tt>.
- * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
- *                   calculations.  Default: 2<sup>20</sup>.
- * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
- *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
+ * @tparam TFile Type of file the ExternalString will be based on. Defaults to <tt>File&lt;&gt;</tt>.
+ * @tparam SEQAN_PAGESIZE The number of values in one page. This should be a power of 2 to speed up transfer and
+ *                   calculations. Default: 2<sup>20</sup>.
+ * @tparam FRAMES    The number of pages that should reside in internal memory. To enable prefetching and automatic
+ *                   swap-out, <tt>frames</tt> should be greater than 1. Default: 2.
  */
 
 /*!
@@ -127,25 +127,25 @@ namespace seqan
  *            class String<TValue, External<TConfig> >;
  *
  * @tparam TValue  The type that is used for the items/characters stored in the string.
- * @tparam TConfig A structure to confgure the external string.  Defaults to <tt>ExternalConfigLarge&lt;&gt;.  See
+ * @tparam TConfig A structure to configure the external string. Defaults to <tt>ExternalConfigLarge&lt;&gt;. See
  *                 ExternalConfig, ExternalConfigLarge, and ExternalConfigSize.
  *
  * The External String enables to access sequences larger than the available internal memory (RAM) by using external
- * memory (e.g. Hard disk, Network storage, ...) via a File object.  Sequences of nearly arbitrary size can be accessed
+ * memory (e.g. Hard disk, Network storage, ...) via a File object. Sequences of nearly arbitrary size can be accessed
  * even larger than the logically addressable memory, i.e. they can in particular contain more than 2^32 elements on a
- * 32bit system (see Tag.ExternalConfigLarge).  See the String constructor for more details.
+ * 32bit system (see Tag.ExternalConfigLarge). See the String constructor for more details.
  *
  * This String also supports fast appending and removing of values at the end (see Block String, appendValue)
  *
- * The External String implements a LRU mechanism to swap out pages.  The External String's Iterator detects a forward or
+ * The External String implements a LRU mechanism to swap out pages. The External String's Iterator detects a forward or
  * backward iteration and asynchronously prefetches pages that certainly will be accessed and automatically swaps out
  * pages that certainly won't be accessed any more in the iteration process.
  *
- * The String is implemented like a virtual memory manager.  It divides its character sequence into pages of a fixed
+ * The String is implemented like a virtual memory manager. It divides its character sequence into pages of a fixed
  * length (e.g. 4MB) and maintains a page table with information for each page (e.g. resides in memory or was swapped
- * out, is dirty and needs to be saved, ...).  Besides the page table the String also contains a size-limited list of
- * page frames.  A page frame is reserved internal memory for a page.  When accessing values of a page that is stored in
- * external memory, the page is loaded to a page frame first.  In case that there is no page frame free, another page is
+ * out, is dirty and needs to be saved, ...). Besides the page table the String also contains a size-limited list of
+ * page frames. A page frame is reserved internal memory for a page. When accessing values of a page that is stored in
+ * external memory, the page is loaded to a page frame first. In case that there is no page frame free, another page is
  * swapped out before to free a page frame.
  */
 
@@ -156,13 +156,13 @@ namespace seqan
     // standard external string
     // size is uint32
     template < typename TFile_ = File<>,                                // default file type
-               unsigned PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
+               unsigned SEQAN_PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
                unsigned FRAMES_ = 2 >                                   // simultanous frames
     struct ExternalConfig {
 //IOREV _bug_ doc says default page size is 2^20, but it is 2^22
         typedef TFile_ TFile;
         typedef unsigned TSize;
-        enum { PAGESIZE = PAGESIZE_ };
+        enum { SEQAN_PAGESIZE = SEQAN_PAGESIZE_ };
         enum { FRAMES = FRAMES_ };
     };
 
@@ -173,26 +173,26 @@ namespace seqan
     // pipes use the size type
     // uint64 blows up your suffix arrays, lcp-tables, ...
     template < typename TFile_ = File<>,                                // default file type
-               unsigned PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
+               unsigned SEQAN_PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
                unsigned FRAMES_ = 2 >                                   // simultanous frames
     struct ExternalConfigLarge {
 //IOREV contains warning in code comments, need to investigate
         typedef TFile_ TFile;
         typedef typename MakeUnsigned<typename Size<TFile_>::Type>::Type TSize;
-        enum { PAGESIZE = PAGESIZE_ };
+        enum { SEQAN_PAGESIZE = SEQAN_PAGESIZE_ };
         enum { FRAMES = FRAMES_ };
     };
 
     // custom size type
     template < typename TSize_,
                typename TFile_ = File<>,                                // default file type
-               unsigned PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
+               unsigned SEQAN_PAGESIZE_ = _EXTERNAL_STRING_DEFAULT_PAGE_SIZE,
                unsigned FRAMES_ = 2 >                                   // simultanous frames
     struct ExternalConfigSize {
 //IOREV
         typedef TSize_ TSize;
         typedef TFile_ TFile;
-        enum { PAGESIZE = PAGESIZE_ };
+        enum { SEQAN_PAGESIZE = SEQAN_PAGESIZE_ };
         enum { FRAMES = FRAMES_ };
     };
 
@@ -215,7 +215,7 @@ namespace seqan
         typedef typename Difference<TExtString>::Type    TDifference;
         typedef typename TExtString::TVolatilePtr        TVolatilePtr;
 
-        enum { PAGESIZE = TExtString::PAGESIZE };
+        enum { SEQAN_PAGESIZE = TExtString::SEQAN_PAGESIZE };
 
         TSize        offset;
         TExtString    *extString;
@@ -319,7 +319,7 @@ namespace seqan
         typedef typename Difference<TExtString>::Type    TDifference;
         typedef typename TExtString::TVolatilePtr        TVolatilePtr;
 
-        enum { PAGESIZE = TExtString::PAGESIZE };
+        enum { SEQAN_PAGESIZE = TExtString::SEQAN_PAGESIZE };
 
         TSize        offset;
         TExtString    *extString;
@@ -423,7 +423,7 @@ namespace seqan
         typedef typename Difference<TExtString>::Type    TDifference;
         typedef typename TExtString::TVolatilePtr        TVolatilePtr;
 
-        enum { PAGESIZE = TExtString::PAGESIZE };
+        enum { SEQAN_PAGESIZE = TExtString::SEQAN_PAGESIZE };
 
 
         TExtString        *extString;
@@ -453,8 +453,8 @@ namespace seqan
         explicit ExtStringFwdIterator(TExtString *_extString, TSize _offset):
             extString(_extString),
             dirty(true),
-            pageNo(_offset / PAGESIZE),
-            pageOfs(_offset % PAGESIZE),
+            pageNo(_offset / SEQAN_PAGESIZE),
+            pageOfs(_offset % SEQAN_PAGESIZE),
             prefetch(0),
             begin(NULL) {}
 
@@ -476,22 +476,22 @@ namespace seqan
 
         ExtStringFwdIterator(const TStdIterator &I):
             extString(I.extString),
-            pageNo(I.offset / PAGESIZE),
-            pageOfs(I.offset % PAGESIZE),
+            pageNo(I.offset / SEQAN_PAGESIZE),
+            pageOfs(I.offset % SEQAN_PAGESIZE),
             prefetch(0),
             begin(NULL) {}
 
         inline TIterator& operator=(TStdIterator const & Right_) {
             invalidate();
-            pageNo = Right_.offset / PAGESIZE;
-            pageOfs = Right_.offset % PAGESIZE;
+            pageNo = Right_.offset / SEQAN_PAGESIZE;
+            pageOfs = Right_.offset % SEQAN_PAGESIZE;
             extString = Right_.extString;
             return *this;
         }
 
         inline TSize position() const
         {
-            return (TSize)pageNo * (TSize)PAGESIZE + pageOfs;
+            return (TSize)pageNo * (TSize)SEQAN_PAGESIZE + pageOfs;
         }
 
         inline operator TStdIterator() const {
@@ -520,20 +520,20 @@ namespace seqan
         }
 
         inline TIterator operator- (TDifference delta) const {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference dPOfs = delta % PAGESIZE;
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference dPOfs = delta % SEQAN_PAGESIZE;
             if (static_cast<TDifference>(pageOfs) >= dPOfs)
                 return TIterator(extString, pageNo - dPNo, pageOfs - dPOfs);
             else
-                return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);
+                return TIterator(extString, pageNo - dPNo - 1, SEQAN_PAGESIZE + pageOfs - dPOfs);
         }
 
         inline TIterator& operator-= (TDifference delta) {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference dPOfs = delta % PAGESIZE;
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference dPOfs = delta % SEQAN_PAGESIZE;
             if (pageOfs < dPOfs) {
                 ++dPNo;
-                pageOfs = PAGESIZE + pageOfs - dPOfs;
+                pageOfs = SEQAN_PAGESIZE + pageOfs - dPOfs;
             } else
                 pageOfs -= dPOfs;
             if (dPNo) invalidate(0);
@@ -542,20 +542,20 @@ namespace seqan
         }
 
         inline TIterator operator+ (TDifference delta) const {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference nPOfs = pageOfs + delta % PAGESIZE;
-            if (nPOfs < PAGESIZE)
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference nPOfs = pageOfs + delta % SEQAN_PAGESIZE;
+            if (nPOfs < SEQAN_PAGESIZE)
                 return TIterator(extString, pageNo + dPNo, nPOfs);
             else
-                return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGESIZE);
+                return TIterator(extString, pageNo + dPNo + 1, nPOfs - SEQAN_PAGESIZE);
         }
 
         inline TIterator& operator+= (TDifference delta) {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference nPOfs = pageOfs + delta % PAGESIZE;
-            if (nPOfs >= PAGESIZE) {
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference nPOfs = pageOfs + delta % SEQAN_PAGESIZE;
+            if (nPOfs >= SEQAN_PAGESIZE) {
                 ++dPNo;
-                nPOfs -= PAGESIZE;
+                nPOfs -= SEQAN_PAGESIZE;
             }
             if (dPNo) invalidate(0);
             pageNo += dPNo;
@@ -597,7 +597,7 @@ namespace seqan
         }
 */
         inline TIterator& operator++ () {
-            if (++pageOfs == PAGESIZE) {
+            if (++pageOfs == SEQAN_PAGESIZE) {
                 invalidate(1);
                 pageOfs = 0;
                 ++pageNo;
@@ -607,7 +607,7 @@ namespace seqan
 
         inline TIterator operator++ (int) {
             TIterator before = *this;
-            if (++pageOfs == PAGESIZE) {
+            if (++pageOfs == SEQAN_PAGESIZE) {
                 invalidate(1);
                 pageOfs = 0;
                 ++pageNo;
@@ -620,7 +620,7 @@ namespace seqan
                 --pageOfs;
             else {
                 invalidate(-1);
-                pageOfs = PAGESIZE - 1;
+                pageOfs = SEQAN_PAGESIZE - 1;
                 --pageNo;
             }
             return *this;
@@ -632,7 +632,7 @@ namespace seqan
                 --pageOfs;
             else {
                 invalidate(-1);
-                pageOfs = PAGESIZE - 1;
+                pageOfs = SEQAN_PAGESIZE - 1;
                 --pageNo;
             }
             return before;
@@ -671,7 +671,7 @@ namespace seqan
         typedef typename Difference<TExtString>::Type    TDifference;
         typedef typename TExtString::TVolatilePtr        TVolatilePtr;
 
-        enum { PAGESIZE = TExtString::PAGESIZE };
+        enum { SEQAN_PAGESIZE = TExtString::SEQAN_PAGESIZE };
 
 
         TExtString        *extString;
@@ -709,8 +709,8 @@ namespace seqan
 
         ExtStringFwdConstIterator(TExtString *_extString, TSize _offset):
             extString(_extString),
-            pageNo(_offset / PAGESIZE),
-            pageOfs(_offset % PAGESIZE),
+            pageNo(_offset / SEQAN_PAGESIZE),
+            pageOfs(_offset % SEQAN_PAGESIZE),
             prefetch(0),
             begin(NULL) {}
 
@@ -726,37 +726,37 @@ namespace seqan
 
         ExtStringFwdConstIterator(TStdIterator &I):
             extString(I.extString),
-            pageNo(I.offset / PAGESIZE),
-            pageOfs(I.offset % PAGESIZE),
+            pageNo(I.offset / SEQAN_PAGESIZE),
+            pageOfs(I.offset % SEQAN_PAGESIZE),
             prefetch(0),
             begin(NULL) {}
 
         ExtStringFwdConstIterator(TStdConstIterator const &I):
             extString(I.extString),
-            pageNo(I.offset / PAGESIZE),
-            pageOfs(I.offset % PAGESIZE),
+            pageNo(I.offset / SEQAN_PAGESIZE),
+            pageOfs(I.offset % SEQAN_PAGESIZE),
             prefetch(0),
             begin(NULL) {}
 
         inline TIterator& operator=(TStdIterator const & Right_) {
             invalidate();
-            pageNo = Right_.offset / PAGESIZE;
-            pageOfs = Right_.offset % PAGESIZE;
+            pageNo = Right_.offset / SEQAN_PAGESIZE;
+            pageOfs = Right_.offset % SEQAN_PAGESIZE;
             extString = Right_.extString;
             return *this;
         }
 
         inline TIterator& operator=(TStdConstIterator const & Right_) {
             invalidate();
-            pageNo = Right_.offset / PAGESIZE;
-            pageOfs = Right_.offset % PAGESIZE;
+            pageNo = Right_.offset / SEQAN_PAGESIZE;
+            pageOfs = Right_.offset % SEQAN_PAGESIZE;
             extString = Right_.extString;
             return *this;
         }
 
         inline TSize position() const
         {
-            return (TSize)pageNo * (TSize)PAGESIZE + pageOfs;
+            return (TSize)pageNo * (TSize)SEQAN_PAGESIZE + pageOfs;
         }
 
         inline operator TStdConstIterator() const {
@@ -790,20 +790,20 @@ namespace seqan
         }
 
         inline TIterator operator- (TDifference delta) const {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference dPOfs = delta % PAGESIZE;
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference dPOfs = delta % SEQAN_PAGESIZE;
             if (pageOfs >= dPOfs)
                 return TIterator(extString, pageNo - dPNo, pageOfs - dPOfs);
             else
-                return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);
+                return TIterator(extString, pageNo - dPNo - 1, SEQAN_PAGESIZE + pageOfs - dPOfs);
         }
 
         inline TIterator& operator-= (TDifference delta) {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference dPOfs = delta % PAGESIZE;
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference dPOfs = delta % SEQAN_PAGESIZE;
             if (pageOfs < dPOfs) {
                 ++dPNo;
-                pageOfs = PAGESIZE + pageOfs - dPOfs;
+                pageOfs = SEQAN_PAGESIZE + pageOfs - dPOfs;
             } else
                 pageOfs -= dPOfs;
             if (dPNo) invalidate(0);
@@ -812,20 +812,20 @@ namespace seqan
         }
 
         inline TIterator operator+ (TDifference delta) const {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference nPOfs = pageOfs + delta % PAGESIZE;
-            if (nPOfs < PAGESIZE)
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference nPOfs = pageOfs + delta % SEQAN_PAGESIZE;
+            if (nPOfs < SEQAN_PAGESIZE)
                 return TIterator(extString, pageNo + dPNo, nPOfs);
             else
-                return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGESIZE);
+                return TIterator(extString, pageNo + dPNo + 1, nPOfs - SEQAN_PAGESIZE);
         }
 
         inline TIterator& operator+= (TDifference delta) {
-            TDifference dPNo  = delta / PAGESIZE;
-            TDifference nPOfs = pageOfs + delta % PAGESIZE;
-            if (nPOfs >= PAGESIZE) {
+            TDifference dPNo  = delta / SEQAN_PAGESIZE;
+            TDifference nPOfs = pageOfs + delta % SEQAN_PAGESIZE;
+            if (nPOfs >= SEQAN_PAGESIZE) {
                 ++dPNo;
-                nPOfs -= PAGESIZE;
+                nPOfs -= SEQAN_PAGESIZE;
             }
             if (dPNo) invalidate(0);
             pageNo += dPNo;
@@ -852,7 +852,7 @@ namespace seqan
         }
 
         inline TIterator& operator++ () {
-            if (++pageOfs == PAGESIZE) {
+            if (++pageOfs == SEQAN_PAGESIZE) {
                 invalidate(1);
                 pageOfs = 0;
                 ++pageNo;
@@ -862,7 +862,7 @@ namespace seqan
 
         inline TIterator operator++ (int) {
             TIterator before = *this;
-            if (++pageOfs == PAGESIZE) {
+            if (++pageOfs == SEQAN_PAGESIZE) {
                 invalidate(1);
                 pageOfs = 0;
                 ++pageNo;
@@ -875,7 +875,7 @@ namespace seqan
                 --pageOfs;
             else {
                 invalidate(-1);
-                pageOfs = PAGESIZE - 1;
+                pageOfs = SEQAN_PAGESIZE - 1;
                 --pageNo;
             }
             return *this;
@@ -887,7 +887,7 @@ namespace seqan
                 --pageOfs;
             else {
                 invalidate(-1);
-                pageOfs = PAGESIZE - 1;
+                pageOfs = SEQAN_PAGESIZE - 1;
                 --pageNo;
             }
             return before;
@@ -1077,23 +1077,23 @@ namespace seqan
     template <typename TExtString>
     inline bool    atEnd(ExtStringFwdIterator<TExtString> &it) {
 //IOREV
-        return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+        return TExtString::SEQAN_PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
     }
     template <typename TExtString>
     inline bool    atEnd(ExtStringFwdIterator<TExtString> const &it) {
 //IOREV
-        return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+        return TExtString::SEQAN_PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
     }
 
     template <typename TExtString>
     inline bool    atEnd(ExtStringFwdConstIterator<TExtString> &it) {
 //IOREV
-        return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+        return TExtString::SEQAN_PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
     }
     template <typename TExtString>
     inline bool    atEnd(ExtStringFwdConstIterator<TExtString> const &it) {
 //IOREV
-        return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
+        return TExtString::SEQAN_PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
     }
 
 
@@ -1112,13 +1112,13 @@ namespace seqan
 //IOREV _doc_ contains TODOs by holtgrew
     public:
         enum { FRAMES    = TConfig::FRAMES,
-               PAGESIZE = TConfig::PAGESIZE };
+               SEQAN_PAGESIZE = TConfig::SEQAN_PAGESIZE };
 
         typedef typename TConfig::TFile                                 TFile;
         typedef typename TConfig::TSize                                 TSize;
 
         typedef String<int>                                             TPageTable;
-        typedef Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE> > >     TPageFrame;
+        typedef Buffer<TValue, PageFrame<TFile, Fixed<SEQAN_PAGESIZE> > >     TPageFrame;
         typedef PageContainer<TPageFrame, FRAMES>                       TCache;
         typedef VolatilePtr<TValue>                                     TVolatilePtr;
 
@@ -1128,7 +1128,7 @@ namespace seqan
         bool                _temporary, _ownFile;
         TSize                data_size;
         int                 lastDiskPage;       // the last page on disk and in mem
-        unsigned            lastDiskPageSize;   // can be smaller than PAGESIZE
+        unsigned            lastDiskPageSize;   // can be smaller than SEQAN_PAGESIZE
 
         String(TSize size = 0) :
             file(NULL), _temporary(true), _ownFile(false), data_size(0),
@@ -1146,7 +1146,7 @@ namespace seqan
  * @signature String::String(file);
  * @signature String::String(fileName[, openMode]);
  *
- * @param[in]     file     The @link File @endlink to use for reading and writing.  You must ensture that
+ * @param[in]     file     The @link File @endlink to use for reading and writing. You must ensure that
  *                         <tt>file</tt> is open as the string will not call <tt>open</tt> and <tt>close</tt>
  *                         on the file.
  * @param[in]     fileName The path to open. Type: <tt>char const *</tt>
@@ -1154,12 +1154,12 @@ namespace seqan
  *
  * @section Remarks
  *
- * When a file or file name is given, this file will be used for the ExternalString.  If the file exists, this file will
- * be used and determines the strings length and content.  If the file doesn't exist, a new and empty file will be
- * created and used for the string.  In both cases, the string won't delete the file in the destructor.
+ * When a file or file name is given, this file will be used for the ExternalString. If the file exists, this file will
+ * be used and determines the strings length and content. If the file doesn't exist, a new and empty file will be
+ * created and used for the string. In both cases, the string won't delete the file in the destructor.
  *
  * When no file is given (default c'tor) the string will be empty and no file is used until the string needs to swap out
- * page frames.  Then a temporary file will be used which will be deleted when the string is destroyed.
+ * page frames. Then a temporary file will be used which will be deleted when the string is destroyed.
  *
  * Instead of giving file or fileName to the constructor, you could also use the default constructor and call open or
  * openTemp afterwards to reach the same behaviour.
@@ -1199,13 +1199,13 @@ namespace seqan
         }
 
         inline TValue & operator[] (TSize offset) {
-            TPageFrame &pf = getPage(offset / PAGESIZE);
+            TPageFrame &pf = getPage(offset / SEQAN_PAGESIZE);
             pf.dirty = true;
-            return pf[offset % PAGESIZE];
+            return pf[offset % SEQAN_PAGESIZE];
         }
 
         inline TValue const & operator[] (TSize offset) const {
-            return const_cast<String*>(this)->getPage(offset / PAGESIZE)[offset % PAGESIZE];
+            return const_cast<String*>(this)->getPage(offset / SEQAN_PAGESIZE)[offset % SEQAN_PAGESIZE];
         }
 
         template <typename TSource>
@@ -1279,11 +1279,11 @@ namespace seqan
                     cache.upgrade(pf, TPageFrame::PREFETCH_LEVEL);
 
                 _ensureFileIsOpen();
-                if (pf.pageNo != (int)(data_size / (TSize)PAGESIZE))
+                if (pf.pageNo != (int)(data_size / (TSize)SEQAN_PAGESIZE))
                     writePage(pf, pf.pageNo, file);
                 else {
-                    lastDiskPage = data_size / PAGESIZE;
-                    lastDiskPageSize = data_size % PAGESIZE;
+                    lastDiskPage = data_size / SEQAN_PAGESIZE;
+                    lastDiskPageSize = data_size % SEQAN_PAGESIZE;
                     writeLastPage(pf, pf.pageNo, file, lastDiskPageSize);
                 }
                 pf.dataStatus = TPageFrame::ON_DISK;
@@ -1312,14 +1312,14 @@ namespace seqan
 
             if (pf.dirty) {                                 // write if dirty
                 _ensureFileIsOpen();
-                if (pf.pageNo != (int)(data_size / (TSize)PAGESIZE)) {
+                if (pf.pageNo != (int)(data_size / (TSize)SEQAN_PAGESIZE)) {
                     writePage(pf, pf.pageNo, file);
                     if (pf.pageNo >= lastDiskPage)
                         lastDiskPage = -1;                   // make lastDiskPage(Size) invalid because file size is aligned
                 } else {
-                    writeLastPage(pf, pf.pageNo, file, data_size % PAGESIZE);
-                    lastDiskPage = data_size / PAGESIZE;
-                    lastDiskPageSize = data_size % PAGESIZE;
+                    writeLastPage(pf, pf.pageNo, file, data_size % SEQAN_PAGESIZE);
+                    lastDiskPage = data_size / SEQAN_PAGESIZE;
+                    lastDiskPageSize = data_size % SEQAN_PAGESIZE;
                 }
                 pager[pf.pageNo] = TPageFrame::ON_DISK;        // page is marked to be on disk
                 bool waitResult = waitFor(pf);              // after finishing I/O transfer
@@ -1539,7 +1539,7 @@ namespace seqan
         {
             unsigned oldFrames = length(cache);
             if (data_size)
-                newFrames = _min(newFrames, (unsigned) enclosingBlocks(data_size, (unsigned)PAGESIZE));
+                newFrames = _min(newFrames, (unsigned) enclosingBlocks(data_size, (unsigned)SEQAN_PAGESIZE));
             if (newFrames < oldFrames) {
                 flush(*this);
                 for(unsigned i = newFrames; i < oldFrames; ++i) {
@@ -1806,12 +1806,12 @@ namespace seqan
             me.data_size = 0;
 
         resize(me.pager, enclosingBlocks(me.data_size,
-            (unsigned)me.PAGESIZE), (me.data_size)?
+            (unsigned)me.SEQAN_PAGESIZE), (me.data_size)?
                 TPageFrame::ON_DISK:
                 TPageFrame::UNINITIALIZED);
 
-        me.lastDiskPage = me.data_size / me.PAGESIZE;
-        me.lastDiskPageSize = me.data_size % me.PAGESIZE;
+        me.lastDiskPage = me.data_size / me.SEQAN_PAGESIZE;
+        me.lastDiskPageSize = me.data_size % me.SEQAN_PAGESIZE;
         return me._ownFile;
     }
 
@@ -1843,12 +1843,12 @@ namespace seqan
             me.data_size = 0;
 
         resize(me.pager, enclosingBlocks(me.data_size,
-            (unsigned)me.PAGESIZE), (me.data_size)?
+            (unsigned)me.SEQAN_PAGESIZE), (me.data_size)?
                 TPageFrame::ON_DISK:
                 TPageFrame::UNINITIALIZED);
 
-        me.lastDiskPage = me.data_size / me.PAGESIZE;
-        me.lastDiskPageSize = me.data_size % me.PAGESIZE;
+        me.lastDiskPage = me.data_size / me.SEQAN_PAGESIZE;
+        me.lastDiskPageSize = me.data_size % me.SEQAN_PAGESIZE;
         return me._file;
     }
 
@@ -1950,7 +1950,7 @@ namespace seqan
     {
 //IOREV
         typedef typename Size< String<TValue, External<TConfig> > >::Type TSize;
-        return (TSize)capacity(me.pager) * (TSize)me.PAGESIZE;
+        return (TSize)capacity(me.pager) * (TSize)me.SEQAN_PAGESIZE;
     }
 //____________________________________________________________________________
 
@@ -1968,7 +1968,7 @@ namespace seqan
         typedef typename TString::TCache                    TCache;
         typedef typename Iterator<TCache, Standard>::Type    TIter;
 
-        resize(me.pager, enclosingBlocks(new_length, (unsigned)me.PAGESIZE), TPageFrame::UNINITIALIZED, expand);
+        resize(me.pager, enclosingBlocks(new_length, (unsigned)me.SEQAN_PAGESIZE), TPageFrame::UNINITIALIZED, expand);
         if ((TSize)new_length < me.data_size)
         {
 
@@ -1976,7 +1976,7 @@ namespace seqan
             TIter fEnd = end(me.cache, Standard());
 
             // remove pages from cache that are behind our new file end
-            int new_pages = (new_length + me.PAGESIZE - 1) / me.PAGESIZE;
+            int new_pages = (new_length + me.SEQAN_PAGESIZE - 1) / me.SEQAN_PAGESIZE;
             for(; f != fEnd ; ++f)
                 if (f->begin && f->pageNo >= new_pages)
                 {
@@ -1986,8 +1986,8 @@ namespace seqan
                 }
 
             // before shrinking the file size
-            me.lastDiskPage = new_length / me.PAGESIZE;
-            me.lastDiskPageSize = new_length % me.PAGESIZE;
+            me.lastDiskPage = new_length / me.SEQAN_PAGESIZE;
+            me.lastDiskPageSize = new_length % me.SEQAN_PAGESIZE;
 
             if (me.file)
                 resize(me.file, (TSize)new_length * (TSize)sizeof(TValue));
@@ -2005,7 +2005,7 @@ namespace seqan
         Tag<TExpand> expand)
     {
 //IOREV
-        reserve(me.pager, enclosingBlocks(new_capacity, (unsigned)me.PAGESIZE), expand);
+        reserve(me.pager, enclosingBlocks(new_capacity, (unsigned)me.SEQAN_PAGESIZE), expand);
         return capacity(me);
     }
 //____________________________________________________________________________

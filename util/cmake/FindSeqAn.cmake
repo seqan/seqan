@@ -107,65 +107,67 @@ endif ()
 # SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
 
 # ----------------------------------------------------------------------------
+# Deactivate verbosity if package detection is quite
+# ----------------------------------------------------------------------------
+
+# deactivate messages in check_* if quiet
+set (CMAKE_REQUIRED_QUIET ${SeqAn_FIND_QUIETLY})
+
+# ----------------------------------------------------------------------------
 # Determine compiler.
 # ----------------------------------------------------------------------------
 
 # Recognize Clang compiler.
 
-set (COMPILER_IS_CLANG FALSE)
+set (COMPILER_CLANG FALSE)
+set (COMPILER_GCC FALSE)
+set (COMPILER_LINTEL FALSE)
+set (COMPILER_WINTEL FALSE)
+set (COMPILER_MSVC FALSE)
+set (STDLIB_VS ${MSVC})
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set (COMPILER_IS_CLANG TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-
-set (CMAKE_COMPILER_IS_GNUCXX FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  set (CMAKE_COMPILER_IS_GNUCXX TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-
-# Intel
-set (COMPILER_IS_INTEL FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-  set (COMPILER_IS_INTEL TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-
-# Visual Studio
-set (COMPILER_IS_MSVC FALSE)
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  set (COMPILER_IS_MSVC TRUE)
-endif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_CLANG TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel" AND STDLIB_VS)
+  set (COMPILER_WINTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  set (COMPILER_LINTEL TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  set (COMPILER_GCC TRUE)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  set (COMPILER_MSVC TRUE)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Check required compiler versions.
 # ----------------------------------------------------------------------------
 
-if (CMAKE_COMPILER_IS_GNUCXX)
+if (COMPILER_GCC)
 
     # require at least gcc 4.9
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         message(AUTHOR_WARNING "GCC version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 4.9! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_CLANG)
+elseif (COMPILER_CLANG)
 
     # require at least clang 3.5
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.5)
         message(AUTHOR_WARNING "Clang version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 3.5! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_INTEL)
+elseif (COMPILER_LINTEL OR COMPILER_WINTEL)
 
     # require at least icpc 16.0.2
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
         message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 16.0.2! Anything below is untested.")
     endif ()
 
-elseif (COMPILER_IS_MSVC)
+elseif (COMPILER_MSVC)
 
     # require at least MSVC 19.0
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0")
         message(FATAL_ERROR "MSVC version (${CMAKE_CXX_COMPILER_VERSION}) must be at least 19.0 (Visual Studio 2015)!")
-    else ()
-        set (CXX11_FOUND TRUE CACHE INTERNAL "Availability of c++11") # always active
     endif ()
 
 else ()
@@ -173,32 +175,34 @@ else ()
 endif ()
 
 # ----------------------------------------------------------------------------
-# Require C++11
+# Require C++14
 # ----------------------------------------------------------------------------
 
-if (NOT CXX11_FOUND)
+# The visual studio compiler and intel compiler on windows defines __cplusplus
+# still as 199711L, thus the check below would fail.
+if (NOT (COMPILER_MSVC OR COMPILER_WINTEL))
     set(CXXSTD_TEST_SOURCE
-    "#if !defined(__cplusplus) || (__cplusplus < 201103L)
-    #error NOCXX11
+    "#if !defined(__cplusplus) || (__cplusplus < 201300L)
+    #error NOCXX14
     #endif
     int main() {}")
-    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX11_DETECTED)
-    set (CXX11_FOUND ${CXX11_DETECTED} CACHE INTERNAL "Availability of c++11")
-    if (NOT CXX11_FOUND)
-        message (FATAL_ERROR "SeqAn requires C++11 since v2.1.0, but your compiler does "
-                "not support it. Make sure that you specify -std=c++11 in your CMAKE_CXX_FLAGS. "
-                "If you absolutely know what you are doing, you can overwrite this check "
-                " by defining CXX11_FOUND.")
-        return ()
-    endif (NOT CXX11_FOUND)
-endif (NOT CXX11_FOUND)
+    check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_BUILTIN)
+    if (NOT CXX14_BUILTIN)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+        check_cxx_source_compiles("${CXXSTD_TEST_SOURCE}" CXX14_FLAG)
+        if (NOT CXX14_FLAG)
+            message (FATAL_ERROR "SeqAn requires C++14 since v2.2.0, but your compiler does not support it.")
+            return ()
+        endif ()
+    endif ()
+endif ()
 
 # ----------------------------------------------------------------------------
 # Compile-specific settings and workarounds around missing CMake features.
 # ----------------------------------------------------------------------------
 
 # GCC/CLANG/ICC
-if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG OR COMPILER_IS_INTEL)
+if (COMPILER_GCC OR COMPILER_CLANG OR COMPILER_LINTEL)
   # Tune warnings for GCC.
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
@@ -228,14 +232,16 @@ endif ()
 if (WIN32)
   # Always set NOMINMAX such that <Windows.h> does not define min/max as
   # macros.
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -DNOMINMAX")
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DNOMINMAX)
 endif (WIN32)
 
 # Visual Studio Setup
-if (MSVC)
+if (COMPILER_MSVC OR COMPILER_WINTEL)
   # Enable intrinics (e.g. _interlockedIncrease)
-  set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /EHsc /Oi")
-endif (MSVC)
+  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_WINTEL, but
+  # COMPILER_CLANG (clang/c2 3.7) can not handle the /EHsc and /Oi flag
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /Oi)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Search for directory seqan.
@@ -288,8 +294,13 @@ endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 
 # librt, libpthread -- implicit, on Linux only
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CMAKE_SYSTEM_NAME} STREQUAL "kFreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "GNU"))
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
+  if ((CMAKE_CXX_FLAGS MATCHES "-static") OR (SEQAN_CXX_FLAGS MATCHES "-static") OR (CMAKE_EXE_LINKER_FLAGS MATCHES "-static"))
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+  else ()
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
+  endif ()
 elseif ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-D_GLIBCXX_USE_C99=1")
@@ -356,8 +367,13 @@ if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
 endif ()
 
 if (OPENMP_FOUND)
-    if (COMPILER_IS_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
+    if (COMPILER_CLANG AND (_GCC_VERSION MATCHES "^37[0-9]$"))
         message (STATUS "Because of a bug in clang-3.7.x OpenMP cannot be used (even if available). Please update your clang!")
+        set (OPENMP_FOUND FALSE)
+    elseif (COMPILER_CLANG AND STDLIB_VS AND (_GCC_VERSION MATCHES "^38[0-9]$"))
+        # The compiler also issues a warning
+        # clang.exe : warning : '-fopenmp=libomp': OpenMP is not supported
+        message (STATUS "The clang/c2 compiler on windows (version 3.7 and 3.8) doesn't support OpenMP!")
         set (OPENMP_FOUND FALSE)
     else ()
         set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
@@ -367,6 +383,19 @@ if (OPENMP_FOUND)
         set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif ()
 endif ()
+
+if (Boost_FOUND)
+  # Example warning:
+  # C:\seqan-deps\boost_1_53_0\boost/mpl/if.hpp(131,1): error : pasting formed
+  # 'BOOST_PP_TUPLE_ELEM_E_2(', an invalid preprocessing token
+  if (COMPILER_CLANG AND STDLIB_VS)
+    message (STATUS "The boost library (at least until 1.53) doesn't support the clang/c2 compiler on windows (version 3.7 and 3.8), yet!")
+    set (Boost_FOUND FALSE)
+    unset(Boost_INCLUDE_DIRS)
+    unset(Boost_LIBRARY_DIRS)
+    unset(Boost_LIBRARIES)
+  endif()
+endif()
 
 # Build SEQAN_INCLUDE_DIRS from SEQAN_INCLUDE_DIRS_MAIN and SEQAN_INCLUDE_DIRS_DEPS
 
@@ -428,13 +457,15 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
   set (SEQAN_VERSION_PATCH "${_SEQAN_VERSION_PATCH}" CACHE INTERNAL "SeqAn patch version.")
   set (SEQAN_VERSION_PRE_RELEASE "${_SEQAN_VERSION_PRE_RELEASE}" CACHE INTERNAL "Whether version is a pre-release version version.")
   set (SEQAN_VERSION_STRING "${_SEQAN_VERSION_STRING}" CACHE INTERNAL "SeqAn version string.")
-
-  message (STATUS "  Determined version is ${SEQAN_VERSION_STRING}")
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
+
+if (NOT SeqAn_FIND_QUIETLY)
+    message (STATUS "Found Seqan: ${SEQAN_INCLUDE_DIRS_MAIN} (found version \"${SEQAN_VERSION_STRING}\")")
+endif ()
 
 if (SEQAN_FIND_DEBUG)
   message("Result for ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")

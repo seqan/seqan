@@ -99,7 +99,7 @@ If you instead did a full git checkout to your home-directory in the previous st
 
 .. tip::
 
-    Depending on your setup you might need to manually choose a more modern compiler and/or activate C++11 support! Please read :ref:`this page <infra-use-cmake-build-dirs>` for more information on configuring CMake builds.
+    Depending on your setup you might need to manually choose a more modern compiler! Please read :ref:`this page <infra-use-cmake-build-dirs>` for more information on configuring CMake builds. Don't forget to clean your CMake build directory after changing the compiler!
 
 Finally you can then build the application by calling
 
@@ -217,7 +217,7 @@ From within CMake you can check the variables ``ZLIB_FOUND`` or ``OpenMP_FOUND``
 ``SEQAN_HAS_BZIP2``
   ``TRUE`` if libbz2 was found.
 
-``SEQAN_HAS_OPENMP``
+``_OPENMP``
   ``TRUE`` if OpenMP was found.
 
 CMake build variables
@@ -238,3 +238,7 @@ Required additions to C++ compiler flags are in the following variable:
 
 ``SEQAN_CXX_FLAGS``
   C++ Compiler flags to add.
+
+  .. caution::
+
+    Please note that these variables include whatever has been added by the dependencies mentioned above so **do not add** e.g. ``${OpenMP_CXX_FLAGS}`` yourself!

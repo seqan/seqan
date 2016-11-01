@@ -333,6 +333,14 @@ template <typename THost>
 struct Prefix<THost &>:
     Prefix<THost> {};
 
+// ----------------------------------------------------------------------------
+// Metafunction PrefixOnValue
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct PrefixOnValue :
+    Prefix<T>{};
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TPosition>

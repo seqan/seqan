@@ -29,81 +29,15 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: David Weese <david.weese@fu-berlin.de>
-// ==========================================================================
-// Critical Section class. In conjunction with a condition object it allows
-// to suspend a thread until another wakes it up.
+// Author: René Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SYSTEM_CRITICAL_SECTION_H_
-#define SEQAN_HEADER_SYSTEM_CRITICAL_SECTION_H_
+#include <seqan/basic.h>
+#include <seqan/stream.h>
 
-namespace seqan {
+#include "test_align_simd.h"
 
-#ifdef PLATFORM_WINDOWS
-
-struct CriticalSection
-{
-    CRITICAL_SECTION data_cs;
-
-    CriticalSection()
-    {
-        InitializeCriticalSection(&data_cs);
-    }
-
-    ~CriticalSection()
-    {
-        DeleteCriticalSection(&data_cs);
-    }
-};
-
-#else
-
-struct CriticalSection
-{
-    pthread_mutex_t data_cs;
-
-    CriticalSection()
-    {
-        int result = pthread_mutex_init(&data_cs, NULL);
-        ignoreUnusedVariableWarning(result);
-        SEQAN_ASSERT_EQ(result, 0);
-    }
-
-    ~CriticalSection()
-    {
-        int result = pthread_mutex_destroy(&data_cs);
-        ignoreUnusedVariableWarning(result);
-        SEQAN_ASSERT_EQ(result, 0);
-    }
-};
-
-#endif
-
-inline void
-lock(CriticalSection &cs)
-{
-#ifdef PLATFORM_WINDOWS
-    EnterCriticalSection(&cs.data_cs);
-#else
-    int result = pthread_mutex_lock(&cs.data_cs);
-    ignoreUnusedVariableWarning(result);
-    SEQAN_ASSERT_EQ(result, 0);
-#endif
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
 }
-
-inline void
-unlock(CriticalSection &cs)
-{
-#ifdef PLATFORM_WINDOWS
-    LeaveCriticalSection(&cs.data_cs);
-#else
-    int result = pthread_mutex_unlock(&cs.data_cs);
-    ignoreUnusedVariableWarning(result);
-    SEQAN_ASSERT_EQ(result, 0);
-#endif
-}
-
-}
-
-#endif  // SEQAN_HEADER_SYSTEM_CRITICAL_SECTION_H_

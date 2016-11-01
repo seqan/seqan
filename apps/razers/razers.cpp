@@ -40,7 +40,7 @@
 #include <cctype>
 
 #include <seqan/platform.h>
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
     #define SEQAN_DEFAULT_TMPDIR "C:\\TEMP\\"
 #else
     #define SEQAN_DEFAULT_TMPDIR "./"
@@ -435,7 +435,7 @@ extractOptions(
     {
         if (back(pm_options.paramFolder) != '/' && back(pm_options.paramFolder) != '\\')
         {
-#ifdef PLATFORM_WINDOWS
+#ifdef STDLIB_VS
             appendValue(pm_options.paramFolder, '\\');
 #else
             appendValue(pm_options.paramFolder, '/');

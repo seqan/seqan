@@ -188,6 +188,7 @@ assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescript
                 me.targetFreqs[i][1] += (estMethLevel/sum)/4.0;         // C
                 me.targetFreqs[i][2] += (1.0/sum)/4.0;                  // G
                 me.targetFreqs[i][3] += ((1.0-estMethLevel)/sum)/4.0;   // T
+                SEQAN_FALLTHROUGH
             case -1: // Ref gap
                 refGap = 1;     // Helper to take ref gap into account
                 break;
@@ -263,6 +264,7 @@ assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescript
                 me.targetFreqs[i][1] += (1.0/sum)/4.0;                  // C
                 me.targetFreqs[i][2] += (estMethLevel/sum)/4.0;         // G
                 me.targetFreqs[i][3] += (1.0/sum)/4.0;                  // T
+                SEQAN_FALLTHROUGH
             case -1: // Ref gap
                 refGap = 1;
                 break;

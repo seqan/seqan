@@ -300,41 +300,39 @@ struct Size< StringSet< TString, TSpec > >
 // Default Size<T const> redirects to non-const.
 
 // --------------------------------------------------------------------------
-// Metafunction Prefix
+// Metafunction PrefixOnValue
 // --------------------------------------------------------------------------
-// TODO(holtgrew): Do Prefix, Suffix, Infix make sense if defined in this way for all StringSet classes?
-// TODO(holtgrew): However, if this works nicely then it shows that implementing segments as Strings would not be advantageous since they now work for arbitrary sequential-access containers.
 
 template <typename TString, typename TSpec>
-struct Prefix< StringSet< TString, TSpec > >
+struct PrefixOnValue< StringSet< TString, TSpec > >
     : Prefix<TString > {};
 
 template <typename TString, typename TSpec>
-struct Prefix<StringSet< TString, TSpec > const>
+struct PrefixOnValue<StringSet< TString, TSpec > const>
     : Prefix<TString const > {};
 
 // --------------------------------------------------------------------------
-// Metafunction Suffix
+// Metafunction SuffixOnValue
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-struct Suffix<StringSet< TString, TSpec> >
+struct SuffixOnValue<StringSet< TString, TSpec> >
     : Suffix<TString> {};
 
 template <typename TString, typename TSpec>
-struct Suffix<StringSet< TString, TSpec> const>
+struct SuffixOnValue<StringSet< TString, TSpec> const>
     : Suffix<TString const> {};
 
 // --------------------------------------------------------------------------
-// Metafunction Infix
+// Metafunction InfixOnValue
 // --------------------------------------------------------------------------
 
 template <typename TString, typename TSpec>
-struct Infix<StringSet< TString, TSpec> >
+struct InfixOnValue<StringSet< TString, TSpec> >
     : Infix<TString> {};
 
 template <typename TString, typename TSpec>
-struct Infix<StringSet< TString, TSpec > const>
+struct InfixOnValue<StringSet< TString, TSpec > const>
     : Infix< TString const > {};
 
 // --------------------------------------------------------------------------
@@ -598,11 +596,12 @@ inline void posLocalize(TResult & result, Pair<T1, T2, TPack> const & pos, Strin
 }
 
 // --------------------------------------------------------------------------
-// Function prefix()
+// Function prefix(); For local string set position.
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Prefix<TString>::Type
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename PrefixOnValue<StringSet< TString, TSpec > >::Type)
 prefix(StringSet< TString, TSpec > & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
@@ -616,7 +615,8 @@ prefix(StringSet< TString, TSpec > & me, TPosition const & pos)
 }
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Prefix<TString const>::Type
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename PrefixOnValue<StringSet< TString, TSpec > const>::Type)
 prefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
@@ -630,11 +630,12 @@ prefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 }
 
 // --------------------------------------------------------------------------
-// Function suffix()
+// Function suffix(); For local string set position.
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Suffix<TString>::Type
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename SuffixOnValue<StringSet< TString, TSpec > >::Type)
 suffix(StringSet< TString, TSpec > & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
@@ -648,7 +649,8 @@ suffix(StringSet< TString, TSpec > & me, TPosition const & pos)
 }
 
 template < typename TString, typename TSpec, typename TPosition >
-inline typename Suffix<TString const>::Type
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename SuffixOnValue<StringSet< TString, TSpec > const>::Type)
 suffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
@@ -662,12 +664,13 @@ suffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 }
 
 // --------------------------------------------------------------------------
-// Function infixWithLength()
+// Function infixWithLength(); For local string set position.
 // --------------------------------------------------------------------------
 
 template < typename TString, typename TSpec, typename TPosition, typename TSize >
-inline typename Infix<TString>::Type
-infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize length)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename InfixOnValue<StringSet< TString, TSpec > >::Type)
+infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize const length)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -680,8 +683,9 @@ infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize l
 }
 
 template < typename TString, typename TSpec, typename TPosition, typename TSize >
-inline typename Infix<TString const>::Type
-infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, TSize length)
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosition> >,
+                             typename InfixOnValue<StringSet< TString, TSpec > const>::Type)
+infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, TSize const length)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -694,12 +698,13 @@ infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, T
 }
 
 // --------------------------------------------------------------------------
-// Function infix()
+// Function infix(); For local string set position.
 // --------------------------------------------------------------------------
 
-template < typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
-inline typename Infix<TString>::Type
-infix(StringSet< TString, TSpec > & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
+template < typename TString, typename TSpec, typename TPosBeg, typename TPosEnd>
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosBeg> >,
+                             typename InfixOnValue<StringSet< TString, TSpec > >::Type)
+infix(StringSet<TString, TSpec > & me, TPosBeg const & posBegin, TPosEnd const & posEnd)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;
@@ -712,9 +717,10 @@ infix(StringSet< TString, TSpec > & me, TPosBegin const & posBegin, TPosEnd cons
     return infix(me[getSeqNo(localPosBegin)], getSeqOffset(localPosBegin), getSeqOffset(localPosEnd));
 }
 
-template < typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
-inline typename Infix<TString const>::Type
-infix(StringSet< TString, TSpec > const & me, TPosBegin const & posBegin, TPosEnd const & posEnd)
+template < typename TString, typename TSpec, typename TPosBeg, typename TPosEnd>
+inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TPosBeg> >,
+                             typename InfixOnValue<StringSet< TString, TSpec > const>::Type)
+infix(StringSet<TString, TSpec > const & me, TPosBeg const & posBegin, TPosEnd const & posEnd)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
     typedef typename Size<TStringSet>::Type         TSetSize;

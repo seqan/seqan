@@ -48,9 +48,13 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef PLATFORM_WINDOWS
+#ifndef STDLIB_VS
 #include <unistd.h>
 #endif
+
+#include <regex>
+#include <vector>
+#include <algorithm>
 
 // ===========================================================================
 // The ArgParse Headers.

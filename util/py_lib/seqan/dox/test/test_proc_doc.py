@@ -85,6 +85,8 @@ class TestConverterBase(unittest.TestCase):
         """
         parser = dox_parser.Parser()
         parser.parse(self.createLexer(text))
+        for e in parser.documentation.entries:
+            parser.documentation.filenames.append('dummy' + e.name.text)
         return parser.documentation
 
 

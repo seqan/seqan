@@ -48,6 +48,13 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// NOTE(rrahn): Special alloc overload for over-aligned data, e.g., simd vector types.
+// We need this, since the standard new/delete operator are not guarenteed
+// to support alignment higher than sizeof(void *), which causes seg faults when holding
+// simd vector types in a string.
+struct OverAligned_;
+using OverAligned = Tag<OverAligned_>;
+
 template <typename TSpec = void>
 struct Alloc {};
 
@@ -333,6 +340,16 @@ template <typename TValue, typename TSpec>
 struct StringSpec<String<TValue, TSpec> >
 {
     typedef TSpec   Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction StringSpecForValue_
+// ----------------------------------------------------------------------------
+
+template <typename TValue>
+struct StringSpecForValue_
+{
+    typedef typename If<Is<SimdVectorConcept<TValue> >, Alloc<OverAligned>, Alloc<> >::Type Type;
 };
 
 // ----------------------------------------------------------------------------

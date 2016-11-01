@@ -276,6 +276,28 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function value()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TSpec,
+          typename TPosition>
+inline typename Reference<Gaps<TSequence, TSpec> >::Type
+value(Gaps<TSequence, TSpec> & gaps,
+      TPosition const clippedViewPos)
+{
+    return typename Reference<Gaps<TSequence, TSpec> >::Type(begin(gaps, Standard()) + clippedViewPos);
+}
+
+template <typename TSequence, typename TSpec,
+          typename TPosition>
+inline typename Reference<Gaps<TSequence, TSpec> const>::Type
+value(Gaps<TSequence, TSpec> const & gaps,
+      TPosition const clippedViewPos)
+{
+    return typename Reference<Gaps<TSequence, TSpec> const>::Type(begin(gaps, Standard()) + clippedViewPos);
+}
+
+// ----------------------------------------------------------------------------
 // Function iter()
 // ----------------------------------------------------------------------------
 
@@ -1067,9 +1089,9 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
 
 /*!
  * @fn Gaps#copyGaps
- * @brief Copy gaps from one Gaps object to another (in the clipped view of both argumetns).
+ * @brief Copy gaps from one Gaps object to another (in the clipped view of both arguments).
  *
- * The user is resposible for ensuring that the gaps are over sequences of same length and appropriate clipping.
+ * The user is responsible for ensuring that the gaps are over sequences of same length and appropriate clipping.
  *
  * @signature void copyGaps(dest, source);
  *

@@ -65,7 +65,7 @@ struct ExactFragment;
  * @headerfile <seqan/align.h>
  * @brief A type for ungapped, pairwise segment matches that maybe in reverse orientation.
  *
- * Compared to the @link ExactFragment @endlink specialzing type of @link Fragment @endlink, a @link
+ * Compared to the @link ExactFragment @endlink <tt>ExactReversableFragment</tt> is a specialized type of @link Fragment @endlink. A @link
  * ExactReversableFragment @endlink stores an additional bool value to indicate whether a match is in reverse
  * orientation or not.
  *
@@ -331,7 +331,7 @@ label(Fragment<TSize, TSpec> const& f,
  * @signature TId sequenceId(frag, seqNum);
  *
  * @param[in] frag   A Fragment.
- * @param[in] seqNum The sequence number fo rwhich the id should be retrieved.  Note that @link Fragment @endlink
+ * @param[in] seqNum The sequence number for which the id should be retrieved.  Note that @link Fragment @endlink
                      stores information about exactly two sequences which can be accessed with seqNum 0 or 1 but whose
                      ids may differ from their seqNum.
  *

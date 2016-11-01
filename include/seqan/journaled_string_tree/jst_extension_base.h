@@ -251,7 +251,12 @@ template <typename TExtension, typename TCxtPosition,
 inline auto
 run(JstExtensionBase<TExtension, TCxtPosition> & extension,
     TTraverser const & traverser,
-    TDelegate && delegate) -> decltype(impl::run(extension._derived, traverser, TCxtPosition()).first)
+    TDelegate && delegate)
+#if !defined(COMPILER_WINTEL)
+// the intel compiler on windows fails with this decltype, but can auto infer
+// the return type itself (possible as of c++14).
+    -> decltype(impl::run(extension._derived, traverser, TCxtPosition()).first)
+#endif
 {
     auto res = impl::run(extension._derived, traverser, TCxtPosition());
     if (res.second)

@@ -17,6 +17,24 @@ You should be able to adapt the descriptions to configure your build system and/
 
    Simply adding its include folder to your include path or installing it globally makes it available to your program.
 
+C++14 Standard
+--------------
+
+On GNU/Linux, BSD and macOS, always add ``-std=c++14`` (or a newer standard) when building on the command line.
+
+For XCode on macOS you need to set this option in the project settings.
+
+As of Visual Studio 2015 our subset of C++14 is already available in all supported compilers.
+
+OpenMP
+------
+
+On GNU/Linux, BSD and macOS, add ``-fopenmp`` unless you are using Clang versions older than 3.8.0.
+
+For XCode on macOS OpenMP is not yet available.
+
+With Visual Studio OpenMP is switched on by default.
+
 Operating System specifics
 --------------------------
 
@@ -25,19 +43,22 @@ GNU/Linux
 
 **Libraries**
 
-Add the flag ``-lrt -lpthread`` to the ``g++`` compiler call.
+Add ``-lrt -lpthread`` to the compiler call.
+
+Note static linking against pthread might cause issues on some linux distributions.
+In this case you need to explicitly link against the whole archive like: ``-Wl,--whole-archive -lpthread -Wl,--no-whole-archive``.
+You can read more about this issue `here <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52590>`_.
 
 BSD
 ^^^
 
 **Libraries**
 
-Add the flag ``-lpthread -lexecinfo -lelf`` to the ``g++`` compiler call.
+Add ``-lpthread -lexecinfo -lelf`` to the compiler call.
 
 **Misc**
 
-Also define ``-D_GLIBCXX_USE_C99=1``.
-
+Also define ``-D_GLIBCXX_USE_C99=1`` if you are using gcc-4.9.
 
 Warning levels
 --------------
@@ -45,20 +66,13 @@ Warning levels
 It is recommended to compile your programs with as many warnings enabled as possible.
 This section explains which flags to set for different compilers.
 
-GCC
-^^^
+GCC, Clang, ICC (unix)
+^^^^^^^^^^^^^^^^^^^^^^
 
-For GCC, the following flags are recommended:
-
-::
-
-    -W -Wall -pedantic
-
-Explanation:
+The following flags are recommended:
 
 ``-W -Wall -pedantic``
   Maximal sensitivity of compiler against possible problems.
-
 
 
 Visual Studio
@@ -229,7 +243,6 @@ This translates into the following GCC flags:
 
     While some guides tell you to not use ``-O3`` this is absolutely crucial for SeqAn based applications to perform well. Unoptimized builds are slower by multiple factors!
 
-
 An Example Project Based On Makefiles
 -------------------------------------
 
@@ -313,7 +326,16 @@ For example, we could create a directory ``include`` parallel to ``src``, copy t
 Short Version
 -------------
 
-* Add both ``include`` to your include path (``-I``).
-* Linux/GCC flags: ``-lrt`` (required) ``-W -Wall -pedantic`` (optional).
-* Windows/MSVC flags: ``/W2 /wd4996 -D_CRT_SECURE_NO_WARNINGS`` (optional).
-* Defines: ``NDEBUG`` to also disable SeqAn assertions in release mode.
++---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| OS      | Compiler            | Flags                                                                                                                                       |
++=========+=====================+=============================================================================================================================================+
+| Linux   | GCC/Clang≥3.8/ICC   | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic -fopenmp -lpthread -lrt``                                            |
++---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| BSD     | GCC/Clang≥3.8/ICC   | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic -fopenmp -lpthread -lexecinfo -lelf -D_GLIBCXX_USE_C99=1``           |
++---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| macOS   | system's Clang      | ``-I /path/to/seqan/include -std=c++14 -O3 -DNDEBUG -W -Wall -pedantic``                                                                    |
++---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+| Windows | Visual Studio MSVC  | ``/W2 /wd4996 -D_CRT_SECURE_NO_WARNINGS``                                                                                                   |
++---------+---------------------+---------------------------------------------------------------------------------------------------------------------------------------------+
+
+Adapt the include path to the actual place of SeqAn's ``include`` folder!

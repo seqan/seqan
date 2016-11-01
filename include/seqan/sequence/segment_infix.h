@@ -356,6 +356,15 @@ template <typename THost>
 struct Infix<THost &>:
     Infix<THost> {};
 
+// ----------------------------------------------------------------------------
+// Metafunction InfixOnValue
+// ----------------------------------------------------------------------------
+
+// The default implementation returns Infix<T>::Type.
+template <typename T>
+struct InfixOnValue :
+    Infix<T> {};
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TPosition1, typename TPosition2>

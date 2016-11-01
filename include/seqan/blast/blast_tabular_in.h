@@ -118,7 +118,7 @@ namespace seqan
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/InputOutput/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
@@ -548,6 +548,7 @@ _readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
             break;
         case BlastMatchField<>::Enum::P_POS:
             match.alignStats.alignmentSimilarity = lexicalCast<double>(context._stringBuffer);
+            break;
         case BlastMatchField<>::Enum::FRAMES:
         {
             clear(context._setBuffer2);

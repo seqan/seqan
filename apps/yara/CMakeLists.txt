@@ -14,16 +14,18 @@ message (STATUS "Configuring apps/yara")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-if (MSVC)
+if (COMPILER_MSVC)
     message (STATUS "Yara is currently not build on Microsoft Visual because it requires OpenMP 3.0.")
     return ()
 endif ()
 
 # Search SeqAn and select dependencies.
-find_package (OpenMP)
-find_package (ZLIB)
-find_package (BZip2)
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (OpenMP)
+    find_package (ZLIB)
+    find_package (BZip2)
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # Warn if OpenMP was not found.
 if (NOT OPENMP_FOUND)
@@ -44,7 +46,7 @@ endif (NOT BZIP2_FOUND)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.6")
+set (SEQAN_APP_VERSION "0.9.7")
 
 option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
 if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)

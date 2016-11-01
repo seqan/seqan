@@ -35,6 +35,8 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_HIRSCHBERG_IMPL_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_HIRSCHBERG_IMPL_H_
 
+#include <bitset>
+
 namespace seqan {
 
 // ============================================================================
@@ -164,6 +166,20 @@ namespace seqan {
 #endif
 
 // ----------------------------------------------------------------------------
+// Function _printBinary()
+// ----------------------------------------------------------------------------
+
+// Debug integer types in binary format.
+template <typename TStream, typename T>
+inline void
+_printBinary(TStream & stream, T const n)
+{
+    std::bitset<BitsPerValue<T>::VALUE> bits(n);
+    stream << bits;
+    stream << '\n';
+}
+
+// ----------------------------------------------------------------------------
 // Function globalAlignment()
 // ----------------------------------------------------------------------------
 
@@ -226,7 +242,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     TScoreValue score_gap = -1;
 
     // additional vars
-    int i;
+    unsigned i;
 
     // stack with parts of matrix that have to be processed
     std::stack<HirschbergSet_> to_process;
@@ -254,7 +270,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
         reverseBitMask[blockCount * ordValue(getValue(y,len_y - j - 1)) + j/BLOCK_SIZE] = reverseBitMask[blockCount * ordValue(getValue(y,len_y - j - 1)) + j/BLOCK_SIZE] | 1 << (j%BLOCK_SIZE);
     }
 
-    HirschbergSet_ hs_complete(0,len_x,0,len_y,1);
+    HirschbergSet_ hs_complete{0, static_cast<unsigned>(len_x), 0, static_cast<unsigned>(len_y), 1};
     to_process.push(hs_complete);
 
     while(!to_process.empty())
@@ -472,7 +488,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             unsigned int X, D0, HN, HP;
 
             /* compute cut position */
-            int mid = static_cast<int>(floor( static_cast<double>((_begin2(target) + _end2(target))/2) ));
+            unsigned mid = static_cast<int>(floor( static_cast<double>((_begin2(target) + _end2(target))/2) ));
 
             /* debug infos */
 #ifdef MYERS_HIRSCHBERG_VERBOSE
@@ -485,22 +501,22 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             std::cout << std::endl;
 #endif
             /* compute blocks and score masks */
-            int fStartBlock = _begin2(target) / BLOCK_SIZE;
-            int fEndBlock = (mid - 1) / BLOCK_SIZE;
-            int fSpannedBlocks = (fEndBlock - fStartBlock) + 1;
+            unsigned fStartBlock = _begin2(target) / BLOCK_SIZE;
+            unsigned fEndBlock = (mid - 1) / BLOCK_SIZE;
+            unsigned fSpannedBlocks = (fEndBlock - fStartBlock) + 1;
 
-            unsigned int fScoreMask = 1 << ((mid  - 1) % BLOCK_SIZE);
+            unsigned int fScoreMask = 1 << ((mid - 1) % BLOCK_SIZE);
 
             unsigned int fOffSet = _begin2(target) % BLOCK_SIZE;
             unsigned int fSilencer = ~0;
             fSilencer <<= fOffSet;
 
             /* reset v-bitvectors */
-            std::fill(begin(VP, Standard()) + fStartBlock, end(VP, Standard()) + fEndBlock + 1, maxValue<unsigned>());
-            std::fill(begin(VN, Standard()) + fStartBlock, end(VN, Standard()) + fEndBlock + 1, 0);
+            std::fill(begin(VP, Standard()) + fStartBlock, begin(VP, Standard()) + fEndBlock + 1, maxValue<unsigned>());
+            std::fill(begin(VN, Standard()) + fStartBlock, begin(VN, Standard()) + fEndBlock + 1, 0);
 
             /* determine start-position and start-score */
-            int pos = _begin1(target);
+            auto pos = _begin1(target);
             score = (mid - _begin2(target)) * score_gap;
             c_score[pos] = score;
 
@@ -530,7 +546,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             } /* end - short patten */
             else
             {
-                int shift, currentBlock;
+                unsigned shift, currentBlock;
                 unsigned int temp, carryD0, carryHP, carryHN;
 
                 while (pos < _end1(target))
@@ -596,9 +612,9 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             /* compute with myers - forward - end */
 
             /* compute blocks and score masks */
-            int rStartBlock = (len_y - _end2(target)) / BLOCK_SIZE;
-            int rEndBlock = (len_y - mid - 1) / BLOCK_SIZE;
-            int rSpannedBlocks = (rEndBlock - rStartBlock) + 1;
+            unsigned rStartBlock = (len_y - _end2(target)) / BLOCK_SIZE;
+            unsigned rEndBlock = (len_y - mid - 1) / BLOCK_SIZE;
+            unsigned rSpannedBlocks = (rEndBlock - rStartBlock) + 1;
 
             unsigned int rScoreMask = 1 <<  ((len_y - mid - 1) % BLOCK_SIZE);
             unsigned int rOffSet = (len_y - _end2(target)) % BLOCK_SIZE;
@@ -606,11 +622,11 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             rSilencer <<= rOffSet;
 
             /* reset v-bitvectors */
-            std::fill(begin(VP, Standard()) + rStartBlock, end(VP, Standard()) + rEndBlock + 1, maxValue<unsigned>());
-            std::fill(begin(VN, Standard()) + rStartBlock, end(VN, Standard()) + rEndBlock + 1, 0);
+            std::fill(begin(VP, Standard()) + rStartBlock, begin(VP, Standard()) + rEndBlock + 1, maxValue<unsigned>());
+            std::fill(begin(VN, Standard()) + rStartBlock, begin(VN, Standard()) + rEndBlock + 1, 0);
 
             /* determine start-position and start-score */
-            pos = _end1(target)-1;
+            pos = _end1(target);
             score = (_end2(target) - mid) * score_gap;
 
             /* set start score */
@@ -624,7 +640,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             /* compute with myers - reverse - begin */
             if(rSpannedBlocks == 1)
             {
-                while (pos >= _begin1(target)) {
+                while (pos-- > _begin1(target)) {
                     X = (rSilencer & reverseBitMask[(blockCount * ordValue(static_cast<TPatternAlphabet>(getValue(x,pos)))) + rStartBlock]) | VN[rStartBlock];
 
                     D0 = ((VP[rStartBlock] + (X & VP[rStartBlock])) ^ VP[rStartBlock]) | X;
@@ -649,16 +665,14 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                         max = c_score[pos];
                         rmax =  score;
                     }
-
-                    --pos;
                 }
             } /* end - short pattern */
             else
             {
-                int shift, currentBlock;
+                unsigned shift, currentBlock;
                 unsigned int temp, carryD0, carryHP, carryHN;
 
-                while (pos >= _begin1(target))
+                while (pos-- > _begin1(target))
                 {
                     carryD0 = carryHP = carryHN = 0;
                     shift = blockCount * ordValue(static_cast<TPatternAlphabet>(getValue(x,pos)));
@@ -720,8 +734,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                         max = c_score[pos];
                         rmax = score;
                     }
-
-                    --pos;
                 }
 
             }  /* end - long pattern */
@@ -735,8 +747,8 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             printf("Optimal cut is at %i and %i with forward score %i and reverse score %i\n\n",mid,pos_max,(max - rmax),rmax);
 #endif
             /* push the two computed parts of the dp-matrix on process stack */
-            to_process.push(HirschbergSet_(pos_max,_end1(target),mid,_end2(target),rmax));
-            to_process.push(HirschbergSet_(_begin1(target),pos_max,_begin2(target),mid,max - rmax));
+            to_process.push(HirschbergSet_{pos_max, _end1(target), mid, _end2(target), rmax});
+            to_process.push(HirschbergSet_{_begin1(target), pos_max, _begin2(target), mid, max - rmax});
 
         }
         /* END CUT */

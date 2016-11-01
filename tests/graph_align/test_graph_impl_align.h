@@ -230,6 +230,16 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights)
     SEQAN_ASSERT_EQ(getValue(mat, 0 * len + 2), getValue(mat, 2 * len + 0));
     SEQAN_ASSERT_EQ(getValue(mat, 1 * len + 4), getValue(mat, 4 * len + 1));
     SEQAN_ASSERT_EQ(getValue(mat, 2 * len + 4), getValue(mat, 4 * len + 2));
+
+    // Vertex Adjacency vectors
+    String<unsigned int> vectIn, vectOut;
+    getVertexAdjacencyVector(vectIn, vectOut, g, 2u);
+    SEQAN_ASSERT(length(vectIn) == 2);
+    SEQAN_ASSERT(length(vectOut) == 2);
+    SEQAN_ASSERT(vectIn[0] == 4);
+    SEQAN_ASSERT(vectIn[1] == 0);
+    SEQAN_ASSERT(vectOut[0] == 4);
+    SEQAN_ASSERT(vectOut[1] == 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////

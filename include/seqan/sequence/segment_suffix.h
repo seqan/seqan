@@ -341,6 +341,14 @@ template <typename THost>
 struct Suffix<THost &>:
     Suffix<THost> {};
 
+// ----------------------------------------------------------------------------
+// Metafunction SuffixOnValue
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct SuffixOnValue :
+    Suffix<T>{};
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TPosition>

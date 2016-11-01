@@ -45,9 +45,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-struct CriticalSection;
-struct Condition;
-
 // ============================================================================
 // Classes
 // ============================================================================
@@ -86,18 +83,18 @@ public:
     typedef typename Host<ConcurrentQueue>::Type    TString;
     typedef typename Size<TString>::Type            TSize;
 
-    size_t          readerCount;
-    size_t          writerCount;
+    size_t                  readerCount;
+    size_t                  writerCount;
 
-    TString         data;
-    TSize           occupied;
-    TSize           back;
-    TSize           front;
+    TString                 data;
+    TSize                   occupied;
+    TSize                   back;
+    TSize                   front;
 
-    CriticalSection cs;
-    Condition       more;
+    std::mutex              cs;
+    std::condition_variable more;
 
-    bool        virgin;
+    bool                    virgin;
 
     ConcurrentQueue():
         readerCount(0),
@@ -105,7 +102,6 @@ public:
         occupied(0),
         back(0),
         front(0),
-        more(cs),
         virgin(true)
     {}
 
@@ -144,19 +140,17 @@ public:
     typedef typename Host<ConcurrentQueue>::Type    TString;
     typedef typename Size<TString>::Type            TSize;
 
-    Condition less;
+    std::condition_variable less;
 
     ConcurrentQueue(TSize maxSize):
-        TBase(),
-        less(TBase::cs)
+        TBase()
     {
         reserve(this->data, maxSize, Exact());
         _setLength(this->data, maxSize);
     }
 
     ConcurrentQueue(ConcurrentQueue const & other):
-        TBase((TBase const &)other),
-        less(this->mutex)
+        TBase((TBase const &)other)
     {}
 };
 
@@ -175,9 +169,12 @@ template <typename TValue, typename TSpec>
 inline void
 unlockReading(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
+    std::unique_lock<std::mutex> lock(me.cs);
     if (--me.readerCount == 0u)
-        signal(me.less);
+    {
+        lock.unlock();
+        me.less.notify_all();
+    }
 }
 
 template <typename TValue, typename TSpec>
@@ -189,16 +186,19 @@ template <typename TValue, typename TSpec>
 inline void
 unlockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
+    std::unique_lock<std::mutex> lk(me.cs);
     if (--me.writerCount == 0u)
-        signal(me.more);
+    {
+        lk.unlock();
+        me.more.notify_all();
+    }
 }
 
 template <typename TValue, typename TSize, typename TSpec>
 inline void
 setReaderCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize readerCount)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
+    std::unique_lock<std::mutex> lock(me.cs);
     me.readerCount = readerCount;
 }
 
@@ -206,7 +206,7 @@ template <typename TValue, typename TSize, typename TSpec>
 inline void
 setWriterCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize writerCount)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
+    std::unique_lock<std::mutex> lock(me.cs);
     me.writerCount = writerCount;
 }
 
@@ -214,7 +214,7 @@ template <typename TValue, typename TSize1, typename TSize2, typename TSpec>
 inline void
 setReaderWriterCount(ConcurrentQueue<TValue, Suspendable<TSpec> > & me, TSize1 readerCount, TSize2 writerCount)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
+    std::unique_lock<std::mutex> lock(me.cs);
     me.readerCount = readerCount;
     me.writerCount = writerCount;
 }
@@ -224,9 +224,9 @@ inline bool
 waitForMinSize(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
                TSize minSize)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
+    std::unique_lock<std::mutex> lock(me.cs);
     while (me.occupied < minSize && me.writerCount > 0u)
-        waitFor(me.more);
+        me.more.wait(lock);
     return me.occupied >= minSize;
 }
 
@@ -247,7 +247,8 @@ length(ConcurrentQueue<TValue, Suspendable<TSpec> > const & me)
 
 template <typename TValue, typename TSpec>
 inline bool
-_popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
+_popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
+          std::unique_lock<std::mutex> & lk)
 {
     typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
     typedef typename Host<TQueue>::Type                     TString;
@@ -257,7 +258,7 @@ _popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
     TSize cap = capacity(me.data);
 
     while (me.occupied == 0u && me.writerCount > 0u)
-        waitFor(me.more);
+        me.more.wait(lk);
 
     if (me.occupied == 0u)
         return false;
@@ -283,7 +284,9 @@ _popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 
 template <typename TValue, typename TSpec>
 inline bool
-_popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
+_popBack(TValue & result,
+         ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
+         std::unique_lock<std::mutex> & lk)
 {
     typedef ConcurrentQueue<TValue, Suspendable<TSpec> >    TQueue;
     typedef typename Host<TQueue>::Type                     TString;
@@ -293,7 +296,7 @@ _popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
     TSize cap = capacity(me.data);
 
     while (me.occupied == 0u && me.writerCount > 0u)
-        waitFor(me.more);
+        me.more.wait(lk);
 
     if (me.occupied == 0u)
         return false;
@@ -322,42 +325,42 @@ template <typename TValue, typename TSpec>
 inline bool
 popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
-    return _popFront(result, me);
+    std::unique_lock<std::mutex> lock(me.cs);
+    return _popFront(result, me, lock);
 }
 
 template <typename TValue>
 inline bool
 popFront(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
-    if (_popFront(result, me))
     {
-        signal(me.less);
-        return true;
+        std::unique_lock<std::mutex> lk(me.cs);
+        if (!_popFront(result, me, lk))
+            return false;
     }
-    return false;
+    me.less.notify_all();
+    return true;
 }
 
 template <typename TValue, typename TSpec>
 inline bool
 popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
-    return _popBack(result, me);
+    std::unique_lock<std::mutex> lk(me.cs);
+    return _popBack(result, me, lk);
 }
 
 template <typename TValue>
 inline bool
 popBack(TValue & result, ConcurrentQueue<TValue, Suspendable<Limit> > & me)
 {
-    ScopedLock<CriticalSection> lock(me.cs);
-    if (_popBack(result, me))
     {
-        signal(me.less);
-        return true;
+        std::unique_lock<std::mutex> lk(me.cs);
+        if (!_popBack(result, me, lk))
+            return false;
     }
-    return false;
+    me.less.notify_all();
+    return true;
 }
 
 
@@ -371,36 +374,37 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
     typedef typename Host<TQueue>::Type                     TString;
     typedef typename Size<TString>::Type                    TSize;
 
-    ScopedLock<CriticalSection> lock(me.cs);
-    TSize cap = capacity(me.data);
-
-    if (me.occupied >= cap)
     {
-        // increase capacity
-        _setLength(me.data, cap);
-        reserve(me.data, cap + 1, expandTag);
-        TSize delta = capacity(me.data) - cap;
+        std::lock_guard<std::mutex> lock(me.cs);
+        TSize cap = capacity(me.data);
 
-        // create a gap of delta many values between tail and head
-        _clearSpace(me.data, delta, me.back, me.back, expandTag);
-        if (me.occupied != 0 && me.back <= me.front)
-            me.front += delta;
+        if (me.occupied >= cap)
+        {
+            // increase capacity
+            _setLength(me.data, cap);
+            reserve(me.data, cap + 1, expandTag);
+            TSize delta = capacity(me.data) - cap;
 
-        cap += delta;
+            // create a gap of delta many values between tail and head
+            _clearSpace(me.data, delta, me.back, me.back, expandTag);
+            if (me.occupied != 0 && me.back <= me.front)
+                me.front += delta;
+
+            cap += delta;
+        }
+
+        valueConstruct(begin(me.data, Standard()) + me.back, val);
+        me.back = (me.back + 1) % cap;
+
+        me.occupied++;
     }
 
-    valueConstruct(begin(me.data, Standard()) + me.back, val);
-    me.back = (me.back + 1) % cap;
-
-    me.occupied++;
-
     /* now: either me.occupied < BSIZE and me.nextin is the index
-       of the next empty slot in the buffer, or
-       me.occupied == BSIZE and me.nextin is the index of the
-       next (occupied) slot that will be emptied by a consumer
-       (such as me.nextin == me.nextout) */
-
-    signal(me.more);
+     of the next empty slot in the buffer, or
+     me.occupied == BSIZE and me.nextin is the index of the
+     next (occupied) slot that will be emptied by a consumer
+     (such as me.nextin == me.nextout) */
+    me.more.notify_all();
     return true;
 }
 
@@ -420,28 +424,29 @@ appendValue(ConcurrentQueue<TValue, Suspendable<Limit> > & me,
     typedef typename Host<TQueue>::Type                     TString;
     typedef typename Size<TString>::Type                    TSize;
 
-    ScopedLock<CriticalSection> lock(me.cs);
-    TSize cap = capacity(me.data);
+    {
+        std::unique_lock<std::mutex> lock(me.cs);
+        TSize cap = capacity(me.data);
 
-    while (me.occupied >= cap && me.readerCount > 0u)
-        waitFor(me.less);
+        while (me.occupied >= cap && me.readerCount > 0u)
+            me.less.wait(lock);
 
-    if (me.occupied >= cap)
-        return false;
+        if (me.occupied >= cap)
+            return false;
 
-    SEQAN_ASSERT_LT(me.occupied, cap);
+        SEQAN_ASSERT_LT(me.occupied, cap);
 
-    valueConstruct(begin(me.data, Standard()) + me.back, val);
-    me.back = (me.back + 1) % cap;
-    me.occupied++;
+        valueConstruct(begin(me.data, Standard()) + me.back, val);
+        me.back = (me.back + 1) % cap;
+        me.occupied++;
+    }
 
     /* now: either me.occupied < BSIZE and me.nextin is the index
-       of the next empty slot in the buffer, or
-       me.occupied == BSIZE and me.nextin is the index of the
-       next (occupied) slot that will be emptied by a consumer
-       (such as me.nextin == me.nextout) */
-
-    signal(me.more);
+     of the next empty slot in the buffer, or
+     me.occupied == BSIZE and me.nextin is the index of the
+     next (occupied) slot that will be emptied by a consumer
+     (such as me.nextin == me.nextout) */
+    me.more.notify_all();
     return true;
 }
 

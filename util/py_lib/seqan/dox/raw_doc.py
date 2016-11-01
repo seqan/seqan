@@ -90,10 +90,12 @@ class RawDoc(object):
 
     def __init__(self):
         self.entries = []
+        self.filenames = []
 
-    def merge(self, other_doc):
+    def merge(self, other_doc, filename=''):
         for e in other_doc.entries:
             self.addEntry(e)
+            self.filenames.append(filename)
 
     def addEntry(self, entry):
         self.entries.append(entry)

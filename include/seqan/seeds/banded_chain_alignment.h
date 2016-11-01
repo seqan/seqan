@@ -168,7 +168,7 @@ namespace seqan {
  *
  * @section Tutorial
  *
- * Also see the <a href="http://seqan.readthedocs.org/en/develop/Tutorial/SeedAndExtend.html">Seed-and-Extend Tutorial</a>
+ * Also see the <a href="http://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/SeedExtension.html">Seed-and-Extend Tutorial</a>
  *
  * @section Reference
  *
