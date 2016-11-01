@@ -873,6 +873,7 @@ inline void printHelp(ArgumentParser const & me,
     // Add arguments to arguments section
     if (length(me.argumentList) != 0)
         addSection(toolDoc, "Arguments");
+
     for (unsigned i = 0; i < length(me.argumentList); ++i)
     {
         ArgParseArgument const & arg = me.argumentList[i];
@@ -913,6 +914,7 @@ inline void printHelp(ArgumentParser const & me,
     // Add options to options section.
     if (length(me.optionMap) != 0)
         addSection(toolDoc, "Options");
+
     for (unsigned i = 0; i < length(me.optionMap); ++i)
     {
         ArgParseOption const & opt = me.optionMap[i];
