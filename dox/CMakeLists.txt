@@ -18,7 +18,6 @@ endif ()
 # find python 2.x
 if(NOT(${PYTHON_VERSION_MAJOR} MATCHES "2"))
     set(_PYTHON2_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
-    #set(_PYTHON2_VERSIONS i12.7 12.6 12.5 12.4 12.3 12.2 12.1 12.0)
     unset(_Python_NAMES)
     foreach(_CURRENT_VERSION IN LISTS _PYTHON2_VERSIONS)
         list(APPEND _Python_NAMES "python${_CURRENT_VERSION}")
