@@ -1124,7 +1124,7 @@ int main(int argc, char const ** argv)
         std::cerr << "WARNING: Files not read completely!\n";
     if (error)
     {
-        std::cerr << "An error occured. Bailing out.\n";
+        std::cerr << "An error occurred. Bailing out.\n";
         return 1;
     }
 
