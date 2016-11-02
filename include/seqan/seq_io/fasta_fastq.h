@@ -544,7 +544,7 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
                         Fasta const & tag,
                         SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    _writeRecord(file.iter, meta, seq, tag, options);
+    _writeRecord(file.iter, meta, seq, tag, context(file).options);
 }
 
 // ----------------------------------------------------------------------------
@@ -617,14 +617,15 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
                         Fastq const & tag,
                         SequenceOutputOptions const & options = SequenceOutputOptions())
 {
-    _writeRecord(file.iter, meta, seq, qual, tag, options);
+    _writeRecord(file.iter, meta, seq, qual, tag, context(file).options);
 }
 
 // ----------------------------------------------------------------------------
 // Function writeRecord(Fastq); Qualities inside seq
 // ----------------------------------------------------------------------------
-template <typename TFile, typename TIdString, typename TSeqString>
-inline void writeRecord(TFile & file,
+template <typename TFile, typename TIdString, typename TSeqString, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(HasQualities<typename Value<TSeqString>::Type>, void)
+writeRecord(TFile & file,
             TIdString const & meta,
             TSeqString const & seq,
             Fastq const & tag,
