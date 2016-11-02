@@ -72,7 +72,7 @@ enum SearchingType
 struct SgipOption
 {
     // I/O options.
-    CharString orginalFile;        // name of orginal file(first graph)
+    CharString originalFile;        // name of original file(first graph)
     CharString comparFile;         // name of comparisive file(second graph)
     CharString outputFile;         // name of result file
     CharString compareFolder;
@@ -127,7 +127,7 @@ int _sgip(TOption & options)
     char const * file1, * file2;
     if (!options.isoCheck)
     {
-        file1 = toCString(options.orginalFile);
+        file1 = toCString(options.originalFile);
         if (!_createGraph(g1, SivaLab(), file1))
             return 1;
 
@@ -137,7 +137,7 @@ int _sgip(TOption & options)
     }
     else
     {
-        file1 = toCString(options.orginalFile);
+        file1 = toCString(options.originalFile);
         file2 = toCString(options.comparFile);
         if (!_createGraph(g1, SivaLab(), file1))
             return 1;
@@ -212,7 +212,7 @@ ArgumentParser::ParseResult _parseOptions(TOption & options,
         return res;
         
     // Extract option value.
-    getOptionValue(options.orginalFile, parser, "o");
+    getOptionValue(options.originalFile, parser, "o");
     if (isSet(parser, "i"))
     {
         if (!isSet(parser, "c"))

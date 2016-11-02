@@ -2609,20 +2609,20 @@ double medianLevel(Iter<TIndex, VSTree<TSpec> > iter){
 	double median = 0.0;
 	double mediumTotalOccs = 0.0;
 
-  std::map<unsigned, unsigned> vectorOccurences;
+  std::map<unsigned, unsigned> vectorOccurrences;
 
 	goBegin(iter);
 	for (; !atEnd(iter); ++iter)
 	{
 		unsigned numOccs = countOccurrences(iter);
-		++vectorOccurences[numOccs];
+		++vectorOccurrences[numOccs];
 		totalOccs += numOccs;
 	}
 
 	mediumTotalOccs = totalOccs / 2.0;
 
   std::map<unsigned,unsigned>::iterator iterMap;
-	for (iterMap = vectorOccurences.begin (); iterMap != vectorOccurences.end (); ++iterMap)
+	for (iterMap = vectorOccurrences.begin (); iterMap != vectorOccurrences.end (); ++iterMap)
 	{
 		sumMedian += iterMap->second*iterMap->first;
 		if (sumMedian >= mediumTotalOccs)
