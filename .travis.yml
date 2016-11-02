@@ -43,7 +43,9 @@ matrix:
       compiler: clang-3.9
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports', 'llvm-toolchain-precise']
+          sources: 
+            - ubuntu-toolchain-r-test
+            - george-edison55-precise-backports
             - sourceline: 'deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
           packages: ['clang-3.9', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
