@@ -29,51 +29,43 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
-// ==========================================================================
-// Facade header for module arg_parse.
+// Author: Svenja Mehringer <svenja.mehringer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_
-#define SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_
+#define SEQAN_DEBUG
 
-// ===========================================================================
-// Prerequisites.
-// ===========================================================================
+#include "test_arg_parse_version_check.h"
 
-#include <seqan/basic.h>
-//#include <seqan/file.h>
-#include <seqan/stream.h>
-#include <seqan/sequence.h>
+using namespace seqan;
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#ifndef STDLIB_VS
-#include <unistd.h>
-#endif
+SEQAN_BEGIN_TESTSUITE(test_arg_parse)
+{
+    // tests to ensure that version check tests can run properly
+    SEQAN_CALL_TEST(test_path_availability);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_create_files);
 
-#include <regex>
-#include <vector>
-#include <algorithm>
+    // version check tests
+    // IMPORTANT: there always needs to be the test 'test_delete_version_files'
+    //            in between tests to ensure that no former files interfere with
+    //            the test results.
+    SEQAN_CALL_TEST(test_option_dev);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_option_app_only);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_option_off);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_smaller_seqan_version);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_smaller_seqan_version_app_only);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_smaller_app_version);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_greater_app_version);
+    SEQAN_CALL_TEST(test_delete_version_files);
+    SEQAN_CALL_TEST(test_time_out);
 
-// ===========================================================================
-// The ArgParse Headers.
-// ===========================================================================
-
-#include <seqan/arg_parse/arg_parse_type_support.h>
-#include <seqan/arg_parse/xml_support.h>
-#include <seqan/arg_parse/tool_doc.h>
-#include <seqan/arg_parse/arg_parse_exceptions.h>
-
-#include <seqan/arg_parse/arg_parse_argument.h>
-#include <seqan/arg_parse/arg_parse_option.h>
-
-#include <seqan/arg_parse/argument_parser.h>
-
-#include <seqan/arg_parse/arg_parse_doc.h>
-#include <seqan/arg_parse/arg_parse_ctd_support.h>
-#include <seqan/arg_parse/arg_parse_parse.h>
-
-#include <seqan/arg_parse/arg_parse_version_check.h>
-
-#endif  // SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_
+    // clean up 
+    _removeFilesFromPath();
+}
+SEQAN_END_TESTSUITE

@@ -249,6 +249,45 @@ inline CharString getShortDescription(ArgumentParser const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function setUrl()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setUrl
+ * @brief Sets url of ArgumentParser.
+ *
+ * @signature void setUrl(parser, url);
+ *
+ * @param[in,out] parser  The ArgumentParser to set the url of.
+ * @param[in]     url     The url string to set, @link CharString @endlink.
+ */
+
+inline void setUrl(ArgumentParser & me, CharString const & urlString)
+{
+    setUrl(me._toolDoc, urlString);
+}
+
+// --------------------------------------------------------------------------
+// Function getUrl()
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getUrl
+ * @brief Returns the url string.
+ *
+ * @signature TCharStringRef getUrl(parser);
+ *
+ * @param[in,out] parser The ArgumentParser to get the url string from.
+ *
+ * @return TCharString A const-ref to a @link CharString @endlink with the url string.
+ */
+
+inline CharString const & getUrl(ArgumentParser const & me)
+{
+    return getUrl(me._toolDoc);
+}
+
+// ----------------------------------------------------------------------------
 // Function setVersion()
 // ----------------------------------------------------------------------------
 
