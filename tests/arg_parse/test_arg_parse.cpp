@@ -130,12 +130,15 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_long_short_flag_name);
 
     // cmd argument tests
-    SEQAN_CALL_TEST(test_argument_string_label);
-    SEQAN_CALL_TEST(test_argument_int_label);
-    SEQAN_CALL_TEST(test_argument_double_label);
-    SEQAN_CALL_TEST(test_argument_inputfile_label);
-    SEQAN_CALL_TEST(test_argument_outputfile_label);
-    SEQAN_CALL_TEST(test_argument_user_defined_label);
+    SEQAN_CALL_TEST(test_argument_string_type);
+    SEQAN_CALL_TEST(test_argument_int_type);
+    SEQAN_CALL_TEST(test_argument_int64_type);
+    SEQAN_CALL_TEST(test_argument_double_type);
+    SEQAN_CALL_TEST(test_argument_inputfile_type);
+    SEQAN_CALL_TEST(test_argument_outputfile_type);
+    SEQAN_CALL_TEST(test_argument_inputprefix_type);
+    SEQAN_CALL_TEST(test_argument_outputprefix_type);
+    SEQAN_CALL_TEST(test_argument_label);
     SEQAN_CALL_TEST(test_argument_invalid_cast);
     SEQAN_CALL_TEST(test_argument_min_max_boundaries);
     SEQAN_CALL_TEST(test_argument_valid_values);
