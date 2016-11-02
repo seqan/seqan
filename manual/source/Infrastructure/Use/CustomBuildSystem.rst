@@ -179,6 +179,31 @@ meaning
  If set to 1 then zlib is expected to be available.
  You have to link against the library (e.g. add ``-lz`` to your linker flags) and ``zlib.h`` must be in your include path.
 
+SEQAN_HAS_OPENMP
+^^^^^^^^^^^^^^^^
+
+possible value
+  0, 1
+
+default
+  0
+
+meaning
+ If set to 1 then OpenMP is expected to be available.
+ You might have to add ``-fopenmp`` and possibly ``-lgomp`` to your build. And OpenMP needs to be supported by your compiler.
+
+SEQAN_DISABLE_VERSION_VCHECK
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+possible value
+  0, 1
+
+default
+  0 (from release 2.4.0 onwards)
+
+meaning
+  Starting from the release 2.4.0 every application or script that uses the SeqAn argument parser (and only those) will have a new feature to check whether your SeqAn version is outdated. This feature can be disabled by setting this flag to 1. Note: You can also disble this feature at runtime by specifying the command line option ``--version-check OFF``.
+
 Settings Projects Using Seqan
 -----------------------------
 

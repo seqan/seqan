@@ -449,6 +449,23 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function _getArgumentType()
+// ----------------------------------------------------------------------------
+inline std::string _getArgumentType(ArgParseArgument const & me)
+{
+    // infer from argument type
+    if (isInputFileArgument(me) || isOutputFileArgument(me))
+        return "FILE";
+    else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
+        return "FILENAME_PREFIX";
+    else if (isStringArgument(me))
+        return "STRING";
+    else if (isIntegerArgument(me) || isDoubleArgument(me))
+        return "NUMBER";
+    return "";
+}
+
+// ----------------------------------------------------------------------------
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
 
@@ -464,7 +481,7 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
  * @return std::string The argument label as a STL string.
  */
 
-inline std::string const getArgumentLabel(ArgParseArgument const & me)
+inline std::string getArgumentLabel(ArgParseArgument const & me)
 {
     if (me._argumentLabel != "")
     {
@@ -1084,6 +1101,16 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
     if (dotPos == std::string::npos)
         return "";
     return value.substr(dotPos + 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function isBooleanOption()
+// ----------------------------------------------------------------------------
+
+// needed for easy printing of the help page
+constexpr bool isBooleanOption(ArgParseArgument const & /*me*/)
+{
+    return false;
 }
 
 } // namespace seqan
