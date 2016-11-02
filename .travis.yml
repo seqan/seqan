@@ -44,17 +44,16 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports'] #, 'llvm-toolchain-precise-3.9'] TODO: enable when 3.9 gets whitelisted
-          packages: ['g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+          packages: ['g++-6', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
       before_install:
          - export LLVM_VERSION=3.9.0
          - export LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
          - wget http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz -O $LLVM_ARCHIVE_PATH
          - mkdir $HOME/clang+llvm
          - tar xf $LLVM_ARCHIVE_PATH -C $HOME/clang+llvm --strip-components 1
-         - ln -s clang++ $HOME/clang+llvm/bin/clang++-3.9
-         - ln -s clang $HOME/clang+llvm/bin/clang-3.9
+         - ln -s $HOME/clang+llvm/bin/clang++ $HOME/clang+llvm/bin/clang++-3.9
          - export PATH=$HOME/clang+llvm/bin:$PATH
-      install: export CXX="clang++-3.9" CC="clang-3.9" LD_LIBRARY_PATH=$HOME/clang+llvm/lib:$LD_LIBRARY_PATH
+      install: export CXX="clang++-3.9" LD_LIBRARY_PATH=$HOME/clang+llvm/lib:$LD_LIBRARY_PATH
 
 # currently too slow on osx
     #- os: osx
