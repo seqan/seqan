@@ -455,16 +455,37 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 /*!
  * @fn ArgParseArgument#getArgumentType
  * @headerfile <seqan/arg_parse.h>
- * @brief Return argument type. The type is either FILE, FILENAME_PREFIX, STRING, NUMBER or UNKOWN_TYPE.
+ * @brief Return the <tt>ArgParseArgument::ArgumentType</tt>.
  *
  * @signature std::string getArgumentType(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return ArgumentType The argument type.
+ */
+
+inline ArgParseArgument::ArgumentType getArgumentType(ArgParseArgument const & me)
+{
+    return me._argumentType;
+}
+
+// ----------------------------------------------------------------------------
+// Function getArgumentTypeAsString()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#getArgumentTypeAsString
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Return argument type. The type is either FILE, FILENAME_PREFIX, STRING, NUMBER or UNKOWN_TYPE.
+ *
+ * @signature std::string getArgumentTypeAsString(arg);
  *
  * @param[in] arg The ArgParseArgument to query.
  *
  * @return std::string The argument type as a STL string.
  */
 
-inline std::string getArgumentType(ArgParseArgument const & me)
+inline std::string getArgumentTypeAsString(ArgParseArgument const & me)
 {
     if (isInputFileArgument(me) || isOutputFileArgument(me))
         return "FILE";
