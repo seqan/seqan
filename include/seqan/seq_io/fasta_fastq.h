@@ -627,11 +627,12 @@ template <typename TFile, typename TIdString, typename TSeqString>
 inline void writeRecord(TFile & file,
             TIdString const & meta,
             TSeqString const & seq,
-            Fastq const & tag)
+            Fastq const & tag,
+            SequenceOutputOptions const & options = SequenceOutputOptions())
 {
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
-    writeRecord(file, meta, seq, quals, tag);
+    writeRecord(file, meta, seq, quals, tag, options);
 }
 
 }  // namespace seqan
