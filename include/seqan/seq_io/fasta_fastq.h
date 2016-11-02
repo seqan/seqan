@@ -542,7 +542,20 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         Fasta const & tag,
-                        SequenceOutputOptions const & options = SequenceOutputOptions())
+                        SequenceOutputOptions const & options)
+{
+    _writeRecord(file.iter, meta, seq, tag, options);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(Fasta); Without Qualities
+// ----------------------------------------------------------------------------
+template <typename TSpec, typename TIdString, typename TSeqString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Fasta const & tag)
 {
     _writeRecord(file.iter, meta, seq, tag, context(file).options);
 }
@@ -556,9 +569,19 @@ inline void writeRecord(TFile & file,
                         TSeqString const & seq,
                         TQualString const & /*qual*/,
                         Fasta const & tag,
-                        SequenceOutputOptions const & options = SequenceOutputOptions())
+                        SequenceOutputOptions const & options)
 {
     writeRecord(file, meta, seq, tag, options);
+}
+
+template <typename TFile, typename TIdString, typename TSeqString, typename TQualString>
+inline void writeRecord(TFile & file,
+                        TIdString const & meta,
+                        TSeqString const & seq,
+                        TQualString const & /*qual*/,
+                        Fasta const & tag)
+{
+    writeRecord(file, meta, seq, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -615,8 +638,24 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
                         TSeqString const & seq,
                         TQualString const & qual,
                         Fastq const & tag,
-                        SequenceOutputOptions const & options = SequenceOutputOptions())
+                        SequenceOutputOptions const & options)
 {
+
+    _writeRecord(file.iter, meta, seq, qual, tag, options);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(Fastq); Separate Qualities
+// ----------------------------------------------------------------------------
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            TQualString const & qual,
+            Fastq const & tag)
+{
+
     _writeRecord(file.iter, meta, seq, qual, tag, context(file).options);
 }
 
@@ -629,11 +668,23 @@ writeRecord(TFile & file,
             TIdString const & meta,
             TSeqString const & seq,
             Fastq const & tag,
-            SequenceOutputOptions const & options = SequenceOutputOptions())
+            SequenceOutputOptions const & options)
 {
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
     writeRecord(file, meta, seq, quals, tag, options);
+}
+
+template <typename TFile, typename TIdString, typename TSeqString>
+inline void
+writeRecord(TFile & file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Fastq const & tag)
+{
+    typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
+    ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
+    writeRecord(file, meta, seq, quals, tag, context(file).options);
 }
 
 }  // namespace seqan
