@@ -335,7 +335,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         typedef    typename HistoryStack_<Iter>::Type      TStack;
         typedef Iter                                    iterator;
 
-        TStack            history;    // contains all previously visited intervals (allows to go up)
+        TStack            history;    // contains all previously visited intervals (allows one to go up)
 
 //____________________________________________________________________________
 

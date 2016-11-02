@@ -40,7 +40,7 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.io/e
             <tr><td><ul><li>@link localAlignment @endlink</li></ul></td><td></td></tr>
             <tr><td><ul><li>@link LocalAlignmentEnumerator @endlink</li></ul></td><td>offers the Waterman-Eggert algorithm for enumerating suboptimal local alignments</td></tr>
             <tr><td><ul><li>@link Align @endlink</li></ul></td><td>provides a data structure for tabular alignment of sequences with the same type</td></tr>
-            <tr><td><ul><li>@link Gaps @endlink</li></ul></td><td>allows to store gaps independent of the underlying sequence</td></tr>
+            <tr><td><ul><li>@link Gaps @endlink</li></ul></td><td>allows one to store gaps independent of the underlying sequence</td></tr>
         </table>
     </li>
     <li>

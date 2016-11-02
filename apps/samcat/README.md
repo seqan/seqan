@@ -22,7 +22,7 @@ Input and output formats can be arbitrary, i.e. to convert a SAM into a BAM file
 samcat input.sam -o output.bam
 ```
 
-If the output file name is ommitted the result is written to stdout in SAM format, use ```-b``` to select BAM.
+If the output file name is omitted the result is written to stdout in SAM format, use ```-b``` to select BAM.
 If ```-``` is used as input file name, the input is read from stdin.
 
 ```
