@@ -505,7 +505,8 @@ struct RankDictionary<TValue, Levels<TSpec, TConfig> >
         // TODO(cpockrandt): make all bitmasks a const-expr
         const unsigned maxValue = (1 << _BITS_PER_VALUE) - 1;
         const unsigned padding = _BITS_PER_WORD % _BITS_PER_VALUE;
-        const TWordType paddingWord = (padding > 0) ? (1ull << (_BITS_PER_WORD - padding)) : 0ull;
+	// Max<> workaround for windows C4293 warning
+        const TWordType paddingWord = (padding > 0) ? (1ull << (_BITS_PER_WORD - Max<padding, 1>::VALUE)) : 0ull;
         if (isLevelsPrefixRD<Levels<TSpec, TConfig> >::VALUE && !std::is_same<TValue, bool>::value)
         {
             if (padding > 0)
