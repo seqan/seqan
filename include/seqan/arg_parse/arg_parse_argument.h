@@ -495,41 +495,7 @@ inline std::string getArgumentType(ArgParseArgument const & me)
 
 inline std::string getArgumentLabel(ArgParseArgument const & me)
 {
-    if (me._argumentLabel != "")
-    {
-        return me._argumentLabel;
-    }
-    else
-    {
-        // infer from argument type
-        std::string baseLabel = "";
-        if (isInputFileArgument(me) || isOutputFileArgument(me))
-            baseLabel = "FILE";
-        else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
-            baseLabel = "PREFIX";
-        else if (isStringArgument(me))
-            baseLabel = "STR";
-        else if (isIntegerArgument(me) || isDoubleArgument(me))
-            baseLabel = "NUM";
-
-        std::string finalLabel;
-
-        if (me._numberOfValues != 1)
-        {
-            for (unsigned i = 0; i < me._numberOfValues; ++i)
-            {
-                if (i != 0)
-                    append(finalLabel, " ");
-                append(finalLabel, baseLabel);
-            }
-        }
-        else if (isListArgument(me))
-            finalLabel = baseLabel;                         // maybe we want to customize list labels
-        else
-            finalLabel = baseLabel;
-
-        return finalLabel;
-    }
+    return me._argumentLabel;
 }
 
 // ----------------------------------------------------------------------------
