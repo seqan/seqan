@@ -169,7 +169,8 @@ namespace seqan
             typedef MaxRepeats_<void>        MaxRepeats;    // maximal repeat
             struct    MaxRepeatOccurrences;
             typedef MaxRepeats_<MultiMems_> MultiMems;    // Multiple Maximal Exact Match
-            struct    MultiMemOccurences;                    // i.e. maximal match over different sequences
+            struct    MultiMemOccurrences;                    // i.e. maximal match over different sequences
+	    typedef MultiMemOccurrences MultiMemOccurences;  // prevent breakage of the API for third party projects relying on the misspelled tag
 
 
 /*!
