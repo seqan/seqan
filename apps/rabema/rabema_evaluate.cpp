@@ -1093,7 +1093,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
                                             "sample position.  For simulated data."));
     addOption(parser, seqan::ArgParseOption("", "only-unique-reads",
                                             "Consider only reads that a single alignment in the mapping result file. "
-                                            "Usefull for precision computation."));
+                                            "Useful for precision computation."));
     addOption(parser, seqan::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
     addOption(parser, seqan::ArgParseOption("", "distance-metric",
                                             "Set distance metric.  Valid values: hamming, edit.  Default: edit.",
@@ -1278,7 +1278,7 @@ int main(int argc, char const ** argv)
               << "    additional        " << yesNo(options.showAdditionalIntervals) << '\n'
               << "    hit               " << yesNo(options.showHitIntervals) << '\n'
               << "    missed            " << yesNo(options.showMissedIntervals) << '\n'
-              << "    superflous        " << yesNo(options.showSuperflousIntervals) << '\n'
+              << "    superfluous       " << yesNo(options.showSuperflousIntervals) << '\n'
               << "    try hit           " << yesNo(options.showTryHitIntervals) << '\n'
               << "\n";
 

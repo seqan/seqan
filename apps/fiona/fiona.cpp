@@ -5268,7 +5268,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     // Parallelization Options.
     addSection(parser, "Parallelization Options");
 
-    addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threds to use (default 1).",
+    addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threads to use (default 1).",
                                             seqan::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "num-threads", "1");
     setDefaultValue(parser, "num-threads", options.numThreads);

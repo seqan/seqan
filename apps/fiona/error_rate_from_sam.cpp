@@ -153,7 +153,7 @@ int main(int argc, char const ** argv)
     std::cout << "STATISTICS\n"
               << "total read count      " << totalReadCount << "\t\t(excludes unaligned reads)\n"
               << "unaligned read count  " << totalUnalignedReadCount << "\n"
-              << "errorneous read count " << totalErrorneousReadCount << "\n"
+              << "erroneous read count " << totalErrorneousReadCount << "\n"
               << "per read error rate   " << 100.0 * totalErrorneousReadCount / totalReadCount << "\n"
               << "\n"
               << "total bases           " << totalBaseCount << "\n"
