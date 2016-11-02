@@ -814,6 +814,7 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseArgument con
 inline void _addTypeAndListInfo(std::string & text, ArgParseArgument const & arg)
 {
     std::string type = getArgumentTypeAsString(arg);
+    for (auto & c: type) c = toupper(c);
 
     // Write arguments to term line -> only exception, boolean flags
     if (!empty(type))

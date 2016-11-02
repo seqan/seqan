@@ -230,19 +230,19 @@ inline std::string _typeToString(ArgParseArgument const & me)
         break;
 
     case ArgParseArgument::INPUT_FILE:
-        typeName = "inputfile";
+        typeName = "input_file";
         break;
 
     case ArgParseArgument::OUTPUT_FILE:
-        typeName = "outputfile";
+        typeName = "output_file";
         break;
 
     case ArgParseArgument::INPUT_PREFIX:
-        typeName = "inputprefix";
+        typeName = "input_prefix";
         break;
 
     case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "outputprefix";
+        typeName = "output_prefix";
         break;
 
     default:
@@ -476,7 +476,7 @@ inline ArgParseArgument::ArgumentType getArgumentType(ArgParseArgument const & m
 /*!
  * @fn ArgParseArgument#getArgumentTypeAsString
  * @headerfile <seqan/arg_parse.h>
- * @brief Return argument type. The type is either FILE, FILENAME_PREFIX, STRING, NUMBER or UNKOWN_TYPE.
+ * @brief Return argument type As a string.
  *
  * @signature std::string getArgumentTypeAsString(arg);
  *
@@ -487,15 +487,7 @@ inline ArgParseArgument::ArgumentType getArgumentType(ArgParseArgument const & m
 
 inline std::string getArgumentTypeAsString(ArgParseArgument const & me)
 {
-    if (isInputFileArgument(me) || isOutputFileArgument(me))
-        return "FILE";
-    else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
-        return "FILENAME_PREFIX";
-    else if (isStringArgument(me))
-        return "STRING";
-    else if (isIntegerArgument(me) || isDoubleArgument(me))
-        return "NUMBER";
-    return "UNKOWN_TYPE";
+    return _typeToString(me._argumentType);
 }
 
 // ----------------------------------------------------------------------------
