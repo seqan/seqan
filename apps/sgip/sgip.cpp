@@ -219,7 +219,7 @@ ArgumentParser::ParseResult _parseOptions(TOption & options,
         {
             if (!isSet(parser, "ad"))
             {
-                std::cerr << "sgip" << ":comparitive file has not been specified!" << std::endl;
+                std::cerr << "sgip" << ":comparative file has not been specified!" << std::endl;
                 printShortHelp(parser, std::cerr);
                 return ArgumentParser::PARSE_ERROR;
             }

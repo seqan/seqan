@@ -1430,7 +1430,7 @@ int main(int argc, char const ** argv)
     if (!empty(options.outTsvPath))
     {
         std::cerr << '\n'
-                  << "Writting output TSV       " << options.outTsvPath << " ...";
+                  << "Writing output TSV        " << options.outTsvPath << " ...";
         std::ofstream tsvOut(toCString(options.outTsvPath), std::ios::out | std::ios::binary);
         bool failed = false;
         if (!tsvOut.good())
