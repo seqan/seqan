@@ -739,7 +739,7 @@ inline void _seperateExtensionsForPrettyPrinting(std::vector<std::string> & file
     // seperate file extensions and compression extensions
     for (std::vector<std::string>::size_type i = 0; i < validValues.size(); ++i)
     {
-        std::regex rgx("^(\\.)?([A-z]+)(\\.)?([A-z]+)?");
+        std::regex rgx("^(\\.)?([A-z0-9]+)(\\.)?([A-z0-9]+)?");
         std::smatch result;
 
         std::regex_search(validValues[i], result, rgx);
