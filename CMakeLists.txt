@@ -79,6 +79,12 @@ option (SEQAN_ARCH_AVX2 "Build AVX optimized binaries." OFF)
 option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 
 # ===========================================================================
+# Version Check Variable.
+# ===========================================================================
+
+option (SEQAN_VERSION_CHECK "SeqAn version check." ON)
+
+# ===========================================================================
 # Setup Modules and Find Packages.
 # ===========================================================================
 
