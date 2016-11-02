@@ -959,25 +959,8 @@ inline void printHelp(ArgumentParser const & me,
                 append(term, "\\fP");
             }
 
-            // Get arguments, autogenerate if necessary.
-            std::string arguments = getArgumentLabel(opt);
-
-            // Write arguments to term line -> only exception, boolean flags
-            if (!empty(arguments))
-            {
-                // Tokenize argument names.
-                std::istringstream iss(toCString(arguments));
-                std::vector<std::string> tokens;
-                std::copy(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>(),
-                          std::back_inserter<std::vector<std::string> >(tokens));
-                // Append them, formatted in italic.
-                for (unsigned i = 0; i < length(tokens); ++i)
-                {
-                    append(term, " \\fI");
-                    append(term, tokens[i]);
-                    append(term, "\\fP");
-                }
-            }
+            // expand type, list and numValues information
+            _addTypeAndListInfo(term, opt);
 
             std::string helpText = opt._helpText;
 
