@@ -105,6 +105,24 @@ API Documentation
 
 The API documentation can be found :dox:`mainpage here`.
 
+Partners
+--------
+   
+
+    |intelLink|_
+    
+    .. |intelLink| image:: Intel-Logo-300x198.jpg
+                        :scale: 70%
+    .. _intelLink: http://www.intel.com/
+
+
+    |deNBILink|_
+
+    .. |deNBILink| image:: deNBI_Logo_rgb.jpg
+                        :scale: 20%
+    .. _deNBILink: https://www.denbi.de
+
+
 .. toctree::
     :caption: Tutorials
     :name: tutorial
