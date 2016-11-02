@@ -90,7 +90,7 @@ class MissingParameterDescriptionValidator(ProcDocValidator):
 
 
 class ReturnVoidValidator(ProcDocValidator):
-    """Warns if there is a (superflous) @return void entry."""
+    """Warns if there is a (superfluous) @return void entry."""
 
     def validate(self, proc_entry):
         if not hasattr(proc_entry, 'returns'):

@@ -69,7 +69,7 @@ struct Owner {};
  * chromosomes of a genome.  This facilitates writing generic data structures and algorithms to operate on single
  * strings and genomes which is captured by the @link TextConcept @endlink.
  *
- * Second, the @link DependentStringSet @endlink specialization allows to create subsets of string sets without
+ * Second, the @link DependentStringSet @endlink specialization allows one to create subsets of string sets without
  * storing copies of strings and identifying strings by a common id.
  *
  * @section Examples

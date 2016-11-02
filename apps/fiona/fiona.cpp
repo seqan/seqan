@@ -4199,7 +4199,7 @@ unsigned correctReads(
         String<double> sd;
         standardDeviation(sd, store.readSeqStore, options.genomeLength);
 
-        /*The strictness value allows to estimate the confidence intervall*/
+        /*The strictness value allows one to estimate the confidence intervall*/
         for (unsigned i = 0; i < length(options.expectedTheoretical); ++i)
         {
             double expectedTemporary = options.expectedTheoretical[i] - options.strictness * sd[i];

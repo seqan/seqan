@@ -339,7 +339,7 @@ namespace seqan
         unsigned alphabetSize = ValueSize< typename Value<TTuple>::Type >::VALUE;
         unsigned seqs = countSequences(me.in);
         // TODO: We run into problems when one sequence contains 1 or less tuples
-        // length should be ommitted in future, but Pools or the skew algorithm needs to know the stream length
+        // length should be omitted in future, but Pools or the skew algorithm needs to know the stream length
         if (length(me.in) >= seqs)
             return
                   (length(me.in) / STEP_SIZE)     * (1 + length(me.tmp.i2) * (alphabetSize - 1)) +            // substitutions and original

@@ -274,7 +274,7 @@ struct RemoveConst<T const [I]>
     typedef T Type[I];
 };
 
-// TODO(holtgrew): Internal metafunction superflous?
+// TODO(holtgrew): Internal metafunction superfluous?
 template <typename T>
 struct RemoveConst_ : RemoveConst<T> {};
 

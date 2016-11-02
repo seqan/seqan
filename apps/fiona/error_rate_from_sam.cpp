@@ -71,7 +71,7 @@ int main(int argc, char const ** argv)
     unsigned totalReadCount = 0;            // Number of reads read.
     unsigned totalErrorneousReadCount = 0;  // Number of reads with errors read, excluding unaligned reads.
     unsigned totalUnalignedReadCount = 0;   // Number of reads without alignments.
-    std::map<unsigned, unsigned> histo;     // Histogram error count -> num occurences.
+    std::map<unsigned, unsigned> histo;     // Histogram error count -> num occurrences.
 
     // Read records
 

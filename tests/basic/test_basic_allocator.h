@@ -49,7 +49,7 @@ using namespace seqan;
 // ==========================================================================
 
 // The following helper class is passed as the parent allocator to all tested
-// allocators.  It allows to count the number of allocations and deallocations
+// allocators.  It allows one to count the number of allocations and deallocations
 // and checks whether all allocated memory blocks are correctly deallocated
 // when it is destructed.
 
