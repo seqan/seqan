@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,9 +73,9 @@ struct MagicHeader<Ebpseq, T> :
 // Metafunctions
 // ============================================================================
 
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Metafunction FileExtensions
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 template <typename T>
 struct FileExtensions<Ebpseq, T>
@@ -85,23 +85,25 @@ struct FileExtensions<Ebpseq, T>
 
 template <typename T>
 char const * FileExtensions<Ebpseq, T>::VALUE[1] =
-    {
-        ".ebpseq"     // default output extension
-    };
+{
+    ".ebpseq"     // default output extension
+};
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [EbpseqHeader]
+// Function readRecord()                                         [EbpseqHeader]
 // ----------------------------------------------------------------------------
 
 inline unsigned _findIndex(StringSet<CharString> const & set, CharString const & str)
 {
     unsigned idx = 0;
     while (idx < length(set) && set[idx] != str)
+    {
         ++idx;
+    }
     return idx;
 }
 
@@ -162,7 +164,7 @@ readHeader(RnaHeader & header, RnaIOContext & context, TForwardIter & iter, Ebps
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [EbpseqRecord]
+// Function readRecord()                                         [EbpseqRecord]
 // ----------------------------------------------------------------------------
 // Read record, updating list of known sequences if new one occurs.
 
@@ -186,17 +188,25 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
             idx = _findIndex(context.seqIdent, buffer.substr(1));
             record.recordID = idx;
             if (idx < length(context.seqIdent))
+            {
                 record.name = context.seqLabels[idx];
+            }
             else
+            {
                 hadErr = true;
+            }
         }
         else if (startsWith(buffer, "T"))
         {
             idx = _findIndex(context.typIdent, buffer.substr(1));
             if (idx < length(context.typIdent))
+            {
                 appendValue(record.typeID, idx);
+            }
             else
+            {
                 hadErr = true;
+            }
         }
         else
         {
@@ -211,10 +221,12 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
         skipUntil(iter, NotFunctor<IsBlank>());
     }
     if (record.hasUndefinedID())
+    {
         SEQAN_THROW(ParseError("ERROR: Record must contain a sequence tag."));
+    }
 
     // read column semantics
-    StringSet<std::string> columnLabels {};
+    StringSet<std::string> columnLabels{};
     skipUntil(iter, NotFunctor<IsWhitespace>());
     readOne(buffer, iter, EqualsChar<'#'>());
     clear(buffer);
@@ -247,12 +259,16 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
             if (label == "I")
             {
                 if (line == 1u && !lexicalCast(record.offset, buffer))
+                {
                     SEQAN_THROW(BadLexicalCast(record.offset, buffer));
+                }
             }
-            else if (label == "NT") {
+            else if (label == "NT")
+            {
                 appendValue(record.sequence, buffer[0]);
             }
-            else if (label == "QU") {
+            else if (label == "QU")
+            {
                 appendValue(record.quality, buffer[0]);
             }
             else if (startsWith(label, "F"))
@@ -264,16 +280,21 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
                     addVertex(graph.inter);
                     graph.specs = context.fixLabels[idx];
                     if (!lexicalCast(pairPos, buffer))
+                    {
                         SEQAN_THROW(BadLexicalCast(pairPos, buffer));
+                    }
                     if (pairPos != 0 && line + record.offset - 1 > pairPos)    // add edge if base is connected
-                        addEdge(graph.inter, pairPos - record.offset, line - 1, 1.);
+                    {
+                        addEdge(graph.inter, pairPos - record.offset, line - 1, 1.0);
+                    }
                 }
                 else
                 {
                     hadErr = true;
                 }
             }
-            else if (startsWith(label, "M")) {
+            else if (startsWith(label, "M"))
+            {
                 idx = _findIndex(context.bppIdent, label.substr(1));
                 if (idx < length(context.bppIdent))
                 {
@@ -281,7 +302,9 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
                     addVertex(graph.inter);
                     graph.specs = context.bppLabels[idx];
                     if (buffer.find('<') == std::string::npos)
+                    {
                         SEQAN_THROW(ParseError("ERROR: Expected a bracket pair: < >"));
+                    }
                     if (buffer.find('>') == std::string::npos)
                     {
                         readUntil(buffer, iter, EqualsChar<'>'>());
@@ -294,11 +317,17 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
                         double prob;
                         std::string::size_type pos = match.str().find('/');
                         if (!lexicalCast(pairPos, match.str().substr(0, pos)))
+                        {
                             SEQAN_THROW(BadLexicalCast(pairPos, match.str().substr(0, pos)));
+                        }
                         if (!lexicalCast(prob, match.str().substr(pos + 1)))
+                        {
                             SEQAN_THROW(BadLexicalCast(prob, match.str().substr(pos + 1)));
+                        }
                         if (pairPos != 0 && line + record.offset - 1 > pairPos)
+                        {
                             addEdge(graph.inter, pairPos - record.offset, line - 1, prob);
+                        }
                         buffer = match.suffix();
                     }
                 }
@@ -314,7 +343,9 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
                 {
                     float react;
                     if (!lexicalCast(react, buffer))
+                    {
                         SEQAN_THROW(BadLexicalCast(react, buffer));
+                    }
                     appendValue(record.reactError[idx], react);
                 }
                 else
@@ -329,7 +360,9 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
                 {
                     float react;
                     if (!lexicalCast(react, buffer))
+                    {
                         SEQAN_THROW(BadLexicalCast(react, buffer));
+                    }
                     appendValue(record.reactivity[idx], react);
                 }
                 else
@@ -346,7 +379,6 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
                 std::cerr << "Found label '" << label << "'." << std::endl;
                 SEQAN_THROW(ParseError("ERROR: Unknown label."));
             }
-
             skipUntil(iter, NotFunctor<IsBlank>());
             clear(buffer);
         }
@@ -357,7 +389,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
 }
 
 // ----------------------------------------------------------------------------
-// Function writeHeader()                                           [EbpseqHeader]
+// Function writeHeader()                                        [EbpseqHeader]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
@@ -419,23 +451,29 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
 
 inline void createPseudoHeader(RnaHeader & header, std::vector<RnaRecord> & records)
 {
-    std::size_t numFix{0}, numBpp{0};
+    std::size_t numFix{}, numBpp{};
     for (unsigned idx = 0; idx < length(records); ++idx)
     {
         records[idx].recordID = idx;
         if (!empty(records[idx].comment))
         {
             if (!empty(header.description))
+            {
                 append(header.description, "\t");
+            }
             append(header.description, records[idx].comment);
         }
 
         appendValue(header.seqLabels, records[idx].name);
 
         if (length(records[idx].fixedGraphs) > numFix)
+        {
             numFix = length(records[idx].fixedGraphs);
+        }
         if (length(records[idx].bppMatrGraphs) > numBpp)
+        {
             numBpp = length(records[idx].bppMatrGraphs);
+        }
     }
 
     for (unsigned idx = 1; idx <= numFix; ++idx)
@@ -446,7 +484,7 @@ inline void createPseudoHeader(RnaHeader & header, std::vector<RnaRecord> & reco
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord()                                           [EbpseqRecord]
+// Function writeRecord()                                        [EbpseqRecord]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
@@ -454,11 +492,17 @@ inline void
 writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, Ebpseq const & /*tag*/)
 {
     if (empty(record.sequence) && length(rows(record.align)) != 1)
+    {
         SEQAN_THROW(ParseError("ERROR: Ebpseq formatted file cannot contain an alignment."));
+    }
     if (empty(context.seqIdent))       // origin is ebpseq, but header was not printed
+    {
         SEQAN_THROW(ParseError("ERROR: Print ebpseq header first."));
+    }
     else if (record.recordID >= length(context.seqIdent))
+    {
         SEQAN_THROW(ParseError("ERROR: Record ID exceeds number of sequences in ebpseq header."));
+    }
 
     unsigned idx;
     // write head line with S and T tags
@@ -467,7 +511,9 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
     for (idx = 0; idx < length(record.typeID); ++idx)
     {
         if (record.typeID[idx] >= length(context.typIdent))
+        {
             SEQAN_THROW(ParseError("ERROR: Type ID exceeds number of types in ebpseq header."));
+        }
         write(target, " T");
         write(target, context.typIdent[record.typeID[idx]]);
     }
@@ -475,14 +521,20 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
 
     // error checks
     if (length(record.fixedGraphs) > length(context.fixIdent))
+    {
         SEQAN_THROW(ParseError("ERROR: Graph ID exceeds number of fixed graphs in ebpseq header."));
+    }
     if (length(record.bppMatrGraphs) > length(context.bppIdent))
+    {
         SEQAN_THROW(ParseError("ERROR: Graph ID exceeds number of bpp matrix graphs in ebpseq header."));
+    }
 
     // write column header
     write(target, "# I\tNT");
     if (!empty(record.quality))
+    {
         write(target, "\tQU");
+    }
     for (idx = 0; idx < length(record.typeID); ++idx)
     {
         if (!empty(record.reactivity[record.typeID[idx]]))
@@ -536,7 +588,9 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
         for (idx = 0; idx < length(record.typeID); ++idx)
         {
             if (record.typeID[idx] >= length(record.reactivity) || record.typeID[idx] >= length(record.reactError))
+            {
                 SEQAN_THROW(ParseError("ERROR: Invalid typeID for printing reactivity."));
+            }
             if (!empty(record.reactivity[record.typeID[idx]]))
             {
                 writeValue(target, '\t');

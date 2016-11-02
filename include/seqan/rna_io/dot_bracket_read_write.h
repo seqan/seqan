@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,7 @@ typedef Tag<DotBracket_> DotBracket;
 // --------------------------------------------------------------------------
 // Class Magicheader
 // --------------------------------------------------------------------------
+
 template <typename T>
 struct MagicHeader<DotBracket, T> :
     public MagicHeader<Nothing, T> {};
@@ -137,6 +138,7 @@ constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
 // ----------------------------------------------------------------------------
 // Helper Function for converting a bracket string to an undirected graph
 // ----------------------------------------------------------------------------
+
 inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const & bracketStr)
 {
     RnaStructureGraph graph;
@@ -169,7 +171,7 @@ inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const
             std::size_t brIndex = elem - DotBracketArgs<>::CLOSE.begin();
             if (!stack[brIndex].empty())
             {
-                addEdge(graph.inter, idx, stack[brIndex].top(), 1.);
+                addEdge(graph.inter, idx, stack[brIndex].top(), 1.0);
                 stack[brIndex].pop();
             }
             else
@@ -184,8 +186,10 @@ inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const
     }
 
     for(unsigned idx = 0; idx < length(DotBracketArgs<>::OPEN); ++idx)
-        if(!stack[idx].empty())
+    {
+        if (!stack[idx].empty())
             SEQAN_THROW(ParseError("Invalid bracket notation: unpaired opening bracket"));
+    }
 
     append(graphSet, graph);
 }
@@ -193,12 +197,13 @@ inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const
 // ----------------------------------------------------------------------------
 // Helper Function for converting a bracket string to an undirected graph
 // ----------------------------------------------------------------------------
+
 inline CharString const graph2bracket(RnaStructureGraph const & graph)
 {
     CharString bracketStr{};
     std::stack<unsigned> endpos_stack;                  // stack stores endpos of outer bracket
     String<unsigned> colors;                            // colors for bracket pairs
-    resize(colors, numVertices(graph.inter), 0);              // color 0 means 'not set'
+    resize(colors, numVertices(graph.inter), 0);        // color 0 means 'not set'
     resize(bracketStr, numVertices(graph.inter), ' ');
 
     unsigned unprocessed = 1; /* any value > 0 */
@@ -255,7 +260,7 @@ inline CharString const graph2bracket(RnaStructureGraph const & graph)
 
     for (unsigned idx = 0; idx < length(colors); ++idx) // write pairs in bracket notation
     {
-        if (degree(graph.inter, idx) == 0)                    // unpaired
+        if (degree(graph.inter, idx) == 0)              // unpaired
         {
             SEQAN_ASSERT(colors[idx] == 0);
             bracketStr[idx] = '.';
@@ -280,6 +285,7 @@ inline CharString const graph2bracket(RnaStructureGraph const & graph)
 // ----------------------------------------------------------------------------
 // Function readRecord(); RnaRecord, DotBracket
 // ----------------------------------------------------------------------------
+
 template <typename TForwardIter>
 inline void
 readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
@@ -318,6 +324,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
     readUntil(buffer, iter, IsWhitespace());
     if (length(buffer) != record.seqLen)
         SEQAN_THROW(ParseError("ERROR: Bracket string must be as long as sequence."));
+
     bracket2graph(record.fixedGraphs, buffer);
     clear(buffer);
 
@@ -337,7 +344,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
 
 template <typename TForwardIter>
 inline void
-readRecord(RnaRecord & record, SEQAN_UNUSED RnaIOContext &, TForwardIter & iter, DotBracket const & /*tag*/)
+readRecord(RnaRecord & record, RnaIOContext & /*context*/, TForwardIter & iter, DotBracket const & /*tag*/)
 {
     readRecord(record, iter, DotBracket());
 }
@@ -388,7 +395,8 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RnaRecord const & record, SEQAN_UNUSED RnaIOContext &, DotBracket const & /*tag*/)
+writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context*/,
+            DotBracket const & /*tag*/)
 {
     writeRecord(target, record, DotBracket());
 }

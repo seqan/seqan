@@ -64,14 +64,13 @@ namespace seqan {
 struct RnaStruct_;
 typedef Tag<RnaStruct_> RnaStruct;
 
-typedef
-TagList<Connect,
-    TagList<Stockholm,
+typedef TagList<Connect,
+        TagList<Stockholm,
         TagList<DotBracket,
-            TagList<Vienna,
-                TagList<Ebpseq,
-                    TagList<Bpseq
-                    > > > > > > RnaStructFormats;
+        TagList<Vienna,
+        TagList<Ebpseq,
+        TagList<Bpseq
+        > > > > > > RnaStructFormats;
 
 // --------------------------------------------------------------------------
 // Class RnaStructContents
@@ -82,14 +81,14 @@ TagList<Connect,
  * @headerfile <seqan/rna_io.h>
  * @brief Contains all the contents of an RNA structure file.
  *
- * @signature typedef struct RnaStructContents_ RnaStructContents;
+ * @signature struct RnaStructContents;
  * @see RnaRecord
  * @see RnaHeader
  *
  * Container for the header and all records of an RNA structure file.
  * If no header was present in the file, a pseudo header with the required information is stored instead.
  */
-struct RnaStructContents_
+struct RnaStructContents
 {
     /*!
      * @var std::vector<RnaRecord> RnaStructContents::records
@@ -105,7 +104,6 @@ struct RnaStructContents_
      */
     RnaHeader header;
 };
-typedef struct RnaStructContents_ RnaStructContents;
 
 // ============================================================================
 // Typedefs
@@ -236,7 +234,6 @@ writeRecord(TFwdIterator & iter, RnaRecord const & record, RnaIOContext & contex
         writeRecord(iter, record, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-
 template <typename TSpec>
 inline void
 writeRecord(FormattedFile<RnaStruct, Output, TSpec> & file, RnaRecord const & record)
@@ -261,9 +258,8 @@ template <typename TSpec>
 inline void
 readHeader(RnaHeader & header, FormattedFile<RnaStruct, Input, TSpec> & file)
 {
-    if (isEqual(file.format, Ebpseq()))
+    if (isEqual(file.format, Ebpseq()))  // all other files contain no header
         readHeader(header, context(file), file.iter, Ebpseq());
-    // other files contain no header
 }
 
 // ----------------------------------------------------------------------------
@@ -283,9 +279,8 @@ template <typename TSpec>
 inline void
 writeHeader(FormattedFile<RnaStruct, Output, TSpec> & file, RnaHeader const & header)
 {
-    if (isEqual(file.format, Ebpseq()))
+    if (isEqual(file.format, Ebpseq()))  // all other files contain no header
         writeHeader(file.iter, header, context(file), Ebpseq());
-    // other files contain no header
 }
 
 // ----------------------------------------------------------------------------

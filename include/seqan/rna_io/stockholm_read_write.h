@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -131,10 +131,10 @@ char const * FileExtensions<Stockholm, T>::VALUE[1] =
 // Functions
 // ==========================================================================
 
-
 // ----------------------------------------------------------------------------
 // Function readRecord(); RnaRecord, Stockholm
 // ----------------------------------------------------------------------------
+
 template <typename TForwardIter>
 inline void
 readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
@@ -244,6 +244,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
         SEQAN_THROW(ParseError("Expected a secondary structure line."));
     if (empty(sequence))
         SEQAN_THROW(ParseError("Expected a sequence line."));
+
     SEQAN_ASSERT_EQ(length(sequence), length(gapPos));
 
     // store the alignment with gaps in record
@@ -252,7 +253,9 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
     {
         assignSource(row(record.align, seq), sequence[seq]);
         for (unsigned pos = length(gapPos[seq]); pos > 0u; --pos)
+        {
             insertGap(row(record.align, seq), gapPos[seq][pos - 1]);
+        }
     }
 
     // store sequence length and secondary structure graph
@@ -262,7 +265,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
 
 template <typename TForwardIter>
 inline void
-readRecord(RnaRecord & record, SEQAN_UNUSED RnaIOContext &, TForwardIter & iter, Stockholm const & /*tag*/)
+readRecord(RnaRecord & record, RnaIOContext & /*context*/, TForwardIter & iter, Stockholm const & /*tag*/)
 {
     readRecord(record, iter, Stockholm());
 }
@@ -323,11 +326,11 @@ writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RnaRecord const & record, SEQAN_UNUSED RnaIOContext &, Stockholm const & /*tag*/)
+writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context*/, Stockholm const & /*tag*/)
 {
     writeRecord(target, record, Stockholm());
 }
 
-} //namespace seqan
+} // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_RNA_IO_STOCKHOLM_READ_WRITE_H_

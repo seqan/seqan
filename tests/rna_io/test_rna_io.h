@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                   rna_io
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -80,8 +80,10 @@ SEQAN_DEFINE_TEST(test_rna_io_write_connect)
 
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
+
     for (unsigned idx = 0; idx < 4; ++idx)
         addEdge(graph.inter, idx, 7u - idx, 1.);
+
     graph.energy = -17.5f;
     append(record.fixedGraphs, graph);
 
@@ -139,8 +141,10 @@ SEQAN_DEFINE_TEST(test_rna_io_write_dot_bracket)
 
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
+
     for (unsigned idx = 0; idx < 3; ++idx)
         addEdge(graph.inter, idx, 7u - idx, 1.);
+
     graph.energy = -17.5f;
     append(record.fixedGraphs, graph);
 
@@ -192,8 +196,10 @@ SEQAN_DEFINE_TEST(test_rna_io_write_vienna)
 
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
+
     for (unsigned idx = 0; idx < 3; ++idx)
         addEdge(graph.inter, idx, 7u - idx, 1.);
+
     append(record.fixedGraphs, graph);
 
     // Write records to string stream.String<char> out;
@@ -258,8 +264,10 @@ SEQAN_DEFINE_TEST(test_rna_io_write_stockholm)
     seqan::RnaStructureGraph graph;
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
+
     for (unsigned idx = 0; idx < 4; ++idx)
         addEdge(graph.inter, idx, 7u - idx, 1.);
+
     append(record.fixedGraphs, graph);
 
     // Write records to string stream.String<char> out;
@@ -317,8 +325,10 @@ SEQAN_DEFINE_TEST(test_rna_io_write_bpseq)
 
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
+
     for (unsigned idx = 0; idx < 4; ++idx)
         addEdge(graph.inter, idx, 7u - idx, 1.);
+
     append(record.fixedGraphs, graph);
 
     // Write records to string stream.String<char> out;
@@ -400,6 +410,7 @@ SEQAN_DEFINE_TEST(test_rna_io_write_ebpseq)
     seqan::RnaStructureGraph fgraph;
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(fgraph.inter);
+
     seqan::addEdge(fgraph.inter, 0u, 2u, 1.);
     append(record.fixedGraphs, fgraph);
 

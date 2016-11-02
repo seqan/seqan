@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -82,9 +82,9 @@ struct FileExtensions<Bpseq, T>
 
 template <typename T>
 char const * FileExtensions<Bpseq, T>::VALUE[1] =
-    {
-        ".bpseq"     // default output extension
-    };
+{
+    ".bpseq"     // default output extension
+};
 
 // ============================================================================
 // Functions
@@ -104,7 +104,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
 
     skipUntil(iter, NotFunctor<IsWhitespace>());
     while (!atEnd(iter) && value(iter) == '#')
-    {                                       // All the information stored in the # lines are saved in a single line
+    {  // All the information stored in the # lines are saved in a single line
         skipOne(iter);
         skipUntil(iter, NotFunctor<IsWhitespace>());
         readLine(buffer, iter);
@@ -122,7 +122,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
     }
 
     RnaStructureGraph graph;
-    unsigned currPos{0};
+    unsigned currPos{};
     while (!atEnd(iter) && value(iter) != '#')
     {
         // read index position
@@ -133,6 +133,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
                 SEQAN_THROW(EmptyFieldError("BEGPOS"));
             if (!lexicalCast(record.offset, buffer))
                 SEQAN_THROW(BadLexicalCast(record.offset, buffer));
+
             currPos = record.offset;
             clear(buffer);
         }
@@ -149,6 +150,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
         addVertex(graph.inter);                 // add base to graph
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("SEQUENCE"));
+
         clear(buffer);
 
         // read paired index
@@ -156,11 +158,14 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
         readUntil(buffer, iter, IsWhitespace());
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
+
         unsigned pairPos;
         if (!lexicalCast(pairPos, buffer))
             SEQAN_THROW(BadLexicalCast(pairPos, buffer));
+
         if (pairPos != 0 && currPos > pairPos)    // add edge if base is connected
-            addEdge(graph.inter, pairPos - record.offset, currPos - record.offset, 1.);
+            addEdge(graph.inter, pairPos - record.offset, currPos - record.offset, 1.0);
+
         clear(buffer);
 
         skipLine(iter);
@@ -172,13 +177,13 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
 
 template <typename TForwardIter>
 inline void
-readRecord(RnaRecord & record, SEQAN_UNUSED RnaIOContext &, TForwardIter & iter, Bpseq const & /*tag*/)
+readRecord(RnaRecord & record, RnaIOContext & /*context*/, TForwardIter & iter, Bpseq const & /*tag*/)
 {
     readRecord(record, iter, Bpseq());
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord()                                           [BpseqRecord]
+// Function writeRecord()                                         [BpseqRecord]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
@@ -225,7 +230,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Bpseq const & /*tag*/)
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RnaRecord const & record, SEQAN_UNUSED RnaIOContext &, Bpseq const & /*tag*/)
+writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context*/, Bpseq const & /*tag*/)
 {
     writeRecord(target, record, Bpseq());
 }

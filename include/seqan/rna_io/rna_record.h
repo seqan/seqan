@@ -33,7 +33,6 @@
 //          Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 
-
 #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 #define SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 
@@ -87,20 +86,13 @@ public:
      * @var CharString RnaStructureGraph::specs
      * @brief Specs of the Method used to compute the bpp matrix or the structure.
      */
-    CharString specs;
+    CharString specs{};
 
     /*!
      * @var float RnaStructureGraph::energy
      * @brief Energy of the RNA structure.
      */
-    float energy;
-
-    /*!
-     * @fn RnaStructureGraph::RnaStructureGraph
-     * @brief The constructor.
-     * @signature RnaStructureGraph::RnaStructureGraph()
-     */
-    RnaStructureGraph() : specs(""), energy(0.0f) {}
+    float energy{};
 };
 
 // ----------------------------------------------------------------------------
@@ -129,31 +121,31 @@ public:
      *
      * In an RNA structure file the first record gets ID 0, the following ID 1 and so on.
      */
-    unsigned recordID;
+    unsigned recordID{UNDEF};
 
     /*!
      * @var unsigned RnaRecord::seqLen
      * @brief Length of the sequence or alignment stored in this record.
      */
-    unsigned seqLen;
+    unsigned seqLen{};
 
     /*!
      * @var unsigned RnaRecord::offset
      * @brief Start index of the sequence.
      */
-    unsigned offset;
+    unsigned offset{1u};
 
     /*!
      * @var CharString RnaRecord::name
      * @brief Sequence name.
      */
-    CharString name;
+    CharString name{};
 
     /*!
      * @var CharString RnaRecord::quality
      * @brief Quality values for the sequence.
      */
-    CharString quality;
+    CharString quality{};
 
     /*!
      * @var String<RnaStructureGraph> RnaRecord::bppMatrGraphs
@@ -171,7 +163,7 @@ public:
      * @var CharString RnaRecord::comment
      * @brief Comment to be stored together with the record.
      */
-    CharString comment;
+    CharString comment{};
 
     /*!
      * @var StringSet<String<float>> RnaRecord::reactivity
@@ -208,7 +200,7 @@ public:
      *
      * This member variable is only used in sequence-based records (from CT, DBN, DBV, BPSEQ, EBPSEQ files).
      */
-    Rna5String sequence;
+    Rna5String sequence{};
 
     /*!
      * @var StringSet<CharString> RnaRecord::seqID
@@ -232,7 +224,7 @@ public:
      * @return bool True if @link RnaRecord::recordID @endlink is not set.
      * @signature bool RnaRecord::hasUndefinedID()
      */
-    bool hasUndefinedID()
+    bool hasUndefinedID() const
     {
         return recordID == UNDEF;
     }
@@ -246,16 +238,6 @@ public:
     {
         recordID = UNDEF;
     }
-
-    /*!
-     * @fn RnaRecord::RnaRecord
-     * @brief The constructor.
-     * @signature RnaRecord::RnaRecord()
-     */
-    RnaRecord() : recordID(UNDEF), seqLen(0u), offset(1u), name(""), quality(""),
-                  comment(""), sequence("")
-    {}
-
 };
 
 // ============================================================================
@@ -286,4 +268,4 @@ inline void clear(RnaRecord & record)
 
 }  // namespace seqan
 
-#endif  //SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
+#endif  // SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_

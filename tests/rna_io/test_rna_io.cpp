@@ -1,5 +1,5 @@
 // ==========================================================================
-//                                   rna_io
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.

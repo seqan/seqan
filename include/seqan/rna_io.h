@@ -29,7 +29,8 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Lily Shellhammer
+// Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
+//          Joerg Winkler <j.winkler@fu-berlin.de>
 // ==========================================================================
 // Facade header for module rna_io.
 // ==========================================================================
@@ -48,13 +49,15 @@
 #include <seqan/graph_types.h>
 
 // ===========================================================================
-// First Header Group.
+// RNA structure containers and file formats
 // ===========================================================================
 
+// containers
 #include <seqan/rna_io/rna_record.h>
 #include <seqan/rna_io/rna_header.h>
 #include <seqan/rna_io/rna_io_context.h>
 
+// file format specific
 #include <seqan/rna_io/connect_read_write.h>
 #include <seqan/rna_io/dot_bracket_read_write.h>
 #include <seqan/rna_io/bpseq_read_write.h>
@@ -62,6 +65,7 @@
 #include <seqan/rna_io/ebpseq_read_write.h>
 #include <seqan/rna_io/vienna_read_write.h>
 
+// general file I/O
 #include <seqan/rna_io/rna_struct_file.h>
 
 #endif  // INCLUDE_SEQAN_RNA_IO_H_
