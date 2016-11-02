@@ -441,7 +441,7 @@ _getPrefixSum(LF<TText, TSpec, TConfig> const & lf, TValue val)
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
-inline typename Size<LF<TText, TSpec, TConfig> >::Type
+inline std::enable_if_t<!isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, typename Size<LF<TText, TSpec, TConfig> >::Type>
 _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, TPos & smaller)
 {
     typedef LF<TText, TSpec, TConfig> const                TLF;
@@ -459,6 +459,30 @@ _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val
             smaller += senti;
             if (ordEqual(lf.sentinelSubstitute, val))
                 ret -= senti;
+        }
+    }
+
+    return ret;
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
+inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, typename Size<LF<TText, TSpec, TConfig> >::Type>
+_getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val, TPos & smaller)
+{
+    typedef LF<TText, TSpec, TConfig> const                TLF;
+    typedef typename Size<TLF>::Type                       TSize;
+
+    TSize ret = _getPrefixSum(lf, val);
+
+    if (pos > 0)
+    {
+        ret += getRank(lf.bwt, pos - 1, val, smaller);
+
+        if (ordEqual(lf.sentinelSubstitute, val))
+        {
+            TPos senti = _getSentinelsRank(lf, pos - 1);
+            smaller += senti;
+            ret -= senti;
         }
     }
 
@@ -505,7 +529,8 @@ _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val)
 // The character with the smallest number of occurrences greater 0 is chosen.
 
 template <typename TText, typename TSpec, typename TConfig>
-inline void _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
+inline std::enable_if_t<!isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, void>
+_setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
 {
     typedef LF<TText, TSpec, TConfig>                   TLF;
     typedef typename Fibre<TLF, FibrePrefixSums>::Type  TPrefixSums;
@@ -526,6 +551,13 @@ inline void _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
     }
 
     lf.sentinelSubstitute = ordVal;
+}
+
+template <typename TText, typename TSpec, typename TConfig>
+inline std::enable_if_t<isLevelsPrefixRD<typename TConfig::Bwt>::VALUE, void>
+_setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
+{
+    lf.sentinelSubstitute = 0;
 }
 
 // ----------------------------------------------------------------------------
