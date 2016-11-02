@@ -50,7 +50,7 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     # Archive Packages
     # ===========================================================================
     if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-      set(CPACK_GENERATOR "ZIP;NSIS")
+      set(CPACK_GENERATOR "ZIP;WIX")
     elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
       set(CPACK_GENERATOR "ZIP;DragNDrop")
     elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
@@ -74,7 +74,7 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
       SET(CPACK_PACKAGE_NAME "seqan-apps")
     endif ()
     SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "SeqAn - The C++ library for sequence analysis.")
-    SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>")
+    SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "SeqAn Team <seqan-team@lists.fu-berlin.de>")
     SET(CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
     SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
     SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
