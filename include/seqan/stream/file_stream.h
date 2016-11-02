@@ -393,7 +393,7 @@ template <typename TValue, typename TDirection, typename TSpec, typename TPageFr
 inline bool
 _preprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
 {
-    // not used yet, could be usefull for external sorters/mappers
+    // not used yet, could be useful for external sorters/mappers
     page.data = page.raw;
     return true;
 }
@@ -406,7 +406,7 @@ template <typename TValue, typename TDirection, typename TSpec, typename TPageFr
 inline bool
 _postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
 {
-    // not used yet, could be usefull for external sorters/mappers
+    // not used yet, could be useful for external sorters/mappers
     resize(page.raw, length(page.data));
     clear(page.data);
     return true;

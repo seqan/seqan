@@ -91,7 +91,7 @@ public:
     // original position of this read.
     bool oracleMode;
 
-    // Consider only reads that have a unique match in the mapping result file. Usefull for precision computation.
+    // Consider only reads that have a unique match in the mapping result file. Useful for precision computation.
     bool onlyUniqueReads;
 
     // The benchmark category, one of {"all", "any-best", "all-best"}.
@@ -142,7 +142,7 @@ public:
     // Print the missed intervals to stderr for debugging purposes.
     bool showMissedIntervals;
 
-    // Print superflous intervals (intervals found in BAM file but have too bad score).
+    // Print superfluous intervals (intervals found in BAM file but have too bad score).
     bool showSuperflousIntervals;
 
     // Print additional intervals (intervals found in BAM with good score that are not in WIT file).

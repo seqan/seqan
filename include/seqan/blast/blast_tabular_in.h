@@ -74,7 +74,7 @@ The "number of hits"-line is always printed by NCBI Blast+, and never by NCBI Bl
 Possibly other lines can be written as comments.
 
 Because 0 matches are allowed, multiple COMMENTLINES can succeed each other, the
-criterium for seperation employed by this implementation is that an NCBI Blast
+criterium for separation employed by this implementation is that an NCBI Blast
 COMMENTLINES always ends after the "Fields" line and NCBI Blast+ COMMENTLINES end after
 the "number of hits"-line.
 */
@@ -422,7 +422,7 @@ _readCommentLinesImpl(BlastRecord<TMatch> & r,
     }
     else
     {
-        // is ommitted in BLAST_PLUS when there are no hits
+        // is omitted in BLAST_PLUS when there are no hits
         if ((fieldsLinePresent != 1) && (length(r.matches) > 0))
             appendValue(context.conformancyErrors, "No or multiple fields lines present.");
     }

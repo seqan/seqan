@@ -82,8 +82,8 @@ struct SgipOption
     FileOption activeFile;
     SearchingType searchingType;
     CharString algorithm;          // Search strategy for metric dimension,e.g. Greedy, genetic etc.
-    unsigned odimension;           // metric dimension of orginal graph specified by user
-    unsigned cdimension;           // metric dimension of comparitive graph specified by user
+    unsigned odimension;           // metric dimension of original graph specified by user
+    unsigned cdimension;           // metric dimension of comparative graph specified by user
     bool showHelp;
     bool showVersion;
     bool isoCheck;                //to check whether two input graphs are isomorphic
