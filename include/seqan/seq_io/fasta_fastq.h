@@ -623,8 +623,8 @@ writeRecord(FormattedFile<Fastq, Output, TSpec>& file,
 // ----------------------------------------------------------------------------
 // Function writeRecord(Fastq); Qualities inside seq
 // ----------------------------------------------------------------------------
-template <typename TFile, typename TIdString, typename TSeqString, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(HasQualities<typename Value<TSeqString>::Type>, void)
+template <typename TFile, typename TIdString, typename TSeqString>
+inline void
 writeRecord(TFile & file,
             TIdString const & meta,
             TSeqString const & seq,
