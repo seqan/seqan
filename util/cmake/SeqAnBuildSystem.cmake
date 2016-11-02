@@ -547,6 +547,7 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   if (NOT CPACK_RESOURCE_FILE_LICENSE)
     set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
   endif ()
+  set(CPACK_WIX_LICENSE_RTF "${CPACK_RESOURCE_FILE_LICENSE}")
 
   # Automatically deduce system name for CPack.
   include (SetCPackSystemName)
