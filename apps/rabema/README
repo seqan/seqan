@@ -112,7 +112,7 @@ passed an error rate of 8% to the evaluation then there would be no invalid
 alignments. The number of additional hits is 0. This is the number of hits in
 the read mapper output with a valid error rate (below 3% in this case) that
 are not found in the gold standard. If this number is greater than zero then
-an error occured while building the gold standard or in the evaluation
+an error occurred while building the gold standard or in the evaluation
 program. If you get such a number then please contact the Rabema authors.
 
 The total number of reads is 8,840, the number of reads having an alignment

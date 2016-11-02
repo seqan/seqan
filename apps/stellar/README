@@ -182,7 +182,7 @@ the command line:
   Remove overabundant query k-mers from the k-mer index. NUM must be a 
   value between 0 (remove all) and 1 (remove nothing, default). k-mers with
   a relative abundance above NUM are removed. The relative abundance is
-  the absolute number of a k-mers occurences divided by the total number of
+  the absolute number of a k-mers occurrences divided by the total number of
   k-mers in the query sequence(s). The total number of k-mers is about
   the total length of the query sequence(s).
   

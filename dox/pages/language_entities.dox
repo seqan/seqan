@@ -16,7 +16,7 @@ We call the above mentioned things like variables, functions, metafunctions, cla
 
 @htmlonly <h2 data-lang-entity="typedef" id="typedef">Typedef</h2> @endhtmlonly
 
-<strong>Typedefs are a common, standardized C++ language feature that allows to give custom names to arbitrary types.</strong>
+<strong>Typedefs are a common, standardized C++ language feature that allows one to give custom names to arbitrary types.</strong>
 
 When programming SeqAn, they are often used for giving short names to complicated, nested template instantiations or to the result of a <a href="#metafunction">metafunction</a>.
 

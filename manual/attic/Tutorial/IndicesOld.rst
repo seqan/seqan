@@ -3,7 +3,7 @@ TOC
 Indices
 -------
 
-A substring index is a datatype which allows to seek efficiently for all
+A substring index is a datatype which allows one to seek efficiently for all
 occurrences of a pattern in a string or a set of strings. Substring
 indices are very efficient for the exact string matching problem, i.e.
 finding all exact occurrences of a pattern in a text or a text
