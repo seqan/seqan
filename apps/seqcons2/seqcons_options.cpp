@@ -208,7 +208,7 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
     setMinValue(parser, "k-mer-size", "5");
     setDefaultValue(parser, "k-mer-size", "20");
 
-    addOption(parser, seqan::ArgParseOption("", "k-mer-max-occ", "Ignore k-mer with higher occurence count, 0 to disable.",
+    addOption(parser, seqan::ArgParseOption("", "k-mer-max-occ", "Ignore k-mer with higher occurrence count, 0 to disable.",
                                             seqan::ArgParseOption::INTEGER, "COUNT"));
     setMinValue(parser, "k-mer-max-occ", "0");
     setDefaultValue(parser, "k-mer-max-occ", "200");

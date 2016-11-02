@@ -1125,7 +1125,7 @@ _writeParams(TOptions & options)
     std::cout << "Thresholds:" << std::endl;
     std::cout << "  overlap threshold (oth)          : " << options.simThresh << std::endl;
     std::cout << "  gap threshold (gth)              : " << options.gapThresh << std::endl;
-    std::cout << "  inital gap threshold (ith)       : " << options.initGapThresh << std::endl;
+    std::cout << "  initial gap threshold (ith)      : " << options.initGapThresh << std::endl;
     std::cout << "Penalties:" << std::endl;
     std::cout << "  translocation penalty (tp)       : " << options.diffDBPen << std::endl;
     std::cout << "  inversion penalty (ip)           : " << options.diffStrandPen << std::endl;

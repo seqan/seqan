@@ -225,7 +225,7 @@ namespace seqan
 
             if (TSpec::DUMP_VERIFICATION_TASKS)
             {
-                open(verifications, "verfication_tasks.bin", OPEN_WRONLY|OPEN_CREATE);
+                open(verifications, "verification_tasks.bin", OPEN_WRONLY|OPEN_CREATE);
             }
 		}
 	};

@@ -33,7 +33,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-s\\fP \\fIIN\\fP");
     setCategory(parser, "Sequence Alignment");
     addDescription(parser,
-                   "The program allows to align two sequences using dyamic programming alignment algorithms while "
+                   "The program allows one to align two sequences using dyamic programming alignment algorithms while "
                    "tweaking various parameters.");
 
     addSection(parser, "Main Options");

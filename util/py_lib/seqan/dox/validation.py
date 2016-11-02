@@ -97,7 +97,7 @@ class ReturnVoidValidator(ProcDocValidator):
             return  # Skip if type has no returns member.
         for r in proc_entry.returns:
             if r.type == 'void':
-                msg = '@return superflous for "void" type -- simply show "void" in signature.'
+                msg = '@return superfluous for "void" type -- simply show "void" in signature.'
                 self.msg_printer.printTokenError(r.raw.first_token, msg, 'warning')
 
 
