@@ -63,15 +63,21 @@ namespace seqan
  * @tparam TAlignRow0 Type of the first alignment row, usually @link Gaps @endlink
  * @tparam TAlignRow1 Type of the second alignment row, usually @link Gaps @endlink
  * @tparam TPos   Position type of the sequences, defaults to <tt>uint32_t</tt>
- * @tparam TQId   Type of qId, defaults to std::string
- * @tparam TSId   Type of sId, defaults to std::string
+ * @tparam TQId   Type of qId, defaults to <tt>std::string</tt>
+ * @tparam TSId   Type of sId, defaults to <tt>std::string</tt>
+ * @tparam TQAccs Type of qAccs, defaults to <tt>std::vector</tt> of <tt>std::string</tt>
+ * @tparam TSAccs Type of sAccs, defaults to <tt>std::vector</tt> of <tt>std::string</tt>
+ * @tparam TSTaxIds Type of sTaxIds, defaults to @link String @endlink of <tt>uint64_t</tt>
  */
 
 template <typename TAlignRow0_ = Gaps<CharString, ArrayGaps>,
           typename TAlignRow1_ = Gaps<CharString, ArrayGaps>,
           typename TPos_ = uint32_t,
           typename TQId_ = std::string,
-          typename TSId_ = std::string>
+          typename TSId_ = std::string,
+          typename TQAccs_ = std::vector<std::string>,
+          typename TSAccs_ = std::vector<std::string>,
+          typename TSTaxIds_ = String<uint64_t>>
 struct BlastMatch
 {
     typedef TAlignRow0_ TAlignRow0;
@@ -79,6 +85,9 @@ struct BlastMatch
     typedef TPos_ TPos;
     typedef TQId_ TQId;
     typedef TSId_ TSId;
+    typedef TQAccs_     TQAccs;
+    typedef TSAccs_     TSAccs;
+    typedef TSTaxIds_   TSTaxIds;
 
     // internal use numerical ids
     uint32_t _n_qId;
@@ -93,6 +102,22 @@ struct BlastMatch
      */
     TQId            qId;
     TSId            sId;
+
+    /*!
+     * @var TQId BlastMatch::qAccs;
+     * @brief The Accession number(s) of the query.
+     *
+     * @var TSId BlastMatch::sAccs;
+     * @brief The Accession number(s) of the subject.
+     */
+    TQAccs          qAccs;
+    TSAccs          sAccs;
+
+    /*!
+     * @var TSId BlastMatch::sTaxIds;
+     * @brief The taxonomic ID(s) of the subject.
+     */
+    TSTaxIds        sTaxIds;
 
     /*!
      * @var TPos BlastMatch::qStart;
@@ -121,6 +146,7 @@ struct BlastMatch
      */
     TPos            qLength       = 0;
     TPos            sLength       = 0;
+
     /*!
      * @var char BlastMatch::qFrameShift;
      * @brief An indicator for query frame and query strand.
@@ -241,6 +267,9 @@ struct BlastMatch
     {
         clear(qId);
         clear(sId);
+        clear(qAccs);
+        clear(sAccs);
+        clear(sTaxIds);
 
         qStart        = 0;
         qEnd          = 0;
@@ -262,6 +291,9 @@ struct BlastMatch
     {
         qId           = "not init";
         sId           = "not init";
+        clear(qAccs);
+        clear(sAccs);
+        clear(sTaxIds);
 
         qStart        = std::numeric_limits<TPos>::max();
         qEnd          = std::numeric_limits<TPos>::max();
