@@ -91,29 +91,32 @@ inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, st
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 16>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi8(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_setr_epi8(std::get<INDICES>(args)...));
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 8>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi16(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_setr_epi16(std::get<INDICES>(args)...));
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 4>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi32(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_setr_epi32(std::get<INDICES>(args)...));
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<16, 2>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
+    // reverse argument list 0, 1 -> 1, 0
+#if defined(COMPILER_LINTEL)
+    // NOTE(marehr): Intel linux fails to reverse argument list and only
+    // _mm_set_epi64x has no reverse equivalent
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<1>(args), std::get<0>(args)));
+#else
     vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
+#endif
 }
 
 // --------------------------------------------------------------------------
