@@ -441,7 +441,7 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
                               _mm_max_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
 #else // defined(__AVX512F__)
-    return blend(a, b, a < b);
+    return blend(b, a, cmpGt(a, b));
 #endif // defined(__AVX512F__)
 }
 
