@@ -174,6 +174,68 @@ typedef
 SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
 SEQAN_TYPED_TEST_CASE(SimdVectorTestGather, SimdVectorCommonCommonTypes);
 
+SEQAN_DEFINE_TEST(test_basic_simd_types)
+{
+    using namespace seqan;
+
+    // SimdVector16Char
+    static_assert(std::is_same<SimdVector<int8_t, 16>::Type,  SimdVector16SChar>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int16_t, 8>::Type,  SimdVector8Short>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int32_t, 4>::Type,  SimdVector4Int>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int64_t, 2>::Type,  SimdVector2Int64>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint8_t, 16>::Type, SimdVector16UChar>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint16_t, 8>::Type, SimdVector8UShort>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint32_t, 4>::Type, SimdVector4UInt>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint64_t, 2>::Type, SimdVector2UInt64>::value, "should be the same type");
+
+    static_assert(LENGTH<SimdVector4UInt>::VALUE == 4, "128bit register fits 4 int's");
+    static_assert(LENGTH<SimdVector<uint32_t, 4>::Type>::VALUE == 4, "128bit register fits 4 int's");
+    SimdVector<uint32_t, 4>::Type a128 = {0, 1, 2, 3};
+    for (uint32_t i = 0; i < 4; ++i) {
+        // std::cout << i << ": " << a128[i] << " = " << i << std::endl;
+        SEQAN_ASSERT_EQ(a128[i], i);
+    }
+
+    // SimdVector32Char
+#if SEQAN_SIZEOF_MAX_VECTOR >= 32
+    static_assert(std::is_same<SimdVector<int8_t,  32>::Type,  SimdVector32SChar>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int16_t, 16>::Type,  SimdVector16Short>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int32_t,  8>::Type,  SimdVector8Int>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int64_t,  4>::Type,  SimdVector4Int64>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint8_t,  32>::Type, SimdVector32UChar>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint16_t, 16>::Type, SimdVector16UShort>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint32_t,  8>::Type, SimdVector8UInt>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint64_t,  4>::Type, SimdVector4UInt64>::value, "should be the same type");
+
+    static_assert(LENGTH<SimdVector8UInt>::VALUE == 8, "256bit register fits 8 int's");
+    static_assert(LENGTH<SimdVector<uint32_t, 8>::Type>::VALUE == 8, "256bit register fits 8 int's");
+    SimdVector<uint32_t, 8>::Type a256 = {0, 1, 2, 3, 4, 5, 6, 7};
+    for (uint32_t i = 0; i < 8; ++i) {
+        // std::cout << i << ": " << a256[i] << " = " << i << std::endl;
+        SEQAN_ASSERT_EQ(a256[i], i);
+    }
+#endif
+
+#if SEQAN_SIZEOF_MAX_VECTOR >= 64
+    static_assert(std::is_same<SimdVector<int8_t,  64>::Type,  SimdVector64SChar>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int16_t, 32>::Type,  SimdVector32Short>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int32_t, 16>::Type,  SimdVector16Int>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<int64_t,  8>::Type,  SimdVector8Int64>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint8_t,  64>::Type, SimdVector64UChar>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint16_t, 32>::Type, SimdVector32UShort>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint32_t, 16>::Type, SimdVector16UInt>::value, "should be the same type");
+    static_assert(std::is_same<SimdVector<uint64_t,  8>::Type, SimdVector8UInt64>::value, "should be the same type");
+
+    static_assert(LENGTH<SimdVector16UInt>::VALUE == 16, "512bit register fits 16 int's");
+    static_assert(LENGTH<SimdVector<uint32_t, 16>::Type>::VALUE == 16, "512bit register fits 16 int's");
+    SimdVector<uint32_t, 16>::Type a512 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    for (uint32_t i = 0; i < 16; ++i) {
+        // std::cout << i << ": " << a512[i] << " = " << i << std::endl;
+        SEQAN_ASSERT_EQ(a512[i], i);
+    }
+#endif
+}
+
 SEQAN_TYPED_TEST(SimdVectorTestCommon, MetaFunctions)
 {
     using namespace seqan;
@@ -333,7 +395,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
     TSimdVector a, b;
     fillVectors(a, b);
 
-    auto c = a == b;
+    auto c = cmpEq(a, b);
 
     for (auto i = 0; i < length; ++i)
     {
@@ -358,7 +420,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
     TSimdVector a, b;
     fillVectors(a, b);
 
-    auto c = a > b;
+    auto c = cmpGt(a, b);
 
     for (auto i = 0; i < length; ++i)
     {
@@ -624,7 +686,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
     TSimdVector a, b;
     fillVectors(a, b);
 
-    auto c = blend(b, a, a > b);
+    auto c = blend(b, a, cmpGt(a, b));
 
     for (auto i = 0; i < length; ++i)
     {
