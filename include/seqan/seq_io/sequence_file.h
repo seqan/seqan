@@ -136,19 +136,19 @@ struct SeqFileContext_;
 template <>
 struct SeqFileContext_<Input>
 {
-    Tuple<CharString, 3>    buffer;
-    Dna5QString             hybrid;
-    CharString              prevId;
-    bool                    headerWasRead;
-    BamIOContext<StringSet<CharString> >          bamIOContext;
+    Tuple<CharString, 3>                    buffer;
+    Dna5QString                             hybrid;
+    CharString                              prevId;
+    bool                                    headerWasRead = false;
+    BamIOContext<StringSet<CharString> >    bamIOContext;
 };
 
 template <>
 struct SeqFileContext_<Output>
 {
-    SequenceOutputOptions   options;
-    bool                    headerWasWriten;
-    BamIOContext<StringSet<CharString> >          bamIOContext;
+    SequenceOutputOptions                   options;
+    bool                                    headerWasWriten = false;
+    BamIOContext<StringSet<CharString> >    bamIOContext;
 };
 
 // ----------------------------------------------------------------------------
