@@ -44,7 +44,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports'] #, 'llvm-toolchain-precise-3.9'] TODO: enable when 3.9 gets whitelisted
-          packages: ['g++-6', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+          packages: ['g++-5', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
       before_install:
          - export LLVM_VERSION=3.9.0
          - export LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
