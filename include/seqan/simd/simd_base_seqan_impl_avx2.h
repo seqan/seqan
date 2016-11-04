@@ -629,7 +629,7 @@ seqan_mm256_i8gather_epi(TValue const * memAddr,
             _mm256_and_si256(
                 // gtrLL:  (93, 31, 30, 29 | 90, 93, 31, 30 | 87, 90, 93, 31 | 84, 87, 90, 93 || 45, 48, 51, 54 | 42, 45, 48, 51 | 39, 42, 45, 48 | 36, 39, 42, 45)
                 _mm256_i32gather_epi32(
-                    memAddr,
+                    (const int *) memAddr,
                     // lowlow: (31,  0,  0,  0 | 30,  0,  0,  0 | 29,  0,  0,  0 | 28,  0,  0,  0 || 15,  0,  0,  0 | 14,  0,  0,  0 | 13,  0,  0,  0 | 12,  0,  0,  0)
                     _mm256_shuffle_epi8(idx, __m256i {
                         ~0xFF000000FFl | 0x0100000000, ~0xFF000000FFl | 0x0300000002,
@@ -643,7 +643,7 @@ seqan_mm256_i8gather_epi(TValue const * memAddr,
             _mm256_and_si256(
                 // gtrLH:  (81, 84, 87, 90 | 78, 81, 84, 87 | 75, 78, 81, 84 | 72, 75, 78, 81 || 33, 36, 39, 42 | 30, 33, 36, 39 | 27, 30, 33, 36 | 24, 27, 30, 33)
                 _mm256_i32gather_epi32(
-                    memAddr,
+                    (const int *) memAddr,
                     // lowhig: (27,  0,  0,  0 | 26,  0,  0,  0 | 25,  0,  0,  0 | 24,  0,  0,  0 || 11,  0,  0,  0 | 10,  0,  0,  0 |  9,  0,  0,  0 |  8,  0,  0,  0)
                     _mm256_shuffle_epi8(idx, __m256i {
                         ~0xFF000000FFl | 0x0500000004, ~0xFF000000FFl | 0x0700000006,
@@ -660,7 +660,7 @@ seqan_mm256_i8gather_epi(TValue const * memAddr,
             _mm256_and_si256(
                 // gtrHL:  (69, 72, 75, 78 | 66, 69, 72, 75 | 63, 66, 69, 72 | 60, 63, 66, 69 || 21, 24, 27, 30 | 18, 21, 24, 27 | 15, 18, 21, 24 | 12, 15, 18, 21)
                 _mm256_i32gather_epi32(
-                    memAddr,
+                    (const int *) memAddr,
                     // higlow: (23,  0,  0,  0 | 22,  0,  0,  0 | 21,  0,  0,  0 | 20,  0,  0,  0 ||  7,  0,  0,  0 |  6,  0,  0,  0 |  5,  0,  0,  0 |  4,  0,  0,  0)
                     _mm256_shuffle_epi8(idx, __m256i {
                         ~0xFF000000FFl | 0x0900000008, ~0xFF000000FFl | 0x0B0000000A,
@@ -674,7 +674,7 @@ seqan_mm256_i8gather_epi(TValue const * memAddr,
             _mm256_and_si256(
                 // gtrHH:  (57, 60, 63, 66 | 54, 57, 60, 63 | 51, 54, 57, 60 | 48, 51, 54, 57 ||  9, 12, 15, 18 |  6,  9, 12, 15 |  3,  6,  9, 12 |  0,  3,  6,  9)
                 _mm256_i32gather_epi32(
-                    memAddr,
+                    (const int *) memAddr,
                     // highig: (19,  0,  0,  0 | 18,  0,  0,  0 | 17,  0,  0,  0 | 16,  0,  0,  0 ||  3,  0,  0,  0 |  2,  0,  0,  0 |  1,  0,  0,  0 |  0,  0,  0,  0)
                     _mm256_shuffle_epi8(idx, __m256i {
                         ~0xFF000000FFl | 0x0D0000000C, ~0xFF000000FFl | 0x0F0000000E,
@@ -720,7 +720,7 @@ seqan_mm256_i16gather_epi(TValue const * memAddr,
         _mm256_and_si256(
             // gtrLow: (45,  0, 15,  0 | 42,  0, 45,  0 | 39,  0, 42,  0 | 36,  0, 39,  0 || 21,  0, 24,  0 | 18,  0, 21,  0 | 15,  0, 18,  0 | 12,  0, 15,  0)
             _mm256_i32gather_epi32(
-                memAddr,
+                (const int *) memAddr,
                 // low:    (15,  0,  0,  0 | 14,  0,  0,  0 | 13,  0,  0,  0 | 12,  0,  0,  0 ||  7,  0,  0,  0 |  6,  0,  0,  0 |  5,  0,  0,  0 |  4,  0,  0,  0)
                 _mm256_unpacklo_epi16(
                     idx, _mm256_set1_epi16(0)
@@ -733,7 +733,7 @@ seqan_mm256_i16gather_epi(TValue const * memAddr,
         _mm256_and_si256(
             // gtrHih: (33,  0, 36,  0 | 30,  0, 33,  0 | 27,  0, 30,  0 | 24,  0, 27,  0 ||  9,  0, 12,  0 |  6,  0,  9,  0 |  3,  0,  6,  0 |  0,  0,  3,  0)
             _mm256_i32gather_epi32(
-                memAddr,
+                (const int *) memAddr,
                 // high:   (11,  0,  0,  0 | 10,  0,  0,  0 |  9,  0,  0,  0 |  8,  0,  0,  0 ||  3,  0,  0,  0 |  2,  0,  0,  0 |  1,  0,  0,  0 |  0,  0,  0,  0)
                 _mm256_unpackhi_epi16(
                     idx, _mm256_set1_epi16(0)
@@ -755,7 +755,7 @@ seqan_mm256_i32gather_epi(TValue const * memAddr,
     constexpr auto const mask = static_cast<uint32_t>(MaxValue<TUnsignedValue>::VALUE);
 
     return _mm256_and_si256(
-        _mm256_i32gather_epi32(memAddr, idx, SCALE),
+        _mm256_i32gather_epi32((const int *) memAddr, idx, SCALE),
         _mm256_set1_epi32(mask)
     );
 }
@@ -770,7 +770,7 @@ seqan_mm256_i64gather_epi(TValue const * memAddr,
     constexpr auto const mask = static_cast<uint64_t>(MaxValue<TUnsignedValue>::VALUE);
 
     return _mm256_and_si256(
-        _mm256_i64gather_epi64(memAddr, idx, SCALE),
+        _mm256_i64gather_epi64((const long *) memAddr, idx, SCALE),
         _mm256_set1_epi64x(mask)
     );
 }
