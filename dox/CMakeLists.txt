@@ -13,7 +13,25 @@ find_package (PythonInterp)
 if (NOT PYTHONINTERP_FOUND)
     message (STATUS "  Python not found, not building dox as a tests.")
     return ()
-endif (NOT PYTHONINTERP_FOUND)
+endif ()
+
+# find python 2.x
+if(NOT(${PYTHON_VERSION_MAJOR} MATCHES "2"))
+    set(_PYTHON2_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
+    unset(_Python_NAMES)
+    foreach(_CURRENT_VERSION IN LISTS _PYTHON2_VERSIONS)
+        list(APPEND _Python_NAMES "python${_CURRENT_VERSION}")
+    endforeach()
+    unset(_PYTHON2_VERSIONS)
+
+    find_program(PYTHON2_EXECUTABLE NAMES ${_Python_NAMES})
+    if(PYTHON2_EXECUTABLE MATCHES "PYTHON2_EXECUTABLE-NOTFOUND")
+        message (STATUS "You need Python 2.x for building dox. (skip the tests)")
+        return()
+    endif()
+    set(PYTHON_EXECUTABLE "${PYTHON2_EXECUTABLE}")
+    message (STATUS "Found Python 2.x: ${PYTHON_EXECUTABLE}") 
+endif()
 
 # Add building the documentation as a test.
 add_test (build_dox
