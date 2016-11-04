@@ -58,6 +58,48 @@ struct SimdVector
     typedef UME::SIMD::SIMDVec<TValue, LENGTH> Type;
 };
 
+// // 64 bit
+// using SimdVector8Char   = UME::SIMD::SIMDVec<char, 8>;
+using SimdVector8SChar  = UME::SIMD::SIMDVec<signed char, 8>;
+using SimdVector8UChar  = UME::SIMD::SIMDVec<unsigned char, 8>;
+using SimdVector4Short  = UME::SIMD::SIMDVec<short, 4>;
+using SimdVector4UShort = UME::SIMD::SIMDVec<unsigned short, 4>;
+using SimdVector2Int    = UME::SIMD::SIMDVec<int, 2>;
+using SimdVector2UInt   = UME::SIMD::SIMDVec<unsigned int, 2>;
+
+// 128 bit
+// using SimdVector16Char  = UME::SIMD::SIMDVec<char, 16>;
+using SimdVector16SChar = UME::SIMD::SIMDVec<signed char, 16>;
+using SimdVector16UChar = UME::SIMD::SIMDVec<unsigned char, 16>;
+using SimdVector8Short  = UME::SIMD::SIMDVec<short, 8>;
+using SimdVector8UShort = UME::SIMD::SIMDVec<unsigned short, 8>;
+using SimdVector4Int    = UME::SIMD::SIMDVec<int, 4>;
+using SimdVector4UInt   = UME::SIMD::SIMDVec<unsigned int, 4>;
+using SimdVector2Int64  = UME::SIMD::SIMDVec<int64_t, 2>;
+using SimdVector2UInt64 = UME::SIMD::SIMDVec<uint64_t, 2>;
+
+// 256 bit
+// using SimdVector32Char   = UME::SIMD::SIMDVec<char, 32>;
+using SimdVector32SChar  = UME::SIMD::SIMDVec<signed char, 32>;
+using SimdVector32UChar  = UME::SIMD::SIMDVec<unsigned char, 32>;
+using SimdVector16Short  = UME::SIMD::SIMDVec<short, 16>;
+using SimdVector16UShort = UME::SIMD::SIMDVec<unsigned short, 16>;
+using SimdVector8Int     = UME::SIMD::SIMDVec<int, 8>;
+using SimdVector8UInt    = UME::SIMD::SIMDVec<unsigned int, 8>;
+using SimdVector4Int64   = UME::SIMD::SIMDVec<int64_t, 4>;
+using SimdVector4UInt64  = UME::SIMD::SIMDVec<uint64_t, 4>;
+
+// 512 bit
+// using SimdVector64Char   = UME::SIMD::SIMDVec<char, 64>;
+using SimdVector64SChar  = UME::SIMD::SIMDVec<signed char, 64>;
+using SimdVector64UChar  = UME::SIMD::SIMDVec<unsigned char, 64>;
+using SimdVector32Short  = UME::SIMD::SIMDVec<short, 32>;
+using SimdVector32UShort = UME::SIMD::SIMDVec<unsigned short, 32>;
+using SimdVector16Int    = UME::SIMD::SIMDVec<int, 16>;
+using SimdVector16UInt   = UME::SIMD::SIMDVec<unsigned int, 16>;
+using SimdVector8Int64   = UME::SIMD::SIMDVec<int64_t, 8>;
+using SimdVector8UInt64  = UME::SIMD::SIMDVec<uint64_t, 8>;
+
 // ============================================================================
 // SIMDSwizzle
 // ============================================================================
