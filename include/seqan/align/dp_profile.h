@@ -127,7 +127,7 @@ struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                
 };                                                                                                  \
                                                                                                     \
 template <typename TVector, __uint8 FILL_VALUE>                                                     \
-const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE = TVector{__VA_ARGS__};
+const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE{__VA_ARGS__};
 
 #define SEQAN_SIMD_TRACE_SETUP_1_(SIZE, MACRO) SEQAN_SIMD_TRACE_SETUP_2_(SIZE, MACRO)
 #define SEQAN_SIMD_TRACE_SETUP_(SIZE) SEQAN_SIMD_TRACE_SETUP_1_(SIZE, SEQAN_SIMD_INIT_FILL_VALUE_ ## SIZE ## _)
