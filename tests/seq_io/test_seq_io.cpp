@@ -48,6 +48,7 @@
 #include "test_stream_read_genbank.h"
 
 #include "test_read_bam.h"
+#include "test_write_bam.h"
 
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
@@ -107,10 +108,14 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     // Tests for BAM-File
     SEQAN_CALL_TEST(test_seq_io_bam_file_sam_read_sequences);
     SEQAN_CALL_TEST(test_seq_io_bam_file_sam_read_sequences_and_qualities);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_write_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_write_sequences_and_qualities);
 
 #if SEQAN_HAS_ZLIB
     SEQAN_CALL_TEST(test_seq_io_bam_file_bam_read_sequences);
     SEQAN_CALL_TEST(test_seq_io_bam_file_bam_read_sequences_and_qualities);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_write_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_write_sequences_and_qualities);
 #endif
 }
 

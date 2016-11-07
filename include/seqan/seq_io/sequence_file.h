@@ -184,14 +184,14 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 // Functions readRecord adapters (file -> file.iter)
 // ----------------------------------------------------------------------------
 template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec, typename TFormat>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+inline void
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec> & file, TFormat const & /**/)
 {
     readRecord(meta, seq, qual, file.iter, TFormat());
 }
 
 template <typename TIdString, typename TSeqString, typename TSpec, typename TFormat>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+inline void
 readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file, TFormat const & /**/)
 {
     readRecord(meta, seq, file.iter, TFormat());
@@ -433,7 +433,6 @@ writeRecord(FormattedFile<Fastq, Output, TSpec> & file, TIdString const & meta, 
 {
     writeRecord(file.iter, meta, seq, TFormat(), context(file).options);
 }
-
 
 // ----------------------------------------------------------------------------
 // Function writeRecord(TagSelector); Without separate qualities
