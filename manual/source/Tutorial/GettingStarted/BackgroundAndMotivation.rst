@@ -155,10 +155,10 @@ Subclassed objects are seen by the compiler as singular instances of a specific 
 That means a subclassed object does not inherit the member or member functions of the alleged base class.
 In order to reduce the overhead of reimplementing the same member functions for every subclassed object, we use global interface functions.
 
-You might already have get in touch with global function interfaces while working with the STL.
+You might already have seen global function interfaces while working with the STL.
 With the new C++11 standard the STL now provides some global interface functions, e.g., the `begin <http://en.cppreference.com/w/cpp/iterator/begin>`_ or `end <http://en.cppreference.com/w/cpp/iterator/end>`_ interface.
 
-The rationale behind is the following observation.
+The rationale behind this is the following observation.
 Global interface functions allow us to implement a general functionality that is used for all subclassed objects of this template class (assuming the accessed member variables exists in all subclassed objects as in the base template class, otherwise the compiler will complain).
 If the behavior for any subclassed object changes, the corresponding global function will be reimplemented for this special type covering the desired functionality.
 Due to template deduction the compiler already chooses the correct function and inlines the kernel if possible, which very likely improves the performance of the program.
@@ -177,7 +177,7 @@ The usual way in the STL is to define the value type of a class like ``vector`` 
 Unfortunately member typedef declarations have the same disadvantages as any members: Since they are specified by the class definition, they cannot be changed or added to the class without changing the code of the class, and it is not possible in C++ to define members for built-in types.
 What we need therefore is a mechanism that returns an output type (e.g. the value type) given an input type (e.g. the string) and doing so does not rely on members of the input type, but instead uses some kind of global interface.
 
-Such task can be performed by **metafunctions**, also known as **type traits**.
+Such tasks can be performed by **metafunctions**, also known as **type traits**.
 A metafunction is a construct to map some types or constants to other entities like types, constants, functions, or objects at compile time.
 The name metafunction comes from fact that they can be regarded as part of a meta-programming language that is evaluated during compilation.
 
