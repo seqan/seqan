@@ -71,22 +71,24 @@ typedef FormattedFile<Fastq, Output>    SeqFileOut;
 
 
 typedef
-TagList<Fastq,
-TagList<Fasta,
-TagList<Embl,
-TagList<GenBank,
-TagList<Raw,
-TagList<Bam,
-TagList<Sam
-> > > > > > > SeqInFormats;
+    TagList<Fastq,
+    TagList<Fasta,
+    TagList<Embl,
+    TagList<GenBank,
+    TagList<Raw,
+    TagList<Bam,
+    TagList<Sam
+    > > > > > > >
+    SeqInFormats;
 
 typedef
-TagList<Fastq,
-TagList<Fasta,
-TagList<Raw,
-TagList<Bam,
-TagList<Sam
-> > > > > SeqOutFormats;
+    TagList<Fastq,
+    TagList<Fasta,
+    TagList<Raw,
+    TagList<Bam,
+    TagList<Sam
+    > > > > >
+    SeqOutFormats;
 
 
 typedef TagSelector<SeqInFormats>   SeqInFormat;
@@ -261,7 +263,7 @@ readRecord(TIdString & meta,
  * @param[out] meta         The @link StringConcept @endlink object where to read the meta information into.
  * @param[out] seq          The @link StringConcept @endlink object where to read the sequence information into.
  * @param[out] qual         The @link StringConcept @endlink object where to read the quality information into.
- * @param[in,out] fileIn    The @link SeqFileIn @endlink or @link BamFileIn @endlink object to read from.
+ * @param[in,out] fileIn    The @link SeqFileIn @endlink object to read from.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -299,7 +301,7 @@ readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec
 {
     readRecord(meta, seq, file, file.format);
 }
-    
+
 // ----------------------------------------------------------------------------
 // Function readRecords()
 // ----------------------------------------------------------------------------
