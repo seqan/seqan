@@ -1094,16 +1094,6 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
     return value.substr(dotPos + 1);
 }
 
-// ----------------------------------------------------------------------------
-// Function isBooleanOption()
-// ----------------------------------------------------------------------------
-
-// needed for easy printing of the help page
-constexpr bool isBooleanOption(ArgParseArgument const & /*me*/)
-{
-    return false;
-}
-
 } // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_
