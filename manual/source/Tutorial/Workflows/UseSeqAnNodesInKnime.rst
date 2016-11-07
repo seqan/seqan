@@ -42,7 +42,7 @@ After pressing OK, KNIME will show you all the contents of the added Update Site
 
 Select the SeqAn NGS Toolbox and click Next.
 Follow the instructions.
-After the installation is done, KNIME will prompt you to restart. Click OK and KNIME will restart with the newly installed SeqAn nodess available under the ``Community Nodes`` category. The installation also includes GenericKnimeNodes which are very useful for using SeqAn nodes in KNIME. This includes file input/output nodes.
+After the installation is done, KNIME will prompt you to restart. Click OK and KNIME will restart with the newly installed SeqAn nodes available under the ``Community Nodes`` category. The installation also includes GenericKnimeNodes which are very useful for using SeqAn nodes in KNIME. This includes file input/output nodes.
 
 .. figure:: install-knime-5.png
    :align: center
