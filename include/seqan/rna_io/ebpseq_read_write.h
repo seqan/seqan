@@ -250,8 +250,9 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
     // read matrix
     while (!atEnd(iter) && value(iter) != '#')
     {
-        for (std::string const label : columnLabels)
+        for (unsigned lbl = 0; lbl < length(columnLabels); ++lbl)
         {
+            std::string const & label = columnLabels[lbl];
             bool hadErr = false;
             unsigned pairPos;
             readUntil(buffer, iter, IsWhitespace());
