@@ -41,6 +41,7 @@
 #include <seqan/stream.h>
 #include <stack>
 #include <array>
+#include <cstddef>
 
 /* IMPLEMENTATION NOTES
 
@@ -151,24 +152,24 @@ inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const
     for(unsigned idx = 0; idx < length(bracketStr); ++idx)
     {
         // skip unpaired
-        auto elem = std::find(DotBracketArgs<>::UNPAIRED.begin(), DotBracketArgs<>::UNPAIRED.end(), bracketStr[idx]);
-        if (elem != std::end(DotBracketArgs<>::UNPAIRED))
+        auto unp_idx = std::find(DotBracketArgs<>::UNPAIRED.begin(), DotBracketArgs<>::UNPAIRED.end(), bracketStr[idx]);
+        if (unp_idx != std::end(DotBracketArgs<>::UNPAIRED))
             continue;
 
         // search opening bracket
-        elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), bracketStr[idx]);
-        if (elem != std::end(DotBracketArgs<>::OPEN))
+        auto open_idx = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), bracketStr[idx]);
+        if (open_idx != std::end(DotBracketArgs<>::OPEN))
         {
-            std::size_t brIndex = elem - DotBracketArgs<>::OPEN.begin();
+            std::ptrdiff_t brIndex = open_idx - DotBracketArgs<>::OPEN.begin();
             stack[brIndex].push(idx);
             continue;
         }
 
         // search closing bracket
-        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), bracketStr[idx]);
-        if (elem != std::end(DotBracketArgs<>::CLOSE))
+        auto clos_idx = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), bracketStr[idx]);
+        if (clos_idx != std::end(DotBracketArgs<>::CLOSE))
         {
-            std::size_t brIndex = elem - DotBracketArgs<>::CLOSE.begin();
+            std::ptrdiff_t brIndex = clos_idx - DotBracketArgs<>::CLOSE.begin();
             if (!stack[brIndex].empty())
             {
                 addEdge(graph.inter, idx, stack[brIndex].top(), 1.0);
