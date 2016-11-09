@@ -78,9 +78,6 @@ namespace seqan {
  *
  * @tparam TString The type of the string to store in the string set.
  *
- * @deprecated The Dependent-Tight StringSet is deprecated and will likely be
- *     removed within the SeqAn-2.x lifecycle.
- *
  * See @link GenerousDependentStringSet @endlink for a Dependent StringSet implementation that allows for more
  * efficient access to strings in the container via ids at the cost of higher memory usage.
  */
