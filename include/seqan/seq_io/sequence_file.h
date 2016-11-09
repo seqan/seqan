@@ -185,36 +185,40 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 // ----------------------------------------------------------------------------
 // Functions readRecord adapters (file -> file.iter)
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec, typename TFormat>
+template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec, typename TagSpec>
 inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec> & file, TFormat const & /**/)
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           TQualString & qual,
+           FormattedFile<Fastq, Input, TSpec> & file,
+           Tag<TagSpec>  const & /**/)
 {
-    readRecord(meta, seq, qual, file.iter, TFormat());
+    readRecord(meta, seq, qual, file.iter, Tag<TagSpec>());
 }
 
-template <typename TIdString, typename TSeqString, typename TSpec, typename TFormat>
+template <typename TIdString, typename TSeqString, typename TSpec, typename TagSpec>
 inline void
-readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file, TFormat const & /**/)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file, Tag<TagSpec> const & /**/)
 {
-    readRecord(meta, seq, file.iter, TFormat());
+    readRecord(meta, seq, file.iter, Tag<TagSpec>());
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord(TagSelector); Without qualities
 // ----------------------------------------------------------------------------
-template <typename TIdString, typename TSeqString, typename TSpec>
+template <typename TIdString, typename TSeqString, typename TFile>
 inline void
 readRecord(TIdString & /* meta */,
            TSeqString & /* seq */,
-           FormattedFile<Fastq, Input, TSpec> & /* file */,
+           TFile & /* file */,
            TagSelector<> const & /* format */)
 {}
 
-template <typename TIdString, typename TSeqString, typename TSpec, typename TTagList>
+template <typename TIdString, typename TSeqString, typename TFile, typename TTagList>
 inline void
 readRecord(TIdString & meta,
            TSeqString & seq,
-           FormattedFile<Fastq, Input, TSpec> & file,
+           TFile & file,
            TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
@@ -229,21 +233,21 @@ readRecord(TIdString & meta,
 // Function readRecord(TagSelector); With qualities
 // ----------------------------------------------------------------------------
 
-template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
 inline void
 readRecord(TIdString & /* meta */,
            TSeqString & /* seq */,
            TQualString & /* qual */,
-           FormattedFile<Fastq, Input, TSpec> & /* file */,
+           TFile & /* file */,
            TagSelector<> const & /* format */)
 {}
 
-template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec, typename TTagList>
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile, typename TTagList>
 inline void
 readRecord(TIdString & meta,
            TSeqString & seq,
            TQualString & qual,
-           FormattedFile<Fastq, Input, TSpec> & file,
+           TFile & file,
            TagSelector<TTagList> const & format)
 {
     typedef typename TTagList::Type TFormat;
@@ -343,7 +347,7 @@ inline void readRecords(TIdStringSet & meta,
     swapPtr(seqBuffer.data_end, context(file).buffer[1].data_end);
     seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
 
-    for (; !atEnd(file) & & maxRecords > 0; --maxRecords)
+    for (; !atEnd(file) && maxRecords > 0; --maxRecords)
     {
         readRecord(context(file).buffer[0], seqBuffer, file);
         appendValue(meta, context(file).buffer[0]);
@@ -388,7 +392,7 @@ inline void readRecords(TIdStringSet & meta,
     swapPtr(seqBuffer.data_end, context(file).buffer[1].data_end);
     seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
 
-    for (; !atEnd(file) & & maxRecords > 0; --maxRecords)
+    for (; !atEnd(file) && maxRecords > 0; --maxRecords)
     {
         readRecord(context(file).buffer[0], seqBuffer, context(file).buffer[2], file);
         appendValue(meta, context(file).buffer[0]);
@@ -418,22 +422,25 @@ inline void readRecords(TIdStringSet & meta,
 // ----------------------------------------------------------------------------
 // Function writeRecord adapters (file -> file.iter)
 // ----------------------------------------------------------------------------
-template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString, typename TFormat>
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString, typename TagSpec>
 inline void
 writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq,
             TQualString const & qual,
-            TFormat const & /**/)
+            Tag<TagSpec> const & /**/)
 {
-    writeRecord(file.iter, meta, seq, qual, TFormat(), context(file).options);
+    writeRecord(file.iter, meta, seq, qual, Tag<TagSpec>(), context(file).options);
 }
 
-template <typename TSpec, typename TIdString, typename TSeqString, typename TFormat>
+template <typename TSpec, typename TIdString, typename TSeqString, typename TagSpec>
 inline void
-writeRecord(FormattedFile<Fastq, Output, TSpec> & file, TIdString const & meta, TSeqString const & seq, TFormat const & /**/)
+writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
+            TIdString const & meta,
+            TSeqString const & seq,
+            Tag<TagSpec> const & /**/)
 {
-    writeRecord(file.iter, meta, seq, TFormat(), context(file).options);
+    writeRecord(file.iter, meta, seq, Tag<TagSpec>(), context(file).options);
 }
 
 // ----------------------------------------------------------------------------
@@ -454,16 +461,16 @@ writeRecord(FormattedFile<Fastq, Output, TSpec> & file, TIdString const & meta, 
  * @throw ParseError On high-level file format errors.
  */
 
-template <typename TSpec, typename TIdString, typename TSeqString>
+template <typename TFile, typename TIdString, typename TSeqString>
 inline void
-writeRecord(FormattedFile<Fastq, Output, TSpec> & /* file */,
+writeRecord(TFile & /* file */,
             TIdString const & /* meta */,
             TSeqString const & /* seq */,
             TagSelector<> const & /* format */)
 {}
 
-template <typename TSpec, typename TIdString, typename TSeqString, typename TTagList>
-inline void writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
+template <typename TFile, typename TIdString, typename TSeqString, typename TTagList>
+inline void writeRecord(TFile & file,
             TIdString const & meta,
             TSeqString const & seq,
             TagSelector<TTagList> const & format)

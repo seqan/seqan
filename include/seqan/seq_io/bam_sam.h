@@ -441,9 +441,9 @@ inline void writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         TQualString const & qual,
-                        Sam const & tag)
+                        Sam const & /* format */)
 {
-    _writeRecord(file, meta, seq, qual, tag);
+    _writeRecord(file, meta, seq, qual, Sam());
 }
 
 // ----------------------------------------------------------------------------
@@ -454,12 +454,11 @@ inline SEQAN_FUNC_ENABLE_IF(HasQualities<typename Value<TSeqString>::Type> , voi
 writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq,
-            Sam const & tag)
+            Sam const & /* format */)
 {
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
-    CharString qual = quals;
-    writeRecord(file, meta, seq, quals, tag);
+    writeRecord(file, meta, seq, quals, Sam());
 }
 
 // ----------------------------------------------------------------------------
@@ -470,9 +469,9 @@ inline SEQAN_FUNC_ENABLE_IF(Not<HasQualities<typename Value<TSeqString>::Type> >
 writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
                         TIdString const & meta,
                         TSeqString const & seq,
-                        Sam const & tag)
+                        Sam const & /* format */)
 {
-        writeRecord(file, meta, seq, "*", tag);
+        writeRecord(file, meta, seq, "*", Sam());
 }
 // ----------------------------------------------------------------------------
 // Function writeRecord(BAM); Separate Qualities
@@ -482,9 +481,9 @@ inline void writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
                         TIdString const & meta,
                         TSeqString const & seq,
                         TQualString const & qual,
-                        Bam const & tag)
+                        Bam const & /* format */)
 {
-    _writeRecord(file, meta, seq, qual, tag);
+    _writeRecord(file, meta, seq, qual, Bam());
 }
 
 // ----------------------------------------------------------------------------
@@ -495,12 +494,12 @@ inline SEQAN_FUNC_ENABLE_IF(HasQualities<typename Value<TSeqString>::Type> , voi
 writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq,
-            Bam const & tag)
+            Bam const & /* format */)
 {
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
     CharString qual = quals;
-    writeRecord(file, meta, seq, quals, tag);
+    writeRecord(file, meta, seq, quals, Bam());
 }
 
 // ----------------------------------------------------------------------------
@@ -511,10 +510,43 @@ inline SEQAN_FUNC_ENABLE_IF(Not<HasQualities<typename Value<TSeqString>::Type> >
 writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq,
-            Bam const & tag)
+            Bam const & /* format */)
 {
-    writeRecord(file, meta, seq, "*", tag);
+    writeRecord(file, meta, seq, "*", Bam());
 }
+// ----------------------------------------------------------------------------
+// Function readRecord(Bam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & /* meta */, TSeqString & /* seq */, TIterator & /* iter */, Bam const & /* format */)
+{}
+// ----------------------------------------------------------------------------
+// Function readRecord(Bam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TIterator>
+inline void readRecord(TIdString & /* meta */,
+                       TSeqString & /* seq */,
+                       TQualString & /* qual */,
+                       TIterator & /* iter */,
+                       Bam const & /* format */)
+{}
+// ----------------------------------------------------------------------------
+// Function readRecord(Sam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline void readRecord(TIdString & /* meta */, TSeqString & /* seq */, TIterator & /* iter */, Sam const & /* format */)
+{}
+// ----------------------------------------------------------------------------
+// Function readRecord(Sam)  -> Directly from an iterator -> not Implemented
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TIterator>
+inline void
+readRecord(TIdString & /* meta */,
+           TSeqString & /* seq */,
+           TQualString & /* qual */,
+           TIterator & /* iter */,
+           Sam const & /* format */)
+{}
 
 } // namespace seqan
 
