@@ -283,24 +283,12 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile
     readRecord(meta, seq, qual, file, file.format);
 }
 
-// ----------------------------------------------------------------------------
-// Function readRecord(); Qualities in seq string
-// ----------------------------------------------------------------------------
-template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
-                            HasQualities<typename Value<TSeqString>::Type> >, void)
-readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
-{
-    readRecord(meta, seq, context(file).buffer[2], file, file.format);
-    assignQualities(seq, context(file).buffer[2]);
-}
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); No qualities in seq string
+// Function readRecord(); Without separate qualities or No qualities
 // ----------------------------------------------------------------------------
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
-                            Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> > , void)
 readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, file, file.format);
