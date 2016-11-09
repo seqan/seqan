@@ -63,8 +63,30 @@ namespace seqan {
  * @tparam TString The type of the string to store in the string set.
  * @tparam TSpec   Tag for further specializing the string set.
  *
- * The class is not usable itself, only its subclasses @link TightDependentStringSet @endlink and
+ * Important: The class is not usable itself, only its subclasses @link TightDependentStringSet @endlink and
  * @link GenerousDependentStringSet @endlink are.
+ *
+ * A Dependent StringSet (DSS) can be used like a normal StringSet while internally storing only pointers to a source set.
+ *
+ * @section Modifying a Dependent StringSet
+ *
+ * (1) Removing a sequence from a DSS only removes the pointer and does not change the source set.
+ *
+ * (2) Appending a sequence to a DSS appends a pointer to that sequence and does not change the source set.
+ *
+ * (3) Assigning a sequence to a position (or id) of a DSS, dereferences the pointer first and does thus additionally change the source set.
+ *
+ * (4) Accessing the DSS at a position (or id) dereferences the pointer, and when stored as a reference, modifications also lead to a change in the source set.
+ *
+ * @section Position vs. Id
+ *
+ * When a sequence is removed in a DSS, the positions of pointers shift and do not represent the exact position in the original source set anymore.
+ * To distinguish between new and original positions, we introduce the term <tt>id</tt> which refers to the original positions in the source set.
+ * Every modification of a DSS can be either based on the id (function ending on <tt>ById()</tt>) or the position depending on the behaviour you want to realize.
+ *
+ * The following figure illustrates the behaviour when removing a sequence:
+ *
+ * <img src="position_vs_id.png" title="Impact to positions and ids on removal of an entry in an DSS" width="900">
  */
 
 /*!
