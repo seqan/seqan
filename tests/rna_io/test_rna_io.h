@@ -408,6 +408,7 @@ SEQAN_DEFINE_TEST(test_rna_io_write_ebpseq)
     seqan::appendValue(record.typeID, 0u);
 
     seqan::RnaStructureGraph fgraph;
+    fgraph.specs = "the fixed structure";
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(fgraph.inter);
 
@@ -415,6 +416,7 @@ SEQAN_DEFINE_TEST(test_rna_io_write_ebpseq)
     append(record.fixedGraphs, fgraph);
 
     seqan::RnaStructureGraph bgraph;
+    bgraph.specs = "the bpp structure";
     for (unsigned idx = 0; idx < record.seqLen; ++idx)
         addVertex(bgraph.inter);
     seqan::addEdge(bgraph.inter, 0u, 2u, 0.8);
