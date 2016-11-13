@@ -6,5 +6,6 @@ Name: @CMAKE_PROJECT_NAME@
 Description: C++ library for biological sequence analysis
 URL: http://www.seqan.de
 Version: @SEQAN_VERSION_STRING@
-Requires: zlib
-Cflags: -I${includedir}
+Requires: @SEQAN_PKGCFG_DEPS@
+Cflags: -I${includedir}  @SEQAN_PKGCFG_CFLAGS@ -DSEQAN_HAS_ZLIB=@SEQAN_HAS_ZLIB@ -DSEQAN_HAS_BZIP2=@SEQAN_HAS_BZIP2@ -DSEQAN_HAS_OPENMP=@SEQAN_HAS_OPENMP@
+Libs: @SEQAN_PKGCFG_LIBS@
