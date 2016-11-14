@@ -16,6 +16,7 @@ message (STATUS "Configuring tests/simd")
 
 # Search SeqAn and select dependencies.
 find_package (SeqAn REQUIRED)
+include (SeqAnSimdUtility)
 
 # ----------------------------------------------------------------------------
 # Build Setup
@@ -44,4 +45,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # Register with CTest
 # ----------------------------------------------------------------------------
 
-add_test (NAME test_test_simd_vector COMMAND $<TARGET_FILE:test_simd_vector>)
+add_simd_platform_tests(test_simd_vector)
