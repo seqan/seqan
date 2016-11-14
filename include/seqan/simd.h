@@ -40,14 +40,27 @@
 // Define global macro to check if simd instructions are enabled.
 #define SEQAN_SIMD_ENABLED 1
 
-#define SEQAN_SEQANSIMD_ENABLED 1
-//#define SEQAN_UMESIMD_ENABLED 1
+// Define maximal size of vector in byte.
+#if defined(__AVX512F__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 64
+#elif defined(__AVX2__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 32
+#elif defined(__SSE4_1__) && defined(__SSE4_2__)
+    #define SEQAN_SIZEOF_MAX_VECTOR 16
+#else
+    #undef SEQAN_SIMD_ENABLED  // Disable simd if instruction set is not supported.
+#endif
+
+// fallback to seqan simd implementation if nothing was specified
+#if SEQAN_SIMD_ENABLED && !SEQAN_UMESIMD_ENABLED && !SEQAN_SEQANSIMD_ENABLED
+    #define SEQAN_SEQANSIMD_ENABLED 1
+#endif
 
 #include "simd/simd_base.h"
 #include "simd/simd_base_seqan_impl.h"
 
 #if SEQAN_SEQANSIMD_ENABLED
-    #if defined(SEQAN_SSE4)
+    #if defined(__SSE4_2__)
     #include "simd/simd_base_seqan_impl_sse4.2.h"
     #endif // defined(SEQAN_SSE4)
 
