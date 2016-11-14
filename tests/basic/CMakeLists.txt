@@ -123,15 +123,6 @@ add_executable (
   test_basic_iterator.h)
 target_link_libraries (test_basic_iterator ${SEQAN_LIBRARIES})
 
-add_executable (
-  test_basic_simd_vector
-  test_basic_simd_vector.cpp
-  test_basic_simd_vector.h)
-target_link_libraries (test_basic_simd_vector ${SEQAN_LIBRARIES})
-if (COMPILER_CLANG)
-  target_compile_options(test_basic_simd_vector PRIVATE -ftemplate-depth=1024)
-endif()
-
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
@@ -152,4 +143,3 @@ add_test (NAME test_test_basic_smart_pointer COMMAND $<TARGET_FILE:test_basic_sm
 add_test (NAME test_test_basic_container COMMAND $<TARGET_FILE:test_basic_container>)
 add_test (NAME test_test_basic_proxy COMMAND $<TARGET_FILE:test_basic_proxy>)
 add_test (NAME test_test_basic_iterator COMMAND $<TARGET_FILE:test_basic_iterator>)
-add_test (NAME test_test_basic_simd_vector COMMAND $<TARGET_FILE:test_basic_simd_vector>)

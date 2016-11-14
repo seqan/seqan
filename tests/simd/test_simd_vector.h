@@ -35,8 +35,8 @@
 // Tests for SIMD vectors.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
+#ifndef SEQAN_CORE_TESTS_SIMD_TEST_SIMD_VECTOR_H_
+#define SEQAN_CORE_TESTS_SIMD_TEST_SIMD_VECTOR_H_
 
 #include <seqan/simd.h>
 #include <random>
@@ -174,7 +174,7 @@ typedef
 SEQAN_TYPED_TEST_CASE(SimdVectorTestCommon, SimdVectorCommonCommonTypes);
 SEQAN_TYPED_TEST_CASE(SimdVectorTestGather, SimdVectorCommonCommonTypes);
 
-SEQAN_DEFINE_TEST(test_basic_simd_types)
+SEQAN_DEFINE_TEST(test_simd_types)
 {
     using namespace seqan;
 
@@ -928,12 +928,12 @@ SEQAN_TYPED_TEST(SimdVectorTestGather, ULongArray)
 
 #ifdef __SSE4_1__
 
-SEQAN_DEFINE_TEST(test_basic_simd_transpose_8x8)
+SEQAN_DEFINE_TEST(test_simd_transpose_8x8)
 {
     seqan::test_matrix_transpose<8, seqan::SimdVector<unsigned char, 8>::Type>();
 }
 
-SEQAN_DEFINE_TEST(test_basic_simd_transpose_16x16)
+SEQAN_DEFINE_TEST(test_simd_transpose_16x16)
 {
     seqan::test_matrix_transpose<16, seqan::SimdVector<unsigned char, 16>::Type>();
 }
@@ -941,7 +941,7 @@ SEQAN_DEFINE_TEST(test_basic_simd_transpose_16x16)
 #endif  // #ifdef __SSE4_1__
 #ifdef __AVX2__
 
-SEQAN_DEFINE_TEST(test_basic_simd_transpose_32x32)
+SEQAN_DEFINE_TEST(test_simd_transpose_32x32)
 {
     seqan::test_matrix_transpose<32, seqan::SimdVector<unsigned char, 32>::Type >();
 }
@@ -949,4 +949,4 @@ SEQAN_DEFINE_TEST(test_basic_simd_transpose_32x32)
 #endif  // #ifdef __AVX2__
 #endif  // SEQAN_SIMD_ENABLED
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SIMD_VECTOR_H_
+#endif  // #ifndef SEQAN_CORE_TESTS_SIMD_TEST_SIMD_VECTOR_H_

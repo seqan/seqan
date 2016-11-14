@@ -36,18 +36,18 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include "test_basic_simd_vector.h"
+#include "test_simd_vector.h"
 
-SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
+SEQAN_BEGIN_TESTSUITE(test_simd_vector)
 {
 #if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__SSE4_1__)
-    SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
-    SEQAN_CALL_TEST(test_basic_simd_types);
+    SEQAN_CALL_TEST(test_simd_transpose_8x8);
+    SEQAN_CALL_TEST(test_simd_transpose_16x16);
+    SEQAN_CALL_TEST(test_simd_types);
 #endif  // defined(SEQAN_SEQANSIMD_ENABLED) && defined(__SSE4_1__)
 
 #if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX2__)
-    SEQAN_CALL_TEST(test_basic_simd_transpose_32x32);
+    SEQAN_CALL_TEST(test_simd_transpose_32x32);
 #endif  // defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX2__)
 
     return seqan::TestSystem::runAll();
