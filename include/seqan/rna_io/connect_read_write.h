@@ -278,7 +278,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
         if (degree(graph.inter, i) != 0)
         {
             RnaAdjacencyIterator adjIter(graph.inter, i);
-            write(target, value(adjIter) + offset);
+            appendNumber(target, value(adjIter) + offset);
         }
         else
         {

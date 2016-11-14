@@ -405,7 +405,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
     for (unsigned idx = 1; idx <= length(header.seqLabels); ++idx)
     {
         write(target, "## S");
-        write(target, idx);
+        appendNumber(target, idx);
         write(target, ": ");
         write(target, header.seqLabels[idx - 1]);
         writeValue(target, '\n');
@@ -415,7 +415,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
     for (unsigned idx = 1; idx <= length(header.fixLabels); ++idx)
     {
         write(target, "## F");
-        write(target, idx);
+        appendNumber(target, idx);
         write(target, ": ");
         write(target, header.fixLabels[idx - 1]);
         writeValue(target, '\n');
@@ -426,7 +426,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
     for (unsigned idx = 1; idx <= length(header.bppLabels); ++idx)
     {
         write(target, "## M");
-        write(target, idx);
+        appendNumber(target, idx);
         write(target, ": ");
         write(target, header.bppLabels[idx - 1]);
         writeValue(target, '\n');
@@ -437,7 +437,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
     for (unsigned idx = 1; idx <= length(header.typeLabels); ++idx)
     {
         write(target, "## T");
-        write(target, idx);
+        appendNumber(target, idx);
         write(target, ": ");
         write(target, header.typeLabels[idx - 1]);
         writeValue(target, '\n');
@@ -568,7 +568,7 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
     for (unsigned line = 0; line < record.seqLen; ++line)
     {
         // write index
-        write(target, line + offset);
+        appendNumber(target, line + offset);
 
         // write sequence
         writeValue(target, '\t');
@@ -578,7 +578,7 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
         if (!empty(record.quality))
         {
             writeValue(target, '\t');
-            write(target, record.quality[line]);
+            writeValue(target, record.quality[line]);
         }
 
         // write reactivity
@@ -592,12 +592,12 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
             if (!empty(record.reactivity[record.typeID[idx]]))
             {
                 writeValue(target, '\t');
-                write(target, record.reactivity[record.typeID[idx]][line]);
+                appendNumber(target, record.reactivity[record.typeID[idx]][line]);
             }
             if (!empty(record.reactError[record.typeID[idx]]))
             {
                 writeValue(target, '\t');
-                write(target, record.reactError[record.typeID[idx]][line]);
+                appendNumber(target, record.reactError[record.typeID[idx]][line]);
             }
         }
 
@@ -608,7 +608,7 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
             if (degree(record.fixedGraphs[idx].inter, line) != 0)
             {
                 RnaAdjacencyIterator adj_it(record.fixedGraphs[idx].inter, line);
-                write(target, value(adj_it) + offset);
+                appendNumber(target, value(adj_it) + offset);
             }
             else
             {
@@ -625,16 +625,16 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
             {
                 RnaAdjacencyIterator adj_it(graph.inter, line);
                 writeValue(target, '<');
-                write(target, value(adj_it) + offset);
+                appendNumber(target, value(adj_it) + offset);
                 writeValue(target, '/');
-                write(target, cargo(findEdge(graph.inter, value(adj_it), line)));
+                appendNumber(target, cargo(findEdge(graph.inter, value(adj_it), line)));
                 goNext(adj_it);
                 while (!atEnd(adj_it))
                 {
                     write(target, " | ");
-                    write(target, value(adj_it) + offset);
+                    appendNumber(target, value(adj_it) + offset);
                     writeValue(target, '/');
-                    write(target, cargo(findEdge(graph.inter, value(adj_it), line)));
+                    appendNumber(target, cargo(findEdge(graph.inter, value(adj_it), line)));
                     goNext(adj_it);
                 }
                 writeValue(target, '>');

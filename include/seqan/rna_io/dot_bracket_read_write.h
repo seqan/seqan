@@ -296,7 +296,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
 
     // read name (and offset)
     skipOne(iter);                                                      // ">" symbol
-    readUntil(buffer, iter, IsNewline());
+    readLine(buffer, iter);
     std::string::size_type pos = buffer.find_last_of('/');
     if (pos == std::string::npos)
     {
@@ -316,15 +316,16 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
     clear(buffer);
 
     // read sequence
-    skipOne(iter);                                                      // newline character
-    readUntil(record.sequence, iter, IsNewline());
+    readLine(record.sequence, iter);
     record.seqLen = length(record.sequence);
 
     // read bracket string and build graph
-    skipOne(iter);                                                      // newline character
     readUntil(buffer, iter, IsWhitespace());
     if (length(buffer) != record.seqLen)
-        SEQAN_THROW(ParseError("ERROR: Bracket string must be as long as sequence."));
+    {
+        SEQAN_THROW(ParseError("ERROR: Bracket string (" + std::to_string(length(buffer)) +
+                               ") must be as long as sequence (" + std::to_string(record.seqLen) + ")."));
+    }
 
     bracket2graph(record.fixedGraphs, buffer);
     clear(buffer);
@@ -371,9 +372,9 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     write(target, record.name);
     // write index beg-end
     writeValue(target, '/');
-    write(target, record.offset);
+    appendNumber(target, record.offset);
     writeValue(target, '-');
-    write(target, record.offset + record.seqLen - 1);
+    appendNumber(target, record.offset + record.seqLen - 1);
     writeValue(target, '\n');
 
     // write sequence
@@ -388,7 +389,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     if (graph.energy != 0.0f)
     {
         write(target, " (");
-        write(target, graph.energy);
+        appendNumber(target, graph.energy);
         writeValue(target, ')');
     }
     writeValue(target, '\n');
