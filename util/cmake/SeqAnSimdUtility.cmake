@@ -178,22 +178,23 @@ macro(add_simd_platform_tests target)
         target_compile_definitions("${target}_umesimd" PUBLIC SEQAN_UMESIMD_ENABLED=1)
     endif()
 
-    # seqan-simd doesn't support avx512
-    set(seqansimd_compile_blacklist "avx512;avx512_knl")
+    # seqan-simd doesn't support avx512, but will fallback to avx2
+    set(seqansimd_compile_blacklist "")
     set(seqansimd_test_blacklist "")
 
-    # ume-simd has some problems with gcc and clang
+    # ume-simd has some problems with clang
     set(umesimd_compile_blacklist "")
     set(umesimd_test_blacklist "")
 
-    # gcc <= 6.2.x can't handle AVX512VL
-    if (COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.3)
+    # gcc <= 6.2.x can't handle AVX512VL, umesimd 0.6.1 has no workaround yet
+    if (COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.3 AND UMESIMD_VERSION_STRING VERSION_LESS 0.7)
         set(umesimd_compile_blacklist "avx512")
     endif()
 
     # clang <= 3.9.x produces executables using invalid instructions for avx512
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
         set(umesimd_test_blacklist "avx512;avx512_knl")
+        set(seqansimd_test_blacklist "${umesimd_test_blacklist}")
     endif()
 
     add_simd_executables("${target}" "${seqansimd_compile_blacklist}")
