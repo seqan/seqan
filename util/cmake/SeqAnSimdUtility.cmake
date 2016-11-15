@@ -186,11 +186,6 @@ macro(add_simd_platform_tests target)
     set(umesimd_compile_blacklist "")
     set(umesimd_test_blacklist "")
 
-    # gcc <= 6.2.x can't handle AVX512VL, umesimd 0.6.1 has no workaround yet
-    if (COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.3 AND UMESIMD_VERSION_STRING VERSION_LESS 0.7)
-        set(umesimd_compile_blacklist "avx512")
-    endif()
-
     # clang <= 3.9.x produces executables using invalid instructions for avx512
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
         set(umesimd_test_blacklist "avx512;avx512_knl")
