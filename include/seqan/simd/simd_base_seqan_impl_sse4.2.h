@@ -436,13 +436,13 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 4>)
 template <typename TSimdVector>
 inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<16, 2>)
 {
-#if defined(__AVX512F__)
+#if defined(__AVX512VL__)
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm_max_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
                                             SEQAN_VECTOR_CAST_(const __m128i&, b)));
-#else // defined(__AVX512F__)
+#else // defined(__AVX512VL__)
     return blend(b, a, cmpGt(a, b));
-#endif // defined(__AVX512F__)
+#endif // defined(__AVX512VL__)
 }
 
 // --------------------------------------------------------------------------
