@@ -38,28 +38,38 @@
 #define SEQAN_INCLUDE_SEQAN_SIMD_H_
 
 // Define global macro to check if simd instructions are enabled.
-#define SEQAN_SIMD_ENABLED 1
+#if defined(__AVX512F__) || defined(__AVX2__) || (defined(__SSE4_1__) && defined(__SSE4_2__))
+    #define SEQAN_SIMD_ENABLED
+#else
+    #undef SEQAN_SIMD_ENABLED
+#endif
+
+// Fallback to seqan's simd implementation if nothing was specified.
+#if defined(SEQAN_SIMD_ENABLED) && !defined(SEQAN_UMESIMD_ENABLED) && !defined(SEQAN_SEQANSIMD_ENABLED)
+    #define SEQAN_SEQANSIMD_ENABLED
+#endif
+
+// Seqan's simd implementation supports only avx2 and sse4.
+#if defined(SEQAN_SEQANSIMD_ENABLED) && !(defined(__AVX2__) || (defined(__SSE4_1__) && defined(__SSE4_2__)))
+    #undef SEQAN_SIMD_ENABLED
+    #undef SEQAN_SEQANSIMD_ENABLED
+#endif
 
 // Define maximal size of vector in byte.
-#if defined(__AVX512F__)
+#if !defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
+    // SEQAN_SIMD doesn't support AVX512, thus fallback to AVX2 (One can assume
+    // that AVX512 implies AVX2)
     #define SEQAN_SIZEOF_MAX_VECTOR 64
 #elif defined(__AVX2__)
     #define SEQAN_SIZEOF_MAX_VECTOR 32
 #elif defined(__SSE4_1__) && defined(__SSE4_2__)
     #define SEQAN_SIZEOF_MAX_VECTOR 16
-#else
-    #undef SEQAN_SIMD_ENABLED  // Disable simd if instruction set is not supported.
-#endif
-
-// fallback to seqan simd implementation if nothing was specified
-#if SEQAN_SIMD_ENABLED && !SEQAN_UMESIMD_ENABLED && !SEQAN_SEQANSIMD_ENABLED
-    #define SEQAN_SEQANSIMD_ENABLED 1
 #endif
 
 #include "simd/simd_base.h"
 #include "simd/simd_base_seqan_impl.h"
 
-#if SEQAN_SEQANSIMD_ENABLED
+#if defined(SEQAN_SEQANSIMD_ENABLED)
     #if defined(__SSE4_2__)
     #include "simd/simd_base_seqan_impl_sse4.2.h"
     #endif // defined(SEQAN_SSE4)
@@ -69,9 +79,9 @@
     #endif // defined(__AVX2__)
 
     #include "simd/simd_base_seqan_interface.h"
-#endif // SEQAN_SIMD_ENABLED
+#endif // defined(SEQAN_SEQANSIMD_ENABLED)
 
-#if SEQAN_UMESIMD_ENABLED
+#if defined(SEQAN_UMESIMD_ENABLED)
     #include "simd/simd_base_umesimd_impl.h"
 #endif
 
