@@ -37,6 +37,11 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_H_
 
+// Check if more than simd back end is selected
+#if SEQAN_SEQANSIMD_ENABLED && SEQAN_UMESIMD_ENABLED
+    #error UME::SIMD and SEQAN::SIMD are both enabled, you can only use one SIMD back end.
+#endif
+
 // Define global macro to check if simd instructions are enabled.
 #if defined(__AVX512F__) || defined(__AVX2__) || (defined(__SSE4_1__) && defined(__SSE4_2__))
     #define SEQAN_SIMD_ENABLED
