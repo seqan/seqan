@@ -770,7 +770,7 @@ seqan_mm256_i64gather_epi(TValue const * memAddr,
     constexpr auto const mask = static_cast<uint64_t>(MaxValue<TUnsignedValue>::VALUE);
 
     return _mm256_and_si256(
-        _mm256_i64gather_epi64((const long *) memAddr, idx, SCALE),
+        _mm256_i64gather_epi64((const long long *) memAddr, idx, SCALE),
         _mm256_set1_epi64x(mask)
     );
 }
