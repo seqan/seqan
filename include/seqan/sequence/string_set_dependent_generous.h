@@ -187,6 +187,13 @@ length(StringSet<TString, Dependent<Generous> > & me)
     return length(me.limits) - 1;
 }
 
+template <typename TString >
+inline typename Size<StringSet<TString, Dependent<Generous> > >::Type
+length(StringSet<TString, Dependent<Generous> > const & me)
+{
+    return length(me.limits) - 1;
+}
+
 // --------------------------------------------------------------------------
 // Function value()
 // --------------------------------------------------------------------------
