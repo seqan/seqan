@@ -63,8 +63,8 @@ namespace seqan {
  * @tparam TString The type of the string to store in the string set.
  * @tparam TSpec   Tag for further specializing the string set.
  *
- * Important: The class is not usable itself, only its subclasses @link TightDependentStringSet @endlink and
- * @link GenerousDependentStringSet @endlink are.
+ * Important: This is an abstract class. Use one of the following specializations: @link TightDependentStringSet @endlink and
+ * @link GenerousDependentStringSet @endlink.
  *
  * A Dependent StringSet (DSS) can be used like a normal StringSet while internally storing only pointers to a source set.
  *
@@ -87,6 +87,12 @@ namespace seqan {
  * The following figure illustrates the behaviour when removing a sequence:
  *
  * <img src="position_vs_id.png" title="Impact to positions and ids on removal of an entry in an DSS" width="900">
+ *
+ * @section Tight vs. Generous
+ *
+ * The two different specializations <tt>Tight</tt> and <tt>Generous</tt> provide the same functionality but behave slightly different
+ * concerning run time and certain errors (e.g. index out of range). See the correspoinding documentation pages @link TightDependentStringSet @endlink
+ * and @link GenerousDependentStringSet @endlink for further details.
  */
 
 /*!
@@ -100,8 +106,30 @@ namespace seqan {
  *
  * @tparam TString The type of the string to store in the string set.
  *
+ * The Tight Dependent StringSet stores pointers to a source set, enabling the user to perform deletions and additions to the set without
+ * changing the original source set (See @link DependentStringSet @endlink for further details).
+ *
+ * @section Run time and Memory
+ *
+ * When a value is removed from the Tight Dependent StringSet, the array of pointers is resized accordingly.
+ * Therefore, in order to call sequences by id or position, the stringset keeps a id-to-position map, which affects the run time complexity of the following functions:
+ *
+ * - value() or operator []: O(1)
+ *
+ * - getValueById(): amortised O(1)
+ *
+ * - removeValueById(): amortised O(1)
+ *
+ * The memory consumption is linear to the number of pointers.
+ *
  * See @link GenerousDependentStringSet @endlink for a Dependent StringSet implementation that allows for more
  * efficient access to strings in the container via ids at the cost of higher memory usage.
+ *
+ * @section Accessing non-existing entries results in undefined behaviour
+ *
+ * Because the Tight Dependent StringSet keeps every array "tight", every entry that is being removed, is actually deleted (in contrast to <tt>Generous</tt>)
+ * and accessing it will result in undefined behaviour.
+ *
  */
 
 // Default id holder string set
