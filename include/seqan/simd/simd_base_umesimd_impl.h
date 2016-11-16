@@ -37,11 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_UMESIMD_IMPL_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_UMESIMD_IMPL_H_
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wpedantic"
 #include "umesimd/UMESimd.h"
-#pragma GCC diagnostic pop
 
 namespace seqan
 {
