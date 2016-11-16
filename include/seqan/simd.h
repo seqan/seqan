@@ -42,6 +42,8 @@
     #define SEQAN_SIMD_ENABLED
 #else
     #undef SEQAN_SIMD_ENABLED
+    #undef SEQAN_SEQANSIMD_ENABLED
+    #undef SEQAN_UMESIMD_ENABLED
 #endif
 
 // Fallback to seqan's simd implementation if nothing was specified.
