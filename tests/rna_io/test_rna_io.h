@@ -454,4 +454,19 @@ SEQAN_DEFINE_TEST(test_rna_io_write_ebpseq)
     SEQAN_ASSERT_EQ(outstr, expected);
 }
 
+SEQAN_DEFINE_TEST(test_rna_io_convert)
+{
+    seqan::CharString rnaPath = SEQAN_PATH_TO_ROOT();
+    append(rnaPath, "/tests/rna_io/example.dbv");
+    seqan::RnaStructFileIn inputfile(seqan::toCString(rnaPath), seqan::OPEN_RDONLY);
+
+    seqan::RnaStructContents filecontents;
+    seqan::readRecords(filecontents, inputfile, 100);
+    SEQAN_ASSERT_EQ(length(filecontents.records), 3u);
+
+    std::string outpath = std::string(SEQAN_TEMP_FILENAME()) + ".ebpseq";
+    seqan::RnaStructFileOut outputfile(seqan::toCString(outpath), seqan::OPEN_WRONLY);
+    seqan::writeRecords(outputfile, filecontents);
+}
+
 #endif  // TESTS_RNA_IO_TEST_RNA_IO_H_

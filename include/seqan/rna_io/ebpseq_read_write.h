@@ -451,7 +451,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
 
 inline void createPseudoHeader(RnaHeader & header, std::vector<RnaRecord> & records)
 {
-    std::size_t numFix{}, numBpp{};
+    bool hasFixed = false, hasBppMatr = false;
     for (unsigned idx = 0; idx < length(records); ++idx)
     {
         records[idx].recordID = idx;
@@ -466,20 +466,23 @@ inline void createPseudoHeader(RnaHeader & header, std::vector<RnaRecord> & reco
 
         appendValue(header.seqLabels, records[idx].name);
 
-        if (length(records[idx].fixedGraphs) > numFix)
+        for (unsigned gr = 0; gr < length(records[idx].fixedGraphs); ++gr)
         {
-            numFix = length(records[idx].fixedGraphs);
+            records[idx].fixedGraphs[gr].specs = "n/a";
+            hasFixed = true;
         }
-        if (length(records[idx].bppMatrGraphs) > numBpp)
+
+        for (unsigned gr = 0; gr < length(records[idx].bppMatrGraphs); ++gr)
         {
-            numBpp = length(records[idx].bppMatrGraphs);
+            records[idx].bppMatrGraphs[gr].specs = "n/a";
+            hasBppMatr = true;
         }
     }
 
-    for (unsigned idx = 1; idx <= numFix; ++idx)
+    if (hasFixed)
         appendValue(header.fixLabels, "n/a");
 
-    for (unsigned idx = 1; idx <= numBpp; ++idx)
+    if (hasBppMatr)
         appendValue(header.bppLabels, "n/a");
 }
 
