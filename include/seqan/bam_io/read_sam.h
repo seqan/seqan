@@ -45,8 +45,7 @@ namespace seqan {
 
 struct Sam_;
 typedef Tag<Sam_> Sam;
-
-
+    
 template <typename T>
 struct FileExtensions<Sam, T>
 {
@@ -58,8 +57,7 @@ char const * FileExtensions<Sam, T>::VALUE[1] =
 {
     ".sam"     // default output extension
 };
-
-
+    
 template <typename T>
 struct MagicHeader<Sam, T>
 {

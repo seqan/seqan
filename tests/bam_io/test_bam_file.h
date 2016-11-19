@@ -112,7 +112,6 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(inFilePath)));
 }
 
-
 // ---------------------------------------------------------------------------
 // Read Records
 // ---------------------------------------------------------------------------
