@@ -251,7 +251,7 @@ void write(TTarget & target,
         SEQAN_ASSERT_LT_MSG(record.rID, static_cast<int32_t>(length(contigNames(context))),
                             "BAM IO Assertion: Unknown REF ID!");
     }
-    if (record.rID != BamAlignmentRecord::INVALID_REFID)
+    if (record.rNextId != BamAlignmentRecord::INVALID_REFID)
     {
         SEQAN_ASSERT_LT_MSG(record.rNextId, static_cast<int32_t>(length(contigNames(context))),
                             "BAM IO Assertion: Unknown NEXT REF ID!");
