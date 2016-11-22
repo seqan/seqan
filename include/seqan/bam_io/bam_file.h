@@ -171,7 +171,7 @@ readHeader(BamHeader & header,
         readHeader(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 readHeader(BamHeader & header, FormattedFile<Bam, Input, TSpec> & file)
@@ -233,12 +233,89 @@ readRecord(BamAlignmentRecord & record,
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+template <typename TIdString, typename TSeqString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(TIdString & /*meta*/,
+           TSeqString & /*seq*/,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /*context*/,
+           TForwardIter & /*iter*/,
+           TagSelector<> const & /*format*/)
+
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
+
+// when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
+// this is for readRecord without quality
+template <typename TIdString, typename TSeqString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
+inline void
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+    if (isEqual(format, TFormat()))
+        readRecord( meta, seq, context, iter, TFormat() );
+    else
+        readRecord( meta, seq, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+inline void
+readRecord(TIdString & /*meta*/,
+           TSeqString & /*seq*/,
+           TQualString & /*qual*/,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /*context*/,
+           TForwardIter & /*iter*/,
+           TagSelector<void> const & /*format*/)
+{
+    SEQAN_FAIL("BamFileIn: File format not specified.");
+}
+
+// when you compile with ZLIB, format is TaglistSelector instead of BAM. This function tells if it is BAM or SAM
+// this is for readRecord with quality
+template <typename TIdString, typename TSeqString, typename TQualString, typename TForwardIter,
+        typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
+inline void
+readRecord(TIdString & meta,
+           TSeqString & seq,
+           TQualString & qual,
+           BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
+           TForwardIter & iter,
+           TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+    if (isEqual(format, TFormat()))
+        readRecord( meta, seq, qual, context, iter, TFormat() );
+    else
+        readRecord( meta, seq, qual, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
+}
+
+template <typename TIdString, typename TSeqString, typename TSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Bam, Input, TSpec> & file)
+{
+    readRecord(meta, seq, context(file), file.iter, file.format);
+}
+
+template <typename TIdString, typename TSeqString, typename TQualString, typename TSpec>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Bam, Input, TSpec> & fileIn)
+{
+    readRecord(meta, seq, qual, context(fileIn), fileIn.iter, fileIn.format);
 }
 
 template <typename TRecords, typename TSpec, typename TSize>
@@ -296,7 +373,7 @@ write(TTarget & target,
         write(target, header, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 writeHeader(FormattedFile<Bam, Output, TSpec> & file, BamHeader const & header)
