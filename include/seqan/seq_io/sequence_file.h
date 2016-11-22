@@ -38,8 +38,7 @@
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 #define SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 
-namespace seqan
-{
+namespace seqan {
 
 // ============================================================================
 // Classes
@@ -69,6 +68,20 @@ typedef FormattedFile<Fastq, Input>     SeqFileIn;
 
 typedef FormattedFile<Fastq, Output>    SeqFileOut;
 
+// --------------------------------------------------------------------------
+// Tag AutoSeqFormat
+// --------------------------------------------------------------------------
+// if TagSelector is set to -1, the file format is auto-detected
+
+/*!
+ * @class AutoSeqFormat
+ * @extends TagSelector
+ * @headerfile <seqan/file.h>
+ * @brief Auto-detects and stores a file format.
+ *
+ * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
+ * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
+ */
 
 typedef
     TagList<Fastq,
@@ -94,20 +107,6 @@ typedef
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
 
-// --------------------------------------------------------------------------
-// Tag AutoSeqFormat
-// --------------------------------------------------------------------------
-// if TagSelector is set to -1, the file format is auto-detected
-
-/*!
- * @class AutoSeqFormat
- * @extends TagSelector
- * @headerfile <seqan/file.h>
- * @brief Auto-detects and stores a file format.
- *
- * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
- * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
- */
 // deprecated
 typedef SeqInFormat AutoSeqFormat;
 
@@ -530,6 +529,8 @@ writeRecord(TFile & file, TIdString const & meta, TSeqString const & seq, TQualS
 template <typename TFile, typename TIdStringSet, typename TSeqStringSet>
 inline void writeRecords(TFile & file, TIdStringSet const & meta, TSeqStringSet const & seq)
 {
+    // TODO(dadi:) change the function in a way that the tag despatching will be done only once.
+
     for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
         writeRecord(file, meta[i], seq[i], file.format);
 }
@@ -541,6 +542,8 @@ template <typename TFile, typename TIdStringSet, typename TSeqStringSet, typenam
 inline void
 writeRecords(TFile & file, TIdStringSet const & meta, TSeqStringSet const & seq, TQualStringSet const & qual)
 {
+    // TODO(dadi:) change the function in a way that the tag despatching will be done only once.
+
     for (typename Size<TIdStringSet>::Type i = 0; i != length(seq); ++i)
         writeRecord(file, meta[i], seq[i], qual[i], file.format);
 }
