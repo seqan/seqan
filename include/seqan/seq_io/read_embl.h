@@ -186,7 +186,7 @@ readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
 inline void
-readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
+_readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
 {
     IsBlank isBlank;
     IsWhitespace isWhite;
@@ -206,16 +206,36 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
             readUntil(meta, iter, IsNewline());
         }
     }
-
     readRecord(seq, iter, EmblSequence());
 }
+// ----------------------------------------------------------------------------
+// Function readRecord(Embl)  from String
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TIterator>
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TIterator & iter, Embl)
+{
+    _readRecord(meta, seq, iter, Embl());
+}
 
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Embl)
+// ----------------------------------------------------------------------------
+// Function readRecord(Embl)
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TFile>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename TFile::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TFile & file, Embl)
+{
+    _readRecord(meta, seq, file.iter, Embl());
+}
+// ----------------------------------------------------------------------------
+// Function readRecord(Embl)
+// ----------------------------------------------------------------------------
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFile>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename TFile::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFile & file, Embl)
 {
     clear(qual);
-    readRecord(meta, seq, iter, Embl());
+    readRecord(meta, seq, file, Embl());
 }
 
 }  // namespace seqan
