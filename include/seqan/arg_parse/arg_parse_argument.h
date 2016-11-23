@@ -706,6 +706,9 @@ inline void setValidValues(ArgParseArgument & me, std::vector<std::string> const
 
 inline void setValidValues(ArgParseArgument & me, std::string const & valuesString)
 {
+    if (isDoubleArgument(me) || isIntegerArgument(me) || isBoolenArgument(me))
+        SEQAN_FAIL("ArgParseArgument does not support setting valid values for numeric or boolean arguments.");
+
     // convert array to String<std::string>
     std::vector<std::string> values;
     std::string current_argument;
