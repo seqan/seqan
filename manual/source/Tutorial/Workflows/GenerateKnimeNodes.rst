@@ -11,7 +11,7 @@
 Generating KNIME Nodes
 ======================
 
-With the help of the GenericWorkflowNodes one can make his/her command line applications available in KNIME as nodes that can be included as parts of a bigger workflow. In this tutorial you will learn how to make your command line application available as a KNIME node. 
+With the help of GenericWorkflowNodes one can make his/her command line applications available in KNIME as nodes that can be included as parts of a bigger workflow. In this tutorial you will learn how to make your command line application available as a KNIME node.
 
 Prerequisites
 -------------
@@ -121,11 +121,11 @@ The name of the mime type is followed (separated by a space) by the file extensi
 
 The CTD (Common Tool descriptor) files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-For every application with the name ``app_name``, there is one CTD file called *${app_name}.ctd*. These file contain the command line description of an application in XML format. They also decide which command-line arguments will be input/output ports or configuration entries in the node to be generated. 
+For every application with the name ``app_name``, there is one CTD file called *${app_name}.ctd*. These files contain the command line description of an application in XML format. They also decide which command-line arguments will be input/output ports or configuration entries in the node to be generated.
 
 .. Tip::
   
-  For application developed in SeqAn or applications using the seqan::ArgumentParser for parsing their command-line arguments a CTD file can be generated using a hidden parameter ``-write-ctd``. 
+  For applications developed in SeqAn or applications using the seqan::ArgumentParser for parsing their command-line arguments a CTD file can be generated using a hidden parameter ``-write-ctd``.
 
   for example:
 
@@ -135,7 +135,7 @@ For every application with the name ``app_name``, there is one CTD file called *
 
   Look at the tutorials :ref:`Make Your SeqAn App KNIME Ready <tutorial-workflows-knime-ready-seqan-app>` and :ref:`Generating SeqAn KNIME Nodes <tutorial-workflows-generating-seqan-knime-nodes>` .
 
-Below is an example of a CTD file for SortBam tool for sorting BAM files.
+Below is an example of a CTD file for a SortBam tool for sorting BAM files.
 
 .. code-block:: xml
 
@@ -186,7 +186,7 @@ Below is an example of a CTD file for SortBam tool for sorting BAM files.
 The ``samtools_sort_bam`` tool from above does not provide any configurable options but only two arguments.
 These are by convention called ``argument-0`` and ``argument-1`` but could have any name.
 
-Also, we always call the program with ``view -f`` as the first two command line arguments since we do not provide a mapping for these arguments.
+Also, we always call the program with ``sort -f`` as the first two command line arguments since we do not provide a mapping for these arguments.
 
 Click **more...** to see the description of the tags and the attributes in the CTD XML file:
 
@@ -200,7 +200,7 @@ Click **more...** to see the description of the tags and the attributes in the C
   |    The CamelCase name of the tool as shown in KNIME and part of the class name.
   | **/tool@version**
   |    The version of the tool.
-  | **/toll@category**
+  | **/tool@category**
   |    The path to the tool's category.
   | **/tool/executableName**
   |    The name of the executable in the payload ZIP's *bin* dir.

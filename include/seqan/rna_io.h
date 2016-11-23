@@ -29,81 +29,43 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Authors: Lily Shellhammer <lily.shellhammer@gmail.com>
+//          Joerg Winkler <j.winkler@fu-berlin.de>
+// ==========================================================================
+// Facade header for module rna_io.
 // ==========================================================================
 
-#include <vector>
+#ifndef INCLUDE_SEQAN_RNA_IO_H_
+#define INCLUDE_SEQAN_RNA_IO_H_
+
+// ===========================================================================
+// Prerequisites.
+// ===========================================================================
+
 #include <seqan/basic.h>
-#include <seqan/index.h>
+#include <seqan/file.h>
+#include <seqan/sequence.h>
+#include <seqan/journaled_set.h>
+#include <seqan/graph_types.h>
 
-#include "test_index_helpers.h"
+// ===========================================================================
+// RNA structure containers and file formats
+// ===========================================================================
 
-using namespace seqan;
+// containers
+#include <seqan/rna_io/rna_record.h>
+#include <seqan/rna_io/rna_header.h>
+#include <seqan/rna_io/rna_io_context.h>
 
-// ========================================================================== 
-// Test Classes
-// ==========================================================================
+// file format specific
+#include <seqan/rna_io/connect_read_write.h>
+#include <seqan/rna_io/dot_bracket_read_write.h>
+#include <seqan/rna_io/bpseq_read_write.h>
+#include <seqan/rna_io/stockholm_read_write.h>
+#include <seqan/rna_io/ebpseq_read_write.h>
+#include <seqan/rna_io/vienna_read_write.h>
 
-// --------------------------------------------------------------------------
-// Class IndexFinderTest
-// --------------------------------------------------------------------------
+// general file I/O
+#include <seqan/rna_io/rna_struct_file.h>
 
-template <typename TIndex_>
-class IndexFinderTest : public IndexTest<TIndex_>
-{
-public:
-    typedef TIndex_             TIndex;
-    typedef IndexTest<TIndex>   TBase;
-    typedef Finder<TIndex>      TFinder;
-
-    TFinder finder;
-
-    IndexFinderTest() :
-        finder(TBase::index)
-    {}
-};
-
-SEQAN_TYPED_TEST_CASE(IndexFinderTest, UnidirectionalIndexTypes);
-
-// --------------------------------------------------------------------------
-// Test Finder
-// --------------------------------------------------------------------------
-
-SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
-{
-    SEQAN_ASSERT(find(this->finder, prefix(concat(this->text), 1u)));
-    SEQAN_ASSERT(find(this->finder, "A"));
-}
-
-SEQAN_TYPED_TEST(IndexFinderTest, DefaultFinder)
-{
-    typedef typename TestFixture::TIndex TIndex;
-    Finder<TIndex> finder;
-    find(finder, "needle");
-}
-
-SEQAN_TYPED_TEST(IndexFinderTest, StdString)
-{
-    typedef Index<std::string, IndexSa<> > TIndex;
-    std::string str;
-    TIndex index(str);
-    Iterator<TIndex, TopDown<> >::Type iter(index);
-}
-
-SEQAN_TYPED_TEST(IndexFinderTest, StdVector)
-{
-    typedef Index<std::vector<char>, IndexSa<> > TIndex;
-    std::vector<char> vec;
-    TIndex index(vec);
-    Iterator<TIndex, TopDown<> >::Type iter(index);
-}
-
-// ==========================================================================
-// Functions
-// ========================================================================== 
-
-int main(int argc, char const ** argv)
-{
-    TestSystem::init(argc, argv);
-    return TestSystem::runAll();
-}
+#endif  // INCLUDE_SEQAN_RNA_IO_H_
