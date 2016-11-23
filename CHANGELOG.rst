@@ -14,6 +14,11 @@ Library Features
         - supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)
         - input/output of whole files or of a single record/header
 
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Test jenkins 1
+
 Release 2.2.0
 ~~~~~~~~~~~~~
 
