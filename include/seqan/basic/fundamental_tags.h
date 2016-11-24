@@ -526,6 +526,44 @@ inline bool isEqual(TagSelector<TTagList> const &selector, TTag const &)
     return selector.tagId == Find<TTagList, TTag>::VALUE;
 }
 
+template <typename TagSpec>
+inline bool tagSelectIntersect(TagSelector<> &, Tag<TagSpec> const &)
+{
+    return false;
+}
+
+template <typename TOutTagList, typename TagSpec>
+inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, Tag<TagSpec> const & inTag)
+{
+    typedef typename TOutTagList::Type TFormat;
+
+    if (IsSameType<Tag<TagSpec>, TFormat>::VALUE)
+    {
+        outTagList.tagId = LENGTH<TOutTagList>::VALUE - 1;
+        return true;
+    }
+    else
+        return tagSelectIntersect(static_cast<typename TagSelector<TOutTagList>::Base & >(outTagList), inTag);
+}
+
+template <typename TOutTagList>
+inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, TagSelector<> const &)
+{
+    outTagList.tagId = -1;
+    return true;
+}
+
+template <typename TOutTagList, typename TInTagList>
+inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, TagSelector<TInTagList> const & inTagList)
+{
+    typedef typename TInTagList::Type TFormat;
+
+    if (isEqual(inTagList, TFormat()))
+        return tagSelectIntersect(outTagList, TFormat());
+    else
+        return tagSelectIntersect(outTagList, static_cast<typename TagSelector<TInTagList>::Base const & >(inTagList));
+}
+
 // assign()
 template <typename TTagList, typename TTag>
 inline void assign(TagSelector<TTagList> &selector, TTag &)
