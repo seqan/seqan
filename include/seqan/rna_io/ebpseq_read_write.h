@@ -40,6 +40,7 @@
 #include <seqan/sequence.h>
 #include <regex>
 #include <string>
+#include <cstdint>
 
 namespace seqan {
 
@@ -98,9 +99,9 @@ char const * FileExtensions<Ebpseq, T>::VALUE[1] =
 // ----------------------------------------------------------------------------
 
 template <typename TVec, typename TElem>
-inline unsigned _findIndex(TVec const & set, TElem const & elem)
+inline typename Size<TVec>::Type _findIndex(TVec const & set, TElem const & elem)
 {
-    unsigned idx = 0;
+    typename Size<TVec>::Type idx = 0;
     while (idx < length(set) && set[idx] != elem)
     {
         ++idx;
@@ -173,8 +174,14 @@ template <typename TForwardIter>
 inline void
 readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebpseq const & /*tag*/)
 {
+    if (length(context.seqIdent) >= UINT32_MAX)
+    {
+        SEQAN_THROW(ParseError("ERROR: Capacity exceeded. Cannot read more than " +
+                               std::to_string(UINT32_MAX - 1u) + " sequences."));
+    }
+
     std::string buffer;
-    unsigned idx;
+    typename Size<StringSet<CharString> >::Type idx;
     clear(record);
 
     // read sequence and type indices
@@ -186,10 +193,10 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
         if (startsWith(buffer, "S"))
         {
             idx = _findIndex(context.seqIdent, buffer.substr(1));
-            record.recordID = idx;
             if (idx < length(context.seqIdent))
             {
                 record.name = context.seqLabels[idx];
+                record.recordID = static_cast<std::uint32_t>(idx);
             }
             else
             {
@@ -221,9 +228,9 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
     }
 
     // read column semantics
-    StringSet<std::string> columnLabels{};
-    String<unsigned> fixIDs{};
-    String<unsigned> bppIDs{};
+    StringSet<std::string> columnLabels;
+    String<unsigned> fixIDs;
+    String<unsigned> bppIDs;
     skipUntil(iter, NotFunctor<IsWhitespace>());
     readOne(buffer, iter, EqualsChar<'#'>());
     clear(buffer);
@@ -235,14 +242,14 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
         if (startsWith(buffer, "F"))
         {
             idx = _findIndex(context.fixIdent, buffer.substr(1));
-            append(fixIDs, idx);
+            appendValue(fixIDs, idx);
             if (idx == length(context.fixIdent))
                 SEQAN_THROW(ParseError("ERROR: Unknown label " + buffer));
         }
         else if (startsWith(buffer, "M"))
         {
             idx = _findIndex(context.bppIdent, buffer.substr(1));
-            append(bppIDs, idx);
+            appendValue(bppIDs, idx);
             if (idx == length(context.bppIdent))
                 SEQAN_THROW(ParseError("ERROR: Unknown label " + buffer));
         }
@@ -259,20 +266,21 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
     resize(record.bppMatrGraphs, length(bppIDs));
 
     // set graph specs
-    for (idx = 0; idx < length(fixIDs); ++idx)
-        record.fixedGraphs[idx].specs = context.fixLabels[fixIDs[idx]];
-    for (idx = 0; idx < length(bppIDs); ++idx)
-        record.bppMatrGraphs[idx].specs = context.bppLabels[bppIDs[idx]];
+    typename Size<String<unsigned> >::Type ii;
+    for (ii = 0; ii < length(fixIDs); ++ii)
+        record.fixedGraphs[ii].specs = context.fixLabels[fixIDs[ii]];
+    for (ii = 0; ii < length(bppIDs); ++ii)
+        record.bppMatrGraphs[ii].specs = context.bppLabels[bppIDs[ii]];
 
     // read matrix
     while (!atEnd(iter) && value(iter) != '#')
     {
         unsigned fixID = 0;
         unsigned bppID = 0;
-        for (unsigned lbl = 0; lbl < length(columnLabels); ++lbl)
+        forEach(columnLabels, [&](std::string const & label)
         {
-            std::string const & label = columnLabels[lbl];
             unsigned pairPos;
+            typename Size<String<std::size_t> >::Type tID;
             readUntil(buffer, iter, IsWhitespace());
 
             if (label == "I")
@@ -339,16 +347,16 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
             }
             else if (startsWith(label, "RE"))
             {
-                unsigned tID = _findIndex(context.typIdent, label.substr(2));
-                idx = _findIndex(record.typeID, tID);
-                if (idx < length(record.typeID))
+                idx = _findIndex(context.typIdent, label.substr(2));
+                tID = _findIndex(record.typeID, idx);
+                if (tID < length(record.typeID))
                 {
                     float react;
                     if (!lexicalCast(react, buffer))
                     {
                         SEQAN_THROW(BadLexicalCast(react, buffer));
                     }
-                    appendValue(record.reactError[idx], react);
+                    appendValue(record.reactError[tID], react);
                 }
                 else
                 {
@@ -357,16 +365,16 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
             }
             else if (startsWith(label, "R"))
             {
-                unsigned tID = _findIndex(context.typIdent, label.substr(1));
-                idx = _findIndex(record.typeID, tID);
-                if (idx < length(record.typeID))
+                idx = _findIndex(context.typIdent, label.substr(1));
+                tID = _findIndex(record.typeID, idx);
+                if (tID < length(record.typeID))
                 {
                     float react;
                     if (!lexicalCast(react, buffer))
                     {
                         SEQAN_THROW(BadLexicalCast(react, buffer));
                     }
-                    appendValue(record.reactivity[idx], react);
+                    appendValue(record.reactivity[tID], react);
                 }
                 else
                 {
@@ -379,7 +387,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
             }
             skipUntil(iter, NotFunctor<IsBlank>());
             clear(buffer);
-        }
+        });
         ++line;
         skipLine(iter);
     }
@@ -394,6 +402,7 @@ template <typename TTarget>
 inline void
 writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, Ebpseq const & /*tag*/)
 {
+    typename Size<StringSet<CharString> >::Type idx;
     clear(context);
     if (!empty(header.description))
     {
@@ -402,7 +411,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
         writeValue(target, '\n');
     }
 
-    for (unsigned idx = 1; idx <= length(header.seqLabels); ++idx)
+    for (idx = 1; idx <= length(header.seqLabels); ++idx)
     {
         write(target, "## S");
         appendNumber(target, idx);
@@ -412,7 +421,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
         appendValue(context.seqIdent, std::to_string(idx));
     }
 
-    for (unsigned idx = 1; idx <= length(header.fixLabels); ++idx)
+    for (idx = 1; idx <= length(header.fixLabels); ++idx)
     {
         write(target, "## F");
         appendNumber(target, idx);
@@ -423,7 +432,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
         appendValue(context.fixLabels, header.fixLabels[idx - 1]);
     }
 
-    for (unsigned idx = 1; idx <= length(header.bppLabels); ++idx)
+    for (idx = 1; idx <= length(header.bppLabels); ++idx)
     {
         write(target, "## M");
         appendNumber(target, idx);
@@ -434,7 +443,7 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
         appendValue(context.bppLabels, header.bppLabels[idx - 1]);
     }
 
-    for (unsigned idx = 1; idx <= length(header.typeLabels); ++idx)
+    for (idx = 1; idx <= length(header.typeLabels); ++idx)
     {
         write(target, "## T");
         appendNumber(target, idx);
@@ -451,10 +460,18 @@ writeHeader(TTarget & target, RnaHeader const & header, RnaIOContext & context, 
 
 inline void createPseudoHeader(RnaHeader & header, std::vector<RnaRecord> & records)
 {
-    bool hasFixed = false, hasBppMatr = false;
-    for (unsigned idx = 0; idx < length(records); ++idx)
+    if (length(records) >= UINT32_MAX)
     {
-        records[idx].recordID = idx;
+        SEQAN_THROW(ParseError("ERROR: Capacity exceeded. Cannot read more than " +
+                               std::to_string(UINT32_MAX - 1u) + " sequences."));
+    }
+    typedef typename Size<std::vector<RnaRecord> >::Type TSizeRnaRecordVector;
+    bool hasFixed = false;
+    bool hasBppMatr = false;
+
+    for (TSizeRnaRecordVector idx = 0; idx < length(records); ++idx)
+    {
+        records[idx].recordID = static_cast<std::uint32_t>(idx);
         if (!empty(records[idx].comment))
         {
             if (!empty(header.description))
@@ -466,13 +483,13 @@ inline void createPseudoHeader(RnaHeader & header, std::vector<RnaRecord> & reco
 
         appendValue(header.seqLabels, records[idx].name);
 
-        for (unsigned gr = 0; gr < length(records[idx].fixedGraphs); ++gr)
+        for (TSizeRnaRecordVector gr = 0; gr < length(records[idx].fixedGraphs); ++gr)
         {
             records[idx].fixedGraphs[gr].specs = "n/a";
             hasFixed = true;
         }
 
-        for (unsigned gr = 0; gr < length(records[idx].bppMatrGraphs); ++gr)
+        for (TSizeRnaRecordVector gr = 0; gr < length(records[idx].bppMatrGraphs); ++gr)
         {
             records[idx].bppMatrGraphs[gr].specs = "n/a";
             hasBppMatr = true;
@@ -507,19 +524,18 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
         SEQAN_THROW(ParseError("ERROR: Record ID exceeds number of sequences in ebpseq header."));
     }
 
-    unsigned idx;
     // write head line with S and T tags
     write(target, "# S");
     write(target, context.seqIdent[record.recordID]);
-    for (idx = 0; idx < length(record.typeID); ++idx)
+    forEach(record.typeID, [&](std::size_t tID)
     {
-        if (record.typeID[idx] >= length(context.typIdent))
+        if (tID >= length(context.typIdent))
         {
             SEQAN_THROW(ParseError("ERROR: Type ID exceeds number of types in ebpseq header."));
         }
         write(target, " T");
-        write(target, context.typIdent[record.typeID[idx]]);
-    }
+        write(target, context.typIdent[tID]);
+    });
     writeValue(target, '\n');
 
     // error checks
@@ -538,32 +554,34 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
     {
         write(target, "\tQU");
     }
-    for (idx = 0; idx < length(record.typeID); ++idx)
+    forEach(record.typeID, [&](std::size_t tID)
     {
         write(target, "\tR");
-        write(target, context.typIdent[record.typeID[idx]]);
+        write(target, context.typIdent[tID]);
 
         write(target, "\tRE");
-        write(target, context.typIdent[record.typeID[idx]]);
-    }
-    for (idx = 0; idx < length(record.fixedGraphs); ++idx)
+        write(target, context.typIdent[tID]);
+    });
+
+    typename Size<StringSet<CharString> >::Type graphIdx;
+    forEach(record.fixedGraphs, [&](RnaStructureGraph const & graph)
     {
-        unsigned fixID = _findIndex(context.fixLabels, record.fixedGraphs[idx].specs);
-        if (fixID == length(context.fixLabels))
+        graphIdx = _findIndex(context.fixLabels, graph.specs);
+        if (graphIdx == length(context.fixLabels))
             SEQAN_THROW(ParseError("ERROR: Fixed structure description not found in header."));
 
         write(target, "\tF");
-        write(target, context.fixIdent[fixID]);
-    }
-    for (idx = 0; idx < length(record.bppMatrGraphs); ++idx)
+        write(target, context.fixIdent[graphIdx]);
+    });
+    forEach(record.bppMatrGraphs, [&](RnaStructureGraph const & graph)
     {
-        unsigned bppID = _findIndex(context.bppLabels, record.bppMatrGraphs[idx].specs);
-        if (bppID == length(context.bppLabels))
+        graphIdx = _findIndex(context.bppLabels, graph.specs);
+        if (graphIdx == length(context.bppLabels))
             SEQAN_THROW(ParseError("ERROR: Bpp matrix description not found in header."));
 
         write(target, "\tM");
-        write(target, context.bppIdent[bppID]);
-    }
+        write(target, context.bppIdent[graphIdx]);
+    });
     writeValue(target, '\n');
 
     // write matrix
@@ -585,44 +603,42 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
         }
 
         // write reactivity
-        for (idx = 0; idx < length(record.typeID); ++idx)
+        forEach(record.typeID, [&](std::size_t tID)
         {
-            if (record.typeID[idx] >= length(record.reactivity) || record.typeID[idx] >= length(record.reactError))
+            if (tID >= length(record.reactivity) || tID >= length(record.reactError))
             {
-                SEQAN_THROW(ParseError("ERROR: Invalid typeID " + std::to_string(record.typeID[idx]) +
-                                       " for printing reactivity."));
+                SEQAN_THROW(ParseError("ERROR: Invalid typeID " + std::to_string(tID) + " for printing reactivity."));
             }
-            if (!empty(record.reactivity[record.typeID[idx]]))
-            {
-                writeValue(target, '\t');
-                appendNumber(target, record.reactivity[record.typeID[idx]][line]);
-            }
-            if (!empty(record.reactError[record.typeID[idx]]))
+            if (!empty(record.reactivity[tID]))
             {
                 writeValue(target, '\t');
-                appendNumber(target, record.reactError[record.typeID[idx]][line]);
+                appendNumber(target, record.reactivity[tID][line]);
             }
-        }
+            if (!empty(record.reactError[tID]))
+            {
+                writeValue(target, '\t');
+                appendNumber(target, record.reactError[tID][line]);
+            }
+        });
 
         // write fixed structure
-        for (idx = 0; idx < length(record.fixedGraphs); ++idx)
+        forEach(record.fixedGraphs, [&](RnaStructureGraph const & graph)
         {
             writeValue(target, '\t');
-            if (degree(record.fixedGraphs[idx].inter, line) != 0)
+            if (degree(graph.inter, line) != 0)
             {
-                RnaAdjacencyIterator adj_it(record.fixedGraphs[idx].inter, line);
+                RnaAdjacencyIterator adj_it(graph.inter, line);
                 appendNumber(target, value(adj_it) + offset);
             }
             else
             {
                 writeValue(target, '0');
             }
-        }
+        });
 
         // write bpp matrix
-        for (idx = 0; idx < length(record.bppMatrGraphs); ++idx)
+        forEach(record.bppMatrGraphs, [&](RnaStructureGraph const & graph)
         {
-            RnaStructureGraph const & graph = record.bppMatrGraphs[idx];
             writeValue(target, '\t');
             if (degree(graph.inter, line) != 0)
             {
@@ -646,7 +662,7 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
             {
                 write(target, "<>");
             }
-        }
+        });
         writeValue(target, '\n');
     }
 }

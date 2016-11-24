@@ -264,20 +264,20 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
 
     // write "body"
     unsigned offset = record.offset > 0 ? record.offset : 1;
-    for (unsigned i = 0; i < length(sequence); ++i)
+    for (TSizeRna5String idx = 0; idx < length(sequence); ++idx)
     {
         writeValue(target, ' ');  // All records start with a space
-        appendNumber(target, i + offset);
+        appendNumber(target, idx + offset);
         writeValue(target, '\t');
-        write(target, sequence[i]);
+        write(target, sequence[idx]);
         writeValue(target, '\t');
-        appendNumber(target, i + offset - 1);
+        appendNumber(target, idx + offset - 1);
         writeValue(target, '\t');
-        appendNumber(target, i + offset + 1);
+        appendNumber(target, idx + offset + 1);
         writeValue(target, '\t');
-        if (degree(graph.inter, i) != 0)
+        if (degree(graph.inter, idx) != 0)
         {
-            RnaAdjacencyIterator adjIter(graph.inter, i);
+            RnaAdjacencyIterator adjIter(graph.inter, idx);
             appendNumber(target, value(adjIter) + offset);
         }
         else
@@ -285,15 +285,14 @@ writeRecord(TTarget & target, RnaRecord const & record, Connect const & /*tag*/)
             writeValue(target, '0');
         }
         writeValue(target, '\t');
-        appendNumber(target, i + offset);
+        appendNumber(target, idx + offset);
         writeValue(target, '\n');
     }
 }
 
 template <typename TTarget>
 inline void
-writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context*/,
-            Connect const & /*tag*/)
+writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context*/, Connect const & /*tag*/)
 {
     writeRecord(target, record, Connect());
 }
