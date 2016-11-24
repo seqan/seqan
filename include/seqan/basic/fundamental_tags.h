@@ -543,7 +543,9 @@ inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, Tag<TagSpe
         return true;
     }
     else
+    {
         return tagSelectIntersect(static_cast<typename TagSelector<TOutTagList>::Base & >(outTagList), inTag);
+    }
 }
 
 template <typename TOutTagList>
@@ -559,9 +561,13 @@ inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, TagSelecto
     typedef typename TInTagList::Type TFormat;
 
     if (isEqual(inTagList, TFormat()))
+    {
         return tagSelectIntersect(outTagList, TFormat());
+    }
     else
+    {
         return tagSelectIntersect(outTagList, static_cast<typename TagSelector<TInTagList>::Base const & >(inTagList));
+    }
 }
 
 // assign()
