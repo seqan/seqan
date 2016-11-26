@@ -102,7 +102,7 @@ struct RDConfig
  * @class RankDictionary
  * @headerfile <seqan/index.h>
  * @brief A rank dictionary is a data structure storing the rank of an element in a sequence at every position of
- *        the sequence.
+ *        the sequence. Only supports sequences containing @link SimpleType @endlink or bool.
  *
  * @signature template <typename TValue, typename TSpec>
  *            struct RankDictionary;
