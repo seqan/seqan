@@ -54,10 +54,15 @@ namespace seqan {
  * @headerfile <seqan/index.h>
  * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
  *
- * @signature template <[typename TSpec]>
+ * @signature template <[typename TSpec[, typename TLengthSum[, unsigned LEVELS[, unsigned WORDS_PER_BLOCK]]]]>
  *            struct FMIndexConfig;
  *
  * @tparam TSpec The specializating type, defaults to <tt>void</tt>.
+ * @tparam TLengthSum The underlying type to store precomputed rank values, defaults to <tt>size_t</tt>.
+ *         The type must hold a value equal to the length of the bit vector.
+ * @tparam LEVELS The number of levels of the rank dictionary, defaults to <tt>1</tt>.
+ * @tparam WORDS_PER_BLOCK Number of popcount operations per rank query, defaults to <tt>0</tt>.
+ *         If set to 0, the number equals the size of the underlying alphabet type.
  *
  * @var unsigned FMIndexConfig::SAMPLING;
  * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
@@ -71,18 +76,63 @@ namespace seqan {
  * @typedef FMIndexConfig::Sentinels
  * @signature typedef Levels<TSpec, TConfig> Sentinels;
  * @brief The <tt>Sentinels</tt> determines the type of the sentinels in the @link FMIndex @endlink. In the
- *        default @link FMIndexConfig @endlink object the type of <tt>Sentinels</tt> is a two level
+ *        default @link FMIndexConfig @endlink object the type of <tt>Sentinels</tt> is a one level
  *        @link RankDictionary @endlink.
  */
 
-template <typename TSpec = void, typename TLengthSum = size_t>
+template <typename TSpec = void, typename TLengthSum = size_t, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 1>
 struct FMIndexConfig
 {
-    typedef TLengthSum                                                  LengthSum;
-    typedef WaveletTree<TSpec, WTRDConfig<LengthSum, Alloc<>, 1, 0> >   Bwt;
-    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, 1, 0> >    Sentinels;
+    typedef TLengthSum                                                                      LengthSum;
+    typedef WaveletTree<TSpec, WTRDConfig<LengthSum, Alloc<>, LEVELS, WORDS_PER_BLOCK> >    Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, LEVELS, WORDS_PER_BLOCK> >     Sentinels;
 
-    static const unsigned SAMPLING =                                    10;
+    static const unsigned SAMPLING = 10;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction FastFMIndexConfig
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class FastFMIndexConfig
+ * @headerfile <seqan/index.h>
+ * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
+ *
+ * @signature template <[typename TSpec[, typename TLengthSum[, unsigned LEVELS[, unsigned WORDS_PER_BLOCK]]]]>
+ *            struct FastFMIndexConfig;
+ *
+ * @tparam TSpec The specializating type, defaults to <tt>void</tt>.
+ * @tparam TLengthSum The underlying type to store precomputed rank values, defaults to <tt>size_t</tt>.
+ *         The type must hold a value equal to the length of the bit vector.
+ * @tparam LEVELS The number of levels of the rank dictionary, defaults to <tt>1</tt>.
+ * @tparam WORDS_PER_BLOCK Number of popcount operations per rank query, defaults to <tt>0</tt>.
+ *         If set to 0, the number equals the size of the underlying alphabet type.
+ *
+ * @var unsigned FastFMIndexConfig::SAMPLING;
+ * @brief The sampling rate determines how many suffix array entries are represented with one entry in the
+ *        @link CompressedSA @endlink.
+ *
+ * @typedef FastFMIndexConfig::Bwt
+ * @signature typedef Levels<TSpec, TConfig> Bwt;
+ * @brief The <tt>Bwt</tt> determines the type of the occurrence table. In the default @link FastFMIndexConfig
+ *        @endlink object the type of <tt>Bwt</tt> is an enhanced prefix sum rank dictionary (@link LevelsPrefixRDConfig @endlink).
+ *
+ * @typedef FastFMIndexConfig::Sentinels
+ * @signature typedef Levels<TSpec, TConfig> Sentinels;
+ * @brief The <tt>Sentinels</tt> determines the type of the sentinels in the @link FMIndex @endlink. In the
+ *        default @link FastFMIndexConfig @endlink object the type of <tt>Sentinels</tt> is a one level
+ *        @link RankDictionary @endlink.
+ */
+
+template <typename TSpec = void, typename TLengthSum = size_t, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 1>
+struct FastFMIndexConfig
+{
+    typedef TLengthSum                                                                          LengthSum;
+    typedef Levels<TSpec, LevelsPrefixRDConfig<LengthSum, Alloc<>, LEVELS, WORDS_PER_BLOCK> >   Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum, Alloc<>, LEVELS, WORDS_PER_BLOCK> >         Sentinels;
+
+    static const unsigned SAMPLING = 10;
 };
 
 // ============================================================================

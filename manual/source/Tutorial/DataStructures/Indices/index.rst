@@ -17,6 +17,7 @@ Indices
     :hidden:
     :titlesonly:
 
+    FMIndex
     QgramIndex
     StringIndices
     IndexIterators

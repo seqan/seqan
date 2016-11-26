@@ -54,6 +54,12 @@ namespace seqan {
  *
  * @tag RankDictionaryFibres#FibreRanks
  * @brief The string set containing a bit string for each character.
+ *
+ * @tag RankDictionaryFibres#FibreSuperBlocks
+ * @brief The string set containing a bit string for each character.
+ *
+ * @tag RankDictionaryFibres#FibreUltraBlocks
+ * @brief The string set containing a bit string for each character.
  */
 
 struct FibreRanks_;
@@ -101,7 +107,7 @@ struct RDConfig
  * @signature template <typename TValue, typename TSpec>
  *            struct RankDictionary;
  *
- * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevelRankDictionary @endlink.
+ * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link Levels @endlink.
  */
 template <typename TValue, typename TSpec>
 struct RankDictionary;
