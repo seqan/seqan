@@ -37,7 +37,7 @@ You can find the following indices in SeqAn:
 :dox:`IndexQGram`
   Q-gram index (see `here <QgramIndex.html>`_ for more details)
 :dox:`FMIndex`
-  Full-text minute index (see `here <FMIndex.html>`_ for more details) :cite:`Ferragina2001`
+  Full-text minute index (see the `FMIndex <FMIndex.html>`_ for more details) :cite:`Ferragina2001`
 
 Index Construction
 ------------------
