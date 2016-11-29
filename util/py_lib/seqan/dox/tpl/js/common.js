@@ -5,6 +5,10 @@
 
 	$(document).ready(function () {
 
+        // known compatability issue with bootstrap & clipboard.js
+        // https://github.com/zenorocha/clipboard.js/issues/155  
+        $.fn.modal.Constructor.prototype.enforceFocus = function() {}; 
+
 	    // hightlight nav items based on scroll area
 	    $('body').scrollspy({ target: '#toc', offset: 50 });
 	    
@@ -122,7 +126,6 @@
         		$('input[type=search]').focus();
         	}, 50);
 		}
-		
     });
 
 })(jQuery);
@@ -383,20 +386,20 @@
 						.first()
 						.attr('id', settings.modalId + 'Label');
 					$modal.appendTo(parent);
-					
-					$modal.find('[data-link]').each(function() {
-						var clip = new ZeroClipboard(this, {
-							moviePath: "lib/ZeroClipboard/ZeroClipboard.swf"
-						});
-					
-						clip.on("load", function(client) {
-							client.on( "complete", function(client, args) {
-								$modal.modal('hide');
-							});
-						});
-					});
-				}
-			}
+
+                    $modal.find('[data-link]').each(function() {
+                        var clipboard = new Clipboard(this);
+
+                        // console logs
+                        clipboard.on('success', function(e) {
+                            console.log(e);
+                        });
+                        clipboard.on('error', function(e) {
+                            console.log(e);
+                        });
+                    });
+                }
+  		    }
 			
 			function changeElement(element) {
 				$('#' + settings.modalId + ' ' + settings.elementSelector).html(element);

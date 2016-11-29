@@ -120,14 +120,14 @@ struct VertexSA : public VertexEsa<TSize>
     VertexSA() :
         TBase(),
         repLen(0),
-        lastChar(0)
+        lastChar()
     {}
 
    
     VertexSA(MinimalCtor) :
         TBase(MinimalCtor()),
         repLen(0),
-        lastChar(0)
+        lastChar()
     {}
 
    

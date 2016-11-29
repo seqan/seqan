@@ -269,6 +269,7 @@ namespace seqan
         Finder<Index<TText, TSpec>, TSpecFinder> &finder,
         TPattern const &pattern)
     {
+        static_assert(Is<ContainerConcept<TPattern> >::VALUE || Is<ContainerConcept<typename Container<TPattern>::Type > >::VALUE, "find(): needle has to implement ContainerConcept (e.g. use DnaString instead of Dna).");
         if (empty(finder))
         {
             _findFirstIndex(finder, needle(pattern), TSpecFinder());

@@ -22,64 +22,38 @@ matrix:
           packages: ['g++-5', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
       install: export CXX="g++-5" CC="gcc-5"
 
-    # package not whitelisted currently
-    #- os: linux
-      #compiler: gcc-6
-      #addons:
-        #apt:
-          #sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
-          #packages: ['g++-6', 'gcc-6', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
-      #install: export CXX="g++-6" CC="gcc-6"
-
     - os: linux
-      compiler: clang-3.5  #TODO: Revert if llvm-toolchain-precise is available again.
+      compiler: gcc-6
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports'] #, 'llvm-toolchain-precise-3.5']
-          packages: ['g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      before_install:
-        - export LLVM_VERSION=3.5.2
-        - export LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
-        - wget http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz -O $LLVM_ARCHIVE_PATH
-        - mkdir $HOME/clang+llvm
-        - tar xf $LLVM_ARCHIVE_PATH -C $HOME/clang+llvm --strip-components 1
-        - ln -s clang++ $HOME/clang+llvm/bin/clang++-3.5
-        - ln -s clang $HOME/clang+llvm/bin/clang-3.5
-        - export PATH=$HOME/clang+llvm/bin:$PATH
-      install: export CXX="clang++-3.5" CC="clang-3.5" LD_LIBRARY_PATH=$HOME/clang+llvm/lib:$LD_LIBRARY_PATH
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
+          packages: ['g++-6', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip']
+      install: export CXX="g++-6" CC="gcc-6"
 
     - os: linux
-      compiler: clang-3.6  #TODO: Revert if llvm-toolchain-precise is available again.
+      compiler: clang-3.5
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports'] #, 'llvm-toolchain-precise-3.6']
-          packages: ['g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      before_install:
-        - export LLVM_VERSION=3.6.2
-        - export LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
-        - wget http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz -O $LLVM_ARCHIVE_PATH
-        - mkdir $HOME/clang+llvm
-        - tar xf $LLVM_ARCHIVE_PATH -C $HOME/clang+llvm --strip-components 1
-        - ln -s clang++ $HOME/clang+llvm/bin/clang++-3.6
-        - ln -s clang $HOME/clang+llvm/bin/clang-3.6
-        - export PATH=$HOME/clang+llvm/bin:$PATH
-      install: export CXX="clang++-3.6" CC="clang-3.6" LD_LIBRARY_PATH=$HOME/clang+llvm/lib:$LD_LIBRARY_PATH
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports' , 'llvm-toolchain-precise-3.5']
+          packages: ['clang-3.5', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+      install: export CXX="clang++-3.5" CC="clang-3.5"
 
     - os: linux
-      compiler: clang-3.7  #TODO: Revert if llvm-toolchain-precise is available again.
+      compiler: clang-3.8
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']#, 'llvm-toolchain-precise-3.7']
-          packages: ['g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
-      before_install:
-        - export LLVM_VERSION=3.7.1
-        - export LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
-        - wget http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz -O $LLVM_ARCHIVE_PATH
-        - mkdir $HOME/clang+llvm
-        - tar xf $LLVM_ARCHIVE_PATH -C $HOME/clang+llvm --strip-components 1
-        - ln -s clang++ $HOME/clang+llvm/bin/clang++-3.7
-        - export PATH=$HOME/clang+llvm/bin:$PATH
-      install: export CXX="clang++-3.7" CC="clang-3.7" LD_LIBRARY_PATH=$HOME/clang+llvm/lib:$LD_LIBRARY_PATH
+          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports' , 'llvm-toolchain-precise-3.8']
+          packages: ['clang-3.8', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+      install: export CXX="clang++-3.8" CC="clang-3.8"
+
+#    # clang-3.9 currently not white listed.
+#    - os: linux
+#      compiler: clang-3.9
+#      addons:
+#        apt:
+#          sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports' , 'llvm-toolchain-precise-3.9']
+#          packages: ['clang-3.9', 'g++-5', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+#      install: export CXX="clang++-3.9"
 
 # currently too slow on osx
     #- os: osx
@@ -100,9 +74,7 @@ matrix:
 
 before_script:
   - export PATH=$HOME/.local/bin:/usr/lib/ccache:$PATH
-  - pip install --upgrade pip --user `whoami`
-  - pip install -r manual/requirements.txt --user `whoami`
-  - pip install --upgrade nose --user `whoami`
+  - pip install --user -r manual/requirements.txt
   - rm -rf ${HOME}/.ccache
   - mkdir -p ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX}
   - ln -s  ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache

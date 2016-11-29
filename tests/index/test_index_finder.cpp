@@ -72,7 +72,7 @@ SEQAN_TYPED_TEST_CASE(IndexFinderTest, UnidirectionalIndexTypes);
 SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
 {
     SEQAN_ASSERT(find(this->finder, prefix(concat(this->text), 1u)));
-    SEQAN_ASSERT(find(this->finder, (const char*)"A"));
+    SEQAN_ASSERT(find(this->finder, "A"));
 }
 
 SEQAN_TYPED_TEST(IndexFinderTest, DefaultFinder)
