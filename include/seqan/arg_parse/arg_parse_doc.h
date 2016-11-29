@@ -759,12 +759,18 @@ inline void _expandList(std::string & text, std::vector<std::string> const & lis
 
 inline void _addDefaultValues(std::string & text, ArgParseArgument const & arg)
 {
-    if (!empty(arg.defaultValue) && !isBooleanOption(arg))
+    if (!empty(arg.defaultValue))
     {
         append(text, " Default: ");
         _expandList(text, arg.defaultValue);
         append(text, ".");
     }
+}
+
+inline void _addDefaultValues(std::string & text, ArgParseOption const & arg)
+{
+    if (!isBooleanOption(arg))
+        _addDefaultValues(text, static_cast<ArgParseArgument>(arg));
 }
 
 // ----------------------------------------------------------------------------
@@ -811,7 +817,7 @@ inline void _seperateExtensionsForPrettyPrinting(std::vector<std::string> & file
 
 inline void _addValidValuesRestrictions(std::string & text, ArgParseArgument const & arg)
 {
-    if (!empty(arg.validValues) && !isBooleanOption(arg))
+    if (!empty(arg.validValues))
     {
         if (isInputFileArgument(arg) || isOutputFileArgument(arg))
         {
@@ -846,13 +852,21 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseArgument con
     }
 }
 
+inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const & opt)
+{
+    if (!isBooleanOption(opt))
+        _addValidValuesRestrictions(text, static_cast<ArgParseArgument>(opt));
+}
+
 // ----------------------------------------------------------------------------
 // Function _addTypeAndListInfo()
 // ----------------------------------------------------------------------------
 
 inline void _addTypeAndListInfo(std::string & text, ArgParseArgument const & arg)
 {
-    std::string type = _getArgumentType(arg);
+    std::string type = getArgumentTypeAsString(arg);
+    for (auto & c: type)
+         c = toupper(c);
 
     // Write arguments to term line -> only exception, boolean flags
     if (!empty(type))
@@ -869,7 +883,7 @@ inline void _addTypeAndListInfo(std::string & text, ArgParseArgument const & arg
         append(text, type);
         append(text, "\\fP");
 
-        if (isListArgument(arg))
+        if (isListArgument(arg) || arg._numberOfValues != 1)
             append(text, "'s");
     }
 }
@@ -998,25 +1012,9 @@ inline void printHelp(ArgumentParser const & me,
                 append(term, "\\fP");
             }
 
-            // Get arguments, autogenerate if necessary.
-            std::string arguments = getArgumentLabel(opt);
-
-            // Write arguments to term line -> only exception, boolean flags
-            if (!empty(arguments))
-            {
-                // Tokenize argument names.
-                std::istringstream iss(toCString(arguments));
-                std::vector<std::string> tokens;
-                std::copy(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>(),
-                          std::back_inserter<std::vector<std::string> >(tokens));
-                // Append them, formatted in italic.
-                for (unsigned i = 0; i < length(tokens); ++i)
-                {
-                    append(term, " \\fI");
-                    append(term, tokens[i]);
-                    append(term, "\\fP");
-                }
-            }
+            // expand type, list and numValues information
+            if (!opt._isFlag)
+                _addTypeAndListInfo(term, opt);
 
             std::string helpText = opt._helpText;
 
