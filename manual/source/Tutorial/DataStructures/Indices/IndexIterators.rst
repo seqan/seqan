@@ -115,9 +115,9 @@ Assignment 2
      Review
 
    Objective
-     Write a program that traverses the nodes of the suffix tree of ``"tobeornottobe"`` in the order shown here:
+     Write a program that traverses the nodes of the suffix tree of ``"mississippi"`` in the order shown here:
 
-     .. image:: streePreorder.png
+     .. image:: preOrder.png
 	:align: center
 	:width: 300px
 
@@ -168,10 +168,10 @@ Assignment 3
 	We modify the DFS traversal to skip the descent if we walk into a node whose representative is longer than 3.
 	We then proceed to the right and up as long as the representative is longer than 3.
 
-	.. includefrags:: demos/tutorial/index_iterators/index_assignment4.cpp
+	.. includefrags:: demos/tutorial/index_iterators/iterator_solution3.cpp
 	   :fragment: iteration
 
-	.. includefrags:: demos/tutorial/index_iterators/index_assignment4.cpp.stdout
+	.. includefrags:: demos/tutorial/index_iterators/iterator_solution3.cpp.stdout
 
 Bidirectional Top-Down Iteration
 --------------------------------
