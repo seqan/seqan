@@ -45,6 +45,7 @@
 #include <stdlib.h>
 #endif
 
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -82,6 +83,8 @@
 // Interfaces
 // ============================================================================
 
+#include <seqan/align_parallel/align_interface.h>
+#include <seqan/align_parallel/align_instance.h>
 #include <seqan/align_parallel/align_parallel_impl.h>
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_H_
