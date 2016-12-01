@@ -118,7 +118,6 @@ void testSeqIOBamFileWriteSequences(char const * extension, bool withQuals)
         SEQAN_ASSERT_EQ(quals[1], new_quals[1]);
         SEQAN_ASSERT_EQ(quals[2], new_quals[2]);
     }
-
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_bam_file_sam_write_sequences)

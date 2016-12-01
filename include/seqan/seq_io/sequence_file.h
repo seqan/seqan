@@ -103,7 +103,6 @@ typedef
     > > > > >
     SeqOutFormats;
 
-
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
 
