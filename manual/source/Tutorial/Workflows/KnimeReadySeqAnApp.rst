@@ -22,7 +22,7 @@ Duration
 Prerequisites
   :ref:`tutorial-getting-started-first-steps-in-seqan`, :ref:`tutorial-getting-started-parsing-command-line-arguments`
 
-In this tutorial you will learn how to write a SeqAn app, which can be, easly converted into a KNIME node.
+In this tutorial you will learn how to write a SeqAn app, which can be, easily converted into a KNIME node.
 
 The first part consists of preparing a dummy app such that it can be used in a KNIME workflow and in the second part you are asked to adapt the app such that it becomes a simple quality control tool.
 
@@ -57,7 +57,7 @@ While adding an :dox:`ArgParseOption` to your :dox:`ArgumentParser` you should c
 
 .. tip::
 
-  Later, when building workflows, you can only connect an output-port of a node to the input-port of the next one if only they have a compatible file endings.
+  Later, when building workflows, you can only connect an output-port of a node to the input-port of the next one if they have a compatible file endings.
 
 - There are special types of input/output ports which are prefixes to a list of files. Such ports are specified using ``ArgParseArgument::INPUT_PREFIX`` or ``ArgParseArgument::OUTPUT_PREFIX``. You can only connect an output prefix port to an input prefix port and vise-versa.
 

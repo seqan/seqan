@@ -509,4 +509,42 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
     SEQAN_ASSERT(_compareTextFilesAlt(toCString(outPath), toCString(gtfPath)));
 }
 
+SEQAN_DEFINE_TEST(test_gff_io_isOpen_fileIn)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    append(filePath, "/tests/gff_io/example.gff");
+
+    // Create SequenceStream object.
+    GffFileIn gffI;
+    SEQAN_ASSERT(!isOpen(gffI));
+
+    // open file
+    open(gffI, toCString(filePath));
+    SEQAN_ASSERT(isOpen(gffI));
+
+    // close file
+    close(gffI);
+    SEQAN_ASSERT(!isOpen(gffI));
+}
+
+SEQAN_DEFINE_TEST(test_gff_io_isOpen_fileOut)
+{
+    // Build path to file.
+    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    append(filePath, ".gff");
+
+    // Create SequenceStream object.
+    GffFileOut gffO;
+    SEQAN_ASSERT(!isOpen(gffO));
+
+    // open files
+    open(gffO, toCString(filePath));
+    SEQAN_ASSERT(isOpen(gffO));
+
+    // close files
+    close(gffO);
+    SEQAN_ASSERT(!isOpen(gffO));
+}
+
 #endif  // TESTS_GFF_IO_TEST_GFF_IO_H_

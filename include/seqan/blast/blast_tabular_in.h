@@ -118,7 +118,7 @@ namespace seqan
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/InputOutput/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
@@ -485,7 +485,9 @@ _readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
             match.qId = context._stringBuffer;
             break;
 //         case ENUM::Q_GI: write(s,  * ); break;
-//         case ENUM::Q_ACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::Q_ACC:
+            appendValue(match.qAccs, context._stringBuffer);
+            break;
 //         case ENUM::Q_ACCVER: write(s,  * ); break;
         case BlastMatchField<>::Enum::Q_LEN:
             match.qLength = lexicalCast<TPos>(context._stringBuffer);
@@ -496,9 +498,13 @@ _readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
 //         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
 //         case ENUM::S_GI: write(s,  * ); break;
 //         case ENUM::S_ALL_GI: write(s,  * ); break;
-//         case ENUM::S_ACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::S_ACC:
+            appendValue(match.sAccs, context._stringBuffer);
+            break;
 //         case ENUM::S_ACCVER: write(s,  * ); break;
-//         case ENUM::S_ALLACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::S_ALLACC:
+            strSplit(match.sAccs, context._stringBuffer, EqualsChar<';'>());
+            break;
         case BlastMatchField<>::Enum::S_LEN:
             match.sLength = lexicalCast<TPos>(context._stringBuffer);
             break;
@@ -548,6 +554,7 @@ _readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
             break;
         case BlastMatchField<>::Enum::P_POS:
             match.alignStats.alignmentSimilarity = lexicalCast<double>(context._stringBuffer);
+            break;
         case BlastMatchField<>::Enum::FRAMES:
         {
             clear(context._setBuffer2);
@@ -564,7 +571,13 @@ _readField(BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> & match,
             match.sFrameShift = lexicalCast<int8_t>(context._stringBuffer);
             break;
 //         case ENUM::BTOP: write( * ); break;
-//         case ENUM::S_TAX_IDS: write( * ); break;
+        case BlastMatchField<>::Enum::S_TAX_IDS:
+        {
+            StringSet<CharString> temp;
+            strSplit(temp, context._stringBuffer, EqualsChar<';'>());
+            for (auto const & s : temp)
+                appendValue(match.sTaxIds, lexicalCast<uint64_t>(s));
+        } break;
 //         case ENUM::S_SCI_NAMES: write( * ); break;
 //         case ENUM::S_COM_NAMES: write( * ); break;
 //         case ENUM::S_BLAST_NAMES: write( * ); break;

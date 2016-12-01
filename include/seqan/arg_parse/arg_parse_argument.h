@@ -230,19 +230,19 @@ inline std::string _typeToString(ArgParseArgument const & me)
         break;
 
     case ArgParseArgument::INPUT_FILE:
-        typeName = "inputfile";
+        typeName = "input_file";
         break;
 
     case ArgParseArgument::OUTPUT_FILE:
-        typeName = "outputfile";
+        typeName = "output_file";
         break;
 
     case ArgParseArgument::INPUT_PREFIX:
-        typeName = "inputprefix";
+        typeName = "input_prefix";
         break;
 
     case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "outputprefix";
+        typeName = "output_prefix";
         break;
 
     default:
@@ -449,6 +449,48 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function getArgumentType()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#getArgumentType
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Return the <tt>ArgParseArgument::ArgumentType</tt>.
+ *
+ * @signature std::string getArgumentType(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return ArgumentType The argument type.
+ */
+
+inline ArgParseArgument::ArgumentType getArgumentType(ArgParseArgument const & me)
+{
+    return me._argumentType;
+}
+
+// ----------------------------------------------------------------------------
+// Function getArgumentTypeAsString()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#getArgumentTypeAsString
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Return argument type As a string.
+ *
+ * @signature std::string getArgumentTypeAsString(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return std::string The argument type as a STL string.
+ */
+
+inline std::string getArgumentTypeAsString(ArgParseArgument const & me)
+{
+    return _typeToString(me._argumentType);
+}
+
+// ----------------------------------------------------------------------------
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------
 
@@ -464,43 +506,9 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
  * @return std::string The argument label as a STL string.
  */
 
-inline std::string const getArgumentLabel(ArgParseArgument const & me)
+inline std::string getArgumentLabel(ArgParseArgument const & me)
 {
-    if (me._argumentLabel != "")
-    {
-        return me._argumentLabel;
-    }
-    else
-    {
-        // infer from argument type
-        std::string baseLabel = "";
-        if (isInputFileArgument(me) || isOutputFileArgument(me))
-            baseLabel = "FILE";
-        else if (isInputPrefixArgument(me) || isOutputPrefixArgument(me))
-            baseLabel = "PREFIX";
-        else if (isStringArgument(me))
-            baseLabel = "STR";
-        else if (isIntegerArgument(me) || isDoubleArgument(me))
-            baseLabel = "NUM";
-
-        std::string finalLabel;
-
-        if (me._numberOfValues != 1)
-        {
-            for (unsigned i = 0; i < me._numberOfValues; ++i)
-            {
-                if (i != 0)
-                    append(finalLabel, " ");
-                append(finalLabel, baseLabel);
-            }
-        }
-        else if (isListArgument(me))
-            finalLabel = baseLabel;                         // maybe we want to customize list labels
-        else
-            finalLabel = baseLabel;
-
-        return finalLabel;
-    }
+    return me._argumentLabel;
 }
 
 // ----------------------------------------------------------------------------

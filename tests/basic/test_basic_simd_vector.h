@@ -43,7 +43,7 @@
 #include <seqan/misc/bit_twiddling.h>
 #include <seqan/basic/basic_simd_vector.h>
 
-#if SEQAN_SIMD_ENABLED
+#if defined(SEQAN_SIMD_ENABLED)
 namespace seqan {
 
 template <int ROWS, typename TVector>

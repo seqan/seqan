@@ -105,6 +105,24 @@ API Documentation
 
 The API documentation can be found :dox:`mainpage here`.
 
+Partners
+--------
+   
+
+    |intelLink|_
+    
+    .. |intelLink| image:: Intel-Logo-300x198.jpg
+                        :scale: 70%
+    .. _intelLink: http://www.intel.com/
+
+
+    |deNBILink|_
+
+    .. |deNBILink| image:: deNBI_Logo_rgb.jpg
+                        :scale: 20%
+    .. _deNBILink: https://www.denbi.de
+
+
 .. toctree::
     :caption: Tutorials
     :name: tutorial
@@ -141,7 +159,7 @@ The API documentation can be found :dox:`mainpage here`.
 
     SeqAn Project <http://seqan.de>
     GitHub <http://github.com/seqan>
-    Twitter <http://twitter.com/seqan>
+    Twitter <http://twitter.com/SeqAnLib>
     RSS Feeds <http://www.seqan.de/feed/>
     SeqAn Mailinglist <https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe>
 

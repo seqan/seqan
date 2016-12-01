@@ -722,13 +722,13 @@ int readMatchesFromSamBam(
                 {
                     switch (record.cigar[i].operation)
                     {
-                        case 'D': std::cout << 'D' << record.cigar[i].count;
-                       // case 'N': std::cout << 'N' << record.cigar[i].count;
-                       // case 'P': std::cout << 'P' << record.cigar[i].count;
-                        case 'I': std::cout << 'I' << record.cigar[i].count;
-                        case 'M': std::cout << 'M' << record.cigar[i].count;
-                       // case 'S': std::cout << 'S' << record.cigar[i].count;
-                       case 'X': std::cout << 'X' << record.cigar[i].count;
+                        case 'D': std::cout << 'D' << record.cigar[i].count; break;
+                       // case 'N': std::cout << 'N' << record.cigar[i].count; break;
+                       // case 'P': std::cout << 'P' << record.cigar[i].count; break;
+                        case 'I': std::cout << 'I' << record.cigar[i].count; break;
+                        case 'M': std::cout << 'M' << record.cigar[i].count; break;
+                       // case 'S': std::cout << 'S' << record.cigar[i].count; break;
+                       case 'X': std::cout << 'X' << record.cigar[i].count; break;
                     }
                 }
                 std::cout << std::endl;

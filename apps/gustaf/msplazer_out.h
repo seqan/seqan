@@ -196,7 +196,7 @@ void _setGffRecordType(GffRecord & record, TBreakpoint & bp)
         case TBreakpoint::INVERSION:
         record.type = "inversion";
         break;
-        case TBreakpoint::TANDEM:
+        case TBreakpoint::SEQAN_TANDEM:
         record.type = "tandem";
         break;
         case TBreakpoint::DISPDUPLICATION:
@@ -647,7 +647,7 @@ inline bool _fillVcfRecord(VcfRecord & record, TBreakpoint & bp, TSequence & ref
         case TBreakpoint::INVERSION:
         _fillVcfRecordInversion(record, bp, ref, id);
         return 1;
-        case TBreakpoint::TANDEM:
+        case TBreakpoint::SEQAN_TANDEM:
         _fillVcfRecordTandem(record, bp, ref, id);
         return 1;
         case TBreakpoint::DISPDUPLICATION:

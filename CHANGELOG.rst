@@ -3,6 +3,17 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.3.0
+~~~~~~~~~~~~~
+
+Library Features
+^^^^^^^^^^^^^^^^
+
+- Sequence I/O:
+    - new support for RNA structure files
+        - supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)
+        - input/output of whole files or of a single record/header
+
 Release 2.2.0
 ~~~~~~~~~~~~~
 

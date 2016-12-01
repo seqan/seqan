@@ -141,7 +141,7 @@ namespace seqan {
  * int result = localAlignment(gapsH, gapsV, scoringScheme, -2, 2);
  * @endcode
  *
- * http://seqan.readthedocs.io/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  *
  * @section References
  *

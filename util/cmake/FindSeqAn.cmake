@@ -107,6 +107,13 @@ endif ()
 # SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
 
 # ----------------------------------------------------------------------------
+# Deactivate verbosity if package detection is quite
+# ----------------------------------------------------------------------------
+
+# deactivate messages in check_* if quiet
+set (CMAKE_REQUIRED_QUIET ${SeqAn_FIND_QUIETLY})
+
+# ----------------------------------------------------------------------------
 # Determine compiler.
 # ----------------------------------------------------------------------------
 
@@ -287,8 +294,13 @@ endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 
 # librt, libpthread -- implicit, on Linux only
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CMAKE_SYSTEM_NAME} STREQUAL "kFreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "GNU"))
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
+  if ((CMAKE_CXX_FLAGS MATCHES "-static") OR (SEQAN_CXX_FLAGS MATCHES "-static") OR (CMAKE_EXE_LINKER_FLAGS MATCHES "-static"))
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+  else ()
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
+  endif ()
 elseif ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-D_GLIBCXX_USE_C99=1")
@@ -445,13 +457,15 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
   set (SEQAN_VERSION_PATCH "${_SEQAN_VERSION_PATCH}" CACHE INTERNAL "SeqAn patch version.")
   set (SEQAN_VERSION_PRE_RELEASE "${_SEQAN_VERSION_PRE_RELEASE}" CACHE INTERNAL "Whether version is a pre-release version version.")
   set (SEQAN_VERSION_STRING "${_SEQAN_VERSION_STRING}" CACHE INTERNAL "SeqAn version string.")
-
-  message (STATUS "  Determined version is ${SEQAN_VERSION_STRING}")
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
 # Print Variables
 # ----------------------------------------------------------------------------
+
+if (NOT SeqAn_FIND_QUIETLY)
+    message (STATUS "Found Seqan: ${SEQAN_INCLUDE_DIRS_MAIN} (found version \"${SEQAN_VERSION_STRING}\")")
+endif ()
 
 if (SEQAN_FIND_DEBUG)
   message("Result for ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")

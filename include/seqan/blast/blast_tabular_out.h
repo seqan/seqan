@@ -85,7 +85,7 @@ namespace seqan {
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/InputOutput/BlastIO.html">Blast IO tutorial</a>.
  *
  * Strictly speaking the <tt>writeHeader()</tt> call is not required for BlastTabular, but for consistency with
  * other (blast) formats and the read interface it is recommended.
@@ -251,7 +251,12 @@ _writeField(TFwdIterator & s,
                             - begin(match.qId, Standard()))); // truncate at first ' '
             break;
 //         case ENUM::Q_GI: write(s,  * ); break;
-//         case ENUM::Q_ACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::Q_ACC:
+            if (length(match.qAccs))
+                write(s, match.qAccs[0]);
+            else
+                write(s, "n/a");
+            break;
 //         case ENUM::Q_ACCVER: write(s,  * ); break;
         case BlastMatchField<>::Enum::Q_LEN:
             write(s, match.qLength);
@@ -264,9 +269,28 @@ _writeField(TFwdIterator & s,
 //         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
 //         case ENUM::S_GI: write(s,  * ); break;
 //         case ENUM::S_ALL_GI: write(s,  * ); break;
-//         case ENUM::S_ACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::S_ACC:
+            if (length(match.sAccs))
+                write(s, match.sAccs[0]);
+            else
+                write(s, "n/a");
+            break;
 //         case ENUM::S_ACCVER: write(s,  * ); break;
-//         case ENUM::S_ALLACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::S_ALLACC:
+            if (length(match.sAccs))
+            {
+                write(s, match.sAccs[0]);
+                for (unsigned i = 1; i < length(match.sAccs); ++i)
+                {
+                    write(s, ';');
+                    write(s, match.sAccs[i]);
+                }
+            }
+            else
+            {
+                write(s, "n/a");
+            }
+            break;
         case BlastMatchField<>::Enum::S_LEN:
             write(s, match.sLength);
             break;
@@ -394,7 +418,28 @@ _writeField(TFwdIterator & s,
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
 //         case ENUM::BTOP: write( * ); break;
-//         case ENUM::S_TAX_IDS: write( * ); break;
+        case BlastMatchField<>::Enum::S_TAX_IDS:
+            if (length(match.sTaxIds) == 1)
+            {
+                write(s, match.sTaxIds[0]);
+            }
+            else if (length(match.sTaxIds) > 1)
+            {
+                // they have to be sorted numerically
+                auto copy = match.sTaxIds;
+                sort(copy);
+                write(s, copy[0]);
+                for (unsigned i = 1; i < length(copy); ++i)
+                {
+                    write(s, ';');
+                    write(s, copy[i]);
+                }
+            }
+            else
+            {
+                write(s, "n/a");
+            }
+            break;
 //         case ENUM::S_SCI_NAMES: write( * ); break;
 //         case ENUM::S_COM_NAMES: write( * ); break;
 //         case ENUM::S_BLAST_NAMES: write( * ); break;
