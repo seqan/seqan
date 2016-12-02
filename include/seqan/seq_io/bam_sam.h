@@ -264,11 +264,12 @@ inline void _readRecord(TIdString & meta,
         resize(qual, l_qseq, Exact());
         TQualIter qitEnd = end(qual, Standard());
         for (TQualIter qit = begin(qual, Standard()); qit != qitEnd; )
+        {
             *qit++ = '!' + *it++;
-
-            clear(file.context.prevId);
-            file.context.prevId = meta;
-            }
+        }
+        clear(file.context.prevId);
+        file.context.prevId = meta;
+    }
     else
     {
         clear(file.context.prevId);
