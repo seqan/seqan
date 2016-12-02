@@ -64,6 +64,7 @@
 #include <seqan/vcf_io.h>
 #include <seqan/bed_io.h>
 
+#include <boost/detail/workaround.hpp>
 #include <boost/math/tools/tuple.hpp>
 #include <boost/math/tools/roots.hpp>
 
