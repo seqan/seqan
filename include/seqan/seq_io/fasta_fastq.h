@@ -231,55 +231,12 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord(TagSelector); Qualities inside seq
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline void
-readRecord(TIdString & /* meta */, TSeqString & /* seq */, TFwdIterator & /* iter */,
-           TagSelector<> const & /* format */)
-{}
-
-template <typename TIdString, typename TSeqString, typename TFwdIterator, typename TTagList>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        readRecord(meta, seq, iter, TFormat());
-    else
-        readRecord(meta, seq, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecord(TagSelector); Qualities inside qual
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void
-readRecord(TIdString & /* meta */, TSeqString & /* seq */, TQualString & /* qual */, TFwdIterator & /* iter */,
-           TagSelector<> const & /* format */)
-{}
-
-template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator, typename TTagList>
-inline void
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, TagSelector<TTagList> const & format)
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        readRecord(meta, seq, qual, iter, TFormat());
-    else
-        readRecord(meta, seq, qual, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecord(Raw);
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
 {
     typedef typename Value<TSeqString>::Type                        TAlphabet;
     typedef typename FastaIgnoreOrAssertFunctor_<TAlphabet>::Type   TIgnoreOrAssert;
@@ -295,7 +252,8 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Raw const & raw)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Raw const & raw)
 {
     clear(qual);
     readRecord(meta, seq, iter, raw);
@@ -306,7 +264,8 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
     typedef typename Value<TSeqString>::Type                        TAlphabet;
     typedef typename FastaIgnoreOrAssertFunctor_<TAlphabet>::Type   TIgnoreOrAssert;
@@ -327,7 +286,8 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fasta)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fasta)
 {
     clear(qual);
     readRecord(meta, seq, iter, Fasta());
@@ -337,8 +297,9 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 // Function readRecord(Fastq); Qualities inside seq
 // ----------------------------------------------------------------------------
 
-template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
+template <typename TIdString, typename TSeqString, typename TFwdIterator >
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
 {
     typedef typename Value<TSeqString>::Type                                TAlphabet;
     typedef typename FastaIgnoreFunctor_<TAlphabet>::Type                   TIgnore;
@@ -388,7 +349,8 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, 
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fastq)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fastq)
 {
     typedef typename Value<TSeqString>::Type                                TSeqAlphabet;
     typedef typename Value<TQualString>::Type                               TQualAlphabet;
@@ -431,7 +393,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Output> > >, void)
 writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const & seq, Raw const &,
             SequenceOutputOptions const & = SequenceOutputOptions())
 {
@@ -444,7 +406,7 @@ writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const 
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Output> > >, void)
 writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const & seq, TQualString const & /* qual */, Raw const &,
             SequenceOutputOptions const & = SequenceOutputOptions())
 {
@@ -458,7 +420,7 @@ writeRecord(TFwdIterator & iter, TIdString const & /* meta */, TSeqString const 
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TTarget, FormattedFile<Fastq, Output> > >, void)
 writeRecord(TTarget & target,
             TIdString const & meta,
             TSeqString const & seq,
@@ -473,7 +435,7 @@ writeRecord(TTarget & target,
 }
 
 template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TTarget, FormattedFile<Fastq, Output> > >, void)
 writeRecord(TTarget & target,
             TIdString const & meta,
             TSeqString const & seq,
@@ -490,7 +452,7 @@ writeRecord(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString, typename TQualString>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TTarget, FormattedFile<Fastq, Output> > >, void)
 writeRecord(TTarget & target,
             TIdString const & meta,
             TSeqString const & seq,
@@ -518,7 +480,7 @@ writeRecord(TTarget & target,
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TIdString, typename TSeqString>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TTarget, FormattedFile<Fastq, Output> > >, void)
 writeRecord(TTarget & target,
             TIdString const & meta,
             TSeqString const & seq,
@@ -528,53 +490,6 @@ writeRecord(TTarget & target,
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
     writeRecord(target, meta, seq, quals, tag, options);
-}
-
-
-// ----------------------------------------------------------------------------
-// Function writeRecord(TagSelector); Qualities inside seq
-// ----------------------------------------------------------------------------
-
-template <typename TFwdIterator, typename TIdString, typename TSeqString>
-inline void
-writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */,
-            TagSelector<> const & /* format */, SequenceOutputOptions const & /* options */)
-{}
-
-template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TTagList>
-inline void
-writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq,
-            TagSelector<TTagList> const & format, SequenceOutputOptions const & options = SequenceOutputOptions())
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        writeRecord(iter, meta, seq, TFormat(), options);
-    else
-        writeRecord(iter, meta, seq, static_cast<typename TagSelector<TTagList>::Base const &>(format), options);
-}
-
-// ----------------------------------------------------------------------------
-// Function writeRecord(TagSelector); Qualities inside qual
-// ----------------------------------------------------------------------------
-
-template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString>
-inline void
-writeRecord(TFwdIterator & /* iter */, TIdString const & /* meta */, TSeqString const & /* seq */, TQualString const & /* qual */,
-            TagSelector<> const & /* format */, SequenceOutputOptions const & /* options */)
-{}
-
-template <typename TFwdIterator, typename TIdString, typename TSeqString, typename TQualString, typename TTagList>
-inline void
-writeRecord(TFwdIterator & iter, TIdString const & meta, TSeqString const & seq, TQualString const & qual,
-            TagSelector<TTagList> const & format, SequenceOutputOptions const & options = SequenceOutputOptions())
-{
-    typedef typename TTagList::Type TFormat;
-
-    if (isEqual(format, TFormat()))
-        writeRecord(iter, meta, seq, qual, TFormat(), options);
-    else
-        writeRecord(iter, meta, seq, qual, static_cast<typename TagSelector<TTagList>::Base const &>(format), options);
 }
 
 }  // namespace seqan
