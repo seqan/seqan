@@ -44,6 +44,28 @@
 
 namespace seqan {
 
+
+// ==========================================================================
+// Tags, Classes, Enums
+// ==========================================================================
+
+template <typename TVoidSpec = void>
+struct BooleanArgumentValues_
+{
+    static const std::vector<std::string> LIST_TRUE;
+    static const std::vector<std::string> LIST_FALSE;
+};
+
+template <typename TVoidSpec>
+const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_TRUE{"1", "ON", "TRUE", "T"};
+
+template <typename TVoidSpec>
+const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_FALSE{"0", "OFF", "FALSE", "F"};
+
+// ==========================================================================
+// Functions
+// ==========================================================================
+
 // ----------------------------------------------------------------------------
 // Function _tryCast()
 // ----------------------------------------------------------------------------
@@ -68,6 +90,23 @@ inline TTarget _cast(TString const s)
     bool result = (!(stream >> dst).fail()) && (stream.rdbuf()->in_avail() == 0);
     SEQAN_CHECK(result, "could not cast %s", toCString(s));
     return dst;
+}
+
+// ----------------------------------------------------------------------------
+// Function _castBool()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline bool _castBool(bool & dst, TString const s)
+{
+    // since the validValue check already verifies that the value if one of
+    // BooleanArgumentValues_<>::LIST, one only needs to check one equivalent class
+    // dst = std::find()
+    dst = (std::find(BooleanArgumentValues_<>::LIST_TRUE.begin(),
+                     BooleanArgumentValues_<>::LIST_TRUE.end(),
+                     s)
+           != BooleanArgumentValues_<>::LIST_TRUE.end());
+    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -102,19 +141,19 @@ inline bool _isInt(TString const s)
 }
 
 // ----------------------------------------------------------------------------
-// Function _convertOptionValue()
+// Function _convertFlagValue()
 // ----------------------------------------------------------------------------
 
-class ArgParseOption;
-inline bool isBooleanOption(ArgParseOption const & me);
-
-inline bool _convertArgumentValue(bool & dst, ArgParseOption const & opt, std::string const & src)
+inline bool _convertFlagValue(bool & dst, std::string const & src)
 {
-    if (!isBooleanOption(opt))
-        return false;
-
     dst = !empty(src) && (src != "false");
     return true;
+}
+
+template <typename TObject>
+inline bool _convertFlagValue(TObject & /*dst*/, std::string const & /*s*/)
+{
+    return false;
 }
 
 // ----------------------------------------------------------------------------
@@ -126,6 +165,15 @@ inline bool isIntegerArgument(ArgParseArgument const & me);
 inline bool isInt64Argument(ArgParseArgument const & me);
 inline bool isDoubleArgument(ArgParseArgument const & me);
 inline bool isStringArgument(ArgParseArgument const & me);
+inline bool isBooleanArgument(ArgParseArgument const & me);
+
+inline bool _convertArgumentValue(bool & dst, ArgParseArgument const & opt, std::string const & src)
+{
+    if (!isBooleanArgument(opt))
+        return false;
+
+    return _castBool(dst, src);
+}
 
 inline bool _convertArgumentValue(int & dst, ArgParseArgument const & opt, std::string const & src)
 {

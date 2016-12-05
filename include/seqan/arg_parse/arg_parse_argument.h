@@ -197,7 +197,12 @@ public:
         _helpText("")
     {
         if (argumentType == ArgParseArgument::BOOL)
-            validValues = {"0", "OFF", "FALSE", "F", "1", "ON", "TRUE", "T"};
+        {
+            validValues = BooleanArgumentValues_<>::LIST_TRUE;
+            validValues.insert(validValues.end(),
+                               BooleanArgumentValues_<>::LIST_FALSE.begin(),
+                               BooleanArgumentValues_<>::LIST_FALSE.end());
+        }
     }
 };
 
@@ -294,22 +299,22 @@ inline bool isListArgument(ArgParseArgument const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function isBoolenArgument()
+// Function isBooleanArgument()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn ArgParseArgument#isBoolenArgument
+ * @fn ArgParseArgument#isBooleanArgument
  * @headerfile <seqan/arg_parse.h>
  * @brief Returns whether the argument is a bool.
  *
- * @signature bool isBoolenArgument(arg);
+ * @signature bool isBooleanArgument(arg);
  *
  * @param[in] arg The ArgParseArgument to query.
  *
  * @return bool <tt>true</tt> if it is a bool, <tt>false</tt> otherwise.
  */
 
-inline bool isBoolenArgument(ArgParseArgument const & me)
+inline bool isBooleanArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::BOOL;
 }
@@ -698,7 +703,7 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
 
 inline void setValidValues(ArgParseArgument & me, std::vector<std::string> const & values)
 {
-    if (isDoubleArgument(me) || isIntegerArgument(me) || isBoolenArgument(me))
+    if (isDoubleArgument(me) || isIntegerArgument(me) || isBooleanArgument(me))
         SEQAN_FAIL("ArgParseArgument does not support setting valid values for numeric or boolean arguments.");
 
     me.validValues = values;
@@ -706,7 +711,7 @@ inline void setValidValues(ArgParseArgument & me, std::vector<std::string> const
 
 inline void setValidValues(ArgParseArgument & me, std::string const & valuesString)
 {
-    if (isDoubleArgument(me) || isIntegerArgument(me) || isBoolenArgument(me))
+    if (isDoubleArgument(me) || isIntegerArgument(me) || isBooleanArgument(me))
         SEQAN_FAIL("ArgParseArgument does not support setting valid values for numeric or boolean arguments.");
 
     // convert array to String<std::string>
@@ -1102,7 +1107,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 
 inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 0)
 {
-    if (!isInputFileArgument(me) || !isOutputFileArgument(me))
+    if (!isInputFileArgument(me) && !isOutputFileArgument(me))
         SEQAN_FAIL("Cannot get file extension from non-file argument/option.");
 
     // Short-circuit to override file extension if set.

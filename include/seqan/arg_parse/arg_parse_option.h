@@ -160,24 +160,24 @@ inline bool isStringArgument(ArgParseOption const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function isBooleanOption()
+// Function isFlagOption()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn ArgParseOption#isBooleanOption
+ * @fn ArgParseOption#isFlagOption
  * @headerfile <seqan/arg_parse.h>
- * @brief Returns whether an option is a switch.
+ * @brief Returns whether an option is a flag.
  *
- * @signature bool isBooleanOption(option);
+ * @signature bool isFlagOption(option);
  *
  * @param[in] option The ArgParseOption object to query.
  *
- * @return bool <tt>true</tt> if <tt>option</tt> is a switch and <tt>false</tt> otherwise.
+ * @return bool <tt>true</tt> if <tt>option</tt> is a flag/switch and <tt>false</tt> otherwise.
  *
  * Flags are given without arguments, e.g. the <tt>-l</tt> flag in the Unix <tt>ls</tt> command.
  */
 
-inline bool isBooleanOption(ArgParseOption const & me)
+inline bool isFlagOption(ArgParseOption const & me)
 {
     return me._isFlag;
 }
@@ -411,7 +411,7 @@ inline void setRequired(ArgParseOption & me, bool required)
 
 inline std::string const getArgumentLabel(ArgParseOption const & me)
 {
-    if (isBooleanOption(me))
+    if (isFlagOption(me))
         return "";
     else
         return getArgumentLabel(static_cast<ArgParseArgument>(me));
