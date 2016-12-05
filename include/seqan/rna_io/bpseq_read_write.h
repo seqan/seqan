@@ -211,14 +211,14 @@ writeRecord(TTarget & target, RnaRecord const & record, Bpseq const & /*tag*/)
     unsigned offset = record.offset > 0 ? record.offset : 1;
     for (unsigned i = 0; i < record.seqLen; ++i)
     {
-        write(target, offset + i);
+        appendNumber(target, offset + i);
         writeValue(target, '\t');
         write(target, record.sequence[i]);
         writeValue(target, '\t');
         if (degree(record.fixedGraphs[0].inter, i) != 0)
         {
             RnaAdjacencyIterator adj_it(record.fixedGraphs[0].inter, i);
-            write(target, value(adj_it) + offset);
+            appendNumber(target, value(adj_it) + offset);
         }
         else
         {

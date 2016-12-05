@@ -53,5 +53,6 @@ SEQAN_BEGIN_TESTSUITE(test_rna_io)
     SEQAN_CALL_TEST(test_rna_io_write_stockholm);
     SEQAN_CALL_TEST(test_rna_io_write_bpseq);
     SEQAN_CALL_TEST(test_rna_io_write_ebpseq);
+    SEQAN_CALL_TEST(test_rna_io_convert);
 }
 SEQAN_END_TESTSUITE

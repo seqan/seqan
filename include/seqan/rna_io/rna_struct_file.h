@@ -307,6 +307,10 @@ inline void readRecords(RnaStructContents & contents, FormattedFile<RnaStruct, I
     TSize numRecords = 0;
     while (!atEnd(file.iter) && ++numRecords <= maxRecords)
     {
+        if (numRecords >= UINT32_MAX)
+            SEQAN_THROW(ParseError("ERROR: Capacity exceeded. File contains too many sequences: Set the maxRecords "
+                                           "parameter to at most " + std::to_string(UINT32_MAX - 1u) + "."));
+
         readRecord(record, file);
         append(contents.records, record);
     }

@@ -106,8 +106,8 @@ readRecord(RnaRecord & record, TForwardIter & iter, Vienna const & /*tag*/)
     clear(record);
 
     // read name (and offset)
-    skipOne(iter);                                                      // ">" symbol
-    readUntil(buffer, iter, IsNewline());
+    skipOne(iter);  // ">" symbol
+    readLine(buffer, iter);
     std::string::size_type pos = buffer.find_last_of('/');
     if (pos == std::string::npos)
     {
@@ -127,22 +127,21 @@ readRecord(RnaRecord & record, TForwardIter & iter, Vienna const & /*tag*/)
     clear(buffer);
 
     // read sequence
-    skipOne(iter);
-    readUntil(record.sequence, iter, IsNewline());
+    readLine(record.sequence, iter);
     record.seqLen = length(record.sequence);
 
     // read bracket string and build graph
-    skipOne(iter);
     readUntil(buffer, iter, IsWhitespace());
     if (length(buffer) != record.seqLen)
         SEQAN_THROW(ParseError("ERROR: Bracket string must be as long as sequence."));
 
     RnaStructureGraph graph;
-    for (unsigned idx = 0; idx < length(buffer); ++idx)
+    typedef typename Size<std::string>::Type TStdStringSize;
+    for (TStdStringSize idx = 0; idx < length(buffer); ++idx)
         addVertex(graph.inter);
 
-    std::stack<unsigned> stack;
-    for(unsigned idx = 0; idx < length(buffer); ++idx)
+    std::stack<TStdStringSize> stack;
+    for (TStdStringSize idx = 0; idx < length(buffer); ++idx)
     {
         if (buffer[idx] == '(')
         {
@@ -198,9 +197,9 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, Vienna const & /*tag*/)
 {
-    if (empty(record.sequence) && length(rows(record.align)) != 1)
+    if (empty(record.sequence) && length(rows(record.align)) != 1u)
         SEQAN_THROW(ParseError("ERROR: Vienna formatted file cannot contain an alignment."));
-    if (length(record.fixedGraphs) != 1)
+    if (length(record.fixedGraphs) != 1u)
         SEQAN_THROW(ParseError("ERROR: Vienna formatted file cannot contain multiple structure graphs."));
 
     Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
@@ -212,9 +211,9 @@ writeRecord(TTarget & target, RnaRecord const & record, Vienna const & /*tag*/)
     write(target, record.name);
     // write index beg-end
     writeValue(target, '/');
-    write(target, record.offset);
+    appendNumber(target, record.offset);
     writeValue(target, '-');
-    write(target, record.offset + record.seqLen - 1);
+    appendNumber(target, record.offset + record.seqLen - 1);
     writeValue(target, '\n');
 
     // write sequence
@@ -226,7 +225,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Vienna const & /*tag*/)
     resize(bracketStr, numVertices(graph.inter), ' ');
     std::stack<unsigned> stack;
 
-    for (unsigned idx = 0; idx < length(bracketStr); ++idx) // write pairs in bracket notation
+    for (typename Size<std::string>::Type idx = 0; idx < length(bracketStr); ++idx)  // write pairs in bracket notation
     {
         if (degree(graph.inter, idx) == 0)                  // unpaired
         {
@@ -263,7 +262,7 @@ writeRecord(TTarget & target, RnaRecord const & record, Vienna const & /*tag*/)
     if (graph.energy != 0.0f)
     {
         write(target, " (");
-        write(target, graph.energy);
+        appendNumber(target, graph.energy);
         writeValue(target, ')');
     }
     writeValue(target, '\n');
