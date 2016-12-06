@@ -116,9 +116,9 @@ namespace seqan {
  *
  * - value() or operator []: O(1)
  *
- * - getValueById(): amortised O(1)
+ * - getValueById(): O(log(n))
  *
- * - removeValueById(): amortised O(1)
+ * - removeValueById(): O(log(n))
  *
  * The memory consumption is linear to the number of pointers.
  *
