@@ -40,7 +40,6 @@
 
 #include <string>
 #include <vector>
-
 #include <sstream>
 
 namespace seqan {
@@ -344,8 +343,7 @@ inline bool isStringArgument(ArgParseArgument const & me)
            (me._argumentType == ArgParseArgument::INPUT_PREFIX) ||
            (me._argumentType == ArgParseArgument::OUTPUT_PREFIX) ||
            (me._argumentType == ArgParseArgument::INPUT_DIRECTORY) ||
-           (me._argumentType == ArgParseArgument::OUTPUT_DIRECTORY) ||
-           (me._argumentType == ArgParseArgument::BOOL);
+           (me._argumentType == ArgParseArgument::OUTPUT_DIRECTORY);
 }
 
 // ----------------------------------------------------------------------------
@@ -881,6 +879,35 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string co
 }
 
 // ----------------------------------------------------------------------------
+// Helper Function _checkBooleanValidValues()
+// ----------------------------------------------------------------------------
+
+inline void _checkBooleanValidValues(ArgParseArgument const & me, std::string const & value)
+{
+    SEQAN_ASSERT(isBooleanArgument(me));
+
+    std::string value_up{value};
+    std::transform(value.begin(), value.end(), value_up.begin(), ::toupper); // allow for lowercase letters
+    bool isContained = (std::find(me.validValues.begin(), me.validValues.end(), value_up)
+                        != me.validValues.end());
+
+    if (!isContained)
+    {
+        std::stringstream what;
+        what << "the given value '" << value << "' is not in the list of allowed values [";
+
+        for (auto validValue = me.validValues.begin(); validValue != me.validValues.end(); ++validValue)
+        {
+            if (validValue != me.validValues.begin())
+                what << ", ";
+            what << *validValue;
+        }
+        what << "]";
+        SEQAN_THROW(ParseError(what.str()));
+    }
+}
+
+// ----------------------------------------------------------------------------
 // Function _checkValue()
 // ----------------------------------------------------------------------------
 
@@ -901,6 +928,9 @@ inline void _checkValue(ArgParseArgument const & me, std::string val, unsigned i
         _checkNumericArgument<double>(me, val);
 
     // check valid values
+    if (isBooleanArgument(me))
+        _checkBooleanValidValues(me, val);
+
     if (isStringArgument(me))
         _checkStringRestrictions(me, val, i);
 }

@@ -57,10 +57,10 @@ struct BooleanArgumentValues_
 };
 
 template <typename TVoidSpec>
-const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_TRUE{"1", "ON", "TRUE", "T"};
+const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_TRUE{"1", "ON", "TRUE", "T", "YES"};
 
 template <typename TVoidSpec>
-const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_FALSE{"0", "OFF", "FALSE", "F"};
+const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_FALSE{"0", "OFF", "FALSE", "F", "NO"};
 
 // ==========================================================================
 // Functions
@@ -77,6 +77,21 @@ inline bool _tryCast(TTarget & dest, TString const source)
     return result;
 }
 
+template <typename TString>
+inline bool _tryCast(bool & dst, TString const & s)
+{
+    // since the validValue check already verifies that the value is one of
+    // BooleanArgumentValues_<>::LIST_TRUE and BooleanArgumentValues_<>::LIST_FALSE,
+    // one only needs to check one equivalent class
+    std::string s_uppercase{s};
+    std::transform(s.begin(), s.end(), s_uppercase.begin(), ::toupper); // allow for lowercase letters
+    dst = (std::find(BooleanArgumentValues_<>::LIST_TRUE.begin(),
+                     BooleanArgumentValues_<>::LIST_TRUE.end(),
+                     s_uppercase)
+           != BooleanArgumentValues_<>::LIST_TRUE.end());
+    return true;
+}
+
 // ----------------------------------------------------------------------------
 // Function _cast()
 // ----------------------------------------------------------------------------
@@ -90,23 +105,6 @@ inline TTarget _cast(TString const s)
     bool result = (!(stream >> dst).fail()) && (stream.rdbuf()->in_avail() == 0);
     SEQAN_CHECK(result, "could not cast %s", toCString(s));
     return dst;
-}
-
-// ----------------------------------------------------------------------------
-// Function _castBool()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-inline bool _castBool(bool & dst, TString const s)
-{
-    // since the validValue check already verifies that the value if one of
-    // BooleanArgumentValues_<>::LIST, one only needs to check one equivalent class
-    // dst = std::find()
-    dst = (std::find(BooleanArgumentValues_<>::LIST_TRUE.begin(),
-                     BooleanArgumentValues_<>::LIST_TRUE.end(),
-                     s)
-           != BooleanArgumentValues_<>::LIST_TRUE.end());
-    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -172,7 +170,7 @@ inline bool _convertArgumentValue(bool & dst, ArgParseArgument const & opt, std:
     if (!isBooleanArgument(opt))
         return false;
 
-    return _castBool(dst, src);
+    return _tryCast(dst, src);
 }
 
 inline bool _convertArgumentValue(int & dst, ArgParseArgument const & opt, std::string const & src)
