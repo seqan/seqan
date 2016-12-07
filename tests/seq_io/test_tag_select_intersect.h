@@ -46,7 +46,6 @@
 
 void testTransferTag()
 {
-
     SeqOutFormat outFormat;
     SeqFileIn inputFile;
     seqan::CharString filePath;
