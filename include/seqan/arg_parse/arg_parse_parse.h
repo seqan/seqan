@@ -308,6 +308,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         return ArgumentParser::PARSE_ERROR;
     }
 
+#ifndef SEQAN_DISABLE_VERSION_CHECK
     // do version check if not turned off by the user
     std::string version_option;
     getOptionValue(version_option, me, "version-check");
@@ -332,6 +333,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
             seqan_version(std::move(seqanVersionProm));
         }
     }
+#endif  // !SEQAN_DISABLE_VERSION_CHECK
 
     // Handle the special options.
     if (hasOption(me, "version") && isSet(me, "version"))

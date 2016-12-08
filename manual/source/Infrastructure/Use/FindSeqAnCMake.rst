@@ -145,11 +145,21 @@ See :ref:`this page <infra-use-cmake-build-dirs>` for more details.
 Checking for newer Versions of SeqAn (optional)
 -----------------------------------------------
 
-Starting from the release 2.4.0 the argument parser will have a new feature to check whether your SeqAn version is outdated. This can be a very helpful reminder to stay up to date since SeqAn evolves rapidly to resolve issues or to supply new functionality. We are aware that this might be unwanted by some of you so we provide several ways of disabling this feature:
+The argument parser has a new feature to check for updates for the SeqAn library or for an application.
+This can be a very helpful reminder to stay up to date since SeqAn evolves rapidly to resolve issues or to supply new functionality.
+The following options are possible:
 
-  #. You can disable the feature globally at compile time using the compiler flag ``-DSEQAN_DISABLE_VERSION_CHECK=1``
+  ===================================  ============================================
+            Cmake Option                                Description
+  ===================================  ============================================
+  ``-DSEQAN_VERSION_CHECK="opt-out"``  The update feature is enabled and switched
+                                       on in the argument parser options. (default)
 
-  #. You can disable the feature locally for every command line application by specifying ``--version-check OFF``
+  ``-DSEQAN_VERSION_CHECK="opt-in"``   The update feature is enabled but switched
+                                       off in the argument parser options.
+
+  ``-DSEQAN_VERSION_CHECK="disable"``  The update feature is disabled.
+  ===================================  ============================================
 
 .. note::
 

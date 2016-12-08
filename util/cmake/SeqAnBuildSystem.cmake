@@ -248,8 +248,10 @@ macro (seqan_build_system_init)
     ## options
 
     # SeqAn Version Check
-    if (NOT SEQAN_VERSION_CHECK)
-        set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-DSEQAN_DISABLE_VERSION_CHECK")
+    if ("${SEQAN_VERSION_CHECK}" STREQUAL "disable")  # Disable completely
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
+    elseif ("${SEQAN_VERSION_CHECK}" STREQUAL "opt-in")  # Build it but make it opt-in
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_VERSION_CHECK_OPT_IN)
     endif ()
 
     # Architecture.
@@ -745,11 +747,11 @@ function (seqan_register_demos PREFIX)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
+    # Disable version check for demos.
+    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
     add_definitions (${SEQAN_DEFINITIONS})
 
     # Disable the version check for all demos.
-    set (SEQAN_VERSION_CHECK_TMP_ ${SEQAN_VERSION_CHECK} CACHE INTERNAL "Disable version check in demos.")
-    set (SEQAN_VERSION_CHECK OFF CACHE BOOL "SeqAn version check." FORCE)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -780,8 +782,6 @@ function (seqan_register_demos PREFIX)
             _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
         endif (SKIP)
     endforeach (ENTRY ${ENTRIES})
-    # Reset SEQAN_VERSION_CHECK to user set value.
-    set (SEQAN_VERSION_CHECK ${SEQAN_VERSION_CHECK_TMP_} CACHE BOOL "SeqAn version check." FORCE)
 endfunction (seqan_register_demos)
 
 # ---------------------------------------------------------------------------
@@ -801,11 +801,7 @@ endfunction (seqan_register_demos)
 
 macro (seqan_register_tests)
     # Setup flags for tests.
-    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
-
-    # Disable the version check for all tests.
-    set (SEQAN_VERSION_CHECK_TMP_ ${SEQAN_VERSION_CHECK} CACHE INTERNAL "Disable version check in tests.")
-    set (SEQAN_VERSION_CHECK OFF CACHE BOOL "SeqAn version check." FORCE)
+    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1 -DSEQAN_DISABLE_VERSION_CHECK)
 
     # Remove NDEBUG definition for tests.
     string (REGEX REPLACE "-DNDEBUG" ""
@@ -838,6 +834,4 @@ macro (seqan_register_tests)
             endif (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
         endif (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
     endforeach (ENTRY ${ENTRIES})
-    # Reset value of SEQAN_VERSION variable.
-    set (SEQAN_VERSION_CHECK ${SEQAN_VERSION_CHECK_TMP_} CACHE BOOL "SeqAn version check." FORCE)
 endmacro (seqan_register_tests)

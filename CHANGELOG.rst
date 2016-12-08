@@ -9,6 +9,12 @@ Release 2.3.0
 Library Features
 ^^^^^^^^^^^^^^^^
 
+- Argument Parser:
+    - Adds version check support to the argument parser.
+        - Check for new updates of a specific application.
+        - Check for new versions of the library.
+        - This option is opt-out by default but can be switched to opt-in or completely disabled via compiler flags and the SeqAn build system.
+
 - Sequence I/O:
     - new support for RNA structure files
         - supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)

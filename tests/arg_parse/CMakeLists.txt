@@ -39,11 +39,9 @@ add_executable (test_arg_parse
                 test_argument_parser.h
                 test_arg_parse_ctd_support.h)
 
-set (SEQAN_VERSION_CHECK ON FORCE)
 add_executable (test_arg_parse_version_check
                test_arg_parse_version_check.cpp
                test_arg_parse_version_check.h)
-set (SEQAN_VERSION_CHECK OFF FORCE)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_arg_parse ${SEQAN_LIBRARIES})

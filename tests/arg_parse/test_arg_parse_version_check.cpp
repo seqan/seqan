@@ -32,6 +32,14 @@
 // Author: Svenja Mehringer <svenja.mehringer@fu-berlin.de>
 // ==========================================================================
 
+// Locally enable version check for this test.
+#if defined(SEQAN_DISABLE_VERSION_CHECK)
+#undef SEQAN_DISABLE_VERSION_CHECK
+#endif
+#if defined(SEQAN_VERSION_CHECK_OPT_IN)
+#undef SEQAN_VERSION_CHECK_OPT_IN
+#endif
+
 #define SEQAN_DEBUG
 
 #include "test_arg_parse_version_check.h"

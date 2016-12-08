@@ -192,17 +192,24 @@ meaning
  If set to 1 then OpenMP is expected to be available.
  You might have to add ``-fopenmp`` and possibly ``-lgomp`` to your build. And OpenMP needs to be supported by your compiler.
 
-SEQAN_DISABLE_VERSION_VCHECK
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SEQAN_VERSION_CHECK_OPT_IN
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-possible value
-  0, 1
+meaning 
+ If set then the version update feature is enabled but deactivated in the argument parser options and must be explicitly activated by the user.
+ If not specified the update feature is enabled and activated by default.
 
-default
-  0 (from release 2.4.0 onwards)
+usage
+ Add compiler flag: ``-DSEQAN_VERSION_CHCK_OPT_IN``
+
+SEQAN_DISABLE_VERSION_CHECK
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 meaning
-  Starting from the release 2.4.0 every application or script that uses the SeqAn argument parser (and only those) will have a new feature to check whether your SeqAn version is outdated. This feature can be disabled by setting this flag to 1. Note: You can also disble this feature at runtime by specifying the command line option ``--version-check OFF``.
+ If set the version update feature is disabled in the argument parser.
+
+usage
+ add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHEK`` 
 
 Settings Projects Using Seqan
 -----------------------------

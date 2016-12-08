@@ -9,9 +9,6 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--full-help" isList="false">
 			<mapping referenceName="test_app.full-help" />
 		</clielement>
-		<clielement optionIdentifier="--version-check" isList="false">
-			<mapping referenceName="test_app.version-check" />
-		</clielement>
 		<clielement optionIdentifier="--double" isList="false">
 			<mapping referenceName="test_app.double" />
 		</clielement>
@@ -56,7 +53,6 @@ The second one contains formating &lt;bla&gt;.
 	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="test_app" description="This is a test-app.">
 			<ITEM name="full-help" value="false" type="string" description="Display the help message with advanced options." restrictions="true,false" required="false" advanced="false" />
-			<ITEM name="version-check" value="OFF" type="string" description="Choose OFF to disable any update notifications. With APP_ONLY you&apos;ll receive update notifications about new versions of your app. In DEV mode you&apos;ll receive update notifications regarding new versions of your app and new versions of the SeqAn library." restrictions="DEV,APP_ONLY,OFF" required="false" advanced="false" />
 			<ITEM name="double" value="" type="double" description="set a double option" required="false" advanced="false" />
 			<ITEM name="integer" value="" type="int" description="set an integer option" restrictions="1:10" required="false" advanced="false" />
 			<ITEM name="int64" value="" type="int" description="set a 64 bit integer option" required="false" advanced="false" />
