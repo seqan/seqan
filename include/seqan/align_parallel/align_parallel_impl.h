@@ -584,7 +584,7 @@ implParallelAlign(ExecutionPolicy<TParSpec, TVecSpec> const & execPolicy,
     typename impl::dp::parallel::ThreadLocalStorage<impl::dp::parallel::DPLocalStorage<TScoreValue, TSimdVec>, TParSpec>::Type tls;
 
 //    auto begin = sysTime();
-        
+    auto taskGraph = createGraph(taskContext, tls, execPolicy);
 //    std::cout << "\nCreation: " << std::setw(15) << sysTime() - begin << "s\n";
     invoke(taskGraph, execPolicy);
 
