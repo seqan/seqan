@@ -130,18 +130,17 @@ struct RankDictionaryEntry_;
  *
  * @brief LevelsRDConfig allows configuring a @link Levels @endlink RankDictionary.
  *
- * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 0>
- *            struct LevelsRDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_>;
+ * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+ *            struct LevelsRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>;
  *
  * @tparam TSize           A data type that can store the length of the input text. Default: <tt>size_t</tt>
  * @tparam TFibre          A tag for specialization purposes of the underlying strings. Default: <tt>Alloc<></tt>
  * @tparam LEVELS          The number of levels (1, 2, or 3). The more levels, the lower the space consumption but possibly slight performance decreases. Default: <tt>1</tt>
  * @tparam WORDS_PER_BLOCK The number of popcount operations per rank query. A lower number implies more space for faster runtime. 0 is a shortcut for the size of the alphabet of the RankDictionary. Default: <tt>0</tt>
- *
  */
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 0>
-struct LevelsRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+struct LevelsRDConfig : RDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK> {};
 
 /*!
  * @class LevelsPrefixRDConfig
@@ -149,17 +148,16 @@ struct LevelsRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
  *
  * @brief LevelsPrefixRDConfig allows configuring a @link Levels @endlink RankDictionary that is recommended for fast searching in bidirectional indices.
  *
- * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 0>
- *            struct LevelsRDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_>;
+ * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+ *            struct LevelsRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>;
  *
  * @tparam TSize           A data type that can store the length of the input text. Default: <tt>size_t</tt>
  * @tparam TFibre          A tag for specialization purposes of the underlying strings. Default: <tt>Alloc<></tt>
  * @tparam LEVELS          The number of levels (1, 2, or 3). The more levels, the lower the space consumption but possibly slight performance decreases. Default: <tt>1</tt>
  * @tparam WORDS_PER_BLOCK The number of popcount operations per rank query. A lower number implies more space for faster runtime. 0 is a shortcut for the size of the alphabet of the RankDictionary. Default: <tt>0</tt>
- *
  */
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 0>
-struct LevelsPrefixRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+struct LevelsPrefixRDConfig : RDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK> {};
 
 // ----------------------------------------------------------------------------
 // Tag Levels

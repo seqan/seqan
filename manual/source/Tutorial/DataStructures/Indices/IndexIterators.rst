@@ -83,9 +83,8 @@ Alternatively, we could have used :dox:`TopDownIterator#goDown` to go down the p
 
 .. tip::
 
-   When implementing recursive algorithms such as an approximate search using backtracking, we recommend
-   the use of the :dox:`TopDownIterator` without history. By passing the iterator by value, the history
-   is stored implicitly on the call stack.
+   When implementing recursive algorithms such as an approximate search using backtracking, we recommend the use of the :dox:`TopDownIterator` without history.
+   By passing the iterator by value, the history is stored implicitly on the call stack.
 
 Assignment 1
 ^^^^^^^^^^^^
@@ -122,9 +121,7 @@ Assignment 2
 	:width: 300px
 
      At each node print the text of the edges from the root to the node.
-     You may only use the functions :dox:`TopDownIterator#goDown`, :dox:`TopDownIterator#goRight`,
-     :dox:`TopDownHistoryIterator#goUp` and :dox:`VSTreeIterator#isRoot` to navigate and
-     :dox:`VSTreeIterator#representative` which returns the string that represents the node the iterator points to.
+     You may only use the functions :dox:`TopDownIterator#goDown`, :dox:`TopDownIterator#goRight`, :dox:`TopDownHistoryIterator#goUp` and :dox:`VSTreeIterator#isRoot` to navigate and :dox:`VSTreeIterator#representative` which returns the string that represents the node the iterator points to.
 
    Hint
      * Use a :dox:`TopDownHistoryIterator TopDown History Iterator`.
@@ -176,29 +173,28 @@ Assignment 3
 Bidirectional Top-Down Iteration
 --------------------------------
 
-The :dox:`FMIndex` supports bidirectional iteration, i.e. a pattern can be extended to the left or right in an arbitrary
-order. This is done by maintaining iterators on two separate indices, one on the original and one on the reversed text
-and keeping both iterators synchronized at all times. The interface is similar to what you learned in the previous
-section. All methods are extended by an additional tag specifying which iterator you want to use. Going down the
-original iterator using the **Fwd** tag extends the pattern to the left (since the FMIndex is traversed as a prefix
-trie). Using the **Rev** tag accesses the reversed text iterator and extends the pattern to the right.
+The :dox:`FMIndex` supports bidirectional iteration, i.e. a pattern can be extended to the left or right in an arbitrary order.
+This is done by maintaining iterators on two separate indices, one on the original and one on the reversed text and keeping both iterators synchronized at all times.
+The interface is similar to what you learned in the previous section.
+All methods are extended by an additional tag specifying which iterator you want to use.
+Going down the original iterator using the *Fwd* tag extends the pattern to the left (since the FMIndex is traversed as a prefix trie).
+Using the *Rev* tag accesses the reversed text iterator and extends the pattern to the right.
 
-Creating the index and iterator is very similar to unidirectional indices. The FMIndex is wrapped in a
-BidirectionalIndex tag:
+Creating the index and iterator is very similar to unidirectional indices.
+The FMIndex is wrapped in a BidirectionalIndex tag:
 
 .. includefrags:: demos/tutorial/index_iterators/index_bidirectional_search.cpp
    :fragment: Create
 
-All methods for traversing the virtual trie are extended by the direction tag **Fwd** or **Rev**. If none is used, it
-will access the iterator on the original text by default (same as using the **Fwd** tag). The goUp method is the only
-method that does not specify a direction tag. goUp corresponds to an undo operation, i.e. it rolls both iterators back
-to their previous states.
+All methods for traversing the virtual trie are extended by the direction tag *Fwd* or *Rev*.
+If none is used, it will access the iterator on the original text by default (same as using the *Fwd* tag).
+The *goUp* method is the only method that does not specify a direction tag.
+*goUp* corresponds to an undo operation, i.e. it rolls both iterators back to their previous states.
 
 .. includefrags:: demos/tutorial/index_iterators/index_bidirectional_search.cpp
    :fragment: Search
 
-Please bear in mind that you can also choose whether you want to retrieve the positions of hits in the original or
-reversed text:
+Please bear in mind that you can also choose whether you want to retrieve the positions of hits in the original or reversed text:
 
 .. includefrags:: demos/tutorial/index_iterators/index_bidirectional_search.cpp
    :fragment: output
