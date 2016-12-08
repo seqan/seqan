@@ -74,33 +74,28 @@ _readVcfContig(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context
     TIter headerIter = directionIterator(headerValue, Input());
     CharString &buffer = context.buffer;
 
-    // Seek ID key.
-    clear(buffer);
-    skipOne(headerIter);
-    readUntil(buffer, headerIter, EqualsChar<'='>());
-    if (buffer != "ID")
-        SEQAN_THROW(ParseError("Contig ID key not found in header."));
-    skipOne(headerIter);
+    skipOne(headerIter, EqualsChar<'<'>());
 
-    // Read ID value.
+    // Seek contig ID key.
+    while (!atEnd(headerIter))
+    {
+        clear(buffer);
+        readUntil(buffer, headerIter, EqualsChar<'='>());
+        if (buffer == "ID") break;
+        skipUntil(headerIter, IsCommaOrGt());
+        skipOne(headerIter);
+    }
+
+    if (atEnd(headerIter))
+        SEQAN_THROW(ParseError("Contig ID key not found in header."));
+
+    // Read contig ID value.
     clear(buffer);
+    skipOne(headerIter, EqualsChar<'='>());
     readUntil(buffer, headerIter, IsCommaOrGt());
     if (empty(buffer))
-        SEQAN_THROW(ParseError("Contig ID key is empty."));
+        SEQAN_THROW(ParseError("Contig ID value not found in header."));
     appendName(contigNamesCache(context), buffer);
-
-    // Seek length key.
-//    clear(buffer);
-//    skipOne(headerIter);
-//    readUntil(buffer, headerIter, EqualsChar<'='>());
-//    if (buffer != "length")
-//        return;
-//    skipOne(headerIter);
-
-    // Read length value.
-//    clear(buffer);
-//    readUntil(buffer, headerIter, IsCommaOrGt());
-//    appendValue(contigLengths(context), lexicalCast<int32_t>(buffer));
 }
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
