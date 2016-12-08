@@ -61,6 +61,15 @@ writeHeader(TTarget & target,
         writeValue(target, '\n');
     }
 
+    for (unsigned i = 0; i < length(contigNames(context)); ++i)
+    {
+        write(target, "##");
+        write(target, "contig=<ID=");
+        write(target, contigNames(context)[i]);
+        writeValue(target, '>');
+        writeValue(target, '\n');
+    }
+
     write(target, "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");
     for (unsigned i = 0; i < length(sampleNames(context)); ++i)
     {

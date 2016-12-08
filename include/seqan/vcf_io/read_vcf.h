@@ -64,21 +64,21 @@ typedef Tag<Vcf_> Vcf;
 // Function readRecord()                                            [VcfHeader]
 // ----------------------------------------------------------------------------
 
+template <typename TString>
 inline void
-_parseVcfContig(CharString & chromName, CharString const & headerValue)
+_parseVcfContigName(TString & contigName, TString const & headerValue)
 {
-    if (length(headerValue) < 3u)
-        return;
+    typedef OrFunctor<EqualsChar<','>, EqualsChar<'>'> >            IsCommaOrGt;
+    typedef typename DirectionIterator<TString const, Input>::Type  TIter;
 
-    CharString tmp = infix(headerValue, 1, length(headerValue) - 2);
-    StringSet<CharString> tmp2;
-    strSplit(tmp2, tmp, EqualsChar<','>());
-    for (unsigned i = 0; i < length(tmp2); ++i)
-    {
-        if (!startsWith(tmp2[i], "ID="))
-            continue;
-        chromName = suffix(tmp2[i], 3);
-    }
+    TIter headerIter = directionIterator(headerValue, Input());
+
+    readUntil(contigName, headerIter, EqualsChar<'='>());
+    if (contigName != "ID")
+        ParseError("Contig ID not found in header.");
+    clear(contigName);
+    skipOne(headerIter);
+    readUntil(contigName, headerIter, IsCommaOrGt());
 }
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -116,7 +116,7 @@ readHeader(VcfHeader & header,
             // Parse out name if headerRecord is a contig field.
             if (record.key == "contig")
             {
-                _parseVcfContig(buffer, record.value);
+                _parseVcfContigName(buffer, record.value);
                 appendName(contigNamesCache(context), buffer);
             }
         }
