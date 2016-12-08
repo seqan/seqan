@@ -44,9 +44,6 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename T>
-struct IsExecutionPolicy;
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -76,35 +73,41 @@ typedef Tag<Parallel_> Parallel;
 // ----------------------------------------------------------------------------
 
 // Dynamic execution policy.
-template <typename TParallelSpec, typename TVectorSpec = Default>
-struct ExecutionPolicy
+template <typename TThreadModel = Serial, typename TVectorSpec = Serial>
+class ExecutionPolicy
 {
+    // Member variables.
     size_t numThreads = 1;
+    
+public:
+    // Member functions.
+    size_t getNumThreads(){ return numThreads; }
+    void setNumThreads(size_t const nt){ numThreads = nt; }
 };
 
 // ----------------------------------------------------------------------------
-// Tag SerialExecutionPolicy
+// Tag ExecutionPolicy  [Sequential]
 // ----------------------------------------------------------------------------
 
-constexpr ExecutionPolicy<Serial> ser{};
+constexpr ExecutionPolicy<> seq{};
 
 // ----------------------------------------------------------------------------
-// Tag VectorExecutionPolicy
+// Tag Vectorial
 // ----------------------------------------------------------------------------
 
-struct VectorExecutionPolicy_;
-using VectorExecutionPolicy = Tag<VectorExecutionPolicy_>;
-ExecutionPolicy<Serial, VectorExecutionPolicy> vec{};
+struct Vectorial_;
+using Vectorial = Tag<Vectorial_>;
+ExecutionPolicy<Serial, Vectorial> vec{};
 
 // ----------------------------------------------------------------------------
 // Tag ParallelExecutionPolicyTbb
 // ----------------------------------------------------------------------------
 
 #if defined(SEQAN_TBB)
-struct ParallelExecutionPolicyTbb_;
-using ParallelExecutionPolicyTbb = Tag<ParallelExecutionPolicyTbb_>;
-ExecutionPolicy<ParallelExecutionPolicyTbb> parTbb{std::thread::hardware_concurrency()};
-ExecutionPolicy<ParallelExecutionPolicyTbb, VectorExecutionPolicy> parTbbVec{std::thread::hardware_concurrency()};
+struct ThreadModelTbb_;
+using ThreadModelTbb = Tag<ThreadModelTbb_>;
+ExecutionPolicy<ThreadModelTbb> parTbb{std::thread::hardware_concurrency()};
+ExecutionPolicy<ThreadModelTbb, Vectorial> parTbbVec{std::thread::hardware_concurrency()};
 #endif
 
 // ----------------------------------------------------------------------------
@@ -112,20 +115,20 @@ ExecutionPolicy<ParallelExecutionPolicyTbb, VectorExecutionPolicy> parTbbVec{std
 // ----------------------------------------------------------------------------
 
 #if defined(_OPENMP)
-struct ParallelExecutionPolicyOmp_;
-using ParallelExecutionPolicyOmp = Tag<ParallelExecutionPolicyOmp_>;
-ExecutionPolicy<ParallelExecutionPolicyOmp> parOmp{std::thread::hardware_concurrency()};
-ExecutionPolicy<ParallelExecutionPolicyOmp, VectorExecutionPolicy> parOmpVec{std::thread::hardware_concurrency()};
+struct ThreadModelOmp_;
+using ThreadModelOmp = Tag<ThreadModelOmp_>;
+ExecutionPolicy<ThreadModelOmp> parOmp{std::thread::hardware_concurrency()};
+ExecutionPolicy<ThreadModelOmp, Vectorial> parOmpVec{std::thread::hardware_concurrency()};
 #endif
 
 // ----------------------------------------------------------------------------
 // Tag ParallelExecutionPolicyNative
 // ----------------------------------------------------------------------------
 
-struct ParallelExecutionPolicyNative_;
-using ParallelExecutionPolicyNative = Tag<ParallelExecutionPolicyNative_>;
-ExecutionPolicy<ParallelExecutionPolicyNative> parNative{std::thread::hardware_concurrency()};
-ExecutionPolicy<ParallelExecutionPolicyNative, VectorExecutionPolicy> parNativeVec{std::thread::hardware_concurrency()};
+struct ThreadModelStd_;
+using ThreadModelStd = Tag<ThreadModelStd_>;
+ExecutionPolicy<ThreadModelStd> parStd{std::thread::hardware_concurrency()};
+ExecutionPolicy<ThreadModelStd, Vectorial> parStdVec{std::thread::hardware_concurrency()};
 
 // ============================================================================
 // Metafunctions
@@ -140,7 +143,7 @@ struct IsVectorExecutionPolicy : False
 {};
 
 template <>
-struct IsVectorExecutionPolicy<VectorExecutionPolicy> : True
+struct IsVectorExecutionPolicy<Vectorial> : True
 {};
 
 template <typename TPar, typename TVec>

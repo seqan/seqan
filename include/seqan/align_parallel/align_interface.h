@@ -47,70 +47,95 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
     
-struct DPStandardExecution_;
-using DPStandardExecution = Tag<DPStandardExecution_>;
-    
-struct DPBlockedExecution_;
-using DPBlockedExecution = Tag<DPBlockedExecution_>;
-
-struct DPExecutionConfig
-{
-    size_t blockSize;
-};
-    
-template <typename TDPExecutionMode>
-using DPExecutionConfigType = typename std::conditional<std::is_same<TDPExecutionMode, DPBlockedExecution>::value, DPExecutionConfig, Nothing>::type;
-
-struct DPTraits
-{
-    using TAlgorithmType    = GlobalAlignment_<>;
-    using TGapsType         = AffineGaps;
-    using TTracebackType    = TracebackOn<TracebackConfig_<SingleTrace, GapsLeft>>;
-    using TExecutionType    = DPStandardExecution;
-    using TBandType         = BandOff;
-    using TDPScoutStateType = Default;
-};
-    
-struct DPTraitsBlocked : public DPTraits
-{
-    using TExecutionType = DPBlockedExecution;
-    using TTracebackType = TracebackOff;
-};
-
-// Runtime options
-template <typename TDPTraits>
-struct DPConfig : public DPExecutionConfigType<typename TDPTraits::TExecutionType>
-{
-    // Runtime information, like band parameter, dpState and block size.
-    DPScoutState_<typename TDPTraits::TDPScoutStateType> dpState;
-};
+//struct DPStandardExecution_;
+//using DPStandardExecution = Tag<DPStandardExecution_>;
+//    
+//struct DPBlockedExecution_;
+//using DPBlockedExecution = Tag<DPBlockedExecution_>;
+//
+//struct DPExecutionConfig
+//{
+//    size_t blockSize;
+//};
+//    
+//template <typename TDPExecutionMode>
+//using DPExecutionConfigType = typename std::conditional<std::is_same<TDPExecutionMode, DPBlockedExecution>::value, DPExecutionConfig, Nothing>::type;
+//
+//struct DPTraits
+//{
+//    using TAlgorithmType    = GlobalAlignment_<>;
+//    using TGapsType         = AffineGaps;
+//    using TTracebackType    = TracebackOn<TracebackConfig_<SingleTrace, GapsLeft>>;
+//    using TExecutionType    = DPStandardExecution;
+//    using TBandType         = BandOff;
+//    using TDPScoutStateType = Default;
+//    using TOutputType       = ArrayGaps;
+//};
+//    
+//struct DPTraitsBlocked : public DPTraits
+//{
+//    using TExecutionType = DPBlockedExecution;
+//    using TTracebackType = TracebackOff;
+//};
+//
+//// Runtime options
+//template <typename TDPTraits>
+//struct DPConfig : public DPExecutionConfigType<typename TDPTraits::TExecutionType>
+//{
+//    // Runtime information, like band parameter, dpState and block size.
+//    DPScoutState_<typename TDPTraits::TDPScoutStateType> dpState;
+//};
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
     
-template <typename TObject>
-struct Traits;
-    
-template <typename TTraits>
-struct Traits<DPConfig<TTraits>>
-{
-    using Type = TTraits;
-};
+//template <typename TObject>
+//struct Traits;
+//    
+//template <typename TTraits>
+//struct Traits<DPConfig<TTraits>>
+//{
+//    using Type = TTraits;
+//};
+//    
+template <typename TCont>
+struct IsContainerOfContainer : IsContainerConcept<typename Value<TCont>::Type>
+{};
 
 // ============================================================================
 // Functions
 // ============================================================================
     
-//template <typename >
-//    
-//template <typename TExecutionPolicy,
-//          typename ...TArgs>
-//void align(TExecutionPolicy && execPolicy,
-//           TArgs && ...args)
-//{
-//    dispatchAlign(TExecutionPolicy execPolicy, std::forward<TArgs>(args)...);
-//}
+template <typename TExecutionPolicy,
+          typename TSeqH,
+          typename TSeqV,
+          typename TScore,
+          typename TDelegate>
+std::enable_if_t<And<IsContainerOfContainer<TSeqH>, IsContainerOfContainer<TSeqV> >::VALUE>
+alignParallel(TExecutionPolicy const & execPolicy,
+              TSeqH const & seqH,
+              TSeqV const & seqV,
+              TScore const & score,  // replaced by the config object later on.
+              TDelegate && delegate)
+{
+    // We need to create the alignment instance here.
+    
+    // We need to setup the ThreadContext here.
+    auto thread_pool = createThreadPool<TTask, TExecutionPolicy>();   // depends on the exec_policy. -> We need the DPTask Type for this.
+    // For c++ this also creates the threads that read from the queue. In all other cases it is just the queue.
+    
+    // We need to generate the Task Scheduler here.
+    
+    
+    // We need to create the Alignment Instances here.
+    auto zipSeqs = makeZippedView(seqH, seqV);
+    for (auto tuple : zipSeqs)
+    {
+        std::get<0>(tuple)
+        AlignInstanz()
+    }
+}
     
 }  // namespace seqan
 

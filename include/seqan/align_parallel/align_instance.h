@@ -186,6 +186,8 @@ public:
     // ----------------------------------------------------------------------------
     // Member Functions.
     // ----------------------------------------------------------------------------
+    
+    
 
     inline void
     operator()(uint16_t const mInstanceId)
@@ -194,10 +196,35 @@ public:
         auto seqHBlocks = TDPTaskTraits::createBlocks(*mSeqHPtr, mDPConfigPtr->blockSize);
         auto seqVBlocks = TDPTaskTraits::createBlocks(*mSeqVPtr, mDPConfigPtr->blockSize);
         
+        // Create the buffer for the matrix.
         auto buffer = TDPTaskTraits::createBlockBuffer(seqHBlocks, seqVBlocks, *mScorePtr, mDPConfigPtr->blockSize);
         
+        // Create trace store -> where presumably the traceback is stored.
         
-
+        // Setup DPTaskContext
+        // task context with access to the blocks the score the band, and the buffer and the trace proxy
+        
+        // create DPLocalStoreage as therad local storage.
+        
+        // create task graph -> nothing to do with the parallel framework
+        
+        // invoke
+            // std::threads -> vector of threads -> get executed with a shared queue.
+            // per alignment instance
+            // spawn(task) -> adds task* to the internal queue.
+            // wait_for_all() clause to wait for finishing execution.
+            // unlock writers and join threads. -> leave no threads dangling around. -> all tasks need to be computed.
+        
+            // tbb -> create task_group
+            // spawn(first task of tg)
+            // tg.run(with task->execution method)
+            // tg.wait()  // barrier.
+            // execute last task graph
+        
+            // omp -> more difficult to model.
+            // global prallel section
+            // master part triggers execution with queue.
+            // sets barrier to end of parallel execution
     }
 };
 

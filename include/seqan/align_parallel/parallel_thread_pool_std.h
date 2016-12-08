@@ -32,68 +32,56 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_H_
+#ifndef INCLUDE_SEQAN_ALING_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
 
+namespace seqan
+{
+    
 // ============================================================================
-// Prerequisites
-// ============================================================================
-
-#if SEQAN_DEBUG_ENABLED
-#include <typeinfo>
-#include <cxxabi.h>
-#include <stdlib.h>
-#endif
-
-#include <type_traits>
-#include <utility>
-#include <vector>
-
-#include <seqan/basic.h>
-#include <seqan/align.h>
-#include <seqan/parallel.h>
-
-// ============================================================================
-// Parallel Container/Helper
+// Forwards
 // ============================================================================
 
-#include <seqan/align_parallel/parallel_thread_pool_base.h>
-#include <seqan/align_parallel/parallel_thread_pool_std.h>
-#include <seqan/align_parallel/parallel_task_pool_base.h>
-#include <seqan/align_parallel/parallel_task_pool_std.h>
-
 // ============================================================================
-// DP Task
+// Tags, Classes, Enums
 // ============================================================================
 
-#include <seqan/align_parallel/dp_parallel_base.h>
-#include <seqan/align_parallel/dp_parallel_scout.h>
+template <typename TTask>
+class ThreadPool<TTask, ThreadModelStd>
+{
+    size_t                      mNumThreads = std::thread::hardware_concurrency();
+    std::vector<std::thread>    mThreadPool;
+    
+    template <typename TWorker>
+    ThreadPool(TWorker && worker)
+    {
+        for (size_t job = 0; job < mNumThreads; ++job)
+            mThreadPool.emplace_back(std::thread(worker));  // Start worker threads.
+    }
+    
+    template <typename TWorker>
+    ThreadPool(TWorker && worker, size_t const numThreads) :
+        mNumThreads(numThreads),
+        ThreadPool(std::forward<TWorker>(worker))
+    {}
+    
+    ~ThreadPool()
+    {
+        for (auto & thread : mThreadPool)
+            thread.join();  // Sync worker threads.
+    }
+};
 
-// Simd specific code.
-#include <seqan/align_parallel/dp_parallel_scout_simd.h>
-#include <seqan/align_parallel/dp_task_base_simd.h>
-
-#include <seqan/align_parallel/dp_task_base.h>
-#if defined(SEQAN_TBB)
-#include <seqan/align_parallel/dp_task_tbb.h>
-#endif
-#if defined(_OPENMP)
-#include <seqan/align_parallel/dp_task_omp.h>
-#endif
-#include <seqan/align_parallel/dp_task_std.h>
 
 // ============================================================================
-// Helper
+// Metafunctions
 // ============================================================================
 
-#include <seqan/align_parallel/dp_trace_matrix_navigator_block_wise.h>
-
 // ============================================================================
-// Interfaces
+// Functions
 // ============================================================================
+    
+    
+}  // namespace seqan
 
-#include <seqan/align_parallel/align_interface.h>
-#include <seqan/align_parallel/align_instance.h>
-#include <seqan/align_parallel/align_parallel_impl.h>
-
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
