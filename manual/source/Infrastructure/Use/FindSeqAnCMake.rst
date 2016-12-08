@@ -147,19 +147,15 @@ Checking for newer Versions of SeqAn (optional)
 
 The argument parser has a new feature to check for updates for the SeqAn library or for an application.
 This can be a very helpful reminder to stay up to date since SeqAn evolves rapidly to resolve issues or to supply new functionality.
-The following options are possible:
+If none of the following options are selected the version update feature is activated by default.
 
-  ===================================  ============================================
+  =================================  ==========================================
             Cmake Option                                Description
-  ===================================  ============================================
-  ``-DSEQAN_VERSION_CHECK="opt-out"``  The update feature is enabled and switched
-                                       on in the argument parser options. (default)
+  =================================  ==========================================
+  ``-DSEQAN_VERSION_CHECK_OPT_IN``   Turn update feature on but make it opt-in.
 
-  ``-DSEQAN_VERSION_CHECK="opt-in"``   The update feature is enabled but switched
-                                       off in the argument parser options.
-
-  ``-DSEQAN_VERSION_CHECK="disable"``  The update feature is disabled.
-  ===================================  ============================================
+  ``-DSEQAN_DISABLE_VERSION_CHECK``  Turn update feature off.
+  =================================  ==========================================
 
 .. note::
 
