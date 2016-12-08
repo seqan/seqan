@@ -307,6 +307,13 @@ macro (seqan_build_system_init)
         endif (APPLE)
     endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
 
+    # strip binaries when packaging
+    if ((CMAKE_BUILD_TYPE STREQUAL "Release") AND
+        (NOT SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
+        (COMPILER_CLANG OR COMPILER_GCC))
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+    endif ()
+
     # search dependencies once, globally, if in DEVELOP
     if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
         message (STATUS "Scanning dependencies once in DEVELOP mode...")
