@@ -137,35 +137,6 @@ endfunction (add_executable)
 # ---------------------------------------------------------------------------
 
 macro (seqan_register_apps)
-
-    # enable static linkage for seqan apps
-    if (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
-        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-        if (APPLE)
-            # static build not supported on apple, but at least we can include gcc libs
-            if (COMPILER_GCC)
-                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-            endif (COMPILER_GCC)
-        else (APPLE)
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-
-            # make sure -rdynamic isn't added automatically
-            set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
-            # make sure -fPIC isn't added automatically
-            set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
-
-            # for ENTIRELY UNKOWN reasons find_package returns libs for static
-            # linking (.a) when building as SEQAN_RELEASE_APPS or APP:*  but
-            # .so when building DEVELOP. In the latter case it also encloses the
-            # static libs with -Bdynamic which turns static off for system libs.
-            # Here we remove these (so statics works), but only for NON-DEVELOP
-            if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-                # make sure -Wl,-Bdynamic isn't added automatically
-                set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
-            endif (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-        endif (APPLE)
-    endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
-
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -312,6 +283,31 @@ macro (seqan_build_system_init)
     endif ()
     # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
     #            find out whether clang/c2 takes - or / options
+
+    # enable static linkage for seqan apps
+    if (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+        if (APPLE)
+            # static build not supported on apple, but at least we can include gcc libs
+            if (COMPILER_GCC)
+                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+            endif (COMPILER_GCC)
+        else (APPLE)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+
+            # make sure -rdynamic isn't added automatically
+            set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
+            # make sure -fPIC isn't added automatically
+            set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
+
+            # For unknown reasons finding .a only seems to work for libz and
+            # libbzip2; cmake than proceeds to wrap these in
+            # -Wl,-Bstatic -lz -lbz2 -Wl,-Bdynamic
+            # the latter reactivates dynamic linking for the system libs
+            # we override this behaviour here:
+            set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
+        endif (APPLE)
+    endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
 
     # search dependencies once, globally, if in DEVELOP
     if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
