@@ -200,7 +200,7 @@ meaning
  If not specified the update feature is enabled and activated by default.
 
 usage
- Add compiler flag: ``-DSEQAN_VERSION_CHCK_OPT_IN``
+ Add compiler flag: ``-DSEQAN_VERSION_CHECK_OPT_IN``
 
 SEQAN_DISABLE_VERSION_CHECK
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -209,7 +209,7 @@ meaning
  If set the version update feature is disabled in the argument parser.
 
 usage
- add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHEK`` 
+ add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHECK`` 
 
 Settings Projects Using Seqan
 -----------------------------

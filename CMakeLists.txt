@@ -79,11 +79,11 @@ option (SEQAN_ARCH_AVX2 "Build AVX optimized binaries." OFF)
 option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 
 # ===========================================================================
-# Version Check Variable.
+# Version Check Variables.
 # ===========================================================================
 
-# Possible values: "opt-out" (default), "opt-in", "disable"
-set(SEQAN_VERSION_CHECK "opt-out" CACHE STRING "Option to choose how version update information should be integrated into the apps.")
+option (SEQAN_VERSION_CHECK_OPT_IN "Enable version check but activate as opt-in." OFF)
+option (SEQAN_DISABLE_VERSION_CHECK "Disable version check." OFF) 
 
 # ===========================================================================
 # Setup Modules and Find Packages.
