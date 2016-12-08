@@ -367,9 +367,6 @@ macro (seqan_setup_library)
                  DESTINATION share/doc/seqan)
         # Install pkg-config file, except on Windows.
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
-            # Find packages and set flags appropriately
-            set (SEQAN_PKGCFG_DEPS "${SEQAN_PKGCFG_DEPS} zlib")
-            set (SEQAN_PKGCFG_LIBS "${SEQAN_PKGCFG_LIBS} -lbz2")
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
             install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
