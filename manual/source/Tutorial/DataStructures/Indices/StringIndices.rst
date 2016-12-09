@@ -35,9 +35,9 @@ You can find the following indices in SeqAn:
 :dox:`IndexDfi`
   Deferred Frequency Index :cite:`Weese2008`
 :dox:`IndexQGram`
-  Q-gram index (see `here <QgramIndex.html>`_)
+  Q-gram index (see `here <QgramIndex.html>`_ for more details)
 :dox:`FMIndex`
-  Full-text minute index :cite:`Ferragina2001`
+  Full-text minute index (see the `FMIndex <FMIndex.html>`_ for more details) :cite:`Ferragina2001`
 
 Index Construction
 ------------------
@@ -194,7 +194,7 @@ FMIndex Fibres
 ^^^^^^^^^^^^^^
 
 The size of a generalized :dox:`FMIndex` depends also on the total number of characters in a :dox:`StringSet` (see :dox:`StringSet#lengthSum`).
-This trait can be configured via the :dox:`FMIndexConfig` object.
+This trait can be configured via the :dox:`FMIndexConfig` object. For more information, see the :ref:`tutorial-datastructures-indices-fm-index` section.
 
 .. includefrags:: demos/tutorial/indices/base.cpp
       :fragment: config

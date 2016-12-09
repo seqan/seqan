@@ -10,7 +10,7 @@ template <typename TIndexSpec>
 void constrainedDFS()
 {
     typedef Index<CharString, TIndexSpec> TIndex;
-    TIndex index("tobeornottobe");
+    TIndex index("mississippi");
     typename Iterator<TIndex, TopDown<ParentLinks<> > >::Type it(index);
 
     do

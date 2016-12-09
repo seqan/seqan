@@ -6,7 +6,7 @@ using namespace seqan;
 int main()
 {
 	typedef Index<CharString> TIndex;
-	TIndex index("tobeornottobe");
+	TIndex index("mississippi");
 	Iterator< TIndex, TopDown<ParentLinks<> > >::Type it(index);
 /*
 	do {
