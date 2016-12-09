@@ -32,8 +32,8 @@
 # ============================================================================
 # This CMake file defines the necessary macros for the SeqAn build system.
 #
-# Note that while the SeqAn build system uses the SeqAnConfig.cmake module,
-# the SeqAnConfig.cmake module itself can be used independently from the SeqAn
+# Note that while the SeqAn build system uses the seqan-config.cmake module,
+# the seqan-config.cmake module itself can be used independently from the SeqAn
 # build system.
 # ============================================================================
 
@@ -373,8 +373,8 @@ macro (seqan_setup_library)
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
             install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
-        # Install FindSeqAn TODO(h-2) rename SeqAnConfig.cmake to SeqAnConfig${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/SeqAnConfig.cmake" DESTINATION share/cmake/)
+        # Install FindSeqAn TODO(h-2) rename seqan-config.cmake to seqan-config${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION share/cmake/)
 
         # Install headers
         file (GLOB HEADERS
