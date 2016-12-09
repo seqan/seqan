@@ -124,11 +124,40 @@ struct RankDictionaryEntry_;
 // Tag LevelsRDConfig
 // ----------------------------------------------------------------------------
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 1>
-struct LevelsRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
+/*!
+ * @class LevelsRDConfig
+ * @headerfile <seqan/index.h>
+ *
+ * @brief LevelsRDConfig allows configuring a @link Levels @endlink RankDictionary.
+ *
+ * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+ *            struct LevelsRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>;
+ *
+ * @tparam TSize           A data type that can store the length of the input text. Default: <tt>size_t</tt>
+ * @tparam TFibre          A tag for specialization purposes of the underlying strings. Default: <tt>Alloc<></tt>
+ * @tparam LEVELS          The number of levels (1, 2, or 3). The more levels, the lower the space consumption but possibly slight performance decreases. Default: <tt>1</tt>
+ * @tparam WORDS_PER_BLOCK The number of popcount operations per rank query. A lower number implies more space for faster runtime. 0 is a shortcut for the size of the alphabet of the RankDictionary. Default: <tt>0</tt>
+ */
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 1>
-struct LevelsPrefixRDConfig : RDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_> {};
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+struct LevelsRDConfig : RDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK> {};
+
+/*!
+ * @class LevelsPrefixRDConfig
+ * @headerfile <seqan/index.h>
+ *
+ * @brief LevelsPrefixRDConfig allows configuring a @link Levels @endlink RankDictionary that is recommended for fast searching in bidirectional indices.
+ *
+ * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+ *            struct LevelsRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>;
+ *
+ * @tparam TSize           A data type that can store the length of the input text. Default: <tt>size_t</tt>
+ * @tparam TFibre          A tag for specialization purposes of the underlying strings. Default: <tt>Alloc<></tt>
+ * @tparam LEVELS          The number of levels (1, 2, or 3). The more levels, the lower the space consumption but possibly slight performance decreases. Default: <tt>1</tt>
+ * @tparam WORDS_PER_BLOCK The number of popcount operations per rank query. A lower number implies more space for faster runtime. 0 is a shortcut for the size of the alphabet of the RankDictionary. Default: <tt>0</tt>
+ */
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+struct LevelsPrefixRDConfig : RDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK> {};
 
 // ----------------------------------------------------------------------------
 // Tag Levels
@@ -433,26 +462,26 @@ struct isLevelsPrefixRD<TPREFIXLEVELS>
 };
 
 // ----------------------------------------------------------------------------
-// Class Levels RankDictionary
+// Struct Levels RankDictionary
 // ----------------------------------------------------------------------------
-// TODO(esiragusa): update doc
 /*!
- * @class TwoLevelRankDictionary
+ * @class Levels
  * @extends RankDictionary
  * @headerfile <seqan/index.h>
  *
- * @brief A TwoLevelRankDictionary is a @link RankDictionary @endlink consisting of two levels.
+ * @brief Levels is a @link RankDictionary @endlink consisting of up to three levels.
  *
  * @signature template <typename TValue, typename TSpec, typename TConfig>
- *            class RankDictionary<TValue, WaveletTree<TSpec> >;
+ *            struct RankDictionary<TValue, Levels<TSpec> >;
  *
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec  A tag for specialization purposes. Default: <tt>void</tt>
  *
- * This @link RankDictionary @endlink consists of two levels of rank
- * infromation, in which one stores information of blocks and the other
- * information until a specified block. Combining those two informations
- * leads to constant rank dictionary look ups.
+ * This @link RankDictionary @endlink consists of up to three levels of rank
+ * infromation, in which one stores information of blocks (1st level) and the other
+ * information until a specified block. Combining those two information
+ * leads to constant rank dictionary look ups. To reduce space one can increase
+ * the number of levels up to three.
  */
 
 template <typename TValue, typename TSpec, typename TConfig>
