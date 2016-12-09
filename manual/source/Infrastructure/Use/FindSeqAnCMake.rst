@@ -77,9 +77,10 @@ First you should create a build directory, i.e. for cmake-builds everything happ
    # mkdir -p ~/devel/my_project-build/release
    # cd ~/devel/my_project-build/release
 
-By default, the ``cmake`` program will look for ``FindSeqAn.cmake`` in its module directory.
-Usually, this is located in ``/usr/share/cmake/Modules`` or a similar location that is available system-wide.
-Depending on how you :ref:`installed SeqAn <infra-use-install>` it might be found by cmake automatically. If not, you have to give the path to cmake via the ``CMAKE_MODULE_PATH`` argument on the command line.
+By default, the ``cmake`` program will look for ``SeqAnConfig.cmake`` in a predefined set of directories.
+Please read the documentation `find_project <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_ to find out, which standard paths are searched.
+Depending on how you :ref:`installed SeqAn <infra-use-install>` it might be found by cmake automatically. 
+If not, you have to give the path to cmake via the ``CMAKE_MODULE_PATH`` argument on the command line.
 
 Also, CMake will look for the SeqAn include files in central locations such as ``/usr/local/include``. Again, depending on your installation this might *just work*. If not, you need to specify the location via the ``SEQAN_INCLUDE_PATH`` argument.
 
@@ -155,8 +156,8 @@ Starting from the release 2.4.0 the argument parser will have a new feature to c
 
     This does only affect applications or scipts that use the SeqAn :ref:`Argument Parser <tutorial-getting-started-parsing-command-line-arguments>`!
 
-Details of the FindSeqAn Module
--------------------------------
+Details of the SeqAnConfig Module
+---------------------------------
 
 As mentioned above, this line is the important line for including SeqAn:
 

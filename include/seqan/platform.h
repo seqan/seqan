@@ -414,7 +414,7 @@ typedef int8_t __int8;     // nolint
 #endif
 
 // HAS_EXECINFO
-// note that this is always set by FindSeqAn.cmake
+// note that this is always set by SeqAnConfig.cmake
 // this is a fallback for non cmake environments
 #ifndef SEQAN_HAS_EXECINFO
     #ifdef STDLIB_VS
