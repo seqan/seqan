@@ -63,7 +63,7 @@ description was dumped.
 Usage: snp_store [OPTIONS]... <REFERENCE.fa> <MAPPED_READS.gff> 
 
 SnpStore expects at least two files: the reference sequence in (Multi-)Fasta format
-and the mapped reads in GFF format. For a description of this GFF format 
+and the mapped reads in GFF or SAM/BAM format. For a description of this GFF format 
 see section 4.1. 
 Multiple mapped read files can be specified by listing multiple GFF files, 
 i.e. file1.gff file2.gff.
@@ -72,7 +72,7 @@ To produce output files, at least one of the two options "-o" (output file
 for SNPs) and "-id" (output file for indels) needs to be specified. 
 
 In default mode, SNPs/indels are called only at positions that are covered
-by at least 5 reads. 
+by at least 2 reads. 
 The default behaviour can be modified by adding the following options to 
 the command line:
 
@@ -92,9 +92,9 @@ the command line:
                                     i.e. actual SNP calls
   See section 4.2 for a detailed description of the output formats.
                    
-  -hq, --hide-qualities   
+  -sq, --show-qualities   
   
-  Hide ASCII quality values in SNP output file. 
+  Show ASCII quality values in SNP output file. 
   Again, see section 4.2 for details.
 
   -id, --indel-file FILE
@@ -110,18 +110,23 @@ the command line:
   
   -mc, --min-coverage NUM    
   
-  Only inspect positions that are covered by a minimum of NUM reads (5).
+  Only inspect positions that are covered by a minimum of NUM reads (2).
 
   -re, --realign
   
   Realign reads using Anson's and Myers' ReAligner algorithm. See Anson, E. 
   and Myers, E. "ReAligner: A Program for Refining DNA Sequence Multi-
-  Alignments." Journal of Comp. Biol. 1997.
+  Alignments." Journal of Comp. Biol. 1997. Use is necessary for good indel
+  representation, but dissuaded for SNVs and higher coverage.
     
   -mp, --max-pile NUM        
   
-  Maximum number of reads allowed to pile up at the same reference position (4).
-  Use -mp 0 to switch off pile up correction.
+  Maximum number of reads allowed to pile up at the same reference position (off).
+  
+  -mec, --min-explained-column 
+  
+  Minimum fraction of alignment column reads explained by genotype call.
+
   
   -mmp, --merged-max-pile
   
@@ -179,6 +184,10 @@ SNP calling options:
   calling variants using mapping quality scores." Genome Res. 2008. 
   and http://maq.sourceforge.net
   In contrast to MAQ, we use base quality values instead of mapping qualities.
+  
+  -qsnp, --snp-quality 
+  
+  Minumum quality of a variant to be called (10).
   
   -th, --theta NUM                        
   
@@ -291,70 +300,7 @@ quality=..;		To specify the ASCII quality string (quality value = ord(ASCII qual
 4.2 Output Formats
 ---------------------------------------------------------------------------
 
-
------------
-SNP OUTPUT:
------------
-
-The first line is the program call that was used to generate the file. The second
-line is a header stating the content of the columns.
-
-Example:
-#./snp_store -mc 3 -oa -mp 1 -re -o snp.txt -it 3 -ipt 0.3 -id indels.txt Hs.dna.fa AG_125.mapped_reads.gff
-#chr    pos     ref     [A+]    [C+]    [G+]    [T+]    [A-]    [C-]    [G-]    [T-]    cov     call    quality
-1       7338    T       []      []      []      [FEEEEEEEDDDDDDDDCCCBBB?]       []      [,]     []      [B50--*]        30
-1       7401    C       [EEDCCA??]      [FEEEDDDCCCCAA@5]       []      []      [E]     [EEC/]  []      []      28      M       105
-1       9070    A       [FFFFEEEEEEEEED@?]      []      []      []      [722220--]      [0]     []      []      25
-
-
-Column 1: 				Chromosome
-Column 2:					Position
-Column 3:					Reference base
-Column 4:					ASCII quality values of all read bases 'A' mapping on forward strand of reference
-Column 5:				  ASCII quality values of all read bases 'C' mapping on forward strand of reference
-Column 6:					ASCII quality values of all read bases 'G' mapping on forward strand of reference
-Column 7:					ASCII quality values of all read bases 'T' mapping on forward strand of reference
-Column 8:					ASCII quality values of all read bases 'A' mapping on reverse strand of reference
-Column 9:					ASCII quality values of all read bases 'C' mapping on reverse strand of reference
-Column 10:				ASCII quality values of all read bases 'G' mapping on reverse strand of reference
-Column 11:				ASCII quality values of all read bases 'T' mapping on reverse strand of reference
-Column 12:				Total number of reads covering the position, i.e. read depth.
-Column 13:				SNP/genotype call for this position, if the position was identified as a SNP (empty otherwise).
-									Iupac code is used to represent diploid genotypes.
-Column 14:				Quality score for the SNP/genotype call, if the position was identified as a SNP (empty otherwise).
-
-
-Column 4 to 11 will look different if option -hq/--hide-qualities is specified. Instead of the individual
-ASCII base quality values in square brackets, only the count of bases will be given. For example, 
-instead of the "[EEDCCA??]" representing the 8 quality values associated with the 8 reads showing an A at 
-position 7401 on the forward strand, you would get "8", simply indicating the read count for A on the forward strand.
-
-Furthermore, if also option -oa is not specified, columns 4 and 8, columns 5 and 9, columns 6 and 10, and
-columns 7 and 11 will be merged/summed up, i.e. not differentiating between forward or reverse strand anymore.
-Note that the output file then has 4 columns less (columns 12 to 14 become columns 8 to 10).
-
-
--------------
-INDEL OUTPUT:
--------------
-
-Indels are written out in General Feature Format, where the individual 
-columns have the following meaning:
-
-<chromosome> <> <insertion/deletion> <start> <end> <score> <> <> <ID=STR;size=x;depth=y;> 
-
-Example:
-chr1	AG	deletion	141481675	141481679	1		+	.	ID=141481675;size=5;depth=3
-chr1	AG	insertion	141587341	141587341	0.8	+	.	ID=141587342;size=-2;seq=TC;depth=5
-
-The score is the percentage of indel-supporting reads at the candidate position.
-In the example, all reads covering the position of the deletion support the 
-deletion event (3 out of 3 reads), while only 80% percent of the reads covering the
-position of the insertion support the insertion event (4 out of 5 reads). The
-"depth" tag specifies how many reads cover the position. The "size" tag specifies
-the length of the indel event, with negative numbers indicating insertions. The
-insertion sequence is given with the "seq" tag.
-
+SNPS and indels are returned in two seperate vcf (V4.2) files.
 
 ---------------------------------------------------------------------------
 5. Example
@@ -364,18 +310,18 @@ The folder "example" contains a mapped read file as well as the corresponding
 reference file.
 If you cd into the example directory, you can run SnpStore in default mode with:
 
-../snp_store exampleGenome.fa exampleReads.gff -o example1.snp.txt -id example.indel1.txt
+../snp_store exampleGenome.fa exampleReads.gff -o example1.snp.vcf -id example.indel1.vcf
 
-This will produce two output files which are empty except for a header in the snp.txt file.
+This will produce two output files which are empty except for a header in the snp.vcf file.
 In the little example, coverage is too low to permit any variants to be called in default
 mode. By reducing the minimum coverage and indel threshold parameters to 2, the
 output files should be filled:
 
-../snp_store -mc 2 -it 2 exampleGenome.fa exampleReads.gff -o example.snp.txt -id example.indel.txt
+../snp_store -it 2 exampleGenome.fa exampleReads.gff -o example.snp.vcf -id example.indel.vcf
 
 To test the realignment option, you can further specify option -re:
 
-../snp_store -re -mc 2 -it 2 exampleGenome.fa exampleReads.gff -o example.snp.txt -id example.indel.txt
+../snp_store -re -it 2 exampleGenome.fa exampleReads.gff -o example.snp.vcf -id example.indel.vcf
 
 In the resulting indel output file, two 1bp insertions should now have been
 merged into one 2bp insertion.
@@ -387,3 +333,4 @@ merged into one 2bp insertion.
 
 For questions or comments, contact:
   Anne-Katrin Emde <emde@inf.fu-berlin.de>
+  Sebastian Roskosch <serosko@zedat.fu-berlin.de>
