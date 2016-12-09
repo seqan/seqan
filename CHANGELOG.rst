@@ -20,6 +20,11 @@ Library Features
         - supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)
         - input/output of whole files or of a single record/header
 
+- Blast I/O:
+    - added support for handling the Q_ACC, S_ACC, S_ALLACC, S_TAX_IDS fields
+    - added non standard fields LCA_ID and LCA_TAX_ID for lowest common ancestor information
+    - moved some redundant data from matches into record objects
+
 Release 2.2.0
 ~~~~~~~~~~~~~
 
