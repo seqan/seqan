@@ -322,7 +322,7 @@ macro (seqan_build_system_init)
         find_package(ZLIB)
         find_package(BZip2)
         find_package(Boost)
-        find_package(SeqAn CONFIG REQUIRED)
+        find_package(SeqAn REQUIRED)
     endif ()
 
 endmacro (seqan_build_system_init)
@@ -375,7 +375,7 @@ macro (seqan_setup_library)
             install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
         # Install FindSeqAn TODO(h-2) rename seqan-config.cmake to seqan-config${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION share/cmake/)
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION share/cmake/seqan/)
 
         # Install headers
         file (GLOB HEADERS
