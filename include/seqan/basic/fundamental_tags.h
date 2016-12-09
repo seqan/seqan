@@ -526,6 +526,18 @@ inline bool isEqual(TagSelector<TTagList> const &selector, TTag const &)
     return selector.tagId == Find<TTagList, TTag>::VALUE;
 }
 
+/*!
+ * @fn TagSelector#tagSelectIntersect
+ * @brief Selects a tag in a @link TagSelector @endlink based on the selected tag of another TagSelector if that same tag exists in the destination.
+ *
+ * @signature bool tagSelectIntersect(outTagList, inTagList);
+ *
+ * @param[out] outTagList   The @link TagSelector @endlink file format a tag will be selected for
+ * @param[in] inTagList     The @link TagSelector @endlink object where to read the sequence information into.
+ *
+ * @return VALUE <tt>true</tt> if the selected tag of inTagList is available in outTagList and <tt>false</tt> otherwise.
+ */
+
 template <typename TagSpec>
 inline bool tagSelectIntersect(TagSelector<> &, Tag<TagSpec> const &)
 {
