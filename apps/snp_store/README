@@ -300,7 +300,7 @@ quality=..;		To specify the ASCII quality string (quality value = ord(ASCII qual
 4.2 Output Formats
 ---------------------------------------------------------------------------
 
-SNPS and indels are returned in two seperate vcf (V4.2) files.
+SNPs and indels are returned in two seperate vcf (V4.2) files.
 
 ---------------------------------------------------------------------------
 5. Example

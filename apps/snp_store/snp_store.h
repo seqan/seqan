@@ -272,9 +272,9 @@ struct SNPCallingOptions
 
         // threshold-method related
         avgQualT = 10;
-        percentageT = (float)0.25;
+        percentageT = static_cast<float>0.25;
         minMutT = 3;
-        snpHetMax = (float)0.8;
+        snpHetMax = static_cast<float>0.8;
         useBaseQuality = true;
 
         // Maq-method related
@@ -299,7 +299,7 @@ struct SNPCallingOptions
         indelQualityThreshold = 1;      // basically off.. doesn't seem to be very helpful anyway (room for improvement)
 
         indelDepthMinOverlap = 0;
-        indelPercentageT = (float) 0.25;
+        indelPercentageT = static_cast<float> 0.25;
         indelCountThreshold = 3;
         indelWindow = 0;                // off
         indelHetMax = 0.70f;
@@ -914,7 +914,7 @@ int readMatchesFromGFF_Batch(
             skipLine(fileIter);
             continue;
         }
-        if ((int)contigId < (int)highestChrId)
+        if (static_cast<int>contigId < static_cast<int>highestChrId)
         {
             std::cerr << "Read files need to be sorted according to chromosomes in genome file.\n";
             return CALLSNPS_GFF_FAILED;
@@ -1005,7 +1005,7 @@ int readMatchesFromGFF_Batch(
             readUntil(temp_str, fileIter, NotFunctor<IsGraph>());
             double tmp;
             lexicalCastWithException(tmp, temp_str);
-            mScore = (int)tmp;
+            mScore = static_cast<int>tmp;
         }
         if (options._debugLevel > 1)
             ::std::cout << mScore << "\t";
@@ -1114,11 +1114,11 @@ int readMatchesFromGFF_Batch(
                     goNext(fileIter);  // Skip '='.
                     if (*fileIter != '\n' && *fileIter != '\r')
                     {
-                        int tempQual = _max(0, (int)ordValue(*fileIter) - options.asciiQualOffset);
+                        int tempQual = _max(0, static_cast<int>ordValue(*fileIter) - options.asciiQualOffset);
                         assignQualityValue(curr_read[i], tempQual);
 #ifdef SNPSTORE_DEBUG
                         if (extraV)
-                            ::std::cout << (char)(getQualityValue(curr_read[i]));
+                            ::std::cout << static_cast<char>(getQualityValue(curr_read[i]));
 #endif
                     }
                     else
@@ -1180,7 +1180,7 @@ int readMatchesFromGFF_Batch(
                         skipOne(fileIter);
                     readUntil(readName, fileIter, OrFunctor<EqualsChar<';'>, IsNewline>());
                     if (mScore != 100)
-                        editDist = (int)((length(curr_read) * ((100.0 - mScore + 0.001) / 100.0)));
+                        editDist = static_cast<int>((length(curr_read) * ((100.0 - mScore + 0.001) / 100.0)));
                 }
                 else if (current_tag == "mutations")
                 {
@@ -1268,7 +1268,7 @@ int readMatchesFromGFF_Batch(
                 clipRight = _max(clipRight, softClippedRight);
                 clipLeft = _max(clipLeft, softClippedLeft);
             }
-            if (clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
+            if (clipLeft + clipRight > static_cast<int>length(curr_read) - static_cast<int>options.minClippedLength)
             {
                 if (options._debugLevel > 1)
                     std::cout << "Discarding read " << readName << ", too short after clipping.." << std::endl;
@@ -1277,7 +1277,7 @@ int readMatchesFromGFF_Batch(
             }
             if (options.realign && splitRead)
             {
-                if (endPos - beginPos > (int)((float)length(curr_read) * 1.5))
+                if (endPos - beginPos > static_cast<int>(static_cast<float>length(curr_read) * 1.5))
                 {
                     if (options._debugLevel > 1)
                         std::cout << "Discarding split read " << readName << ", deletion too large.." << std::endl;
@@ -1320,9 +1320,9 @@ int readMatchesFromGFF_Batch(
 
             // remember min and max positions seen
             if (beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>())
-                options.minCoord = (unsigned)beginPos;
+                options.minCoord = static_cast<unsigned>beginPos;
             if (endPos > (TContigPos)options.maxCoord)
-                options.maxCoord =  (unsigned)endPos;
+                options.maxCoord =  static_cast<unsigned>endPos;
 
             // create match m
             TMatch m;
@@ -1342,8 +1342,8 @@ int readMatchesFromGFF_Batch(
 
             // corresponding match quality attributes are stored in q
             TMatchQuality q;
-            q.errors = (char)editDist;
-            q.score = (char) 0;
+            q.errors = static_cast<char>editDist;
+            q.score = static_cast<char> 0;
             if (options._debugLevel > 1)
             {
                 if (splitRead && hasIndel)
@@ -1623,7 +1623,7 @@ int readMatchesFromSamBam_Batch(
             }
         }
 
-        if ((int)contigId < (int)highestChrId)
+        if (static_cast<int>contigId < static_cast<int>highestChrId)
         {
             std::cerr << "Read files need to be sorted according to chromosomes in genome file.\n";
             return CALLSNPS_GFF_FAILED;
@@ -1721,7 +1721,7 @@ int readMatchesFromSamBam_Batch(
             break;
 
         // must be parsed from tag
-        mScore = (int)record.mapQ;
+        mScore = static_cast<int>record.mapQ;
         if (options._debugLevel > 1)
             ::std::cout << mScore << "\t";
 
@@ -1746,7 +1746,7 @@ int readMatchesFromSamBam_Batch(
         TRead curr_read = record.seq;
         for (unsigned j = 0; j < length(record.qual); ++j)
         {
-            int tempQual = _max(0, (int)ordValue(record.qual[j]) - options.asciiQualOffset);
+            int tempQual = _max(0, static_cast<int>ordValue(record.qual[j]) - options.asciiQualOffset);
             assignQualityValue(curr_read[j], tempQual);
         }
         if (orientation == 'R')
@@ -1787,7 +1787,7 @@ int readMatchesFromSamBam_Batch(
                                 << editDist << "\n";
                 return 1;
             }
-            if (clipLeft + clipRight > (int)length(curr_read) - (int)options.minClippedLength)
+            if (clipLeft + clipRight > static_cast<int>length(curr_read) - static_cast<int>options.minClippedLength)
             {
                 if (options._debugLevel > 1)
                     std::cout << "Discarding read " << readName << ", too short after clipping.." << std::endl;
@@ -1796,7 +1796,7 @@ int readMatchesFromSamBam_Batch(
             }
             if (options.realign && splitRead)
             {
-                if (endPos - beginPos > (int)((float)length(curr_read) * 1.5))
+                if (endPos - beginPos > static_cast<int>(static_cast<float>length(curr_read) * 1.5))
                 {
 
                     if (options._debugLevel > 1)
@@ -1838,9 +1838,9 @@ int readMatchesFromSamBam_Batch(
 
             // remember min and max positions seen
             if (beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>())
-                options.minCoord = (unsigned)beginPos;
+                options.minCoord = static_cast<unsigned>beginPos;
             if (endPos > (TContigPos)options.maxCoord)
-                options.maxCoord =  (unsigned)endPos;
+                options.maxCoord =  static_cast<unsigned>endPos;
 
             // create match m
             TMatch m;
@@ -1860,8 +1860,8 @@ int readMatchesFromSamBam_Batch(
 
             // corresponding match quality attributes are stored in q
             TMatchQuality q;
-            q.errors = (char)editDist;
-            q.score = (char) mScore;
+            q.errors = static_cast<char>editDist;
+            q.score = static_cast<char> mScore;
             if (options._debugLevel > 1)
             {
                 if (splitRead && hasIndel)
@@ -2028,13 +2028,13 @@ double lgamma(TVal x)
     if (x < 2)
     {
         return 0.0;
-        //return log((double)1); //WHY?! log (1) = 0!
+        //return log(static_cast<double>1); //WHY?! log (1) = 0!
     }
     else
     {
-        double f = log((double)2);
+        double f = log(static_cast<double>2);
         for (int s = 3; s <= x; ++s)
-            f += log((double)s);
+            f += log(static_cast<double>s);
         return f;
     }
 }
@@ -2055,11 +2055,11 @@ logSum(TValue x, TValue y)
 
     double diff = x - y;
     double retVal;
-    if (!std::isfinite((double)exp(diff))) // difference is too large
+    if (!std::isfinite(static_cast<double>exp(diff))) // difference is too large
         return x > y ? x : y;
 
     // otherwise return the sum.
-    retVal = (double)(y + log((double)(1.0) + exp(diff)));
+    retVal = static_cast<double>(y + log(static_cast<double>(1.0) + exp(diff)));
     return retVal;
 }
 
@@ -2173,7 +2173,7 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options)
     for (int n = 1; n < 512; ++n)
     {
         double mean = options.meanAlleleFrequency * n;
-        double standardDev = (double)sqrt((1.0 - options.meanAlleleFrequency) * mean);
+        double standardDev = static_cast<double>sqrt((1.0 - options.meanAlleleFrequency) * mean);
         long double correction = (long double) sqrt(
             (long double)n * (2.0 * (1.0 / (1.0 + options.amplificationEfficiency)) - 2.0 *
                               pow(1.0 + options.amplificationEfficiency, -options.amplificationCycles - 1.0) +
@@ -2237,8 +2237,8 @@ double computeHetTable(THeteroTable & hetTable, TOptions & options, MaqMethod &)
             for (int k = 1; k <= numHaplotypes - 1; ++k)
             {
                 double pk = 1.0 / k / sum_harmo;
-                double log1 = log((double)k / numHaplotypes);
-                double log2 = log(1.0 - (double)k / numHaplotypes);
+                double log1 = log(static_cast<double>k / numHaplotypes);
+                double log2 = log(1.0 - static_cast<double>k / numHaplotypes);
                 sum += pk * 0.5 * (expl(log1 * n2) * expl(log2 * n1) + expl(log1 * n1) * expl(log2 * n2));
             }
             hetTable[n1 << 8 | n2] = lC + logl(sum);
@@ -2374,14 +2374,14 @@ void getHomoProbs(THomoTable & cnks,
     if (best != -1)
     {
         // normalized quality of the base with the best weighted sum of qualities
-        qAvgBest = (int)(sumE[best] / sumF[best] + 0.5);
+        qAvgBest = static_cast<int>(sumE[best] / sumF[best] + 0.5);
         countBest = length(qualitiesForward[best]) + length(qualitiesReverse[best]);
     }
     else
         countBest = 0;
     if (secondBest != -1)
     {
-        qAvgSecondBest = (int)(sumE[secondBest] / sumF[secondBest] + 0.5);
+        qAvgSecondBest = static_cast<int>(sumE[secondBest] / sumF[secondBest] + 0.5);
         countSecondBest = length(qualitiesForward[secondBest]) + length(qualitiesReverse[secondBest]);
     }
     else
@@ -2665,7 +2665,7 @@ void dumpVariantsRealignBatchWrap(
         TContigPos groupStartPos = _min((*matchIt).endPos, (*matchIt).beginPos);
 
         // Translate coordinates to group-local ones.
-        TContigPos groupStartCoordLocal = _max(0, (int)groupStartPos - options.realignAddBorder);
+        TContigPos groupStartCoordLocal = _max(0, static_cast<int>groupStartPos - options.realignAddBorder);
 
         int indelReadCount = 0; // how many reads have indels in the current group
         while (matchIt != matchItEnd && _min((*matchIt).beginPos, (*matchIt).endPos) < groupEndPos)
@@ -2715,7 +2715,7 @@ void dumpVariantsRealignBatchWrap(
             groupEndPos = _min(groupEndPos, currWindowEnd);
 
             //the current group is formed by all reads from matchItBatchBegin until matchItBatchEnd
-            if (indelReadCount >= (int)minNumIndels && options.realign)
+            if (indelReadCount >= static_cast<int>minNumIndels && options.realign)
             {
                 //do realignment
                 dumpVariantsRealignBatch(fragStoreGroup, readCigars,
@@ -2822,8 +2822,8 @@ inline bool _doSnpCall(TCounts & countF,
 
     if (n > 255)
     {
-        int temp2 = (int)((countF[secondBest] + countR[secondBest]) * 255.0 / n + 0.5);
-        int temp1 = (int)((countF[best] + countR[best]) * 255.0 / n + 0.5);
+        int temp2 = static_cast<int>((countF[secondBest] + countR[secondBest]) * 255.0 / n + 0.5);
+        int temp1 = static_cast<int>((countF[best] + countR[best]) * 255.0 / n + 0.5);
 #ifdef SNPSTORE_DEBUG_CANDPOS
         if (extraV)
             std::cout << "temp1 = " << temp1 << std::endl;
@@ -2876,31 +2876,31 @@ inline bool _doSnpCall(TCounts & countF,
 
             if (pHomo1 <= pHomo2)        //(1)
             {
-                qCall1 = (int)(pHomo1 - pHet  + 0.5);
-                qSnp = (int)(pRef - pHet  + 0.5);
+                qCall1 = static_cast<int>(pHomo1 - pHet  + 0.5);
+                qSnp = static_cast<int>(pRef - pHet  + 0.5);
                 // homo1 = 1; //second best
                 // genotypeCalled2 = (best << 2) | best;
-                // qCall2 = (int)(pHomo2 - pHomo1 + 0.5);
+                // qCall2 = static_cast<int>(pHomo2 - pHomo1 + 0.5);
                 homo2 = 2;     // last
             }
             else                    //(2)
             {
-                qCall1 = (int)(pHomo2 - pHet + 0.5);
-                qSnp = (int)(pRef - pHet  + 0.5);
+                qCall1 = static_cast<int>(pHomo2 - pHet + 0.5);
+                qSnp = static_cast<int>(pRef - pHet  + 0.5);
                 homo2 = 1;
                 // genotypeCalled2 = (secondBest<<2)| secondBest;
-                // qCall2 = (int)(pHomo1 - pHomo2 + 0.5);
+                // qCall2 = static_cast<int>(pHomo1 - pHomo2 + 0.5);
                 // homo1 = 2;
             }
         }
         else                        //(3)
         {       // shouldnt happen
             homo2 = 0;
-            qCall1 = (int)(pHet - pHomo2 + 0.5);
-            qSnp = (int)(pRef - pHomo2  + 0.5);
+            qCall1 = static_cast<int>(pHet - pHomo2 + 0.5);
+            qSnp = static_cast<int>(pRef - pHomo2  + 0.5);
             genotypeCalled = (secondBest << 2) | secondBest;
             het = 1;
-            // qCall2 = (int)(pHomo1 - pHet + 0.5);
+            // qCall2 = static_cast<int>(pHomo1 - pHet + 0.5);
             // if (best==refAllele)
             //  genotypeCalled2 = (best<<2)| secondBest;
             // else
@@ -2915,11 +2915,11 @@ inline bool _doSnpCall(TCounts & countF,
             //this case shouldnt happen
             // std::cout << "Weird case 4" << std::endl;
             homo2 = 0;
-            qCall1 = (int)(pHomo1 - pHomo2 + 0.5);
-            qSnp = (int)(pRef - pHomo2  + 0.5);
+            qCall1 = static_cast<int>(pHomo1 - pHomo2 + 0.5);
+            qSnp = static_cast<int>(pRef - pHomo2  + 0.5);
             genotypeCalled = (secondBest << 2) | secondBest;
             // homo1 = 1;
-            // qCall2 = (int)(pHet - pHomo1 + 0.5);
+            // qCall2 = static_cast<int>(pHet - pHomo1 + 0.5);
             // genotypeCalled2 = (best<<2)| best;
             het = 2;
         }
@@ -2929,22 +2929,22 @@ inline bool _doSnpCall(TCounts & countF,
             genotypeCalled = (best << 2) | best;
             if (pHet < pHomo2)         //(5)
             {
-                qCall1 = (int)(pHet - pHomo1 + 0.5);
-                qSnp = (int)(pRef - pHomo1  + 0.5);
+                qCall1 = static_cast<int>(pHet - pHomo1 + 0.5);
+                qSnp = static_cast<int>(pRef - pHomo1  + 0.5);
                 het = 1;
                 // if (best==refAllele)
                 //  genotypeCalled2 = (best << 2)| secondBest;
                 // else
                 //  genotypeCalled2 = (secondBest << 2 ) | best;
-                // qCall2 = (int)(pHomo2 - pHet + 0.5);
+                // qCall2 = static_cast<int>(pHomo2 - pHet + 0.5);
                 homo2 = 2;
             }
             else            // (6)
             {
-                qCall1 = (int)(pHomo2 - pHomo1 + 0.5);
-                qSnp = (int)(pRef - pHomo1  + 0.5);
+                qCall1 = static_cast<int>(pHomo2 - pHomo1 + 0.5);
+                qSnp = static_cast<int>(pRef - pHomo1  + 0.5);
                 homo2 = 1;
-                // qCall2 = (int)(pHet - pHomo2 + 0.5);
+                // qCall2 = static_cast<int>(pHet - pHomo2 + 0.5);
                 // genotypeCalled2 = (secondBest << 2) | secondBest;
                 het = 2;
             }
@@ -2991,7 +2991,7 @@ inline bool _doSnpCall(TCounts & countF,
     {
         snp.called = true;
     }
-    if ((double)consideredCount / totalCoverage < options.minExplainedColumn)
+    if (static_cast<double>consideredCount / totalCoverage < options.minExplainedColumn)
     {
         setBit(snp.filter, 0);                  //set first bit, indicating that mec filter has not been passed
         //snp.called = false;
@@ -3049,10 +3049,10 @@ _doSnpCall(TCounts & countF,
 
     // threshold method
     if (mutCoverage >= options.minMutT &&
-        (float)mutCoverage / totalCoverage >= options.percentageT &&
-        (float)(qualF[mutAllele] + qualR[mutAllele]) / mutCoverage >= options.avgQualT)
+        static_cast<float>mutCoverage / totalCoverage >= options.percentageT &&
+        static_cast<float>(qualF[mutAllele] + qualR[mutAllele]) / mutCoverage >= options.avgQualT)
     {
-        if ((float)mutCoverage / totalCoverage <= options.snpHetMax)
+        if (static_cast<float>mutCoverage / totalCoverage <= options.snpHetMax)
             genotypeCalled = (mutAllele << 2) | refAllele;  // we dont attempt real genotype calling here
         else
             genotypeCalled = (mutAllele << 2) | mutAllele;  // we dont attempt real genotype calling here
@@ -3308,9 +3308,9 @@ void _dumpMatches(TFragmentStore & fragmentStore, TStr str)
         if (length(fragmentStore.alignQualityStore) > fragmentStore.alignedReadStore[i].id)
         {
             std::cout << "--" << str << "EditDist = "
-                      << (int) fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].errors << "\n";
+                      << static_cast<int> fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].errors << "\n";
             std::cout << "--" << str << "AvgQ     = "
-                      << (int)fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].score << "\n";
+                      << static_cast<int>fragmentStore.alignQualityStore[fragmentStore.alignedReadStore[i].id].score << "\n";
         }
         std::cout << "--" << str << "Readseq  = "
                   << fragmentStore.readSeqStore[fragmentStore.alignedReadStore[i].readId] << std::flush << "\n";
@@ -3404,7 +3404,7 @@ void realignReferenceToReadProfile(TFragmentStore & fragmentStore, TId refId, TO
         {
             TReadPos limit = gitRead->seqPos;
             int newDiff = (gitRead->gapPos - limit);
-            SEQAN_ASSERT_LT(gitRead->gapPos, (int)length(multiReadProfile));
+            SEQAN_ASSERT_LT(gitRead->gapPos, static_cast<int>length(multiReadProfile));
             if (diff > newDiff)
             {
                 limit -= (diff - newDiff);
@@ -3539,13 +3539,13 @@ void realignReferenceToReadProfile(TFragmentStore & fragmentStore, TId refId, TO
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
-        if (getMax1 == gapChar && countMax2 > 0 && (float)countMax2 / countMax1 > options.indelCountThreshold)
+        if (getMax1 == gapChar && countMax2 > 0 && static_cast<float>countMax2 / countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax1] = (*it).count[getMax1];
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
-        if (getMax2 == gapChar && countMax2 > 0 && (float)countMax2 / countMax1 > options.indelCountThreshold)
+        if (getMax2 == gapChar && countMax2 > 0 && static_cast<float>countMax2 / countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
@@ -3692,7 +3692,7 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
         {
             TReadPos limit = gitRead->seqPos;
             int newDiff = (gitRead->gapPos - limit);
-            SEQAN_ASSERT_LT(gitRead->gapPos, (int)length(multiReadProfile));
+            SEQAN_ASSERT_LT(gitRead->gapPos, static_cast<int>length(multiReadProfile));
             if (diff > newDiff)
             {
                 limit -= (diff - newDiff);
@@ -3786,16 +3786,16 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
             remove = false;
         }
 //        if (getMax1 == gapChar && countMax2 > options.indelCountThreshold &&
-//            (float)countMax2/countMax1 > options.indelPercentageT)
-        if (getMax1 == gapChar && countMax2 > 0 && (float)countMax2 / countMax1 > options.indelCountThreshold)
+//            static_cast<float>countMax2/countMax1 > options.indelPercentageT)
+        if (getMax1 == gapChar && countMax2 > 0 && static_cast<float>countMax2 / countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax1] = (*it).count[getMax1];
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
         }
 //        if (getMax2 == gapChar && countMax2 > options.indelCountThreshold &&
-//            (float)countMax2/countMax1 > options.indelPercentageT)
-        if (getMax2 == gapChar && countMax2 > 0 && (float)countMax2 / countMax1 > options.indelCountThreshold)
+//            static_cast<float>countMax2/countMax1 > options.indelPercentageT)
+        if (getMax2 == gapChar && countMax2 > 0 && static_cast<float>countMax2 / countMax1 > options.indelCountThreshold)
         {
             (*dipIt).count[getMax2] = (*it).count[getMax2];
             remove = false;
@@ -3866,9 +3866,9 @@ void realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore, T
                     consScore,
                     AlignConfig<false, false, false, false>(),
                     _max(leftDiag,
-                         -1 * (int)length(refProfile)),
+                         -1 * static_cast<int>length(refProfile)),
                     _min(rightDiag,
-                         (int)length(diploidConsensus)),
+                         static_cast<int>length(diploidConsensus)),
                     Gotoh());
 
     // now use removeState string to retrieve reference<->multiReadProfile alignment
@@ -4022,8 +4022,8 @@ checkSequenceContext(TSequence & reference,
 #ifdef SNPSTORE_DEBUG
         std::cout << "indelSize=" << indelSize << std::endl;
         std::cout << infix(reference,
-                           _max((int)0, (int)candidatePos - 6),
-                           _min((int)candidatePos + indelSize + 6, (int)length(reference)));
+                           _max(static_cast<int>0, static_cast<int>candidatePos - 6),
+                           _min(static_cast<int>candidatePos + indelSize + 6, static_cast<int>length(reference)));
 #endif
 
         // left candidate position
@@ -4038,8 +4038,8 @@ checkSequenceContext(TSequence & reference,
 #ifdef SNPSTORE_DEBUG
         std::cout << "indelSize=" << indelSize << std::endl;
         std::cout << infix(reference,
-                           _max((int)0, (int)candidatePos - 6),
-                           _min((int)candidatePos + 6, (int)length(reference)));
+                           _max(static_cast<int>0, static_cast<int>candidatePos - 6),
+                           _min(static_cast<int>candidatePos + 6, static_cast<int>length(reference)));
 #endif
 
         // left candidate position
@@ -4088,14 +4088,14 @@ template <typename TMatchQuality, typename TRead, typename TOptions>
 inline int
 calibrateQuality(TRead & read, TMatchQuality & matchQuality, int originalQuality, TOptions & options)
 {
-    double epsilon = (double)(matchQuality.errors) / length(read);
-    //return ((int)((double)(epsilon*100.0) * (int)matchQuality.score / pow(2.0,(100.0 * epsilon - 1.0))
-    //        + (double)originalQuality) / (double)(100.0 * epsilon + 1.0));
-    return (int)((int)((double)(epsilon * options.newQualityCalibrationFactor)
-                       * (int)matchQuality.score
+    double epsilon = static_cast<double>(matchQuality.errors) / length(read);
+    //return (static_cast<int>(static_cast<double>(epsilon*100.0) * static_cast<int>matchQuality.score / pow(2.0,(100.0 * epsilon - 1.0))
+    //        + static_cast<double>originalQuality) / static_cast<double>(100.0 * epsilon + 1.0));
+    return static_cast<int>(static_cast<int>(static_cast<double>(epsilon * options.newQualityCalibrationFactor)
+                       * static_cast<int>matchQuality.score
                        / pow(2.0, (20.0 * options.newQualityCalibrationFactor - 1.0))
-                       + (double)originalQuality)
-                 / (double)(20.0 * options.newQualityCalibrationFactor + 1.0));
+                       + static_cast<double>originalQuality)
+                 / static_cast<double>(20.0 * options.newQualityCalibrationFactor + 1.0));
 
 }
 
@@ -4146,14 +4146,14 @@ inline void writeIndel(TFile & indelfile,
     depth = (depth + (absIndelSize >> 1)) / absIndelSize;      // coverage is spread over all positions
     if (!noQual)
         quality = (quality + (absIndelSize >> 1)) / absIndelSize;  // quality is spread over all positions
-    int indelQ = (int)(quality * percentage);
+    int indelQ = static_cast<int>(quality * percentage);
     if (!bsi)
         indelQ /= 2;
     if (percentage > options.indelHetMax)                      //determine zygocity
         het = false;
     auto upstreamSeq = infix(reference,                            //reference seq
-                             _max((int)0, (int)candidatePos - 1),
-                             _min((int)(candidatePos + delSize), (int)length(reference)));
+                             _max(static_cast<int>0, static_cast<int>candidatePos - 1),
+                             _min(static_cast<int>(candidatePos + delSize), static_cast<int>length(reference)));
 
     indelfile << genomeID << '\t'                                  //chromosome
               << pos  << '\t'                                      //position
@@ -4165,8 +4165,8 @@ inline void writeIndel(TFile & indelfile,
         indelfile << upstreamSeq << insertionSeq << '\t';          //Alternative (ref+insertion)
     else
         indelfile << infix(reference,                              //Alternative (deletion)
-                           _max((int)0, (int)candidatePos - 1),    //TODO(serosko): remove _min().
-                           _min((int)(candidatePos), (int)length(reference))) << '\t';
+                           _max(static_cast<int>0, static_cast<int>candidatePos - 1),    //TODO(serosko): remove _min().
+                           _min(static_cast<int>(candidatePos), static_cast<int>length(reference))) << '\t';
     if (noQual)
         indelfile << ".\t";
     else
@@ -4547,7 +4547,7 @@ void dumpVariantsRealignBatch(
         if (extraVVVV)
             std::cout << "cov=" << coverage << std::endl;
 #endif
-        if (coverage < (int)options.minCoverage)
+        if (coverage < static_cast<int>options.minCoverage)
             continue;  // coverage too low
 
         // start checking reads for this position, prepare some helpers
@@ -4627,25 +4627,25 @@ void dumpVariantsRealignBatch(
                     else
                         ++numIndelsObservedR;
                     if (options.minDifferentReadPos > 0)
-                        if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
-                            (unsigned) readPos >= options.excludeBorderPos)
+                        if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
+                            static_cast<unsigned> readPos >= options.excludeBorderPos)
                             indelReadPosMap.insert(readPos);
                 }
                 else if (candidateBase != refBase)
                 {
                     observedAtLeastOneMut = true;
                     if (options.minDifferentReadPos > 0)
-                        if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
-                            (unsigned) readPos >= options.excludeBorderPos)
+                        if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
+                            static_cast<unsigned> readPos >= options.excludeBorderPos)
                             readPosMap.insert(readPos);
                 }
                 quality = getQualityValue(reads[(*matchIt).readId][readPos]);
                 if (options.newQualityCalibrationFactor > 0.0001)
                     quality = calibrateQuality(reads[(*matchIt).readId], matchQualities[(*matchIt).id], quality, options);
 
-                if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score) // dont trust the quality of this position more
+                if (!options.useBaseQuality && quality > static_cast<int>matchQualities[(*matchIt).id].score) // dont trust the quality of this position more
                 {   // than the average quality of this read
-                    quality = (int)matchQualities[(*matchIt).id].score;
+                    quality = static_cast<int>matchQualities[(*matchIt).id].score;
                 }
 
 
@@ -4653,13 +4653,13 @@ void dumpVariantsRealignBatch(
                 {
                     columnQualityF[ordValue(candidateBase)] += quality;
                     ++countF[ordValue(candidateBase)];
-                    appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                    appendValue(qualityStringF[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                 }
                 else
                 {
                     columnQualityR[ordValue(candidateBase)] += quality;
                     ++countR[ordValue(candidateBase)];
-                    appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                    appendValue(qualityStringR[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                 }
             }
             else //potential deletions
@@ -4694,8 +4694,8 @@ void dumpVariantsRealignBatch(
                     }
                     if (options.minDifferentReadPos > 0)
                     {
-                        if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
-                            (unsigned)readPos >= options.excludeBorderPos)
+                        if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos &&
+                            static_cast<unsigned>readPos >= options.excludeBorderPos)
                             indelReadPosMap.insert(readPos);
                     }
                 }
@@ -4713,7 +4713,7 @@ void dumpVariantsRealignBatch(
         }
 #endif
         // too few reads actually cover the position
-        if (positionCoverage < (int)options.minCoverage)
+        if (positionCoverage < static_cast<int>options.minCoverage)
             continue;
 
         //all observed bases match the reference allele or there were too few indels
@@ -4756,7 +4756,7 @@ void dumpVariantsRealignBatch(
                                    snp,
                                    ThresholdMethod());
             // write SNP to file
-            if (snp.snpQuality < (int)options.minQual)
+            if (snp.snpQuality < static_cast<int>options.minQual)
                 setBit(snp.filter, 2);
             if (isSnp && (snp.called || options.outputFormat == 0 || snp.filter == 0))
                 SEQAN_OMP_PRAGMA(critical(writeSNP))
@@ -4771,26 +4771,26 @@ void dumpVariantsRealignBatch(
                           options);
         }
         bool isIndel = true;
-        if (!indelfile.is_open() || numIndelsObserved < (int)options.indelCountThreshold) // count threshold
+        if (!indelfile.is_open() || numIndelsObserved < static_cast<int>options.indelCountThreshold) // count threshold
             isIndel = false;
-        if (isIndel && ((float)numIndelsObserved / (float)positionCoverage) < options.indelPercentageT)
+        if (isIndel && (static_cast<float>numIndelsObserved / static_cast<float>positionCoverage) < options.indelPercentageT)
             isIndel = false;
         if (isIndel && options.minDifferentReadPos > 0 && indelReadPosMap.size() < options.minDifferentReadPos)
             isIndel = false;  // minDiffReadPos criterium
-        if (isIndel && options.bothIndelStrands && ((float)numIndelsObservedF == 0 || numIndelsObservedR == 0))
+        if (isIndel && options.bothIndelStrands && (static_cast<float>numIndelsObservedF == 0 || numIndelsObservedR == 0))
             isIndel = false;
         // possible deletion, insertion quality will be handled later
         int avgIndelQuality = 0;
         if (isIndel && numIndelsObserved > 0)
-            avgIndelQuality = (int)((double)indelQualF
+            avgIndelQuality = static_cast<int>(static_cast<double>indelQualF
                                     + indelQualR) / numIndelsObserved;
-        if (isIndel && !refGap && (float)avgIndelQuality < options.indelQualityThreshold)
+        if (isIndel && !refGap && static_cast<float>avgIndelQuality < options.indelQualityThreshold)
             isIndel = false;
 
 
         // do indel calling. TODO: for 454 look at sequence content! for >= 6bp homopolymer runs needs to be more strict
-        //if (indelfile.is_open() && numIndelsObserved >= (int)options.indelCountThreshold // count threshold &&
-        //    ((float)numIndelsObserved/(float)positionCoverage) >= options.indelPercentageT // percentage threshold &&
+        //if (indelfile.is_open() && numIndelsObserved >= static_cast<int>options.indelCountThreshold // count threshold &&
+        //    (static_cast<float>numIndelsObserved/static_cast<float>positionCoverage) >= options.indelPercentageT // percentage threshold &&
         // minDiffReadPos criterium
         //    (options.minDifferentReadPos == 0 || indelReadPosMap.size() >= options.minDifferentReadPos))
         if (isIndel)
@@ -4816,10 +4816,10 @@ void dumpVariantsRealignBatch(
                 if (maxCount < options.indelCountThreshold)
                     indelCalled = false;
                 // if (!indelCalled) std::cout << "verloren1\n";
-                if (((double)maxCount / positionCoverage) < options.indelPercentageT)
+                if ((static_cast<double>maxCount / positionCoverage) < options.indelPercentageT)
                     indelCalled = false;
                 // if (!indelCalled) std::cout << "verloren2\n";
-                if ((double)(maxCount + positionCoverage - numIndelsObserved) / positionCoverage
+                if (static_cast<double>(maxCount + positionCoverage - numIndelsObserved) / positionCoverage
                     < options.minExplainedColumn)
                     indelCalled = false;
                 // if (!indelCalled)
@@ -4827,11 +4827,11 @@ void dumpVariantsRealignBatch(
                 //                << positionCoverage << "numIndelsObserved = " << numIndelsObserved <<" verloren3\n";
 
                 // check quality
-                //avgIndelQuality = (int) ((double)columnQualityR[mostCommonBase]
+                //avgIndelQuality = static_cast<int> (static_cast<double>columnQualityR[mostCommonBase]
                 //      + columnQualityF[mostCommonBase])/numIndelsObserved; // divide by all observed insertions?
-                avgIndelQuality = (int)((double)columnQualityR[mostCommonBase]
+                avgIndelQuality = static_cast<int>(static_cast<double>columnQualityR[mostCommonBase]
                                         + columnQualityF[mostCommonBase]) / maxCount;  // or just candidate insertions?
-                if ((float)avgIndelQuality < options.indelQualityThreshold)
+                if (static_cast<float>avgIndelQuality < options.indelQualityThreshold)
                     indelCalled = false;
                 // if (!indelCalled)
                 //     std::cout << "verloren4\n";
@@ -4845,11 +4845,11 @@ void dumpVariantsRealignBatch(
                 indelConsens[candidateViewPos].i1 = avgIndelQuality << 8 | bothStrandsObserved << 4 | mostCommonBase;
 #ifdef SNPSTORE_DEBUG
                 if (extraVVVV)
-                    std::cout << "mosCommonBase = " << (int)mostCommonBase << std::endl;
+                    std::cout << "mosCommonBase = " << static_cast<int>mostCommonBase << std::endl;
 #endif
                 if (positionCoverage > 255) //downscaling if numbers get too large
                 {
-                    numIndelsObserved *= (int)((float)255.0 / (float)positionCoverage);
+                    numIndelsObserved *= static_cast<int>(static_cast<float>255.0 / static_cast<float>positionCoverage);
                     positionCoverage = 255;
 #ifdef SNPSTORE_DEBUG
                     if (extraVVVV)
@@ -4913,7 +4913,7 @@ void dumpVariantsRealignBatch(
                 {
                     ++indelSize;
                     depth += (indelConsens[candidateViewPos].i2 & 255);
-                    percentage += (float)((indelConsens[candidateViewPos].i2 >> 8) & 255);
+                    percentage += static_cast<float>((indelConsens[candidateViewPos].i2 >> 8) & 255);
                     quality += ((indelConsens[candidateViewPos].i1 >> 8) & 255);
                     bsi = bsi && (((indelConsens[candidateViewPos].i1 >> 4) & 1) == 1);
                 }
@@ -4956,7 +4956,7 @@ void dumpVariantsRealignBatch(
                 {
                     --indelSize;
                     depth += (indelConsens[candidateViewPos].i2 & 255);
-                    percentage += (float)((indelConsens[candidateViewPos].i2 >> 8) & 255);
+                    percentage += static_cast<float>((indelConsens[candidateViewPos].i2 >> 8) & 255);
                     quality += ((indelConsens[candidateViewPos].i1 >> 8) & 255);
                     appendValue(insertionSeq, (Dna5)(indelConsens[candidateViewPos].i1 & 7));
                     bsi = bsi && (((indelConsens[candidateViewPos].i1 >> 4) & 1) == 1);
@@ -5113,7 +5113,7 @@ void dumpSNPsBatch(
         matchIt = matchRangeBegin;
 
         int coverage = matchRangeEnd - matchRangeBegin;
-        if (coverage < (int)options.minCoverage)
+        if (coverage < static_cast<int>options.minCoverage)
             continue;  // coverage too low
 
         if (options._debugLevel > 1)
@@ -5154,7 +5154,7 @@ void dumpSNPsBatch(
             // if (candidatePos lies in split gap) continue;
 
             // do edit alignment
-            if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
+            if (static_cast<int>matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
             {
                 Dna5String gInf = infix(genome, currentBegin, currentEnd);
                 if (orientation == 'R')
@@ -5170,7 +5170,7 @@ void dumpSNPsBatch(
                 FunctorComplement<Dna5> f;
 
                 int readPos = currentEnd - candidatePos - 1;
-                if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+                if (static_cast<int>matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align, readPos, false);  //
 
 #ifdef SNPSTORE_DEBUG
@@ -5189,8 +5189,8 @@ void dumpSNPsBatch(
                     {
                         observedAtLeastOneMut = true;
                         if (options.minDifferentReadPos > 0)
-                            if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                                (unsigned) readPos >= options.excludeBorderPos)
+                            if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                                static_cast<unsigned> readPos >= options.excludeBorderPos)
                                 readPosMap.insert(readPos);
 
                     }
@@ -5200,9 +5200,9 @@ void dumpSNPsBatch(
                                                    quality,
                                                    options);
 
-                    if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score) // dont trust the quality of this position more than the average quality of this read
+                    if (!options.useBaseQuality && quality > static_cast<int>matchQualities[(*matchIt).id].score) // dont trust the quality of this position more than the average quality of this read
                     {
-                        quality = (int) matchQualities[(*matchIt).id].score;
+                        quality = static_cast<int> matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
                     else
@@ -5219,7 +5219,7 @@ void dumpSNPsBatch(
                     {
                         columnQualityR[ordValue(candidateBase)] += quality;
                         ++countR[ordValue(candidateBase)];
-                        appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                        appendValue(qualityStringR[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                     }
                 }
             }
@@ -5227,7 +5227,7 @@ void dumpSNPsBatch(
             {
                 int readPos = candidatePos - currentBegin;
 
-                if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+                if (static_cast<int>matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align, readPos);
 
                 if (readPos != -1) //-1 indicates gap
@@ -5238,8 +5238,8 @@ void dumpSNPsBatch(
                     {
                         observedAtLeastOneMut = true;
                         if (options.minDifferentReadPos > 0)
-                            if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                                (unsigned) readPos >= options.excludeBorderPos)
+                            if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                                static_cast<unsigned> readPos >= options.excludeBorderPos)
                                 readPosMap.insert(readPos);
                     }
                     if (options.newQualityCalibrationFactor > 0.0001)
@@ -5248,9 +5248,9 @@ void dumpSNPsBatch(
                                                    quality,
                                                    options);
 
-                    if (!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
+                    if (!options.useBaseQuality && quality > static_cast<int> matchQualities[(*matchIt).id].score)
                     {
-                        quality = (int) matchQualities[(*matchIt).id].score;
+                        quality = static_cast<int> matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
                     else
@@ -5265,7 +5265,7 @@ void dumpSNPsBatch(
                     {
                         ++countF[ordValue(candidateBase)];
                         columnQualityF[ordValue(candidateBase)] += quality;
-                        appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                        appendValue(qualityStringF[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                     }
                 }
             }
@@ -5301,7 +5301,7 @@ void dumpSNPsBatch(
                                snp,
                                MaqMethod()
 #ifdef SNPSTORE_DEBUG_CANDPOS
-                              , (int) candidatePos + startCoord
+                              , static_cast<int> candidatePos + startCoord
 #endif
                                );
         else if (isSnp && options.method == 0)      //Threshold-method
@@ -5314,7 +5314,7 @@ void dumpSNPsBatch(
                                snp,
                                ThresholdMethod());
         // write SNP to file
-        if (snp.snpQuality < (int)options.minQual)
+        if (snp.snpQuality < static_cast<int>options.minQual)
             setBit(snp.filter, 2);
         if (isSnp && (snp.called || options.outputFormat == 0 || snp.filter == 0))
             SEQAN_OMP_PRAGMA(critical(writeSNP))
@@ -5602,7 +5602,7 @@ void dumpShortIndelPolymorphismsBatch(
 
             //TODO: make use of i2
             //TODO: remember strand of indel-supporting read
-            indelIt = indels.find(TPosLen((unsigned)indelCandPos, -(int)(readInserts[i].i2).i2));
+            indelIt = indels.find(TPosLen(static_cast<unsigned>indelCandPos, -static_cast<int>(readInserts[i].i2).i2));
             if (indelIt == indels.end())
             {
                 // this is the first insertion with this length found at this genomic position
@@ -5616,7 +5616,7 @@ void dumpShortIndelPolymorphismsBatch(
                                  (readInserts[i].i2).i1,
                                  (readInserts[i].i2).i1 + (readInserts[i].i2).i2);
                     indelStrandHelper.insert(std::make_pair(
-                                                 Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2),
+                                                 Pair<unsigned, int>(indelCandPos, -static_cast<int>(readInserts[i].i2).i2),
                                                  Pair<bool, bool>(true, false)));
                 }
                 else
@@ -5625,11 +5625,11 @@ void dumpShortIndelPolymorphismsBatch(
                                  readLen - (readInserts[i].i2).i1 - (readInserts[i].i2).i2,
                                  readLen - (readInserts[i].i2).i1);
                     reverseComplement(rInf);
-                    indelStrandHelper.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2),
+                    indelStrandHelper.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, -static_cast<int>(readInserts[i].i2).i2),
                                                             Pair<bool, bool>(false, true)));
                 }
 
-                indels.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2),
+                indels.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, -static_cast<int>(readInserts[i].i2).i2),
                                              Pair<unsigned, TReadInf>(1, rInf)));
 
                 //          if (extraV)std::cout << rInf << " <-" << (*matchIt).id<<std::endl;
@@ -5638,7 +5638,7 @@ void dumpShortIndelPolymorphismsBatch(
             {
                 //          if (extraV) ::std::cout << "increase counter ins pos" << std::endl;
                 ++(indelIt->second.i1);
-                strandIt = indelStrandHelper.find(TPosLen((unsigned)indelCandPos, -(int)(readInserts[i].i2).i2));
+                strandIt = indelStrandHelper.find(TPosLen(static_cast<unsigned>indelCandPos, -static_cast<int>(readInserts[i].i2).i2));
                 //                SEQAN_ASSERT_NEQ(strandIt, indelStrandHelper.end());
 
                 if ((*matchIt).beginPos < (*matchIt).endPos)
@@ -5667,11 +5667,11 @@ void dumpShortIndelPolymorphismsBatch(
             }
             if (!empty(readCigars[(*matchIt).readId])) // if this is a split read --> increase counter
             {
-                splitCountIt = splitCounts.find(Pair<unsigned, int>(indelCandPos, -(int)(readInserts[i].i2).i2));
+                splitCountIt = splitCounts.find(Pair<unsigned, int>(indelCandPos, -static_cast<int>(readInserts[i].i2).i2));
                 if (splitCountIt == splitCounts.end())
                 {
                     splitCounts.insert(std::make_pair(Pair<unsigned, int>(indelCandPos,
-                                                                          -(int)(readInserts[i].i2).i2), 1));
+                                                                          -static_cast<int>(readInserts[i].i2).i2), 1));
                 }
                 else
                     ++(splitCountIt->second);
@@ -5691,29 +5691,29 @@ void dumpShortIndelPolymorphismsBatch(
 #endif
 
             //TODO: make use of i2
-            indelIt = indels.find(Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2));
+            indelIt = indels.find(Pair<unsigned, int>(indelCandPos, static_cast<int>(readDeletes[i].i2).i2));
             if (indelIt == indels.end())
             {
-                indels.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2),
+                indels.insert(std::make_pair(Pair<unsigned, int>(indelCandPos, static_cast<int>(readDeletes[i].i2).i2),
                                              Pair<unsigned, TReadInf>(1, dummyInf)));
 
                 if ((*matchIt).beginPos < (*matchIt).endPos)
                 {
                     indelStrandHelper.insert(std::make_pair(
-                                                 Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2),
+                                                 Pair<unsigned, int>(indelCandPos, static_cast<int>(readDeletes[i].i2).i2),
                                                  Pair<bool, bool>(true, false)));
                 }
                 else
                 {
                     indelStrandHelper.insert(std::make_pair(
-                                                 Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2),
+                                                 Pair<unsigned, int>(indelCandPos, static_cast<int>(readDeletes[i].i2).i2),
                                                  Pair<bool, bool>(false, true)));
                 }
             }
             else
             {
                 ++(indelIt->second.i1);
-                strandIt = indelStrandHelper.find(Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2));
+                strandIt = indelStrandHelper.find(Pair<unsigned, int>(indelCandPos, static_cast<int>(readDeletes[i].i2).i2));
                 //                SEQAN_ASSERT_NEQ(strandIt,indelStrandHelper.end());
 
                 if ((*matchIt).beginPos < (*matchIt).endPos)
@@ -5728,7 +5728,7 @@ void dumpShortIndelPolymorphismsBatch(
                 if (splitCountIt == splitCounts.end())
                 {
                     splitCounts.insert(std::make_pair<Pair<unsigned, int>, unsigned>
-                                           (Pair<unsigned, int>(indelCandPos, (int)(readDeletes[i].i2).i2), 1));
+                                           (Pair<unsigned, int>(indelCandPos, static_cast<int>(readDeletes[i].i2).i2), 1));
 
                 }
                 else
@@ -5870,7 +5870,7 @@ void dumpShortIndelPolymorphismsBatch(
                 }
             }
             int coverage = matchRangeEnd - matchRangeBegin;
-            if (coverage < (int)options.minCoverage)
+            if (coverage < static_cast<int>options.minCoverage)
             {
                 matchIt = matchRangeBegin;
                 continue;
@@ -5899,7 +5899,7 @@ void dumpShortIndelPolymorphismsBatch(
             int depth = covF + covR;
             if (options.indelDepthMinOverlap != 0)
                 depth = minOverlapDepth;
-            if (depth < (int)options.minCoverage)
+            if (depth < static_cast<int>options.minCoverage)
             {
                 if (options._debugLevel > 1)
                     ::std::cout << "Coverage " << covF + covR
@@ -6071,7 +6071,7 @@ void dumpPositionsRealignBatchWrap(
         TContigPos groupEndPos = _max((*matchIt).endPos, (*matchIt).beginPos);
         TContigPos groupStartPos = _min((*matchIt).endPos, (*matchIt).beginPos);
 
-        TContigPos groupStartCoordLocal = _max(0, (int)groupStartPos - options.realignAddBorder);
+        TContigPos groupStartCoordLocal = _max(0, static_cast<int>groupStartPos - options.realignAddBorder);
         while (inspectPosIt != inspectPosItEnd && *inspectPosIt < groupStartPos + startCoord)
         {
             if (options.orientationAware)
@@ -6133,7 +6133,7 @@ void dumpPositionsRealignBatchWrap(
             groupEndPos = _min(groupEndPos, currWindowEnd);
 
             //the current group is formed by all reads from matchItBatchBegin until matchItBatchEnd
-            if (indelReadCount >= (int)minNumIndels && options.realign)
+            if (indelReadCount >= static_cast<int>minNumIndels && options.realign)
             {
                 //do realignment
                 dumpPositionsRealignBatch(fragStoreGroup, inspectPosIt, inspectPosItEnd,
@@ -6416,8 +6416,8 @@ void dumpPositionsRealignBatch(
             if (readPos != -1) //-1 indicates gap in read
             {
                 //if (options.minDifferentReadPos > 0)
-                //    if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                //            (unsigned) readPos >= options.excludeBorderPos )
+                //    if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                //            static_cast<unsigned> readPos >= options.excludeBorderPos )
                 //        readPosMap.insert(readPos);
 
                 if (orientation == 'R')
@@ -6427,21 +6427,21 @@ void dumpPositionsRealignBatch(
 
                 quality = getQualityValue(reads[(*matchIt).readId][readPos]);
 
-                if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score) // dont trust the quality of this position more than the average quality of this read
+                if (!options.useBaseQuality && quality > static_cast<int>matchQualities[(*matchIt).id].score) // dont trust the quality of this position more than the average quality of this read
                 {
-                    quality = (int) matchQualities[(*matchIt).id].score;
+                    quality = static_cast<int> matchQualities[(*matchIt).id].score;
                 }
                 if (orientation == 'F')
                 {
                     columnQualityF[ordValue(candidateBase)] += quality;
                     ++countF[ordValue(candidateBase)];
-                    appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                    appendValue(qualityStringF[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                 }
                 else
                 {
                     columnQualityR[ordValue(candidateBase)] += quality;
                     ++countR[ordValue(candidateBase)];
-                    appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                    appendValue(qualityStringR[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                 }
             }
             else
@@ -6637,7 +6637,7 @@ void dumpPosBatch(                                          // Witout realignmen
                 continue;
             }
             // do edit alignment
-            if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
+            if (static_cast<int>matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
             {
                 Dna5String gInf = infix(genome, currentBegin, currentEnd);
                 if (orientation == 'R')
@@ -6650,7 +6650,7 @@ void dumpPosBatch(                                          // Witout realignmen
             {
                 FunctorComplement<Dna5> f;
                 int readPos = currentEnd - candidatePos - 1;
-                if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+                if (static_cast<int>matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align, readPos, false);  //
 
 #ifdef SNPSTORE_DEBUG
@@ -6660,8 +6660,8 @@ void dumpPosBatch(                                          // Witout realignmen
                 if (readPos != -1) //-1 indicates gap
                 {
                     //if (options.minDifferentReadPos > 0)
-                    //    if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                    //        (unsigned) readPos >= options.excludeBorderPos )
+                    //    if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                    //        static_cast<unsigned> readPos >= options.excludeBorderPos )
                     //        readPosMap.insert(readPos);
                     candidateBase = f((Dna5)reads[(*matchIt).readId][readPos]);
 #ifdef SNPSTORE_DEBUG
@@ -6670,9 +6670,9 @@ void dumpPosBatch(                                          // Witout realignmen
 #endif
                     quality = getQualityValue(reads[(*matchIt).readId][readPos]);
 
-                    if (!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score) // dont trust the quality of this position more than the average quality of this read
+                    if (!options.useBaseQuality && quality > static_cast<int>matchQualities[(*matchIt).id].score) // dont trust the quality of this position more than the average quality of this read
                     {
-                        quality = (int) matchQualities[(*matchIt).id].score;
+                        quality = static_cast<int> matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
                     else
@@ -6687,7 +6687,7 @@ void dumpPosBatch(                                          // Witout realignmen
                     {
                         columnQualityR[ordValue(candidateBase)] += quality;
                         ++countR[ordValue(candidateBase)];
-                        appendValue(qualityStringR[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                        appendValue(qualityStringR[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                     }
                 }
                 else
@@ -6696,21 +6696,21 @@ void dumpPosBatch(                                          // Witout realignmen
             else
             {
                 int readPos = candidatePos - currentBegin;
-                if ((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
+                if (static_cast<int>matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/)
                     readPos = getReadPos(align, readPos);
                 if (readPos != -1) //-1 indicates gap
                 {
                     //if (options.minDifferentReadPos > 0)
-                    //    if ((unsigned)(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
-                    //        (unsigned) readPos >= options.excludeBorderPos )
+                    //    if (static_cast<unsigned>(length(reads[(*matchIt).readId]) - readPos) > options.excludeBorderPos  &&
+                    //        static_cast<unsigned> readPos >= options.excludeBorderPos )
                     //        readPosMap.insert(readPos);
 
                     candidateBase = (Dna5)reads[(*matchIt).readId][readPos];
                     quality = getQualityValue(reads[(*matchIt).readId][readPos]);
 
-                    if (!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
+                    if (!options.useBaseQuality && quality > static_cast<int> matchQualities[(*matchIt).id].score)
                     {
-                        quality = (int) matchQualities[(*matchIt).id].score;
+                        quality = static_cast<int> matchQualities[(*matchIt).id].score;
                         ++countLowerMQ;
                     }
                     else
@@ -6725,7 +6725,7 @@ void dumpPosBatch(                                          // Witout realignmen
                     {
                         ++countF[ordValue(candidateBase)];
                         columnQualityF[ordValue(candidateBase)] += quality;
-                        appendValue(qualityStringF[ordValue(candidateBase)], (char)(quality + 33), Generous());
+                        appendValue(qualityStringF[ordValue(candidateBase)], static_cast<char>(quality + 33), Generous());
                     }
                 }
                 else
