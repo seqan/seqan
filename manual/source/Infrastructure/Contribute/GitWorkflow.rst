@@ -34,59 +34,63 @@ Execute the following command to get the last sources:
 
 .. code-block:: console
     
-    ~ # git clone https://github.com/seqan/seqan.git seqan-src
+    ~ # git clone https://github.com/seqan/seqan.git seqan
 
 
 SeqAn Workflow
 --------------
 
-The SeqAn workflow is based on the `Gitflow <https://www.atlassian.com/git/workflows#workflow-gitflow>`_ workflow by `Atlassian`__. 
+The SeqAn workflow is based on the `Gitflow <https://www.atlassian.com/git/tutorials/comparing-workflows>`_ workflow by `Atlassian`__. 
 The workflow is based on two persistent branches: `master <https://github.com/seqan/seqan/tree/master>`_ and `develop <https://github.com/seqan/seqan/tree/develop>`_. 
-Development of new library and app features usually occurs on develop. 
-The master branch receives only new library and app releases, in addition to hot-fixes to previous releases. 
-Thus, the master branch is always stable and safe to use, and the develop branch contains the last development but might occasionally break overnight. 
-The most frequent development use cases are documented below.
+Almost all development occurs in develop.
+
+The master branch is only updated before a new release, either by merging from develop which will create a new minor release [2.x+1.0] or through an emergency fix which will result in a patch level release [2.x.y+1].
+Thus, the master branch is always stable and usually identical to the latest release, and the develop branch contains the latest development but might occasionally have breaking changes. 
 
 .. __: https://www.atlassian.com
 
-Develop a feature in a module or an app
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Develop a feature or fix a bug
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Follow the `steps <https://www.atlassian.com/git/workflows#workflow-gitflow>`_ in “Mary and John begin new features” and “Mary finishes her feature”.
 
-* Create a new feature `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ based on `develop <https://github.com/seqan/seqan/tree/develop>`_.
+* Create a new `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ based on `develop <https://github.com/seqan/seqan/tree/develop>`_.
 * Perform your changes and `commit <https://www.atlassian.com/git/tutorial/git-basics#commit>`_ them onto your feature branch.
+* Keep your commit history concise (see below) and `write proper commit messages <infra-contribute-git-commits>`_.
 * When the development is complete, push the feature branch to your repository on GithHub.
+* Make sure that you have `signed the Contributor License Agreement <https://www.clahub.com/agreements/seqan/seqan>`_
 * `Create a GitHub pull request <https://github.com/seqan/seqan/compare/develop>`_ to `develop <https://github.com/seqan/seqan/tree/develop>`_.
-* Delete your feature branch once it has been merged.
+* Delete your branch once it has been merged.
 
-Fix an existing bug in a module or app
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What to include in a commit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Follow the `steps <https://www.atlassian.com/git/workflows#workflow-gitflow>`_ in “End-user discovers a bug”.
+The git history of your contribution should be concise. Please follow the following hints:
 
-* Create a new hotfix `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ based on `master <https://github.com/seqan/seqan/tree/master>`_.
-* Perform your changes and `commit <https://www.atlassian.com/git/tutorial/git-basics#commit>`_ them onto your hotfix branch.
-* When the fix is ready, push your hotfix branch to repository on GitHub. Then:
-    #. `Create a GitHub pull request`__ to `master <https://github.com/seqan/seqan/tree/master>`_.
-    #. `Create a GitHub pull request`__ to `develop <https://github.com/seqan/seqan/tree/develop>`_.
-    #. The pull requests should contain only the commits from your hotfix branch.
-* Delete your hotfix branch once it has been merged through the pull request.
+* A single commit should be a logical unit; don't split a logical change over multiple commits and don't address different issues in one commit.
+* Do not include revisions to your changes in your history, i.e. if you receive comments on your PR, change your previous commits via ``git commit --amend`` or ``git rebase``, don't just push more changes onto the history.
+* Always split functional changes and style changes, including whitespace changes, into seperate commits.
+* Follow our style for `commit messages <infra-contribute-git-commits>`_.
+* If you don't follow these rules your contribution will be squashed into a single commit by the project member doing the merge.
 
-.. __: https://github.com/seqan/seqan/compare/master
-.. __: https://github.com/seqan/seqan/compare/develop
+An example of a good git log:
 
-Develop new modules and apps
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: console
 
-Create a new module or app `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ where to develop your new module or application.
-The branch should be based on master if your module or application doesn't rely on any recently developed features.
-If a new feature becomes necessary later on, the branch can be `rebased <https://www.atlassian.com/git/tutorial/rewriting-git-history#rebase>`_ onto develop.
-When the development is complete, the branch can be merged back into the corresponding base branch - either master or develop.
+  [FIX-#666] fix bug in sequence i/o module
+  [INTERNAL] remove empty lines
+  [FIX] repair apps that depended on broken behaviour
+  [TEST] add test that triggers #666
+ 
+An example of a bad git log:
 
-Rules
------
+.. code-block:: console
 
-* Never push feature branches to the SeqAn repository.
-* Submit code reviews through GitHub.
-
+  [FIX] fix bug in sequence i/o module
+  [INTERNAL] remove empty line
+  [FIX] forgot to change foo/bar.h
+  revert previous changes
+  revert "revert previous changes"
+  [FIX] correctly this time
+  [INTERNAL] remove another empty line
+  [FIX,TEST] fix apps and add test
