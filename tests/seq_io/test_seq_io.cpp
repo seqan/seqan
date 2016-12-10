@@ -50,6 +50,8 @@
 #include "test_read_bam.h"
 #include "test_write_bam.h"
 
+#include "test_tag_select_intersect.h"
+
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
     // Test recognition of supported file types.
@@ -59,6 +61,9 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     // Test recognition of supported file formats.
     SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta);
     SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq);
+
+    // Test transefer of format from input file to output file (tag_select_intersect).
+    SEQAN_CALL_TEST(test_tag_select_intersect);
 
     // Test reading with different interfaces.
     SEQAN_CALL_TEST(test_seq_io_sequence_file_read_record_text_fasta);

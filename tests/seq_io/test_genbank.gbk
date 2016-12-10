@@ -1,0 +1,90 @@
+LOCUS       SCU49845     5028 bp    DNA             PLN       21-JUN-1999
+DEFINITION  Saccharomyces cerevisiae TCP1-beta gene, partial cds, and Axl2p
+            (AXL2) and Rev7p (REV7) genes, complete cds.
+ACCESSION   U49845
+VERSION     U49845.1  GI:1293613
+KEYWORDS    .
+SOURCE      Saccharomyces cerevisiae (baker's yeast)
+  ORGANISM  Saccharomyces cerevisiae
+            Eukaryota; Fungi; Ascomycota; Saccharomycotina; Saccharomycetes;
+            Saccharomycetales; Saccharomycetaceae; Saccharomyces.
+REFERENCE   1  (bases 1 to 5028)
+  AUTHORS   Torpey,L.E., Gibbs,P.E., Nelson,J. and Lawrence,C.W.
+  TITLE     Cloning and sequence of REV7, a gene whose function is required for
+            DNA damage-induced mutagenesis in Saccharomyces cerevisiae
+  JOURNAL   Yeast 10 (11), 1503-1509 (1994)
+  PUBMED    7871890
+REFERENCE   2  (bases 1 to 5028)
+  AUTHORS   Roemer,T., Madden,K., Chang,J. and Snyder,M.
+  TITLE     Selection of axial growth sites in yeast requires Axl2p, a novel
+            plasma membrane glycoprotein
+  JOURNAL   Genes Dev. 10 (7), 777-793 (1996)
+  PUBMED    8846915
+REFERENCE   3  (bases 1 to 5028)
+  AUTHORS   Roemer,T.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (22-FEB-1996) Terry Roemer, Biology, Yale University, New
+            Haven, CT, USA
+FEATURES             Location/Qualifiers
+     source          1..5028
+                     /organism="Saccharomyces cerevisiae"
+                     /db_xref="taxon:4932"
+                     /chromosome="IX"
+                     /map="9"
+     CDS             <1..206
+                     /codon_start=3
+                     /product="TCP1-beta"
+                     /protein_id="AAA98665.1"
+                     /db_xref="GI:1293614"
+                     /translation="SSIYNGISTSGLDLNNGTIADMRQLGIVESYKLKRAVVSSASEA
+                     AEVLLRVDNIIRARPRTANRQHM"
+     gene            687..3158
+                     /gene="AXL2"
+     CDS             687..3158
+                     /gene="AXL2"
+                     /note="plasma membrane glycoprotein"
+                     /codon_start=1
+                     /function="required for axial budding pattern of S.
+                     cerevisiae"
+                     /product="Axl2p"
+                     /protein_id="AAA98666.1"
+                     /db_xref="GI:1293615"
+                     /translation="MTQLQISLLLTATISLLHLVVATPYEAYPIGKQYPPVARVNESF
+                     TFQISNDTYKSSVDKTAQITYNCFDLPSWLSFDSSSRTFSGEPSSDLLSDANTTLYFN
+                     VILEGTDSADSTSLNNTYQFVVTNRPSISLSSDFNLLALLKNYGYTNGKNALKLDPNE
+                     VFNVTFDRSMFTNEESIVSYYGRSQLYNAPLPNWLFFDSGELKFTGTAPVINSAIAPE
+                     TSYSFVIIATDIEGFSAVEVEFELVIGAHQLTTSIQNSLIINVTDTGNVSYDLPLNYV
+                     YLDDDPISSDKLGSINLLDAPDWVA"
+     gene            complement(3300..4037)
+                     /gene="REV7"
+     CDS             complement(3300..4037)
+                     /gene="REV7"
+                     /codon_start=1
+                     /product="Rev7p"
+                     /protein_id="AAA98667.1"
+                     /db_xref="GI:1293616"
+                     /translation="MNRWVEKWLRVYLKCYINLILFYRNVYPPQSFDYTTYQSFNLPQ
+                     FVPINRHPALIDYIEELILDVLSKLTHVYRFSICIINKKNDLCIEKYVLDFSELQHVD
+                     KDDQIITETEVFDEFRSSLNSLIMHLEKLPKVNDDTITFEAVINAIELELGHKLDRNR
+                     RVDSLEEKAEIERDSNWVKCQEDENLPDNNGFQPPKIKLTSLVGSDVGPLIIHQFSEK
+                     LISGDDKILNGVYSQYEEGESIFGSLF"
+ORIGIN
+        1 gatcctccat atacaacggt atctccacct caggtttaga tctcaacaac ggaaccattg
+       61 ccgacatgag acagttaggt atcgtcgaga gttacaagct aaaacgagca gtagtcagct
+      121 ctgcatctga agccgctgaa gttctactaa gggtggataa catcatccgt gcaagaccaa
+      181 gaaccgccaa tagacaacat atgtaacata tttaggatat acctcgaaaa taataaaccg
+      241 ccacactgtc attattataa ttagaaacag aacgcaaaaa ttatccacta tataattcaa
+      301 agacgcgaaa aaaaaagaac aacgcgtcat agaacttttg gcaattcgcg tcacaaataa
+      361 attttggcaa cttatgtttc ctcttcgagc agtactcgag ccctgtctca agaatgtaat
+      421 aatacccatc gtaggtatgg ttaaagatag catctccaca acctcaaagc tccttgccga
+      481 gagtcgccct cctttgtcga gtaattttca cttttcatat gagaacttat tttcttattc
+      541 tttactctca catcctgtag tgattgacac tgcaacagcc accatcacta gaagaacaga
+      601 acaattactt aatagaaaaa ttatatcttc ctcgaaacga tttcctgctt ccaacatcta
+      661 cgtatatcaa gaagcattca cttaccatga cacagcttca gatttcatta ttgctgacag
+      721 ctactatatc actactccat ctagtagtgg ccacgcccta tgaggcatat cctatcggaa
+      781 aacaataccc cccagtggca agagtcaatg aatcgtttac atttcaaatt tccaatgata
+      841 cctataaatc gtctgtagac aagacagctc aaataacata caattgcttc gacttaccga
+      901 gctggctttc gtttgactct agttctagaa cgttctcagg tgaaccttct tctgacttac
+      961 tatctgatgc gaacaccacg ttgtatttca atgtaatact cgagggtacg gactctgccg
+     1021 acagcacgtc tttgaacaat acataccaat ttgttgttac aaaccgtcca tccatctcgc
+     1081 tatcgtcaga tttcaatcta ttggcgttgt taaaaaacta tggttatact aacggcaaaa
