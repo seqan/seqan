@@ -191,9 +191,9 @@ private:
             // If everything is fine then we can assign the value to the option.
             _assignArgumentValue(opt, val);
         }
-        else if (isBooleanOption(opt))
+        else if (isFlagOption(opt))
         {
-            // Handling boolean options is simple.
+            // Handling flag options is simple.
             _assignArgumentValue(opt, "true");
         }
         else
@@ -229,8 +229,8 @@ private:
                     ArgParseOption & opt = getOption(parser, arg.substr(s, e - s));
                     s = --e;  // advance in squished options;  s > e if at end
 
-                    // Boolean options are easy to handle.
-                    if (isBooleanOption(opt))
+                    // Flag options are easy to handle.
+                    if (isFlagOption(opt))
                     {
                         _assignArgumentValue(opt, "true");
                         continue;

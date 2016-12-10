@@ -687,11 +687,22 @@ inline bool getOptionValue(TValue & val,
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
 
     if (isSet(me, name) || hasDefault(me, name))
-        return _convertArgumentValue(val,
-                                     getOption(me, name),
-                                     getArgumentValue(getOption(me, name), argNo));
+    {
+        if (isFlagOption(getOption(me, name)))
+        {
+            return _convertFlagValue(val, getArgumentValue(getOption(me, name), argNo));
+        }
+        else
+        {
+            return _convertArgumentValue(val,
+                                         getOption(me, name),
+                                         getArgumentValue(getOption(me, name), argNo));
+        }
+    }
     else
+    {
         return false;
+    }
 }
 
 template <typename TValue>

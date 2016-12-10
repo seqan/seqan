@@ -50,6 +50,11 @@ SEQAN_DEFINE_TEST(test_argument_string_type)
     SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::STRING);
 }
 
+SEQAN_DEFINE_TEST(test_argument_bool_type)
+{
+    ArgParseArgument arg(ArgParseArgument::BOOL);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::BOOL);
+}
 SEQAN_DEFINE_TEST(test_argument_int_type)
 {
     ArgParseArgument arg(ArgParseArgument::INTEGER);
@@ -90,6 +95,18 @@ SEQAN_DEFINE_TEST(test_argument_outputprefix_type)
 {
     ArgParseArgument arg(ArgParseArgument::OUTPUT_PREFIX);
     SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::OUTPUT_PREFIX);
+}
+
+SEQAN_DEFINE_TEST(test_argument_inputdirectory_type)
+{
+    ArgParseArgument arg(ArgParseArgument::INPUT_DIRECTORY);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::INPUT_DIRECTORY);
+}
+
+SEQAN_DEFINE_TEST(test_argument_outputdirectory_type)
+{
+    ArgParseArgument arg(ArgParseArgument::OUTPUT_DIRECTORY);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::OUTPUT_DIRECTORY);
 }
 
 SEQAN_DEFINE_TEST(test_argument_label)
