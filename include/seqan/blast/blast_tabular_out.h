@@ -485,7 +485,7 @@ _writeField(TFwdIterator & s,
                 // replace whitespace with _
                 std::string buf;
                 resize(buf, length(record.lcaId));
-                std::transform(seqan::begin(record.lcaId), seqan::end(record.lcaId), std::begin(buf), [] (auto const c)
+                std::transform(seqan::begin(record.lcaId, Standard()), seqan::end(record.lcaId, Standard()), std::begin(buf), [] (auto const c)
                 {
                     return ((c == ' ') || (c == '\t')) ? '_' : c;
                 });
@@ -527,7 +527,7 @@ _writeMatch(TFwdIterator & stream,
 {
     if (SEQAN_LIKELY(!context.legacyFormat))
     {
-        for (auto it = std::begin(context.fields), itB = it, itEnd = std::end(context.fields); it != itEnd; ++it)
+        for (decltype(std::begin(context.fields)) it = std::begin(context.fields), itB = it, itEnd = std::end(context.fields); it != itEnd; ++it)
         {
             if (it != itB)
                 write(stream, '\t');
