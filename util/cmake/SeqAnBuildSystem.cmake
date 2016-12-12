@@ -32,8 +32,8 @@
 # ============================================================================
 # This CMake file defines the necessary macros for the SeqAn build system.
 #
-# Note that while the SeqAn build system uses the FindSeqAn.cmake module,
-# the FindSeqAn.cmake module itself can be used independently from the SeqAn
+# Note that while the SeqAn build system uses the seqan-config.cmake module,
+# the seqan-config.cmake module itself can be used independently from the SeqAn
 # build system.
 # ============================================================================
 
@@ -172,6 +172,7 @@ macro (seqan_build_system_init)
     set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
     set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
+    set (SeqAn_DIR ${SeqAn_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake")
 #     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
     # Enable global exception handler for all "official" stuff
     set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER=1")
@@ -371,10 +372,10 @@ macro (seqan_setup_library)
         # Install pkg-config file, except on Windows.
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
-            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION lib/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
-        # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
+        # Install FindSeqAn TODO(h-2) rename seqan-config.cmake to seqan-config${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION lib/cmake/seqan/)
 
         # Install headers
         file (GLOB HEADERS
