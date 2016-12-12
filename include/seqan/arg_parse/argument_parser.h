@@ -268,7 +268,7 @@ public:
             appVersionCheckFuture.wait_for(std::chrono::seconds(3));
                 
         if (seqanVersionCheckFuture.valid()) 
-            seqanVersionCheckFuture.wait_for(std::chrono::seconds(2));
+            seqanVersionCheckFuture.wait_for(std::chrono::seconds(3));
     }
     
 };
