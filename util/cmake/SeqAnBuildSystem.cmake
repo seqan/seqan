@@ -540,7 +540,10 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   seqan_install_required_system_libraries()
 
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(CPACK_GENERATOR "ZIP;NSIS")
+    set(CPACK_GENERATOR "ZIP;WIX")
+    file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" license)
+    file(WRITE "${CMAKE_BINARY_DIR}/apps/${APP_DIR}/LICENSE.txt" "${license}")
+    set (CPACK_RESOURCE_FILE_LICENSE  "${CMAKE_BINARY_DIR}/apps/${APP_DIR}/LICENSE.txt")
   elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(CPACK_GENERATOR "ZIP;DragNDrop")
   elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
