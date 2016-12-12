@@ -157,6 +157,10 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
     SEQAN_CALL_TEST(test_bam_io_bam_write_header);
     SEQAN_CALL_TEST(test_bam_io_bam_write_alignment);
 
+    // Test isOpen.
+    SEQAN_CALL_TEST(test_bam_io_bam_file_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_bam_io_bam_file_isOpen_fileOut);
+
 #if SEQAN_HAS_ZLIB
     // Test BamStream class.
     SEQAN_CALL_TEST(test_bam_io_bam_file_sam_file_size);

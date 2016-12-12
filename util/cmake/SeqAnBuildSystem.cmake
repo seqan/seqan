@@ -176,9 +176,10 @@ macro (seqan_register_apps)
     foreach (ENTRY ${ENTRIES})
         if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
             if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
-                if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
+                if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
                     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS") OR
-                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}"))
+                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}")) AND
+                    (NOT (${${ENTRY}_NO_BUILD})))
                     add_subdirectory(${ENTRY})
                 endif ()
             endif (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
@@ -245,6 +246,13 @@ macro (seqan_build_system_init)
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
     ## options
+
+    # SeqAn Version Check
+    if (NOT SEQAN_VERSION_CHECK)
+        set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS};-DSEQAN_DISABLE_VERSION_CHECK")
+    endif ()
+
+    # Architecture.
     if (NOT SEQAN_64BIT_TARGET_PLATFORM)
         set (SEQAN_ARCH_SSE4 FALSE)
         set (SEQAN_ARCH_AVX2 FALSE)
@@ -302,6 +310,16 @@ macro (seqan_build_system_init)
     endif ()
     # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
     #            find out whether clang/c2 takes - or / options
+
+    # search dependencies once, globally, if in DEVELOP
+    if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
+        message (STATUS "Scanning dependencies once in DEVELOP mode...")
+        find_package(OpenMP)
+        find_package(ZLIB)
+        find_package(BZip2)
+        find_package(Boost)
+        find_package(SeqAn REQUIRED)
+    endif ()
 
 endmacro (seqan_build_system_init)
 
@@ -714,11 +732,8 @@ function (seqan_register_demos PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
-    # Find SeqAn with all dependencies.
-    find_package (OpenMP)
-    find_package (ZLIB)
-    find_package (BZip2)
-    find_package (SeqAn REQUIRED)
+    # NOTE(h-2): we do not need to search for dependencies, because this is
+    # done globally for DEVELOP (and demos are only built with DEVELOP)
 
     # Supress unused parameter warnings for demos.
     if (COMPILER_GCC OR COMPILER_CLANG)
@@ -731,6 +746,10 @@ function (seqan_register_demos PREFIX)
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
+
+    # Disable the version check for all demos.
+    set (SEQAN_VERSION_CHECK_TMP_ ${SEQAN_VERSION_CHECK} CACHE INTERNAL "Disable version check in demos.")
+    set (SEQAN_VERSION_CHECK OFF CACHE BOOL "SeqAn version check." FORCE)
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -761,6 +780,8 @@ function (seqan_register_demos PREFIX)
             _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
         endif (SKIP)
     endforeach (ENTRY ${ENTRIES})
+    # Reset SEQAN_VERSION_CHECK to user set value.
+    set (SEQAN_VERSION_CHECK ${SEQAN_VERSION_CHECK_TMP_} CACHE BOOL "SeqAn version check." FORCE)
 endfunction (seqan_register_demos)
 
 # ---------------------------------------------------------------------------
@@ -781,6 +802,10 @@ endfunction (seqan_register_demos)
 macro (seqan_register_tests)
     # Setup flags for tests.
     set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
+
+    # Disable the version check for all tests.
+    set (SEQAN_VERSION_CHECK_TMP_ ${SEQAN_VERSION_CHECK} CACHE INTERNAL "Disable version check in tests.")
+    set (SEQAN_VERSION_CHECK OFF CACHE BOOL "SeqAn version check." FORCE)
 
     # Remove NDEBUG definition for tests.
     string (REGEX REPLACE "-DNDEBUG" ""
@@ -813,4 +838,6 @@ macro (seqan_register_tests)
             endif (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
         endif (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
     endforeach (ENTRY ${ENTRIES})
+    # Reset value of SEQAN_VERSION variable.
+    set (SEQAN_VERSION_CHECK ${SEQAN_VERSION_CHECK_TMP_} CACHE BOOL "SeqAn version check." FORCE)
 endmacro (seqan_register_tests)

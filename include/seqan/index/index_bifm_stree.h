@@ -65,7 +65,6 @@ inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndex
     value(oppDirIter).repLen = value(dirIter).repLen; // do not increment in case of goRight
 }
 
-
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
 inline bool
 _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > &it,
@@ -96,7 +95,8 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
         update(it, TDirection());
     }
 
-    value(_iter(it, TDirection())).repLen += lcp;
+    value(_iter(it, Fwd())).repLen += lcp;
+    value(_iter(it, Rev())).repLen += lcp;
 
     if (lcp) value(_iter(it, TDirection())).lastChar = value(stringIt - 1);
 

@@ -40,6 +40,7 @@
 #include <seqan/arg_parse/arg_parse_type_support.h>
 #include <seqan/arg_parse/arg_parse_argument.h>
 #include <seqan/arg_parse/arg_parse_option.h>
+#include <seqan/arg_parse/arg_parse_version_check.h>
 
 #include <seqan/arg_parse/tool_doc.h>
 
@@ -47,6 +48,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <future>
 
 namespace seqan {
 
@@ -61,6 +63,8 @@ class ArgParseOption;
 void addOption(ArgumentParser & me, ArgParseOption const & opt);
 void hideOption(ArgumentParser & me, std::string const & name, bool hide);
 void setValidValues(ArgumentParser & me, std::string const & name, std::string const & values);
+template <typename TValue>
+void setDefaultValue(ArgumentParser & me, std::string const & name, const TValue & value);
 
 // Required in addOption() and addArgument().
 inline void hideOption(ArgumentParser & me, std::string const & name, bool hide = true);
@@ -197,6 +201,8 @@ public:
     std::vector<std::string> _usageText;    // the usage lines as strings, to avoid
                                             // interference with the rest of the doc
 
+    std::future<bool> appVersionCheckFuture;
+    std::future<bool> seqanVersionCheckFuture;
     // ----------------------------------------------------------------------------
     // Function init()
     // ----------------------------------------------------------------------------
@@ -221,6 +227,22 @@ public:
                                         "FORMAT"));
         hideOption(*this, "export-help", true);
         setValidValues(*this, "export-help", "html man txt");
+
+        addOption(*this, ArgParseOption("",
+                                        "version-check",
+                                        "Choose OFF to disable any update notifications. "
+                                        "With APP_ONLY you'll receive update notifications about new versions of your app. "
+                                        "In DEV mode you'll receive update notifications regarding new versions of your app "
+                                        "and new versions of the SeqAn library.",
+                                        ArgParseArgument::STRING,
+                                        "OPTION"));
+        setValidValues(*this, "version-check", VersionControlTags_<>::OPTIONS);
+#ifdef SEQAN_DISABLE_VERSION_CHECK
+        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);
+        hideOption(*this, "version-check", true);
+#else
+        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);  // TODO(rrahn): Set to "DEV" after proper testing.
+#endif  // SEQAN_DISABLE_VERSION_CHECK
     }
 
     // ----------------------------------------------------------------------------
@@ -238,6 +260,13 @@ public:
         init();
     }
 
+    ~ArgumentParser()
+    {
+        // wait for another 3 seconds
+        if(appVersionCheckFuture.valid())
+            appVersionCheckFuture.wait_for(std::chrono::seconds(3));
+    }
+    
 };
 
 // ==========================================================================

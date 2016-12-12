@@ -33,7 +33,7 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 // Various useful bit-twiddling routines, mostly taken from the website
-// http://www-graphics.stanford.edu/~seander/bithacks.html
+// https://graphics.stanford.edu/~seander/bithacks.html
 // ==========================================================================
 
 #ifndef SEQAN_MISC_BIT_TWIDDLING_H_
@@ -133,7 +133,7 @@ template <typename TWord, typename TPos>
 inline void
 setBitTo(TWord & word, TPos index, bool value)
 {
-    // See http://www-graphics.stanford.edu/~seander/bithacks.html#ConditionalSetOrClearBitsWithoutBranching
+    // See http://graphics.stanford.edu/~seander/bithacks.html#ConditionalSetOrClearBitsWithoutBranching
     word = (word & ~(1u << index)) | (-value & (1u << index));
 }
 

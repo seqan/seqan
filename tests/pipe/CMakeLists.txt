@@ -15,7 +15,9 @@ message (STATUS "Configuring tests/pipe")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup
