@@ -197,10 +197,10 @@ public:
     {
         if (argumentType == ArgParseArgument::BOOL)
         {
-            validValues = BooleanArgumentValues_<>::LIST_TRUE;
-            validValues.insert(validValues.end(),
-                               BooleanArgumentValues_<>::LIST_FALSE.begin(),
-                               BooleanArgumentValues_<>::LIST_FALSE.end());
+            copy(BooleanArgumentValues_<>::LIST_TRUE.begin(), BooleanArgumentValues_<>::LIST_TRUE.end(),
+                 std::back_inserter(validValues));
+            copy(BooleanArgumentValues_<>::LIST_FALSE.begin(), BooleanArgumentValues_<>::LIST_FALSE.end(),
+                 std::back_inserter(validValues));
         }
     }
 };

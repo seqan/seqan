@@ -52,15 +52,15 @@ namespace seqan {
 template <typename TVoidSpec = void>
 struct BooleanArgumentValues_
 {
-    static const std::vector<std::string> LIST_TRUE;
-    static const std::vector<std::string> LIST_FALSE;
+    static constexpr std::array<const char *, 5> LIST_TRUE  = {"1", "ON", "TRUE", "T", "YES"};
+    static constexpr std::array<const char *, 5> LIST_FALSE = {"1", "ON", "TRUE", "T", "YES"};
 };
 
 template <typename TVoidSpec>
-const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_TRUE{"1", "ON", "TRUE", "T", "YES"};
+constexpr std::array<const char *, 5> BooleanArgumentValues_<TVoidSpec>::LIST_TRUE;
 
 template <typename TVoidSpec>
-const std::vector<std::string> BooleanArgumentValues_<TVoidSpec>::LIST_FALSE{"0", "OFF", "FALSE", "F", "NO"};
+constexpr std::array<const char *, 5> BooleanArgumentValues_<TVoidSpec>::LIST_FALSE;
 
 // ==========================================================================
 // Functions
