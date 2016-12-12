@@ -139,7 +139,7 @@ struct VersionCheck
         {
             _version = versionMatch.str(1); // in case the git revision number is given take only version number
         }
-        _url = static_cast<std::string>("http://www.seqan.de/version_check/SeqAn_") + _getOS() + _getBitSys() + _name + "_" + _version;
+        _url = static_cast<std::string>("http://seqan-update.informatik.uni-tuebingen.de/check/SeqAn_") + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
         _updateCommand();
     }
