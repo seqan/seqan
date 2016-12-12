@@ -13,7 +13,7 @@ find_package (PythonInterp)
 if (NOT PYTHONINTERP_FOUND)
     message (STATUS "  Python not found, not building dox as a tests.")
     return ()
-endif ()
+endif (NOT PYTHONINTERP_FOUND)
 
 # find python 2.x
 if(NOT(${PYTHON_VERSION_MAJOR} MATCHES "2"))
