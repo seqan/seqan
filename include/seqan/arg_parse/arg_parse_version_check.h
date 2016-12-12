@@ -158,9 +158,9 @@ struct VersionCheck
     {
         // ask if system call for version or help is successfull
         if (!system("wget --version > /dev/null 2>&1"))
-            _program = "wget -q -O";
+            _program = "wget -q -O -T 50";
         else if (!system("curl --version > /dev/null 2>&1"))
-            _program =  "curl -o";
+            _program =  "curl -o -m 50";
 #ifndef __linux  // ftp call does not work on linux
         else if (!system("which ftp > /dev/null 2>&1"))
             _program =  "ftp -Vo";
