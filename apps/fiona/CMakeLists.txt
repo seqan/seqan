@@ -21,7 +21,7 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)
     find_package (ZLIB)
     find_package (Boost)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # Stop here if we cannot find Boost or OpenMP.

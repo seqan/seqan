@@ -324,7 +324,7 @@ macro (seqan_build_system_init)
         find_package(ZLIB)
         find_package(BZip2)
         find_package(Boost)
-        find_package(SeqAn REQUIRED)
+        find_package(SeqAn CONFIG REQUIRED)
     endif ()
 
 endmacro (seqan_build_system_init)

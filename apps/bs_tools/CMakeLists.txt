@@ -25,7 +25,7 @@ endif ()
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (ZLIB)
     find_package (Boost)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
