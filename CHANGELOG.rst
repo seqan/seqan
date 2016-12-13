@@ -11,19 +11,74 @@ Library Features
 
 - Argument Parser:
     - Adds version check support to the argument parser.
-        - Check for new updates of a specific application.
+        - Codeheck for new updates of a specific application.
         - Check for new versions of the library.
         - This option is opt-out by default but can be switched to opt-in or completely disabled via compiler flags and the SeqAn build system.
+    - Altered Argument Parsers help page to display argument information.
+    - Extended Argument types by bool, input_directory and output_directory.
+    - Display file extensions that contain numbers.
 
 - Sequence I/O:
-    - new support for RNA structure files
-        - supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)
-        - input/output of whole files or of a single record/header
+    - New support for RNA structure files
+        - Supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)
+        - Input/output of whole files or of a single record/header
+    - Added function isOpen() for formatted files.
+    - Enabling assignment of format tags that differ from underlying format.
+    - Allow reading bam-files with ``SeqFileIn``
 
 - Blast I/O:
-    - added support for handling the Q_ACC, S_ACC, S_ALLACC, S_TAX_IDS fields
-    - added non standard fields LCA_ID and LCA_TAX_ID for lowest common ancestor information
-    - moved some redundant data from matches into record objects
+    - Added support for handling the Q_ACC, S_ACC, S_ALLACC, S_TAX_IDS fields
+    - Added non standard fields LCA_ID and LCA_TAX_ID for lowest common ancestor information
+    - Moved some redundant data from matches into record objects
+
+- FM Index:
+    - Added documentation for the bidirectional FM index
+    - Reduced size of constant-time FM index
+
+- Graphs:
+    - Added new function getVertexAdjacencyVector()
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+  - Sequences:
+      - Initialize empty CStyle Strings properly.
+      - Fixed length function for const Dependent-StringSet
+
+  - Graphs:
+      - Reimplemented DFS in a non-recursive fashion to avoid stack overflow.
+      - Multiple Sequence Alignment: Fix getAlignmentStatistics() on empty ``matches`` string.
+
+  - Alignments:
+      - Banded Chain Alignment: check for possible score overflow.
+
+  - GFF / GTF:
+      - Fixed I/O compatibility
+          - Ignoring additional space
+          - Allowing records to have multiple parents
+
+  - BAM I/O:
+      - Parsing the header for SO tags
+
+  - VCF I/O:
+      - Fixed reading of contig names in VCF header
+
+  - Indices:
+      - Enforce Container-Types for find()
+
+App Updates
+^^^^^^^^^^^
+
+  - Gustaf:
+      - Fixed name conflict (TANDEM)
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+  - Added feature to surpress builds of specified apps
+  - Enforce using Python 2.x for documentation
+  - Renaming FindSeqAn to SeqAnConfig in CMake
+  - TODO (h2/rrahn): pkg-config: Define SEQAN_HAS_* flags in pkg-config file (#1938)
 
 Release 2.2.0
 ~~~~~~~~~~~~~
