@@ -99,7 +99,7 @@ _newLimit(TMatchFilter const & filter, unsigned histogramId)
     // TODO(holtgrew): This could be speeded up if using prefix sum data structures for histograms.
     typedef typename Iterator<String<unsigned> const, Standard>::Type TIter;
 
-    register int max = filter.options.maxHits;
+    int max = filter.options.maxHits;
     if (max == 0)
         return NO_NEW_LIMIT;
 
@@ -111,7 +111,7 @@ _newLimit(TMatchFilter const & filter, unsigned histogramId)
     TIter itBeg = begin(hist, Standard());
     TIter itEnd = end(hist, Standard());
 
-    for (register TIter it = itBeg; it != itEnd; ++it)
+    for (TIter it = itBeg; it != itEnd; ++it)
     {
         max -= *it;
         if (max <= 0)
@@ -129,10 +129,10 @@ _newLimitDistRange(TMatchFilter const & filter, unsigned histogramId)
 
     String<unsigned> const & hist = filter.histograms[histogramId];
 
-    register int max = filter.options.maxHits;
+    int max = filter.options.maxHits;
     TIter itBeg = begin(hist, Standard());
     TIter itEnd = end(hist, Standard());
-    register TIter it = itBeg;
+    TIter it = itBeg;
 
     if (max == 0)
     {

@@ -1156,7 +1156,7 @@ int _mapMatePairReads(
         std::cerr << std::endl;
         std::cerr << "___FILTRATION_STATS____" << std::endl;
         std::cerr << "Filtration counter:  " << options.countFiltration << std::endl;
-        std::cerr << "Verfication counter: " << options.countVerification << std::endl;
+        std::cerr << "Verification counter: " << options.countVerification << std::endl;
     }
 
     return 0;

@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// The ProjectSplicedRoi class allows to do the projection of ROIs to grouped
+// The ProjectSplicedRoi class allows one to do the projection of ROIs to grouped
 // GTF/GFF intervals.
 //
 // This mode is enabled when the --gff-group-by KEY option is used.  In this

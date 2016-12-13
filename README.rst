@@ -30,7 +30,10 @@ Windows:
   * Intel Compiler ≥ 16.0.3 / Visual Studio ≥ 2015u2
   * Clang/C2 ≥ 3.8.0 / Visual Studio ≥ 2015u3 [experimental, requires CMake ≥ 3.6]
 
-We test on 32-bit and 64-bit Intel/AMD architectures, although we highly recommend 64-bit platforms.
+Architecture support:
+  * 32bit and 64bit Intel/AMD officially supported
+  * 64bit is highly recommended and some parts of SeqAn are optimized for ``POPCNT``, ``SSE4`` and/or ``AVX2`` instruction sets available on newer CPUs
+  * many other architectures, including ARM, PowerPC and Sparc64 work, but receive less testing and optimizations
 
 To build tests, demos, and official SeqAn applications you also need:
   * CMake ≥ 3.0 (http://cmake.org/)

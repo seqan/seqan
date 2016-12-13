@@ -113,7 +113,7 @@ typedef Tag<BlastReport_> BlastReport;
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/InputOutput/BlastIO.html">Blast IO tutorial</a>.
  *
  * @see BlastRecord
  */
@@ -610,13 +610,13 @@ _writeMatchOneLiner(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TMatch,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeRecordTop(TStream & stream,
                    BlastIOContext<TScore, p, h> &,
-                   BlastRecord<TMatch> const & record,
+                   BlastRecord<TSpecs...> const & record,
                    BlastReport const & /*tag*/)
 {
     // write query header
@@ -629,13 +629,13 @@ _writeRecordTop(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TMatch,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeRecordFooter(TStream & stream,
                    BlastIOContext<TScore, p, h> & context,
-                   BlastRecord<TMatch> const & record,
+                   BlastRecord<TSpecs...> const & record,
                    BlastReport const & /*tag*/)
 {
     write(stream, "\n"
@@ -683,13 +683,13 @@ _writeRecordFooter(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TMatch,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeRecord(TStream & stream,
             BlastIOContext<TScore, p, h> & context,
-            BlastRecord<TMatch> const & record,
+            BlastRecord<TSpecs...> const & record,
             BlastReport const & /*tag*/)
 {
 
@@ -728,10 +728,10 @@ writeRecord(TStream & stream,
 }
 
 template <typename TContext,
-          typename TMatch>
+          typename ... TSpecs>
 inline void
 writeRecord(BlastReportFileOut<TContext> & formattedFile,
-            BlastRecord<TMatch> const & r)
+            BlastRecord<TSpecs...> const & r)
 {
     writeRecord(formattedFile.iter, context(formattedFile), r, BlastReport());
 }

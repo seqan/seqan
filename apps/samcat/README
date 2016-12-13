@@ -6,7 +6,7 @@ SYNOPSIS
 
 DESCRIPTION
     This tool reads a set of input files in SAM or BAM format and outputs the concatenation of them. If the output
-    file name is ommitted the result is written to standard output in SAM format.
+    file name is omitted the result is written to standard output in SAM format.
 
     (c) Copyright 2014 by David Weese.
 

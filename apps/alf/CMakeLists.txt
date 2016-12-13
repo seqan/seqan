@@ -10,14 +10,16 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_alf CXX)
 message (STATUS "Configuring apps/alf")
 
-set (SEQAN_APP_VERSION "1.1.6")
+set (SEQAN_APP_VERSION "1.1.7")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup

@@ -32,8 +32,8 @@
 # ============================================================================
 # This CMake file defines the necessary macros for the SeqAn build system.
 #
-# Note that while the SeqAn build system uses the FindSeqAn.cmake module,
-# the FindSeqAn.cmake module itself can be used independently from the SeqAn
+# Note that while the SeqAn build system uses the seqan-config.cmake module,
+# the seqan-config.cmake module itself can be used independently from the SeqAn
 # build system.
 # ============================================================================
 
@@ -137,35 +137,6 @@ endfunction (add_executable)
 # ---------------------------------------------------------------------------
 
 macro (seqan_register_apps)
-
-    # enable static linkage for seqan apps
-    if (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
-        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-        if (APPLE)
-            # static build not supported on apple, but at least we can include gcc libs
-            if (COMPILER_GCC)
-                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-            endif (COMPILER_GCC)
-        else (APPLE)
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-
-            # make sure -rdynamic isn't added automatically
-            set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
-            # make sure -fPIC isn't added automatically
-            set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
-
-            # for ENTIRELY UNKOWN reasons find_package returns libs for static
-            # linking (.a) when building as SEQAN_RELEASE_APPS or APP:*  but
-            # .so when building DEVELOP. In the latter case it also encloses the
-            # static libs with -Bdynamic which turns static off for system libs.
-            # Here we remove these (so statics works), but only for NON-DEVELOP
-            if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-                # make sure -Wl,-Bdynamic isn't added automatically
-                set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
-            endif (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-        endif (APPLE)
-    endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
-
     # Get all direct entries of the current source directory into ENTRIES.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -176,9 +147,10 @@ macro (seqan_register_apps)
     foreach (ENTRY ${ENTRIES})
         if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY})
             if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
-                if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
+                if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR
                     ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_APPS") OR
-                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}"))
+                    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${ENTRY}")) AND
+                    (NOT (${${ENTRY}_NO_BUILD})))
                     add_subdirectory(${ENTRY})
                 endif ()
             endif (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${ENTRY}/CMakeLists.txt)
@@ -200,6 +172,7 @@ macro (seqan_build_system_init)
     set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
     set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
+    set (SeqAn_DIR ${SeqAn_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake")
 #     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
     # Enable global exception handler for all "official" stuff
     set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER=1")
@@ -245,6 +218,15 @@ macro (seqan_build_system_init)
     set (SEQAN_NIGHTLY_RELEASE FALSE CACHE BOOL "Set to TRUE to enable nightly app releases.")
 
     ## options
+
+    # SeqAn Version Check
+    if (SEQAN_DISABLE_VERSION_CHECK)  # Disable completely
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
+    elseif (SEQAN_VERSION_CHECK_OPT_IN OR ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))  # Build it but make it opt-in, also when building in develop mode.
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_VERSION_CHECK_OPT_IN)
+    endif ()
+
+    # Architecture.
     if (NOT SEQAN_64BIT_TARGET_PLATFORM)
         set (SEQAN_ARCH_SSE4 FALSE)
         set (SEQAN_ARCH_AVX2 FALSE)
@@ -303,6 +285,48 @@ macro (seqan_build_system_init)
     # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
     #            find out whether clang/c2 takes - or / options
 
+    # enable static linkage for seqan apps
+    if (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
+        set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+        if (APPLE)
+            # static build not supported on apple, but at least we can include gcc libs
+            if (COMPILER_GCC)
+                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
+            endif (COMPILER_GCC)
+        else (APPLE)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+
+            # make sure -rdynamic isn't added automatically
+            set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
+            # make sure -fPIC isn't added automatically
+            set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
+
+            # For unknown reasons finding .a only seems to work for libz and
+            # libbzip2; cmake than proceeds to wrap these in
+            # -Wl,-Bstatic -lz -lbz2 -Wl,-Bdynamic
+            # the latter reactivates dynamic linking for the system libs
+            # we override this behaviour here:
+            set(CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS)
+        endif (APPLE)
+    endif (SEQAN_STATIC_APPS AND (NOT CMAKE_SYSTEM_NAME MATCHES "Windows"))
+
+    # strip binaries when packaging
+    if ((CMAKE_BUILD_TYPE STREQUAL "Release") AND
+        (NOT SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
+        (COMPILER_CLANG OR COMPILER_GCC))
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
+    endif ()
+
+    # search dependencies once, globally, if in DEVELOP
+    if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
+        message (STATUS "Scanning dependencies once in DEVELOP mode...")
+        find_package(OpenMP)
+        find_package(ZLIB)
+        find_package(BZip2)
+        find_package(Boost)
+        find_package(SeqAn REQUIRED)
+    endif ()
+
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -350,10 +374,10 @@ macro (seqan_setup_library)
         # Install pkg-config file, except on Windows.
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
-            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION share/pkgconfig)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION lib/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
-        # Install FindSeqAn TODO(h-2) rename FindSeqAn.cmake to FindSeqAn${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/FindSeqAn.cmake" DESTINATION share/cmake/Modules)
+        # Install FindSeqAn TODO(h-2) rename seqan-config.cmake to seqan-config${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION lib/cmake/seqan/)
 
         # Install headers
         file (GLOB HEADERS
@@ -516,7 +540,10 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   seqan_install_required_system_libraries()
 
   if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(CPACK_GENERATOR "ZIP;NSIS")
+    set(CPACK_GENERATOR "ZIP;WIX")
+    file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" license)
+    file(WRITE "${CMAKE_BINARY_DIR}/apps/${APP_DIR}/LICENSE.txt" "${license}")
+    set (CPACK_RESOURCE_FILE_LICENSE  "${CMAKE_BINARY_DIR}/apps/${APP_DIR}/LICENSE.txt")
   elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(CPACK_GENERATOR "ZIP;DragNDrop")
   elseif (CMAKE_VERSION VERSION_LESS "3.1") # TXZ support since 3.1
@@ -714,11 +741,8 @@ function (seqan_register_demos PREFIX)
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
-    # Find SeqAn with all dependencies.
-    find_package (OpenMP)
-    find_package (ZLIB)
-    find_package (BZip2)
-    find_package (SeqAn REQUIRED)
+    # NOTE(h-2): we do not need to search for dependencies, because this is
+    # done globally for DEVELOP (and demos are only built with DEVELOP)
 
     # Supress unused parameter warnings for demos.
     if (COMPILER_GCC OR COMPILER_CLANG)
@@ -730,7 +754,11 @@ function (seqan_register_demos PREFIX)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}" PARENT_SCOPE)
     # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
+    # Disable version check for demos.
+    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
     add_definitions (${SEQAN_DEFINITIONS})
+
+    # Disable the version check for all demos.
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -780,7 +808,7 @@ endfunction (seqan_register_demos)
 
 macro (seqan_register_tests)
     # Setup flags for tests.
-    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1)
+    set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_ENABLE_TESTING=1 -DSEQAN_DISABLE_VERSION_CHECK)
 
     # Remove NDEBUG definition for tests.
     string (REGEX REPLACE "-DNDEBUG" ""

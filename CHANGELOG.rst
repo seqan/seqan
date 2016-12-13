@@ -3,6 +3,95 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.3.0
+~~~~~~~~~~~~~
+
+Library Features
+^^^^^^^^^^^^^^^^
+
+- Argument Parser:
+    - Adds version check support to the argument parser.
+        - Check for new updates of a specific application.
+        - Check for new versions of the library.
+        - This option is opt-out by default but can be switched to opt-in or completely disabled via compiler flags and the SeqAn build system.
+    - Altered Argument Parsers help page to display argument information.
+    - Extended Argument types by bool, input_directory and output_directory.
+    - Display file extensions that contain numbers.
+
+- Sequence I/O:
+    - New support for RNA structure files
+        - Supported formats: Vienna (.dbv), Dot-Bracket-Notation (.dbn), Stockholm (.sth), Connect (.ct), Bpseq (.bpseq), Extended Bpseq (.ebpseq)
+        - Input/output of whole files or of a single record/header
+    - Added function isOpen() for formatted files.
+    - Enabling assignment of format tags that differ from underlying format.
+    - It is now possible to treat a BAM file as a (compressed) sequence file and read the sequences as if they were FastQ.
+
+- Blast I/O:
+    - Added support for handling the ``Q_ACC``, ``S_ACC``, ``S_ALLACC``, ``S_TAX_IDS`` fields
+    - Added non standard fields ``LCA_ID`` and ``LCA_TAX_ID`` for lowest common ancestor information
+    - Moved some redundant data from matches into record objects
+
+- FM Index:
+    - Added documentation for the bidirectional FM index
+    - Reduced size of constant-time FM index
+
+- Graphs:
+    - Added new function getVertexAdjacencyVector()
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+  - Sequences:
+      - Initialize empty CStyle Strings properly.
+      - Fixed length function for const Dependent-StringSet
+
+  - Graphs:
+      - Reimplemented DFS in a non-recursive fashion to avoid stack overflow.
+      - Multiple Sequence Alignment: Fix getAlignmentStatistics() on empty ``matches`` string.
+
+  - Alignments:
+      - Banded Chain Alignment: check for possible score overflow.
+
+  - GFF / GTF:
+      - Fixed I/O compatibility
+          - Ignoring additional space
+          - Allowing records to have multiple parents
+
+  - BAM I/O:
+      - Parsing the header for SO tags
+
+  - VCF I/O:
+      - Fixed reading of contig names in VCF header
+
+  - Indices:
+      - Enforce Container-Types for find()
+
+App Updates
+^^^^^^^^^^^
+
+  - Gustaf:
+      - Fixed name conflict (TANDEM)
+
+Platform Support
+^^^^^^^^^^^^^^^^
+
+  - Compiler support:
+      - SeqAn satisfies stricter warning levels of GCC7 and c++1z
+  - New operating systems supported:
+      - (Debian) GNU/kFreeBSD and GNU/Hurd
+  - New CPU architectures supported:
+      - ``arm`` and ``arm64``, ``mips`` and ``mips64``
+      - ``powerpc``, ``powerpc64`` and ``sparc64``
+      - and some others (all Debian platforms except ``sh4`` and ``armel``)
+  - Thanks to the Debian Med team for their patches
+
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+  - Added feature to selectively deactive the build of individual apps
+  - Enforce using Python 2.x for documentation
+  - Improvements to CMake and PkgConfig files
+
 Release 2.2.0
 ~~~~~~~~~~~~~
 

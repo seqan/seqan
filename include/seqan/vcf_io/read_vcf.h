@@ -64,21 +64,38 @@ typedef Tag<Vcf_> Vcf;
 // Function readRecord()                                            [VcfHeader]
 // ----------------------------------------------------------------------------
 
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TString>
 inline void
-_parseVcfContig(CharString & chromName, CharString const & headerValue)
+_readVcfContig(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context, TString const & headerValue)
 {
-    if (length(headerValue) < 3u)
-        return;
+    typedef OrFunctor<EqualsChar<','>, EqualsChar<'>'> >            IsCommaOrGt;
+    typedef typename DirectionIterator<TString const, Input>::Type  TIter;
 
-    CharString tmp = infix(headerValue, 1, length(headerValue) - 2);
-    StringSet<CharString> tmp2;
-    strSplit(tmp2, tmp, EqualsChar<','>());
-    for (unsigned i = 0; i < length(tmp2); ++i)
+    TIter headerIter = directionIterator(headerValue, Input());
+    CharString &buffer = context.buffer;
+
+    skipOne(headerIter, EqualsChar<'<'>());
+
+    // Seek contig ID key.
+    while (!atEnd(headerIter))
     {
-        if (!startsWith(tmp2[i], "ID="))
-            continue;
-        chromName = suffix(tmp2[i], 3);
+        clear(buffer);
+        readUntil(buffer, headerIter, EqualsChar<'='>());
+        if (buffer == "ID") break;
+        skipUntil(headerIter, IsCommaOrGt());
+        skipOne(headerIter);
     }
+
+    if (atEnd(headerIter))
+        SEQAN_THROW(ParseError("Contig ID key not found in header."));
+
+    // Read contig ID value.
+    clear(buffer);
+    skipOne(headerIter, EqualsChar<'='>());
+    readUntil(buffer, headerIter, IsCommaOrGt());
+    if (empty(buffer))
+        SEQAN_THROW(ParseError("Contig ID value not found in header."));
+    appendName(contigNamesCache(context), buffer);
 }
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -89,7 +106,7 @@ readHeader(VcfHeader & header,
            Vcf const & /*tag*/)
 {
     clear(header);
-    CharString buffer;
+    CharString &buffer = context.buffer;
     VcfHeaderRecord record;
 
     while (!atEnd(iter) && value(iter) == '#')
@@ -115,23 +132,20 @@ readHeader(VcfHeader & header,
 
             // Parse out name if headerRecord is a contig field.
             if (record.key == "contig")
-            {
-                _parseVcfContig(buffer, record.value);
-                appendName(contigNamesCache(context), buffer);
-            }
+                _readVcfContig(context, record.value);
         }
         else
         {
             // Is line "#CHROM\t...".
             readLine(buffer, iter);
             if (!startsWith(buffer, "CHROM"))
-                ParseError("Invalid line with samples.");
+                SEQAN_THROW(ParseError("Invalid line with samples."));
 
             // Split line, get sample names.
             StringSet<CharString> fields;
             strSplit(fields, buffer, IsTab());
             if (length(fields) < 9u)
-                ParseError("Not enough fields.");
+                SEQAN_THROW(ParseError("Not enough fields."));
 
             // Get sample names.
             for (unsigned i = 9; i < length(fields); ++i)

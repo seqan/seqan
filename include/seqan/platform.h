@@ -398,8 +398,23 @@ typedef int8_t __int8;     // nolint
 // backwards compatibility
 #define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
 
+// eliminate fallthrough warnings
+#define SEQAN_FALLTHROUGH
+#if defined(__has_cpp_attribute)
+    #if __has_cpp_attribute(fallthrough)
+        #undef SEQAN_FALLTHROUGH
+        #if __cplusplus < 201500 && defined(COMPILER_GCC)
+            #define SEQAN_FALLTHROUGH [[gnu::fallthrough]];
+        #elif __cplusplus < 201500 && defined(COMPILER_CLANG)
+            #define SEQAN_FALLTHROUGH [[clang::fallthrough]];
+        #else
+            #define SEQAN_FALLTHROUGH [[fallthrough]];
+        #endif
+    #endif
+#endif
+
 // HAS_EXECINFO
-// note that this is always set by FindSeqAn.cmake
+// note that this is always set by seqan-config.cmake
 // this is a fallback for non cmake environments
 #ifndef SEQAN_HAS_EXECINFO
     #ifdef STDLIB_VS

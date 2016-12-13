@@ -134,7 +134,7 @@ struct Breakpoint
         INSERTION,          // 1
         DELETION,           // 2
         INVERSION,          // 3
-        TANDEM,             // 4
+        SEQAN_TANDEM,       // 4  TANDEM is an IOCTL numeric constant in Hurd
         DISPDUPLICATION,    // 5
         INTERTRANSLOCATION, // 6
         TRANSLOCATION,      // 7
@@ -609,7 +609,7 @@ inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPo
     if (bp1.endSeqId != bp2.endSeqId)
         return false;
 
-    if (bp1.svtype == TBreakpoint::DELETION || TBreakpoint::INVERSION)
+    if (bp1.svtype == TBreakpoint::DELETION || bp1.svtype == TBreakpoint::INVERSION)
         return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range) && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
     if (bp1.svtype == TBreakpoint::INSERTION)
         return (_posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
@@ -696,7 +696,7 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
         case TBreakpoint::INVERSION:
         out << "SVType: inversion";
         break;
-        case TBreakpoint::TANDEM:
+        case TBreakpoint::SEQAN_TANDEM:
         out << "SVType: tandem";
         break;
         case TBreakpoint::DISPDUPLICATION:

@@ -85,7 +85,7 @@ namespace seqan {
  * </ul>
  *
  * For a detailed example have a look at the
- * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/BlastIO.html">Blast IO tutorial</a>.
+ * <a href="http://seqan.readthedocs.io/en/develop/Tutorial/InputOutput/BlastIO.html">Blast IO tutorial</a>.
  *
  * Strictly speaking the <tt>writeHeader()</tt> call is not required for BlastTabular, but for consistency with
  * other (blast) formats and the read interface it is recommended.
@@ -155,13 +155,13 @@ _writeFieldLabels(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TMatch,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeCommentLinesWithoutColumnLabels(TFwdIterator & stream,
                                       BlastIOContext<TScore, p, h> & context,
-                                      BlastRecord<TMatch> const & r,
+                                      BlastRecord<TSpecs...> const & r,
                                       BlastTabular const & /*tag*/)
 {
     write(stream, "# ");
@@ -178,13 +178,13 @@ _writeCommentLinesWithoutColumnLabels(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TMatch,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeCommentLines(TFwdIterator & stream,
                   BlastIOContext<TScore, p, h> & context,
-                  BlastRecord<TMatch> const & r,
+                  BlastRecord<TSpecs...> const & r,
                   BlastTabular const & /*tag*/)
 {
     ++context._numberOfRecords;
@@ -224,6 +224,20 @@ _writeCommentLines(TFwdIterator & stream,
 // Function _writeField() [match object given]
 // ----------------------------------------------------------------------------
 
+template <typename TSequence>
+inline SEQAN_FUNC_ENABLE_IF(Is<StringConcept<TSequence>>, bool)
+_isEmpty(TSequence const & s)
+{
+    return length(s);
+}
+
+template <typename TSequence>
+inline SEQAN_FUNC_DISABLE_IF(Is<StringConcept<TSequence>>, bool)
+_isEmpty(TSequence const &)
+{
+    return true;
+}
+
 template <typename TFwdIterator,
           typename TScore,
           typename TQId,
@@ -231,12 +245,14 @@ template <typename TFwdIterator,
           typename TPos,
           typename TAlignRow0,
           typename TAlignRow1,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeField(TFwdIterator & s,
             BlastIOContext<TScore, p, h> & context,
             BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & match,
+            BlastRecord<TSpecs...> const & record,
             typename BlastMatchField<>::Enum const fieldId,
             BlastTabular const &)
 {
@@ -246,15 +262,28 @@ _writeField(TFwdIterator & s,
              // STD is handled from the calling function
             break;
         case BlastMatchField<>::Enum::Q_SEQ_ID:
-            write(s, prefix(match.qId,
-                            std::find(begin(match.qId, Standard()), end(match.qId, Standard()), ' ')
-                            - begin(match.qId, Standard()))); // truncate at first ' '
+            if (_isEmpty(match.qId)) // new behaviour
+                write(s, prefix(record.qId,
+                                std::find(begin(record.qId, Standard()), end(record.qId, Standard()), ' ')
+                                - begin(record.qId, Standard()))); // truncate at first ' '
+            else // deprecated behaviour
+                write(s, prefix(match.qId,
+                                std::find(begin(match.qId, Standard()), end(match.qId, Standard()), ' ')
+                                - begin(match.qId, Standard()))); // truncate at first ' '
             break;
 //         case ENUM::Q_GI: write(s,  * ); break;
-//         case ENUM::Q_ACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::Q_ACC:
+            if (length(record.qAccs))
+                write(s, record.qAccs[0]);
+            else
+                write(s, "n/a");
+            break;
 //         case ENUM::Q_ACCVER: write(s,  * ); break;
         case BlastMatchField<>::Enum::Q_LEN:
-            write(s, match.qLength);
+            if ((match.qLength != 0) && (match.qLength != record.qLength)) // deprecated behaviour
+                write(s, match.qLength);
+            else // new behaviour
+                write(s, record.qLength);
             break;
         case BlastMatchField<>::Enum::S_SEQ_ID:
             write(s, prefix(match.sId,
@@ -264,9 +293,28 @@ _writeField(TFwdIterator & s,
 //         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
 //         case ENUM::S_GI: write(s,  * ); break;
 //         case ENUM::S_ALL_GI: write(s,  * ); break;
-//         case ENUM::S_ACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::S_ACC:
+            if (length(match.sAccs))
+                write(s, match.sAccs[0]);
+            else
+                write(s, "n/a");
+            break;
 //         case ENUM::S_ACCVER: write(s,  * ); break;
-//         case ENUM::S_ALLACC: write(s,  * ); break;
+        case BlastMatchField<>::Enum::S_ALLACC:
+            if (length(match.sAccs))
+            {
+                write(s, match.sAccs[0]);
+                for (unsigned i = 1; i < length(match.sAccs); ++i)
+                {
+                    write(s, ';');
+                    write(s, match.sAccs[i]);
+                }
+            }
+            else
+            {
+                write(s, "n/a");
+            }
+            break;
         case BlastMatchField<>::Enum::S_LEN:
             write(s, match.sLength);
             break;
@@ -274,7 +322,10 @@ _writeField(TFwdIterator & s,
         {
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
-            _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
+            auto length             = record.qLength;
+            if ((match.qLength != 0) && (match.qLength != record.qLength))
+                length = match.qLength;
+            _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, length,
                                    context.blastProgram);
             write(s, effectiveQStart);
         } break;
@@ -282,7 +333,10 @@ _writeField(TFwdIterator & s,
         {
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
-            _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
+            auto length             = record.qLength;
+            if ((match.qLength != 0) && (match.qLength != record.qLength))
+                length = match.qLength;
+            _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, length,
                                    context.blastProgram);
             write(s, effectiveQEnd);
         } break;
@@ -394,7 +448,28 @@ _writeField(TFwdIterator & s,
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
 //         case ENUM::BTOP: write( * ); break;
-//         case ENUM::S_TAX_IDS: write( * ); break;
+        case BlastMatchField<>::Enum::S_TAX_IDS:
+            if (length(match.sTaxIds) == 1)
+            {
+                write(s, match.sTaxIds[0]);
+            }
+            else if (length(match.sTaxIds) > 1)
+            {
+                // they have to be sorted numerically
+                auto copy = match.sTaxIds;
+                sort(copy);
+                write(s, copy[0]);
+                for (unsigned i = 1; i < length(copy); ++i)
+                {
+                    write(s, ';');
+                    write(s, copy[i]);
+                }
+            }
+            else
+            {
+                write(s, "n/a");
+            }
+            break;
 //         case ENUM::S_SCI_NAMES: write( * ); break;
 //         case ENUM::S_COM_NAMES: write( * ); break;
 //         case ENUM::S_BLAST_NAMES: write( * ); break;
@@ -404,6 +479,26 @@ _writeField(TFwdIterator & s,
 //         case ENUM::S_STRAND: write( * ); break;
 //         case ENUM::Q_COV_S: write( * ); break;
 //         case ENUM::Q_COV_HSP:
+        case BlastMatchField<>::Enum::LCA_ID:
+            if (length(record.lcaId))
+            {
+                // replace whitespace with _
+                std::string buf;
+                resize(buf, length(record.lcaId));
+                std::transform(seqan::begin(record.lcaId, Standard()), seqan::end(record.lcaId, Standard()), std::begin(buf), [] (auto const c)
+                {
+                    return ((c == ' ') || (c == '\t')) ? '_' : c;
+                });
+                write(s, buf);
+            }
+            else
+            {
+                write(s, "n/a");
+            }
+            break;
+        case BlastMatchField<>::Enum::LCA_TAX_ID:
+            write(s, record.lcaTaxId);
+            break;
         default:
             write(s, "n/i"); // not implemented
     };
@@ -420,24 +515,26 @@ template <typename TQId,
           typename TPos,
           typename TAlignRow0,
           typename TAlignRow1,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeMatch(TFwdIterator & stream,
            BlastIOContext<TScore, p, h> & context,
            BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & match,
+           BlastRecord<TSpecs...> const & record,
            BlastTabular const & /*tag*/)
 {
     if (SEQAN_LIKELY(!context.legacyFormat))
     {
-        for (auto it = std::begin(context.fields), itB = it, itEnd = std::end(context.fields); it != itEnd; ++it)
+        for (decltype(std::begin(context.fields)) it = std::begin(context.fields), itB = it, itEnd = std::end(context.fields); it != itEnd; ++it)
         {
             if (it != itB)
                 write(stream, '\t');
 
             if (*it != BlastMatchField<>::Enum::STD)
             {
-                _writeField(stream, context, match, *it, BlastTabular());
+                _writeField(stream, context, match, record, *it, BlastTabular());
             }
             else // STD is placeholder for multiple fields
             {
@@ -447,7 +544,7 @@ _writeMatch(TFwdIterator & stream,
                     if (it2 != it2B)
                         write(stream, '\t');
 
-                    _writeField(stream, context, match, *it2, BlastTabular());
+                    _writeField(stream, context, match, record, *it2, BlastTabular());
                 }
             }
         }
@@ -460,7 +557,7 @@ _writeMatch(TFwdIterator & stream,
             if (it != itB)
                 write(stream, '\t');
 
-            _writeField(stream, context, match, *it, BlastTabular());
+            _writeField(stream, context, match, record, *it, BlastTabular());
         }
 
         #if SEQAN_ENABLE_DEBUG
@@ -536,13 +633,13 @@ _writeMatch(TFwdIterator & stream,
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TMatch,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 writeRecord(TFwdIterator & stream,
             BlastIOContext<TScore, p, h> & context,
-            BlastRecord<TMatch> const & r,
+            BlastRecord<TSpecs...> const & r,
             BlastTabular const & /*tag*/)
 {
     //TODO if debug, do lots of sanity checks on record
@@ -554,15 +651,15 @@ writeRecord(TFwdIterator & stream,
         //SOME SANITY CHECKS
         SEQAN_ASSERT(startsWith(r.qId, it->qId));
 
-        _writeMatch(stream, context, *it, BlastTabular());
+        _writeMatch(stream, context, *it, r, BlastTabular());
     }
 }
 
 template <typename TContext,
-          typename TMatch>
+          typename ... TSpecs>
 inline void
 writeRecord(BlastTabularFileOut<TContext> & formattedFile,
-            BlastRecord<TMatch> const & r)
+            BlastRecord<TSpecs...> const & r)
 {
     writeRecord(formattedFile.iter, context(formattedFile), r, BlastTabular());
 }

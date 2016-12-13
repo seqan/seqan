@@ -61,7 +61,7 @@ class ProcDoc(object):
     """Collection of the top-level documentation entries.
 
     @ivar doc_processor      The DocProcessor that created this ProcDoc.
-    @ivar local_name_counter Number of occurences for local names, used for
+    @ivar local_name_counter Number of occurrences for local names, used for
                              shortening @link display to second level entries.
     """
 

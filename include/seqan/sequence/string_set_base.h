@@ -69,7 +69,7 @@ struct Owner {};
  * chromosomes of a genome.  This facilitates writing generic data structures and algorithms to operate on single
  * strings and genomes which is captured by the @link TextConcept @endlink.
  *
- * Second, the @link DependentStringSet @endlink specialization allows to create subsets of string sets without
+ * Second, the @link DependentStringSet @endlink specialization allows one to create subsets of string sets without
  * storing copies of strings and identifying strings by a common id.
  *
  * @section Examples
@@ -1436,6 +1436,7 @@ return iter(me, length(me), tag);
 /*!
  * @mfn StringSet#Id
  * @brief Return the id type for the string set.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature Id<TStringSet>::Type
  *
@@ -1447,9 +1448,9 @@ return iter(me, length(me), tag);
 /*!
  * @fn StringSet#getValueById
  * @brief Get the value from a string set by its id.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature TString getValueById(s, id);
- * @deprecated Use the subscript operator (<tt>operator[]</tt>) instead.
  *
  * @param[in] s  The string set to get string from.
  * @param[in] id The id of the string to get.
@@ -1466,9 +1467,9 @@ return iter(me, length(me), tag);
 /*!
  * @fn StringSet#valueById
  * @brief Get the value from a string set by its id.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature TString valueById(s, id);
- * @deprecated Use the subscript operator (<tt>operator[]</tt>) instead.
  *
  * @param[in] s  The string set to get string from.
  * @param[in] id The id of the string to get.
@@ -1502,9 +1503,9 @@ valueById(StringSet<TString, TSpec> & me,
 /*!
  * @fn StringSet#assignValueById
  * @brief Set the member of a string set by its id.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature TId assignValueById(set, s[, id]);
- * @deprecated Use @link StringSet#assignValue @endlink instead.
  *
  * @param[in] set The string set to assign value in.
  * @param[in] s   The string set to assign.
@@ -1539,9 +1540,9 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 /*!
  * @fn StringSet#removeValueById
  * @brief Remove a value from a string set by its id.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature void removeValueById(set, id);
- * @deprecated Use @link StringConcept#erase @endlink.
  *
  * @param[in,out] set The string to remove value in.
  * @param[in]     id  The id of the string to remove.
@@ -1556,9 +1557,9 @@ assignValueById(StringSet<TString, TSpec1>& dest,
 /*!
  * @fn StringSet#positionToId
  * @brief Convert a position/index in the string set to a string id.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature Id positionToId(set, pos);
- * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] pos The position to convert.
@@ -1677,9 +1678,9 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
 /*!
  * @fn StringSet#idToPosition
  * @brief Convert a string id to a position/index in the string set.
+ * Note: Position is the same as id for all string sets but the @link DependentStringSet @endlink.
  *
  * @signature TPos idToPosition(set, id);
- * @deprecated ID is the same as the position
  *
  * @param[in] set The string to convert positions for.
  * @param[in] id  The id to convert.

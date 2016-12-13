@@ -167,7 +167,7 @@ _alignWrapperSequential(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gap
 template <typename... TArgs>
 inline auto _alignWrapper(TArgs && ...args)
 {
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
     return _alignWrapperSimd(std::forward<TArgs>(args)...);
 #else
     return _alignWrapperSequential(std::forward<TArgs>(args)...);

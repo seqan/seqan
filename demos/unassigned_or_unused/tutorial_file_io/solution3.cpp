@@ -28,8 +28,8 @@ void copyStream(TOutStream & vout, TInStream & vin)
 
 // The main function parses the command line, opens the files
 // and then calls either copyStream. Read from stdin if the 1st
-// argument is - or ommitted and write to stdout if the 2nd argument
-// is ommitted.
+// argument is - or omitted and write to stdout if the 2nd argument
+// is omitted.
 
 int main(int argc, char const ** argv)
 {

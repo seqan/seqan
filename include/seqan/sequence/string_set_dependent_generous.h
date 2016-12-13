@@ -59,8 +59,30 @@ namespace seqan {
  *
  * @tparam TString The type of the string to store in the string set.
  *
+ * The Generous Dependent StringSet stores pointers to a source set, enabling the user to perform deletions and additions to the set without
+ * changing the original source set (See @link DependentStringSet @endlink for further details).
+ *
+ * @section Run time and Memory
+ *
+ * When a value is removed from the Generous Dependent StringSet, the pointer is simply set to zero. The only exception applies to zero pointers at the end
+ * of the pointer array, which are removed by resizing the array step by step.
+ * This results into the following run time complexity:
+ *
+ * - value() or operator []: amortised O(1)
+ *
+ * - getValueById(): O(1)
+ *
+ * - removeValueById(): amortised O(1)
+ *
+ * The memory consumption is linear to the number of pointers but potentially stores a lot of unneccessary null pointers.
+ *
  * See @link TightDependentStringSet @endlink for a Dependent StringSet implementation with a more memory efficient
  * representation at higher costs for by-id element access.
+ *
+ * @section Accessing non-existing entries returns empty string
+ *
+ * This also applies for accessing a position behind the last element.
+ *
  */
 
 // The Dddoc documentation of the Dependent specialization is in string_set_tight.h
@@ -183,6 +205,13 @@ inline void clear(StringSet<TString, Dependent<Generous> > & me)
 template <typename TString >
 inline typename Size<StringSet<TString, Dependent<Generous> > >::Type
 length(StringSet<TString, Dependent<Generous> > & me)
+{
+    return length(me.limits) - 1;
+}
+
+template <typename TString>
+inline typename Size<StringSet<TString, Dependent<Generous> > >::Type
+length(StringSet<TString, Dependent<Generous> > const & me)
 {
     return length(me.limits) - 1;
 }

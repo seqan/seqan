@@ -47,6 +47,11 @@
 #include "test_stream_read_embl.h"
 #include "test_stream_read_genbank.h"
 
+#include "test_read_bam.h"
+#include "test_write_bam.h"
+
+#include "test_tag_select_intersect.h"
+
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
     // Test recognition of supported file types.
@@ -56,6 +61,9 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     // Test recognition of supported file formats.
     SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta);
     SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq);
+
+    // Test transefer of format from input file to output file (tag_select_intersect).
+    SEQAN_CALL_TEST(test_tag_select_intersect);
 
     // Test reading with different interfaces.
     SEQAN_CALL_TEST(test_seq_io_sequence_file_read_record_text_fasta);
@@ -68,6 +76,10 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual);
     SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual);
     SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual);
+
+    // Test isOpen functionality
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_isOpen_fileIn);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_isOpen_fileOut);
 
     // Test parsing for GenomicRegion.
     SEQAN_CALL_TEST(test_seq_io_genomic_region_default_constructed);
@@ -97,6 +109,19 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_stream_read_genbank_record_char_array_stream);
     SEQAN_CALL_TEST(test_stream_read_genbank_single_mmap);
     SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_mmap);
+
+    // Tests for BAM-File
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_read_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_read_sequences_and_qualities);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_write_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_sam_write_sequences_and_qualities);
+
+#if SEQAN_HAS_ZLIB
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_read_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_read_sequences_and_qualities);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_write_sequences);
+    SEQAN_CALL_TEST(test_seq_io_bam_file_bam_write_sequences_and_qualities);
+#endif
 }
 
 SEQAN_END_TESTSUITE

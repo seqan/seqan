@@ -568,7 +568,7 @@ public:
  *
  * @section Remarks
  *
- * This class is generally not used directly by the user but through @link ArgumentParser @endlink. It allows to store
+ * This class is generally not used directly by the user but through @link ArgumentParser @endlink. It allows one to store
  * and represent all information related to a command line tool that would normally go into a man page. It can be
  * printed to STL streams in different formats, currently plain text, HTML and man pages are supported.
  *
@@ -632,6 +632,7 @@ class ToolDoc
 public:
     CharString _name;
     CharString _shortDescription;
+    CharString _url;
     CharString _date;
     CharString _version;
     CharString _shortCopyright;
@@ -649,7 +650,7 @@ public:
         _manSection(1) {}
 
     ToolDoc(ToolDoc const & toolDoc) :
-        _name(toolDoc._name), _shortDescription(toolDoc._shortDescription),
+        _name(toolDoc._name), _shortDescription(toolDoc._shortDescription), _url(toolDoc._url),
         _date(toolDoc._date), _version(toolDoc._version), _shortCopyright(toolDoc._shortCopyright),
         _longCopyright(toolDoc._longCopyright), _citation(toolDoc._citation), _manTitle(toolDoc._manTitle),
         _category(toolDoc._category), _manSection(1)
@@ -871,6 +872,47 @@ inline void setShortDescription(ToolDoc & doc, CharString const & shortDescripti
 inline CharString const & getShortDescription(ToolDoc const & doc)
 {
     return doc._shortDescription;
+}
+
+// --------------------------------------------------------------------------
+// Function setUrl()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#setUrl
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Set the url string to the app repository or website.
+ *
+ * @signature void setUrl(toolDoc, str);
+ *
+ * @param[in,out] toolDoc The ToolDoc object to the set the version string for.
+ * @param[in]     str     The url string of the tool (@link CharString @endlink).
+ */
+
+inline void setUrl(ToolDoc & doc, CharString url)
+{
+    std::swap(doc._url, url);
+}
+
+// --------------------------------------------------------------------------
+// Function getUrl()                                              ToolDoc
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ToolDoc#getUrl
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Get the url string to the app repository or website.
+ *
+ * @signature CharString getUrl(toolDoc);
+ *
+ * @param[in] toolDoc The ToolDoc object to the get the version string.
+ *
+ * @return CharString Resulting url string (@link CharString @endlink).
+ */
+
+inline CharString const & getUrl(ToolDoc const & doc)
+{
+    return doc._url;
 }
 
 // --------------------------------------------------------------------------
@@ -1332,7 +1374,7 @@ void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     }
     _maybeCloseList(stream, isDl);
 
-    // Print version and date.
+    // Print version, date and url.
     stream << "<h2>Version</h2>\n"
            << "<strong>Last update:</strong> " << _toHtml(doc._date) << "<br>\n<strong>"
            << doc._name << " version:</strong> " << doc._version << "<br>\n"
@@ -1340,6 +1382,11 @@ void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
            << SEQAN_VERSION_PATCH;
     if (SEQAN_VERSION_PRE_RELEASE != 0)
         stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
+    if (!empty(doc._url))
+    {
+        stream << "<h2>Url</h2>\n"
+               << doc._url << "<br>\n";
+    }
     stream << "<br>\n";
 
     // Print legal stuff
@@ -1429,7 +1476,7 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         }
     }
 
-    // Print version and date.
+    // Print version, date and url.
     stream << "\n" << _toText("\\fB") << "VERSION" << _toText("\\fP") << "\n";
     std::fill_n(out, _layout.leftPadding, ' ');
     stream << _toText("\\fB") << "Last update: " << _toText("\\fP") << doc._date << "\n";
@@ -1440,6 +1487,12 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
            <<  SEQAN_VERSION_MINOR << '.' << SEQAN_VERSION_PATCH;
     if (SEQAN_VERSION_PRE_RELEASE != 0)
         stream << "-pre" << SEQAN_VERSION_PRE_RELEASE;
+    if (!empty(doc._url))
+    {
+        stream <<  "\n" << _toText("\\fB") << "URL" << _toText("\\fP") << "\n";
+        std::fill_n(out, _layout.leftPadding, ' ');
+        stream << doc._url << "\n";
+    }
     stream << "\n";
 
     // Print legal stuff

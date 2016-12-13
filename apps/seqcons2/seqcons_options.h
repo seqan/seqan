@@ -100,7 +100,7 @@ struct SeqConsOptions
 
     // K-mer length to use for identifying overlap candidates.
     int kMerSize;
-    // K-mers with a higher number of occurences are ignored.
+    // K-mers with a higher number of occurrences are ignored.
     int kMerMaxOcc;
 
     // -----------------------------------------------------------------------

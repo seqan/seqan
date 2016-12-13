@@ -89,7 +89,7 @@ struct SimdAlignVariableLengthTraits
 // Function _createSimdRepImpl()
 // ----------------------------------------------------------------------------
 
-#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    data[strPos + 1][chrPos], data[strPos][chrPos]
+#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    getValue(data[strPos + 1], chrPos), getValue(data[strPos], chrPos)
 #define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)
 #define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)
 #define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)

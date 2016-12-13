@@ -196,7 +196,7 @@ void _setGffRecordType(GffRecord & record, TBreakpoint & bp)
         case TBreakpoint::INVERSION:
         record.type = "inversion";
         break;
-        case TBreakpoint::TANDEM:
+        case TBreakpoint::SEQAN_TANDEM:
         record.type = "tandem";
         break;
         case TBreakpoint::DISPDUPLICATION:
@@ -647,7 +647,7 @@ inline bool _fillVcfRecord(VcfRecord & record, TBreakpoint & bp, TSequence & ref
         case TBreakpoint::INVERSION:
         _fillVcfRecordInversion(record, bp, ref, id);
         return 1;
-        case TBreakpoint::TANDEM:
+        case TBreakpoint::SEQAN_TANDEM:
         _fillVcfRecordTandem(record, bp, ref, id);
         return 1;
         case TBreakpoint::DISPDUPLICATION:
@@ -1125,7 +1125,7 @@ _writeParams(TOptions & options)
     std::cout << "Thresholds:" << std::endl;
     std::cout << "  overlap threshold (oth)          : " << options.simThresh << std::endl;
     std::cout << "  gap threshold (gth)              : " << options.gapThresh << std::endl;
-    std::cout << "  inital gap threshold (ith)       : " << options.initGapThresh << std::endl;
+    std::cout << "  initial gap threshold (ith)      : " << options.initGapThresh << std::endl;
     std::cout << "Penalties:" << std::endl;
     std::cout << "  translocation penalty (tp)       : " << options.diffDBPen << std::endl;
     std::cout << "  inversion penalty (ip)           : " << options.diffStrandPen << std::endl;

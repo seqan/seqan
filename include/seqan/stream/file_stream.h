@@ -178,10 +178,10 @@ clear(FilePage<TValue, TSpec> & me)
 // Class FilePager
 // ----------------------------------------------------------------------------
 
-template <unsigned PAGESIZE = 4 * 1024>
+template <unsigned SEQAN_PAGESIZE = 4 * 1024>
 struct FixedPagingScheme
 {
-    enum { pageSize = PAGESIZE };
+    enum { pageSize = SEQAN_PAGESIZE };
 
     static void * EMPTY;
     static void * ON_DISK;
@@ -189,11 +189,11 @@ struct FixedPagingScheme
     String<void *> frameStart;
 };
 
-template <unsigned PAGESIZE>
-void * FixedPagingScheme<PAGESIZE>::EMPTY = NULL;
+template <unsigned SEQAN_PAGESIZE>
+void * FixedPagingScheme<SEQAN_PAGESIZE>::EMPTY = NULL;
 
-template <unsigned PAGESIZE>
-void * FixedPagingScheme<PAGESIZE>::ON_DISK = (void *)-1;
+template <unsigned SEQAN_PAGESIZE>
+void * FixedPagingScheme<SEQAN_PAGESIZE>::ON_DISK = (void *)-1;
 
 
 template <typename TFilePageTable>
@@ -276,9 +276,9 @@ clear(FilePageTable<TValue, TDirection, TSpec> & pager)
 // Function _getPageOffsetAndLength()
 // ----------------------------------------------------------------------------
 
-template <unsigned PAGESIZE, typename TPos>
+template <unsigned SEQAN_PAGESIZE, typename TPos>
 inline Pair<int64_t, unsigned>
-_getPageOffsetAndLength(FixedPagingScheme<PAGESIZE> const & scheme, TPos pos)
+_getPageOffsetAndLength(FixedPagingScheme<SEQAN_PAGESIZE> const & scheme, TPos pos)
 {
     SEQAN_ASSERT_EQ(scheme.pageSize & (scheme.pageSize - 1), 0);  // pageSize must be a power of 2
     return Pair<int64_t, unsigned>((int64_t)pos & ~(int64_t)(scheme.pageSize - 1), scheme.pageSize);
@@ -288,9 +288,9 @@ _getPageOffsetAndLength(FixedPagingScheme<PAGESIZE> const & scheme, TPos pos)
 // Function _getFrameStart()
 // ----------------------------------------------------------------------------
 
-template <unsigned PAGESIZE, typename TFilePos, typename TSize>
+template <unsigned SEQAN_PAGESIZE, typename TFilePos, typename TSize>
 inline void *
-_getFrameStart(FixedPagingScheme<PAGESIZE> &table, TFilePos filePos, TSize)
+_getFrameStart(FixedPagingScheme<SEQAN_PAGESIZE> &table, TFilePos filePos, TSize)
 {
     unsigned pageNo = filePos / table.pageSize;
     if (SEQAN_LIKELY(pageNo < length(table.frameStart)))
@@ -303,9 +303,9 @@ _getFrameStart(FixedPagingScheme<PAGESIZE> &table, TFilePos filePos, TSize)
 // Function _setFrameStart()
 // ----------------------------------------------------------------------------
 
-template <unsigned PAGESIZE, typename TFilePos, typename TSize>
+template <unsigned SEQAN_PAGESIZE, typename TFilePos, typename TSize>
 inline void
-_setFrameStart(FixedPagingScheme<PAGESIZE> &table, TFilePos filePos, TSize, void * frameStart)
+_setFrameStart(FixedPagingScheme<SEQAN_PAGESIZE> &table, TFilePos filePos, TSize, void * frameStart)
 {
     unsigned pageNo = filePos / table.pageSize;
     if (length(table.frameStart) <= pageNo)
@@ -393,7 +393,7 @@ template <typename TValue, typename TDirection, typename TSpec, typename TPageFr
 inline bool
 _preprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
 {
-    // not used yet, could be usefull for external sorters/mappers
+    // not used yet, could be useful for external sorters/mappers
     page.data = page.raw;
     return true;
 }
@@ -406,7 +406,7 @@ template <typename TValue, typename TDirection, typename TSpec, typename TPageFr
 inline bool
 _postprocessFilePage(FilePageTable<TValue, TDirection, TSpec> &, TPageFrame &page, TBool const &)
 {
-    // not used yet, could be usefull for external sorters/mappers
+    // not used yet, could be useful for external sorters/mappers
     resize(page.raw, length(page.data));
     clear(page.data);
     return true;

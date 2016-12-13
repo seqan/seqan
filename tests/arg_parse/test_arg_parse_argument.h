@@ -44,73 +44,75 @@
 
 using namespace seqan;
 
-SEQAN_DEFINE_TEST(test_argument_string_label)
+SEQAN_DEFINE_TEST(test_argument_string_type)
 {
-    ArgParseArgument arg1(ArgParseArgument::STRING);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "STR");
-
-    arg1._numberOfValues = 2;
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "STR STR");
-
-    ArgParseArgument arg2(ArgParseArgument::STRING);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg2), "STR");
+    ArgParseArgument arg(ArgParseArgument::STRING);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::STRING);
 }
 
-SEQAN_DEFINE_TEST(test_argument_int_label)
+SEQAN_DEFINE_TEST(test_argument_bool_type)
 {
-    ArgParseArgument arg1(ArgParseArgument::INTEGER);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "NUM");
-
-    arg1._numberOfValues = 2;
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "NUM NUM");
-
-    ArgParseArgument arg2(ArgParseArgument::INTEGER);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg2), "NUM");
+    ArgParseArgument arg(ArgParseArgument::BOOL);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::BOOL);
+}
+SEQAN_DEFINE_TEST(test_argument_int_type)
+{
+    ArgParseArgument arg(ArgParseArgument::INTEGER);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::INTEGER);
 }
 
-SEQAN_DEFINE_TEST(test_argument_double_label)
+SEQAN_DEFINE_TEST(test_argument_int64_type)
 {
-    ArgParseArgument arg1(ArgParseArgument::DOUBLE);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "NUM");
-
-    arg1._numberOfValues = 2;
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "NUM NUM");
-
-    ArgParseArgument arg2(ArgParseArgument::DOUBLE);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg2), "NUM");
+    ArgParseArgument arg(ArgParseArgument::INT64);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::INT64);
 }
 
-SEQAN_DEFINE_TEST(test_argument_inputfile_label)
+SEQAN_DEFINE_TEST(test_argument_double_type)
 {
-    ArgParseArgument arg1(ArgParseArgument::INPUT_FILE);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "FILE");
-
-    arg1._numberOfValues = 2;
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "FILE FILE");
-
-    ArgParseArgument arg2(ArgParseArgument::INPUT_FILE);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg2), "FILE");
+    ArgParseArgument arg(ArgParseArgument::DOUBLE);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::DOUBLE);
 }
 
-SEQAN_DEFINE_TEST(test_argument_outputfile_label)
+SEQAN_DEFINE_TEST(test_argument_inputfile_type)
 {
-    ArgParseArgument arg1(ArgParseArgument::OUTPUT_FILE);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "FILE");
-
-    arg1._numberOfValues = 2;
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "FILE FILE");
-
-    ArgParseArgument arg2(ArgParseArgument::OUTPUT_FILE);
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg2), "FILE");
+    ArgParseArgument arg(ArgParseArgument::INPUT_FILE);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::INPUT_FILE);
 }
 
-SEQAN_DEFINE_TEST(test_argument_user_defined_label)
+SEQAN_DEFINE_TEST(test_argument_outputfile_type)
 {
-    ArgParseArgument arg1(ArgParseArgument::STRING, "my_label");
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "my_label");
+    ArgParseArgument arg(ArgParseArgument::OUTPUT_FILE);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::OUTPUT_FILE);
+}
 
-    arg1._numberOfValues = 2;
-    SEQAN_ASSERT_EQ(getArgumentLabel(arg1), "my_label");
+SEQAN_DEFINE_TEST(test_argument_inputprefix_type)
+{
+    ArgParseArgument arg(ArgParseArgument::INPUT_PREFIX);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::INPUT_PREFIX);
+}
+
+SEQAN_DEFINE_TEST(test_argument_outputprefix_type)
+{
+    ArgParseArgument arg(ArgParseArgument::OUTPUT_PREFIX);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::OUTPUT_PREFIX);
+}
+
+SEQAN_DEFINE_TEST(test_argument_inputdirectory_type)
+{
+    ArgParseArgument arg(ArgParseArgument::INPUT_DIRECTORY);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::INPUT_DIRECTORY);
+}
+
+SEQAN_DEFINE_TEST(test_argument_outputdirectory_type)
+{
+    ArgParseArgument arg(ArgParseArgument::OUTPUT_DIRECTORY);
+    SEQAN_ASSERT_EQ(getArgumentType(arg), ArgParseArgument::OUTPUT_DIRECTORY);
+}
+
+SEQAN_DEFINE_TEST(test_argument_label)
+{
+    ArgParseArgument arg(ArgParseArgument::STRING, "my_label");
+    SEQAN_ASSERT_EQ(getArgumentLabel(arg), "my_label");
 }
 
 SEQAN_DEFINE_TEST(test_argument_invalid_cast)

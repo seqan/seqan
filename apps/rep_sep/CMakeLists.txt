@@ -10,14 +10,16 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_rep_sep CXX)
 message (STATUS "Configuring apps/rep_sep")
 
-set (SEQAN_APP_VERSION "0.1.7")
+set (SEQAN_APP_VERSION "0.1.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup

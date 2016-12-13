@@ -1,0 +1,39 @@
+## G: COMMENT: RNA was folded for 20 minutes at 37 C ANNOTATION: chemical:HEPES:100mM(pH8.0)	chemical:MgCl2:10mM	chemical:NACl:100mM	temperature:37C	experimentType:SHAPE-Seqv2.0	replicate:1 
+## S1: Name of first sequence
+## S2: Name of second sequence
+## S3: Name of third sequence
+## F1: First fixed structure computed with a tool such as Ipknot, dotknot, RNAfold etc..
+## F2: Second fixed structure computed with a tool such as Ipknot, dotknot, RNAfold etc..
+## M1: First base pair probability matrix computed with a tool such RNAfold
+## M2: Second base pair probability matrix computed with a tool such RNAfold
+## T1: First type of biological validated data (SHAPE, DMS, CMCT).
+## T2: Second type of biological validated data (SHAPE, DMS, CMCT).
+# S1 T2
+# I	NT	QU	R2	RE2	F1	F2	M1	M2
+1	A	H	3.4552	1.1760	8	5	<5/0.003 | 8/0.87>	<4/0.002 | 5/0.3 | 8/0.007>
+2	G	{	46.9128	13.8533	7	4	<5/0.03 | 7/0.4>	<4/0.6 | 7/0.3>
+3	U	#	0.1740	0.2738	6	6	<6/0.5>	<6/0.8>
+4	C	!	0.0000	0.0000	0	2	<>	<1/0.002 | 2/0.6>
+5	C	7	0.0000	0.0000	0	1	<1/0.003 | 2/0.03>	<1/0.3>
+6	G	T	0.0279	0.0161	3	3	<3/0.5>	<3/0.8>
+7	U	@	0.0997	0.0575	2	0	<2/0.4>	<2/0.3>
+8	C	g	0.0000	0.0000	1	0	<1/0.87>	<1/0.007>
+# S2 T2
+# I	NT	QU	R2	RE2	F2	M1
+1	A	@	3.4552	1.1760	8	<5/0.003 | 8/0.87>
+2	G	{	16.9128	1.8533	7	<5/0.03 | 7/0.4>
+3	C	#	0.1740	0.2738	6	<6/0.6>
+4	C	!	0.0000	2.0220	0	<>
+5	C	&	0.4300	0.0110	0	<1/0.003 | 2/0.03>
+6	A	T	0.0279	0.0161	3	<3/0.6>
+7	U	@	0.0997	0.0575	2	<2/0.4>
+8	C	1	0.0000	0.0000	1	<1/0.87>
+# S3 T1	T2
+# I	NT	QU	R1	RE1	R2	RE2	F1	M2
+1	A	?	3.4552	1.1760	0.7127	0.0863	5	<4/0.002 | 5/0.3>
+2	G	'	46.9128	13.8533	0.3916	0.1568	4	<4/0.6 | 7/0.3>
+3	U	5	0.1740	0.2738	1.5855	0.2431	6	<6/0.8>
+4	C	!	0.7700	2.4500	0.3236	0.6132	2	<1/0.002 | 2/0.6>
+5	C	@	0.0000	0.0000	1.6117	0.0000	1	<1/0.3>
+6	G	\	0.0279	0.0161	0.4674	0.0000	3	<3/0.8>
+7	U	@	0.0997	0.0575	0.3222	3.9352	0	<2/0.3>

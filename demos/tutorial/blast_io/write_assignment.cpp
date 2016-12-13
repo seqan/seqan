@@ -75,7 +75,7 @@ int main(int argc, char ** argv)
 
         for (unsigned s = 0; s < length(subjects); ++s)
         {
-            appendValue(r.matches, TBlastMatch(qIds[q], sIds[s]));
+            appendValue(r.matches, TBlastMatch(sIds[s]));
             TBlastMatch & m = back(records[q].matches);
 
             assignSource(m.alignRow0, queries[q]);

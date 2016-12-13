@@ -249,6 +249,45 @@ inline CharString getShortDescription(ArgumentParser const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function setUrl()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#setUrl
+ * @brief Sets url of ArgumentParser.
+ *
+ * @signature void setUrl(parser, url);
+ *
+ * @param[in,out] parser  The ArgumentParser to set the url of.
+ * @param[in]     url     The url string to set, @link CharString @endlink.
+ */
+
+inline void setUrl(ArgumentParser & me, CharString const & urlString)
+{
+    setUrl(me._toolDoc, urlString);
+}
+
+// --------------------------------------------------------------------------
+// Function getUrl()
+// --------------------------------------------------------------------------
+
+/*!
+ * @fn ArgumentParser#getUrl
+ * @brief Returns the url string.
+ *
+ * @signature TCharStringRef getUrl(parser);
+ *
+ * @param[in,out] parser The ArgumentParser to get the url string from.
+ *
+ * @return TCharString A const-ref to a @link CharString @endlink with the url string.
+ */
+
+inline CharString const & getUrl(ArgumentParser const & me)
+{
+    return getUrl(me._toolDoc);
+}
+
+// ----------------------------------------------------------------------------
 // Function setVersion()
 // ----------------------------------------------------------------------------
 
@@ -667,22 +706,22 @@ inline void printLongCopyright(ArgumentParser const & me)
 // Function _addNumericalRestriction()
 // ----------------------------------------------------------------------------
 
-inline void _addNumericalRestriction(std::string & text, ArgParseOption const & opt)
+inline void _addNumericalRestriction(std::string & text, ArgParseArgument const & arg)
 {
     // expand min/max restrictions
-    if (!empty(opt.minValue) || !empty(opt.maxValue))
+    if (!empty(arg.minValue) || !empty(arg.maxValue))
     {
         append(text, " In range [");
 
-        if (!empty(opt.minValue))
-            append(text, opt.minValue);
+        if (!empty(arg.minValue))
+            append(text, arg.minValue);
         else
             append(text, "-inf");
 
         append(text, "..");
 
-        if (!empty(opt.maxValue))
-            append(text, opt.maxValue);
+        if (!empty(arg.maxValue))
+            append(text, arg.maxValue);
         else
             append(text, "inf");
 
@@ -718,40 +757,134 @@ inline void _expandList(std::string & text, std::vector<std::string> const & lis
 // Function _addDefaultValues()
 // ----------------------------------------------------------------------------
 
-inline void _addDefaultValues(std::string & text, ArgParseOption const & opt)
+inline void _addDefaultValues(std::string & text, ArgParseArgument const & arg)
 {
-    if (!empty(opt.defaultValue) && !isBooleanOption(opt))
+    if (!empty(arg.defaultValue))
     {
         append(text, " Default: ");
-        _expandList(text, opt.defaultValue);
+        _expandList(text, arg.defaultValue);
         append(text, ".");
     }
+}
+
+inline void _addDefaultValues(std::string & text, ArgParseOption const & arg)
+{
+    if (!isFlagOption(arg))
+        _addDefaultValues(text, static_cast<ArgParseArgument>(arg));
+}
+
+// ----------------------------------------------------------------------------
+// Function _seperateExtensionsForPrettyPrinting()
+// ----------------------------------------------------------------------------
+
+inline void _seperateExtensionsForPrettyPrinting(std::vector<std::string> & file_ext,
+                                                 std::vector<std::string> & comp_ext,
+                                                 std::vector<std::string> const & validValues)
+{
+    // seperate file extensions and compression extensions
+    for (std::vector<std::string>::size_type i = 0; i < validValues.size(); ++i)
+    {
+        std::regex rgx("^(\\.)?([A-z0-9]+)(\\.)?([A-z0-9]+)?");
+        std::smatch result;
+
+        std::regex_search(validValues[i], result, rgx);
+
+        if (!result[4].str().empty())
+        {
+            comp_ext.push_back(result[4].str());
+            file_ext.push_back("." + result[2].str() + "[.*]");
+        }
+        else
+        {
+            file_ext.push_back("." + result[2].str());
+        }
+    }
+
+    std::sort(file_ext.rbegin(), file_ext.rend()); // sort extensions in reverse order such that '.fa[.x]'
+    std::sort(comp_ext.rbegin(), comp_ext.rend()); // comes before '.fa' and will be chosen by std::unique()
+
+    comp_ext.erase(std::unique(comp_ext.begin(), comp_ext.end()), comp_ext.end()); // remove duplicates
+    file_ext.erase(std::unique(file_ext.begin(), file_ext.end(),
+                    [&](auto& lhs, auto& rhs)
+                    {
+                        return lhs.substr(0, lhs.find('[')) == rhs.substr(0, rhs.find('['));
+                    }), file_ext.end());
 }
 
 // ----------------------------------------------------------------------------
 // Function _addValidValuesRestrictions()
 // ----------------------------------------------------------------------------
 
-inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const & opt)
+inline void _addValidValuesRestrictions(std::string & text, ArgParseArgument const & arg)
 {
-    if (!empty(opt.validValues) && !isBooleanOption(opt))
+    if (!empty(arg.validValues))
     {
-        if (isInputFileArgument(opt) || isOutputFileArgument(opt))
+        if (isInputFileArgument(arg) || isOutputFileArgument(arg))
         {
+            std::vector<std::string> file_extensions;
+            std::vector<std::string> compresssion_extensions;
+
+            _seperateExtensionsForPrettyPrinting(file_extensions, compresssion_extensions, arg.validValues);
+
             append(text, " Valid filetype");
 
-            if (opt.validValues.size() > 1)
+            if (file_extensions.size() > 1)
                 append(text, "s are: ");
             else
                 append(text, " is: ");
+
+            _expandList(text, file_extensions);
+
+            if (compresssion_extensions.size() != 0)
+            {
+                append(text, ", where * is any of the following extensions: ");
+                _expandList(text, compresssion_extensions);
+                append(text, " for transparent (de)compression");
+            }
         }
         else
         {
             append(text, " One of ");
+            _expandList(text, arg.validValues);
         }
 
-        _expandList(text, opt.validValues);
         append(text, ".");
+    }
+}
+
+inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const & opt)
+{
+    if (!isFlagOption(opt))
+        _addValidValuesRestrictions(text, static_cast<ArgParseArgument>(opt));
+}
+
+// ----------------------------------------------------------------------------
+// Function _addTypeAndListInfo()
+// ----------------------------------------------------------------------------
+
+inline void _addTypeAndListInfo(std::string & text, ArgParseArgument const & arg)
+{
+    std::string type = getArgumentTypeAsString(arg);
+    for (auto & c: type)
+         c = toupper(c);
+
+    // Write arguments to term line -> only exception, boolean flags
+    if (!empty(type))
+    {
+        append(text, " ");
+
+        if (isListArgument(arg))
+            append(text, "List of ");
+
+        if (arg._numberOfValues != 1)
+            append(text,  std::to_string(arg._numberOfValues) + " ");
+
+        append(text, "\\fI");
+        append(text, type);
+        append(text, "\\fP");
+
+        if (isListArgument(arg) || arg._numberOfValues != 1)
+            append(text, "'s");
     }
 }
 
@@ -790,7 +923,52 @@ inline void printHelp(ArgumentParser const & me,
     for (unsigned i = 0; i < me._description.size(); ++i)
         addText(toolDoc, me._description[i]);
 
-    // Add options to description section.
+    // Add arguments to arguments section
+    if (length(me.argumentList) != 0)
+        addSection(toolDoc, "Required Arguments");
+
+    for (unsigned i = 0; i < length(me.argumentList); ++i)
+    {
+        ArgParseArgument const & arg = me.argumentList[i];
+
+        // Build list item term.
+        std::string term;
+        if (!empty(arg._argumentLabel))
+        {
+            std::regex space(" ");
+            term = "\\fB";
+            append(term, std::regex_replace(arg._argumentLabel, space,"_"));
+            append(term, "\\fP");
+        }
+        else
+        {
+            term = "\\fBARGUMENT ";
+            append(term, std::to_string(i));
+            append(term, "\\fP");
+        }
+
+        // expand type, list and numValues information
+        _addTypeAndListInfo(term, arg);
+
+        std::string helpText = arg._helpText;
+
+        // expand min/max restrictions
+        _addNumericalRestriction(helpText, arg);
+
+        // expand validValues restrictions
+        _addValidValuesRestrictions(helpText, arg);
+
+        // expand defaultValue
+        _addDefaultValues(helpText, arg);
+
+        // Add list item.
+        addListItem(toolDoc, term, helpText);
+    }
+
+    // Add options to options section.
+    if (length(me.optionMap) != 0)
+        addSection(toolDoc, "Options");
+
     for (unsigned i = 0; i < length(me.optionMap); ++i)
     {
         ArgParseOption const & opt = me.optionMap[i];
@@ -833,25 +1011,10 @@ inline void printHelp(ArgumentParser const & me,
                 append(term, opt.longName);
                 append(term, "\\fP");
             }
-            // Get arguments, autogenerate if necessary.
-            std::string arguments = getArgumentLabel(opt);
 
-            // Write arguments to term line -> only exception, boolean flags
-            if (!empty(arguments))
-            {
-                // Tokenize argument names.
-                std::istringstream iss(toCString(arguments));
-                std::vector<std::string> tokens;
-                std::copy(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>(),
-                          std::back_inserter<std::vector<std::string> >(tokens));
-                // Append them, formatted in italic.
-                for (unsigned i = 0; i < length(tokens); ++i)
-                {
-                    append(term, " \\fI");
-                    append(term, tokens[i]);
-                    append(term, "\\fP");
-                }
-            }
+            // expand type, list and numValues information
+            if (!opt._isFlag)
+                _addTypeAndListInfo(term, opt);
 
             std::string helpText = opt._helpText;
 

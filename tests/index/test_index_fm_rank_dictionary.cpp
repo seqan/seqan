@@ -78,45 +78,53 @@ typedef Levels<void, LevelsRDConfig<uint32_t, Alloc<>, 3, 3> >       Default3Lev
 typedef
     TagList<RankDictionary<bool,            Prefix1Level>,
     TagList<RankDictionary<Dna,             Prefix1Level>,
+    TagList<RankDictionary<Dna5,            Prefix1Level>,
     TagList<RankDictionary<Dna5Q,           Prefix1Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix1Level>,
     TagList<RankDictionary<AminoAcid,       Prefix1Level>,
     TagList<RankDictionary<bool,            Prefix2Level>,
     TagList<RankDictionary<Dna,             Prefix2Level>,
+    TagList<RankDictionary<Dna5,            Prefix2Level>,
     TagList<RankDictionary<Dna5Q,           Prefix2Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix2Level>,
     TagList<RankDictionary<AminoAcid,       Prefix2Level>,
     TagList<RankDictionary<bool,            Prefix3Level>,
     TagList<RankDictionary<Dna,             Prefix3Level>,
+    TagList<RankDictionary<Dna5,            Prefix3Level>,
     TagList<RankDictionary<Dna5Q,           Prefix3Level>,
     TagList<RankDictionary<ReducedMurphy10, Prefix3Level>,
     TagList<RankDictionary<AminoAcid,       Prefix3Level>,
     TagList<RankDictionary<bool,            WaveletTree<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
+    TagList<RankDictionary<Dna5,            WaveletTree<> >,
     TagList<RankDictionary<Dna5Q,           WaveletTree<> >,
+    TagList<RankDictionary<ReducedMurphy10, WaveletTree<> >,
     TagList<RankDictionary<AminoAcid,       WaveletTree<> >
-    > > > > > > > > > > > > > > > > > > >
+    > > > > > > > > > > > > > > > > > > > > > > > >
     RankDictionaryPrefixSumTypes;
 
 typedef
     TagList<RankDictionary<bool,            Naive<> >,
     TagList<RankDictionary<bool,            Default1Level>,
     TagList<RankDictionary<Dna,             Default1Level>,
+    TagList<RankDictionary<Dna5,            Default1Level>,
     TagList<RankDictionary<Dna5Q,           Default1Level>,
     TagList<RankDictionary<ReducedMurphy10, Default1Level>,
     TagList<RankDictionary<AminoAcid,       Default1Level>,
     TagList<RankDictionary<bool,            Default2Level>,
     TagList<RankDictionary<Dna,             Default2Level>,
-    TagList<RankDictionary<Dna5Q,           Default2Level>,
+    TagList<RankDictionary<Dna5,            Default2Level>,
+    TagList<RankDictionary<Dna5,            Default2Level>,
     TagList<RankDictionary<ReducedMurphy10, Default2Level>,
     TagList<RankDictionary<AminoAcid,       Default2Level>,
     TagList<RankDictionary<bool,            Default3Level>,
     TagList<RankDictionary<Dna,             Default3Level>,
+    TagList<RankDictionary<Dna5,            Default3Level>,
     TagList<RankDictionary<Dna5Q,           Default3Level>,
     TagList<RankDictionary<ReducedMurphy10, Default3Level>,
     TagList<RankDictionary<AminoAcid,       Default3Level>,
     RankDictionaryPrefixSumTypes
-    > > > > > > > > > > > > > > > >
+    > > > > > > > > > > > > > > > > > > >
     RankDictionaryAllTypes;
 
 // ==========================================================================

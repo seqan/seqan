@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
 {
     // Load example SAM from file.
     //
-    // There are many superflous gaps in the SAM file that we will get rid of below.
+    // There are many superfluous gaps in the SAM file that we will get rid of below.
     seqan::FragmentStore<> store;
     seqan::CharString samPath = SEQAN_PATH_TO_ROOT();
     append(samPath, "/tests/consensus/small_example.sam");

@@ -33,7 +33,7 @@
 // ==========================================================================
 // (Read-only) Tabix index support.
 //
-// A Tabix index (Heng Li) allows to randomly seek in a tab-seperated genome
+// A Tabix index (Heng Li) allows one to randomly seek in a tab-seperated genome
 // related file, e.g. VCF, GFF, SAM, BED, etc. The corresponding file only
 // needs to be sorted by chromosomal position in advance and optionally
 // compressed with 'bgzip'. The resulting file must be indexed with 'tabix'.
@@ -469,6 +469,9 @@ open(TabixIndex & index, char const * filename)
     CharString tmp;
     readRawPod(lNm, iter);
     read(tmp, iter, lNm);
+    // Trim last terminating '\0's as they confuse strSplit() below
+    while (!empty(tmp) && back(tmp) == '\0')
+        resize(tmp, length(tmp) - 1);
 
     // Split concatenated names at \0's.
     clear(index._nameStore);

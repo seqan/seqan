@@ -77,9 +77,10 @@ First you should create a build directory, i.e. for cmake-builds everything happ
    # mkdir -p ~/devel/my_project-build/release
    # cd ~/devel/my_project-build/release
 
-By default, the ``cmake`` program will look for ``FindSeqAn.cmake`` in its module directory.
-Usually, this is located in ``/usr/share/cmake/Modules`` or a similar location that is available system-wide.
-Depending on how you :ref:`installed SeqAn <infra-use-install>` it might be found by cmake automatically. If not, you have to give the path to cmake via the ``CMAKE_MODULE_PATH`` argument on the command line.
+By default, the ``cmake`` program will look for ``seqan-config.cmake`` in a predefined set of directories.
+Please read the documentation `find_project <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_ to find out, which standard paths are searched.
+Depending on how you :ref:`installed SeqAn <infra-use-install>` it might be found by cmake automatically. 
+If not, you have to give the path containing the config file to cmake via the ``SeqAn_DIR`` argument on the command line, or you add the installation prefix of ``SeqAn`` via the ``CMAKE_PREFIX_PATH`` variable.
 
 Also, CMake will look for the SeqAn include files in central locations such as ``/usr/local/include``. Again, depending on your installation this might *just work*. If not, you need to specify the location via the ``SEQAN_INCLUDE_PATH`` argument.
 
@@ -142,9 +143,27 @@ On Windows a Visual Studio generator is used by default and you will find a ``.v
 
 See :ref:`this page <infra-use-cmake-build-dirs>` for more details.
 
+Checking for newer Versions of SeqAn (optional)
+-----------------------------------------------
 
-Details of the FindSeqAn Module
--------------------------------
+The argument parser has a new feature to check for updates for the SeqAn library or for an application.
+This can be a very helpful reminder to stay up to date since SeqAn evolves rapidly to resolve issues or to supply new functionality.
+If none of the following options are selected the version update feature is activated by default.
+
+  =================================  ==========================================
+            Cmake Option                                Description
+  =================================  ==========================================
+  ``-DSEQAN_VERSION_CHECK_OPT_IN``   Turn update feature on but make it opt-in.
+
+  ``-DSEQAN_DISABLE_VERSION_CHECK``  Turn update feature off.
+  =================================  ==========================================
+
+.. note::
+
+    This does only affect applications or scipts that use the SeqAn :ref:`Argument Parser <tutorial-getting-started-parsing-command-line-arguments>`!
+
+Details of the SeqAn Module
+---------------------------
 
 As mentioned above, this line is the important line for including SeqAn:
 

@@ -111,7 +111,7 @@ struct Stats
     // Number of errors pre-correction/post-correction.
     uint64_t numErrorsPre;
     uint64_t numErrorsPost;
-    // Number of errorneous reads pre-correction/post-correction.
+    // Number of erroneous reads pre-correction/post-correction.
     uint64_t numErrorReadsPre;
     uint64_t numErrorReadsPost;
     uint64_t numReads;
@@ -1124,7 +1124,7 @@ int main(int argc, char const ** argv)
         std::cerr << "WARNING: Files not read completely!\n";
     if (error)
     {
-        std::cerr << "An error occured. Bailing out.\n";
+        std::cerr << "An error occurred. Bailing out.\n";
         return 1;
     }
 
