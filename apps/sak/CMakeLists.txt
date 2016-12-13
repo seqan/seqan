@@ -18,7 +18,7 @@ set (SEQAN_APP_VERSION "0.4.5")
 
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # ----------------------------------------------------------------------------

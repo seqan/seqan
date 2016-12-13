@@ -19,7 +19,7 @@ set (SEQAN_APP_VERSION "1.2.7")
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 if (NOT ZLIB_FOUND)
