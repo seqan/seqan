@@ -11,7 +11,7 @@ Library Features
 
 - Argument Parser:
     - Adds version check support to the argument parser.
-        - Codeheck for new updates of a specific application.
+        - Check for new updates of a specific application.
         - Check for new versions of the library.
         - This option is opt-out by default but can be switched to opt-in or completely disabled via compiler flags and the SeqAn build system.
     - Altered Argument Parsers help page to display argument information.
@@ -24,11 +24,11 @@ Library Features
         - Input/output of whole files or of a single record/header
     - Added function isOpen() for formatted files.
     - Enabling assignment of format tags that differ from underlying format.
-    - Allow reading bam-files with ``SeqFileIn``
+    - It is now possible to treat a BAM file as a (compressed) sequence file and read the sequences as if they were FastQ.
 
 - Blast I/O:
-    - Added support for handling the Q_ACC, S_ACC, S_ALLACC, S_TAX_IDS fields
-    - Added non standard fields LCA_ID and LCA_TAX_ID for lowest common ancestor information
+    - Added support for handling the ``Q_ACC``, ``S_ACC``, ``S_ALLACC``, ``S_TAX_IDS`` fields
+    - Added non standard fields ``LCA_ID`` and ``LCA_TAX_ID`` for lowest common ancestor information
     - Moved some redundant data from matches into record objects
 
 - FM Index:
@@ -72,13 +72,25 @@ App Updates
   - Gustaf:
       - Fixed name conflict (TANDEM)
 
+Platform Support
+^^^^^^^^^^^^^^^^
+
+  - Compiler support:
+      - SeqAn satisfies stricter warning levels of GCC7 and c++1z
+  - New operating systems supported:
+      - (Debian) GNU/kFreeBSD and GNU/Hurd
+  - New CPU architectures supported:
+      - ``arm`` and ``arm64``, ``mips`` and ``mips64``
+      - ``powerpc``, ``powerpc64`` and ``sparc64``
+      - and some others (all Debian platforms except ``sh4`` and ``armel``)
+  - Thanks to the Debian Med team for their patches
+
 Infrastructure Updates
 ^^^^^^^^^^^^^^^^^^^^^^
 
-  - Added feature to surpress builds of specified apps
+  - Added feature to selectively deactive the build of individual apps
   - Enforce using Python 2.x for documentation
-  - Renaming FindSeqAn to SeqAnConfig in CMake
-  - TODO (h2/rrahn): pkg-config: Define SEQAN_HAS_* flags in pkg-config file (#1938)
+  - Improvements to CMake and PkgConfig files
 
 Release 2.2.0
 ~~~~~~~~~~~~~
