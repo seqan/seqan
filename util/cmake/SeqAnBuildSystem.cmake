@@ -313,6 +313,7 @@ macro (seqan_build_system_init)
     # strip binaries when packaging
     if ((CMAKE_BUILD_TYPE STREQUAL "Release") AND
         (NOT SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP") AND
+        (NOT APPLE) AND
         (COMPILER_CLANG OR COMPILER_GCC))
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
     endif ()
@@ -324,7 +325,7 @@ macro (seqan_build_system_init)
         find_package(ZLIB)
         find_package(BZip2)
         find_package(Boost)
-        find_package(SeqAn REQUIRED)
+        find_package(SeqAn CONFIG REQUIRED)
     endif ()
 
 endmacro (seqan_build_system_init)
