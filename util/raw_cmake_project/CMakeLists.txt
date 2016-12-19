@@ -1,4 +1,4 @@
-# Example CMakeLists.txt file that uses the FindSeqAn.cmake module for
+# Example CMakeLists.txt file that uses the seqan-config.cmake module for
 # building a SeqAn-based app.
 
 project (raw_cmake_project CXX)

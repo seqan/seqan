@@ -883,22 +883,22 @@ void SangerSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
     setDefaultValue(parser, "sanger-quality-match-end-stddev", "2");
 
     addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-start-mean",
-                                            "Mean PHRED quality for errorneous bases of first base in Sanger sequencing.",
+                                            "Mean PHRED quality for erroneous bases of first base in Sanger sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-start-mean", "30");
 
     addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-end-mean",
-                                            "Mean PHRED quality for errorneous bases of last base in Sanger sequencing.",
+                                            "Mean PHRED quality for erroneous bases of last base in Sanger sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-end-mean", "20");
 
     addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-start-stddev",
-                                            "Mean PHRED quality for errorneous bases of first base in Sanger sequencing.",
+                                            "Mean PHRED quality for erroneous bases of first base in Sanger sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-start-stddev", "2");
 
     addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-end-stddev",
-                                            "Mean PHRED quality for errorneous bases of last base in Sanger sequencing.",
+                                            "Mean PHRED quality for erroneous bases of last base in Sanger sequencing.",
                                             seqan::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-end-stddev", "5");
 }

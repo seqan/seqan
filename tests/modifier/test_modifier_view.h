@@ -150,7 +150,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre)
     CharString const EXPECTED_RESULT = "Uijt jt b uftu!";
 
     // Test the various ways to initialize a ModifiedString.
-    // TODO(holtgrew): Should modified strings not be const to the outside?  Lots of non-const functions are superflous, right?
+    // TODO(holtgrew): Should modified strings not be const to the outside?  Lots of non-const functions are superfluous, right?
     {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(myFunctor);
         setHost(modifiedStr, originalStr);

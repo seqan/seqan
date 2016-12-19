@@ -228,6 +228,7 @@ public:
         hideOption(*this, "export-help", true);
         setValidValues(*this, "export-help", "html man txt");
 
+#ifndef SEQAN_DISABLE_VERSION_CHECK
         addOption(*this, ArgParseOption("",
                                         "version-check",
                                         "Choose OFF to disable any update notifications. "
@@ -237,12 +238,12 @@ public:
                                         ArgParseArgument::STRING,
                                         "OPTION"));
         setValidValues(*this, "version-check", VersionControlTags_<>::OPTIONS);
-#ifdef SEQAN_DISABLE_VERSION_CHECK
+#ifdef SEQAN_VERSION_CHECK_OPT_IN
         setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);
-        hideOption(*this, "version-check", true);
-#else
-        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);  // TODO(rrahn): Set to "DEV" after proper testing.
-#endif  // SEQAN_DISABLE_VERSION_CHECK
+#else  // Make version update opt out.
+        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_DEV);
+#endif  // SEQAN_VERSION_CHECK_OPT_IN
+#endif  // !SEQAN_DISABLE_VERSION_CHECK
     }
 
     // ----------------------------------------------------------------------------
@@ -263,8 +264,11 @@ public:
     ~ArgumentParser()
     {
         // wait for another 3 seconds
-        if(appVersionCheckFuture.valid())
+        if (appVersionCheckFuture.valid())
             appVersionCheckFuture.wait_for(std::chrono::seconds(3));
+                
+        if (seqanVersionCheckFuture.valid()) 
+            seqanVersionCheckFuture.wait_for(std::chrono::seconds(3));
     }
     
 };
@@ -687,11 +691,22 @@ inline bool getOptionValue(TValue & val,
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
 
     if (isSet(me, name) || hasDefault(me, name))
-        return _convertArgumentValue(val,
-                                     getOption(me, name),
-                                     getArgumentValue(getOption(me, name), argNo));
+    {
+        if (isFlagOption(getOption(me, name)))
+        {
+            return _convertFlagValue(val, getArgumentValue(getOption(me, name), argNo));
+        }
+        else
+        {
+            return _convertArgumentValue(val,
+                                         getOption(me, name),
+                                         getArgumentValue(getOption(me, name), argNo));
+        }
+    }
     else
+    {
         return false;
+    }
 }
 
 template <typename TValue>

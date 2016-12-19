@@ -769,7 +769,7 @@ inline void _addDefaultValues(std::string & text, ArgParseArgument const & arg)
 
 inline void _addDefaultValues(std::string & text, ArgParseOption const & arg)
 {
-    if (!isBooleanOption(arg))
+    if (!isFlagOption(arg))
         _addDefaultValues(text, static_cast<ArgParseArgument>(arg));
 }
 
@@ -854,7 +854,7 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseArgument con
 
 inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const & opt)
 {
-    if (!isBooleanOption(opt))
+    if (!isFlagOption(opt))
         _addValidValuesRestrictions(text, static_cast<ArgParseArgument>(opt));
 }
 

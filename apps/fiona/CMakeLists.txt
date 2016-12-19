@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fiona CXX)
 message (STATUS "Configuring apps/fiona")
 
-set (SEQAN_APP_VERSION "0.2.6")
+set (SEQAN_APP_VERSION "0.2.7")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -21,7 +21,7 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)
     find_package (ZLIB)
     find_package (Boost)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # Stop here if we cannot find Boost or OpenMP.

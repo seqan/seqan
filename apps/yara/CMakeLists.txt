@@ -24,7 +24,7 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)
     find_package (ZLIB)
     find_package (BZip2)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # Warn if OpenMP was not found.
@@ -46,7 +46,7 @@ endif (NOT BZIP2_FOUND)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.7")
+set (SEQAN_APP_VERSION "0.9.8")
 
 option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
 if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)

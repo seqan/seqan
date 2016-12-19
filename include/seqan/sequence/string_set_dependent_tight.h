@@ -63,8 +63,36 @@ namespace seqan {
  * @tparam TString The type of the string to store in the string set.
  * @tparam TSpec   Tag for further specializing the string set.
  *
- * The class is not usable itself, only its subclasses @link TightDependentStringSet @endlink and
- * @link GenerousDependentStringSet @endlink are.
+ * Important: This is an abstract class. Use one of the following specializations: @link TightDependentStringSet @endlink and
+ * @link GenerousDependentStringSet @endlink.
+ *
+ * A Dependent StringSet (DSS) can be used like a normal StringSet while internally storing only pointers to a source set.
+ *
+ * @section Modifying a Dependent StringSet
+ *
+ * (1) Removing a sequence from a DSS only removes the pointer and does not change the source set.
+ *
+ * (2) Appending a sequence to a DSS appends a pointer to that sequence and does not change the source set.
+ *
+ * (3) Assigning a sequence to a position (or id) of a DSS, dereferences the pointer first and does thus additionally change the source set.
+ *
+ * (4) Accessing the DSS at a position (or id) dereferences the pointer, and when stored as a reference, modifications also lead to a change in the source set.
+ *
+ * @section Position vs. Id
+ *
+ * When a sequence is removed in a DSS, the positions of pointers shift and do not represent the exact position in the original source set anymore.
+ * To distinguish between new and original positions, we introduce the term <tt>id</tt> which refers to the original positions in the source set.
+ * Every modification of a DSS can be either based on the id (function ending on <tt>ById()</tt>) or the position depending on the behaviour you want to realize.
+ *
+ * The following figure illustrates the behaviour when removing a sequence:
+ *
+ * <img src="position_vs_id.png" title="Impact to positions and ids on removal of an entry in an DSS" width="900">
+ *
+ * @section Tight vs. Generous
+ *
+ * The two different specializations <tt>Tight</tt> and <tt>Generous</tt> provide the same functionality but behave slightly different
+ * concerning run time and certain errors (e.g. index out of range). See the correspoinding documentation pages @link TightDependentStringSet @endlink
+ * and @link GenerousDependentStringSet @endlink for further details.
  */
 
 /*!
@@ -78,11 +106,30 @@ namespace seqan {
  *
  * @tparam TString The type of the string to store in the string set.
  *
- * @deprecated The Dependent-Tight StringSet is deprecated and will likely be
- *     removed within the SeqAn-2.x lifecycle.
+ * The Tight Dependent StringSet stores pointers to a source set, enabling the user to perform deletions and additions to the set without
+ * changing the original source set (See @link DependentStringSet @endlink for further details).
+ *
+ * @section Run time and Memory
+ *
+ * When a value is removed from the Tight Dependent StringSet, the array of pointers is resized accordingly.
+ * Therefore, in order to call sequences by id or position, the stringset keeps a id-to-position map, which affects the run time complexity of the following functions:
+ *
+ * - value() or operator []: O(1)
+ *
+ * - getValueById(): O(log(n))
+ *
+ * - removeValueById(): O(log(n))
+ *
+ * The memory consumption is linear to the number of pointers.
  *
  * See @link GenerousDependentStringSet @endlink for a Dependent StringSet implementation that allows for more
  * efficient access to strings in the container via ids at the cost of higher memory usage.
+ *
+ * @section Accessing non-existing entries results in undefined behaviour
+ *
+ * Because the Tight Dependent StringSet keeps every array "tight", every entry that is being removed, is actually deleted (in contrast to <tt>Generous</tt>)
+ * and accessing it will result in undefined behaviour.
+ *
  */
 
 // Default id holder string set

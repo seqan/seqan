@@ -5,7 +5,7 @@ Query file      : read_reference2.fa
 Thresholds:
   overlap threshold (oth)          : 0.5
   gap threshold (gth)              : 5
-  inital gap threshold (ith)       : 15
+  initial gap threshold (ith)      : 15
 Penalties:
   translocation penalty (tp)       : 5
   inversion penalty (ip)           : 5

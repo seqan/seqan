@@ -75,14 +75,14 @@ SEQAN_DEFINE_TEST(test_rna_io_write_connect)
     //set values
     record.name = "S.cerevisiae_tRNA-PHE";
     record.sequence = "GCGGAUUU";
-    record.seqLen = static_cast<unsigned>(length(record.sequence));
+    record.seqLen = length(record.sequence);
     seqan::RnaStructureGraph graph;
 
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
 
-    for (unsigned idx = 0; idx < 4; ++idx)
-        addEdge(graph.inter, idx, 7u - idx, 1.);
+    for (unsigned idx = 0u; idx < 4u; ++idx)
+        addEdge(graph.inter, idx, 7u - idx, 1.0);
 
     graph.energy = -17.5f;
     append(record.fixedGraphs, graph);
@@ -136,14 +136,14 @@ SEQAN_DEFINE_TEST(test_rna_io_write_dot_bracket)
     //set values
     record.name = "S.cerevisiae_tRNA-PHE";
     record.sequence = "GCGGAUUU";
-    record.seqLen = static_cast<unsigned>(length(record.sequence));
+    record.seqLen = length(record.sequence);
     seqan::RnaStructureGraph graph;
 
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
 
-    for (unsigned idx = 0; idx < 3; ++idx)
-        addEdge(graph.inter, idx, 7u - idx, 1.);
+    for (unsigned idx = 0u; idx < 3u; ++idx)
+        addEdge(graph.inter, idx, 7u - idx, 1.0);
 
     graph.energy = -17.5f;
     append(record.fixedGraphs, graph);
@@ -191,14 +191,14 @@ SEQAN_DEFINE_TEST(test_rna_io_write_vienna)
     //set values
     record.name = "S.cerevisiae_tRNA-PHE";
     record.sequence = "GCGGAUUU";
-    record.seqLen = static_cast<unsigned>(length(record.sequence));
+    record.seqLen = length(record.sequence);
     seqan::RnaStructureGraph graph;
 
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
 
-    for (unsigned idx = 0; idx < 3; ++idx)
-        addEdge(graph.inter, idx, 7u - idx, 1.);
+    for (unsigned idx = 0u; idx < 3u; ++idx)
+        addEdge(graph.inter, idx, 7u - idx, 1.0);
 
     append(record.fixedGraphs, graph);
 
@@ -262,11 +262,11 @@ SEQAN_DEFINE_TEST(test_rna_io_write_stockholm)
     seqan::appendValue(record.seqID, seqan::CharString{"seq1"});
 
     seqan::RnaStructureGraph graph;
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0u; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
 
-    for (unsigned idx = 0; idx < 4; ++idx)
-        addEdge(graph.inter, idx, 7u - idx, 1.);
+    for (unsigned idx = 0u; idx < 4u; ++idx)
+        addEdge(graph.inter, idx, 7u - idx, 1.0);
 
     append(record.fixedGraphs, graph);
 
@@ -320,14 +320,14 @@ SEQAN_DEFINE_TEST(test_rna_io_write_bpseq)
     //set values
     record.name = "S.cerevisiae_tRNA-PHE";
     record.sequence = "GCGGAUUU";
-    record.seqLen = static_cast<unsigned>(length(record.sequence));
+    record.seqLen = length(record.sequence);
     seqan::RnaStructureGraph graph;
 
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0; idx < record.seqLen; ++idx)
         addVertex(graph.inter);
 
-    for (unsigned idx = 0; idx < 4; ++idx)
-        addEdge(graph.inter, idx, 7u - idx, 1.);
+    for (unsigned idx = 0u; idx < 4u; ++idx)
+        addEdge(graph.inter, idx, 7u - idx, 1.0);
 
     append(record.fixedGraphs, graph);
 
@@ -408,14 +408,16 @@ SEQAN_DEFINE_TEST(test_rna_io_write_ebpseq)
     seqan::appendValue(record.typeID, 0u);
 
     seqan::RnaStructureGraph fgraph;
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    fgraph.specs = "the fixed structure";
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0; idx < record.seqLen; ++idx)
         addVertex(fgraph.inter);
 
-    seqan::addEdge(fgraph.inter, 0u, 2u, 1.);
+    seqan::addEdge(fgraph.inter, 0u, 2u, 1.0);
     append(record.fixedGraphs, fgraph);
 
     seqan::RnaStructureGraph bgraph;
-    for (unsigned idx = 0; idx < record.seqLen; ++idx)
+    bgraph.specs = "the bpp structure";
+    for (typename seqan::Size<seqan::Rna5String>::Type idx = 0u; idx < record.seqLen; ++idx)
         addVertex(bgraph.inter);
     seqan::addEdge(bgraph.inter, 0u, 2u, 0.8);
     seqan::addEdge(bgraph.inter, 1u, 2u, 0.2);
@@ -450,6 +452,21 @@ SEQAN_DEFINE_TEST(test_rna_io_write_ebpseq)
         "2\tG\t7\t1.9\t0.1\t0\t<3/0.2>\n"
         "3\tU\tT\t4\t0.08\t1\t<2/0.2 | 1/0.8>\n";
     SEQAN_ASSERT_EQ(outstr, expected);
+}
+
+SEQAN_DEFINE_TEST(test_rna_io_convert)
+{
+    seqan::CharString rnaPath = SEQAN_PATH_TO_ROOT();
+    append(rnaPath, "/tests/rna_io/example.dbv");
+    seqan::RnaStructFileIn inputfile(seqan::toCString(rnaPath), seqan::OPEN_RDONLY);
+
+    seqan::RnaStructContents filecontents;
+    seqan::readRecords(filecontents, inputfile, 100u);
+    SEQAN_ASSERT_EQ(length(filecontents.records), 3u);
+
+    std::string outpath = std::string(SEQAN_TEMP_FILENAME()) + ".ebpseq";
+    seqan::RnaStructFileOut outputfile(seqan::toCString(outpath), seqan::OPEN_WRONLY);
+    seqan::writeRecords(outputfile, filecontents);
 }
 
 #endif  // TESTS_RNA_IO_TEST_RNA_IO_H_

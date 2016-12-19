@@ -391,22 +391,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // prefer short name for options
         std::string optionName = _getOptionName(opt);
 
-        std::string type;
-
-        if (isIntegerArgument(opt) || isInt64Argument(opt))
-            type = "int";
-        else if (isDoubleArgument(opt))
-            type = "double";
-        else if (isInputFileArgument(opt))
-            type = "input-file";
-        else if (isOutputFileArgument(opt))
-            type = "output-file";
-        else if (isInputPrefixArgument(opt))
-            type = "input-prefix";
-        else if (isOutputPrefixArgument(opt))
-            type = "output-prefix";
-        else if (isStringArgument(opt) || isBooleanOption(opt))
-            type = "string";
+        std::string type = _typeToString(opt);
 
         // set up restrictions
         std::vector<std::string> restrictions;
@@ -479,22 +464,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         argumentNameStream << "argument-" << argIdx;
         std::string optionName = argumentNameStream.str();
 
-        std::string type;
-
-        if (isIntegerArgument(arg) || isInt64Argument(arg))
-            type = "int";
-        else if (isDoubleArgument(arg))
-            type = "double";
-        else if (isInputFileArgument(arg))
-            type = "input-file";
-        else if (isOutputFileArgument(arg))
-            type = "output-file";
-        else if (isInputPrefixArgument(arg))
-            type = "input-prefix";
-        else if (isOutputPrefixArgument(arg))
-            type = "output-prefix";
-        else if (isStringArgument(arg))
-            type = "string";
+        std::string type = _typeToString(arg);
 
         // set up restrictions
         std::vector<std::string> restrictions;

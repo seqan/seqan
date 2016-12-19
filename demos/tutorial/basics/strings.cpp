@@ -22,7 +22,7 @@ int main()
     }
     std::cout << std::endl;
 //![iterate-and-replace]
-//![count-occurences]
+//![count-occurrences]
     typedef Size<TAminoAcidString>::Type TSize;
     typedef String<TSize> TCounterString;
     TCounterString counter;
@@ -30,7 +30,7 @@ int main()
     resize(counter, alphSize, 0);
     for (TIter it = begin(sourceSeq); it != itEnd; goNext(it))
         value(counter, ordValue(value(it))) += 1;
-//![count-occurences]
+//![count-occurrences]
 //![frequency-table]
     typedef Iterator<TCounterString>::Type TCounterIter;
     TCounterIter countIt = begin(counter);

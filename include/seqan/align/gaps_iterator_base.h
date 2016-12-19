@@ -449,7 +449,7 @@ container(Iter<TGaps, GapsIterator<TSpec> > const & me)
 
 // Returns host iterator.
 
-// TODO(holtgrew): Non-const version is superflous.
+// TODO(holtgrew): Non-const version is superfluous.
 template <typename TGaps, typename TSpec>
 inline typename Source<Iter<TGaps, GapsIterator<TSpec> > >::Type /*returns copy*/
 source(Iter<TGaps, GapsIterator<TSpec> > & it)

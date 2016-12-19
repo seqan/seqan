@@ -48,8 +48,24 @@ namespace seqan {
 // Tag WaveletTreeConfig
 // --------------------------------------------------------------------------
 
-template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1, unsigned WORDS_PER_BLOCK_ = 0/*, unsigned ARITY_ = 2*/>
-struct WTRDConfig : LevelsRDConfig<TSize, TFibre, LEVELS_, WORDS_PER_BLOCK_>
+/*!
+ * @class WTRDConfig
+ * @extends LevelsRDConfig
+ * @headerfile <seqan/index.h>
+ *
+ * @brief WTRDConfig allows configuring a @link WaveletTree @endlink.
+ *
+ * @signature template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0>
+ *            struct WTRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>;
+ *
+ * @tparam TSize           A data type that can store the length of the input text. Default: <tt>size_t</tt>
+ * @tparam TFibre          A tag for specialization purposes of the underlying strings. Default: <tt>Alloc<></tt>
+ * @tparam LEVELS          The number of levels (1, 2, or 3). The more levels, the lower the space consumption but possibly slight performance decreases. Default: <tt>1</tt>
+ * @tparam WORDS_PER_BLOCK The number of popcount operations per rank query. A lower number implies more space for faster runtime. 0 is a shortcut for the size of the alphabet of the RankDictionary. Default: <tt>0</tt>
+ */
+
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned WORDS_PER_BLOCK = 0/*, unsigned ARITY_ = 2*/>
+struct WTRDConfig : LevelsRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>
 {
     //static const unsigned ARITY = ARITY_;
 };
@@ -81,7 +97,6 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
  *
  * @tag WaveletTreeFibres#FibreRanks
  * @brief A string set containing a rank support bit string for each node in the tree.
- *
  */
 
 // ----------------------------------------------------------------------------

@@ -262,7 +262,7 @@ _importSequences(CharString const & fileName,
 
     std::cout << "Loaded " << seqCount << " " << name << " sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
     if (!idsUnique)
-        std::cerr << "WARNING: Non-unique " << name << " ids. Output can be ambigous.\n";
+        std::cerr << "WARNING: Non-unique " << name << " ids. Output can be ambiguous.\n";
     return true;
 }
 

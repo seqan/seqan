@@ -36,10 +36,13 @@ add_executable (test_seq_io
                 test_seq_io.cpp
                 test_fai_index.h
                 test_genomic_region.h
+                test_read_bam.h
+                test_write_bam.h
                 test_sequence_file.h
                 test_stream_read_embl.h
                 test_stream_read_genbank.h
-                test_stream_write_fasta.h)
+                test_stream_write_fasta.h
+                test_tag_select_intersect.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_seq_io ${SEQAN_LIBRARIES})

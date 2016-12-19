@@ -174,7 +174,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addDescription(parser, "This tool reads a set of input files in SAM format "
 #endif
                            "and outputs the concatenation of them. "
-                           "If the output file name is ommitted the result is written to stdout.");
+                           "If the output file name is omitted the result is written to stdout.");
 
     addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 

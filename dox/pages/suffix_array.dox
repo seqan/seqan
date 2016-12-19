@@ -13,7 +13,7 @@
  * "Faster Suffix Sorting", 1999), and a quicksort based algorithm.
  * 
  * The following example constructs a suffix array using the modified Skew algorithm and searches the interval of suffices
- * beginning with $t="l"$. The start positions of these suffices are the occurences of $t$, which are outputted at last.
+ * beginning with $t="l"$. The start positions of these suffices are the occurrences of $t$, which are outputted at last.
  * This is only an example for @link createSuffixArray @endlink and similar functions. For an index based substring search
  * better use the more generic @link Finder @endlink class (see @Demo.Index Finder@ demo).
  *

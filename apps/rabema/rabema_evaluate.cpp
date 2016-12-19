@@ -91,7 +91,7 @@ public:
     // original position of this read.
     bool oracleMode;
 
-    // Consider only reads that have a unique match in the mapping result file. Usefull for precision computation.
+    // Consider only reads that have a unique match in the mapping result file. Useful for precision computation.
     bool onlyUniqueReads;
 
     // The benchmark category, one of {"all", "any-best", "all-best"}.
@@ -142,7 +142,7 @@ public:
     // Print the missed intervals to stderr for debugging purposes.
     bool showMissedIntervals;
 
-    // Print superflous intervals (intervals found in BAM file but have too bad score).
+    // Print superfluous intervals (intervals found in BAM file but have too bad score).
     bool showSuperflousIntervals;
 
     // Print additional intervals (intervals found in BAM with good score that are not in WIT file).
@@ -1093,7 +1093,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
                                             "sample position.  For simulated data."));
     addOption(parser, seqan::ArgParseOption("", "only-unique-reads",
                                             "Consider only reads that a single alignment in the mapping result file. "
-                                            "Usefull for precision computation."));
+                                            "Useful for precision computation."));
     addOption(parser, seqan::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
     addOption(parser, seqan::ArgParseOption("", "distance-metric",
                                             "Set distance metric.  Valid values: hamming, edit.  Default: edit.",
@@ -1278,7 +1278,7 @@ int main(int argc, char const ** argv)
               << "    additional        " << yesNo(options.showAdditionalIntervals) << '\n'
               << "    hit               " << yesNo(options.showHitIntervals) << '\n'
               << "    missed            " << yesNo(options.showMissedIntervals) << '\n'
-              << "    superflous        " << yesNo(options.showSuperflousIntervals) << '\n'
+              << "    superfluous       " << yesNo(options.showSuperflousIntervals) << '\n'
               << "    try hit           " << yesNo(options.showTryHitIntervals) << '\n'
               << "\n";
 
@@ -1430,7 +1430,7 @@ int main(int argc, char const ** argv)
     if (!empty(options.outTsvPath))
     {
         std::cerr << '\n'
-                  << "Writting output TSV       " << options.outTsvPath << " ...";
+                  << "Writing output TSV        " << options.outTsvPath << " ...";
         std::ofstream tsvOut(toCString(options.outTsvPath), std::ios::out | std::ios::binary);
         bool failed = false;
         if (!tsvOut.good())

@@ -40,6 +40,7 @@
 #include <seqan/stream.h>
 // for bracket-graph transformation
 #include <seqan/rna_io/dot_bracket_read_write.h>
+#include "rna_record.h"
 
 /* IMPLEMENTATION NOTES
 
@@ -152,7 +153,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
 
     CharString bracketStr{};
     StringSet<Rna5String, Owner<JournaledSet> > sequence;
-    StringSet<String<unsigned> > gapPos;
+    StringSet<String<TSizeRna5String> > gapPos;
 
     while (!atEnd(iter))
     {
@@ -197,15 +198,15 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
                 record.comment = buffer;
             }
         }
-        else if (length(buffer) > 0 && buffer[0] != '#')
+        else if (length(buffer) > 0u && buffer[0] != '#')
         {                                                       // found a sequence id
-            unsigned idx = 0;                                   // search for index of this seq id
+            typename Size<StringSet<CharString> >::Type idx = 0u;  // search for index of this seq id
             while (idx < length(record.seqID) && record.seqID[idx] != buffer)
                 ++idx;
 
             // determine length of stored sequence belonging to idx
-            unsigned const OFFSET = idx == length(record.seqID) ? 0 : length(sequence[idx]);
-            if (OFFSET == 0)
+            TSizeRna5String const offset = idx == length(record.seqID) ? 0u : length(sequence[idx]);
+            if (offset == 0u)
             {                                                   // sequence id is new
                 appendValue(record.seqID, buffer);
                 resize(gapPos, idx + 1);
@@ -217,7 +218,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
             readUntil(buffer, iter, IsWhitespace());
 
             // remove gap symbols from sequence and store their positions in gapPos list
-            unsigned pos = 0;
+            typename Size<std::string>::Type pos = 0u;
             while (pos < length(buffer))
             {
                 if (buffer[pos] != '.' && buffer[pos] != '-')
@@ -226,12 +227,12 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
                 }
                 else
                 {
-                    appendValue(gapPos[idx], pos + OFFSET);
+                    appendValue(gapPos[idx], static_cast<TSizeRna5String>(pos) + offset);
                     erase(buffer, pos);
                 }
             }
 
-            if (OFFSET == 0)
+            if (offset == 0u)
                 appendValue(sequence, buffer);                  // store new sequence
             else
                 append(sequence[idx], buffer);                  // append to existing sequence
@@ -249,10 +250,10 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
 
     // store the alignment with gaps in record
     resize(rows(record.align), length(sequence));
-    for (unsigned seq = 0; seq < length(sequence); ++seq)
+    for (typename Size<StringSet<Rna5String, Owner<JournaledSet> > >::Type seq = 0; seq < length(sequence); ++seq)
     {
         assignSource(row(record.align, seq), sequence[seq]);
-        for (unsigned pos = length(gapPos[seq]); pos > 0u; --pos)
+        for (typename Size<String<TSizeRna5String> >::Type pos = length(gapPos[seq]); pos > 0u; --pos)
         {
             insertGap(row(record.align, seq), gapPos[seq][pos - 1]);
         }
@@ -278,7 +279,7 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*/)
 {
-    if (length(record.fixedGraphs) != 1)
+    if (length(record.fixedGraphs) != 1u)
         SEQAN_THROW(ParseError("ERROR: Cannot deal with multiple structure graphs."));
 
     write(target, "# STOCKHOLM 1.0\n");                         // header
@@ -304,11 +305,13 @@ writeRecord(TTarget & target, RnaRecord const & record, Stockholm const & /*tag*
     else
     {                                                           // alignment
         SEQAN_ASSERT_EQ(length(record.seqID), length(rows(record.align)));
-        unsigned maxlen = 12;                                   // determine indentation
-        for (unsigned idx = 0; idx < length(record.seqID); ++idx)
-            maxlen = length(record.seqID[idx]) > maxlen ? length(record.seqID[idx]) : maxlen;
+        typename Size<CharString>::Type maxlen = 12;            // determine indentation
+        forEach(record.seqID, [&](CharString const & sID)
+        {
+            maxlen = length(sID) > maxlen ? length(sID) : maxlen;
+        });
 
-        for (unsigned idx = 0; idx < length(record.seqID); ++idx)
+        for (typename Size<StringSet<CharString> >::Type idx = 0; idx < length(record.seqID); ++idx)
         {
             CharString str = record.seqID[idx];                 // write id
             resize(str, maxlen, ' ');

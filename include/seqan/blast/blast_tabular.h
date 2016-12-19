@@ -241,16 +241,16 @@ constexpr char const * FileExtensions<BlastTabular, T>::VALUE[2];
  * <tr><td>0</td><td>STD</td><td>std</td><td>query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score</td><td>Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of identical matches, Alignment length, Number of mismatches, Number of gap openings, Start of alignment in query, End of alignment in query, Start of alignment in subject, End of alignment in subject, Expect value, Bit score)</td><td>&#9745;</td></tr>
  * <tr><td>1</td><td>Q_SEQ_ID</td><td>qseqid</td><td>query id</td><td>Query Seq-id</td><td>&#9745;</td></tr>
  * <tr><td>2</td><td>Q_GI</td><td>qgi</td><td>query gi</td><td>Query GI</td><td>&#9744;</td></tr>
- * <tr><td>3</td><td>Q_ACC</td><td>qacc</td><td>query acc.</td><td>Query accesion</td><td>&#9744;</td></tr>
+ * <tr><td>3</td><td>Q_ACC</td><td>qacc</td><td>query acc.</td><td>Query accesion</td><td>&#9745;</td></tr>
  * <tr><td>4</td><td>Q_ACCVER</td><td>qaccver</td><td>query acc.ver</td><td>Query accesion.version</td><td>&#9744;</td></tr>
  * <tr><td>5</td><td>Q_LEN</td><td>qlen</td><td>query length</td><td>Query sequence length</td><td>&#9745;</td></tr>
  * <tr><td>6</td><td>S_SEQ_ID</td><td>sseqid</td><td>subject id</td><td>Subject Seq-id</td><td>&#9745;</td></tr>
  * <tr><td>7</td><td>S_ALL_SEQ_ID</td><td>sallseqid</td><td>subject ids</td><td>All subject Seq-id(s), separated by a ';'</td><td>&#9744;</td></tr>
  * <tr><td>8</td><td>S_GI</td><td>sgi</td><td>subject gi</td><td>Subject GI</td><td>&#9744;</td></tr>
  * <tr><td>9</td><td>S_ALL_GI</td><td>sallgi</td><td>subject gis</td><td>All subject GIs</td><td>&#9744;</td></tr>
- * <tr><td>10</td><td>S_ACC</td><td>sacc</td><td>subject acc.</td><td>Subject accession</td><td>&#9744;</td></tr>
+ * <tr><td>10</td><td>S_ACC</td><td>sacc</td><td>subject acc.</td><td>Subject accession</td><td>&#9745;</td></tr>
  * <tr><td>11</td><td>S_ACCVER</td><td>saccver</td><td>subject acc.ver</td><td>Subject accession.version</td><td>&#9744;</td></tr>
- * <tr><td>12</td><td>S_ALLACC</td><td>sallacc</td><td>subject accs.</td><td>All subject accessions</td><td>&#9744;</td></tr>
+ * <tr><td>12</td><td>S_ALLACC</td><td>sallacc</td><td>subject accs.</td><td>All subject accessions</td><td>&#9745;</td></tr>
  * <tr><td>13</td><td>S_LEN</td><td>slen</td><td>subject length</td><td>Subject sequence length</td><td>&#9745;</td></tr>
  * <tr><td>14</td><td>Q_START</td><td>qstart</td><td>q. start</td><td>Start of alignment in query</td><td>&#9745;</td></tr>
  * <tr><td>15</td><td>Q_END</td><td>qend</td><td>q. end</td><td>End of alignment in query</td><td>&#9745;</td></tr>
@@ -273,7 +273,7 @@ constexpr char const * FileExtensions<BlastTabular, T>::VALUE[2];
  * <tr><td>32</td><td>Q_FRAME</td><td>qframe</td><td>query frame</td><td>Query frame</td><td>&#9745;</td></tr>
  * <tr><td>33</td><td>S_FRAME</td><td>sframe</td><td>sbjct frame</td><td>Subject frame</td><td>&#9745;</td></tr>
  * <tr><td>34</td><td>BTOP</td><td>btop</td><td>BTOP</td><td>Blast traceback operations (BTOP)</td><td>&#9744;</td></tr>
- * <tr><td>35</td><td>S_TAX_IDS</td><td>staxids</td><td>subject tax ids</td><td>unique Subject Taxonomy ID(s), separated by a ';' (in numerical order)</td><td>&#9744;</td></tr>
+ * <tr><td>35</td><td>S_TAX_IDS</td><td>staxids</td><td>subject tax ids</td><td>unique Subject Taxonomy ID(s), separated by a ';' (in numerical order)</td><td>&#9745;</td></tr>
  * <tr><td>36</td><td>S_SCI_NAMES</td><td>sscinames</td><td>subject sci names</td><td>unique Subject Scientific Name(s), separated by a ';'</td><td>&#9744;</td></tr>
  * <tr><td>37</td><td>S_COM_NAMES</td><td>scomnames</td><td>subject com names</td><td>unique Subject Common Name(s), separated by a ';'</td><td>&#9744;</td></tr>
  * <tr><td>38</td><td>S_BLAST_NAMES</td><td>sblastnames</td><td>subject blast names</td><td>unique Subject Blast Name(s), separated by a ';' (in alphabetical order)</td><td>&#9744;</td></tr>
@@ -283,10 +283,12 @@ constexpr char const * FileExtensions<BlastTabular, T>::VALUE[2];
  * <tr><td>42</td><td>S_STRAND</td><td>sstrand</td><td>subject strand</td><td>Subject Strand</td><td>&#9744;</td></tr>
  * <tr><td>43</td><td>Q_COV_S</td><td>qcovs</td><td>% subject coverage</td><td>Query Coverage Per Subject</td><td>&#9744;</td></tr>
  * <tr><td>45</td><td>Q_COV_HSP</td><td>qcovhsp</td><td>% hsp coverage</td><td>Query Coverage Per HSP</td><td>&#9744;</td></tr>
+ * <tr><td>46</td><td>LCA_ID</td><td>lcaid</td><td>lca id</td><td>String ID (e.g. scientific name) of the lowest common ancestor of all matches of a query</td><td>&#9745;</td></tr>
+ * <tr><td>47</td><td>LCA_TAX_ID</td><td>lcataxid</td><td>lca tax id</td><td>Numeric Taxonomy ID of the lowest common ancestor of all matches of a query</td><td>&#9745;</td></tr>
  * </table></span>
  * @endhtmlonly
  *
- * More fields will likely be implemented in the future.
+ * <tt>LCA_IC</tt> and <tt>LCA_TAX_ID</tt> are non available in NCBI Blast.
  */
 
 template <typename TVoidSpec = void>
@@ -346,7 +348,9 @@ struct BlastMatchField
         S_ALL_TITLES,
         S_STRAND,
         Q_COV_S,
-        Q_COV_HSP
+        Q_COV_HSP,
+        LCA_ID,
+        LCA_TAX_ID
     };
 
     /*!
@@ -393,10 +397,10 @@ struct BlastMatchField
     };
 
     /*!
-     * @var static_constexpr_const_std::array<char_const*,45> BlastMatchField::optionLabels[]
+     * @var static_constexpr_const_std::array<char_const*,47> BlastMatchField::optionLabels[]
      * @brief An array of CStrings representing the command line parameter name of each field
      */
-    static constexpr const std::array<char const *, 45> optionLabels
+    static constexpr const std::array<char const *, 47> optionLabels
     {
       {
         "std",
@@ -443,7 +447,9 @@ struct BlastMatchField
         "salltitles",
         "sstrand",
         "qcovs",
-        "qcovhsp"
+        "qcovhsp",
+        "lcaid",
+        "lcataxid"
       }
     };
 
@@ -458,11 +464,11 @@ struct BlastMatchField
     };
 
     /*!
-     * @var static_constexpr_const_std::array<char_const*,45> BlastMatchField::columnLabels[]
+     * @var static_constexpr_const_std::array<char_const*,47> BlastMatchField::columnLabels[]
      * @brief An array of CStrings representing the <b>column label</b> of each possible field; for the
      * @link BlastIOContext::legacyFormat @endlink, use @link BlastMatchField::legacyColumnLabels @endlink instead.
      */
-    static constexpr const std::array<char const *, 45> columnLabels
+    static constexpr const std::array<char const *, 47> columnLabels
     {
       {
         "query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. "
@@ -510,15 +516,17 @@ struct BlastMatchField
         "subject titles",
         "subject strand",
         "% subject coverage",
-        "% hsp coverage"
+        "% hsp coverage",
+        "lca id",
+        "lca tax id"
       }
     };
 
     /*!
-     * @var static_constexpr_const_std::array<char_const*,45> BlastMatchField::descriptions[]
+     * @var static_constexpr_const_std::array<char_const*,47> BlastMatchField::descriptions[]
      * @brief An array of CStrings representing the human-readable descriptions of each field
      */
-    static constexpr const std::array<char const *, 45> descriptions
+    static constexpr const std::array<char const *, 47> descriptions
     {
       {
         "Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of "
@@ -569,81 +577,85 @@ struct BlastMatchField
         "All Subject Title(s), separated by a '<>'",
         "Subject Strand",
         "Query Coverage Per Subject",
-        "Query Coverage Per HSP"
+        "Query Coverage Per HSP",
+        "String ID (e.g. scientific name) of the lowest common ancestor of all matches of a query",
+        "Numeric Taxonomy ID of the lowest common ancestor of all matches of a query"
       }
     };
 
     /*!
-     * @var static_constexpr_const_std::array<bool,45> BlastMatchField::implemented[]
+     * @var static_constexpr_const_std::array<bool,47> BlastMatchField::implemented[]
      * @brief An array of bools revealing whether the Blast I/O module supports printing this field
      */
     //TODO(c++14): change to std::bitset that is initialized with binary literal
-    static constexpr const std::array<bool, 45> implemented
+    static constexpr const std::array<bool, 47> implemented
     {
       {
-        true,
-        true,
-        false,
-        false,
-        false,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
+        true,         // STD,
+        true,         // Q_SEQ_ID,
+        false,        // Q_GI,
+        true,         // Q_ACC,
+        false,        // Q_ACCVER,
+        true,         // Q_LEN,
+        true,         // S_SEQ_ID,
+        false,        // S_ALL_SEQ_ID,
+        false,        // S_GI,
+        false,        // S_ALL_GI,
+        true,         // S_ACC,
+        false,        // S_ACCVER,
+        true,         // S_ALLACC,
+        true,         // S_LEN,
+        true,         // Q_START,
+        true,         // Q_END,
+        true,         // S_START,
+        true,         // S_END,
+        false,        // Q_SEQ,
+        false,        // S_SEQ,
+        true,         // E_VALUE,
+        true,         // BIT_SCORE,
+        true,         // SCORE,
+        true,         // LENGTH,
+        true,         // P_IDENT,
+        true,         // N_IDENT,
+        true,         // MISMATCH,
+        true,         // POSITIVE,
+        true,         // GAP_OPEN,
+        true,         // GAPS,
+        true,         // P_POS,
+        true,         // FRAMES,
+        true,         // Q_FRAME,
+        true,         // S_FRAME,
+        false,        // BTOP,
+        true,         // S_TAX_IDS,
+        false,        // S_SCI_NAMES,
+        false,        // S_COM_NAMES,
+        false,        // S_BLAST_NAMES,
+        false,        // S_S_KINGDOMS,
+        false,        // S_TITLE,
+        false,        // S_ALL_TITLES,
+        false,        // S_STRAND,
+        false,        // Q_COV_S,
+        false,        // Q_COV_HSP,
+        true,         // LCA_ID,
+        true          // LCA_TAX_ID
       }
     };
 };
 
 template <typename TVoidSpec>
-constexpr const std::array<char const *, 45> BlastMatchField<TVoidSpec>::optionLabels;
+constexpr const std::array<char const *, 47> BlastMatchField<TVoidSpec>::optionLabels;
 
 template <typename TVoidSpec>
 constexpr char const * const BlastMatchField<TVoidSpec>::legacyColumnLabels;
 
 template <typename TVoidSpec>
-constexpr const std::array<char const *, 45> BlastMatchField<TVoidSpec>::columnLabels;
+constexpr const std::array<char const *, 47> BlastMatchField<TVoidSpec>::columnLabels;
 
 template <typename TVoidSpec>
-constexpr const std::array<char const *, 45> BlastMatchField<TVoidSpec>::descriptions;
+constexpr const std::array<char const *, 47> BlastMatchField<TVoidSpec>::descriptions;
 
 template <typename TVoidSpec>
-constexpr const std::array<bool, 45> BlastMatchField<TVoidSpec>::implemented;
+constexpr const std::array<bool, 47> BlastMatchField<TVoidSpec>::implemented;
 
 template <typename TVoidSpec>
 constexpr const std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12> BlastMatchField<TVoidSpec>::defaults;

@@ -47,6 +47,8 @@
 #include <seqan/sequence.h>
 #include <seqan/journaled_set.h>
 #include <seqan/graph_types.h>
+// forEach loop
+#include <seqan/parallel/parallel_algorithms.h>
 
 // ===========================================================================
 // RNA structure containers and file formats

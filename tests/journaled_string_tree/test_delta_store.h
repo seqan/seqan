@@ -89,10 +89,10 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_get_delta_store)
 {
     impl::DeltaStore<Dna, unsigned> store = createMock<Dna, unsigned>();
 
-    SEQAN_ASSERT_EQ(getDeltaStore(store, DeltaTypeSnp()), store._snpData);
-    SEQAN_ASSERT_EQ(getDeltaStore(store, DeltaTypeDel()), store._delData);
-    SEQAN_ASSERT_EQ(getDeltaStore(store, DeltaTypeIns()), store._insData);
-    SEQAN_ASSERT_EQ(getDeltaStore(store, DeltaTypeSV()), store._svData);
+    SEQAN_ASSERT(getDeltaStore(store, DeltaTypeSnp()) == store._snpData);
+    SEQAN_ASSERT(getDeltaStore(store, DeltaTypeDel()) == store._delData);
+    SEQAN_ASSERT(getDeltaStore(store, DeltaTypeIns()) == store._insData);
+    SEQAN_ASSERT(getDeltaStore(store, DeltaTypeSV())  == store._svData);
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_add_delta_value)

@@ -1101,7 +1101,7 @@ _capacityReturned(T const &,
  * @return TSize The amount of the requested capacity that was available.  That is the function returns the minimum of
  *               <tt>newCapacity</tt> and <tt>capacity(me)</tt>.
  *
- * This function allows to increase the capacity but not the length of a container.
+ * This function allows one to increase the capacity but not the length of a container.
  *
  * Use @link StringConcept#resize @endlink if you want to change the size of a container.
  *

@@ -40,7 +40,6 @@
 
 #include <string>
 #include <vector>
-
 #include <sstream>
 
 namespace seqan {
@@ -128,6 +127,7 @@ public:
     enum ArgumentType
     {
         // argument is
+        BOOL,
         STRING,      // .. a string
         INTEGER,     // .. an integer
         INT64,       // .. a 64 bit integer
@@ -137,7 +137,9 @@ public:
         INPUT_PREFIX, // .. an inputprefix (implicitly also a string)
         ///@deprecated use INPUT_PREFIX instead
         INPUTPREFIX = INPUT_PREFIX,
-        OUTPUT_PREFIX // .. an outoutprefix (implicitly also a string)
+        OUTPUT_PREFIX, // .. an outoutprefix (implicitly also a string)
+        INPUT_DIRECTORY,
+        OUTPUT_DIRECTORY
     };
 
 
@@ -192,7 +194,15 @@ public:
         minValue(""),
         maxValue(""),
         _helpText("")
-    {}
+    {
+        if (argumentType == ArgParseArgument::BOOL)
+        {
+            copy(BooleanArgumentValues_<>::LIST_TRUE.begin(), BooleanArgumentValues_<>::LIST_TRUE.end(),
+                 std::back_inserter(validValues));
+            copy(BooleanArgumentValues_<>::LIST_FALSE.begin(), BooleanArgumentValues_<>::LIST_FALSE.end(),
+                 std::back_inserter(validValues));
+        }
+    }
 };
 
 // ==========================================================================
@@ -213,6 +223,10 @@ inline std::string _typeToString(ArgParseArgument const & me)
 
     switch (me._argumentType)
     {
+    case ArgParseArgument::BOOL:
+        typeName = "bool";
+        break;
+
     case ArgParseArgument::DOUBLE:
         typeName = "double";
         break;
@@ -243,6 +257,14 @@ inline std::string _typeToString(ArgParseArgument const & me)
 
     case ArgParseArgument::OUTPUT_PREFIX:
         typeName = "output_prefix";
+        break;
+
+    case ArgParseArgument::INPUT_DIRECTORY:
+        typeName = "input_directory";
+        break;
+
+    case ArgParseArgument::OUTPUT_DIRECTORY:
+        typeName = "output_directory";
         break;
 
     default:
@@ -276,6 +298,27 @@ inline bool isListArgument(ArgParseArgument const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function isBooleanArgument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isBooleanArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is a bool.
+ *
+ * @signature bool isBooleanArgument(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is a bool, <tt>false</tt> otherwise.
+ */
+
+inline bool isBooleanArgument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::BOOL;
+}
+
+// ----------------------------------------------------------------------------
 // Function isStringArgument()
 // ----------------------------------------------------------------------------
 
@@ -298,7 +341,9 @@ inline bool isStringArgument(ArgParseArgument const & me)
            (me._argumentType == ArgParseArgument::INPUT_FILE) ||
            (me._argumentType == ArgParseArgument::OUTPUT_FILE) ||
            (me._argumentType == ArgParseArgument::INPUT_PREFIX) ||
-           (me._argumentType == ArgParseArgument::OUTPUT_PREFIX) ;
+           (me._argumentType == ArgParseArgument::OUTPUT_PREFIX) ||
+           (me._argumentType == ArgParseArgument::INPUT_DIRECTORY) ||
+           (me._argumentType == ArgParseArgument::OUTPUT_DIRECTORY);
 }
 
 // ----------------------------------------------------------------------------
@@ -382,7 +427,8 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
 
 inline bool isInputFileArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::INPUT_FILE;
+    return me._argumentType == ArgParseArgument::INPUT_FILE ||
+           me._argumentType == ArgParseArgument::INPUT_DIRECTORY;
 }
 
 // ----------------------------------------------------------------------------
@@ -403,7 +449,8 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 
 inline bool isOutputFileArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::OUTPUT_FILE;
+    return me._argumentType == ArgParseArgument::OUTPUT_FILE ||
+           me._argumentType == ArgParseArgument::OUTPUT_DIRECTORY;
 }
 
 // ----------------------------------------------------------------------------
@@ -654,14 +701,17 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
 
 inline void setValidValues(ArgParseArgument & me, std::vector<std::string> const & values)
 {
-    if (isDoubleArgument(me) || isIntegerArgument(me))
-        SEQAN_FAIL("ArgParseArgument does not support setting valid values for numeric arguments.");
+    if (isDoubleArgument(me) || isIntegerArgument(me) || isBooleanArgument(me))
+        SEQAN_FAIL("ArgParseArgument does not support setting valid values for numeric or boolean arguments.");
 
     me.validValues = values;
 }
 
 inline void setValidValues(ArgParseArgument & me, std::string const & valuesString)
 {
+    if (isDoubleArgument(me) || isIntegerArgument(me) || isBooleanArgument(me))
+        SEQAN_FAIL("ArgParseArgument does not support setting valid values for numeric or boolean arguments.");
+
     // convert array to String<std::string>
     std::vector<std::string> values;
     std::string current_argument;
@@ -829,6 +879,35 @@ inline void _checkStringRestrictions(ArgParseArgument const & me, std::string co
 }
 
 // ----------------------------------------------------------------------------
+// Helper Function _checkBooleanValidValues()
+// ----------------------------------------------------------------------------
+
+inline void _checkBooleanValidValues(ArgParseArgument const & me, std::string const & value)
+{
+    SEQAN_ASSERT(isBooleanArgument(me));
+
+    std::string value_up{value};
+    std::transform(value.begin(), value.end(), value_up.begin(), ::toupper); // allow for lowercase letters
+    bool isContained = (std::find(me.validValues.begin(), me.validValues.end(), value_up)
+                        != me.validValues.end());
+
+    if (!isContained)
+    {
+        std::stringstream what;
+        what << "the given value '" << value << "' is not in the list of allowed values [";
+
+        for (auto validValue = me.validValues.begin(); validValue != me.validValues.end(); ++validValue)
+        {
+            if (validValue != me.validValues.begin())
+                what << ", ";
+            what << *validValue;
+        }
+        what << "]";
+        SEQAN_THROW(ParseError(what.str()));
+    }
+}
+
+// ----------------------------------------------------------------------------
 // Function _checkValue()
 // ----------------------------------------------------------------------------
 
@@ -849,6 +928,9 @@ inline void _checkValue(ArgParseArgument const & me, std::string val, unsigned i
         _checkNumericArgument<double>(me, val);
 
     // check valid values
+    if (isBooleanArgument(me))
+        _checkBooleanValidValues(me, val);
+
     if (isStringArgument(me))
         _checkStringRestrictions(me, val, i);
 }
@@ -1055,8 +1137,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 
 inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 0)
 {
-    if (me._argumentType != ArgParseArgument::INPUT_FILE &&
-        me._argumentType != ArgParseArgument::OUTPUT_FILE)
+    if (!isInputFileArgument(me) && !isOutputFileArgument(me))
         SEQAN_FAIL("Cannot get file extension from non-file argument/option.");
 
     // Short-circuit to override file extension if set.

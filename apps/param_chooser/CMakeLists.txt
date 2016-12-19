@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_param_chooser CXX)
 message (STATUS "Configuring apps/param_chooser")
 
-set (SEQAN_APP_VERSION "0.0.5")
+set (SEQAN_APP_VERSION "0.0.6")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -18,7 +18,7 @@ set (SEQAN_APP_VERSION "0.0.5")
 
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # ----------------------------------------------------------------------------

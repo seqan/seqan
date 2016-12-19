@@ -323,7 +323,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         TSize        parentRepLen;    // representative length of parent node
         TSize        edgeLen;        // length of edge above current node
         Pair<TSize> range;            // current SA interval of hits
-        TSize        parentRight;    // right boundary of parent node's range (allows to go right)
+        TSize        parentRight;    // right boundary of parent node's range (allows one to go right)
 
         VertexWotdModified_() :
             node(0),

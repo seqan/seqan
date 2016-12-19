@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_ngs_roi CXX)
 message (STATUS "Configuring apps/ngs_roi")
 
-set (SEQAN_APP_VERSION "0.2.8")
+set (SEQAN_APP_VERSION "0.2.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -20,7 +20,7 @@ set (SEQAN_APP_VERSION "0.2.8")
 
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # ----------------------------------------------------------------------------

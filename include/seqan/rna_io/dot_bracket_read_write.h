@@ -41,6 +41,7 @@
 #include <seqan/stream.h>
 #include <stack>
 #include <array>
+#include <cstddef>
 
 /* IMPLEMENTATION NOTES
 
@@ -110,26 +111,26 @@ char const * FileExtensions<DotBracket, T>::VALUE[1] =
 template <typename T = void>
 struct DotBracketArgs
 {
-    constexpr static std::array<char, 30> const OPEN = {{
+    constexpr static std::array<char, 30> const open = {{
         '(', '{', '<', '[', 'A', 'B', 'C', 'D', 'E', 'F',
         'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
         'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}};
-    constexpr static std::array<char, 30> const CLOSE = {{
+    constexpr static std::array<char, 30> const close = {{
         ')', '}', '>', ']', 'a', 'b', 'c', 'd', 'e', 'f',
         'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
         'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}};
-    constexpr static std::array<char, 6> const UNPAIRED = {{
+    constexpr static std::array<char, 6> const unpaired = {{
         '.', ',', ':', '_', '-', '='}};
 };
 
 template <typename T>
-constexpr std::array<char, 30> const DotBracketArgs<T>::OPEN;
+constexpr std::array<char, 30> const DotBracketArgs<T>::open;
 
 template <typename T>
-constexpr std::array<char, 30> const DotBracketArgs<T>::CLOSE;
+constexpr std::array<char, 30> const DotBracketArgs<T>::close;
 
 template <typename T>
-constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
+constexpr std::array<char, 6> const DotBracketArgs<T>::unpaired;
 
 // ============================================================================
 // Functions
@@ -141,34 +142,35 @@ constexpr std::array<char, 6> const DotBracketArgs<T>::UNPAIRED;
 
 inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const & bracketStr)
 {
+    typedef typename Size<CharString>::Type TCharStringSize;
     RnaStructureGraph graph;
-    for (unsigned idx = 0; idx < length(bracketStr); ++idx)
+    for (TCharStringSize idx = 0; idx < length(bracketStr); ++idx)
         addVertex(graph.inter);
 
     // declare stacks for different bracket pairs
-    std::stack<unsigned> stack[length(DotBracketArgs<>::OPEN)];
+    std::stack<TCharStringSize> stack[length(DotBracketArgs<>::open)];
 
-    for(unsigned idx = 0; idx < length(bracketStr); ++idx)
+    for (TCharStringSize idx = 0; idx < length(bracketStr); ++idx)
     {
         // skip unpaired
-        auto elem = std::find(DotBracketArgs<>::UNPAIRED.begin(), DotBracketArgs<>::UNPAIRED.end(), bracketStr[idx]);
-        if (elem != std::end(DotBracketArgs<>::UNPAIRED))
+        auto unp_idx = std::find(DotBracketArgs<>::unpaired.begin(), DotBracketArgs<>::unpaired.end(), bracketStr[idx]);
+        if (unp_idx != std::end(DotBracketArgs<>::unpaired))
             continue;
 
         // search opening bracket
-        elem = std::find(DotBracketArgs<>::OPEN.begin(), DotBracketArgs<>::OPEN.end(), bracketStr[idx]);
-        if (elem != std::end(DotBracketArgs<>::OPEN))
+        auto open_idx = std::find(DotBracketArgs<>::open.begin(), DotBracketArgs<>::open.end(), bracketStr[idx]);
+        if (open_idx != std::end(DotBracketArgs<>::open))
         {
-            std::size_t brIndex = elem - DotBracketArgs<>::OPEN.begin();
+            std::ptrdiff_t brIndex = open_idx - DotBracketArgs<>::open.begin();
             stack[brIndex].push(idx);
             continue;
         }
 
         // search closing bracket
-        elem = std::find(DotBracketArgs<>::CLOSE.begin(), DotBracketArgs<>::CLOSE.end(), bracketStr[idx]);
-        if (elem != std::end(DotBracketArgs<>::CLOSE))
+        auto clos_idx = std::find(DotBracketArgs<>::close.begin(), DotBracketArgs<>::close.end(), bracketStr[idx]);
+        if (clos_idx != std::end(DotBracketArgs<>::close))
         {
-            std::size_t brIndex = elem - DotBracketArgs<>::CLOSE.begin();
+            std::ptrdiff_t brIndex = clos_idx - DotBracketArgs<>::close.begin();
             if (!stack[brIndex].empty())
             {
                 addEdge(graph.inter, idx, stack[brIndex].top(), 1.0);
@@ -185,7 +187,7 @@ inline void bracket2graph(String<RnaStructureGraph> & graphSet, CharString const
         }
     }
 
-    for(unsigned idx = 0; idx < length(DotBracketArgs<>::OPEN); ++idx)
+    for (decltype(length(DotBracketArgs<>::open)) idx = 0; idx < length(DotBracketArgs<>::open); ++idx)
     {
         if (!stack[idx].empty())
             SEQAN_THROW(ParseError("Invalid bracket notation: unpaired opening bracket"));
@@ -258,7 +260,8 @@ inline CharString const graph2bracket(RnaStructureGraph const & graph)
         }
     }
 
-    for (unsigned idx = 0; idx < length(colors); ++idx) // write pairs in bracket notation
+    // write pairs in bracket notation
+    for (typename Size<String<unsigned> >::Type idx = 0; idx < length(colors); ++idx)
     {
         if (degree(graph.inter, idx) == 0)              // unpaired
         {
@@ -271,12 +274,12 @@ inline CharString const graph2bracket(RnaStructureGraph const & graph)
         if (idx < value(adj_it))                        // open bracket
         {
             SEQAN_ASSERT(colors[idx] > 0);
-            bracketStr[idx] = DotBracketArgs<>::OPEN[colors[idx]-1];
+            bracketStr[idx] = DotBracketArgs<>::open[colors[idx]-1];
         }
         else                                            // close bracket
         {
             SEQAN_ASSERT(colors[idx] > 0);
-            bracketStr[idx] = DotBracketArgs<>::CLOSE[colors[idx]-1];
+            bracketStr[idx] = DotBracketArgs<>::close[colors[idx]-1];
         }
     }
     return bracketStr;
@@ -295,7 +298,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
 
     // read name (and offset)
     skipOne(iter);                                                      // ">" symbol
-    readUntil(buffer, iter, IsNewline());
+    readLine(buffer, iter);
     std::string::size_type pos = buffer.find_last_of('/');
     if (pos == std::string::npos)
     {
@@ -315,15 +318,16 @@ readRecord(RnaRecord & record, TForwardIter & iter, DotBracket const & /*tag*/)
     clear(buffer);
 
     // read sequence
-    skipOne(iter);                                                      // newline character
-    readUntil(record.sequence, iter, IsNewline());
+    readLine(record.sequence, iter);
     record.seqLen = length(record.sequence);
 
     // read bracket string and build graph
-    skipOne(iter);                                                      // newline character
     readUntil(buffer, iter, IsWhitespace());
     if (length(buffer) != record.seqLen)
-        SEQAN_THROW(ParseError("ERROR: Bracket string must be as long as sequence."));
+    {
+        SEQAN_THROW(ParseError("ERROR: Bracket string (" + std::to_string(length(buffer)) +
+                               ") must be as long as sequence (" + std::to_string(record.seqLen) + ")."));
+    }
 
     bracket2graph(record.fixedGraphs, buffer);
     clear(buffer);
@@ -357,9 +361,9 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag*/)
 {
-    if (empty(record.sequence) && length(rows(record.align)) != 1)
+    if (empty(record.sequence) && length(rows(record.align)) != 1u)
         SEQAN_THROW(ParseError("ERROR: DotBracket formatted file cannot contain an alignment."));
-    if (length(record.fixedGraphs) != 1)
+    if (length(record.fixedGraphs) != 1u)
         SEQAN_THROW(ParseError("ERROR: DotBracket formatted file cannot contain multiple structure graphs."));
 
     Rna5String const sequence = empty(record.sequence) ? source(row(record.align, 0)) : record.sequence;
@@ -370,9 +374,9 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     write(target, record.name);
     // write index beg-end
     writeValue(target, '/');
-    write(target, record.offset);
+    appendNumber(target, record.offset);
     writeValue(target, '-');
-    write(target, record.offset + record.seqLen - 1);
+    appendNumber(target, record.offset + record.seqLen - 1);
     writeValue(target, '\n');
 
     // write sequence
@@ -387,7 +391,7 @@ writeRecord(TTarget & target, RnaRecord const & record, DotBracket const & /*tag
     if (graph.energy != 0.0f)
     {
         write(target, " (");
-        write(target, graph.energy);
+        appendNumber(target, graph.energy);
         writeValue(target, ')');
     }
     writeValue(target, '\n');

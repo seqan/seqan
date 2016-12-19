@@ -108,7 +108,7 @@ char const * FileExtensions<Embl, T>::VALUE[1] =
  */
 
 template <typename TKey, typename TValue, typename TFwdIterator>
-inline void
+    inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
 readRecord(TKey & key, TValue & val, TFwdIterator & iter, EmblHeader)
 {
     clear(key);
@@ -156,7 +156,7 @@ nextIs(TFwdIterator & iter, EmblSequence)
 // Read all sequence, eat/ignore '//' line.
 
 template <typename TSeqString, typename TFwdIterator>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
 readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 {
     typedef typename Value<TSeqString>::Type TSeqAlphabet;
@@ -185,7 +185,7 @@ readRecord(TSeqString & seq, TFwdIterator & iter, EmblSequence)
 // readRecord() for EMBL id/seq pairs.
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
 {
     IsBlank isBlank;
@@ -211,7 +211,7 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Embl)
 }
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline void
+inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Embl)
 {
     clear(qual);

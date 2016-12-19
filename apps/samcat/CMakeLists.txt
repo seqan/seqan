@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_samcat CXX)
 message (STATUS "Configuring apps/samcat")
 
-set (SEQAN_APP_VERSION "0.3.4")
+set (SEQAN_APP_VERSION "0.3.5")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -20,7 +20,7 @@ set (SEQAN_APP_VERSION "0.3.4")
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)
     find_package (ZLIB)
-    find_package (SeqAn REQUIRED)
+    find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
 # ----------------------------------------------------------------------------

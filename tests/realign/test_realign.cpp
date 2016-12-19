@@ -42,7 +42,7 @@
 static const bool PRINT_REALIGNMENTS = false;
 static const bool DEBUG_REALIGNMENT = false;
 
-// Helper function that allows to add gaps into the i-th read alignment in a fragmentStore.
+// Helper function that allows one to add gaps into the i-th read alignment in a fragmentStore.
 template <typename TFragmentStore>
 void addGaps(TFragmentStore & store, unsigned alignID, unsigned pos)
 {

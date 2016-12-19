@@ -41,6 +41,8 @@ endif ()
 
 # some platforms (e.g. FreeBSD) use different names here
 if (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64")
+  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+  set(CPACK_RPM_PACKAGE_ARCHITECTURE "amd64")
   set(CMAKE_SYSTEM_PROCESSOR "x86_64")
 endif ()
 

@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 #define SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_
 
-#include <climits>
+#include <cstdint>
 
 namespace seqan {
 
@@ -48,9 +48,17 @@ namespace seqan {
  * @typedef RnaAdjacencyIterator
  * @headerfile <seqan/rna_io.h>
  * @brief Iterator for adjacent vertices in a @link RnaStructureGraph @endlink.
- * @signature typename Iterator<Graph<Undirected<double> >, AdjacencyIterator>::Type RnaAdjacencyIterator;
+ * @signature typedef typename Iterator<Graph<Undirected<double> >, AdjacencyIterator>::Type RnaAdjacencyIterator;
  */
 typedef typename Iterator<Graph<Undirected<double> >, AdjacencyIterator>::Type RnaAdjacencyIterator;
+
+/*!
+ * @typedef TSizeRna5String
+ * @headerfile <seqan/rna_io.h>
+ * @brief Type for the length of @link Rna5String @endlink.
+ * @signature typedef typename Size<Rna5String>::Type TSizeRna5String;
+ */
+typedef typename Size<Rna5String>::Type TSizeRna5String;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -112,22 +120,22 @@ class RnaRecord
 {
 private:
     // Constant for an undefined ID.
-    static unsigned const UNDEF = UINT_MAX;
+    static std::uint32_t const undef = UINT32_MAX;
 
 public:
     /*!
-     * @var unsigned RnaRecord::recordID
+     * @var std::uint32_t RnaRecord::recordID
      * @brief Identification of the record.
      *
      * In an RNA structure file the first record gets ID 0, the following ID 1 and so on.
      */
-    unsigned recordID{UNDEF};
+    std::uint32_t recordID{undef};
 
     /*!
-     * @var unsigned RnaRecord::seqLen
+     * @var TSizeRna5String RnaRecord::seqLen
      * @brief Length of the sequence or alignment stored in this record.
      */
-    unsigned seqLen{};
+    TSizeRna5String seqLen{};
 
     /*!
      * @var unsigned RnaRecord::offset
@@ -187,12 +195,12 @@ public:
     StringSet<String<float> > reactError;
 
     /*!
-     * @var String<unsigned> RnaRecord::typeID
+     * @var String<std::uint32_t> RnaRecord::typeID
      * @brief Indices of the assigned type (T..) attributes records from EBPSEQ files.
      *
      * This member variable is used only if biological validated data is found (T.. fields in EBPSEQ are set).
      */
-    String<unsigned> typeID;
+    String<std::uint32_t> typeID;
 
     /*!
      * @var Rna5String RnaRecord::sequence
@@ -226,7 +234,7 @@ public:
      */
     bool hasUndefinedID() const
     {
-        return recordID == UNDEF;
+        return recordID == undef;
     }
 
     /*!
@@ -236,7 +244,7 @@ public:
      */
     void clearID()
     {
-        recordID = UNDEF;
+        recordID = undef;
     }
 };
 

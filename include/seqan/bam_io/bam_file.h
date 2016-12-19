@@ -171,7 +171,7 @@ readHeader(BamHeader & header,
         readHeader(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 readHeader(BamHeader & header, FormattedFile<Bam, Input, TSpec> & file)
@@ -233,7 +233,7 @@ readRecord(BamAlignmentRecord & record,
         readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
@@ -251,7 +251,6 @@ readRecords(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize m
         resize(buffers, maxRecords, Exact());
     if (static_cast<TSize>(length(records)) < maxRecords)
         resize(records, maxRecords, Exact());
-
 
     TSize numRecords = 0;
     for (; numRecords < maxRecords && !atEnd(file.iter); ++numRecords)
@@ -296,7 +295,7 @@ write(TTarget & target,
         write(target, header, context, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
-// convient BamFile variant
+// convenient BamFile variant
 template <typename TSpec>
 inline void
 writeHeader(FormattedFile<Bam, Output, TSpec> & file, BamHeader const & header)
