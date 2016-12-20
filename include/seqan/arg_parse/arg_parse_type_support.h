@@ -53,7 +53,7 @@ template <typename TVoidSpec = void>
 struct BooleanArgumentValues_
 {
     static constexpr std::array<const char *, 5> LIST_TRUE{{"1", "ON", "TRUE", "T", "YES"}};
-    static constexpr std::array<const char *, 5> LIST_FALSE{{"1", "ON", "TRUE", "T", "YES"}};
+    static constexpr std::array<const char *, 5> LIST_FALSE{{"0", "OFF", "FALSE", "F", "NO"}};
 };
 
 template <typename TVoidSpec>
