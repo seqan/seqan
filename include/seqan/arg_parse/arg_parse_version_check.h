@@ -121,6 +121,7 @@ struct VersionCheck
     std::string _program;
     std::string _command;
     std::string _path = _getPath();
+    bool        _checkAppOnly;
     std::ostream & errorStream;
 
     // ----------------------------------------------------------------------------
@@ -129,8 +130,10 @@ struct VersionCheck
 
     VersionCheck(std::string name,
                  std::string const & version,
+                 bool app_only,
                  std::ostream & errorStream) :
         _name{std::move(name)},
+        _checkAppOnly{std::move(app_only)},
         errorStream(errorStream)
     {
         std::smatch versionMatch;
@@ -139,7 +142,7 @@ struct VersionCheck
         {
             _version = versionMatch.str(1); // in case the git revision number is given take only version number
         }
-        _url = static_cast<std::string>("http://seqan-update.informatik.uni-tuebingen.de/check/SeqAn_") + _getOS() + _getBitSys() + _name + "_" + _version;
+        _url = static_cast<std::string>("http://www.seqan.de/version_check/SeqAn_") + _getOS() + _getBitSys() + _name + "_" + _version;
         _getProgram();
         _updateCommand();
     }
@@ -368,26 +371,30 @@ inline String<int> _getNumbersFromString(std::string const & str)
 // Function _readVersionString()
 // ----------------------------------------------------------------------------
 
-inline std::string _readVersionString(VersionCheck & me, std::string const & version_file)
+inline void _readVersionStrings(std::vector<std::string> & versions,
+                                VersionCheck & me,
+                                std::string const & version_file)
 {
     std::ifstream myfile;
     myfile.open(version_file.c_str());
-    std::string line;
+    std::string app_version;
+    std::string seqan_version;
     if (myfile.is_open())
     {
-        std::getline(myfile,line); // get first line which should only contain the version number
-        if (!(std::regex_match(line, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$"))))
-        {
-            line.clear();
-        }
-        if (line == VersionControlTags_<>::UNREGISTERED_APP)
-        {
+        std::getline(myfile, app_version); // get first line which should only contain the version number of the app
+
+        if (app_version == VersionControlTags_<>::UNREGISTERED_APP)
             me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
-            line.clear();
-        }
+        else if (std::regex_match(app_version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$")))
+            versions[0] = app_version;
+
+        std::getline(myfile, seqan_version); // get second line which should only contain the version number of seqan
+
+        if (std::regex_match(seqan_version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$")))
+            versions[1] = seqan_version;
+
         myfile.close();
     }
-    return line; // line is an empty string on failure
 }
 
 // ----------------------------------------------------------------------------
@@ -436,23 +443,28 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         return;
     }
 
-    std::string str_server_version(_readVersionString(me, version_filename));
-    if (!str_server_version.empty())
+    std::vector<std::string> str_server_versions{"", ""};
+    _readVersionStrings(str_server_versions, me, version_filename);
+
+    if (!str_server_versions[1].empty() && !me._checkAppOnly) // seqan version
     {
-        String<int> server_version(_getNumbersFromString(str_server_version));
-        String<int> current_version(_getNumbersFromString(me._version));
-        Lexical<> version_comp(current_version, server_version);
+        std::string seqan_version = std::to_string(SEQAN_VERSION_MAJOR) + "." +
+                                    std::to_string(SEQAN_VERSION_MINOR) + "." +
+                                    std::to_string(SEQAN_VERSION_PATCH);
+        Lexical<> version_comp(_getNumbersFromString(seqan_version), _getNumbersFromString(str_server_versions[1]));
+
         if (isLess(version_comp))
-        {
-            if (me._name == VersionControlTags_<>::SEQAN_NAME)
-                me.errorStream << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
-            else
-                me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
-        }
+            me.errorStream << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
+    }
+
+    if (!str_server_versions[0].empty()) // app version
+    {
+        Lexical<> version_comp(_getNumbersFromString(me._version), _getNumbersFromString(str_server_versions[0]));
+
+        if (isLess(version_comp))
+            me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
         else if (isGreater(version_comp))
-        {
             me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
-        }
     }
 
     if (me._program.empty())

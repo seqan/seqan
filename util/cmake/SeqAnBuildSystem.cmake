@@ -222,7 +222,7 @@ macro (seqan_build_system_init)
     # SeqAn Version Check
     if (SEQAN_DISABLE_VERSION_CHECK)  # Disable completely
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
-    elseif (SEQAN_VERSION_CHECK_OPT_IN OR ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))  # Build it but make it opt-in, also when building in develop mode.
+    elseif (SEQAN_VERSION_CHECK_OPT_IN)  # Build it but make it opt-in.
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_VERSION_CHECK_OPT_IN)
     endif ()
 

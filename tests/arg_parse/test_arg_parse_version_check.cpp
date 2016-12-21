@@ -59,7 +59,6 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     //            the test results.
     SEQAN_CALL_TEST(test_option_dev);
     SEQAN_CALL_TEST(test_delete_version_files);
-    SEQAN_CALL_TEST(test_option_app_only);
     SEQAN_CALL_TEST(test_delete_version_files);
     SEQAN_CALL_TEST(test_option_off);
     SEQAN_CALL_TEST(test_delete_version_files);
