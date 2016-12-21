@@ -41,6 +41,7 @@
 #endif
 
 #define SEQAN_DEBUG
+#define SEQAN_TEST_VERSION_CHECK_
 
 #include "test_arg_parse_version_check.h"
 
@@ -57,15 +58,12 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     // IMPORTANT: there always needs to be the test 'test_delete_version_files'
     //            in between tests to ensure that no former files interfere with
     //            the test results.
-    SEQAN_CALL_TEST(test_option_dev);
-    SEQAN_CALL_TEST(test_delete_version_files);
-    SEQAN_CALL_TEST(test_option_app_only);
+    SEQAN_CALL_TEST(test_option_on);
     SEQAN_CALL_TEST(test_delete_version_files);
     SEQAN_CALL_TEST(test_option_off);
     SEQAN_CALL_TEST(test_delete_version_files);
     SEQAN_CALL_TEST(test_smaller_seqan_version);
     SEQAN_CALL_TEST(test_delete_version_files);
-    SEQAN_CALL_TEST(test_smaller_seqan_version_app_only);
     SEQAN_CALL_TEST(test_delete_version_files);
     SEQAN_CALL_TEST(test_smaller_app_version);
     SEQAN_CALL_TEST(test_delete_version_files);
