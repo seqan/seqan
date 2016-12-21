@@ -202,7 +202,6 @@ public:
                                             // interference with the rest of the doc
 
     std::future<bool> appVersionCheckFuture;
-    std::future<bool> seqanVersionCheckFuture;
     // ----------------------------------------------------------------------------
     // Function init()
     // ----------------------------------------------------------------------------
@@ -231,17 +230,12 @@ public:
 #ifndef SEQAN_DISABLE_VERSION_CHECK
         addOption(*this, ArgParseOption("",
                                         "version-check",
-                                        "Choose OFF to disable any update notifications. "
-                                        "With APP_ONLY you'll receive update notifications about new versions of your app. "
-                                        "In DEV mode you'll receive update notifications regarding new versions of your app "
-                                        "and new versions of the SeqAn library.",
-                                        ArgParseArgument::STRING,
-                                        "OPTION"));
-        setValidValues(*this, "version-check", VersionControlTags_<>::OPTIONS);
+                                        "Turn this option off to disable version update notifications of the application. ",
+                                        ArgParseArgument::BOOL));
 #ifdef SEQAN_VERSION_CHECK_OPT_IN
-        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_OFF);
+        setDefaultValue(*this, "version-check", false);
 #else  // Make version update opt out.
-        setDefaultValue(*this, "version-check", VersionControlTags_<>::OPTION_DEV);
+        setDefaultValue(*this, "version-check", true);
 #endif  // SEQAN_VERSION_CHECK_OPT_IN
 #endif  // !SEQAN_DISABLE_VERSION_CHECK
     }
@@ -266,9 +260,6 @@ public:
         // wait for another 3 seconds
         if (appVersionCheckFuture.valid())
             appVersionCheckFuture.wait_for(std::chrono::seconds(3));
-                
-        if (seqanVersionCheckFuture.valid()) 
-            seqanVersionCheckFuture.wait_for(std::chrono::seconds(3));
     }
     
 };
