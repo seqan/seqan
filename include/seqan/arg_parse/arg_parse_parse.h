@@ -310,7 +310,7 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
 
 #ifndef SEQAN_DISABLE_VERSION_CHECK
     // do version check if not turned off by the user
-    bool check_version;
+    bool check_version = false;
     getOptionValue(check_version, me, "version-check");
 
     if (check_version)
