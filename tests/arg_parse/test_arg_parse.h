@@ -215,7 +215,7 @@ SEQAN_DEFINE_TEST(test_boolean_argument_on)
 
     bool booleanValue = 0;
     SEQAN_ASSERT(getOptionValue(booleanValue, parser, "mybool"));
-    SEQAN_ASSERT_EQ(booleanValue, 1);
+    SEQAN_ASSERT_EQ(booleanValue, true);
 }
 
 SEQAN_DEFINE_TEST(test_boolean_argument_off)
@@ -236,7 +236,7 @@ SEQAN_DEFINE_TEST(test_boolean_argument_off)
 
     bool booleanValue = 1;
     SEQAN_ASSERT(getOptionValue(booleanValue, parser, "mybool"));
-    SEQAN_ASSERT_EQ(booleanValue, 0);
+    SEQAN_ASSERT_EQ(booleanValue, false);
 }
 
 SEQAN_DEFINE_TEST(test_int_short_argument)
