@@ -3,6 +3,16 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.3.1
+~~~~~~~~~~~~~
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Argument parser
+    - bool option negative values
+    - improve and fix version check
+
 Release 2.3.0
 ~~~~~~~~~~~~~
 
