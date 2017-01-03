@@ -169,31 +169,75 @@ inline TSimdVector _cmpEq(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32>)
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32, int8_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_cmpgt_epi8(SEQAN_VECTOR_CAST_(const __m256i&, a),
                                                              SEQAN_VECTOR_CAST_(const __m256i&, b)));
 }
 
 template <typename TSimdVector>
-inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16>)
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32, uint8_t>)
+{
+    // There is no unsigned cmpgt, we reduce it to the signed case.
+    // Note that 0x80 = ~0x7F (prevent overflow messages).
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_cmpgt_epi8(
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, a), _mm256_set1_epi8(~0x7F)),
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, b), _mm256_set1_epi8(~0x7F))));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16, int16_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_cmpgt_epi16(SEQAN_VECTOR_CAST_(const __m256i&, a),
                                                               SEQAN_VECTOR_CAST_(const __m256i&, b)));
 }
 
 template <typename TSimdVector>
-inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16, uint16_t>)
+{
+    // There is no unsigned cmpgt, we reduce it to the signed case.
+    // Note that 0x8000 = ~0x7FFF (prevent overflow messages).
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_cmpgt_epi16(
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, a), _mm256_set1_epi16(~0x7FFF)),
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, b), _mm256_set1_epi16(~0x7FFF))));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8, int32_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_cmpgt_epi32(SEQAN_VECTOR_CAST_(const __m256i&, a),
                                                               SEQAN_VECTOR_CAST_(const __m256i&, b)));
 }
 
 template <typename TSimdVector>
-inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8, uint32_t>)
+{
+    // There is no unsigned cmpgt, we reduce it to the signed case.
+    // Note that 0x80000000 = ~0x7FFFFFFF (prevent overflow messages).
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_cmpgt_epi32(
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, a), _mm256_set1_epi32(~0x7FFFFFFF)),
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, b), _mm256_set1_epi32(~0x7FFFFFFF))));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4, int64_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_cmpgt_epi64(SEQAN_VECTOR_CAST_(const __m256i&, a),
                                                               SEQAN_VECTOR_CAST_(const __m256i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _cmpGt(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4, uint64_t>)
+{
+    // There is no unsigned cmpgt, we reduce it to the signed case.
+    // Note that 0x8000000000000000ul = ~0x7FFFFFFFFFFFFFFFul (prevent overflow messages).
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_cmpgt_epi64(
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, a) ,_mm256_set1_epi64x(~0x7FFFFFFFFFFFFFFFul)),
+                                  _mm256_xor_si256(SEQAN_VECTOR_CAST_(const __m256i&, b), _mm256_set1_epi64x(~0x7FFFFFFFFFFFFFFFul))));
 }
 
 // --------------------------------------------------------------------------
@@ -404,7 +448,7 @@ inline TSimdVector _mult(TSimdVector &a, TSimdVector &/*b*/, SimdParams_<32, 4>)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32>)
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32, int8_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm256_max_epi8(SEQAN_VECTOR_CAST_(const __m256i&, a),
@@ -412,7 +456,15 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32>)
 }
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16>)
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 32, uint8_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_max_epu8(SEQAN_VECTOR_CAST_(const __m256i&, a),
+                                              SEQAN_VECTOR_CAST_(const __m256i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16, int16_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm256_max_epi16(SEQAN_VECTOR_CAST_(const __m256i&, a),
@@ -420,7 +472,15 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16>)
 }
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 16, uint16_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_max_epu16(SEQAN_VECTOR_CAST_(const __m256i&, a),
+                                               SEQAN_VECTOR_CAST_(const __m256i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8, int32_t>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm256_max_epi32(SEQAN_VECTOR_CAST_(const __m256i&, a),
@@ -428,11 +488,31 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8>)
 }
 
 template <typename TSimdVector>
-inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4>)
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 8, uint32_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm256_max_epu32(SEQAN_VECTOR_CAST_(const __m256i&, a),
+                                               SEQAN_VECTOR_CAST_(const __m256i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4, int64_t>)
 {
     #if defined(__AVX512VL__)
         return SEQAN_VECTOR_CAST_(TSimdVector,
                                   _mm256_max_epi64(SEQAN_VECTOR_CAST_(const __m256i&, a),
+                                                   SEQAN_VECTOR_CAST_(const __m256i&, b)));
+    #else // defined(__AVX512VL__)
+        return blend(b, a, cmpGt(a, b));
+    #endif // defined(__AVX512VL__)
+}
+
+template <typename TSimdVector>
+inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4, uint64_t>)
+{
+    #if defined(__AVX512VL__)
+        return SEQAN_VECTOR_CAST_(TSimdVector,
+                                  _mm256_max_epu64(SEQAN_VECTOR_CAST_(const __m256i&, a),
                                                    SEQAN_VECTOR_CAST_(const __m256i&, b)));
     #else // defined(__AVX512VL__)
         return blend(b, a, cmpGt(a, b));

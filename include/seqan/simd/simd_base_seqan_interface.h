@@ -145,7 +145,7 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 cmpGt (TSimdVector const &a, TSimdVector const &b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
-    return _cmpGt(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
+    return _cmpGt(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue), TValue>());
 }
 
 // --------------------------------------------------------------------------
@@ -169,7 +169,7 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 max(TSimdVector const &a, TSimdVector const &b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
-    return _max(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
+    return _max(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue), TValue>());
 }
 
 // --------------------------------------------------------------------------

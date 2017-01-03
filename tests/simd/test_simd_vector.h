@@ -89,7 +89,7 @@ void fillVectors(TSimdVector & a, TSimdVector & b)
 
     for (auto i = 0; i < length; ++i)
     {
-        a[i] = i * 3;
+        a[i] = (i - 1) * 3;
         b[i] = length - i;
     }
 }
@@ -399,7 +399,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
 
     for (auto i = 0; i < length; ++i)
     {
-        TValue a_i = i * 3, b_i = length - i;
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " == " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] == b[i] ? true_ : false_);
         SEQAN_ASSERT_EQ(c[i], a_i == b_i ? true_ : false_);
@@ -424,7 +424,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
 
     for (auto i = 0; i < length; ++i)
     {
-        TValue a_i = i * 3, b_i = length - i;
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? true_ : false_);
         SEQAN_ASSERT_EQ(c[i], a_i > b_i ? true_ : false_);
@@ -445,7 +445,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
 
     for (auto i = 0; i < length; ++i)
     {
-        TValue a_i = i * 3, b_i = length - i;
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = max (" << (int)a[i] << ", " << (int)b[i] << ")" << std::endl;
         SEQAN_ASSERT_EQ(c[i], std::max(a[i], b[i]));
         SEQAN_ASSERT_EQ(c[i], std::max(a_i, b_i));
@@ -466,9 +466,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOr)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " | " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] | b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) | (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i | b_i));
     }
 }
 
@@ -487,9 +488,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOrAssign)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " | " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] | b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) | (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i | b_i));
     }
 }
 
@@ -507,9 +509,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAnd)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " & " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] & b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) & (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i & b_i));
     }
 }
 
@@ -528,9 +531,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndAssign)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " & " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] & b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>((i * 3) & (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i & b_i));
     }
 }
 
@@ -548,9 +552,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseNot)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = ~" << (int)a[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~a[i]));
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~(i * 3)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~a_i));
     }
 }
 
@@ -568,9 +573,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Addition)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " + " << (int)b[i] << std::endl;
-        SEQAN_ASSERT_EQ(c[i], a[i] + b[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(length + 2*i));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[i] + b[i]));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i + b_i));
     }
 }
 
@@ -588,9 +594,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Subtraction)
 
     for (auto i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " - " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[i] - b[i]));
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3 - (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i - b_i));
     }
 }
 
@@ -608,9 +615,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Multiplication)
 
     for (size_t i = 0; i < length; ++i)
     {
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " * " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a[i] * b[i]));
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3 * (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(a_i * b_i));
     }
 }
 
@@ -628,7 +636,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Division)
 
     for (auto i = 0; i < length; ++i)
     {
-        TValue a_i = i * 3, b_i = length - i;
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " / " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] / b[i]);
         SEQAN_ASSERT_EQ(c[i], a_i / b_i);
@@ -651,7 +659,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndNot)
     {
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = (~" << (int)a[i] << ") & " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~a[i] & b[i]));
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~(i * 3) & (length - i)));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(~(-3 + i * 3) & (length - i)));
     }
 }
 
@@ -664,6 +672,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShiftRightLogical)
 
     TSimdVector a, b;
     fillVectors(a, b);
+
+    // ensure that a >= 0, because (-3) >> 2 has undefined behavior according to
+    // C++ 11 standard.
+    a = a + createVector<TSimdVector>(3);
 
     auto c = shiftRightLogical(a, 2);
 
@@ -690,7 +702,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
 
     for (auto i = 0; i < length; ++i)
     {
-        TValue a_i = i * 3, b_i = length - i;
+        TValue a_i = -3 + i * 3, b_i = length - i;
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " > " << (int)b[i] << " ? " << (int)a[i] << " : " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] > b[i] ? (TValue)a[i] : (TValue)b[i]);
         SEQAN_ASSERT_EQ(c[i], a_i > b_i ? a_i : b_i);
@@ -714,7 +726,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Storeu)
     {
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(-3 + i * 3));
     }
 }
 
@@ -736,7 +748,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Load)
     {
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i]);
-        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(i * 3));
+        SEQAN_ASSERT_EQ(c[i], static_cast<TValue>(-3 + i * 3));
     }
 }
 

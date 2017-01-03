@@ -107,9 +107,11 @@ template <typename TValue, int LENGTH = SEQAN_SIZEOF_MAX_VECTOR / sizeof(TValue)
 struct SimdVector;
 
 // internal struct to specialize for vector parameters
-// VEC_SIZE = Vector size := sizeof(vec)
-// LENGTH = number of elements := VEC_SIZE / sizeof(InnerValue<TVec>::Type)
-template <int VEC_SIZE, int LENGTH = 0>
+// VEC_SIZE    = Vector size := sizeof(vec)
+// LENGTH      = number of elements := VEC_SIZE / sizeof(InnerValue<TVec>::Type)
+// SCALAR_TYPE = the scalar type of the vector (maybe optional, if the type
+//               doesn't matter for the operation)
+template <int VEC_SIZE, int LENGTH = 0, typename SCALAR_TYPE = void>
 struct SimdParams_
 {};
 
