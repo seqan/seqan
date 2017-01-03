@@ -179,7 +179,7 @@ _testBlastOutputGenerateContent(TFile & file,
 
             computeAlignmentStats(m, context);
             computeBitScore(m, context);
-            computeEValue(m, context);
+            computeEValue(m, records[q].qLength, context);
         }
     }
 
