@@ -312,56 +312,29 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CreateVector)
     }
 }
 
-template <typename TSimdVector, int L>
-inline void
-test_fill_vector(TSimdVector & a, seqan::SimdParams_<2, L>)
+SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVectorConstant)
 {
     using namespace seqan;
-    fillVector(a, 0, 1);
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a;
+
+    fillVector(a, 5);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        // std::cout << i << " / " << length << ": " << (int)a[i] << " = " << i << std::endl;
+        SEQAN_ASSERT_EQ(a[i], static_cast<TValue>(5));
+    }
 }
 
-template <typename TSimdVector, int L>
+template <typename TSimdVector, std::size_t... index >
 inline void
-test_fill_vector(TSimdVector & a, seqan::SimdParams_<4, L>)
+call_fill_vector(TSimdVector & a, std::index_sequence<index...>)
 {
-    using namespace seqan;
-    fillVector(a, 0, 1, 2, 3);
-}
-
-template <typename TSimdVector, int L>
-inline void
-test_fill_vector(TSimdVector & a, seqan::SimdParams_<8, L>)
-{
-    using namespace seqan;
-    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7);
-}
-
-template <typename TSimdVector, int L>
-inline void
-test_fill_vector(TSimdVector & a, seqan::SimdParams_<16, L>)
-{
-    using namespace seqan;
-    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-}
-
-template <typename TSimdVector, int L>
-inline void
-test_fill_vector(TSimdVector & a, seqan::SimdParams_<32, L>)
-{
-    using namespace seqan;
-    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31);
-}
-
-template <typename TSimdVector, int L>
-inline void
-test_fill_vector(TSimdVector & a, seqan::SimdParams_<64, L>)
-{
-    using namespace seqan;
-    fillVector(a, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-               16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-               32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-               48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63);
+    seqan::fillVector(a, index...);
 }
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
@@ -372,7 +345,9 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
     constexpr auto length = TestFixture::LENGTH;
 
     TSimdVector a;
-    test_fill_vector(a, SimdParams_<length, 0>());
+
+    // calls seqan::fillVector(a, 0, 1, 2, 3, ..., length-1);
+    call_fill_vector(a, std::make_index_sequence<length>{});
 
     for (auto i = 0; i < length; ++i)
     {

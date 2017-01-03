@@ -82,20 +82,17 @@ inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & x, st
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<32, 32>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
     vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm256_setr_epi8(std::get<INDICES>(args)...));
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<32, 16>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
     vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm256_setr_epi16(std::get<INDICES>(args)...));
 }
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
 inline void _fillVector(TSimdVector &vector, std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<32, 8>)
 {
-    // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
     vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm256_setr_epi32(std::get<INDICES>(args)...));
 }
 
