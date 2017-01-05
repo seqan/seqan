@@ -42,6 +42,13 @@
     #error UME::SIMD and SEQAN::SIMD are both enabled, you can only use one SIMD back end.
 #endif
 
+// MSVC doesn't define SSE4 macros, even if instruction set is available (e.g.
+// when AVX is defined)
+#if defined(COMPILER_MSVC) && defined(__AVX__) && !defined(__SSE4_1__) && !defined(__SSE4_2__)
+    #define __SSE4_1__ 1
+    #define __SSE4_2__ 1
+#endif
+
 // Define global macro to check if simd instructions are enabled.
 #if defined(__AVX512F__) || defined(__AVX2__) || (defined(__SSE4_1__) && defined(__SSE4_2__))
     #define SEQAN_SIMD_ENABLED

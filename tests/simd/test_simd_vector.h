@@ -241,8 +241,10 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, MetaFunctions)
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
 
+    // NOTE(marehr): explicit namespace is necessary for msvc 2015:
+    // error C2039: 'VALUE': is not a member of '`global namespace''
+    constexpr auto length = seqan::LENGTH<TSimdVector>::VALUE;
     using TValue = typename Value<TSimdVector>::Type;
-    constexpr auto length = LENGTH<TSimdVector>::VALUE;
     typedef typename SimdVector<TValue, length>::Type TSimdVectorNew;
 
     bool sameType = IsSameType<TSimdVector, TSimdVectorNew>::VALUE;
@@ -258,7 +260,13 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, SizeOf)
 
     TSimdVector a;
 
+    // only on windows are the values unequal
+    SEQAN_ASSERT_GEQ(sizeof(a), sizeof(TValue) * length);
+
+    // on linux we assume that the sizes are equal
+#ifndef COMPILER_MSVC
     SEQAN_ASSERT_EQ(sizeof(a), sizeof(TValue) * length);
+#endif
 }
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, SubscriptType)
@@ -715,7 +723,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Load)
     TSimdVector a, c;
     fillVectors(a, c);
 
-    alignas(sizeof(TSimdVector)) TValue b[length];
+    alignas(TSimdVector) TValue b[length];
     storeu(b, a);
     c = load<TSimdVector>(b);
 
