@@ -57,9 +57,10 @@ inline void test_matrix_transpose()
     resize(random, ROWS * COLS);
 
     std::mt19937 rng;
-    std::uniform_int_distribution<TValue> pdf(0, MaxValue<TValue>::VALUE);
+    // http://stackoverflow.com/questions/31460733/why-arent-stduniform-int-distributionuint8-t-and-stduniform-int-distri
+    std::uniform_int_distribution<uint64_t> pdf(0, MaxValue<TValue>::VALUE);
     for (unsigned i = 0; i < length(random); ++i)
-        random[i] = pdf(rng);
+        random[i] = static_cast<TValue>(pdf(rng));
 
     TMatrix tmp;
     for (int i = 0; i < ROWS; ++i)
@@ -264,7 +265,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, SizeOf)
     SEQAN_ASSERT_GEQ(sizeof(a), sizeof(TValue) * length);
 
     // on linux we assume that the sizes are equal
-#ifndef COMPILER_MSVC
+#ifndef STDLIB_VS
     SEQAN_ASSERT_EQ(sizeof(a), sizeof(TValue) * length);
 #endif
 }

@@ -69,6 +69,10 @@
     #undef SEQAN_SEQANSIMD_ENABLED
 #endif
 
+#if defined(SEQAN_SEQANSIMD_ENABLED) && (defined(COMPILER_MSVC) || defined(COMPILER_WINTEL))
+    #error SEQAN::SIMD (vector extension) is not supported by msvc and windows intel compiler
+#endif
+
 // Define maximal size of vector in byte.
 #if !defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
     // SEQAN_SIMD doesn't support AVX512, thus fallback to AVX2 (One can assume
