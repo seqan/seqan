@@ -72,17 +72,20 @@ public:
     using TSizeH = typename Size<typename TTraits::TSeqH>::Type;
     using TSizeV = typename Size<typename TTraits::TSeqV>::Type;
 
+    using TModString = ModifiedString<String<size_t>, ModPos<String<size_t> > >;
+    using TIterator = typename Iterator<TModString, Standard>::Type;
+
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksH;
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksV;
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masks;
 
-    String<size_t> endsH;
-    String<size_t> endsV;
-    ModifiedString<String<size_t>, ModPos<String<size_t> > > sortedEndsH;
-    ModifiedString<String<size_t>, ModPos<String<size_t> > > sortedEndsV;
+    String<size_t>  endsH;
+    String<size_t>  endsV;
+    TModString      sortedEndsH;
+    TModString      sortedEndsV;
 
-    decltype(begin(sortedEndsH, Standard())) nextEndsH;
-    decltype(begin(sortedEndsV, Standard())) nextEndsV;
+    TIterator nextEndsH;
+    TIterator nextEndsV;
 
     size_t dimV;
     size_t posH;
