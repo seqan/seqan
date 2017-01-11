@@ -219,6 +219,24 @@ macro(add_simd_platform_tests target)
     set(umesimd_compile_blacklist "")
     set(umesimd_test_blacklist "")
 
+    if (COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5)
+        ## seqan-simd:
+        # avx2: gcc4.9 has a problem to differentiate `__vector(32) signed char`
+        #       from `__vector(16) signed char` (some conflicts in the abi).
+        #       Theoretically, one could build avx2, but one wouldn't be allowed
+        #       to mix it with sse4 in the complete program. This can be fixed
+        #       by adding `-fabi-version=6` to the compiler flags, but since we
+        #       don't know which consequences this has, we disable it.
+        #
+        ## ume-simd:
+        # avx512_knl/avx512: gcc4.9 has no complete avx512_knl intrinsics
+        #                    support, which are used in umesimd
+        #   error: ‘__mmask32’ does not name a type
+        #   error: ‘_mm512_castsi128_si512’ was not declared in this scope
+        set(umesimd_compile_blacklist "avx512_knl;avx512")
+        set(seqansimd_compile_blacklist "avx2;avx512_knl;avx512")
+    endif()
+
     # Build the executables, but don't execute them, because clang <= 3.9.x
     # produces executables which contain invalid instructions for AVX512.
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
@@ -227,33 +245,43 @@ macro(add_simd_platform_tests target)
     endif()
 
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9)
-        # clang compiler < 3.9 has no complete avx512_knl intrinsics support,
-        # which are used in umesimd
-        #   error : use of undeclared identifier '_mm512_castsi128_si512'
-        #   error : use of undeclared identifier '_mm512_mask_mov_epi32'
-        # clang compiler < 3.9 can't handle avx512 compiler flags
+        ## all-simd wrappers
+        # avx512: clang compiler <= 3.8.x can't handle avx512 compiler flags
         #   error : unknown argument: '-mavx512ifma'
         #   error : unknown argument: '-mavx512vbmi'
-        # clang compiler 3.6 crashes on avx512_knl, thus disabling it also for
-        #   3.8, where avx512_knl works
+        #
+        ## ume-simd:
+        # avx512_knl: clang compiler <= 3.8.x has no complete avx512_knl
+        #             intrinsics support, which are used in umesimd
+        #   error : use of undeclared identifier '_mm512_castsi128_si512'
+        #   error : use of undeclared identifier '_mm512_mask_mov_epi32'
+        #
+        ## seqan-simd:
+        # avx512_knl: clang compiler 3.6.x crashes on avx512_knl, thus disabling
+        #             it also for 3.7.x and 3.8.x, where avx512_knl works
         set(umesimd_compile_blacklist "avx512_knl;avx512")
         set(seqansimd_compile_blacklist "avx512_knl;avx512")
 
         if (STDLIB_VS)
-            # Also, it can't handle avx2 on windows, because some intrinsics are not implemented yet:
+            ## ume-simd:
+            # avx2: Also, it can't handle avx2 on windows, because some
+            #       intrinsics are not implemented yet:
             #   %16 = call <8 x i32> @llvm.x86.avx2.gather.d.d.256(<8 x i32> %7, i8* %9, <8 x i32> %13, <8 x i32> %15, i8 4), !dbg !7025
             set(umesimd_compile_blacklist "avx2;${umesimd_compile_blacklist}")
 
-            # Similar, it doens't support simd-seqan
-            #   sse4: fatal error C1001: An internal error has occurred in the compiler.
-            #     clang!DllGetC2Telemetry()+0x1d7c28
-            #     clang!LLVM_IR_InvokeCompilerPassW()+0xd127
-            #     clang!DllGetC2Telemetry()+0xfa13e
-            #     clang!crt_at_quick_exit()+0x104
-            #     clang!BaseThreadInitThunk()+0x12
-            #   avx2: 'mm256_unpackhi_epi128': Intrinsic not yet implemented:
-            #     %8 = call <4 x i64> @llvm.x86.avx2.vperm2i128(<4 x i64> %5, <4 x i64> %7, i8 49), !dbg !5915
-            #     fatal error C1001: An internal error has occurred in the compiler.
+            ## seqan-simd: Similar, simd-seqan doesn't work, even though
+            #              it should theoretically be possible, but some
+            #              intrinsic are not yet implemented.
+            # sse4: fatal error C1001: An internal error has occurred in the
+            #       compiler.
+            #   clang!DllGetC2Telemetry()+0x1d7c28
+            #   clang!LLVM_IR_InvokeCompilerPassW()+0xd127
+            #   clang!DllGetC2Telemetry()+0xfa13e
+            #   clang!crt_at_quick_exit()+0x104
+            #   clang!BaseThreadInitThunk()+0x12
+            # avx2: 'mm256_unpackhi_epi128': Intrinsic not yet implemented:
+            #   %8 = call <4 x i64> @llvm.x86.avx2.vperm2i128(<4 x i64> %5, <4 x i64> %7, i8 49), !dbg !5915
+            #   fatal error C1001: An internal error has occurred in the compiler.
             set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
         endif()
     endif()
@@ -263,13 +291,14 @@ macro(add_simd_platform_tests target)
         # compile AVX512
         set(umesimd_compile_blacklist "avx512_knl;avx512")
 
-        # block all simd extensions, because simd-seqan uses a compiler
-        # extensions which is not supported by msvc
+        # Don't compile simd-seqan, because it uses a compiler extensions which
+        # is not supported by msvc
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
     if (COMPILER_WINTEL)
-        # wintel compiler doesn't support vector extension even though lintel does.
+        # Don't compile simd-seqan, because wintel compiler doesn't support
+        # vector extension even though lintel does.
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
