@@ -302,6 +302,28 @@ macro(add_simd_platform_tests target)
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
+    if (COMPILER_LINTEL AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.2)
+        ## seqan-simd: intel compiler crashes on <= 17.0.1 at least in the test
+        #              case test_align_simd, others may work (e.g.
+        #              test_simd_vector)
+        #   ": internal error: ** The compiler has encountered an unexpected
+        #   problem. ** Segmentation violation signal raised. ** Access
+        #   violation or stack overflow. Please contact Intel Support for
+        #   assistance.
+        if(NOT ("${target}" MATCHES "test_simd_vector"))
+            set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+        endif()
+    endif()
+
+    if(COMPILER_LINTEL AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
+        ## seqan-simd: intel compiler crashes on <= 16.0.1
+        #   ": internal error: ** The compiler has encountered an unexpected
+        #   problem. ** Segmentation violation signal raised. ** Access
+        #   violation or stack overflow. Please contact Intel Support for
+        #   assistance.
+        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+    endif()
+
     add_simd_executables("${target}" "${seqansimd_compile_blacklist}")
     add_simd_tests("${target}" "${seqansimd_test_blacklist}")
 
