@@ -212,6 +212,7 @@ int main(int argc, const char *argv[])
     
     
     ArgumentParser parser("micro_razers");
+    setShortDescription(parser, "Map small RNA reads possibly containing 3' adapter sequence");
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
     addDescription(parser, "MicroRazerS uses a prefix-based mapping strategy to map "
                            "small RNA reads possibly containing 3' adapter sequence. ");
