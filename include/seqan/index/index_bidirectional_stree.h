@@ -349,7 +349,7 @@ inline bool goRight(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<T
 {
     if (goRight(_iter(it, Tag<TDirection>())))
     {
-        update(it, Tag<TDirection>());
+        updateOnGoRight(it, Tag<TDirection>());
         return true;
     }
     return false;
