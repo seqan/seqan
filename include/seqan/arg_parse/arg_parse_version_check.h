@@ -447,18 +447,20 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
 #endif
 
-#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only check app version in release or testing mode
     if (!str_server_versions[0].empty() & !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
     {
         Lexical<> version_comp(_getNumbersFromString(me._version), _getNumbersFromString(str_server_versions[0]));
 
+#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only check app version in release or testing mode
         if (isLess(version_comp))
             me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
-
-        else if (isGreater(version_comp))
-            me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
-    }
 #endif // defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+
+#if !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only notify developer that app version should be updated on server
+        if (isGreater(version_comp))
+            me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
+#endif // !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+    }
 
     if (me._program.empty())
     {
