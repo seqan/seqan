@@ -88,12 +88,11 @@ int main(int argc, char ** argv)
             m.sStart = beginPosition(m.alignRow1);
             m.sEnd   = endPosition(m.alignRow1);
 
-            m.qLength = length(queries[q]);
             m.sLength = length(subjects[s]);
 
             computeAlignmentStats(m, context(outfile));
             computeBitScore(m, context(outfile));
-            computeEValue(m, context(outfile));
+            computeEValue(m, r.qLength, context(outfile));
 
             if (m.eValue > 1)
                 eraseBack(records[q].matches);
