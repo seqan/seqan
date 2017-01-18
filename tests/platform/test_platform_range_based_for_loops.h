@@ -100,8 +100,6 @@ SEQAN_DEFINE_TEST(test_platform_range_based_for_loops2) {
     #if defined(__INTEL_COMPILER)
         #if __INTEL_COMPILER < 1600 || (__INTEL_COMPILER == 1600 && __INTEL_COMPILER_UPDATE <= 3)
             SEQAN_SKIP_TEST;
-        #else
-            #warning "The Intel Compiler has a bug for this type of range-based for loop (at least until v16.0.3). Please reevaluate this issue for newer versions."
         #endif
     #endif
 
