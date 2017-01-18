@@ -114,6 +114,11 @@ install (FILES LICENSE
 # App Test
 # ----------------------------------------------------------------------------
 
+if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
+    include("SeqAnConsistentFPFlags")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CONSISTENT_FP_FLAGS}")
+endif()
+
 # (weese:) temporarily disabled app test
 seqan_add_app_test (bs_tools)
 
