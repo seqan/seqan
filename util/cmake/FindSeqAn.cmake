@@ -1,1 +1,1 @@
-seqan-config.cmake
+include("seqan-config")
