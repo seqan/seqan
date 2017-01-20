@@ -120,7 +120,7 @@ int main()
     print(text);
     // > This is an awesome tutorial to get to now SeqAn!
     print(protein);
-    // > TXTXRIAL
+    // > TUTORIAL
     print(proteinScore);
     // > 6 -9 -3 -6 -6 0 -9 -8 -7 -3 -9 -5 -8 -4 -5 -6 -6 1 -6 25 -7 2 -6 -6 -9 -6 -5 -7 1 -7 -5 -4 -6 2 -6 -3 -8 -9 -10 -4 -6 0 0 0 0 0 0 0
     print(proteinScore, MaxOnly());
