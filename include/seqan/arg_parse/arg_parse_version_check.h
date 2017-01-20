@@ -108,7 +108,7 @@ struct VersionCheck
     std::string _version = "0.0.0";
     std::string _program;
     std::string _command;
-    const std::string _path = _getPath();
+    std::string _path = _getPath();
     std::string _timestamp_filename;
     std::ostream & errorStream;
 
@@ -124,9 +124,9 @@ struct VersionCheck
     {
         std::smatch versionMatch;
 #if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
-        _timestamp_filename = _path + "/" + _name + "_release.timestamp";
+        _timestamp_filename = _path + "/" + _name + "_usr.timestamp";
 #else
-        _timestamp_filename = _path + "/" + _name + "_debug.timestamp";
+        _timestamp_filename = _path + "/" + _name + "_dev.timestamp";
 #endif
         if (!version.empty() &&
             std::regex_search(version, versionMatch, std::regex("^([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+).*")))
@@ -324,7 +324,7 @@ inline std::string _getPath()
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
 
-inline double _getFileTimeDiff(VersionCheck & me)
+inline double _getFileTimeDiff(VersionCheck const & me)
 {
     double curr = static_cast<double>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
     std::ifstream timestamp_file;
