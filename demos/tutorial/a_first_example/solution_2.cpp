@@ -1,5 +1,4 @@
-// Copy the code into your current file and encapsulate the print instructions.
-
+//![all]
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -38,7 +37,7 @@ void print(String<int> text)
 
 int main()
 {
-    String<char> text = "This is an awesome tutorial to get to now SeqAn!";
+    String<char> text = "This is an awesome tutorial to get to know SeqAn!";
     String<char> pattern = "tutorial";
     String<int> score = computeScore(text, pattern);
 
@@ -46,3 +45,4 @@ int main()
 
     return 0;
 }
+//![all]
