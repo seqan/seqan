@@ -46,32 +46,18 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTask>
-class ThreadPool<TTask, ThreadModelStd>
+
+
+// Simple Thread Pool.
+class ThreadPool
 {
-    size_t                      mNumThreads = std::thread::hardware_concurrency();
-    std::vector<std::thread>    mThreadPool;
-    
-    template <typename TWorker>
-    ThreadPool(TWorker && worker)
-    {
-        for (size_t job = 0; job < mNumThreads; ++job)
-            mThreadPool.emplace_back(std::thread(worker));  // Start worker threads.
-    }
-    
-    template <typename TWorker>
-    ThreadPool(TWorker && worker, size_t const numThreads) :
-        mNumThreads(numThreads),
-        ThreadPool(std::forward<TWorker>(worker))
-    {}
-    
+    std::vector<std::thread> mPool;
+
     ~ThreadPool()
     {
-        for (auto & thread : mThreadPool)
-            thread.join();  // Sync worker threads.
+        for_each(std::begin(mPool), std::end(mPool), [](auto & t){ t.join(); });
     }
 };
-
 
 // ============================================================================
 // Metafunctions
@@ -80,7 +66,13 @@ class ThreadPool<TTask, ThreadModelStd>
 // ============================================================================
 // Functions
 // ============================================================================
-    
+
+template <typename TCallable, typename TArgs...>
+inline void
+emplaceBack(TCallable callable, TArgs && ...args)
+{
+    mPool.emplace_back(callable, std::forward<TArgs>(args)...);
+}
     
 }  // namespace seqan
 

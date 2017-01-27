@@ -197,6 +197,8 @@ combineMaxScore(TThreadContext & pContext,
                 bool const traceEnabled)
 {
     using TBaseScout = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> >::TBase;
+
+    // We want to encapsulate this away from the DPScout.
     if (pContext.mDpLocalStore.mMaxScore < maxScore(static_cast<TBaseScout const &>(dpScout)))
     {
         pContext.mDpLocalStore.mMaxScore    = maxScore(static_cast<TBaseScout const &>(dpScout));

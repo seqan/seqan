@@ -112,6 +112,8 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
+    
+    //TODO(rrahn): implement the assignment operator.
 };
 
 // ============================================================================

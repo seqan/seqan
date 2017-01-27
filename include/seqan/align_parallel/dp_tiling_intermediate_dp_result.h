@@ -32,16 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SCORE_STORE_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SCORE_STORE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TILING_INTERMEDIATE_DP_RESULT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TILING_INTERMEDIATE_DP_RESULT_H_
 
 namespace seqan
 {
 namespace impl
-{
-namespace dp
-{
-namespace parallel
 {
 
 // ============================================================================
@@ -52,29 +48,26 @@ namespace parallel
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TScalarScoreValue, typename TSimdScoreValue>
-class DPScoreStore
+template <typename TScout>
+struct IntermediateDPResult
 {
-public:
-
     // Typedefs
     // ----------------------------------------------------------------------------
+    using TScout = typename TContext::TScout;
+    using TState = typename TScout::TState;
 
     // Member Variables
     // ----------------------------------------------------------------------------
 
-    TScalarScoreValue mMaxScoreScalar = MinValue<TScoreValue>::VALUE;
-    TSimdScoreValue   mMaxScoreSimd   = MinValue<TSimdScoreValue>::VALUE;
-    size_t            mMaxBlockPos    = 0;
-    size_t            mMaxBlockHId    = 0;
-    size_t            mMaxBlockVId    = 0;
+    TState  mState{};       // Requires: Default-Constructible!, Copy-Constructible!, Move-Constructible+.
+    size_t  mTileCol{0};
+    size_t  mTileRow{0};
 
     // Constructors
     // ----------------------------------------------------------------------------
 
     // Member Functions.
     // ----------------------------------------------------------------------------
-    
 };
 
 // ============================================================================
@@ -85,9 +78,39 @@ public:
 // Functions
 // ============================================================================
 
-}  // namespace parallel
-}  // namespace dp
+template <typename TScout, typename TSingleMaxState>
+void updateMax(IntermediateDPResult<TScout> & me,
+               TSingleMaxState && state,
+               size_t tileCol,
+               size_t tileRow)
+{
+    using TPredicate = IntermediateDPResult<TScout>::TCompPredicate;
+    if (swapStateIf(me.mState, std::forward<TSingleMaxState>(state), TPredicate{}))
+    {
+        me.mTileCol = tileCol;
+        me.mTileRow = tileRow;
+    }
+}
+
+template <typename TScout, typename TSingleMaxState>
+void reset(IntermediateDPResult<TScout> & me)
+{
+    using std::swap;
+
+    using TState = typename IntermediateDPResult<TScout>::TState;
+
+    swap(me.mState, TState{});
+    mTileCol = 0;
+    mTileRow = 0;
+}
+
+template <typename TScout, typename TSingleMaxState>
+auto const & state(IntermediateDPResult<TScout> const & me)
+{
+    return me.mState;
+}
+
 }  // namespace impl
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SCORE_STORE_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TILING_INTERMEDIATE_DP_RESULT_H_

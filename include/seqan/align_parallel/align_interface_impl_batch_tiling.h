@@ -31,14 +31,13 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-//  Implements the new interface for calling alingment algorithms.
-// ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_IMPL_BATCH_TILING_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_IMPL_BATCH_TILING_H_
 
-namespace seqan {
-namespace impl {
+namespace seqan
+{
+    
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -47,120 +46,57 @@ namespace impl {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct ScalarWorker
+// We can define some interface here.
+struct DPTilingStd_;
+using DPTilingStd = Tag<DPTilingStd_>;
+
+namespace impl
 {
 
-    template <typename TQueueContext>
-    inline void
-    operator()(TQueueContext & queueContext)
-    {
-        lockWriting(queueContext.mQueue);
-        while (true)
-        {
-            auto task = popFront(queueContext.mQueue);
-
-            if (task == nullptr)
-                return;
-
-            SEQAN_ASSERT(task != nullptr);
-            task->template execute(queueContext.mQueue, Nothing());
-        }
-    }
-};
-
-struct SimdWorker
-{
-    template <typename TQueueContext>
-    inline void
-    operator()(TQueueContext & queueContext)
-    {
-        using TTask = decltype(popFront(queueContext.mQueue));
-
-        lockWriting(queueContext.mQueue);
-        std::vector<TTask> tasks;
-        while (true)
-        {
-            TTask task = nullptr;
-            tasks.clear();
-            {
-                std::lock_guard<decltype(queueContext.mLock)> scopedLock(queueContext.mLock);
-                task = popFront(queueContext.mQueue);
-                if (task == nullptr)
-                    return;
-
-                if (length(queueContext.mQueue) >= TQueueContext::VECTOR_SIZE - 1)
-                {
-                    for (unsigned i = 0; i < TQueueContext::VECTOR_SIZE - 1; ++i)
-                        tasks.push_back(popFront(*workQueuePtr));
-                }
-            }
-
-            SEQAN_ASSERT(task != nullptr);
-            task->template execute(*workQueuePtr, tasks, mThreadId);
-        }
-    }
-};
+}  // namespace impl
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
+template <typename TSpec>
+struct IsParallelExecutionPolicy<DPTilingStd> : public std::true_type
+{};
+
+// We add a custom metafunction that allows us to further qualify the config object.
+
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TParallelPolicy, typename TSchedulingPolicy>
-struct BatchAlignmentExecutor;
 
-template <typename TParSpec, typename TSchedulingSpec>
-struct BatchAlignmentExecutor<Parallel<TSpec>, Dynamic<TSchedulingSpec>>
+namespace impl
 {
-    template <typename TContext,
-              typename TSeqBatchH,
-              typename TSeqBatchV,
-              typename TDelegate>
-    inline static void run(TContext const & context,
+
+template <>
+struct BatchAlignmentExecutor<DPTilingStd>
+{
+    template <typename TScore, typename TDPTraits, typename TExecutionTraits,
+    typename TSeqBatchH,
+    typename TSeqBatchV,
+    typename TDelegate>
+    inline static void run(DPConfig<TScore, TDPTraits, TExecutionTraits> const & config,
                            TSeqBatchH const & seqBatchH,
                            TSeqBatchV const & seqBatchV,
                            TDelegate && delegate)
     {
-        // We can nothing say about the parallel structure.
-        // We might want to choose a different approach to get the result type.
-        // This can be achieved by defining the IntermediateDPResult by a the context traits.
+        // Now we need to have a parallel context:
+            // * thread_pool.
+            // *
+        // Implement me!
+        using TDPThreadLocalContext = typename SelectScorePolicy<TDPTraits, TExecutionTraits>::Type;
 
-        // TODO(rrahn): Need to update when using more information.
-        using TIntermediate = IntermediateDPResult<typename TTContext::TScout>;
-        using TEnumerableThreadSpecific = EnumerableThreadSpecific<TIntermediate>;  // Can be switched between TBB, and own implementation.
+        impl::ThreadEnumerabelSpecific<DPThreadLocalContext>
+        // config must fulfill a certain interface.
+        std::vector<std::thread> thread_pool;  // resize to getNumThreads(config);
 
-        // Now we need to create an TEnumerableThreadSpecific object.
-        TEnumerableThreadSpecific ets;
-
-        // Now we need to create the ParallelContext.
-        // We need a thread pool.
-        ThreadPool pool;
-
-        using TTask = DPTaskImpl<TTaskContext, TThreadLocalStorage, TVecExecPolicy, ParallelExecutionPolicyNative>;
-        using TWorkQueue = ConcurrentQueue<TTask *>;
-        using TDPThread = DPThread<TWorkQueue, TTaskContext, typename IsVectorExecutionPolicy<TVecExecPolicy>::Type>;
-
-        using TQueueContext = 
-        TQueueContext queueContext;
-
-        // Prepare the tls.
-        std::mutex mtx;
-        // We need a callable with the parameters for
-        // We can start the pool here.
-        // SimdSwitch
-        for (unsigned i = 0; i < numParallelWorkers(context); ++i)
-            emplaceBack(pool, ScalarWorker, std::ref(queueContext));
-
-        waitForWriters(queueContext.mQueue, numParallelWorkers(context));
-        // Now we need to define the context that runs in every AlingmentInstance.
-        // This context needs a reference to the thread_pool
-        // This context needs a reference to the ets
-        // This context needs a reference to the sequences used.
-        // For this we need the callable function.
-
+        // We need the local_thread data.
+        
         ParallelDPAlignmentContext<Parallel<TSpec> >           // Defines the thread pool, the tasks, buffer and thread_local storage and so on ...
         
         // Normally we would create a single AlingmentInstance and call it.
@@ -192,17 +128,7 @@ struct BatchAlignmentExecutor<Parallel<TSpec>, Dynamic<TSchedulingSpec>>
     }
 };
 
-// Now we can implement different strategies to compute the alignment.
-template <typename TScore, typename TDPTraits, typename TExecutionTraits,
-          typename ...Ts>
-void align_batch(DPConfig<TScore, TDPTraits, TExecutionTraits> const & config,
-                 Ts ...&& args)
-{
-    BatchAlignmentExecutor<typename TExecutionTraits::TParallelPolixy, typename TExecutionTraits::TSchedulingPolicy>::run(config, std::forward<Ts>(args)...);
-}
-
 }  // namespace impl
-
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_IMPL_BATCH_TILING_H_

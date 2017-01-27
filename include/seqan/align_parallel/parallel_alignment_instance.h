@@ -45,6 +45,26 @@ namespace seqan
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
+namespace impl {
+    
+template <typename T>
+struct AICallableRaiiWrapper {
+    
+    unique_ptr<T> mData;
+    
+    template <typename ...TArgs>
+    AICallableRaiiWrapper(TArgs && ...args) mData(std::make_unique<T>(std::forward<TArgs>(args)...))
+    {}
+    
+    // Call operator() of the by mData pointed-to object.
+    void operator()()
+    {
+        mData->operator();
+    }
+};
+    
+}  // namespace impl;
     
 template <typename TScore, typename TDPTraits, typename TThreadContext>
 struct DPTaskTraits
@@ -187,8 +207,7 @@ public:
     // Member Functions.
     // ----------------------------------------------------------------------------
     
-    
-
+    // This function now run's in a separate thread.
     inline void
     operator()(uint16_t const mInstanceId)
     {
@@ -225,6 +244,7 @@ public:
             // global prallel section
             // master part triggers execution with queue.
             // sets barrier to end of parallel execution
+        
     }
 };
 
