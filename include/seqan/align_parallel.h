@@ -54,13 +54,15 @@
 #include <seqan/parallel.h>
 
 // ============================================================================
-// Parallel Container/Helper
+// Parallel DataStructures
 // ============================================================================
 
-#include <seqan/align_parallel/parallel_thread_pool_base.h>
-#include <seqan/align_parallel/parallel_thread_pool_std.h>
-#include <seqan/align_parallel/parallel_task_pool_base.h>
-#include <seqan/align_parallel/parallel_task_pool_std.h>
+//#include <seqan/align_parallel/parallel_thread_pool_base.h>
+//#include <seqan/align_parallel/parallel_thread_pool_std.h>
+//#include <seqan/align_parallel/parallel_task_pool_base.h>
+//#include <seqan/align_parallel/parallel_task_pool_std.h>
+#include <seqan/align_parallel/parallel_alignment_instance.h>
+#include <seqan/align_parallel/parallel_alignment_scheduler.h>
 
 // ============================================================================
 // DP Task

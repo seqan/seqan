@@ -336,6 +336,21 @@ _incVerticalPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
     // no-op.
 }
 
+// ----------------------------------------------------------------------------
+//  Function swapStateIf()
+// ----------------------------------------------------------------------------
+
+template <typename TSingleMaxState, typename TPredicate>
+inline bool swapStateIf(TSingleMaxState && lhs, TSingleMaxState && rhs, TPredicate && p)
+{
+    using std::swap;
+
+    if (!p(lhs.mMaxScore, rhs.mMaxScore))
+        return false;
+    swap(lhs, rhs);
+    return true;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
