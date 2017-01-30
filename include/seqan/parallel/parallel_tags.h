@@ -65,8 +65,8 @@ namespace seqan {
  * @brief Tag to select the serial implementation of an algorithm.
  */
 
-struct Parallel_;
-typedef Tag<Parallel_> Parallel;
+//struct Parallel_;
+//typedef Tag<Parallel_> Parallel;
 
 // ----------------------------------------------------------------------------
 // Tag ExecutionPolicy
@@ -74,15 +74,10 @@ typedef Tag<Parallel_> Parallel;
 
 // Dynamic execution policy.
 template <typename TThreadModel = Serial, typename TVectorSpec = Serial>
-class ExecutionPolicy
+struct ExecutionPolicy
 {
     // Member variables.
     size_t numThreads = 1;
-    
-public:
-    // Member functions.
-    size_t getNumThreads(){ return numThreads; }
-    void setNumThreads(size_t const nt){ numThreads = nt; }
 };
 
 // ----------------------------------------------------------------------------
@@ -100,35 +95,28 @@ using Vectorial = Tag<Vectorial_>;
 ExecutionPolicy<Serial, Vectorial> vec{};
 
 // ----------------------------------------------------------------------------
-// Tag ParallelExecutionPolicyTbb
+// Tag Parallel Flags depending on parallel option.
 // ----------------------------------------------------------------------------
 
 #if defined(SEQAN_TBB)
-struct ThreadModelTbb_;
-using ThreadModelTbb = Tag<ThreadModelTbb_>;
-ExecutionPolicy<ThreadModelTbb> parTbb{std::thread::hardware_concurrency()};
-ExecutionPolicy<ThreadModelTbb, Vectorial> parTbbVec{std::thread::hardware_concurrency()};
+struct ParallelTbb_;
+using ParallelTbb = Tag<ParallelTbb_>;
+using Parallel = ParallelTbb;
+ExecutionPolicy<ParallelTbb> par{std::thread::hardware_concurrency()};
+ExecutionPolicy<ParallelTbb, Vectorial> parVec{std::thread::hardware_concurrency()};
+#elsif defined(_OPENMP)
+struct ParallelOmp_;
+using ParallelOmp = Tag<ParallelOmp_>;
+using Parallel = ParallelOmp;
+ExecutionPolicy<ParallelOmp> par{std::thread::hardware_concurrency()};
+ExecutionPolicy<ParallelOmp, Vectorial> parVec{std::thread::hardware_concurrency()};
+#else
+struct ParallelStd_;
+using ParallelStd = Tag<ParallelStd_>;
+using Parallel = ParallelStd;
+ExecutionPolicy<ParallelStd> par{std::thread::hardware_concurrency()};
+ExecutionPolicy<ParallelStd, Vectorial> parVec{std::thread::hardware_concurrency()};
 #endif
-
-// ----------------------------------------------------------------------------
-// Tag ParallelExecutionPolicyOmp
-// ----------------------------------------------------------------------------
-
-#if defined(_OPENMP)
-struct ThreadModelOmp_;
-using ThreadModelOmp = Tag<ThreadModelOmp_>;
-ExecutionPolicy<ThreadModelOmp> parOmp{std::thread::hardware_concurrency()};
-ExecutionPolicy<ThreadModelOmp, Vectorial> parOmpVec{std::thread::hardware_concurrency()};
-#endif
-
-// ----------------------------------------------------------------------------
-// Tag ParallelExecutionPolicyNative
-// ----------------------------------------------------------------------------
-
-struct ThreadModelStd_;
-using ThreadModelStd = Tag<ThreadModelStd_>;
-ExecutionPolicy<ThreadModelStd> parStd{std::thread::hardware_concurrency()};
-ExecutionPolicy<ThreadModelStd, Vectorial> parStdVec{std::thread::hardware_concurrency()};
 
 // ============================================================================
 // Metafunctions
@@ -171,6 +159,25 @@ struct DefaultParallelSpec
 {
     typedef Parallel Type;
 };
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TParallelSpec, typename TVectorizationSpec>
+inline auto
+numThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> const & p)
+{
+    return p.numThreads;
+}
+
+template <typename TParallelSpec, typename TVectorizationSpec>
+inline void
+setNumThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> & p,
+              size_t const nt)
+{
+    p.numThreads = nt;
+}
 
 }  // namespace seqan
 

@@ -434,6 +434,7 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
 //    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
 //        return;
 
+    // bad design to do it here,
     // Some check to get same behavior as old module.
     if (IsTracebackEnabled_<TTraceFlag>::VALUE &&
         ((IsFreeEndGap_<TAlignmentAlgorithm, DPLastColumn>::VALUE && lastCol) ||
@@ -447,6 +448,9 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
         //            maxHostPosition(dpScout); // We only have the trace value not the score value.
         _correctTraceValue(dpTraceMatrixNavigator, dpScout);
     }
+    // bad design to do it here.
+    // rather pass the local tile information back to the caller.
+    // Simply returning the dp_scout.
     combineMaxScore(scoutState.mThreadContext, dpScout, dpTraceMatrix, IsTracebackEnabled_<TTraceFlag>::VALUE);
 //    return dpScout; // Needed for local/semi-global alignment.
 }
@@ -676,6 +680,75 @@ parallelAlign(TExecPolicy const & policy,
     _adaptTraceSegmentsTo(targetH, targetV, trace);  // Convert to corresponding alignment representation.
     return res;
 }
+
+namespace impl
+{
+// ----------------------------------------------------------------------------
+// Function computeTile()
+// ----------------------------------------------------------------------------
+
+template <typename TDPScoreValue, typename TTraceValue, typename TScoreMatHost, typename TTraceMatHost,
+          typename TDPScout,
+          typename TSequenceH,
+          typename TSequenceV,
+          typename TDPConfig>
+inline void
+computeTile(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & dpContext,
+            TDPScout & scout,
+            TSequenceH const & seqH,
+            TSequenceV const & seqV,
+            TDPConfig const & config)
+{
+    using TDPTraits = typename Traits<TDPConfig>::Type;
+
+    using TScoreMatrixSpec = typename DefaultScoreMatrixSpec_<typename TDPTraits::TAlgorithm>::Type;
+    using TScoreValue = typename TDPTraits::TScoreValue;
+    using TTraceValue = typename TDPTraits::TTraceValue;
+
+    using TDPScoreMatrix = DPMatrix_<TScoreValue, TScoreMatrixSpec, TScoreMatHost>;
+    using TDPTraceMatrix = DPMatrix_<TTraceValue, FullDPMatrix, TTraceMatHost>;
+
+    using TDPScoreMatrixNavigator = DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise>;
+    using TDPTraceMatrixNavigator = DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<TTraceFlag>, NavigateColumnWise>;
+
+    using TDPProfile = DPProfile_<typename TDPTraits::TAlgorothm,
+                                  typename TDPTraits::TGap,
+                                  typename TDPTraits::TTraceback,
+                                  Parallel>;
+
+    // Setup the score and trace matrix.
+    TDPScoreMatrix dpScoreMatrix;
+    TDPTraceMatrix dpTraceMatrix;
+
+    setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
+    setLength(dpScoreMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
+
+    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
+    setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
+
+    // Resue the buffer from the cache.
+    setHost(dpScoreMatrix, getDpScoreMatrix(dpContext));
+    setHost(dpTraceMatrix, getDpTraceMatrix(dpContext));
+
+    resize(dpScoreMatrix);
+    // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
+    if /*constexpr*/(IsTracebackEnabled_<typename TDPTraits::TTraceback>::VALUE)
+    {
+        resize(dpTraceMatrix);
+    }
+
+    // Initialize the navigators.
+    TDPScoreMatrixNavigator dpScoreMatrixNavigator;
+    TDPTraceMatrixNavigator dpTraceMatrixNavigator;
+
+    _init(dpScoreMatrixNavigator, dpScoreMatrix, DPBandConfig<BandOff>());
+    _init(dpTraceMatrixNavigator, dpTraceMatrix, DPBandConfig<BandOff>());
+
+    // Execute the alignment.
+    _computeUnbandedAlignment(dpScout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
+                              scoringScheme(config), TDPProfile());
+}
+}  // namespace impl
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_PARALLEL_IMPL_H_

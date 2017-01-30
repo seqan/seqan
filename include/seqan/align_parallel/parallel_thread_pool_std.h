@@ -46,7 +46,12 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-
+template <typename TScoreState, typename TCache>
+struct ThreadLocal
+{
+    TScoreState mState;
+    TCache      mCache;
+};
 
 // Simple Thread Pool.
 class ThreadPool

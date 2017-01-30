@@ -37,6 +37,8 @@
 
 namespace seqan
 {
+namespace impl
+{
 
 // ============================================================================
 // Forwards
@@ -45,8 +47,6 @@ namespace seqan
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
-
-namespace impl {
     
 template <typename T>
 struct AICallableRaiiWrapper {
@@ -63,113 +63,12 @@ struct AICallableRaiiWrapper {
         mData->operator();
     }
 };
-    
-}  // namespace impl;
-    
-template <typename TScore, typename TDPTraits, typename TThreadContext>
-struct DPTaskTraits
-{
-    // ----------------------------------------------------------------------------
-    // Typedefs.
-    // ----------------------------------------------------------------------------
-    
-    // DPTrait type forwarding.
-    using TScoreValue       = typename Value<TScore>::Type;
-    using TAlgorithmType    = typename TDPTraits::TAlgorithmType;
-    using TTracebackType    = typename TDPTraits::TTracebackType;
-    using TGapsType         = typename TDPTraits::TGapsType;
-    
-    // Types needed for the buffer.
-    using TDPCell           = DPCell_<TScoreValue, TGapsType>;
-    using TBufferValue      = Pair<TDPCell, typename TraceBitMap_<>::Type>;
-    using TBuffer           = String<TBufferValue>;
-    using TBlockBuffer      = DPTileBuffer<TBuffer>;
-    
-    // DPProfile type.
-    using TDPProfile        = DPProfile_<TAlgorithmType, TGapsType, TTracebackType, Parallel>;
-    
-    // Parallel type.
-    //    using TIsVectorized     = typename IsVectorized<typename TThreadContext::TExecutionPolicy>::Type;
-    
-    // ----------------------------------------------------------------------------
-    // Static member functions.
-    // ----------------------------------------------------------------------------
-    
-    // TODO(rrahn) Implement me!
-    template <...>
-    static auto createTaskGraph()
-    {
-        return createGraph(taskContext, tls, execPolicy);
-    }
-    
-    // ----------------------------------------------------------------------------
-    // Function createBlockBuffer()
-    // ----------------------------------------------------------------------------
-    
-    template <typename TSeqH, typename TSeqV>
-    static auto createBlockBuffer(TSeqH const & seqH, TSeqV const & seqV, TScore const & score, size_t const blockSize)
-    {
-        TBlockBuffer buffer;
-        resize(buffer.horizontalBuffer, length(seqH), Exact());
-        resize(buffer.verticalBuffer, length(seqV), Exact());
-        
-        TBufferValue tmp;
-        tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), TDPProfile());
-        for (auto itH = begin(buffer.horizontalBuffer, Standard()); itH != end(buffer.horizontalBuffer, Standard()); ++itH)
-        {
-            resize(*itH, length(front(seqH)), Exact());
-            for (auto it = begin(*itH, Standard()); it != end(*itH, Standard()); ++it)
-            {
-                it->i2 = _doComputeScore(it->i1, TDPCell(), tmp.i1, TDPCell(), Nothing(), Nothing(), score, RecursionDirectionHorizontal(), TDPProfile());
-                tmp.i1 = it->i1;
-            }
-        }
-        tmp.i1 = decltype(tmp.i1){};
-        tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), TDPProfile());
-        
-        for (auto itV = begin(buffer.verticalBuffer, Standard()); itV != end(buffer.verticalBuffer, Standard()); ++itV)
-        {
-            resize(*itV, length(front(seqV)) + 1, Exact());
-            auto it = begin(*itV, Standard());
-            it->i2 = tmp.i2;
-            it->i1 = tmp.i1;
-            ++it;
-            for (; it != end(*itV, Standard()); ++it)
-            {
-                it->i2 = _doComputeScore(it->i1, TDPCell(), TDPCell(), tmp.i1, Nothing(), Nothing(), score, RecursionDirectionVertical(), TDPProfile());
-                tmp.i1 = it->i1;
-                tmp.i2 = it->i2;  // TODO(rrahn): Move out of loop.
-            }
-        }
-        return buffer;
-    }
-    
-    // ----------------------------------------------------------------------------
-    // Function createBlocks()
-    // ----------------------------------------------------------------------------
-    
-    template <typename TSeq>
-    static auto createBlocks(TSeq const & seq, size_t const blockSize)
-    {
-        using TIter = typename Iterator<typename Infix<TSeq const>::Type, Standard>::Type;
-        String<Range<TIter>> blocks;
-        resize(blocks, (length(seq) + blockSize - 1) / blockSize, Exact());
-        
-        for (unsigned id = 0; id < length(blocks); ++id)
-            blocks[id] = toRange(infix(seq, id * blockSize, _min(length(seq),(id + 1) * blockSize)));
-        return blocks;
-    }
-    
-};
 
 template <typename TSeqH,
           typename TSeqV,
-          typename TScore,
-          typename TDPConfig,
-          typename TDelegate,
-          typename TThreadContext,
-          typename TDPTaskTraits = DPTaskTraits<TScore, typename Traits<TDPConfig>::Type, TThreadContext>>
-class AlignmentInstance
+          typename TConfig,
+          typename TIncubator = WavefrontIncubator<TConfig>>
+struct AlignmentInstance
 {
 public:
 
@@ -177,56 +76,60 @@ public:
     // Member Variables.
     // ----------------------------------------------------------------------------
 
-    TSeqH     const* mSeqHPtr     = nullptr;
-    TSeqV     const* mSeqVPtr     = nullptr;
-    TScore    const* mScorePtr    = nullptr;
-    TDPConfig const* mDPConfigPtr = nullptr;
-
-    TDelegate &     mDelegate;
-    TThreadContext& mThreadContext;
+    TSeqH const &   mSeqH;
+    TSeqV const &   mSeqV;
+    TConfig const & mDPConfig;
+    size_t          mBlockSize;
     
     // ----------------------------------------------------------------------------
     // Constructors.
     // ----------------------------------------------------------------------------
-    
-    AlignmentInstance(TSeqH const & seqH,
-                      TSeqV const & seqV,
-                      TScore const & score,
-                      TDPConfig const & config,
-                      TDelegate & delegate,
-                      TThreadContext & threadContext) :
-        mSeqHPtr(&seqH),
-        mSeqVPtr(&seqV),
-        mScorePtr(&score),
-        mDPConfigPtr(&config),
-        mDelegate(delegate),
-        mThreadContext(threadContext)
-    {}
 
     // ----------------------------------------------------------------------------
     // Member Functions.
     // ----------------------------------------------------------------------------
     
     // This function now run's in a separate thread.
+    template <typename TConcurrentQueue,
+              typename TEnumerableThreadSpecific,
+              typename TCallback>
     inline void
-    operator()(uint16_t const mInstanceId)
+    operator()(uint16_t const mAlignmentId,
+               TConcurrentQueue & queue,
+               TEnumerableThreadSpecific & ets,
+               TCallback && callback)
     {
         // Initialize the strings.
-        auto seqHBlocks = TDPTaskTraits::createBlocks(*mSeqHPtr, mDPConfigPtr->blockSize);
-        auto seqVBlocks = TDPTaskTraits::createBlocks(*mSeqVPtr, mDPConfigPtr->blockSize);
+        auto seqHBlocks = TIncubator::createBlocks(mSeqH, mBlockSize);
+        auto seqVBlocks = TIncubator::createBlocks(mSeqV, mBlockSize);
         
         // Create the buffer for the matrix.
-        auto buffer = TDPTaskTraits::createBlockBuffer(seqHBlocks, seqVBlocks, *mScorePtr, mDPConfigPtr->blockSize);
-        
+        auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, scoringScheme(mDPConfig), mBlockSize);
+
         // Create trace store -> where presumably the traceback is stored.
+        // Now we can create the DPContext.
         
         // Setup DPTaskContext
         // task context with access to the blocks the score the band, and the buffer and the trace proxy
-        
-        // create DPLocalStoreage as therad local storage.
+        DPTaskContext<TBlocksSeqH, TBlocksSeqV, TIncubator> dpContext{mAlignmentId,
+                                                                      seqHBlocks, seqVBlocks,
+                                                                      scoringScheme(mDPConfig),
+                                                                      queue,
+                                                                      ets};
+        // What could we possibly need?
+        // create DPLocalStorage as thread local storage.
         
         // create task graph -> nothing to do with the parallel framework
-        
+        auto taskGraph = TIncubator::createGraph(taskContext);
+
+        appendValue(queue, firstTask(graph).get());  // Kick off execution.
+
+        // Wait for threads to finish.
+        {
+            std::unique_lock<std::mutex> lck(lastTask(graph)->_taskContext.mLockEvent);
+            lastTask(graph)->_taskContext.mReadyEvent.wait(lck, [&graph]{return lastTask(graph)->_taskContext.mReady;});
+        }
+
         // invoke
             // std::threads -> vector of threads -> get executed with a shared queue.
             // per alignment instance
@@ -244,7 +147,7 @@ public:
             // global prallel section
             // master part triggers execution with queue.
             // sets barrier to end of parallel execution
-        
+        callback(score, trace);
     }
 };
 
@@ -255,7 +158,8 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
-    
+
+}  // namespace impl
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INSTANCE_H_

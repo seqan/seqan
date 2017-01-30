@@ -31,14 +31,16 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-//  Implements the new interface for calling alingment algorithms.
+//  DP Task implementation.
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_STD_2_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_STD_2_H_
 
-namespace seqan {
-namespace impl {
+namespace seqan
+{
+namespace impl
+{
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -47,37 +49,29 @@ namespace impl {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct SimdWorker
+template <typename ...TArgs>
+struct DPTaskStdContext
 {
-    template <typename TQueueContext>
-    inline void
-    operator()(TQueueContext & queueContext)
-    {
-        using TTask = decltype(popFront(queueContext.mQueue));
+    TTaskQueue &        mQueue;
+    TThreadLocal &      mThreadLocal;
+    TTileBuffer &       mBuffer;
+    TSeqBlocksH const & mSeqBlocksH;
+    TSeqBlocksV const & mSeqBlocksV;
+    TDPConfig const &   mConfig;
+    uint16_t            mAlignInstanceId;
 
-        lockWriting(queueContext.mQueue);
-        std::vector<TTask> tasks;
-        while (true)
-        {
-            TTask task = nullptr;
-            tasks.clear();
-            {
-                std::lock_guard<decltype(queueContext.mLock)> scopedLock(queueContext.mLock);
-                task = popFront(queueContext.mQueue);
-                if (task == nullptr)
-                    return;
+    // Notification.
+    std::mutex          lock;
+    std::conditional    readyEvent;
+    bool                ready;
+};
 
-                if (length(queueContext.mQueue) >= TQueueContext::VECTOR_SIZE - 1)
-                {
-                    for (unsigned i = 0; i < TQueueContext::VECTOR_SIZE - 1; ++i)
-                        tasks.push_back(popFront(*workQueuePtr));
-                }
-            }
-
-            SEQAN_ASSERT(task != nullptr);
-            task->template execute(*workQueuePtr, tasks, mThreadId);
-        }
-    }
+template <typename TTaskContext>
+class DPTaskStd : public DPTaskBase<DPTaskStd<TTaskContext>>
+{
+    TTaskContext& mContext;      // A set of shared data.
+    bool          mLastTile;
+    // Context can keep also the simd score.
 };
 
 // ============================================================================
@@ -88,17 +82,20 @@ struct SimdWorker
 // Functions
 // ============================================================================
 
-// Now we can implement different strategies to compute the alignment.
-template <typename TScore, typename TDPTraits, typename TExecutionTraits,
-          typename ...Ts>
-void align_batch(DPConfig<TScore, TDPTraits, TExecutionTraits> const & config,
-                 Ts ...&& args)
+template <typename TTaskContext>
+inline void
+execute(DPTaskStd & task)
 {
-    BatchAlignmentExecutor<typename TExecutionTraits::TParallelPolixy, typename TExecutionTraits::TSchedulingPolicy>::run(config, std::forward<Ts>(args)...);
-}
-
+    inline void
+    executeScalar(task);
+    if (task.mLastTile)
+    {
+        {
+            std::lock_guard<std::mutex> lck(task.mContext.lock);
+            task.mContext.ready = true;
+        }
+        task.mContext.readyEvent.notify_one();
+    }
 }  // namespace impl
-
 }  // namespace seqan
-
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_STD_2_H_

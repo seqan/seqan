@@ -31,14 +31,15 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-//  Implements the new interface for calling alingment algorithms.
-// ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_INTERMEDIATE_RESULT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_INTERMEDIATE_RESULT_H_
 
-namespace seqan {
-namespace impl {
+namespace seqan
+{
+namespace impl
+{
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -47,58 +48,93 @@ namespace impl {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct SimdWorker
+template <typename TDPScout>
+struct IndermediateResultTraits
 {
-    template <typename TQueueContext>
-    inline void
-    operator()(TQueueContext & queueContext)
-    {
-        using TTask = decltype(popFront(queueContext.mQueue));
+    using TScore = typename std::decay<decltype(maxScore(TDPScout{}))>::type;
+    using TPos   = typename std::decay<decltype(maxHostPosition(TDPScout{}))>::type;
 
-        lockWriting(queueContext.mQueue);
-        std::vector<TTask> tasks;
-        while (true)
-        {
-            TTask task = nullptr;
-            tasks.clear();
-            {
-                std::lock_guard<decltype(queueContext.mLock)> scopedLock(queueContext.mLock);
-                task = popFront(queueContext.mQueue);
-                if (task == nullptr)
-                    return;
+    using TState      = std::pair<TScore, TPos>;
+    using TComparator = std::less<TState>;
+};
 
-                if (length(queueContext.mQueue) >= TQueueContext::VECTOR_SIZE - 1)
-                {
-                    for (unsigned i = 0; i < TQueueContext::VECTOR_SIZE - 1; ++i)
-                        tasks.push_back(popFront(*workQueuePtr));
-                }
-            }
+template <typename TDPScout,
+          typename TTraits = IndermediateResultTraits<TDPScout>>
+struct IntermediateResult
+{
+    // Typedefs
+    // ----------------------------------------------------------------------------
 
-            SEQAN_ASSERT(task != nullptr);
-            task->template execute(*workQueuePtr, tasks, mThreadId);
-        }
-    }
+    // Member Variables
+    // ----------------------------------------------------------------------------
+
+    TState  mState{};       // Requires: Default-Constructible!, Copy-Constructible!, Move-Constructible+.
+    size_t  mTileCol{0};
+    size_t  mTileRow{0};
+
+    // Constructors
+    // ----------------------------------------------------------------------------
+
+    // Member Functions.
+    // ----------------------------------------------------------------------------
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
+template <typename TDPScout, typename TTraits>
+struct Traits<IntermediateResult<TDPScout, TTraits>>
+{
+    using Type = TTraits;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
 
-// Now we can implement different strategies to compute the alignment.
-template <typename TScore, typename TDPTraits, typename TExecutionTraits,
-          typename ...Ts>
-void align_batch(DPConfig<TScore, TDPTraits, TExecutionTraits> const & config,
-                 Ts ...&& args)
+template <typename TScout, typename TTraits, typename TState>
+void update(IntermediateResult<TScout, TTraits> & me,
+            TState && state,
+            size_t tileCol,
+            size_t tileRow)
 {
-    BatchAlignmentExecutor<typename TExecutionTraits::TParallelPolixy, typename TExecutionTraits::TSchedulingPolicy>::run(config, std::forward<Ts>(args)...);
+    using TComp = typename TTraits::TComparator;
+    if (TComp{}(me.mState, std::forward<TSingleMaxState>(state)))
+    {
+        std::swap(me.mState, state);
+        me.mTileCol = tileCol;
+        me.mTileRow = tileRow;
+    }
+}
+
+template <typename TScout, typename TTraits, typename TSingleMaxState>
+void reset(IntermediateResult<TScout, TTraits> & me)
+{
+    using std::swap;
+
+    using TState = typename IntermediateResult<TScout>::TState;
+
+    swap(me.mState, TState{});
+    mTileCol = 0;
+    mTileRow = 0;
+}
+
+template <typename TScout, typename TTraits, typename TSingleMaxState>
+auto const & value(IntermediateResult<TScout, TTraits> const & me)
+{
+    return me.mState;
+}
+
+template <typename TAlgorithm>
+bool void isTrackingEnabled(bool const inLastColumn, bool const inLastRow)
+{
+    if (inLastColumn && inLastRow)
+        return true;
+
 }
 
 }  // namespace impl
-
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_INTERMEDIATE_RESULT_H_
