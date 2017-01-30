@@ -61,34 +61,61 @@ public:
     // Typedefs.
     // ----------------------------------------------------------------------------
 
-    using TTaskPool = TTraits::TTaskPool;
+    using TTaskPool = ConcurrentQueue<TCallable, Suspendable<Limit>>;
 
     // Member Variables.
     // ----------------------------------------------------------------------------
     
     std::vector<std::thread> mPool;
+    std::vector<uint16_t>    mRecycableIds;
     TTaskPool                mQueue;
+    std::mutex               mMtx;
 
     // Constructors.
     // ----------------------------------------------------------------------------
 
-    AlignmentScheduler(unsigned const reader) :
+    AlignmentScheduler(unsigned const readerCount) :
     {
-        SEQAN_ASSERT_GT(reader, 0u);  // Bad if reader is 0.
+        SEQAN_ASSERT_GT(readerCount, 0u);  // Bad if reader is 0.
+
+        idBuffer.resize(readerCount);
+        std::iota(std::begin(mRecycableIds), std::end(mRecycableIds), 0);
         
-        setReaderWriterCount(mQueue, reader, 1);
-        
+        setReaderWriterCount(mQueue, readerCount, 1);
+
+        try {
         // Create the threads here, later we can try to make lazy thread creation.
-        for (unsigned i = 0; i < reader; ++i)
-            mPool.emplace_back([this](){
-                for (;;) {
-                    TCallable callable;
-                    if (popFront(callable, mQueue))
-                        callable();  // invokes the alingment.
-                    else
-                        return; // no elements in the queue and no writer registered.
-                }
-            });
+            for (unsigned i = 0; i < readerCount; ++i)
+                mPool.emplace_back([this](){
+                    for (;;) {
+                        TCallable callable;
+                        if (popFront(callable, mQueue))
+                        {
+                            uint16_t id = -1;
+                            {
+                                std::lock_guard<std::mutex> lck(mMtx);
+                                if (mRecycableIds.empty())
+                                    throw std::exception("Exception!");
+                                id = mRecycableIds.pop_back();
+                            }
+                            callable(id);  // invokes the alignment.
+                            { // recycle id, when done.
+                                std::lock_guard<std::mutex> lck(mMtx);
+                                mRecycableIds.push_back(id);
+                            }
+                        }
+                        else
+                            return; // no elements in the queue and no writer registered.
+                    }
+                });
+        }
+        catch(...)
+        {
+            // Catch any error.
+            setReaderWriterCount(mQueue, 0, 0);
+            for_each(mPool.begin(), mPool.end(), [](auto & t){ t.join(); });
+            throw;
+        }
     }
     
     // Default constructor.

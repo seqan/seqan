@@ -52,7 +52,7 @@ namespace seqan
 
 // Tag used to subclass DPScoutState and DPScout.
 // T represents the buffer type.
-template <typename TBuffer, typename TThreadContext, typename TSimdSpec = void>
+template <typename TBuffer, typename TThreadContext = void, typename TSimdSpec = void>
 struct DPTiled;
 
 // ----------------------------------------------------------------------------
@@ -69,10 +69,16 @@ public:
 
     TBuffer* ptrHorBuffer = nullptr;
     TBuffer* ptrVerBuffer = nullptr;
-    TThreadContext mThreadContext;
+    TThreadContext mThreadContext{};
 
+    DPScoutState_() = default;
 //    DPScoutState_() : ptrHorBuffer(nullptr), ptrVerBuffer(nullptr)
 //    {}
+
+    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer) :
+        ptrHorBuffer(&horBuffer),
+        ptrVerBuffer(&verBuffer)
+    {}
 
     DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer, TThreadContext && pThreadContext) :
         ptrHorBuffer(&horBuffer),
@@ -99,7 +105,7 @@ public:
     bool mForceTracking;
     
     DPScout_(DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state,
-             bool pForceTracking) :
+             bool pForceTracking = false) :
         TBase(),
         state(state),
         mForceTracking(pForceTracking)

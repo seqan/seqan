@@ -31,15 +31,14 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
+// Policies used for parallel alignment computation.
+// ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TILING_INTERMEDIATE_DP_RESULT_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TILING_INTERMEDIATE_DP_RESULT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_PARALLEL_EXECUTION_PLOCIES_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_PARALLEL_EXECUTION_PLOCIES_H_
 
 namespace seqan
 {
-namespace impl
-{
-
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -48,26 +47,15 @@ namespace impl
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TScout>
-struct IntermediateDPResult
+template <typename TSpec = void>
+struct ParallelAlignWavefront;
+
+template <typename TSpec, typename TVectorizationSpec>
+struct ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> :
+    public ExecutionPolicy<Parallel, TVectorizationSpec>
 {
-    // Typedefs
-    // ----------------------------------------------------------------------------
-    using TScout = typename TContext::TScout;
-    using TState = typename TScout::TState;
-
-    // Member Variables
-    // ----------------------------------------------------------------------------
-
-    TState  mState{};       // Requires: Default-Constructible!, Copy-Constructible!, Move-Constructible+.
-    size_t  mTileCol{0};
-    size_t  mTileRow{0};
-
-    // Constructors
-    // ----------------------------------------------------------------------------
-
-    // Member Functions.
-    // ----------------------------------------------------------------------------
+    size_t mBlockSize{100};
+    size_t mParallelInstances{numThreads << 1};
 };
 
 // ============================================================================
@@ -78,39 +66,36 @@ struct IntermediateDPResult
 // Functions
 // ============================================================================
 
-template <typename TScout, typename TSingleMaxState>
-void updateMax(IntermediateDPResult<TScout> & me,
-               TSingleMaxState && state,
-               size_t tileCol,
-               size_t tileRow)
+template <typename TSpec, typename TVectorizationSpec>
+inline auto
+blockSize(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> const & p)
 {
-    using TPredicate = IntermediateDPResult<TScout>::TCompPredicate;
-    if (swapStateIf(me.mState, std::forward<TSingleMaxState>(state), TPredicate{}))
-    {
-        me.mTileCol = tileCol;
-        me.mTileRow = tileRow;
-    }
+    return p.mBlockSize;
 }
 
-template <typename TScout, typename TSingleMaxState>
-void reset(IntermediateDPResult<TScout> & me)
+template <typename TSpec, typename TVectorizationSpec>
+inline void
+setBlockSize(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> & p,
+             size_t const bs)
 {
-    using std::swap;
-
-    using TState = typename IntermediateDPResult<TScout>::TState;
-
-    swap(me.mState, TState{});
-    mTileCol = 0;
-    mTileRow = 0;
+    p.mBlockSize = bs;
 }
 
-template <typename TScout, typename TSingleMaxState>
-auto const & state(IntermediateDPResult<TScout> const & me)
+template <typename TSpec, typename TVectorizationSpec>
+inline auto
+parallelInstances(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> const & p)
 {
-    return me.mState;
+    return p.mParallelInstances;
 }
 
-}  // namespace impl
+template <typename TSpec, typename TVectorized>
+inline void
+setParallelInstances(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> & p,
+                     size_t const pi)
+{
+    p.mParallelInstances = pi;
+}
+
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TILING_INTERMEDIATE_DP_RESULT_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_PARALLEL_EXECUTION_PLOCIES_H_
