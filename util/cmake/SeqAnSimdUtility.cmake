@@ -240,8 +240,25 @@ macro(add_simd_platform_tests target)
     # Build the executables, but don't execute them, because clang <= 3.9.x
     # produces executables which contain invalid instructions for AVX512.
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
-        set(umesimd_test_blacklist "avx512_knl;avx512_skx")
-        set(seqansimd_test_blacklist "${umesimd_test_blacklist}")
+
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1)
+            message(STATUS "Clang 3.9.0 produces executables which contain invalid instructions for AVX512_skx and AVX512_knl")
+            set(umesimd_test_blacklist "avx512_knl;avx512_skx")
+            set(seqansimd_test_blacklist "${umesimd_test_blacklist}")
+        endif()
+
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.2)
+            message(STATUS "Clang 3.9.1 produces executables which contain invalid instructions for AVX512_skx (seqan-simd only), see https://llvm.org/bugs/show_bug.cgi?id=31731")
+            set(umesimd_test_blacklist "")
+            set(seqansimd_test_blacklist "avx512_skx")
+        endif()
+
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9.1)
+            message(AUTHOR_WARNING "Clang >=3.9.2 reevaluate if AVX512_skx (seqan-simd only) binaries are working.")
+            set(umesimd_test_blacklist "")
+            set(seqansimd_test_blacklist "")
+        endif()
+
     endif()
 
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9)
