@@ -80,39 +80,39 @@
 #       - adds executables for sse4, avx2, etc. as `target`_sse4, `target`_avx2,
 #         etc. (Will clone the SOURCE, FLAGS and other properties from `target`)
 #       - blacklist: list of architectures that shouldn't be added (e.g. sse4,
-#         avx2, avx512_knl, avx512)
+#         avx2, avx512_knl, avx512_skx)
 #
 #   add_simd_tests(target blacklist) [not required to use explicitly]
 #       - adds tests for executables (targets) specified by add_simd_executables
 #       - blacklist: list of architectures which executables shouldn't be tested
-#         (e.g. sse4, avx2, avx512_knl, avx512)
+#         (e.g. sse4, avx2, avx512_knl, avx512_skx)
 #
 
 find_package (SDE)
 find_package (Umesimd)
 
-set(SEQAN_SIMD_SUPPORTED_EXTENSIONS "sse4;avx2;avx512_knl;avx512")
+set(SEQAN_SIMD_SUPPORTED_EXTENSIONS "sse4;avx2;avx512_knl;avx512_skx")
 
 if (COMPILER_MSVC)
     set(SEQAN_SIMD_SSE4_OPTIONS /arch:AVX)
     set(SEQAN_SIMD_AVX2_OPTIONS /arch:AVX2)
     set(SEQAN_SIMD_AVX512_KNL_OPTIONS "")
-    set(SEQAN_SIMD_AVX512_OPTIONS "")
+    set(SEQAN_SIMD_AVX512_SKX_OPTIONS "")
 elseif (COMPILER_WINTEL)
     set(SEQAN_SIMD_SSE4_OPTIONS /QxSSE4.2)
     set(SEQAN_SIMD_AVX2_OPTIONS /QxCORE-AVX2)
     set(SEQAN_SIMD_AVX512_KNL_OPTIONS /QxMIC-AVX512)
-    set(SEQAN_SIMD_AVX512_OPTIONS /QxCORE-AVX512)
+    set(SEQAN_SIMD_AVX512_SKX_OPTIONS /QxCORE-AVX512)
 elseif (COMPILER_LINTEL)
     set(SEQAN_SIMD_SSE4_OPTIONS -xSSE4.2)
     set(SEQAN_SIMD_AVX2_OPTIONS -xCORE-AVX2)
     set(SEQAN_SIMD_AVX512_KNL_OPTIONS -xMIC-AVX512)
-    set(SEQAN_SIMD_AVX512_OPTIONS -xCORE-AVX512)
+    set(SEQAN_SIMD_AVX512_SKX_OPTIONS -xCORE-AVX512)
 else()
     set(SEQAN_SIMD_SSE4_OPTIONS -msse4)
     set(SEQAN_SIMD_AVX2_OPTIONS -mavx2)
     set(SEQAN_SIMD_AVX512_KNL_OPTIONS -mavx512f -mavx512cd -mavx512er -mavx512pf)
-    set(SEQAN_SIMD_AVX512_OPTIONS -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl)
+    set(SEQAN_SIMD_AVX512_SKX_OPTIONS -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl)
 endif()
 
 macro(transfer_target_property property source_target target_target)
@@ -169,12 +169,12 @@ macro(add_simd_executables target blacklist)
         endif()
     endif()
 
-    if (NOT (";${blacklist};" MATCHES ";avx512;"))
-        clone_target(${target} "${target}_avx512")
-        target_compile_options("${target}_avx512" PRIVATE "${SEQAN_SIMD_AVX512_OPTIONS}")
+    if (NOT (";${blacklist};" MATCHES ";avx512_skx;"))
+        clone_target(${target} "${target}_avx512_skx")
+        target_compile_options("${target}_avx512_skx" PRIVATE "${SEQAN_SIMD_AVX512_SKX_OPTIONS}")
 
         if (COMPILER_MSVC)
-            message(STATUS "avx512 not supported on msvc")
+            message(STATUS "avx512_skx not supported on msvc")
         endif()
     endif()
 endmacro(add_simd_executables)
@@ -199,8 +199,8 @@ macro(add_simd_tests target blacklist)
         add_test(NAME "test_${target}_avx512_knl" COMMAND  ${SDE_EXECUTABLE} -knl -- $<TARGET_FILE:${target}_avx512_knl>)
     endif()
 
-    if (TARGET "${target}_avx512" AND NOT (";${blacklist};" MATCHES ";avx512;"))
-        add_test(NAME "test_${target}_avx512" COMMAND  ${SDE_EXECUTABLE} -skx -- $<TARGET_FILE:${target}_avx512>)
+    if (TARGET "${target}_avx512_skx" AND NOT (";${blacklist};" MATCHES ";avx512_skx;"))
+        add_test(NAME "test_${target}_avx512_skx" COMMAND  ${SDE_EXECUTABLE} -skx -- $<TARGET_FILE:${target}_avx512_skx>)
     endif()
 endmacro(add_simd_tests)
 
@@ -229,18 +229,18 @@ macro(add_simd_platform_tests target)
         #       don't know which consequences this has, we disable it.
         #
         ## ume-simd:
-        # avx512_knl/avx512: gcc4.9 has no complete avx512_knl intrinsics
+        # avx512_knl/avx512_skx: gcc4.9 has no complete avx512_knl intrinsics
         #                    support, which are used in umesimd
         #   error: ‘__mmask32’ does not name a type
         #   error: ‘_mm512_castsi128_si512’ was not declared in this scope
-        set(umesimd_compile_blacklist "avx512_knl;avx512")
-        set(seqansimd_compile_blacklist "avx2;avx512_knl;avx512")
+        set(umesimd_compile_blacklist "avx512_knl;avx512_skx")
+        set(seqansimd_compile_blacklist "avx2;avx512_knl;avx512_skx")
     endif()
 
     # Build the executables, but don't execute them, because clang <= 3.9.x
     # produces executables which contain invalid instructions for AVX512.
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
-        set(umesimd_test_blacklist "avx512_knl;avx512")
+        set(umesimd_test_blacklist "avx512_knl;avx512_skx")
         set(seqansimd_test_blacklist "${umesimd_test_blacklist}")
     endif()
 
@@ -259,8 +259,8 @@ macro(add_simd_platform_tests target)
         ## seqan-simd:
         # avx512_knl: clang compiler 3.6.x crashes on avx512_knl, thus disabling
         #             it also for 3.7.x and 3.8.x, where avx512_knl works
-        set(umesimd_compile_blacklist "avx512_knl;avx512")
-        set(seqansimd_compile_blacklist "avx512_knl;avx512")
+        set(umesimd_compile_blacklist "avx512_knl;avx512_skx")
+        set(seqansimd_compile_blacklist "avx512_knl;avx512_skx")
 
         if (STDLIB_VS)
             ## ume-simd:
@@ -289,7 +289,7 @@ macro(add_simd_platform_tests target)
     if (COMPILER_MSVC)
         # msvc 2015/2017 only supports /arch:AVX and /arch:AVX2, thus don't
         # compile AVX512
-        set(umesimd_compile_blacklist "avx512_knl;avx512")
+        set(umesimd_compile_blacklist "avx512_knl;avx512_skx")
 
         # Don't compile simd-seqan, because it uses a compiler extensions which
         # is not supported by msvc
