@@ -112,7 +112,7 @@ else()
     set(SEQAN_SIMD_SSE4_OPTIONS -msse4)
     set(SEQAN_SIMD_AVX2_OPTIONS -mavx2)
     set(SEQAN_SIMD_AVX512_KNL_OPTIONS -mavx512f -mavx512cd -mavx512er -mavx512pf)
-    set(SEQAN_SIMD_AVX512_OPTIONS -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl -mavx512ifma -mavx512vbmi)
+    set(SEQAN_SIMD_AVX512_OPTIONS -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl)
 endif()
 
 macro(transfer_target_property property source_target target_target)
