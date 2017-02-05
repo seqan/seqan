@@ -37,6 +37,8 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_H_
 
+#include <seqan/basic.h>
+
 // Check if more than simd back end is selected
 #if SEQAN_SEQANSIMD_ENABLED && SEQAN_UMESIMD_ENABLED
     #error UME::SIMD and SEQAN::SIMD are both enabled, you can only use one SIMD back end.
