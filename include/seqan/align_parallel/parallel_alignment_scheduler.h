@@ -63,13 +63,14 @@ public:
 
     using TTaskPool = ConcurrentQueue<TCallable, Suspendable<Limit>>;
 
-    // Member Variables.
+    // Private Member Variables.
     // ----------------------------------------------------------------------------
     
     std::vector<std::thread> mPool;
     std::vector<uint16_t>    mRecycableIds;
     TTaskPool                mQueue;
     std::mutex               mMtx;
+    std::function<void()>    mDeleter = []{};  // empty no-op deleter
 
     // Constructors.
     // ----------------------------------------------------------------------------
@@ -83,35 +84,40 @@ public:
         
         setReaderWriterCount(mQueue, readerCount, 1);
 
-        try {
+        try
+        {
         // Create the threads here, later we can try to make lazy thread creation.
             for (unsigned i = 0; i < readerCount; ++i)
-                mPool.emplace_back([this](){
-                    for (;;) {
+            {
+                mPool.emplace_back([this]()
+                {
+
+                    for (;;)
+                    {
                         TCallable callable;
-                        if (popFront(callable, mQueue))
+                        if (!popFront(callable, mQueue))
+                            break;  // End of thread => No writers and queue is empty.
+
+                        uint16_t id = -1;
                         {
-                            uint16_t id = -1;
-                            {
-                                std::lock_guard<std::mutex> lck(mMtx);
-                                if (mRecycableIds.empty())
-                                    throw std::exception("Exception!");
-                                id = mRecycableIds.pop_back();
-                            }
-                            callable(id);  // invokes the alignment.
-                            { // recycle id, when done.
-                                std::lock_guard<std::mutex> lck(mMtx);
-                                mRecycableIds.push_back(id);
-                            }
+                            std::lock_guard<std::mutex> lck(mMtx);
+                            if (mRecycableIds.empty())
+                                throw std::exception("Exception!");  // TODO(rrahn): Add propper exception.
+                            id = mRecycableIds.pop_back();
                         }
-                        else
-                            return; // no elements in the queue and no writer registered.
+                        callable(id);  // invokes the alignment with assigned id.
+                        { // recycle id, when done.
+                            std::lock_guard<std::mutex> lck(mMtx);
+                            mRecycableIds.push_back(id);
+                        }
                     }
+                    unlockReading(mQueue);  // Nothing is getting into the queue anymore.
                 });
+            }
         }
-        catch(...)
+        catch(...)  // TODO(rrahn): Add correct error handling here.
         {
-            // Catch any error.
+            // Make sure all the spawned threads are safely stopped before re-throwing the exception.
             setReaderWriterCount(mQueue, 0, 0);
             for_each(mPool.begin(), mPool.end(), [](auto & t){ t.join(); });
             throw;
@@ -121,15 +127,34 @@ public:
     // Default constructor.
     AlignmentScheduler() : AlignmentScheduler(1)
     {}
-    
+
+    // Copy & Move C'tor
+    AlignmentScheduler(AlignmentScheduler const &)              = delete;
+    AlignmentScheduler(AlignmentScheduler &&)                   = delete;
+
+    // Special C'tor, to pass in a deleter
+    AlignmentScheduler(unsigned const readerCount, auto && deleter) :
+        AlignmentScheduler(rederCount),
+        mDeleter(std::forward<decltype(deleter)>(deleter))
+    {}
+
+    // Copy & Move assignment
+    AlignmentScheduler& operator=(AlignmentScheduler const &)   = delete;
+    AlignmentScheduler& operator=(AlignmentScheduler &&)        = delete;
+
     // Implicitly deleted copy constructor (because of std::thread).
     // Default move constructor.
     
     // Destructor.
     ~AlignmentScheduler()
     {
-        setReaderWriterCount(mQueue, 0, 0);  // We notify that there is
+        // No more alignments will be added.
+        unlockWriting(mQueue);
+
+        // Join the threads.
         for_each(mPool.begin(), mPool.end(), [](auto & t){ t.join(); });
+
+        mDeleter();
     }
 
     // Member Functions.
@@ -147,50 +172,14 @@ public:
 // Functions
 // ============================================================================
 
-// TODO(rrahn): Remove!
-//template <typename TDPScoreStore, typename TDPTraceStore, typename TExecutionPolicy>
-//inline void
-//init(ParallelAlignScheduler<TDPScoreStore, TDPTraceStore, TExecutionPolicy> & scheduler)
-//{
-//
-//}
-//
-//template <typename TExecutionPolicy, typename TAlignInstances>
-//execute(ParallelAlignScheduler<TExecutionPolicy> & execPolicy,
-//        TAlignInstances & alignInstances)
-//{
-//    using TAlignInstance = typename Value<TAlignInstances>::Type;
-//    using TInstanceTrait = typename Traits<TAlignInstances>::Type;
-//
-//    // Initialize scheduler:
-//
-//
-//    while (!empty(alignInstances))
-//    {
-//        auto& instance = popFront(alignInstances);
-//        SEQAN_ASSERT(instance != nullptr);
-//        std::thread(*instance, std::ref()).detach();  // Invocation must run in detached thread!
-//        ++sharedConfig.runningInstances;
-//        auto& sharedConfig = getSharedConfig(instance);
-//        {
-//            std::unique_lock<decltype(sharedConfig.schedulerLock)> lk(sharedConfig.schedulerLock);
-//            cond.wait_for(lk, []{ sharedConfig.runningInstances < TInstanceTrait::MAX_PARALLEL_INSTANCES; } );
-//        }
-//    }
-//
-//    // Finally wait for running jobs.
-//    std::unique_lock<decltype(sharedConfig.schedulerLock)> lk(sharedConfig.schedulerLock);
-//    cond.wait_for(lk, []{ sharedConfig.runningInstances < TInstanceTrait::MAX_PARALLEL_INSTANCES; } );
-//}
-
 // basic exception-safety guarantee.
 // Throws if appendValue failed.
 template <typename TCallable>
-void schedule(AlignmentScheduler<TCallable> & alignScheduler,
+void schedule(AlignmentScheduler<TCallable> & scheduler,
               TCallable && callable)
 {
     // Spins until there is enough space to add to the queue.
-    if (!appendValue(alignScheduler.mAlignInstanceQueue, std::forward<TCallable>(callable)))
+    if (!appendValue(scheduler.mAlignInstanceQueue, std::forward<TCallable>(callable)))
         throw std::runtime_exception("Called append value on invalid queue. Maybe reader count 0?");
 }
 
