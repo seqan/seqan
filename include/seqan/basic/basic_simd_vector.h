@@ -43,7 +43,7 @@
 #include <tuple>
 
 // Currently only support the following compilers
-#if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
+#if (defined(COMPILER_GCC) && __GNUC__ >= 5) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
     // Define global macro to check if simd instructions are enabled.
     #define SEQAN_SIMD_ENABLED
 
@@ -56,7 +56,9 @@
     #else  // defined(__AVX2__)
         #undef SEQAN_SIMD_ENABLED  // Disable simd if instruction set is not supported.
     #endif  // defined(__AVX2__)
-#endif  // defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
+#elif defined(COMPILER_GCC)
+    #pragma message "Note: Due to performance issues in gcc 4.9 simd accelerated code is disabled."
+#endif  // (defined(COMPILER_GCC) && __GNUC__ >= 5) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
 
 #ifdef SEQAN_SIMD_ENABLED  // Include header with intrinsics.
     #include <x86intrin.h>
