@@ -22,7 +22,7 @@ Prerequisites
 -------------------
 
 Linux, Mac OSX, FreeBSD:
-  * GCC ≥ 4.9
+  * GCC ≥ 4.9 [GCC ≥ 5 recommended]
   * Clang/LLVM ≥ 3.5
   * Intel Compiler ≥ 16.0.2
 Windows:
@@ -36,7 +36,7 @@ Architecture support:
   * many other architectures, including ARM, PowerPC and Sparc64 work, but receive less testing and optimizations
 
 To build tests, demos, and official SeqAn applications you also need:
-  * CMake ≥ 3.0 (http://cmake.org/)
+  * CMake ≥ 3.0 [CMake ≥ 3.4 recommended]
 
 Some of the official applications might have additional requirements or work only on a subset of platforms.
 
