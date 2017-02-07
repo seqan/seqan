@@ -50,18 +50,40 @@ namespace impl
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TConfig_, typename TSpec = ParallelAlignWavefront<>>
+// We use this thread here.
+struct AlignThread
+{
+    template <typename TQueue>
+    inline void
+    operator()(TQueue & queue)
+    {
+        lockWriting(queue);
+        while (true)
+        {
+            auto task = popFront(queue);
+           if (task == nullptr)
+               return;
+
+           SEQAN_ASSERT(task != nullptr);
+           task->execute();
+       }
+   }
+};
+
+
+
+template <typename TDPSettings, typename TSpec = void>
 struct WavefrontIncubator
 {
     // ----------------------------------------------------------------------------
     // Typedefs.
     
     // DPTrait type forwarding.
-    using TConfig           = TConfig_;
-    using TScoreValue       = typename Value<typename TConfig::TScore>::Type;
-    using TAlgorithmType    = typename TConfig::TAlgorithm;
-    using TTracebackType    = typename TConfig::TTraceback;
-    using TGapType          = typename TConfig::TGap;
+    using TDPTraits         = typename Traits<TDPSettings>::Type;
+    using TScoreValue       = typename Value<typename TDPSettings::TScoringScheme>::Type;
+    using TAlgorithmType    = typename TDPTraits::TAlgorithm;
+    using TTracebackType    = typename TDPTraits::TTraceback;
+    using TGapType          = typename TDPTraits::TGap;
     
     // Wavefront Context.
     using TDPCell           = DPCell_<TScoreValue, TGapType>;
@@ -75,9 +97,7 @@ struct WavefrontIncubator
     using TDPScout          = DPScout_<TDPCell, typename ScoutSpecForAlignmentAlgorithm_<TAlgorithmType>::Type>;
 
     // Parallel Context.
-    using TThreadLocal              = ThreadLocal<IntermediateDPResult<typename TIncubator::TScout>,
-                                                  typename TIncubator::TDPCache>::Type;
-    using TEnumerableThreadSpecific = EnumerableThreadSpecific<TThreadLocal>;
+    using TThreadLocal      = ThreadLocal<IntermediateDPResult<TDPScout>, TDPCache>;
 
     // ----------------------------------------------------------------------------
     // Static member functions.
@@ -167,94 +187,6 @@ struct WavefrontIncubator
     
 };
 
-template <typename TExecutionPolicy>
-struct BatchAlignmentExecutor;
-
-template <typename TSpec>
-struct BatchAlignmentExecutor<ExecutionPolicy<ParallelAlignWavefront<TSpec>, Serial>>
-{
-    // We use this thread here.
-    struct AlignThread
-    {
-        template <typename TQueue>
-        inline void
-        operator()(TQueue & queue)
-        {
-            lockWriting(queue);
-            while (true)
-            {
-                auto task = popFront(queue);
-
-                if (task == nullptr)
-                    return;
-
-                SEQAN_ASSERT(task != nullptr);
-                task->execute();
-            }
-        }
-    };
-
-    // We can only support score based alignment for now.
-    template <typename TExecPolicy,
-              typename TSeqBatchH,
-              typename TSeqBatchV,
-              typename TConfig,
-              typename TCallback>
-    inline static void run(TExecPolicy const & execPol,
-                           TSeqBatchH const & seqBatchH,
-                           TSeqBatchV const & seqBatchV,
-                           TDPConfig const & config,
-                           TCallback && callback)
-    {
-        // Sequence types.
-        using TSeqH = typename Value<TSequenceH>::Type;
-        using TSeqV = typename Value<TSequenceV>::Type;
-        // Wavefront Alignment Incubator
-        using TIncubator = WavefrontIncubator<TConfig, ParallelAlignWavefront<TSpec>>;
-        // Definition of TaskContext
-        using TBlocksSeqH = decltype(TIncubator::createBlocks(seqBatchH[0], 1));
-        using TBlocksSeqV = decltype(TIncubator::createBlocks(seqBatchV[0], 1));
-        using TTaskContext = DPTaskContext<TBlocksSeqH, TBlocksSeqV, TIncubator>;
-        // Parallel data structures.
-        using TTask = DPTaskImpl<TTaskContext, Parallel>;
-        using TWorkQueue = ConcurrentQueue<TTask *>;
-        using TEts = typename TIncubator::TEnumerableThreadSpecific;
-
-        // Create instance of task-queue and thread pool.
-        TWorkQueue queue;
-        ThreadPool pool;
-        TEts ets;
-
-        // We need to initialize the ets data structure with the number of paralle alingment instances.
-
-        // Initialiaze thread pool and task queue.
-        for (unsigned i = 0; i < numThreads(execPol); ++i)
-        {
-            emplaceBack(pool, AlignThread, std::ref(queue));
-        }
-        waitForWriters(queueContext.mQueue, numThreads(execPol));
-
-        // Initialize instance of alignment scheduler.
-        using TAlignmentInstance = AlignmentInstance<TSeqH, TSeqV, TConfig, TIncubator>;
-
-        std::function<std::function<void(uint16_t)>(TAlignmentInstance)> aiCaller =
-            [&queue, &ets, &callback](auto && func) mutable {
-                return [&queue, &ets, &callback, func = std::move(func)](uint16_t id) mutable {
-                func(id, queue, ets, std::forward<TCallback>(callback));
-            };
-        };
-
-        using TCallable = decltype(aiCaller(TAlignmentInstance{}));
-        AlignmentScheduler<TCallable> scheduler{parallelInstances(execPol)};
-        // Iterate over pair of sequences.
-        auto zip_cont = make_zip(seqSetH, seqSetV);
-        for (std::tie<seqH, seqV> tie : zip_cont)
-        {
-            schedule(scheduler, aiCaller(TAlignmentInstance{seqH, seqV, config, blockSize(execPol)}));
-        }
-    }
-};
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -263,6 +195,101 @@ struct BatchAlignmentExecutor<ExecutionPolicy<ParallelAlignWavefront<TSpec>, Ser
 // Functions
 // ============================================================================
 
+template <typename TSpec,
+          typename TSetH,
+          typename TSetV,
+          typename TSettings,
+          typename TContinuator>
+inline void
+impl::alignExecBatch(ExecutionPolicy<ParallelWavefront<TSpec>, Serial> const & execPolicy,
+                     TSetH const & setH,
+                     TSetV const & setV,
+                     TSettings const & settings,
+                     TContinuator && callback)
+{
+    using TSeqH = typename Value<TSetH const>::Type;
+    using TSeqV = typename Value<TSetV const>::Type;
+
+    // Wavefront Alignment Incubator
+    using TIncubator = WavefrontIncubator<TSettings, TSpec>;
+
+    // Definition of TaskContext
+    using TBlocksSeqH = decltype(TIncubator::createBlocks(setH[0], 1));
+    using TBlocksSeqV = decltype(TIncubator::createBlocks(setV[0], 1));
+
+    // The context is all the required shared data between the threads.
+    using TTaskContext = DPTaskContext<TBlocksSeqH, TBlocksSeqV, TIncubator>;
+    // Parallel data structures.
+    using TTask = DPTaskImpl<TTaskContext, Parallel>;
+    using TWorkQueue = ConcurrentQueue<TTask *>;
+
+    // Initialize instance of alignment scheduler.
+    using TAlignmentInstance = AlignmentInstance<TSeqH, TSeqV, TSettings, TIncubator>;
+
+    // TODO(rrahn): The next thing we have to do.
+    using TEts = typename TIncubator::TEnumerableThreadSpecific;
+
+    // Create instance of task-queue and thread pool.
+    ThreadPool pool;
+    TWorkQueue queue;
+    TEts ets;
+
+    // We need to initialize the ets data structure with the number of paralle alingment instances.
+
+    // Define the actual execution strategy for the threads.
+    auto threadExecutor = [](auto & queue)
+    {
+        waitForFirstValue(queue);  // Wait for all alignment instances to be setup.
+        lockReading(queue);
+        while (true)
+        {
+            // we have to make sure that we not popping from an empty queue
+            // that has no writers registered anymore.
+            decltype(popFront(queue)) task = nullptr;
+            if (!popFront(task, queue);
+                break;
+
+            SEQAN_ASSERT(task != nullptr);
+            task->execute();
+        }
+        unlockReading(queue);
+    };
+
+    // Initialiaze thread pool and task queue.
+    for (unsigned i = 0; i < numThreads(execPolicy); ++i)
+    {
+        emplaceBack(pool, threadExecutor, std::ref(queue));
+    }
+
+    std::function<std::function<void(uint16_t)>(TAlignmentInstance)> aiCaller =
+    [&queue, &ets, &callback](auto && func) mutable
+    {
+        return [&queue, &ets, &callback, func = std::move(func)](uint16_t id) mutable
+        {
+            func(id, queue, ets, std::forward<TCallback>(callback));
+        };
+    };
+
+    using TCallable = decltype(aiCaller(TAlignmentInstance{}));
+    AlignmentScheduler<TCallable> scheduler{parallelInstances(execPolicy), [&]()
+    {
+        for (unsigned i = 0; i < parallelInstances(execPolicy); ++i)
+            unlockWriting(queue);
+    }};
+
+    // Setup the writers for the queue.
+    for (unsigned i = 0; i < parallelInstances(execPolicy); ++i)
+        lockWriting(queue);
+    waitForWriters(queue);
+
+    // Iterate over pair of sequences.
+    auto zip_cont = make_zip(setH, setV);
+    for (std::tie<seqH, seqV> tie : zip_cont)
+    {
+        schedule(scheduler, aiCaller(TAlignmentInstance{seqH, seqV, settings, blockSize(execPolicy)}));
+    }
+
+}
 }  // namespace impl
 }  // namespace seqan
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGNMENT_IMPL_WAVEFRONT_H_

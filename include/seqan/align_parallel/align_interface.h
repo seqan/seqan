@@ -97,6 +97,106 @@ void align_batch(DPConfig<TScore, TDPTraits, TExecutionTraits> const & config,
     BatchAlignmentExecutor<typename TExecutionTraits::TParallelPolixy, typename TExecutionTraits::TSchedulingPolicy>::run(config, std::forward<Ts>(args)...);
 }
 
+template <typename TExecutionPolicy, typename TSeqH, typename TSeqV, typename TScoringScheme, typename TTraits>
+// traits must fulfill certain semantics.
+inline void
+alignAndThen(TExecutionPolicy const & policy,
+             TSeqH const & seqH,
+             TSeqV const & seqV,
+             DPSettings<TScoringScheme, TTraits> const & settings,
+             TContinuator && callback)
+{
+    // First choose the correct interface for batch or non batch:
+    // TODO(rrahn): Enable constexpr if when c++17
+    if /*constexpr*/ (Is<ContainerConcept<typename Value<TSeqH>::Type>>::VALUE)
+    {
+        // we need a conversion from std::policy to seqan policy?
+        impl::alignExecBatch(execPolicy, seqH, seqV, settings, std::forward<TContinuator>(callback));
+    }
+    else
+    {
+        impl::alignExecSingle(execPolicy, seqH, seqV, settings, std::forward<TContinuator>(callback));
+    }
+}
+
+// Compile time config interface.
+template <typename TExecutionPolicy,
+          typename TSeqH,
+          typename TSeqV,
+          typename TScoringScheme,
+          typename TTraits,
+          typename std::enable_if_t<Is<ContainerConcept<typename Value<TSeqH>::Type>>::VALUE &&
+                                    Is<ContainerConcept<typename Value<TSeqV>::Type>>::VALUE>>
+// traits must fulfill certain semantics.
+inline auto
+align(TExecutionPolicy const & policy,
+      TSeqH const & seqH,
+      TSeqV const & seqV,
+      DPSettings<TScoringScheme, TTraits> const & settings)
+{
+    SEQAN_ASSERT_FAIL("Implement me!");
+
+    // We need a functor that persist the ordering of the sequences?
+    // We could use a map to find store the correct values, by the address of the source.
+    // Not correct execution policy
+    impl::alignBatchAndThan(policy, seqH, seqV, settings, callback);
+//    if /*constexpr*/ (Is<ContainerConcept<typename Value<TSeqH>::Type>>::VALUE)
+//    {
+//        // we need a conversion from std::policy to seqan policy?
+//        impl::alignBatch(execPolicy, seqH, seqV, settings);
+//    }
+//    else  // Run single pairwise alignment.
+//    {
+//        // std::vector<>
+//        impl::alignSingle(execPolicy, seqH, seqV, settings);
+//    }
+}
+
+template <typename TExecutionPolicy,
+          typename TSeqH,
+          typename TSeqV,
+          typename TScoringScheme,
+          typename TTraits,
+          typename std::enable_if_t<!Is<ContainerConcept<typename Value<TSeqH>::Type>>::VALUE &&
+                                    !Is<ContainerConcept<typename Value<TSeqV>::Type>>::VALUE>>
+inline auto
+align(TExecutionPolicy const & policy,
+      TSeqH const & seqH,
+      TSeqV const & seqV,
+      DPSettings<TScoringScheme, TTraits> const & settings)
+{
+    SEQAN_ASSERT_FAIL("Implement me!");
+}
+
+
+// Runtime config interface.
+
+template <typename TExecutionPolicy, typename TSeqH, typename TSeqV, typename TScoringScheme>
+// traits must fulfill certain semantics.
+inline auto
+alignAndThen(TExecutionPolicy const & policy,
+             TSeqH const & seqH,
+             TSeqV const & seqV,
+             AlignmentConfigurator<TScoringScheme> const & configurator,
+             TContinuator && callback)
+{
+    SEQAN_ASSERT_FAIL("Implement me!");
+}
+
+template <typename TExecutionPolicy,
+          typename TSeqH,
+          typename TSeqV,
+          typename TScoringScheme, typename TSpec>
+inline auto
+align(TExecutionPolicy const & policy,
+      TSeqH const & seqH,
+      TSeqV const & seqV,
+      AlignmentConfigurator<TScoringScheme, TSpec> const & configurator)
+{
+    // TODO(rrahn): Implement the conversion pipeline.
+    SEQAN_ASSERT_FAIL("Implement me!");
+}
+
 }  // namespace impl
 
 }  // namespace seqan

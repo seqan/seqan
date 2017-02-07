@@ -59,12 +59,6 @@ namespace impl
 // Metafunctions
 // ============================================================================
 
-template <typename TSpec>
-struct IsParallelExecutionPolicy<DPTilingStd> : public std::true_type
-{};
-
-// We add a custom metafunction that allows us to further qualify the config object.
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -85,48 +79,67 @@ struct BatchAlignmentExecutor<DPTilingStd>
                            TSeqBatchV const & seqBatchV,
                            TDelegate && delegate)
     {
-        // Now we need to have a parallel context:
-            // * thread_pool.
-            // *
-        // Implement me!
-        using TDPThreadLocalContext = typename SelectScorePolicy<TDPTraits, TExecutionTraits>::Type;
-
-        impl::ThreadEnumerabelSpecific<DPThreadLocalContext>
-        // config must fulfill a certain interface.
-        std::vector<std::thread> thread_pool;  // resize to getNumThreads(config);
-
-        // We need the local_thread data.
-        
-        ParallelDPAlignmentContext<Parallel<TSpec> >           // Defines the thread pool, the tasks, buffer and thread_local storage and so on ...
-        
-        // Normally we would create a single AlingmentInstance and call it.
-        // We get the traits for the alingment instance and we need to add a policy for the alignment instance.
-        // All these parameters depend on certain trait values.
-        
-        AlignmentInstance<ParallelDPAlignmentContext> parallelDpContext;
-        
-        // We need to set the number of concurrent Alignments running
-        // We need to propagate the dpTaskPool to the underlying structures.
-        
-        
-        using TSchedulerTraits = typename Traits<Dynamic<TSchedulingPolicy>>::Type;
-        AlignmentScheduler<AICallableRAIIWrapper<TAlignmentInstance>, TSchedulerTraits> scheduler();
-        
-        using TSeqH = typename Value<TSequenceH>::Type;
-        using TSeqV = typename Value<TSequenceV>::Type;
-        
-        auto zip_cont = make_zip(seqSetH, seqSetV);
-        
-        for (std::tie<seqH, seqV> tie : zip_cont)
-        {
-            // Here we call asynchronsly into a concurrent queue.
-            // TODO(rrahn): Lazy thread creation mechanism.
-            // Is supposed to be a callable.
-            // Recycling, becuase we don't allocate more than currently consumed by the list
-            schedule(scheduler, impl::AICallableRaiiWrapper<TAlignmentInstance>{seqH, seqV, config, delegate});
-        }
     }
 };
+
+template <typename TSpec,
+          typename TSetH,
+          typename TSetV,
+          typename TSettings,
+          typename TContinuator>
+inline void
+impl::alignExecBatch(ExecutionPolicy<ParallelWavefront<TSpec>, Serial> const & execPolicy,
+                     TSetH const & seqH,
+                     TSetV const & seqV,
+                     TSettings const & settings,
+                     TContinuator && callback)
+{
+    // Now we need to have a parallel context:
+
+
+    WavefrontIncubator<TSetH, TSetV, TSettings, TSpec> incubator;
+//    Can we now check for the appropriate types that are necessary to define the functionaliy?
+//    Actually we don't know until it is to late.
+
+    // Implement me!
+    using TDPThreadLocalContext = typename SelectScorePolicy<TDPTraits, TExecutionTraits>::Type;
+
+    impl::ThreadEnumerabelSpecific<DPThreadLocalContext>
+    // config must fulfill a certain interface.
+    std::vector<std::thread> thread_pool;  // resize to getNumThreads(config);
+
+    // We need the local_thread data.
+
+
+    ParallelDPAlignmentContext<Parallel<TSpec> >           // Defines the thread pool, the tasks, buffer and thread_local storage and so on ...
+
+    // Normally we would create a single AlingmentInstance and call it.
+    // We get the traits for the alingment instance and we need to add a policy for the alignment instance.
+    // All these parameters depend on certain trait values.
+
+    AlignmentInstance<ParallelDPAlignmentContext> parallelDpContext;
+
+    // We need to set the number of concurrent Alignments running
+    // We need to propagate the dpTaskPool to the underlying structures.
+
+
+    using TSchedulerTraits = typename Traits<Dynamic<TSchedulingPolicy>>::Type;
+    AlignmentScheduler<AICallableRAIIWrapper<TAlignmentInstance>, TSchedulerTraits> scheduler();
+
+    using TSeqH = typename Value<TSequenceH>::Type;
+    using TSeqV = typename Value<TSequenceV>::Type;
+
+    auto zip_cont = make_zip(seqSetH, seqSetV);
+
+    for (std::tie<seqH, seqV> tie : zip_cont)
+    {
+        // Here we call asynchronsly into a concurrent queue.
+        // TODO(rrahn): Lazy thread creation mechanism.
+        // Is supposed to be a callable.
+        // Recycling, becuase we don't allocate more than currently consumed by the list
+        schedule(scheduler, impl::AICallableRaiiWrapper<TAlignmentInstance>{seqH, seqV, config, callback});
+    }
+}
 
 }  // namespace impl
 }  // namespace seqan

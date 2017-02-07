@@ -123,19 +123,37 @@ ExecutionPolicy<ParallelStd, Vectorial> parVec{std::thread::hardware_concurrency
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction IsVectorExecutionPolicy
+// Metafunction IsVectorized
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct IsVectorExecutionPolicy : False
+struct IsVectorized : False
 {};
 
 template <>
-struct IsVectorExecutionPolicy<Vectorial> : True
+struct IsVectorized<Vectorial> : True
 {};
 
 template <typename TPar, typename TVec>
-struct IsVectorExecutionPolicy<ExecutionPolicy<TPar, TVec> > : IsVectorExecutionPolicy<TVec>
+struct IsVectorized<ExecutionPolicy<TPar, TVec> > :
+    public IsVectorized<TVec>
+{};
+
+// ----------------------------------------------------------------------------
+// Metafunction IsParallel
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsParallel : False
+{};
+
+template <>
+struct IsParallel<Parallel> : True
+{};
+
+template <typename TPar, typename TVec>
+struct IsParallel<ExecutionPolicy<TPar, TVec> > :
+    public IsParallel<TPar>
 {};
 
 // ----------------------------------------------------------------------------

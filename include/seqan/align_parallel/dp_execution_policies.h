@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_EXECUTION_POLICIES_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_EXECUTION_POLICIES_H_
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -46,43 +46,36 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// Parallel Modes:
+// ----------------------------------------------------------------------------
+//  Tag ParallelWavefront
+// ----------------------------------------------------------------------------
 
-// SEQ_NOSIMD_NOTILING  -> for loop over all sequences/or sequence and call single alignment.
-// SEQ_NOSIMD_TILING    -> NaN!
-// SEQ_SIMD_NOTILING    -> for loop over all sequences in batches and call on single thread -> do not spawn new thread.
-// SEQ_SIMD_TILING      -> NaN!
+template <typename TSpec = void>
+struct ParallelWavefront;
 
-// For latter options, we want to set the thread number. => default is std::thread::hardware_concurrency();
-// PAR_NOSIMD_NOTILING  -> parallel for loop over all sequences
-// PAR_NOSIMD_TILING    -> alignment_scheduler (QueueSpec<unlimited,limited>, TBBQueue?, STDQueue?)+ thread pool.  // Set the limit on alignment scheduler, set the block size
-// PAR_SIMD_NOTILING    -> parallel for loop over all sequences plus process in vector batches.
-// PAR_SIMD_TILING      -> alignment_scheduler (QueueSpec<unlimited,limited>, TBBQueue?, STDQueue?)+ thread pool + dp task pool.  // Set the limit on alignment scheduler, set the block size
+// ----------------------------------------------------------------------------
+//  Tag ParallelChunking
+// ----------------------------------------------------------------------------
 
-// Use interface as: DPSettings<TScore, TBand, Traits<>>
-template <typename TScoringScheme, typename TDPTraits = DPTraits::GlobalLinear>
-struct DPSettings
-{
-    using TBandConfig = DPBandConfig<typename TDPTraits::TBandPolicy>;
-
-    TScoringScheme  mScoringPolicy;
-    TBandConfig     mBandPolicy;
-};
+struct ParallelChunking;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-template <typename TScoringScheme, typename TTraits>
-struct Traits<DPSettings<TScoringScheme, TTraits>>
-{
-    using Type = TTraits;
-};
+template <typename TSpec>
+struct IsParallel<ParallelWavefront<TSpec>> : True
+{};
+
+template <>
+struct IsParallel<ParallelChunking> : True
+{};
 
 // ============================================================================
 // Functions
 // ============================================================================
     
+    
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_EXECUTION_POLICIES_H_
