@@ -249,3 +249,8 @@ Required additions to C++ compiler flags are in the following variable:
   .. caution::
 
     Please note that these variables include whatever has been added by the dependencies mentioned above so **do not add** e.g. ``${OpenMP_CXX_FLAGS}`` yourself!
+
+Static builds
+^^^^^^^^^^^^^
+
+If you want to build your app statically, please do not use gcc-4.9 or make sure you add the ``-static`` flag **before** calling ``find_package (SeqAn)``. Otherwise a broken binary will be built that crashes immediately.
