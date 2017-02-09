@@ -35,17 +35,17 @@
 #ifndef TESTS_SEQ_IO_TEST_TAG_SELECT_INTERSECT_H_
 #define TESTS_SEQ_IO_TEST_TAG_SELECT_INTERSECT_H_
 
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-#include <seqan/seq_io.h>
-#include <seqan/bam_io.h>
-
 // ---------------------------------------------------------------------------
 // Assign tags to an output file based on the format of input file.
 // ---------------------------------------------------------------------------
 
 void testTransferTag()
 {
+    int offset = 1;
+#if SEQAN_HAS_ZLIB
+    offset = 0;
+#endif
+
     SeqOutFormat outFormat;
     SeqFileIn inputFile;
     seqan::CharString filePath;
@@ -72,7 +72,7 @@ void testTransferTag()
     open(inputFile, toCString(filePath));
     result = tagSelectIntersect(outFormat, inputFile.format);
     SEQAN_ASSERT_EQ(result, true);
-    SEQAN_ASSERT_EQ(outFormat.tagId, 3);
+    SEQAN_ASSERT_EQ(outFormat.tagId, 3 - offset);
     close(inputFile);
 
     filePath = SEQAN_PATH_TO_ROOT();
@@ -80,7 +80,7 @@ void testTransferTag()
     open(inputFile, toCString(filePath));
     result = tagSelectIntersect(outFormat, inputFile.format);
     SEQAN_ASSERT_EQ(result, true);
-    SEQAN_ASSERT_EQ(outFormat.tagId, 4);
+    SEQAN_ASSERT_EQ(outFormat.tagId, 4 - offset);
     close(inputFile);
 
     filePath = SEQAN_PATH_TO_ROOT();
@@ -88,16 +88,18 @@ void testTransferTag()
     open(inputFile, toCString(filePath));
     result = tagSelectIntersect(outFormat, inputFile.format);
     SEQAN_ASSERT_EQ(result, true);
-    SEQAN_ASSERT_EQ(outFormat.tagId, 0);
+    SEQAN_ASSERT_EQ(outFormat.tagId, 1 - offset);
     close(inputFile);
 
+#if SEQAN_HAS_ZLIB
     filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/tests/seq_io/small_sequences.bam");
     open(inputFile, toCString(filePath));
     result = tagSelectIntersect(outFormat, inputFile.format);
     SEQAN_ASSERT_EQ(result, true);
-    SEQAN_ASSERT_EQ(outFormat.tagId, 1);
+    SEQAN_ASSERT_EQ(outFormat.tagId, 0);
     close(inputFile);
+#endif
 }
 
 SEQAN_DEFINE_TEST(test_tag_select_intersect)

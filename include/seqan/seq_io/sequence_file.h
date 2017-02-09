@@ -83,28 +83,26 @@ typedef FormattedFile<Fastq, Output>    SeqFileOut;
  * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
  */
 
+#if SEQAN_HAS_ZLIB
+    typedef TagList<Sam,TagList<Bam > > BamTagList;
+#else
+    typedef TagList<Sam> BamTagList;
+#endif
+
 typedef
     TagList<Fastq,
     TagList<Fasta,
     TagList<Embl,
     TagList<GenBank,
-    TagList<Raw,
-#if SEQAN_HAS_ZLIB
-    TagList<Bam,
-#endif
-    TagList<Sam
-    > > > > > > >
+    TagList<Raw, BamTagList>
+    > > > >
     SeqInFormats;
 
 typedef
     TagList<Fastq,
     TagList<Fasta,
-    TagList<Raw,
-#if SEQAN_HAS_ZLIB
-    TagList<Bam,
-#endif
-    TagList<Sam
-    > > > > >
+    TagList<Raw, BamTagList>
+    > >
     SeqOutFormats;
 
 typedef TagSelector<SeqInFormats>   SeqInFormat;
