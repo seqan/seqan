@@ -44,7 +44,7 @@ namespace seqan {
 // ============================================================================
 
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
-inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
+inline void _update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
     typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
 
@@ -60,7 +60,7 @@ inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndex
 }
 
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
-inline void updateOnGoRight(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
+inline void _updateOnGoRight(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
     typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
 
@@ -98,7 +98,7 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
 
         value(_iter(it, TDirection())).range = _range;
         value(_iter(it, TDirection())).smaller = _smaller;
-        update(it, TDirection());
+        _update(it, TDirection());
     }
 
     value(_iter(it, Fwd())).repLen += lcp;
