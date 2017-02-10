@@ -38,6 +38,7 @@
 
 #define SEQAN_DEBUG
 
+#pragma message "some diagnostic message"
 
 #include <seqan/basic.h>
 
