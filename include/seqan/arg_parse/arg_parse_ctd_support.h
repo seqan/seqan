@@ -173,7 +173,15 @@ _getRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const
              valid != opt.validValues.end();
              ++valid)
         {
-            appendValue(restrictions, *valid);
+            switch (opt._argumentType)
+            {
+                case ArgParseArgument::ArgumentType::BOOL:
+                    if (*valid == "TRUE" || *valid == "FALSE")
+                        appendValue(restrictions, *valid);
+                    break;
+                default:
+                    appendValue(restrictions, *valid);
+            }
         }
     }
     else
@@ -278,6 +286,18 @@ inline std::string _getManual(ArgumentParser const & me)
         manual << _toText(me._description[i]) << std::endl;
     }
     return manual.str();
+}
+
+// ----------------------------------------------------------------------------
+// Function _toValidGnkTypeSpecifier()
+// ----------------------------------------------------------------------------
+
+inline std::string
+_toValidGnkTypeSpecifier(std::string const & type)
+{
+    if (type == "integer")
+        return "int";
+    return type;
 }
 
 // ----------------------------------------------------------------------------
@@ -391,7 +411,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // prefer short name for options
         std::string optionName = _getOptionName(opt);
 
-        std::string type = _typeToString(opt);
+        std::string type = _toValidGnkTypeSpecifier(_typeToString(opt));
 
         // set up restrictions
         std::vector<std::string> restrictions;

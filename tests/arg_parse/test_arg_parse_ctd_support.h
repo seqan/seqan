@@ -55,6 +55,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addDescription(parser, "This is the first line of our test description.");
     addDescription(parser, "The second one contains formating <\\fIbla\\fP>.");
 
+    addOption(parser, seqan::ArgParseOption("b", "bool", "set a bool option", seqan::ArgParseArgument::BOOL));
     addOption(parser, seqan::ArgParseOption("d", "double", "set a double option", seqan::ArgParseArgument::DOUBLE));
     addOption(parser, seqan::ArgParseOption("i", "integer", "set an integer option", seqan::ArgParseArgument::INTEGER));
     setMinValue(parser, "i", "1");
