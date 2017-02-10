@@ -47,11 +47,14 @@
     #if defined(STDLIB_GNU)
         #include <parallel/algorithm>
         #define SORT __gnu_parallel::sort
-#else
+    #else
         #define SORT std::sort
-#endif
+    #endif
 #else
-    #warning "Please enable OpenMP."
+    #define SORT std::sort
+    #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
+        #pragma message("OpenMP not found! Shared-memory parallelization will be disabled in join tool.")
+    #endif  // #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
 #endif  // #ifdef _OPENMP
 
 #include <seqan/basic.h>

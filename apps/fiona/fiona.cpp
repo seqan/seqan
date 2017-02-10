@@ -84,7 +84,7 @@
         #define SORT ::std::sort
     #endif
 #else
-    #warning "Please enable OpenMP."
+    #pragma message("Please enable OpenMP.")
 #endif  // #ifdef _OPENMP
 
 // The q-gram length used for the q-gram index.  This has to be hard-coded as a precompiler definition since it is part
