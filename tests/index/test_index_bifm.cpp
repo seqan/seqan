@@ -196,7 +196,7 @@ SEQAN_TYPED_TEST(BidirectionalFMIndexTest, SearchInStringSet)
         appendValue(revStringSet, revText);
 
         TStringSetIndex index(stringSet);
-        for (unsigned patternLength = 1; patternLength <= 10; ++patternLength)
+        for (unsigned patternLength = 1; patternLength <= 20; ++patternLength)
         {
             TText pattern;
             if (rng() % 2) // guaranteed hit
