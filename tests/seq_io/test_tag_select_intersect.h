@@ -41,6 +41,7 @@
 
 void testTransferTag()
 {
+    // in the case of no ZLIB BAM tag is not in the TagList and tagId is shifted by 1
     int offset = 1;
 #if SEQAN_HAS_ZLIB
     offset = 0;

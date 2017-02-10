@@ -91,7 +91,7 @@ typedef
     TagList<Raw,
     TagList<Sam
 #if SEQAN_HAS_ZLIB
-    , TagList<Bam >
+    , TagList<Bam>
 #endif
     > > > > > >
     SeqInFormats;
@@ -102,7 +102,7 @@ typedef
     TagList<Raw,
     TagList<Sam
 #if SEQAN_HAS_ZLIB
-    , TagList<Bam >
+    , TagList<Bam>
 #endif
     > > > >
     SeqOutFormats;
