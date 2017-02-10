@@ -34,6 +34,8 @@
 // Tests for the sub module basic_fundamental.
 // ==========================================================================
 
+#pragma message "jenkins test"
+
 #include <seqan/basic.h>
 
 #include "test_basic_fundamental_helpers.h"
