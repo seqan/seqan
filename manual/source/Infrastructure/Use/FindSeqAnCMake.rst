@@ -90,21 +90,12 @@ If everything was done with default settings, than you can simply build your pro
 .. code-block:: console
    
    # cmake ../../my_project
-   
-In case you installed SeqAn into a specific <*prefix*> you can tell cmake to add this prefix to search for the ``seqan-config.cmake`` file.
-Assume you chose ``$HOME/local/seqan`` as the installation prefix, than your setup could look as the following:
 
-.. code-block:: console
-   
-   # cmake ../../my_project \
-      -DCMAKE_PREFIX_PATH="$HOME/local/seqan"
+Install SeqAn into user defined prefix or clone from GitHub
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-SeqAn from GitHub clone
-~~~~~~~~~~~~~~~~~~~~~~~
-
-In case you obtained SeqAn from a git clone, we still recommend to use the method described above and set the ``CMAKE_PREFIX_PATH`` to your SeqAn clone.
-But in addition you also have to specify the ``SEQAN_INCLUDE_PATH`` variable to find the SeqAn headers. 
+In case you obtained SeqAn from a git clone, or installed SeqAn into a user defined location, you need to specify the install location by setting the ``CMAKE_PREFIX_PATH`` in your cmake call.
+In addition you also have to specify the ``SEQAN_INCLUDE_PATH`` variable to find the SeqAn headers. 
 Assume you have cloned SeqAn into ``~/devel/seqan``, then your setup could look as the following:
 
 .. code-block:: console
@@ -117,8 +108,8 @@ Backwards compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Before SeqAn 2.3 we used the module mode to setup SeqAn as an external project.
-To allow backwards compatibility we added a symlink from the ``FindSeqAn.cmake`` to ``seqan-config.cmake``.
-In this case configuing your project with the old approach, will still work:
+To allow backwards compatibility we added a redirect from the ``FindSeqAn.cmake`` to ``seqan-config.cmake`` in our sources.
+In this case configuing your project with the old approach using the ``CMAKE_MODULE_PATH`` variable, will still work:
 
 .. code-block:: console
    
