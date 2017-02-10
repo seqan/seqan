@@ -70,24 +70,19 @@
 
 #endif
 
+#include <seqan/platform.h>
 
 #if defined(_OPENMP)
     #include <omp.h>
     #define SEQAN_PARALLEL      // Only enable parallelism in fiona if OpenMP is enabled.
     #define FIONA_PARALLEL		// divide suffix tree into subtrees for each possible 3-gram
-                                // and use process subtrees in parallel
-    #if !defined(__MINGW32__) || defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
-    // The parallel STL generates warnings in MinGW: "...parallel/compatibility.h:167:42: note: #pragma message: slow __fetch_and_add_64".
-    // Thus, we do not enable it in this case.
-        #define _GLIBCXX_PARALLEL
-    #endif  // #if !defined(__MINGW32__) || defined(__amd64__) || defined(__x86_64__) || defined(__ia64__)
 
-    #if defined(__INTEL_COMPILER)
-        #pragma message("The Intel Compiler crashes with _GLIBCXX_PARALLEL defined (at least until v16.0.2). Therefore, the feature will be disabled.")
-        #if __INTEL_COMPILER < 1600 || (__INTEL_COMPILER == 1600 && __INTEL_COMPILER_UPDATE <= 2)
-            #undef _GLIBCXX_PARALLEL
-        #endif
-    #endif // #if defined(__INTEL_COMPILER)
+    #if defined(STDLIB_GNU)
+        #include <parallel/algorithm>
+        #define SORT ::__gnu_parallel::sort
+    #else
+        #define SORT ::std::sort
+    #endif
 #else
     #warning "Please enable OpenMP."
 #endif  // #ifdef _OPENMP
@@ -661,7 +656,7 @@ namespace seqan
             }
         
         // sort them descendingly by bucket size
-        ::std::sort(begin(bktIdx, Standard()), end(bktIdx, Standard()), GreaterBucketSize<TDir>(dir));
+        SORT(begin(bktIdx, Standard()), end(bktIdx, Standard()), GreaterBucketSize<TDir>(dir));
         
         // mask for removal of the largest buckets that 
         // contain overall at most 2% of all suffixes
@@ -715,7 +710,7 @@ namespace seqan
             }
         
         // sort them descendingly by bucket size
-        ::std::sort(begin(bktIdx, Standard()), end(bktIdx, Standard()), GreaterBucketSize<TDir>(dir));
+        SORT(begin(bktIdx, Standard()), end(bktIdx, Standard()), GreaterBucketSize<TDir>(dir));
 
         TBktIter itFirst = begin(bktIdx, Standard());
         TBktIter itLast = end(bktIdx, Standard());
@@ -1730,7 +1725,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         //sorting by Position first to get the best correction per Position
         //sorting is done arbitrarily from large to small(right to left)
 
-        std::sort(begin(possibleCorrections, Standard()), end(possibleCorrections, Standard()), LessPositionOverlap<CorrectionIndelPos>());
+        SORT(begin(possibleCorrections, Standard()), end(possibleCorrections, Standard()), LessPositionOverlap<CorrectionIndelPos>());
 
 #ifndef FIONA_NO_SEPARATE_OVERLAPSUM
 	//only remove if several corrections per position are saved
@@ -1780,7 +1775,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 
         //sorting by overlap sum now
 #ifndef FIONA_NOERROROPTIMIZATION    //dont sort in random encounter (local) mode
-        std::sort(begin(possibleCorrections, Standard()), end(possibleCorrections, Standard()), LessOverlap<CorrectionIndelPos>());
+        SORT(begin(possibleCorrections, Standard()), end(possibleCorrections, Standard()), LessOverlap<CorrectionIndelPos>());
 #endif
         //go through all Correction struct and keep the ones with highest overlapsum
         // and without conflict in terms of error type
@@ -4947,7 +4942,7 @@ unsigned correctReads(
 	if (inTerm && options.verbosity >= 1)
         std::cerr << "done. (" << SEQAN_PROTIMEDIFF(search) << " seconds)" << std::endl;
 
-    std::sort(begin(resourcesPerPackage, Standard()), end(resourcesPerPackage, Standard()));
+    SORT(begin(resourcesPerPackage, Standard()), end(resourcesPerPackage, Standard()));
 	if (inTerm && options.verbosity >= 2)
     {
         std::cerr << std::endl;

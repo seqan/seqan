@@ -797,7 +797,7 @@ void build(DbIndex<Index<TText, TIndexSpec>, TDbIndexSpec> & dbIndex,
         for (int i = 1; i < (int)length(dir); ++i)
         {
             if (dir[i - 1] + 1 < dir[i])
-                std::sort(
+                SORT(
                     saBegin + dir[i - 1],
                     saBegin + dir[i],
                     QGramLessOffset_<TIndexSAPos, TText const>(text, maxSeedLength, shapeLength));
@@ -833,7 +833,7 @@ void build(DbIndex<Index<TText, TIndexSpec>, TDbIndexSpec> & dbIndex,
 //    }
 //
 //    QGramLess_<TIndexSAPos, TText const> less(db.text, MaxValue<TTextSize>::VALUE);
-//    std::sort(begin(sa, Standard()), end(sa, Standard()), less);
+//    SORT(begin(sa, Standard()), end(sa, Standard()), less);
 }
 
 // ----------------------------------------------------------------------------
@@ -953,7 +953,7 @@ void _buildSA(TIndexSAFibre & sa,
 
     // Construct index using quicksort.
     QGramLess_<TIndexSAPos, TText const> less(db.text, seedLength);
-    std::sort(begin(sa, Standard()), end(sa, Standard()), less);
+    SORT(begin(sa, Standard()), end(sa, Standard()), less);
 }
 
 // ----------------------------------------------------------------------------
