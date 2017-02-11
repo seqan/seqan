@@ -7,5 +7,5 @@ Description: C++ library for biological sequence analysis
 URL: http://www.seqan.de
 Version: @SEQAN_VERSION_STRING@
 Requires: zlib
-Cflags: -I${includedir}  @SEQAN_PKGCFG_CFLAGS@ -DSEQAN_HAS_ZLIB=1 -DSEQAN_HAS_BZIP2=1
+Cflags: -I${includedir} -DSEQAN_HAS_ZLIB=1 -DSEQAN_HAS_BZIP2=1
 Libs: -lbz2
