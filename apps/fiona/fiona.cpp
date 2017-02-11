@@ -79,12 +79,8 @@
 
     #if defined(STDLIB_GNU)
         #include <parallel/algorithm>
-        #define PARALLELTAG Parallel()
-    #else
-        #define PARALLELTAG Serial()
     #endif
 #else
-    #define PARALLELTAG Serial()
     #pragma message("Please enable OpenMP.")
 #endif  // #ifdef _OPENMP
 
@@ -657,7 +653,7 @@ namespace seqan
             }
         
         // sort them descendingly by bucket size
-        sort(bktIdx, GreaterBucketSize<TDir>(dir), PARALLELTAG);
+        sort(bktIdx, GreaterBucketSize<TDir>(dir), Parallel());
         
         // mask for removal of the largest buckets that 
         // contain overall at most 2% of all suffixes
@@ -711,7 +707,7 @@ namespace seqan
             }
         
         // sort them descendingly by bucket size
-        sort(bktIdx, GreaterBucketSize<TDir>(dir), PARALLELTAG);
+        sort(bktIdx, GreaterBucketSize<TDir>(dir), Parallel());
 
         TBktIter itFirst = begin(bktIdx, Standard());
         TBktIter itLast = end(bktIdx, Standard());
@@ -1726,7 +1722,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         //sorting by Position first to get the best correction per Position
         //sorting is done arbitrarily from large to small(right to left)
 
-        sort(possibleCorrections, LessPositionOverlap<CorrectionIndelPos>(), PARALLELTAG);
+        sort(possibleCorrections, LessPositionOverlap<CorrectionIndelPos>(), Parallel());
 
 #ifndef FIONA_NO_SEPARATE_OVERLAPSUM
 	//only remove if several corrections per position are saved
@@ -1776,7 +1772,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 
         //sorting by overlap sum now
 #ifndef FIONA_NOERROROPTIMIZATION    //dont sort in random encounter (local) mode
-        sort(possibleCorrections, LessOverlap<CorrectionIndelPos>(), PARALLELTAG);
+        sort(possibleCorrections, LessOverlap<CorrectionIndelPos>(), Parallel());
 #endif
         //go through all Correction struct and keep the ones with highest overlapsum
         // and without conflict in terms of error type
@@ -4943,7 +4939,7 @@ unsigned correctReads(
 	if (inTerm && options.verbosity >= 1)
         std::cerr << "done. (" << SEQAN_PROTIMEDIFF(search) << " seconds)" << std::endl;
 
-    sort(resourcesPerPackage, PARALLELTAG);
+    sort(resourcesPerPackage, Parallel());
 	if (inTerm && options.verbosity >= 2)
     {
         std::cerr << std::endl;

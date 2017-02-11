@@ -802,7 +802,7 @@ void build(DbIndex<Index<TText, TIndexSpec>, TDbIndexSpec> & dbIndex,
 	        sort(
 		    infixSA,
 		    QGramLessOffset_<TIndexSAPos, TText const>(text, maxSeedLength, shapeLength),
-		    PARALLELTAG);
+		    Parallel());
             }
 //            typename Infix<TIndexSAFibre>::Type saInf = infix(sa, dir[i - 1], dir[i]);
 //            _refineQGramIndexBucket(
@@ -835,7 +835,7 @@ void build(DbIndex<Index<TText, TIndexSpec>, TDbIndexSpec> & dbIndex,
 //    }
 //
 //    QGramLess_<TIndexSAPos, TText const> less(db.text, MaxValue<TTextSize>::VALUE);
-//    sort(sa, less, PARALLELTAG);
+//    sort(sa, less, Parallel());
 }
 
 // ----------------------------------------------------------------------------
@@ -955,7 +955,7 @@ void _buildSA(TIndexSAFibre & sa,
 
     // Construct index using quicksort.
     QGramLess_<TIndexSAPos, TText const> less(db.text, seedLength);
-    sort(sa, less, PARALLELTAG);
+    sort(sa, less, Parallel());
 }
 
 // ----------------------------------------------------------------------------

@@ -46,12 +46,8 @@
 
     #if defined(STDLIB_GNU)
         #include <parallel/algorithm>
-        #define PARALLELTAG Parallel()
-    #else
-        #define PARALLELTAG Serial()
     #endif
 #else
-    #define PARALLELTAG Serial()
     #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
         #pragma message("OpenMP not found! Shared-memory parallelization will be disabled in search tool.")
     #endif  // #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
