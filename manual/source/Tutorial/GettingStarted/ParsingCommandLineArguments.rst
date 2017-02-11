@@ -602,30 +602,35 @@ With the seqan-2.3.0 release applications, using the :dox:`ArgumentParser`, chec
 
 Customized Messages
 """""""""""""""""""
-The version information you receive depends on whether you are an application user or developer. We differentiate this by inquiring the ``NDEBUG`` (no debug) macro.
+The version information you receive depends on whether you are an application user or developer.
+We differentiate this by inquiring the ``NDEBUG`` (no debug) macro.
 
-#. Case: ``NDEBUG`` **is set**. Its the default in our application and represents that you ara a user. The only message you will eventually encounter is the following:
-  .. code-block:: console
+#. Case: ``NDEBUG`` **is set**. Its the default in our application and represents that you ara a user.
+The only message you will eventually encounter is the following:
 
-      [APP INFO] :: There is a newer version of this application available.
-      [APP INFO] :: If this app is developed by SeqAn, visit www.seqan.de for updates.
-      [APP INFO] :: If you don't want to recieve this message again set --version_check OFF
+.. code-block:: console
 
-#. Case: ``NDEBUG`` **is NOT set**. If you build one of our application or your own one in debug mode, we will consider you as a developer. Therefore we will inform you whenever a new library version is available:
-  .. code-block:: console
+    [APP INFO] :: There is a newer version of this application available.
+    [APP INFO] :: If this app is developed by SeqAn, visit www.seqan.de for updates.
+    [APP INFO] :: If you don't want to recieve this message again set --version_check OFF
 
-      [SEQAN INFO] :: There is a newer SeqAn version available!
-      [SEQAN INFO] :: Please visit www.seqan.de for an update or inform the developer of this app.
-      [SEQAN INFO] :: If you don't want to recieve this message again set --version-check OFF
+#. Case: ``NDEBUG`` **is NOT set**. If you build one of our application or your own one in debug mode, we will consider you as a developer.
+Therefore we will inform you whenever a new library version is available:
+
+.. code-block:: console
+
+    [SEQAN INFO] :: There is a newer SeqAn version available!
+    [SEQAN INFO] :: Please visit www.seqan.de for an update or inform the developer of this app.
+    [SEQAN INFO] :: If you don't want to recieve this message again set --version-check OFF
 
   If you are working on your own application, using the SeqAn ArgumentParser, we will inform you about the possibility to register your application with us. This will make the distribution of your application version simple and convenient.
 
-  .. code-block:: console
+.. code-block:: console
 
-      [SEQAN INFO] :: Thank you for using SeqAn!
-      [SEQAN INFO] :: You might want to regsiter you app for support and version check features?
-      [SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.
-      [SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF
+    [SEQAN INFO] :: Thank you for using SeqAn!
+    [SEQAN INFO] :: You might want to regsiter you app for support and version check features?
+    [SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.
+    [SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF
   
 
 The information we do (not) collect
@@ -633,7 +638,9 @@ The information we do (not) collect
 The process of checking for a new version happens at most once a day and takes at most three seconds enforced by an internal timeout.
 
 .. note::
-  The runtime of your application might be slightly affected by the process of checkng the version. You might want to temporarily switch off the option while doing sensible performance measurements (``--version-check OFF``).
+
+    The runtime of your application might be slightly affected by the process of checkng the version. 
+    You might want to temporarily switch off the option while doing sensible performance measurements (``--version-check OFF``).
 
 The following information is transmitted to the servers solely via the URL:
 
@@ -647,7 +654,10 @@ Beyond the update information, we may count the total number of version requests
 This may be used for anonymized analysis by the SeqAn team, but raw data is never shared with third parties.
 
 .. attention::
-  There is no form of user identification and no tracking. IP-Addresses are never stored permanently. SeqAn collects no information regarding your use of the application, like selected options or arguments provided, and of course no information on your files!
+
+    There is no form of user identification and no tracking. 
+    IP-Addresses are never stored permanently. 
+    SeqAn collects no information regarding your use of the application, like selected options or arguments provided, and of course no information on your files!
 
 Disable this feature any time you want
 """"""""""""""""""""""""""""""""""""""
