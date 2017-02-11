@@ -79,11 +79,12 @@
 
     #if defined(STDLIB_GNU)
         #include <parallel/algorithm>
-        #define SORT ::__gnu_parallel::sort
+        #define PARALLELTAG Parallel()
     #else
-        #define SORT ::std::sort
+        #define PARALLELTAG Serial()
     #endif
 #else
+    #define PARALLELTAG Serial()
     #pragma message("Please enable OpenMP.")
 #endif  // #ifdef _OPENMP
 
@@ -656,7 +657,7 @@ namespace seqan
             }
         
         // sort them descendingly by bucket size
-        SORT(begin(bktIdx, Standard()), end(bktIdx, Standard()), GreaterBucketSize<TDir>(dir));
+        sort(bktIdx, GreaterBucketSize<TDir>(dir), PARALLELTAG);
         
         // mask for removal of the largest buckets that 
         // contain overall at most 2% of all suffixes
@@ -710,7 +711,7 @@ namespace seqan
             }
         
         // sort them descendingly by bucket size
-        SORT(begin(bktIdx, Standard()), end(bktIdx, Standard()), GreaterBucketSize<TDir>(dir));
+        sort(bktIdx, GreaterBucketSize<TDir>(dir), PARALLELTAG);
 
         TBktIter itFirst = begin(bktIdx, Standard());
         TBktIter itLast = end(bktIdx, Standard());
@@ -1725,7 +1726,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         //sorting by Position first to get the best correction per Position
         //sorting is done arbitrarily from large to small(right to left)
 
-        SORT(begin(possibleCorrections, Standard()), end(possibleCorrections, Standard()), LessPositionOverlap<CorrectionIndelPos>());
+        sort(possibleCorrections, LessPositionOverlap<CorrectionIndelPos>(), PARALLELTAG);
 
 #ifndef FIONA_NO_SEPARATE_OVERLAPSUM
 	//only remove if several corrections per position are saved
@@ -1775,7 +1776,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 
         //sorting by overlap sum now
 #ifndef FIONA_NOERROROPTIMIZATION    //dont sort in random encounter (local) mode
-        SORT(begin(possibleCorrections, Standard()), end(possibleCorrections, Standard()), LessOverlap<CorrectionIndelPos>());
+        sort(possibleCorrections, LessOverlap<CorrectionIndelPos>(), PARALLELTAG);
 #endif
         //go through all Correction struct and keep the ones with highest overlapsum
         // and without conflict in terms of error type
@@ -4942,7 +4943,7 @@ unsigned correctReads(
 	if (inTerm && options.verbosity >= 1)
         std::cerr << "done. (" << SEQAN_PROTIMEDIFF(search) << " seconds)" << std::endl;
 
-    SORT(begin(resourcesPerPackage, Standard()), end(resourcesPerPackage, Standard()));
+    sort(resourcesPerPackage, PARALLELTAG);
 	if (inTerm && options.verbosity >= 2)
     {
         std::cerr << std::endl;

@@ -46,12 +46,12 @@
 
     #if defined(STDLIB_GNU)
         #include <parallel/algorithm>
-        #define SORT __gnu_parallel::sort
+        #define PARALLELTAG Parallel()
     #else
-        #define SORT std::sort
+        #define PARALLELTAG Serial()
     #endif
 #else
-    #define SORT std::sort
+    #define PARALLELTAG Serial()
     #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
         #pragma message("OpenMP not found! Shared-memory parallelization will be disabled in join tool.")
     #endif  // #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
