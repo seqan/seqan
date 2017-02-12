@@ -73,16 +73,22 @@ For example, we can already let the program generate an online help:
    SYNOPSIS
 
    DESCRIPTION
+
+   REQUIRED ARGUMENTS
+       TEXT STRING
+
+   OPTIONS
        -h, --help
-	     Displays this help message.
-       -i, --period INT
-	     Period to use for the index.
+             Display the help message.
+       -i, --period INTEGER
+             Period to use for the index.
        -U, --uppercase
-	     Select to-uppercase as operation.
+             Select to-uppercase as operation.
 
    VERSION
+       Last update:
        modify_string version:
-       Last update
+       SeqAn version: 2.3.1
 
 While already informative, the help screen looks like there is something missing.
 For example, there is no synopsis, no version and no date of the last update given.
@@ -323,15 +329,8 @@ Of course, this only works with integer- and double-typed command line options.
 We can pass both the short and the long option name to these functions.
 The value is given as a string and parsed the same as parameters on the command line.
 
-.. code-block:: cpp
-
-   seqan::ArgumentParser parser("modify_string");
-   addOption(parser, seqan::ArgParseOption(
-       "i", "integer-value", "An integer option",
-       seqan::ArgParseArgument::INTEGER, "INT"));
-
-   setMinValue(parser, "i", "10");
-   setMaxValue(parser, "integer-value", "20");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: setMinMax
 
 Assignment 4
 """"""""""""
@@ -356,14 +355,8 @@ Marking Options as Required
 
 We can mark options as being required using the function :dox:`ArgumentParser#setRequired`:
 
-.. code-block:: cpp
-
-   seqan::ArgumentParser parser("modify_string");
-   addOption(parser, seqan::ArgParseOption(
-       "i", "integer-value", "An integer option",
-       seqan::ArgParseArgument::INTEGER, "INT"));
-
-   setRequired(parser, "i");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: setRequired
 
 Setting List of Valid Values
 """"""""""""""""""""""""""""
@@ -372,14 +365,8 @@ Sometimes, it is useful to give a list of valid values for a command line option
 You can give it as a space-separated list in a string to :dox:`ArgumentParser#setValidValues`.
 The check whether the value from the command line is valid is case sensitive.
 
-.. code-block:: cpp
-
-    seqan::ArgumentParser parser("modify_string");
-    addOption(parser, seqan::ArgParseOption(
-        "", "distance-model", "Distance model, either HAMMING or EDIT.",
-        seqan::ArgParseArgument::STRING, "STR"));
-
-    setValidValues(parser, "distance-model", "HAMMING EDIT");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: setValidValues
 
 More Option and Argument Types
 ------------------------------
@@ -400,32 +387,21 @@ However, there are two special argument/option types ``ArgParseArgument::INPUT_F
 
 Here is an example for defining input and output file arguments:
 
-.. code-block:: cpp
-
-   addOption(parser, seqan::ArgParseOption(
-       "I", "input-file", "Path to the input file",
-       seqan::ArgParseArgument::INPUT_FILE, "IN"));
-   addOption(parser, seqan::ArgParseOption(
-       "O", "output-file", "Path to the output file",
-       seqan::ArgParseArgument::OUTPUT_FILE, "OUT"));
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: addFileOption
 
 The restrictions are added by defining the expected file extension.
 
-.. code-block:: cpp
-
-   setValidValues(parser, "input-file", "txt");
-   setValidValues(parser, "output-file", "txt");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: addFileExtension
 
 Again multiple values are provided as space-separated list.
 Note that the file ending check is case insensitive, so you do not need to provide ``txt`` and ``TXT``.
 
 You can simply read the values of these options as you would read string options:
 
-.. code-block:: cpp
-
-    seqan::CharString inputFileName, outputFileName;
-    seqan::getOptionValue(inputFileName, parser, "input-file");
-    seqan::getOptionValue(outputFileName, parser, "output-file");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: readFile
 
 
 Assignment 5
@@ -455,12 +431,8 @@ Tuples
 We can define an :dox:`ArgParseArgument` and :dox:`ArgParseOption` to be a tuple with a fixed number of arguments.
 For example, an integer pair (tuple with two entries) could describe a range:
 
-.. code-block:: cpp
-
-   addOption(parser, seqan::ArgParseOption(
-       "r", "range", "The range to modify.",
-       seqan::ArgParseArgument::INTEGER, "BEGIN END",
-       false, 2));
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: tupleOption
 
 We add two parameters after the label ``"BEGIN END"`` for the documentation.
 First, we specify that the option is not a list option (``false``) and second, that we need exactly two numbers for it.
@@ -473,11 +445,8 @@ The user can now use the parameter as follows:
 
 We use the four-parameter variant with an integer index of :dox:`ArgumentParser#getOptionValue` to access the entries in the tuple given on the command line.
 
-.. code-block:: cpp
-
-    unsigned rangeBegin = 0, rangeEnd = 0;
-    getOptionValue(rangeBegin, parser, "range", 0);
-    getOptionValue(rangeEnd, parser, "range", 1);
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: getTupleValue
 
 Assignment 6
 """"""""""""
@@ -510,22 +479,14 @@ You can set the short description, the version string, date, synopsis and add te
 Let us first set the **short description**, **version string**, and **date** in our program from above.
 We insert the following lines just after the declaration of the variable ``parser``.
 
-.. code-block:: cpp
-
-   setShortDescription(parser, "String Modifier");
-   setVersion(parser, "1.0");
-   setDate(parser, "July 2012");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: setVersion
 
 After the line with ``setDate()``, we give a usage line and add to the description.
 This information will go to the Synopsis section of the program help.
 
-.. code-block:: cpp
-
-   addUsageLine(parser,
-		"[\\fIOPTIONS\\fP] \"\\fITEXT\\fP\"");
-   addDescription(parser,
-		  "This program allows simple character modifications to "
-		  "each i-th character.");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: addUsageLine
 
 .. tip::
 
@@ -547,24 +508,14 @@ The argument parser will add some options of its own, for example for printing t
 To separate our arguments from the autogenerated ones, we add the following line.
 This line will introduce the section "Modification Options" in the Description section of the output.
 
-.. code-block:: cpp
-
-   addSection(parser, "Modification Options");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: addSection
 
 Finally, we will add a section with examples.
 Add the following lines just before the line with the ``parse()`` function call.
 
-.. code-block:: cpp
-
-   addTextSection(parser, "Examples");
-
-   addListItem(parser,
-	       "\\fBmodify_string\\fP \\fB-U\\fP \\fIveryverylongword\\fP",
-	       "Print upper case version of \"veryverylongword\"");
-   addListItem(parser,
-	       "\\fBmodify_string\\fP \\fB-L\\fP \\fB-i\\fP \\fI3\\fP \\fIveryverylongword\\fP",
-	       "Print \"veryverylongword\" with every third character "
-	       "converted to upper case.");
+.. includefrags:: demos/tutorial/parsing_command_line_arguments/base.cpp
+      :fragment: addListItem
 
 That were a lot of changes!
 Click **more...** to see the complete program.
@@ -590,29 +541,33 @@ Simply call the new program with the ``--help`` option.
        This program allows simple character modifications to each
        i-th character.
 
+   REQUIRED ARGUMENTS
+       TEXT STRING
+
+   OPTIONS
        -h, --help
-	     Displays this help message.
+             Display the help message.
        --version
-	     Display version information
+             Display version information.
 
      Modification Options:
-       -i, --period INT
-	     Period to use for the index.
+       -i, --period INTEGER
+             Period to use for the index. Default: 1.
        -U, --uppercase
-	     Select to-uppercase as operation.
+             Select to-uppercase as operation.
        -L, --lowercase
-	     Select to-lowercase as operation.
+             Select to-lowercase as operation.
 
    EXAMPLES
        modify_string -U veryverylongword
-	     Print upper case version of "veryverylongword"
+             Print upper case version of "veryverylongword"
        modify_string -L -i 3 veryverylongword
-	     Print "veryverylongword" with every third character
-	     converted to upper case.
+             Print "veryverylongword" with every third character converted to upper case.
 
    VERSION
+       Last update: July 2012
        modify_string version: 1.0
-       Last update July 2012
+       SeqAn version: 2.3.1
 
 Also, there is an undocumented option called ``--export-help`` that is automatically added by :dox:`ArgumentParser`.
 You can call it with the values ``html`` and ``man``.
@@ -639,3 +594,75 @@ Below, you can see a part of the rendered HTML and man pages generated by the co
 .. image:: modify_string.png
 
 For further deading, have a look at the :dox:`ArgumentParser` class.
+
+The Version Update Feature
+--------------------------
+
+With the seqan-2.3.0 release applications, using the :dox:`ArgumentParser`, check SeqAn servers for version updates. The functionality helps getting new versions out to users faster. It is also used to inform application developers of new versions of the SeqAn library which means that applications ship with less bugs.
+
+Customized Messages
+"""""""""""""""""""
+The version information you receive depends on whether you are an application user or developer.
+We differentiate this by inquiring the ``NDEBUG`` (no debug) macro.
+
+#. Case: ``NDEBUG`` **is set**. Its the default in our application and represents that you ara a user.
+The only message you will eventually encounter is the following:
+
+.. code-block:: console
+
+    [APP INFO] :: There is a newer version of this application available.
+    [APP INFO] :: If this app is developed by SeqAn, visit www.seqan.de for updates.
+    [APP INFO] :: If you don't want to recieve this message again set --version_check OFF
+
+#. Case: ``NDEBUG`` **is NOT set**. If you build one of our application or your own one in debug mode, we will consider you as a developer.
+Therefore we will inform you whenever a new library version is available:
+
+.. code-block:: console
+
+    [SEQAN INFO] :: There is a newer SeqAn version available!
+    [SEQAN INFO] :: Please visit www.seqan.de for an update or inform the developer of this app.
+    [SEQAN INFO] :: If you don't want to recieve this message again set --version-check OFF
+
+  If you are working on your own application, using the SeqAn ArgumentParser, we will inform you about the possibility to register your application with us. This will make the distribution of your application version simple and convenient.
+
+.. code-block:: console
+
+    [SEQAN INFO] :: Thank you for using SeqAn!
+    [SEQAN INFO] :: You might want to regsiter you app for support and version check features?
+    [SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.
+    [SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF
+  
+
+The information we do (not) collect
+"""""""""""""""""""""""""""""""""""
+The process of checking for a new version happens at most once a day and takes at most three seconds enforced by an internal timeout.
+
+.. note::
+
+    The runtime of your application might be slightly affected by the process of checkng the version. 
+    You might want to temporarily switch off the option while doing sensible performance measurements (``--version-check OFF``).
+
+The following information is transmitted to the servers solely via the URL:
+
+  * The application name and its version
+  * The SeqAn version that the application was built with
+  * The operating system type (Linux, macOS, Windows or BSD)
+  * The CPU type (32 or 64bit)
+
+The purpose of this transmission is to provide accurate update data for your app.
+Beyond the update information, we may count the total number of version requests and may also resolve them to geographical regions.
+This may be used for anonymized analysis by the SeqAn team, but raw data is never shared with third parties.
+
+.. attention::
+
+    There is no form of user identification and no tracking. 
+    IP-Addresses are never stored permanently. 
+    SeqAn collects no information regarding your use of the application, like selected options or arguments provided, and of course no information on your files!
+
+Disable this feature any time you want
+""""""""""""""""""""""""""""""""""""""
+If you still feel uncomfortable with the version check, you may
+
+  * disable it at run-time simply by setting ``--version-check OFF`` or
+  * rebuild the application and specify ``-DCMAKE_CXX_ARGS="-DSEQAN_VERSION_CHECK_OPT_IN=YES"`` to change the default value of ``--version-check to OFF`` or even
+  * rebuild the application and specify ``-DCMAKE_CXX_ARGS="-DSEQAN_DISABLE_VERSION_CHECK=YES"`` to completely remove all codepaths related to this feature.
