@@ -165,23 +165,21 @@ _getRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const
 {
     // we only extract non-file restrictions
     if (isOutputFileArgument(opt) || isInputFileArgument(opt) || isInputPrefixArgument(opt) || isOutputPrefixArgument(opt))
+    {
         return;
-
+    }
+    else if (isBooleanArgument(opt))
+    {
+        appendValue(restrictions, "true,false");
+        return;
+    }
     if (length(opt.validValues) != 0)
     {
         for (std::vector<std::string>::const_iterator valid = opt.validValues.begin();
              valid != opt.validValues.end();
              ++valid)
         {
-            switch (opt._argumentType)
-            {
-                case ArgParseArgument::ArgumentType::BOOL:
-                    if (*valid == "TRUE" || *valid == "FALSE")
-                        appendValue(restrictions, *valid);
-                    break;
-                default:
-                    appendValue(restrictions, *valid);
-            }
+            appendValue(restrictions, *valid);
         }
     }
     else
@@ -297,6 +295,8 @@ _toValidGnkTypeSpecifier(std::string const & type)
 {
     if (type == "integer")
         return "int";
+    else if (type == "bool")
+        return "string";
     return type;
 }
 
