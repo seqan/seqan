@@ -287,23 +287,69 @@ inline std::string _getManual(ArgumentParser const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function _toValidGnkTypeSpecifier()
+// Function _toValidGKNTypeSpecifier()
 // ----------------------------------------------------------------------------
+// TODO(dadi): similar to  _typeToString() function. Differs only in the case of bool, integer, int64 and types
+//.            that has underscores in them. hyphens are used instead of underscores. e.g. input-file instead
+//             of input_file. This should be removed and _typeToString() should be used instead once GKN is
+//             modified to accept the results of _typeToString() functions directly.
 
-inline std::string
-_toValidGnkTypeSpecifier(std::string const & type)
+inline std::string _toValidGKNTypeSpecifier(ArgParseArgument const & me)
 {
-    if (type == "integer")
-        return "int";
-    else if (type == "int64")
-        return "int";
-    else if (type == "bool")
-        return "string";
-    else if (type == "input-directory")
-        return "input-prefix";
-    else if (type == "output-directory")
-        return "output-prefix";
-    return type;
+    std::string typeName = "";
+
+    switch (me._argumentType)
+    {
+    case ArgParseArgument::BOOL:
+        typeName = "string";
+        break;
+
+    case ArgParseArgument::DOUBLE:
+        typeName = "double";
+        break;
+
+    case ArgParseArgument::INTEGER:
+        typeName = "int";
+        break;
+
+    case ArgParseArgument::INT64:
+        typeName = "int";
+        break;
+
+    case ArgParseArgument::STRING:
+        typeName = "string";
+        break;
+
+    case ArgParseArgument::INPUT_FILE:
+        typeName = "input-file";
+        break;
+
+    case ArgParseArgument::OUTPUT_FILE:
+        typeName = "output-file";
+        break;
+
+    case ArgParseArgument::INPUT_PREFIX:
+        typeName = "input-prefix";
+        break;
+
+    case ArgParseArgument::OUTPUT_PREFIX:
+        typeName = "output-prefix";
+        break;
+
+    case ArgParseArgument::INPUT_DIRECTORY:
+        typeName = "input-prefix";
+        break;
+
+    case ArgParseArgument::OUTPUT_DIRECTORY:
+        typeName = "output-prefix";
+        break;
+
+    default:
+        typeName = "unknown";
+        break;
+    }
+
+    return typeName;
 }
 
 // ----------------------------------------------------------------------------
@@ -417,7 +463,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // prefer short name for options
         std::string optionName = _getOptionName(opt);
 
-        std::string type = _toValidGnkTypeSpecifier(_typeToString(opt));
+        std::string type = _toValidGKNTypeSpecifier(opt);
 
         // set up restrictions
         std::vector<std::string> restrictions;
@@ -490,7 +536,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         argumentNameStream << "argument-" << argIdx;
         std::string optionName = argumentNameStream.str();
 
-        std::string type = _typeToString(arg);
+        std::string type = _toValidGKNTypeSpecifier(arg);
 
         // set up restrictions
         std::vector<std::string> restrictions;

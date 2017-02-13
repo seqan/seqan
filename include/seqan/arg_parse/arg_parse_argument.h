@@ -244,27 +244,27 @@ inline std::string _typeToString(ArgParseArgument const & me)
         break;
 
     case ArgParseArgument::INPUT_FILE:
-        typeName = "input-file";
+        typeName = "input_file";
         break;
 
     case ArgParseArgument::OUTPUT_FILE:
-        typeName = "output-file";
+        typeName = "output_file";
         break;
 
     case ArgParseArgument::INPUT_PREFIX:
-        typeName = "input-prefix";
+        typeName = "input_prefix";
         break;
 
     case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "output-prefix";
+        typeName = "output_prefix";
         break;
 
     case ArgParseArgument::INPUT_DIRECTORY:
-        typeName = "input-directory";
+        typeName = "input_directory";
         break;
 
     case ArgParseArgument::OUTPUT_DIRECTORY:
-        typeName = "output-directory";
+        typeName = "output_directory";
         break;
 
     default:
