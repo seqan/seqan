@@ -295,8 +295,14 @@ _toValidGnkTypeSpecifier(std::string const & type)
 {
     if (type == "integer")
         return "int";
+    else if (type == "int64")
+        return "int";
     else if (type == "bool")
         return "string";
+    else if (type == "input-directory")
+        return "input-prefix";
+    else if (type == "output-directory")
+        return "output-prefix";
     return type;
 }
 
