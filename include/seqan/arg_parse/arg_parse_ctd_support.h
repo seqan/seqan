@@ -300,53 +300,45 @@ inline std::string _toValidGKNTypeSpecifier(ArgParseArgument const & me)
 
     switch (me._argumentType)
     {
-    case ArgParseArgument::BOOL:
-        typeName = "string";
-        break;
+        case ArgParseArgument::BOOL:
+            typeName = "string";
+            break;
 
-    case ArgParseArgument::DOUBLE:
-        typeName = "double";
-        break;
+        case ArgParseArgument::INTEGER:
+            typeName = "int";
+            break;
 
-    case ArgParseArgument::INTEGER:
-        typeName = "int";
-        break;
+        case ArgParseArgument::INT64:
+            typeName = "int";
+            break;
 
-    case ArgParseArgument::INT64:
-        typeName = "int";
-        break;
+        case ArgParseArgument::INPUT_FILE:
+            typeName = "input-file";
+            break;
 
-    case ArgParseArgument::STRING:
-        typeName = "string";
-        break;
+        case ArgParseArgument::OUTPUT_FILE:
+            typeName = "output-file";
+            break;
 
-    case ArgParseArgument::INPUT_FILE:
-        typeName = "input-file";
-        break;
+        case ArgParseArgument::INPUT_PREFIX:
+            typeName = "input-prefix";
+            break;
 
-    case ArgParseArgument::OUTPUT_FILE:
-        typeName = "output-file";
-        break;
+        case ArgParseArgument::OUTPUT_PREFIX:
+            typeName = "output-prefix";
+            break;
 
-    case ArgParseArgument::INPUT_PREFIX:
-        typeName = "input-prefix";
-        break;
+        case ArgParseArgument::INPUT_DIRECTORY:
+            typeName = "input-prefix";
+            break;
 
-    case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "output-prefix";
-        break;
+        case ArgParseArgument::OUTPUT_DIRECTORY:
+            typeName = "output-prefix";
+            break;
 
-    case ArgParseArgument::INPUT_DIRECTORY:
-        typeName = "input-prefix";
-        break;
-
-    case ArgParseArgument::OUTPUT_DIRECTORY:
-        typeName = "output-prefix";
-        break;
-
-    default:
-        typeName = "unknown";
-        break;
+        default:
+            typeName = _typeToString(me);
+            break;
     }
 
     return typeName;

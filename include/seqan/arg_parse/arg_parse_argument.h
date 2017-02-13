@@ -223,53 +223,53 @@ inline std::string _typeToString(ArgParseArgument const & me)
 
     switch (me._argumentType)
     {
-    case ArgParseArgument::BOOL:
-        typeName = "bool";
-        break;
+        case ArgParseArgument::BOOL:
+            typeName = "bool";
+            break;
 
-    case ArgParseArgument::DOUBLE:
-        typeName = "double";
-        break;
+        case ArgParseArgument::DOUBLE:
+            typeName = "double";
+            break;
 
-    case ArgParseArgument::INTEGER:
-        typeName = "integer";
-        break;
+        case ArgParseArgument::INTEGER:
+            typeName = "integer";
+            break;
 
-    case ArgParseArgument::INT64:
-        typeName = "int64";
-        break;
+        case ArgParseArgument::INT64:
+            typeName = "int64";
+            break;
 
-    case ArgParseArgument::STRING:
-        typeName = "string";
-        break;
+        case ArgParseArgument::STRING:
+            typeName = "string";
+            break;
 
-    case ArgParseArgument::INPUT_FILE:
-        typeName = "input_file";
-        break;
+        case ArgParseArgument::INPUT_FILE:
+            typeName = "input_file";
+            break;
 
-    case ArgParseArgument::OUTPUT_FILE:
-        typeName = "output_file";
-        break;
+        case ArgParseArgument::OUTPUT_FILE:
+            typeName = "output_file";
+            break;
 
-    case ArgParseArgument::INPUT_PREFIX:
-        typeName = "input_prefix";
-        break;
+        case ArgParseArgument::INPUT_PREFIX:
+            typeName = "input_prefix";
+            break;
 
-    case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "output_prefix";
-        break;
+        case ArgParseArgument::OUTPUT_PREFIX:
+            typeName = "output_prefix";
+            break;
 
-    case ArgParseArgument::INPUT_DIRECTORY:
-        typeName = "input_directory";
-        break;
+        case ArgParseArgument::INPUT_DIRECTORY:
+            typeName = "input_directory";
+            break;
 
-    case ArgParseArgument::OUTPUT_DIRECTORY:
-        typeName = "output_directory";
-        break;
+        case ArgParseArgument::OUTPUT_DIRECTORY:
+            typeName = "output_directory";
+            break;
 
-    default:
-        typeName = "unknown";
-        break;
+        default:
+            typeName = "unknown";
+            break;
     }
 
     return typeName;
