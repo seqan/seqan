@@ -219,60 +219,44 @@ public:
 
 inline std::string _typeToString(ArgParseArgument const & me)
 {
-    std::string typeName = "";
-
     switch (me._argumentType)
     {
     case ArgParseArgument::BOOL:
-        typeName = "bool";
-        break;
+        return "bool";
 
     case ArgParseArgument::DOUBLE:
-        typeName = "double";
-        break;
+        return "double";
 
     case ArgParseArgument::INTEGER:
-        typeName = "integer";
-        break;
+        return "integer";
 
     case ArgParseArgument::INT64:
-        typeName = "int64";
-        break;
+        return "int64";
 
     case ArgParseArgument::STRING:
-        typeName = "string";
-        break;
+        return "string";
 
     case ArgParseArgument::INPUT_FILE:
-        typeName = "input_file";
-        break;
+        return "input_file";
 
     case ArgParseArgument::OUTPUT_FILE:
-        typeName = "output_file";
-        break;
+        return "output_file";
 
     case ArgParseArgument::INPUT_PREFIX:
-        typeName = "input_prefix";
-        break;
+        return "input_prefix";
 
     case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "output_prefix";
-        break;
+        return "output_prefix";
 
     case ArgParseArgument::INPUT_DIRECTORY:
-        typeName = "input_directory";
-        break;
+        return "input_directory";
 
     case ArgParseArgument::OUTPUT_DIRECTORY:
-        typeName = "output_directory";
-        break;
+        return "output_directory";
 
     default:
-        typeName = "unknown";
-        break;
+        return "unknown";
     }
-
-    return typeName;
 }
 
 // ----------------------------------------------------------------------------
