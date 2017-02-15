@@ -219,60 +219,44 @@ public:
 
 inline std::string _typeToString(ArgParseArgument const & me)
 {
-    std::string typeName = "";
-
     switch (me._argumentType)
     {
-    case ArgParseArgument::BOOL:
-        typeName = "bool";
-        break;
+        case ArgParseArgument::BOOL:
+            return "bool";
 
-    case ArgParseArgument::DOUBLE:
-        typeName = "double";
-        break;
+        case ArgParseArgument::DOUBLE:
+            return "double";
 
-    case ArgParseArgument::INTEGER:
-        typeName = "integer";
-        break;
+        case ArgParseArgument::INTEGER:
+            return "integer";
 
-    case ArgParseArgument::INT64:
-        typeName = "int64";
-        break;
+        case ArgParseArgument::INT64:
+            return "int64";
 
-    case ArgParseArgument::STRING:
-        typeName = "string";
-        break;
+        case ArgParseArgument::STRING:
+            return "string";
 
-    case ArgParseArgument::INPUT_FILE:
-        typeName = "input_file";
-        break;
+        case ArgParseArgument::INPUT_FILE:
+            return "input_file";
 
-    case ArgParseArgument::OUTPUT_FILE:
-        typeName = "output_file";
-        break;
+        case ArgParseArgument::OUTPUT_FILE:
+            return "output_file";
 
-    case ArgParseArgument::INPUT_PREFIX:
-        typeName = "input_prefix";
-        break;
+        case ArgParseArgument::INPUT_PREFIX:
+            return "input_prefix";
 
-    case ArgParseArgument::OUTPUT_PREFIX:
-        typeName = "output_prefix";
-        break;
+        case ArgParseArgument::OUTPUT_PREFIX:
+            return "output_prefix";
 
-    case ArgParseArgument::INPUT_DIRECTORY:
-        typeName = "input_directory";
-        break;
+        case ArgParseArgument::INPUT_DIRECTORY:
+            return "input_directory";
 
-    case ArgParseArgument::OUTPUT_DIRECTORY:
-        typeName = "output_directory";
-        break;
+        case ArgParseArgument::OUTPUT_DIRECTORY:
+            return "output_directory";
 
-    default:
-        typeName = "unknown";
-        break;
+        default:
+            return "unknown";
     }
-
-    return typeName;
 }
 
 // ----------------------------------------------------------------------------
