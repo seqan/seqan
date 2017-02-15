@@ -221,41 +221,41 @@ inline std::string _typeToString(ArgParseArgument const & me)
 {
     switch (me._argumentType)
     {
-    case ArgParseArgument::BOOL:
-        return "bool";
+        case ArgParseArgument::BOOL:
+            return "bool";
 
-    case ArgParseArgument::DOUBLE:
-        return "double";
+        case ArgParseArgument::DOUBLE:
+            return "double";
 
-    case ArgParseArgument::INTEGER:
-        return "integer";
+        case ArgParseArgument::INTEGER:
+            return "integer";
 
-    case ArgParseArgument::INT64:
-        return "int64";
+        case ArgParseArgument::INT64:
+            return "int64";
 
-    case ArgParseArgument::STRING:
-        return "string";
+        case ArgParseArgument::STRING:
+            return "string";
 
-    case ArgParseArgument::INPUT_FILE:
-        return "input_file";
+        case ArgParseArgument::INPUT_FILE:
+            return "input_file";
 
-    case ArgParseArgument::OUTPUT_FILE:
-        return "output_file";
+        case ArgParseArgument::OUTPUT_FILE:
+            return "output_file";
 
-    case ArgParseArgument::INPUT_PREFIX:
-        return "input_prefix";
+        case ArgParseArgument::INPUT_PREFIX:
+            return "input_prefix";
 
-    case ArgParseArgument::OUTPUT_PREFIX:
-        return "output_prefix";
+        case ArgParseArgument::OUTPUT_PREFIX:
+            return "output_prefix";
 
-    case ArgParseArgument::INPUT_DIRECTORY:
-        return "input_directory";
+        case ArgParseArgument::INPUT_DIRECTORY:
+            return "input_directory";
 
-    case ArgParseArgument::OUTPUT_DIRECTORY:
-        return "output_directory";
+        case ArgParseArgument::OUTPUT_DIRECTORY:
+            return "output_directory";
 
-    default:
-        return "unknown";
+        default:
+            return "unknown";
     }
 }
 
