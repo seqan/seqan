@@ -259,7 +259,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, SizeOf)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a;
+    TSimdVector a{0u};
 
     // only on windows are the values unequal
     SEQAN_ASSERT_GEQ(sizeof(a), sizeof(TValue) * length);
@@ -276,7 +276,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, SubscriptType)
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
     TValue c = a[0];
 
@@ -292,7 +292,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ClearVector)
     constexpr auto length = TestFixture::LENGTH;
 
     auto zero = static_cast<TValue>(0);
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     clearVector(a);
@@ -328,7 +328,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVectorConstant)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a;
+    TSimdVector a{0u};
 
     fillVector(a, 5);
 
@@ -353,7 +353,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a;
+    TSimdVector a{0u};
 
     // calls seqan::fillVector(a, 0, 1, 2, 3, ..., length-1);
     call_fill_vector(a, std::make_index_sequence<length>{});
@@ -376,7 +376,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
     TBoolValue false_ = 0,
                true_ = trueValue<TSimdVector>();
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = cmpEq(a, b);
@@ -401,7 +401,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
     TBoolValue false_ = 0,
                true_ = trueValue<TSimdVector>();
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = cmpGt(a, b);
@@ -422,7 +422,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = max(a, b);
@@ -443,7 +443,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOr)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = a | b;
@@ -464,7 +464,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOrAssign)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b, c;
+    TSimdVector a{0u}, b{0u}, c{0u};
     fillVectors(a, b);
 
     c = a;
@@ -486,7 +486,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAnd)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = a & b;
@@ -507,7 +507,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndAssign)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b, c;
+    TSimdVector a{0u}, b{0u}, c{0u};
     fillVectors(a, b);
 
     c = a;
@@ -529,7 +529,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseNot)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = ~a;
@@ -550,7 +550,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Addition)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = a + b;
@@ -571,7 +571,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Subtraction)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = a - b;
@@ -592,7 +592,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Multiplication)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = a * b;
@@ -613,7 +613,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Division)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = a / b;
@@ -634,7 +634,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndNot)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = andNot(a, b);
@@ -654,7 +654,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShiftRightLogical)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     // ensure that a >= 0, because (-3) >> 2 has undefined behavior according to
@@ -679,7 +679,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     auto c = blend(b, a, cmpGt(a, b));
@@ -700,7 +700,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Storeu)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
     TValue c[length];
@@ -721,7 +721,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Load)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, c;
+    TSimdVector a{0u}, c{0u};
     fillVectors(a, c);
 
     alignas(TSimdVector) TValue b[length];
@@ -743,7 +743,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
-    TSimdVector a, idx;
+    TSimdVector a{0u}, idx{0u};
     fillVectors(a, idx);
     reverseIndexSequence(idx, length);
 
@@ -766,7 +766,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant1)
     constexpr auto length = TestFixture::LENGTH;
     typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     auto idx = createVector<TSimdSwizzleVector>(1);
     fillVectors(a, b);
 
@@ -787,7 +787,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant2)
     constexpr auto length = TestFixture::LENGTH;
     typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
 
-    TSimdVector a, b;
+    TSimdVector a{0u}, b{0u};
     auto idx = createVector<TSimdSwizzleVector>(length - 2);
     fillVectors(a, b);
 
@@ -808,8 +808,8 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Shuffle)
     constexpr auto length = TestFixture::LENGTH;
     typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
 
-    TSimdVector a, b;
-    TSimdSwizzleVector idx;
+    TSimdVector a{0u}, b{0u};
+    TSimdSwizzleVector idx{0u};
     fillVectors(a, b);
     reverseIndexSequence(idx, length);
 
@@ -829,7 +829,7 @@ inline void test_gather_array()
     using namespace seqan;
     constexpr auto length = LENGTH<TSimdVector>::VALUE;
 
-    TSimdVector idx;
+    TSimdVector idx{0u};
     reverseIndexSequence(idx, length);
 
     TArrayValue a[2*length];
