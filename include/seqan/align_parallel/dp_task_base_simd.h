@@ -50,7 +50,7 @@ namespace impl
 {
 template <typename TDPCell, typename TTrace,
           typename TTasks,
-          typename TBuffer,
+          typename TBuffer, 
           typename TPos,
           typename TFunc>
 inline void

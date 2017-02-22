@@ -48,14 +48,14 @@ namespace seqan
 // ============================================================================
 
 template <typename TSpec = void>
-struct ParallelAlignWavefront;
+struct WavefrontAlignment;
 
 template <typename TSpec, typename TVectorizationSpec>
-struct ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> :
+struct ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> :
     public ExecutionPolicy<Parallel, TVectorizationSpec>
 {
     size_t mBlockSize{100};
-    size_t mParallelInstances{numThreads << 1};
+    size_t mParallelAlignments{std::thread::hardware_concurrency()};
 };
 
 // ============================================================================
@@ -68,14 +68,14 @@ struct ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> :
 
 template <typename TSpec, typename TVectorizationSpec>
 inline auto
-blockSize(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> const & p)
+blockSize(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> const & p)
 {
     return p.mBlockSize;
 }
 
 template <typename TSpec, typename TVectorizationSpec>
 inline void
-setBlockSize(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> & p,
+setBlockSize(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> & p,
              size_t const bs)
 {
     p.mBlockSize = bs;
@@ -83,17 +83,17 @@ setBlockSize(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> 
 
 template <typename TSpec, typename TVectorizationSpec>
 inline auto
-parallelInstances(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> const & p)
+parallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> const & p)
 {
-    return p.mParallelInstances;
+    return p.mParallelAlignments;
 }
 
-template <typename TSpec, typename TVectorized>
+template <typename TSpec, typename TVectorizationSpec>
 inline void
-setParallelInstances(ExecutionPolicy<ParallelAlignWavefront<TSpec>, TVectorizationSpec> & p,
+setParallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> & p,
                      size_t const pi)
 {
-    p.mParallelInstances = pi;
+    p.mParallelAlignments = pi;
 }
 
 }  // namespace seqan

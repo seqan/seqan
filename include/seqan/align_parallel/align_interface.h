@@ -47,38 +47,38 @@ namespace impl {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct SimdWorker
-{
-    template <typename TQueueContext>
-    inline void
-    operator()(TQueueContext & queueContext)
-    {
-        using TTask = decltype(popFront(queueContext.mQueue));
-
-        lockWriting(queueContext.mQueue);
-        std::vector<TTask> tasks;
-        while (true)
-        {
-            TTask task = nullptr;
-            tasks.clear();
-            {
-                std::lock_guard<decltype(queueContext.mLock)> scopedLock(queueContext.mLock);
-                task = popFront(queueContext.mQueue);
-                if (task == nullptr)
-                    return;
-
-                if (length(queueContext.mQueue) >= TQueueContext::VECTOR_SIZE - 1)
-                {
-                    for (unsigned i = 0; i < TQueueContext::VECTOR_SIZE - 1; ++i)
-                        tasks.push_back(popFront(*workQueuePtr));
-                }
-            }
-
-            SEQAN_ASSERT(task != nullptr);
-            task->template execute(*workQueuePtr, tasks, mThreadId);
-        }
-    }
-};
+//struct SimdWorker
+//{
+//    template <typename TQueueContext>
+//    inline void
+//    operator()(TQueueContext & queueContext)
+//    {
+//        using TTask = decltype(popFront(queueContext.mQueue));
+//
+//        lockWriting(queueContext.mQueue);
+//        std::vector<TTask> tasks;
+//        while (true)
+//        {
+//            TTask task = nullptr;
+//            tasks.clear();
+//            {
+//                std::lock_guard<decltype(queueContext.mLock)> scopedLock(queueContext.mLock);
+//                task = popFront(queueContext.mQueue);
+//                if (task == nullptr)
+//                    return;
+//
+//                if (length(queueContext.mQueue) >= TQueueContext::VECTOR_SIZE - 1)
+//                {
+//                    for (unsigned i = 0; i < TQueueContext::VECTOR_SIZE - 1; ++i)
+//                        tasks.push_back(popFront(*workQueuePtr));
+//                }
+//            }
+//
+//            SEQAN_ASSERT(task != nullptr);
+//            task->template execute(*workQueuePtr, tasks, mThreadId);
+//        }
+//    }
+//};
 
 // ============================================================================
 // Metafunctions
@@ -87,15 +87,6 @@ struct SimdWorker
 // ============================================================================
 // Functions
 // ============================================================================
-
-// Now we can implement different strategies to compute the alignment.
-template <typename TScore, typename TDPTraits, typename TExecutionTraits,
-          typename ...Ts>
-void align_batch(DPConfig<TScore, TDPTraits, TExecutionTraits> const & config,
-                 Ts ...&& args)
-{
-    BatchAlignmentExecutor<typename TExecutionTraits::TParallelPolixy, typename TExecutionTraits::TSchedulingPolicy>::run(config, std::forward<Ts>(args)...);
-}
 
 template <typename TExecutionPolicy, typename TSeqH, typename TSeqV, typename TScoringScheme, typename TTraits>
 // traits must fulfill certain semantics.

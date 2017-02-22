@@ -32,12 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_TASK_POOL_STD_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_TASK_POOL_STD_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_INTERMEDIATE_DP_RESULT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_INTERMEDIATE_DP_RESULT_H_
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -46,86 +46,27 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-//template <typename TWorkQueue, typename TTaskContext>
-//struct DPThread<TWorkQueue, TTaskContext, Serial>
-//{
-//    using TTask = typename Value<TWorkQueue>::Type;
-//    
-//    TWorkQueue *  workQueuePtr = nullptr;
-//    TTaskContext& mTaskContext;
-//    uint8_t       mThreadId;
-//    
-//    inline void
-//    operator()()
-//    {
-//        lockWriting(*workQueuePtr);
-//        while (true)
-//        {
-//            TTask task = nullptr;
-//            
-//            if (!popFront(task, *workQueuePtr))
-//                return;
-//            
-//            SEQAN_ASSERT(task != nullptr);
-//            task->template execute(*workQueuePtr, Nothing(), mThreadId);
-//        }
-//    }
-//};
-//
-//template <typename TWorkQueue, typename TTaskContext>
-//struct DPThread<TWorkQueue, TTaskContext, Vectorial>
-//{
-//    using TTask = typename Value<TWorkQueue>::Type;
-//    
-//    TWorkQueue *  workQueuePtr = nullptr;
-//    TTaskContext& mTaskContext;
-//    uint8_t       mThreadId;
-//    
-//    inline void
-//    operator()()
-//    {
-//        lockWriting(*workQueuePtr);
-//        String<TTask> tasks;
-//        while (true)
-//        {
-//            TTask task = nullptr;
-//            clear(tasks);
-//            {
-//                std::lock_guard<decltype(mTaskContext.mLock)> scopedLock(mTaskContext.mLock);
-//                if (!popFront(task, *workQueuePtr))
-//                    return;
-//                
-//                if (length(*workQueuePtr) >= TTaskContext::VECTOR_SIZE - 1)
-//                {
-//                    for (unsigned i = 0; i < TTaskContext::VECTOR_SIZE - 1; ++i)
-//                        appendValue(tasks, popFront(*workQueuePtr));
-//                }
-//            }
-//            
-//            SEQAN_ASSERT(task != nullptr);
-//            task->template execute(*workQueuePtr, tasks, mThreadId);
-//        }
-//    }
-//};
-
-template <typename TTask, typename TVecSpec>
-struct TaskPoolTrait<TTask, ExecutionPolicy<ThreadModelStd, TVecSpec>>
+template <typename TDPScout>
+struct IntermediateDPResult
 {
-    using TTaskPoolType  = ConcurrentQueue<TTask>;
-    using ThreadPoolType = ThreadPool<ThreadModelStd>;
-};
+    // ----------------------------------------------------------------------------
+    // Member Types.
 
-template <typename TTask, typename TVecSpec, typename TTrait>
-class TaskPool<TTask, ExecutionPolicy<ThreadModelStd, TVecSpec>, TTrait>
-{
-    using TTaskPool = typename TTrait::TPoolType;
-    using TThreadPool = typename TTrait::ThreadPoolType;
-    
-    TThreadPool mThreadPool;
-    TTaskPool   mTaskPool;
-    
-    TaskPool() : mThreadPool(/*worker*/)
-    {}
+    using TScoreValue = typename TDPScout::TScoreValue;
+    using TState      = std::pair<TScoreValue, size_t>;
+
+    // ----------------------------------------------------------------------------
+    // Member Variables
+
+    TState  mMaxState{minValue<TScoreValue>(), 0};
+    size_t  mTileCol{0};
+    size_t  mTileRow{0};
+
+    // ----------------------------------------------------------------------------
+    // Constructors.
+
+    // ----------------------------------------------------------------------------
+    // Member Functions.
 };
 
 // ============================================================================
@@ -135,8 +76,78 @@ class TaskPool<TTask, ExecutionPolicy<ThreadModelStd, TVecSpec>, TTrait>
 // ============================================================================
 // Functions
 // ============================================================================
-    
-    
+
+namespace impl
+{
+
+template <typename TIntermediate,
+          typename TState>
+inline void
+updateMax(TIntermediate & me,
+          TState const & state,
+          size_t const tileCol,
+          size_t const tileRow)
+{
+    if (state.first > me.mMaxState.first)
+    {
+        me.mMaxState = state;
+        me.mTileCol = tileCol;
+        me.mTileRow = tileRow;
+    }
+}
+}  // namespace impl
+
+template <typename ...TArgs>
+inline void
+updateMax(IntermediateDPResult<TArgs...> & me,
+          typename IntermediateDPResult<TArgs...>::TState const & state,
+          size_t const tileCol,
+          size_t const tileRow)
+{
+    impl::updateMax(me, state, tileCol, tileRow);
+}
+
+template <typename ...TArgs>
+inline void
+updateMax(IntermediateDPResult<TArgs...> & lhs,
+          IntermediateDPResult<TArgs...> const & rhs)
+{
+    impl::updateMax(lhs, rhs.mMaxState, rhs.mTileCol, rhs.mTileRow);
+}
+
+template <typename ...TArgs>
+inline void
+clear(IntermediateDPResult<TArgs...> & me)
+{
+    IntermediateDPResult<TArgs...> tmp;
+    swap(me, tmp);
+}
+
+template <typename ...TArgs>
+inline void
+clear(IntermediateDPResult<TArgs...> && me)
+{
+    IntermediateDPResult<TArgs...> tmp;
+    swap(me, tmp);
+}
+
+template <typename ...TArgs>
+inline typename IntermediateDPResult<TArgs...>::TState const &
+value(IntermediateDPResult<TArgs...> const & me)
+{
+    return me.mMaxState;
+}
+
+template <typename ...TArgs>
+inline void
+swap(IntermediateDPResult<TArgs...> & lhs,
+     IntermediateDPResult<TArgs...> & rhs)
+{
+    IntermediateDPResult<TArgs...> tmp{std::move(lhs)};
+    lhs = std::move(rhs);
+    rhs = std::move(tmp);
+}
+
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_TASK_POOL_STD_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_INTERMEDIATE_DP_RESULT_H_

@@ -52,7 +52,7 @@ namespace seqan
 
 // Tag used to subclass DPScoutState and DPScout.
 // T represents the buffer type.
-template <typename TBuffer, typename TThreadContext = void, typename TSimdSpec = void>
+template <typename TBuffer, typename TThreadContext = Default, typename TSimdSpec = void>
 struct DPTiled;
 
 // ----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ public:
         ptrVerBuffer(&verBuffer)
     {}
 
-    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer, TThreadContext && pThreadContext) :
+    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer, TThreadContext pThreadContext) :
         ptrHorBuffer(&horBuffer),
         ptrVerBuffer(&verBuffer),
         mThreadContext(std::move(pThreadContext))
@@ -134,7 +134,7 @@ template <typename TDPCell, typename TBuffer, typename TThreadContext, typename 
           typename TIsLastColumn,
           typename TIsLastRow>
 inline bool
-isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > const & dpScout,
+isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > const & /*dpScout*/,
                   TIsLastColumn const & /*unused*/,
                   TIsLastRow const & /*unused*/)
 {
@@ -173,6 +173,21 @@ isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > con
 // ----------------------------------------------------------------------------
 // Function _scoutBestScore()
 // ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TBuffer,
+          typename TTraceMatrixNavigator,
+          typename TIsLastColumn,
+          typename TIsLastRow>
+inline void
+_scoutBestScore(DPScout_<TDPCell, DPTiled<TBuffer, Default, void> > & dpScout,
+                TDPCell const & activeCell,
+                TTraceMatrixNavigator const & navigator,
+                TIsLastColumn const & isLastColumn,
+                TIsLastRow const & isLastRow)
+{
+    using TBaseScout = typename DPScout_<TDPCell, DPTiled<TBuffer, Default, void> >::TBase;
+    _scoutBestScore(static_cast<TBaseScout&>(dpScout), activeCell, navigator, isLastColumn, isLastRow);
+}
 
 // Tracks the new score, if it is the new maximum.
 template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TTraceMatrixNavigator,

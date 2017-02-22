@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_ALIGN_PARALLEL_PARALLEL_TASK_POOL_BASE_H_
-#define SEQAN_INCLUDE_ALIGN_PARALLEL_PARALLEL_TASK_POOL_BASE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_STD_TASK_CONTEXT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_STD_TASK_CONTEXT_H_
 
 namespace seqan
 {
@@ -46,11 +46,14 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTask, typename TExecutionPolicy>
-struct TaskPoolTrait;
-
-template <typename TTask, typename TExecutionPolicy, typename TTrait = TaskPoolTrait<TTask, TExecutionPolicy>>
-class TaskPool;
+template <typename TScheduler, typename TThreadLocalStore>
+struct WavefrontExecutorStd
+{
+    // Shared data in parallel context.
+    TScheduler *                  mTaskSchedulerPtr{nullptr};
+    TThreadLocalStore *           mThreadLocalPtr{nullptr};
+    WavefrontAlignmentTaskEvent * mThreadEventPtr{nullptr};
+};
 
 // ============================================================================
 // Metafunctions
@@ -60,7 +63,40 @@ class TaskPool;
 // Functions
 // ============================================================================
 
-    
+template <typename ...TArgs,
+          typename TTaskExecutor>
+inline void
+spawn(WavefrontExecutorStd<TArgs...> & executor,
+      TTaskExecutor && taskExec)
+{
+    SEQAN_ASSERT(executor.mTaskSchedulerPtr != nullptr);
+    scheduleTask(*executor.mTaskSchedulerPtr, std::forward<TTaskExecutor>(taskExec));
+}
+
+template <typename ...TArgs>
+inline auto&
+local(WavefrontExecutorStd<TArgs...> & executor)
+{
+    SEQAN_ASSERT(executor.mThreadLocalPtr != nullptr);
+    return local(*executor.mThreadLocalPtr);
+}
+
+template <typename ...TArgs>
+inline void
+notify(WavefrontExecutorStd<TArgs...> & executor)
+{
+    SEQAN_ASSERT(executor.mThreadEventPtr != nullptr);
+    notify(*executor.mThreadEventPtr);
+}
+
+template <typename ...TArgs>
+inline void
+wait(WavefrontExecutorStd<TArgs...> & executor)
+{
+    SEQAN_ASSERT(executor.mThreadEventPtr != nullptr);
+    wait(*executor.mThreadEventPtr);
+}
+
 }  // namespace seqan
 
-#endif  // SEQAN_INCLUDE_ALIGN_PARALLEL_PARALLEL_TASK_POOL_BASE_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_STD_TASK_CONTEXT_H_

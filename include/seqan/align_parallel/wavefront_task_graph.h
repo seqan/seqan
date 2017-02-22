@@ -31,16 +31,13 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-//  DP Task implementation.
-// ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_STD_2_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_STD_2_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_GRAPH_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_GRAPH_H_
 
 namespace seqan
 {
-namespace impl
-{
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -49,29 +46,61 @@ namespace impl
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename ...TArgs>
-struct DPTaskStdContext
+template <typename TTask, template <typename> typename TAllocator = std::allocator>
+class WavefrontTaskGraph
 {
-    TTaskQueue &        mQueue;
-    TThreadLocal &      mThreadLocal;
-    TTileBuffer &       mBuffer;
-    TSeqBlocksH const & mSeqBlocksH;
-    TSeqBlocksV const & mSeqBlocksV;
-    TDPConfig const &   mConfig;
-    uint16_t            mAlignInstanceId;
+    //-------------------------------------------------------------------------
+    // Helper
 
-    // Notification.
-    std::mutex          lock;
-    std::conditional    readyEvent;
-    bool                ready;
+    template <typename TDimType>
+    struct Dimension
+    {
+        TDimType mDimH;
+        TDimType mDimV;
+
+        void setDimensionH(TDimType const dimH)
+        {
+            mDimH = dimH;
+        }
+
+        void setDimensionV(TDimType const dimV)
+        {
+            mDimV = dimV;
+        }
+    };
+
+    //-------------------------------------------------------------------------
+    // Typedefs
+
+    using TTaskAllocator = TAllocator<TTask>;
+    using TPointer       = typename TTaskAllocator<>
+    using TDimension     = Dimension<TDimType>;
+
+    //-------------------------------------------------------------------------
+    // Private Member Variables
+
+    // we could use a bare array, but this does not make sense.
+    // Unless, we cannot use the 
+    std::vector<std::vector<TTask>>     _mTaskDag;
+
+
+    //-------------------------------------------------------------------------
+    // Member Functions
+
+    inline auto&
+    operator[](TDimension const & dim)
+    {
+        return
+    }
 };
 
-template <typename TTaskContext>
-class DPTaskStd : public DPTaskBase<DPTaskStd<TTaskContext>>
+template <typename TGraph>
+struct TaskGraphTraits;
+
+template <typename ...TArgs>
+struct TaskGraphTraits<WavefrontTaskGraph<TArgs...>>
 {
-    TTaskContext& mContext;      // A set of shared data.
-    bool          mLastTile;
-    // Context can keep also the simd score.
+    using TDimension = typename WavefrontTaskGraph<TArgs...>::TDimension;
 };
 
 // ============================================================================
@@ -82,20 +111,22 @@ class DPTaskStd : public DPTaskBase<DPTaskStd<TTaskContext>>
 // Functions
 // ============================================================================
 
-template <typename TTaskContext>
-inline void
-execute(DPTaskStd & task)
+template <typename ...TArgs>
+inline auto&
+root(WavefrontTaskGraph<TArgs...> & me)
 {
-    inline void
-    executeScalar(task);
-    if (task.mLastTile)
-    {
-        {
-            std::lock_guard<std::mutex> lck(task.mContext.lock);
-            task.mContext.ready = true;
-        }
-        task.mContext.readyEvent.notify_one();
-    }
-}  // namespace impl
+    return typename WavefrontTaskGraph<TArgs...>::TAllocator::reference(me._mTaskDag[0][0]);
+}
+
+template <typename ...TArgs>
+inline auto&
+sink(WavefrontTaskGraph<TArgs...> & me)
+{
+    using WavefrontTaskGraph<TArgs...>::Dimensions;
+    return typename WavefrontTaskGraph<TArgs...>::TAllocator::reference(me._mTaskDag[length(me, HORIZONTAL) - 1][length(me, VERTICAL) - 1]);
+}
+
+
 }  // namespace seqan
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_STD_2_H_
+
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_GRAPH_H_

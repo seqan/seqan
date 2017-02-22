@@ -32,8 +32,10 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALING_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
+
+#include <sched.h>
 
 namespace seqan
 {
@@ -46,22 +48,78 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TScoreState, typename TCache>
-struct ThreadLocal
+std::mutex _globalMutexCout;
+
+class TestThread
 {
-    TScoreState mState;
-    TCache      mCache;
+public:
+
+    std::string name;
+    unsigned id;
+    std::thread thread;
+
+    TestThread(TestThread && moveable) = default;
+
+    template <typename TFunc, typename ...TArgs>
+    TestThread(std::string _name, unsigned const _id, TFunc && f, TArgs && ...args) :
+        name(std::move(_name)),
+        id(_id),
+        thread(std::forward<TFunc>(f), std::forward<TArgs>(args)...)
+    {
+        std::lock_guard<std::mutex> lck(_globalMutexCout);
+        std::cout << "Created Thread: " << name << " with id: " << id << '\n';
+    }
+
+    bool joinable()
+    {
+        return thread.joinable();
+    }
+
+    void join()
+    {
+        {
+            std::lock_guard<std::mutex> lck(_globalMutexCout);
+            std::cout << "Join Thread: " << name << " with id: " << id << '\n';
+        }
+        thread.join();
+    }
+
+    ~TestThread()
+    {
+        std::lock_guard<std::mutex> lck(_globalMutexCout);
+        std::cout << "Killed Thread: " << name << " with id: " << id << '\n';
+    }
 };
 
 // Simple Thread Pool.
 class ThreadPool
 {
-    std::vector<std::thread> mPool;
+public:
+
+    //-------------------------------------------------------------------------
+    // Constructor.
+
+    ThreadPool() = default;
+    ThreadPool(ThreadPool const &) = delete;
+    ThreadPool(ThreadPool &&) = delete;
+
+    ThreadPool& operator=(ThreadPool const &) = delete;
+    ThreadPool& operator=(ThreadPool &&) = delete;
 
     ~ThreadPool()
     {
-        for_each(std::begin(mPool), std::end(mPool), [](auto & t){ t.join(); });
+        for_each(std::begin(_mPool), std::end(_mPool),
+        [](auto & t)
+        {
+            if (t.joinable())
+                t.join();
+        });
     }
+
+    //-------------------------------------------------------------------------
+    // Private Member Variables.
+
+    std::vector<std::thread> _mPool;
 };
 
 // ============================================================================
@@ -72,11 +130,50 @@ class ThreadPool
 // Functions
 // ============================================================================
 
-template <typename TCallable, typename TArgs...>
+//template <typename TCallable, typename ...TArgs>
+//inline void
+//spawn(ThreadPool & pool,
+//      std::string const & str,
+//      unsigned id,
+//      TCallable callable, TArgs && ...args)
+//{
+//    pool._mPool.emplace_back(str, id, callable, std::forward<TArgs>(args)...);
+//}
+
+//template <typename TCallable, typename ...TArgs>
+//inline void
+//spawn(ThreadPool & pool,
+//      size_t const cpuId,
+//      TCallable callable, TArgs && ...args)
+//{
+//    pool._mPool.emplace_back(callable, std::forward<TArgs>(args)...);
+//    cpu_set_t cpuset;
+//    CPU_ZERO(&cpuset);
+//    CPU_SET(cpuId, &cpuset);
+//    int rc = pthread_setaffinity_np(back(pool).native_handle(),
+//                                    sizeof(cpu_set_t), &cpuset);
+//    if (rc != 0) {
+//        std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
+//    }
+//}
+
+template <typename TCallable, typename ...TArgs>
 inline void
-emplaceBack(TCallable callable, TArgs && ...args)
+spawn(ThreadPool & pool,
+      TCallable callable, TArgs && ...args)
 {
-    mPool.emplace_back(callable, std::forward<TArgs>(args)...);
+    pool._mPool.emplace_back(callable, std::forward<TArgs>(args)...);
+}
+
+inline void
+join(ThreadPool & me)
+{
+    for_each(std::begin(me._mPool), std::end(me._mPool),
+    [](auto & t)
+    {
+        if (t.joinable())
+            t.join();
+    });
 }
     
 }  // namespace seqan
