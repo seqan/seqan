@@ -109,6 +109,7 @@ struct VersionCheck
     std::string _program;
     std::string _command;
     std::string _path = _getPath();
+    std::string _timestamp_filename;
     std::ostream & errorStream;
 
     // ----------------------------------------------------------------------------
@@ -122,6 +123,11 @@ struct VersionCheck
         errorStream(errorStream)
     {
         std::smatch versionMatch;
+#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+        _timestamp_filename = _path + "/" + _name + "_usr.timestamp";
+#else
+        _timestamp_filename = _path + "/" + _name + "_dev.timestamp";
+#endif
         if (!version.empty() &&
             std::regex_search(version, versionMatch, std::regex("^([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+).*")))
         {
@@ -318,11 +324,11 @@ inline std::string _getPath()
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
 
-inline double _getFileTimeDiff(std::string const & timestamp_filename)
+inline double _getFileTimeDiff(VersionCheck const & me)
 {
     double curr = static_cast<double>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
     std::ifstream timestamp_file;
-    timestamp_file.open(timestamp_filename.c_str());
+    timestamp_file.open(me._timestamp_filename.c_str());
 
     if (timestamp_file.is_open())
     {
@@ -390,8 +396,7 @@ inline void _readVersionStrings(std::vector<std::string> & versions, std::string
 inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 {
     // update timestamp
-    std::string timestamp_filename(me._path + "/" + me._name + ".timestamp");
-    std::ofstream timestamp_file(timestamp_filename.c_str());
+    std::ofstream timestamp_file(me._timestamp_filename.c_str());
     if (timestamp_file.is_open())
     {
         timestamp_file << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -419,9 +424,8 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
     }
 
     std::string version_filename(me._path + "/" + me._name + ".version");
-    std::string timestamp_filename(me._path + "/" + me._name + ".timestamp");
     double min_time_diff(86400);                                 // one day = 86400 seonds
-    double file_time_diff(_getFileTimeDiff(timestamp_filename)); // time difference in seconds
+    double file_time_diff(_getFileTimeDiff(me)); // time difference in seconds
 
     if (file_time_diff < min_time_diff)
     {
@@ -447,16 +451,19 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
 #endif
 
-#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only check app version in release or testing mode
     if (!str_server_versions[0].empty() & !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
     {
         Lexical<> version_comp(_getNumbersFromString(me._version), _getNumbersFromString(str_server_versions[0]));
 
+#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only check app version in release or testing mode
         if (isLess(version_comp))
             me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
+#endif // defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
 
-        else if (isGreater(version_comp))
+#if !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only notify developer that app version should be updated on server
+        if (isGreater(version_comp))
             me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
+#endif // !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
     }
 #endif // defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
 

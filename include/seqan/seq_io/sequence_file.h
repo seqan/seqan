@@ -89,18 +89,22 @@ typedef
     TagList<Embl,
     TagList<GenBank,
     TagList<Raw,
-    TagList<Bam,
     TagList<Sam
-    > > > > > > >
+#if SEQAN_HAS_ZLIB
+    , TagList<Bam>
+#endif
+    > > > > > >
     SeqInFormats;
 
 typedef
     TagList<Fastq,
     TagList<Fasta,
     TagList<Raw,
-    TagList<Bam,
     TagList<Sam
-    > > > > >
+#if SEQAN_HAS_ZLIB
+    , TagList<Bam>
+#endif
+    > > > >
     SeqOutFormats;
 
 typedef TagSelector<SeqInFormats>   SeqInFormat;

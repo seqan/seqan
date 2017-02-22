@@ -63,7 +63,7 @@ const std::string TestVersionCheck_::APP_VERSION_FILENAME     = TestVersionCheck
                                                                 static_cast<std::string>(".version");
 const std::string TestVersionCheck_::APP_TIMESTAMP_FILENAME   = TestVersionCheck_::PATH + "/" +
                                                                 TestVersionCheck_::APP_NAME +
-                                                                static_cast<std::string>(".timestamp");
+                                                                static_cast<std::string>("_usr.timestamp");
 
 namespace seqan {
 

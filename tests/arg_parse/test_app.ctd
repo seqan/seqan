@@ -9,6 +9,9 @@ The second one contains formating &lt;bla&gt;.
 		<clielement optionIdentifier="--full-help" isList="false">
 			<mapping referenceName="test_app.full-help" />
 		</clielement>
+		<clielement optionIdentifier="--bool" isList="false">
+			<mapping referenceName="test_app.bool" />
+		</clielement>
 		<clielement optionIdentifier="--double" isList="false">
 			<mapping referenceName="test_app.double" />
 		</clielement>
@@ -53,20 +56,21 @@ The second one contains formating &lt;bla&gt;.
 	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="test_app" description="This is a test-app.">
 			<ITEM name="full-help" value="false" type="string" description="Display the help message with advanced options." restrictions="true,false" required="false" advanced="false" />
+			<ITEM name="bool" value="" type="string" description="set a bool option" restrictions="true,false" required="false" advanced="false" />
 			<ITEM name="double" value="" type="double" description="set a double option" required="false" advanced="false" />
-			<ITEM name="integer" value="" type="integer" description="set an integer option" restrictions="1:10" required="false" advanced="false" />
-			<ITEM name="int64" value="" type="int64" description="set a 64 bit integer option" required="false" advanced="false" />
+			<ITEM name="integer" value="" type="int" description="set an integer option" restrictions="1:10" required="false" advanced="false" />
+			<ITEM name="int64" value="" type="int" description="set a 64 bit integer option" required="false" advanced="false" />
 			<ITEMLIST name="string" type="string" description="set a string option" restrictions="a,b,c" required="false" advanced="false" >
 			</ITEMLIST>
-			<ITEM name="in" value="" type="input_file" description="set an input file" supported_formats="*.fasta" required="false" advanced="false" />
-			<ITEM name="out" value="" type="output_file" description="set an output file" supported_formats="*.sam" required="false" advanced="false" />
-			<ITEM name="input-prefix-option" value="" type="input_prefix" description="set an input prefix" supported_formats="*.btx" required="false" advanced="false" />
-			<ITEM name="output-prefix-option" value="" type="output_prefix" description="set an output prefix" supported_formats="*.blub" required="false" advanced="false" />
+			<ITEM name="in" value="" type="input-file" description="set an input file" supported_formats="*.fasta" required="false" advanced="false" />
+			<ITEM name="out" value="" type="output-file" description="set an output file" supported_formats="*.sam" required="false" advanced="false" />
+			<ITEM name="input-prefix-option" value="" type="input-prefix" description="set an input prefix" supported_formats="*.btx" required="false" advanced="false" />
+			<ITEM name="output-prefix-option" value="" type="output-prefix" description="set an output prefix" supported_formats="*.blub" required="false" advanced="false" />
 			<ITEM name="advanced" value="" type="string" description="an advanced option - will appear as advanced in the ctd, too" required="false" advanced="true" />
 			<ITEM name="argument-0" value="" type="double" description="Double Argument" required="true" advanced="false" />
 			<ITEM name="argument-1" value="" type="string" description="String Argument" required="true" advanced="false" />
 			<ITEM name="argument-2" value="" type="string" description="Documentated Argument with formating" required="true" advanced="false" />
-			<ITEM name="argument-3" value="" type="output_file" description="Testing output file arguments" required="true" advanced="false" />
+			<ITEM name="argument-3" value="" type="output-file" description="Testing output file arguments" required="true" advanced="false" />
 		</NODE>
 	</PARAMETERS>
 </tool>
