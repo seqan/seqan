@@ -32,14 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_INTERMEDIATE_RESULT_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_INTERMEDIATE_RESULT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_LOCAL_DP_RESULT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_LOCAL_DP_RESULT_H_
 
 namespace seqan
 {
-namespace impl
-{
-
+    
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -49,92 +47,32 @@ namespace impl
 // ============================================================================
 
 template <typename TDPScout>
-struct IndermediateResultTraits
+WavefrontLocalDPResult
 {
-    using TScore = typename std::decay<decltype(maxScore(TDPScout{}))>::type;
-    using TPos   = typename std::decay<decltype(maxHostPosition(TDPScout{}))>::type;
+    using TScore = typename std::decay<delctype(maxScore(declval<TDPScout>()))>::type;
 
-    using TState      = std::pair<TScore, TPos>;
-    using TComparator = std::less<TState>;
-};
-
-template <typename TDPScout,
-          typename TTraits = IndermediateResultTraits<TDPScout>>
-struct IntermediateResult
-{
-    // Typedefs
-    // ----------------------------------------------------------------------------
-
-    // Member Variables
-    // ----------------------------------------------------------------------------
-
-    TState  mState{};       // Requires: Default-Constructible!, Copy-Constructible!, Move-Constructible+.
-    size_t  mTileCol{0};
-    size_t  mTileRow{0};
-
-    // Constructors
-    // ----------------------------------------------------------------------------
-
-    // Member Functions.
-    // ----------------------------------------------------------------------------
+    TScore  mMaxScore{minValue<TScore>()};
+    size_t  mMaxTileH{0};
+    size_t  mMaxTileV{0};
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
-template <typename TDPScout, typename TTraits>
-struct Traits<IntermediateResult<TDPScout, TTraits>>
-{
-    using Type = TTraits;
-};
-
 // ============================================================================
 // Functions
 // ============================================================================
 
-template <typename TScout, typename TTraits, typename TState>
-void update(IntermediateResult<TScout, TTraits> & me,
-            TState && state,
-            size_t tileCol,
-            size_t tileRow)
+template <typename ...TArgs>
+inline void
+reset(WavefrontLocalDPResult<TArgs...> & me)
 {
-    using TComp = typename TTraits::TComparator;
-    if (TComp{}(me.mState, std::forward<TSingleMaxState>(state)))
-    {
-        std::swap(me.mState, state);
-        me.mTileCol = tileCol;
-        me.mTileRow = tileRow;
-    }
+    me.mMaxScore = minValue<typename WavefrontLocalDPResult<TArgs...>::TScore>();
+    mMaxTileH = 0;
+    mMaxTileV = 0;
 }
-
-template <typename TScout, typename TTraits, typename TSingleMaxState>
-void reset(IntermediateResult<TScout, TTraits> & me)
-{
-    using std::swap;
-
-    using TState = typename IntermediateResult<TScout>::TState;
-
-    swap(me.mState, TState{});
-    mTileCol = 0;
-    mTileRow = 0;
-}
-
-template <typename TScout, typename TTraits, typename TSingleMaxState>
-auto const & value(IntermediateResult<TScout, TTraits> const & me)
-{
-    return me.mState;
-}
-
-template <typename TAlgorithm>
-bool void isTrackingEnabled(bool const inLastColumn, bool const inLastRow)
-{
-    if (inLastColumn && inLastRow)
-        return true;
-
-}
-
-}  // namespace impl
+    
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_INTERMEDIATE_RESULT_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_LOCAL_DP_RESULT_H_

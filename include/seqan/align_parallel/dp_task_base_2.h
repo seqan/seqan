@@ -39,8 +39,6 @@
 
 namespace seqan
 {
-namespace impl
-{
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -49,110 +47,330 @@ namespace impl
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTask>
-class DPTaskBase
+template <typename TSeqHBlocks,
+          typename TSeqVBlocks,
+          typename TTileBuffer,
+          typename TDPSettings>
+struct WavefrontAlignmentContext
+{
+    size_t              mAlignmentId{0};
+    TSeqHBlocks const & mSeqHBlocks;
+    TSeqVBlocks const & mSeqVBlocks;
+    TTileBuffer       & mTileBuffer;
+    TDPSettings const & mDPSettings;
+};
+
+template <typename TAlignmentContext>
+class WavefrontTask
 {
 public:
-    std::array<TTask*, 2>  mSuccessor;
-    size_t                 mCol{0};
-    size_t                 mRow{0};
-    std::atomic<unsigned>  mRefCount{0};
-    bool                   mLastTileH{false};
-    bool                   mLastTileV{false};
 
-    // ============================================================================
-    // Member functions.
+    using TContext  = TAlignmentContext;
 
-    // TODO(rrahn): Make global functions.
-    inline void
-    setRefCount(unsigned const n)
-    {
-        refCount.store(n, std::memory_order_relaxed);
-    }
+    TContext &              mContext;
 
-    inline unsigned
-    decrementRefCount()
-    {
-        return --refCount;
-    }
+    std::array<WavefrontTask*, 2>  mSuccessor{nullptr, nullptr};
+    size_t                  mCol{0};
+    size_t                  mRow{0};
+    std::atomic<size_t>     mRefCount{0};
 
-    inline unsigned
-    incrementRefCount()
-    {
-        return ++refCount;
-    }
+    bool                    mLastTileH{false};
+    bool                    mLastTileV{false};
+
+
+    //-------------------------------------------------------------------------
+    // Constructor
+    WavefrontTask() = delete;
+
+    WavefrontTask(TContext & context, std::array<WavefrontTask*, 2> successor,
+                  size_t const col,
+                  size_t const row,
+                  size_t const refCount,
+                  bool const lastTileH,
+                  bool const lastTileV) :
+                mContext(context),
+                mSuccessor(std::move(successor)),
+                mCol(col), mRow(row),
+            	mRefCount(refCount),
+                mLastTileH(lastTileH), mLastTileV(lastTileV)
+    {}
 };
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
+template <typename TContext>
+struct TaskExecutionTraits;
+
+template <typename ...TArgs>
+struct TaskExecutionTraits<WavefrontAlignmentContext<TArgs...>>
+{
+    using TaskContext_      = WavefrontAlignmentContext<TArgs...>;
+
+    using TSeqHBlocks       = typename std::decay<decltype(std::declval<TaskContext_>().mSeqHBlocks)>::type;
+    using TSeqVBlocks       = typename std::decay<decltype(std::declval<TaskContext_>().mSeqVBlocks)>::type;
+    using TWavefrontBuffer  = typename std::decay<decltype(std::declval<TaskContext_>().mTileBuffer)>::type;
+    using TDPSettings       = typename std::decay<decltype(std::declval<TaskContext_>().mDPSettings)>::type;
+
+    using TTileBuffer       = typename std::decay<decltype(std::declval<TWavefrontBuffer>().horizontalBuffer[0])>::type;
+    using TDPScoutState     = DPScoutState_<DPTiled<TTileBuffer>>;
+
+    // DPTrait type forwarding.
+    using TDPTraits         = typename TDPSettings::TTraits;
+    using TScoreValue       = typename Value<typename TDPSettings::TScoringScheme>::Type;
+    using TAlgorithmType    = typename TDPTraits::TAlgorithmType;
+    using TTracebackType    = typename TDPTraits::TTracebackType;
+    using TGapType          = typename TDPTraits::TGapType;
+
+    // Wavefront Alignment Context.
+    using TDPCell           = DPCell_<TScoreValue, TGapType>;
+
+    using TScoutSpec        = typename ScoutSpecForAlignmentAlgorithm_<TAlgorithmType, TDPScoutState>::Type;
+    using TDPScout          = DPScout_<TDPCell, TScoutSpec>;
+};
+
+
+template <typename TAlgotrithm>
+struct AlgorithmProperty
+{
+    template <typename TTask>
+    inline static bool
+    isTrackingEnabled(TTask const & tile)
+    {
+        return isLastColumn(tile) && isLastRow(tile);
+    }
+};
+
+template <typename TFreeEndGaps>
+struct AlgorithmProperty<GlobalAlignment_<TFreeEndGaps>>
+{
+    template <typename TTask>
+    inline static bool
+    isTrackingEnabled(TTask const & tile)
+    {
+        return (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE && inLastColumn(tile)) ||
+               (IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE && inLastRow(tile)) ||
+               (inLastColumn(tile) && inLastRow(tile));
+    }
+};
+
+template <typename TSpec>
+struct AlgorithmProperty<LocalAlignment_<TSpec>>
+{
+    template <typename TTask>
+    inline static bool
+    isTrackingEnabled(TTask const & /*tile*/)
+    {
+        return true;
+    }
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
 
+namespace impl
+{
+    // ----------------------------------------------------------------------------
+    // Function computeTile()
+    // ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TTraceValue, typename TScoreMatHost, typename TTraceMatHost,
+          typename TDPScout,
+          typename TSequenceH,
+          typename TSequenceV,
+          typename TDPSettings>
+inline void
+computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & dpContext,
+            TDPScout & scout,
+            TSequenceH const & seqH,
+            TSequenceV const & seqV,
+            TDPSettings const & settings)
+{
+    using TDPTraits = typename TDPSettings::TTraits;
+
+    using TScoreMatrixSpec = typename DefaultScoreMatrixSpec_<typename TDPTraits::TAlgorithmType>::Type;
+
+    using TDPScoreMatrix = DPMatrix_<TScoreValue, TScoreMatrixSpec, TScoreMatHost>;
+    using TDPTraceMatrix = DPMatrix_<TTraceValue, FullDPMatrix, TTraceMatHost>;
+
+    using TDPScoreMatrixNavigator = DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise>;
+    using TDPTraceMatrixNavigator = DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<typename TDPTraits::TTracebackType>, NavigateColumnWise>;
+
+    using TDPProfile = DPProfile_<typename TDPTraits::TAlgorithmType,
+                                  typename TDPTraits::TGapType,
+                                  typename TDPTraits::TTracebackType,
+                                  Parallel>;
+
+    // Setup the score and trace matrix.
+    TDPScoreMatrix dpScoreMatrix;
+    TDPTraceMatrix dpTraceMatrix;
+
+    setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
+    setLength(dpScoreMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
+
+    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
+    setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
+
+    // Resue the buffer from the cache.
+    setHost(dpScoreMatrix, getDpScoreMatrix(dpContext));
+    setHost(dpTraceMatrix, getDpTraceMatrix(dpContext));
+
+    resize(dpScoreMatrix);
+    // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
+    if /*constexpr*/(IsTracebackEnabled_<typename TDPTraits::TTracebackType>::VALUE)
+    {
+        static_assert(std::is_same<typename TDPTraits::TTracebackType, TracebackOff>::value, "Traceback not implemented!");
+        resize(dpTraceMatrix);
+    }
+
+    // Initialize the navigators.
+    TDPScoreMatrixNavigator dpScoreMatrixNavigator;
+    TDPTraceMatrixNavigator dpTraceMatrixNavigator;
+    
+    _init(dpScoreMatrixNavigator, dpScoreMatrix, DPBandConfig<BandOff>());
+    _init(dpTraceMatrixNavigator, dpTraceMatrix, DPBandConfig<BandOff>());
+    
+    // Execute the alignment.
+    _computeUnbandedAlignment(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
+                              settings.mScoringScheme, TDPProfile());
+}
+}  // namespace impl
+
+template <typename ...TArgs>
+inline void
+setRefCount(WavefrontTask<TArgs...> & me, size_t const count)
+{
+    me.mRefCount.store(count, std::memory_order_relaxed);
+}
+
+template <typename ...TArgs>
+inline unsigned
+decrementRefCount(WavefrontTask<TArgs...> & me)
+{
+    return --me.mRefCount;
+}
+
+template <typename ...TArgs>
+inline unsigned
+incrementRefCount(WavefrontTask<TArgs...> & me)
+{
+    return ++me.mRefCount;
+}
+
 template <typename TTask>
-auto column(TTask const & task)
+inline auto
+column(TTask const & task)
 {
     return task.mCol;
 }
 
 template <typename TTask>
-auto row(TTask const & task)
+inline auto
+row(TTask const & task)
 {
     return task.mRow;
 }
 
 template <typename TTask>
-bool inLastColumn(TTask const & task)
+inline bool
+inLastColumn(TTask const & task)
 {
     return task.mLastTileH;
 }
 
 template <typename TTask>
-auto inLastRow(TTask const & task)
+inline auto
+inLastRow(TTask const & task)
 {
     return task.mLastTileV;
 }
 
 template <typename TTask>
-inline void
-executeScalar(TTask & task)
+inline bool
+isLastTask(TTask const & task)
 {
-    using TTaskTraits = typename TTask::TTraits;
-    using TBuffer = typename TTaskTraits::TTileBuffer;
-    using TDPScoutState = DPScoutState_<DPTiled<TBuffer>>;
+    return inLastColumn(task) && inLastRow(task);
+}
 
-    using TResultState = typename 
-    using TDPTraits = typename Traits<typename TTaskTraits::TDPConfig>::Type;
+template <typename TTask>
+inline auto &
+successor(TTask & task)
+{
+    return task.mSuccessor;
+}
 
-    // Indirection:
-    auto & tls = local(threadStorage(context(task)));
-    auto & dpCache = cache(tls);
+template <typename TTask>
+inline auto const &
+successor(TTask const & task)
+{
+    return task.mSuccessor;
+}
 
-    auto & buffer = tileBuffer(context(task));
+template <typename TTask>
+inline auto &
+context(TTask & task)
+{
+    return task.mContext;
+}
 
-    // Something I really want to get refined.
-    TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
-                             buffer.verticalBuffer[row(task)]);  // Task local
-    DPScout_<TDPCell, TDPScoutState> scout(scouteState);
-    // We rather get the DPScout in here.
+template <typename TTask>
+inline auto const &
+context(TTask const & task)
+{
+    return task.mContext;
+}
+
+template <typename TAlgorithm, typename TTask>
+inline bool
+isTrackTile(TTask const & task)
+{
+    return isLastColumn(task) && isLastRow(task);
+}
+
+template <typename TTask>
+inline bool
+isTrackTile(TTask const & task)
+{
+    return isLastColumn(task) && isLastRow(task);
+}
+
+template <typename TTask, typename TDPLocalData>
+inline void
+executeScalar(TTask & task, TDPLocalData & dpLocal)
+{
+    using TExecTraits = TaskExecutionTraits<typename TTask::TContext>;
+
+    auto& taskContext = context(task);
+    // Load the cache from the local data.
+    auto & dpCache = cache(dpLocal, taskContext.mAlignmentId);
+    auto & buffer = taskContext.mTileBuffer;
+
+    // Capture the buffer.
+    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
+                                                   buffer.verticalBuffer[row(task)]);  // Task local
+
+    typename TExecTraits::TDPScout scout(scoutState);
 
     // DEBUG: Remove!
 //        auto bufHBegin = _taskContext.getTileBuffer().horizontalBuffer[_col];
 //        auto bufVBegin = _taskContext.getTileBuffer().verticalBuffer[_row];
 
-    computeTile(dpCache, scout,
-                seqBlocksH(context(task))[column(task)],
-                seqBlocksV(context(task))[row(task)],
-                config(context(task)));
+    impl::computeTile(dpCache, scout,
+                      taskContext.mSeqHBlocks[column(task)],
+                      taskContext.mSeqVBlocks[row(task)],
+                      taskContext.mDPSettings);
 
-    if (isTrackingEnabled<typename TDPTraits::TAlgorithm>(inLastColumn(task), inLastRow(task)))
+    // We want to get the state here from the scout.
+    if(AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
     {
-        update(intermediate(tls, instance(context(task))),
-               TResultState{maxScore(scout), maxHostPosition(scout)},
-               column(task),
-               row(task));
+        // TODO(rrahn): Implement the interface.
+        // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
+        updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
+                  {maxScore(scout), maxHostPosition(scout)},
+                  column(task),
+                  row(task));
     }
 
     
@@ -170,11 +388,10 @@ executeScalar(TTask & task)
 //                                                             {0, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mScalarTraceVec) - 1)},
 //                                                              0});
 //    }
-    #ifdef DP_ALIGN_STATS
-        ++serialCounter;
-    #endif
+//    #ifdef DP_ALIGN_STATS
+//        ++serialCounter;
+//    #endif
 }
 
-}  // namespace impl
 }  // namespace seqan
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_H_

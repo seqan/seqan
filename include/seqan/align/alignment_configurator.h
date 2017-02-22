@@ -49,13 +49,6 @@ namespace seqan
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//  Tag GlobalAlignment
-// ----------------------------------------------------------------------------
-
-struct GlobalAlignment_;
-using GlobalAlignment = Tag<GlobalAlignment_>;
-
-// ----------------------------------------------------------------------------
 //  Class AlignmentConfigurator
 // ----------------------------------------------------------------------------
 
@@ -128,45 +121,45 @@ struct DPTraits
     struct GlobalLinear
     {
         // The algorithm to choose.
-        using TAlgorithmPolicy    = GlobalAlignment_<>;
+        using TAlgorithmType    = GlobalAlignment_<>;
         // The Gaps to choos
-        using TGapPolicy          = LinearGaps;
+        using TGapType          = LinearGaps;
         // The Band to choose.
-        using TBandPolicy         = BandOff;
+        using TBandType         = BandOff;
         // The traceback.
-        using TTracebackPolicy    = TracebackOn<TracebackConfig_<SingleTrace, GapsLeft>>;
+        using TTracebackType    = TracebackOn<TracebackConfig_<SingleTrace, GapsLeft>>;
         // The output to choose.
-        using TFormat             = ArrayGaps;
+        using TFormat           = ArrayGaps;
     };
 
     // Global alignment with affine gap costs.
     struct GlobalAffine : public GlobalLinear
     {
-        using TGapPolicy          = AffineGaps;
+        using TGapType          = AffineGaps;
     };
 
     // Banded global alignment with linear gap costs.
     struct BandedGlobalLinear : public GlobalLinear
     {
-        using TBandPolicy         = BandOn;
+        using TBandType         = BandOn;
     };
 
     // Banded global alignment with affine gap costs.
     struct BandedGlobalAffine : public BandedGlobalLinear
     {
-        using TGapPolicy          = AffineGaps;
+        using TGapType          = AffineGaps;
     };
 
     // Local alignment with linear gap costs.
     struct LocalLinear : public GlobalLinear
     {
-        using TAlgorithmPolicy    = LocalAlignment_<>;
+        using TAlgorithmType    = LocalAlignment_<>;
     };
 
     // Local alignment with affine gap costs.
     struct LocalAffine : public LocalLinear
     {
-        using TGapPolicy          = AffineGaps;
+        using TGapType          = AffineGaps;
     };
 };
 

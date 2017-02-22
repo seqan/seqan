@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_TASK_EVENT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_TASK_EVENT_H_
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -46,29 +46,32 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// Parallel Modes:
-
-// SEQ_NOSIMD_NOTILING  -> for loop over all sequences/or sequence and call single alignment.
-// SEQ_NOSIMD_TILING    -> NaN!
-// SEQ_SIMD_NOTILING    -> for loop over all sequences in batches and call on single thread -> do not spawn new thread.
-// SEQ_SIMD_TILING      -> NaN!
-
-// For latter options, we want to set the thread number. => default is std::thread::hardware_concurrency();
-// PAR_NOSIMD_NOTILING  -> parallel for loop over all sequences
-// PAR_NOSIMD_TILING    -> alignment_scheduler (QueueSpec<unlimited,limited>, TBBQueue?, STDQueue?)+ thread pool.  // Set the limit on alignment scheduler, set the block size
-// PAR_SIMD_NOTILING    -> parallel for loop over all sequences plus process in vector batches.
-// PAR_SIMD_TILING      -> alignment_scheduler (QueueSpec<unlimited,limited>, TBBQueue?, STDQueue?)+ thread pool + dp task pool.  // Set the limit on alignment scheduler, set the block size
-
-// Use interface as: DPSettings<TScore, TBand, Traits<>>
-template <typename TScoringScheme_, typename TDPTraits = DPTraits::GlobalLinear>
-struct DPSettings
+class WavefrontAlignmentTaskEvent
 {
-    using TTraits        = TDPTraits;
-    using TScoringScheme = TScoringScheme_;
-    using TBandConfig    = DPBandConfig<typename TDPTraits::TBandType>;
+public:
+    std::mutex                  mMutexLastTask{};
+    std::condition_variable     mConditionLastTask{};
+    bool                        mReadyLastTask{false};
 
-    TScoringScheme  mScoringScheme;
-    TBandConfig     mBandScheme;
+    WavefrontAlignmentTaskEvent() = default;
+
+    WavefrontAlignmentTaskEvent(WavefrontAlignmentTaskEvent const &) = delete;
+    WavefrontAlignmentTaskEvent(WavefrontAlignmentTaskEvent &&) = delete;
+
+    WavefrontAlignmentTaskEvent& operator=(WavefrontAlignmentTaskEvent const &) = delete;
+    WavefrontAlignmentTaskEvent& operator=(WavefrontAlignmentTaskEvent &&) = delete;
+
+    ~WavefrontAlignmentTaskEvent()
+    {
+        if (!mReadyLastTask)
+        {
+            {
+                std::lock_guard<decltype(mMutexLastTask)> lck(mMutexLastTask);
+                mReadyLastTask = true;
+            }
+            mConditionLastTask.notify_one();
+        }
+    }
 };
 
 // ============================================================================
@@ -78,7 +81,25 @@ struct DPSettings
 // ============================================================================
 // Functions
 // ============================================================================
-    
+
+inline void
+notify(WavefrontAlignmentTaskEvent & event)
+{
+    {
+        std::lock_guard<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
+        event.mReadyLastTask = true;
+    }
+    event.mConditionLastTask.notify_one();
+}
+
+inline void
+wait(WavefrontAlignmentTaskEvent & event)
+{
+    std::unique_lock<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
+    if (!event.mReadyLastTask)
+        event.mConditionLastTask.wait(lck, [&]{ return event.mReadyLastTask; });
+}
+
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_TASK_EVENT_H_

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
+#ifndef SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
+#define SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -46,29 +46,47 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// Parallel Modes:
-
-// SEQ_NOSIMD_NOTILING  -> for loop over all sequences/or sequence and call single alignment.
-// SEQ_NOSIMD_TILING    -> NaN!
-// SEQ_SIMD_NOTILING    -> for loop over all sequences in batches and call on single thread -> do not spawn new thread.
-// SEQ_SIMD_TILING      -> NaN!
-
-// For latter options, we want to set the thread number. => default is std::thread::hardware_concurrency();
-// PAR_NOSIMD_NOTILING  -> parallel for loop over all sequences
-// PAR_NOSIMD_TILING    -> alignment_scheduler (QueueSpec<unlimited,limited>, TBBQueue?, STDQueue?)+ thread pool.  // Set the limit on alignment scheduler, set the block size
-// PAR_SIMD_NOTILING    -> parallel for loop over all sequences plus process in vector batches.
-// PAR_SIMD_TILING      -> alignment_scheduler (QueueSpec<unlimited,limited>, TBBQueue?, STDQueue?)+ thread pool + dp task pool.  // Set the limit on alignment scheduler, set the block size
-
-// Use interface as: DPSettings<TScore, TBand, Traits<>>
-template <typename TScoringScheme_, typename TDPTraits = DPTraits::GlobalLinear>
-struct DPSettings
+template <typename TConfig>
+class WavefrontAlignmentThreadLocalStorage
 {
-    using TTraits        = TDPTraits;
-    using TScoringScheme = TScoringScheme_;
-    using TBandConfig    = DPBandConfig<typename TDPTraits::TBandType>;
+public:
+    //-------------------------------------------------------------------------
+    // Member Types.
 
-    TScoringScheme  mScoringScheme;
-    TBandConfig     mBandScheme;
+    using TIntermediate = typename TConfig::TIntermediate;
+    using TCache        = typename TConfig::TCache;
+
+    using TAlignmentLocal = std::tuple<TIntermediate, TCache>;
+
+    //-------------------------------------------------------------------------
+    // Private Members.
+
+    std::vector<TAlignmentLocal>   _mMultiAlignmentThreadLocal;
+
+    //-------------------------------------------------------------------------
+    // Constructor.
+
+    explicit WavefrontAlignmentThreadLocalStorage(size_t const numAlignments) :
+        _mMultiAlignmentThreadLocal(numAlignments)
+    {}
+
+    // Delegating default constructor.
+    WavefrontAlignmentThreadLocalStorage() : WavefrontAlignmentThreadLocalStorage(1)
+    {}
+
+    WavefrontAlignmentThreadLocalStorage(WavefrontAlignmentThreadLocalStorage const &) = default;
+    WavefrontAlignmentThreadLocalStorage(WavefrontAlignmentThreadLocalStorage &&) = default;
+
+    //-------------------------------------------------------------------------
+    // Destructor.
+
+    ~WavefrontAlignmentThreadLocalStorage() = default;
+
+    //-------------------------------------------------------------------------
+    // Member Functions.
+
+    WavefrontAlignmentThreadLocalStorage& operator=(WavefrontAlignmentThreadLocalStorage const &) = default;
+    WavefrontAlignmentThreadLocalStorage& operator=(WavefrontAlignmentThreadLocalStorage &&) = default;
 };
 
 // ============================================================================
@@ -78,7 +96,25 @@ struct DPSettings
 // ============================================================================
 // Functions
 // ============================================================================
-    
+
+template <typename TConfig>
+inline auto &
+intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
+             size_t const alignId)
+{
+    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
+    return std::get<typename TConfig::TIntermediate>(me._mMultiAlignmentThreadLocal[alignId]);
+}
+
+template <typename TConfig>
+inline auto &
+cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
+      size_t const alignId)
+{
+    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
+    return std::get<typename TConfig::TCache>(me._mMultiAlignmentThreadLocal[alignId]);
+}
+
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_
+#endif  // SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
