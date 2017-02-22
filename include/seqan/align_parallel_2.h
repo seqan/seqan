@@ -74,6 +74,7 @@
 // ============================================================================
 
 #include <seqan/align_parallel/enumerable_thread_local.h>
+#include <seqan/align_parallel/enumerable_thread_local_limit.h>
 #include <seqan/align_parallel/enumerable_thread_local_iterator.h>
 #include <seqan/align_parallel/dp_parallel_execution_policies.h>      // TODO(rrahn): rename! refactor!
 #include <seqan/align_parallel/parallel_thread_pool_std.h>      // TODO(rrahn): rename! refactor

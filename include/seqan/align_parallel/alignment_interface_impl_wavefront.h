@@ -76,12 +76,13 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, Serial> const & execPo
     // Initialize instance of alignment scheduler.
     using TAlignTask    = WavefrontAlignmentTask<TSeqH, TSeqV, TSettings>;
     using TThreadLocal  = typename WavefrontAlignmentTaskConfig<TSettings>::TThreadLocal;
-    using TExecutor     = WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal>>;
+    using TExecutor     = WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
 
     // Initialize the alignment scheduler.
     WavefrontAlignmentScheduler alignScheduler{parallelAlignments(execPolicy), numThreads(execPolicy)};
 
-    EnumerableThreadLocal<TThreadLocal> tls{TThreadLocal{parallelAlignments(execPolicy)}};
+//    EnumerableThreadLocal<TThreadLocal> tls{TThreadLocal{parallelAlignments(execPolicy)}};
+    EnumerableThreadLocal<TThreadLocal, Limit> tls{numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}};
     TExecutor executor{&taskScheduler(alignScheduler), &tls};
 
     // Continuator for calling the alignment instance functor.
