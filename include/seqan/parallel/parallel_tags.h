@@ -77,13 +77,14 @@ template <typename TThreadModel = Serial, typename TVectorSpec = Serial>
 struct ExecutionPolicy
 {
     // Member variables.
-    size_t numThreads = 1;
+    size_t mNumThreads = 1;
 };
 
 // ----------------------------------------------------------------------------
 // Tag ExecutionPolicy  [Sequential]
 // ----------------------------------------------------------------------------
 
+using Sequential = ExecutionPolicy<>;
 constexpr ExecutionPolicy<> seq{};
 
 // ----------------------------------------------------------------------------
@@ -104,7 +105,7 @@ using ParallelTbb = Tag<ParallelTbb_>;
 using Parallel = ParallelTbb;
 ExecutionPolicy<ParallelTbb> par{std::thread::hardware_concurrency()};
 ExecutionPolicy<ParallelTbb, Vectorial> parVec{std::thread::hardware_concurrency()};
-#elsif defined(_OPENMP)
+#elif defined(_OPENMP)
 struct ParallelOmp_;
 using ParallelOmp = Tag<ParallelOmp_>;
 using Parallel = ParallelOmp;
@@ -186,7 +187,7 @@ template <typename TParallelSpec, typename TVectorizationSpec>
 inline auto
 numThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> const & p)
 {
-    return p.numThreads;
+    return p.mNumThreads;
 }
 
 template <typename TParallelSpec, typename TVectorizationSpec>
@@ -194,7 +195,7 @@ inline void
 setNumThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> & p,
               size_t const nt)
 {
-    p.numThreads = nt;
+    p.mNumThreads = nt;
 }
 
 }  // namespace seqan
