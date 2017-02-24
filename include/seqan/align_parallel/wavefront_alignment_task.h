@@ -75,9 +75,40 @@ struct WavefrontAlignmentTaskConfig
     struct AlignThreadLocalConfig_ {
         using TIntermediate = TDPIntermediate;
         using TCache        = TDPCache;
+
+        using TLocalHost    = std::tuple<TIntermediate, TCache>;
     };
 
     using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<AlignThreadLocalConfig_>;
+    using TAlignEvent       = WavefrontAlignmentTaskEvent;
+};
+
+template <typename TDPSettings>
+struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TDPSettings>
+{
+    // ----------------------------------------------------------------------------
+    // Member Typedefs.
+
+    using TBase_ = WavefrontAlignmentTaskConfig<TDPSettings>;
+
+    using TDPSimdCell         = DPCell_<typename TDPSettings::TScoreValueSimd, typename TBase_::TGapType>;
+    using TDPSimdTraceValue   = typename TraceBitMap_<typename TDPSettings::TScoreValueSimd>::Type;
+
+    using TDPSimdScoreMatrix  = String<TDPSimdCell, Alloc<OverAligned>>;
+    using TDPSimdTraceMatrix  = String<TDPSimdTraceValue, Alloc<OverAligned>>;
+    using TDPSimdCache      = DPContext<TDPSimdCell, TDPSimdTraceValue, TDPSimdScoreMatrix, TDPSimdTraceMatrix>;
+
+    // Parallel Context.
+    struct SimdAlignThreadLocalConfig_ {
+
+        using TIntermediate = typename TBase_::TDPIntermediate;
+        using TCache        = typename TBase_::TDPCache;
+        using TSimdCache    = TDPSimdCache;
+
+        using TLocalHost    = std::tuple<TIntermediate, TCache, TSimdCache>;
+    };
+
+    using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<SimdAlignThreadLocalConfig_>;
     using TAlignEvent       = WavefrontAlignmentTaskEvent;
 };
 
@@ -185,6 +216,16 @@ class WavefrontAlignmentTask
 {
 public:
 
+    using TIncubator    = WavefrontAlignmentTaskIncubator<TConfig>;
+
+    using TSeqHBlocks   = decltype(TIncubator::createBlocks(std::declval<TSeqH>(), std::declval<size_t>()));
+    using TSeqVBlocks   = decltype(TIncubator::createBlocks(std::declval<TSeqV>(), std::declval<size_t>()));
+    using TTileBuffer   = decltype(TIncubator::createBlockBuffer(std::declval<TSeqHBlocks>(),
+                                                                 std::declval<TSeqVBlocks>(),
+                                                                 std::declval<typename TDPSettings::TScoringScheme>()));
+
+    using TTaskContext  = WavefrontAlignmentContext<TSeqHBlocks, TSeqVBlocks, TTileBuffer, TDPSettings>;
+
     // ----------------------------------------------------------------------------
     // Member Variables.
     // ----------------------------------------------------------------------------
@@ -236,7 +277,6 @@ public:
                TWavefrontExecutor executor,
                TCallback && callback)
     {
-        using TIncubator = WavefrontAlignmentTaskIncubator<TConfig>;
         // Initialize the strings.
         auto seqHBlocks = TIncubator::createBlocks(mSeqH, mBlockSize);
         auto seqVBlocks = TIncubator::createBlocks(mSeqV, mBlockSize);
@@ -245,25 +285,22 @@ public:
         auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, mDPSettings.mScoringScheme);
 
         // Setup the task context and create task graph.
-        using TTaskContext = WavefrontAlignmentContext<decltype(seqHBlocks),
-                                                       decltype(seqVBlocks),
-                                                       decltype(buffer),
-                                                       TDPSettings>;
-
         TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, mDPSettings};
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
-        typename TConfig::TAlignEvent event;
-        executor.mThreadEventPtr = &event;
+//        typename TConfig::TAlignEvent event;
+//        executor.mThreadEventPtr = &event;
 
         // Kick off the execution.
-        using TWavefrontTaskExec = WavefrontTaskExecutor<typename std::decay<decltype(*taskGraph[0][0])>::type,
-                                                         TWavefrontExecutor>;
-        spawn(executor, TWavefrontTaskExec{taskGraph[0][0].get(), &executor});
+        using TExec = WavefrontExecutorEvent<TWavefrontExecutor>;
+        TExec exec{executor};
+
+        using TWavefrontTaskExec = WavefrontTaskExecutor<typename std::decay<decltype(*taskGraph[0][0])>::type, TExec>;
+        spawn(exec, TWavefrontTaskExec{taskGraph[0][0].get(), &exec});
 
         // Wait for alignment to finish.
-        wait(executor);
+        wait(exec);
 
         // Reduce.
         typename TConfig::TDPIntermediate interMax{};
@@ -297,6 +334,49 @@ public:
         // We have to compute the trace here.
 
         // Continue execution.
+        callback(mAlignmentId, interMax.mMaxState.first);
+    }
+
+    template <typename TWavefrontExecutor,
+              typename TSimdTaskQueue,
+              typename TCallback>
+    inline void
+    operator()(uint16_t const instanceId,
+               TWavefrontExecutor executor,
+               TSimdTaskQueue & taskQueue,
+               TCallback && callback)
+    {
+        // Initialize the strings.
+        auto seqHBlocks = TIncubator::createBlocks(mSeqH, mBlockSize);
+        auto seqVBlocks = TIncubator::createBlocks(mSeqV, mBlockSize);
+
+        // Create the buffer for the matrix.
+        auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, mDPSettings.mScoringScheme);
+
+        // Setup the task context and create task graph.
+        TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, mDPSettings};
+        auto taskGraph = TIncubator::createTaskGraph(taskContext);
+
+        // Prepare event.
+        typename TConfig::TAlignEvent event;
+        executor.mThreadEventPtr = &event;
+
+        // Kick off the execution.
+        using TWavefrontTaskExec = WavefrontTaskExecutor<TSimdTaskQueue, TWavefrontExecutor>;
+        appendValue(taskQueue, *taskGraph[0][0]);
+        spawn(executor, TWavefrontTaskExec{&taskQueue, &executor});
+
+        // Wait for alignment to finish.
+        wait(executor);
+
+        // Reduce.
+        typename TConfig::TDPIntermediate interMax{};
+        auto collectAndReset = [&](auto & threadLocalStorage)
+        {
+            updateMax(interMax, intermediate(threadLocalStorage, instanceId));
+            clear(intermediate(threadLocalStorage, instanceId));
+        };
+        combineEach(*executor.mThreadLocalPtr, collectAndReset);
         callback(mAlignmentId, interMax.mMaxState.first);
     }
 };
