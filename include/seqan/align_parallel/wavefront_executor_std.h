@@ -55,6 +55,28 @@ struct WavefrontExecutorStd
     WavefrontAlignmentTaskEvent * mThreadEventPtr{nullptr};
 };
 
+template <typename TGlobalExecutor>
+struct WavefrontExecutorEvent
+{
+    TGlobalExecutor             & mExecutor;
+    WavefrontAlignmentTaskEvent mThreadEvent;
+
+    WavefrontExecutorEvent(TGlobalExecutor & exec) : mExecutor(exec)
+    {}
+};
+
+template <typename TGlobalExecutor>
+struct WavefrontExecutorAtomic
+{
+    TGlobalExecutor &   mExecutor;
+    std::atomic_flag    mFlag;
+
+    WavefrontExecutorAtomic(TGlobalExecutor & exec) : mExecutor(exec)
+    {
+        mFlag.test_and_set(std::memory_order_relaxed);
+    }
+};
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -95,6 +117,68 @@ wait(WavefrontExecutorStd<TArgs...> & executor)
 {
     SEQAN_ASSERT(executor.mThreadEventPtr != nullptr);
     wait(*executor.mThreadEventPtr);
+}
+
+template <typename ...TArgs,
+typename TTaskExecutor>
+inline void
+spawn(WavefrontExecutorEvent<TArgs...> & executor,
+      TTaskExecutor && taskExec)
+{
+    spawn(executor.mExecutor, std::forward<TTaskExecutor>(taskExec));
+}
+
+template <typename ...TArgs>
+inline auto&
+local(WavefrontExecutorEvent<TArgs...> & executor)
+{
+    return local(executor.mExecutor);
+}
+
+template <typename ...TArgs>
+inline void
+notify(WavefrontExecutorEvent<TArgs...> & executor)
+{
+    notify(executor.mThreadEvent);
+}
+
+template <typename ...TArgs>
+inline void
+wait(WavefrontExecutorEvent<TArgs...> & executor)
+{
+    wait(executor.mThreadEvent);
+}
+
+template <typename ...TArgs,
+typename TTaskExecutor>
+inline void
+spawn(WavefrontExecutorAtomic<TArgs...> & executor,
+      TTaskExecutor && taskExec)
+{
+    spawn(executor.mExecutor, std::forward<TTaskExecutor>(taskExec));
+}
+
+template <typename ...TArgs>
+inline auto&
+local(WavefrontExecutorAtomic<TArgs...> & executor)
+{
+    return local(executor.mExecutor);
+}
+
+template <typename ...TArgs>
+inline void
+notify(WavefrontExecutorAtomic<TArgs...> & executor)
+{
+    executor.mFlag.clear(std::memory_order_release);
+}
+
+template <typename ...TArgs>
+inline void
+wait(WavefrontExecutorAtomic<TArgs...> & executor)
+{
+    SpinDelay delay;
+    while (executor.mFlag.test_and_set(std::memory_order_acquire))
+        waitFor(delay);
 }
 
 }  // namespace seqan
