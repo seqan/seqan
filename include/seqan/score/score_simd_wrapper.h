@@ -125,6 +125,24 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function baseScore();
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TScore>
+inline auto &
+underlying(Score<TValue, ScoreSimdWrapper<TScore> > & me)
+{
+    return me._baseScore;
+}
+
+template <typename TValue, typename TScore>
+inline auto const &
+underlying(Score<TValue, ScoreSimdWrapper<TScore> > const & me)
+{
+    return me._baseScore;
+}
+
+// ----------------------------------------------------------------------------
 // Function score(); SimpleScore Wrapper
 // ----------------------------------------------------------------------------
 

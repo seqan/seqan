@@ -59,6 +59,7 @@
 // ============================================================================
 
 #include <seqan/basic.h>
+#include <seqan/basic/basic_simd_vector.h>
 #include <seqan/align.h>
 #include <seqan/parallel.h>
 
@@ -78,6 +79,7 @@
 #include <seqan/align_parallel/enumerable_thread_local_iterator.h>
 #include <seqan/align_parallel/dp_parallel_execution_policies.h>      // TODO(rrahn): rename! refactor!
 #include <seqan/align_parallel/parallel_thread_pool_std.h>      // TODO(rrahn): rename! refactor
+#include <seqan/align_parallel/wavefront_simd_dp_tasks.h>  // TODO(rrahn): Write tests!
 
 // ============================================================================
 // Wavefront DataStructures
@@ -98,9 +100,11 @@
 // ============================================================================
 
 #include <seqan/align_parallel/dp_parallel_scout.h>
-#include <seqan/align_parallel/dp_task_base_2.h>
-
+#include <seqan/align_parallel/dp_parallel_scout_simd.h>
 #include <seqan/align_parallel/wavefront_alignment_task_event.h>
+
+#include <seqan/align_parallel/dp_task_base_2_impl.h>
+#include <seqan/align_parallel/dp_task_base_2.h>
 #include <seqan/align_parallel/wavefront_task_executor.h>
 #include <seqan/align_parallel/wavefront_executor_std.h>
 #include <seqan/align_parallel/wavefront_alignment_task.h>

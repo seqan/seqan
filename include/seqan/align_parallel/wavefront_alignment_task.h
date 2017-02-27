@@ -70,7 +70,13 @@ struct WavefrontAlignmentTaskConfig
     using TDPScout          = DPScout_<TDPCell, Default>;
 
     // Parallel Context.
-    using TDPIntermediate     = IntermediateDPResult<TDPScout>;
+    struct IntermediateTraits_
+    {
+        using TScoreValue   = decltype(maxScore(std::declval<TDPScout>()));
+        using THostPosition = decltype(maxHostPosition(std::declval<TDPScout>()));
+    };
+
+    using TDPIntermediate     = IntermediateDPResult<IntermediateTraits_>;
 
     struct AlignThreadLocalConfig_ {
         using TIntermediate = TDPIntermediate;
@@ -96,12 +102,21 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
 
     using TDPSimdScoreMatrix  = String<TDPSimdCell, Alloc<OverAligned>>;
     using TDPSimdTraceMatrix  = String<TDPSimdTraceValue, Alloc<OverAligned>>;
-    using TDPSimdCache      = DPContext<TDPSimdCell, TDPSimdTraceValue, TDPSimdScoreMatrix, TDPSimdTraceMatrix>;
+    using TDPSimdCache        = DPContext<TDPSimdCell, TDPSimdTraceValue, TDPSimdScoreMatrix, TDPSimdTraceMatrix>;
+
+    using TDPScout_           = DPScout_<TDPSimdCell, SimdAlignmentScout<> >;
+
+    struct IntermediateTraits_ : public TBase_::IntermediateTraits_
+    {
+        using TScoreValue = decltype(maxScoreAt(std::declval<TDPScout_>()));
+    };
+
+    using TDPIntermediate     = IntermediateDPResult<IntermediateTraits_>;
 
     // Parallel Context.
     struct SimdAlignThreadLocalConfig_ {
 
-        using TIntermediate = typename TBase_::TDPIntermediate;
+        using TIntermediate = TDPIntermediate;
         using TCache        = typename TBase_::TDPCache;
         using TSimdCache    = TDPSimdCache;
 
@@ -274,7 +289,7 @@ public:
               typename TCallback>
     inline void
     operator()(uint16_t const instanceId,
-               TWavefrontExecutor executor,
+               TWavefrontExecutor & executor,
                TCallback && callback)
     {
         // Initialize the strings.
@@ -289,18 +304,16 @@ public:
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
-//        typename TConfig::TAlignEvent event;
-//        executor.mThreadEventPtr = &event;
+        WavefrontAlignmentTaskEvent event;
+        context(*taskGraph.back().back()).mEventPtr = &event;
 
         // Kick off the execution.
-        using TExec = WavefrontExecutorEvent<TWavefrontExecutor>;
-        TExec exec{executor};
-
-        using TWavefrontTaskExec = WavefrontTaskExecutor<typename std::decay<decltype(*taskGraph[0][0])>::type, TExec>;
-        spawn(exec, TWavefrontTaskExec{taskGraph[0][0].get(), &exec});
+        using TWavefrontTaskExec = WavefrontTaskExecutor<typename std::decay<decltype(*taskGraph[0][0])>::type,
+                                                         TWavefrontExecutor>;
+        spawn(executor, TWavefrontTaskExec{taskGraph[0][0].get(), &executor});
 
         // Wait for alignment to finish.
-        wait(exec);
+        wait(event);
 
         // Reduce.
         typename TConfig::TDPIntermediate interMax{};
@@ -342,7 +355,7 @@ public:
               typename TCallback>
     inline void
     operator()(uint16_t const instanceId,
-               TWavefrontExecutor executor,
+               TWavefrontExecutor & executor,
                TSimdTaskQueue & taskQueue,
                TCallback && callback)
     {
@@ -358,8 +371,9 @@ public:
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
-        typename TConfig::TAlignEvent event;
-        executor.mThreadEventPtr = &event;
+        // Prepare event.
+        WavefrontAlignmentTaskEvent event;
+        context(*taskGraph.back().back()).mEventPtr = &event;
 
         // Kick off the execution.
         using TWavefrontTaskExec = WavefrontTaskExecutor<TSimdTaskQueue, TWavefrontExecutor>;
@@ -367,7 +381,7 @@ public:
         spawn(executor, TWavefrontTaskExec{&taskQueue, &executor});
 
         // Wait for alignment to finish.
-        wait(executor);
+        wait(event);
 
         // Reduce.
         typename TConfig::TDPIntermediate interMax{};

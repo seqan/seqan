@@ -385,6 +385,13 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTr
     _updateHostPositions(dpScout, mask, navigator);
 }
 
+template <typename TDPCell, typename TScoutSpec>
+inline auto
+maxScoreAt(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
+{
+    return maxScore(dpScout)[dpScout._simdLane];
+}
+
 // ----------------------------------------------------------------------------
 // Function maxHostCoordinate()
 // ----------------------------------------------------------------------------
@@ -399,12 +406,20 @@ maxHostCoordinate(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpS
             dpScout.mVerticalPos[dpScout._simdLane];
 }
 
+template <typename TDPCell, typename TScoutSpec>
+inline auto
+maxHostCoordinates(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
+{
+    return std::make_pair(maxHostCoordinate(dpScout, DPMatrixDimension_::HORIZONTAL),
+                          maxHostCoordinate(dpScout, DPMatrixDimension_::VERTICAL));
+}
+
 // ----------------------------------------------------------------------------
 // Function maxHostPosition()
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TScoutSpec>
-[[deprecated("Use maxHostCoordinate instead!")]] inline unsigned int
+[[deprecated("Use maxHostCoordinate instead!")]] auto
 maxHostPosition(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & /*unused*/)
 {}
 

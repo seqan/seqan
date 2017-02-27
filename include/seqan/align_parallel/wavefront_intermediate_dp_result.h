@@ -46,19 +46,20 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TDPScout>
+template <typename TTraits>
 struct IntermediateDPResult
 {
     // ----------------------------------------------------------------------------
     // Member Types.
 
-    using TScoreValue = typename TDPScout::TScoreValue;
-    using TState      = std::pair<TScoreValue, size_t>;
+//    using TScoreValue = typename TTraits::TScoreValue;
+//    using THostPos    = typename TTraits::THostPosition;
+    using TState      = std::pair<typename TTraits::TScoreValue, typename TTraits::THostPosition>;
 
     // ----------------------------------------------------------------------------
     // Member Variables
 
-    TState  mMaxState{minValue<TScoreValue>(), 0};
+    TState  mMaxState{minValue<typename TTraits::TScoreValue>(), typename TTraits::THostPosition{}};
     size_t  mTileCol{0};
     size_t  mTileRow{0};
 

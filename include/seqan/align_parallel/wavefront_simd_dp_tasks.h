@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
-#define SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_SIMD_DP_TASKS_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_SIMD_DP_TASKS_H_
 
 namespace seqan
 {
@@ -46,44 +46,47 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TConfig>
-class WavefrontAlignmentThreadLocalStorage
+template <typename TValue,
+          size_t VECTOR_SIZE_>
+class WavefrontSimdDPTasks
 {
 public:
+
     //-------------------------------------------------------------------------
     // Member Types.
 
-    using TAlignmentLocal = typename TConfig::TLocalHost;
+    using TQueue = ConcurrentQueue<TValue*>;
+    using ResultType = std::vector<TValue*>;
+    using ValueType = TValue;
 
     //-------------------------------------------------------------------------
-    // Private Members.
+    // Members.
+    static constexpr size_t VECTOR_SIZE{VECTOR_SIZE_};
 
-    std::vector<TAlignmentLocal>   _mMultiAlignmentThreadLocal;
-
+    TQueue      mQueue;
+    std::mutex  mMutexPopQueue;
+    bool        mHasNotified{false};
     //-------------------------------------------------------------------------
-    // Constructor.
+    // Constructors.
 
-    explicit WavefrontAlignmentThreadLocalStorage(size_t const numAlignments) :
-        _mMultiAlignmentThreadLocal(numAlignments)
-    {}
+    WavefrontSimdDPTasks()
+    {
+        lockWriting(mQueue);
+        lockReading(mQueue);
+    }
 
-    // Delegating default constructor.
-    WavefrontAlignmentThreadLocalStorage() : WavefrontAlignmentThreadLocalStorage(1)
-    {}
+    WavefrontSimdDPTasks(WavefrontSimdDPTasks const&) = delete;
+    WavefrontSimdDPTasks(WavefrontSimdDPTasks &&) = delete;
 
-    WavefrontAlignmentThreadLocalStorage(WavefrontAlignmentThreadLocalStorage const &) = default;
-    WavefrontAlignmentThreadLocalStorage(WavefrontAlignmentThreadLocalStorage &&) = default;
+    WavefrontSimdDPTasks& operator=(WavefrontSimdDPTasks const &) = delete;
+    WavefrontSimdDPTasks& operator=(WavefrontSimdDPTasks &&) = delete;
 
-    //-------------------------------------------------------------------------
-    // Destructor.
-
-    ~WavefrontAlignmentThreadLocalStorage() = default;
-
-    //-------------------------------------------------------------------------
-    // Member Functions.
-
-    WavefrontAlignmentThreadLocalStorage& operator=(WavefrontAlignmentThreadLocalStorage const &) = default;
-    WavefrontAlignmentThreadLocalStorage& operator=(WavefrontAlignmentThreadLocalStorage &&) = default;
+    ~WavefrontSimdDPTasks()
+    {
+        if (!mHasNotified)
+            unlockWriting(mQueue);
+        unlockReading(mQueue);
+    }
 };
 
 // ============================================================================
@@ -94,33 +97,45 @@ public:
 // Functions
 // ============================================================================
 
-template <typename TConfig>
-inline auto &
-intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
-             size_t const alignId)
+template <typename TValue, size_t VECTOR_SIZE>
+inline bool
+tryPopTasks(typename WavefrontSimdDPTasks<TValue, VECTOR_SIZE>::ResultType & tasks,
+            WavefrontSimdDPTasks<TValue, VECTOR_SIZE> & me)
 {
-    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
-    return std::get<typename TConfig::TIntermediate>(me._mMultiAlignmentThreadLocal[alignId]);
+    clear(tasks);
+    std::lock_guard<std::mutex> lck(me.mMutexPopQueue);
+    if (length(me.mQueue) < WavefrontSimdDPTasks<TValue, VECTOR_SIZE>::VECTOR_SIZE)
+    {
+        resize(tasks, 1);
+        if (!popFront(tasks[0], me.mQueue, Serial()))
+        {
+            return false;
+        }
+    }
+    else
+    {
+        for (size_t lane = 0u; lane < VECTOR_SIZE; ++lane)
+            tasks.push_back(popFront(me.mQueue, Serial()));
+    }
+    return true;
 }
 
-template <typename TConfig>
-inline auto &
-cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
-      size_t const alignId)
+template <typename TValue, size_t VECTOR_SIZE>
+inline void
+appendValue(WavefrontSimdDPTasks<TValue, VECTOR_SIZE> & me,
+            TValue & newTask)
 {
-    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
-    return std::get<typename TConfig::TCache>(me._mMultiAlignmentThreadLocal[alignId]);
+    appendValue(me.mQueue, &newTask);
 }
 
-template <typename TConfig>
-inline auto &
-simdCache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
-          size_t const alignId)
+template <typename TValue, size_t VECTOR_SIZE>
+inline void
+notify(WavefrontSimdDPTasks<TValue, VECTOR_SIZE> & me)
 {
-    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
-    return std::get<typename TConfig::TSimdCache>(me._mMultiAlignmentThreadLocal[alignId]);
+    me.mHasNotified = true;
+    unlockWriting(me.mQueue);
 }
 
 }  // namespace seqan
 
-#endif  // SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_SIMD_DP_TASKS_H_

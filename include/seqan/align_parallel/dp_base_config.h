@@ -69,6 +69,40 @@ struct DPSettings
 
     TScoringScheme  mScoringScheme;
     TBandConfig     mBandScheme;
+
+    DPSettings() = default;
+
+    explicit DPSettings(TScoringScheme score) : mScoringScheme(std::move(score))
+    {}
+};
+
+// Aggregate type.
+template <typename TDPSettings>
+struct SimdDPSettings : public TDPSettings
+{
+    //-------------------------------------------------------------------------
+    // Member Types.
+
+    using TTraits = typename TDPSettings::TTraits;
+    using TScoringScheme = typename TDPSettings::TScoringScheme;
+    using TScoreValue = typename Value<TScoringScheme>::Type;
+    using TScoreValueSimd = typename SimdVector<TScoreValue>::Type;
+    using TSimdScoringScheme = Score<TScoreValueSimd, ScoreSimdWrapper<TScoringScheme>>;
+
+    //-------------------------------------------------------------------------
+    // Members.
+
+    TSimdScoringScheme  mSimdScoringScheme;
+
+    //-------------------------------------------------------------------------
+    // Constructor.
+
+    SimdDPSettings() = default;
+    
+    explicit SimdDPSettings(TScoringScheme score) :
+        TDPSettings(std::move(score)),
+        mSimdScoringScheme(score)
+    {}
 };
 
 // ============================================================================

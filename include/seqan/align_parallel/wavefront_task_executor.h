@@ -79,68 +79,47 @@ struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
         }
         if (isLastTask(task))
         {
-            notify(wavefrontExec);
-//            std::lock_guard<std::mutex> lck(wavefrontExec.mMutexLastTile);
-//            wavefrontExec.mConditionLastTile.notify_one();
+            notify(*(context(task).mEventPtr));
         }
     }
 };
 
-//template <typename ...TArgs>
-//struct WavefrontTaskExecutionPolicy<SimdQueueResource<TArgs...>>
-//{
-//    template <typename TResource, typename TWavefrontExecutor>
-//    inline static void
-//    execute(TResource & resource, TWavefrontExecutor & wavefrontExec)
-//    {
-//        using TWaveTaskExec = WavefrontTaskExecutor<TResource, TWavefrontExecutor>;
-//        std::vector<decltype(popFront(resource.queue))> tasks;
-//        {
-//            std::lock_guard<std::mutex> lck(resource.mResourceMutex);
-//            if (length(resource.queue) < TResource::SIMD_LANES)
-//            {
-//                tasks.resize(1);
-//                if (!popFront(tasks[0], resource.queue))
-//                {
-//                    return;
-//                }
-//            }
-//            else
-//            {
-//                for (size_t lane = 0u; lane < TResource::SIMD_LANES; ++lane)
-//                    tasks.push_back(popFront(resource.queue));
-//            }
-//
-//        }
-//        if (tasks.size()  == 1)
-//            executeScalar(*front(tasks), local(wavefrontExec.threadLocalStorage));
-//        else
-//            executeSimd(tasks, local(wavefrontExec.threadLocalStorage));
-//
-//        for (auto task : tasks)
-//        {
-//            for (auto successor : successors(*task))
-//            {
-//                if (successor && decrementRefCount(successor) == 0)
-//                {
-//                    appendValue(resource.queue, successor);
-//                    // Need to call method on another object.
-//                    //executor_trais<TWavefrontContext>::spawn(resource, wavefrontExec);
-//                    // runAsync(scheduler(wavefrontExec), TWaveTask{&resource, &wavefrontExec});
-//                    spawn(wavefrontExec, TWaveTaskExec{&resource, &wavefrontExec});
-//                }
-//            }
-//            if (isLastTask(*task))
-//            {
-//                notify(wavefrontExec);
-//                // Need to call method on another object.
-//                //executor_trais<TWavefrontContext>::notify(resource, wavefrontExec);
-//                std::lock_guard<std::mutex> lck(wavefrontExec.mMutexLastTile);
-//                wavefrontExec.mConditionLastTile.notify_one();
-//            }
-//        }
-//    }
-//};
+template <typename TValue, size_t VECTOR_SIZE>
+struct WavefrontTaskExecutionPolicy<WavefrontSimdDPTasks<TValue, VECTOR_SIZE>>
+{
+    template <typename TResource, typename TWavefrontExecutor>
+    inline static void
+    execute(TResource & resource, TWavefrontExecutor & wavefrontExec)
+    {
+        using TWaveTaskExec = WavefrontTaskExecutor<TResource, TWavefrontExecutor>;
+        
+        typename TResource::ResultType tasks;
+        if (!tryPopTasks(tasks, resource))
+            return;
+
+        SEQAN_ASSERT(!empty(tasks));
+        if (tasks.size()  == 1)
+            executeScalar(*front(tasks), local(wavefrontExec));
+        else
+            executeSimd(tasks, local(wavefrontExec));
+
+        for (auto task : tasks)
+        {
+            for (auto succ : successor(*task))
+            {
+                if (succ && decrementRefCount(*succ) == 0)
+                {
+                    appendValue(resource, *succ);
+                    spawn(wavefrontExec, TWaveTaskExec{&resource, &wavefrontExec});
+                }
+            }
+            if (isLastTask(*task))
+            {
+                notify(*(context(*task).mEventPtr));
+            }
+        }
+    }
+};
 
 // ============================================================================
 // Metafunctions
