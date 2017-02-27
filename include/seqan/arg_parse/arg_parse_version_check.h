@@ -465,7 +465,6 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
             me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
 #endif // !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
     }
-#endif // defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
 
     if (me._program.empty())
     {
