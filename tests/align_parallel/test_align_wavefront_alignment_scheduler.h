@@ -119,7 +119,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
             scheduleTask(scheduler, t);
         }
 
-        signalAndWait(scheduler);
+        notify(scheduler);
+        wait(scheduler);
     }
     catch(...)
     {
@@ -222,7 +223,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
         {
             scheduleTask(scheduler, t);
         }
-        signalAndWait(scheduler);
+        notify(scheduler);
+        wait(scheduler);
     }
     catch(std::runtime_error & e)
     {
@@ -254,7 +256,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
         }
     }
 
-    signalAndWait(scheduler);
+    notify(scheduler);
+    wait(scheduler);
     auto val = std::accumulate(std::begin(calledIds), std::end(calledIds), 0);
     SEQAN_ASSERT_EQ(val, 50);
     SEQAN_ASSERT_NOT(isValid(scheduler));
