@@ -101,7 +101,64 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, Serial> const & execPo
     {
         scheduleTask(alignScheduler, aiCaller(TAlignTask{i, setH[i], setV[i], settings, blockSize(execPolicy)}));
     }
-    signalAndWait(alignScheduler);
+    notify(alignScheduler);
+    wait(alignScheduler);
+}
+
+template <typename TSpec,
+          typename TSetH,
+          typename TSetV,
+          typename TSettings,
+          typename TContinuator>
+inline void
+alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, Vectorial> const & execPolicy,
+               TSetH const & setH,
+               TSetV const & setV,
+               TSettings const & settings,
+               TContinuator && callback)
+{
+    using TSeqH = typename Value<TSetH const>::Type;
+    using TSeqV = typename Value<TSetV const>::Type;
+
+    // Translate dp settings into simd settings.
+    using TSimdSettings = SimdDPSettings<TSettings>;
+    TSimdSettings simdSettings{settings.mScoringScheme};
+
+    // Initialize instance of alignment scheduler.
+    using TAlignTask    = WavefrontAlignmentTask<TSeqH, TSeqV, TSimdSettings, WavefrontAlignmentSimdTaskConfig<TSimdSettings>>;
+    using TThreadLocal  = typename WavefrontAlignmentSimdTaskConfig<TSimdSettings>::TThreadLocal;
+    using TExecutor     = WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
+
+    // I need a resource here. And the resource should take the tasks.
+    // But I don't have the task description here yet.
+    using TWavefrontTask = WavefrontTask<typename TAlignTask::TTaskContext>;
+    WavefrontSimdDPTasks<TWavefrontTask, LENGTH<typename TSimdSettings::TScoreValueSimd>::VALUE> simdTaskQueue;
+
+    // Initialize the alignment scheduler.
+    WavefrontAlignmentScheduler alignScheduler{parallelAlignments(execPolicy), numThreads(execPolicy)};
+
+    //    EnumerableThreadLocal<TThreadLocal> tls{TThreadLocal{parallelAlignments(execPolicy)}};
+    EnumerableThreadLocal<TThreadLocal, Limit> tls{numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}};
+    TExecutor executor{&taskScheduler(alignScheduler), &tls};
+
+    // Continuator for calling the alignment instance functor.
+    std::function<std::function<void(uint16_t)>(TAlignTask)> aiCaller =
+    [&executor, &simdTaskQueue, &callback](auto && func) mutable
+    {
+        return [&executor, &simdTaskQueue, &callback, func = std::move(func)](uint16_t id) mutable
+        {
+                 func(id, executor, simdTaskQueue, std::forward<TContinuator>(callback));
+        };
+    };
+
+    // Iterate over pair of sequences.
+    //    auto zipCont = makeZipView(setH, setV);
+    for(size_t i = 0u; i < length(setH); ++i)
+    {
+        scheduleTask(alignScheduler, aiCaller(TAlignTask{i, setH[i], setV[i], simdSettings, blockSize(execPolicy)}));
+    }
+    notify(alignScheduler);
+    wait2(alignScheduler, simdTaskQueue);
 }
 }  // namespace impl
 }  // namespace seqan

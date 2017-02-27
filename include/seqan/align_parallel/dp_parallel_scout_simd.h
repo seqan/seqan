@@ -59,6 +59,11 @@ public:
 
     DPScoutState_() = default;
 
+    DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer) :
+        DPScoutState_<DPTiled<TBuffer, TThreadContext, void> >(horBuffer, verBuffer),
+        DPScoutState_<TSimdSpec>()
+    {}
+
     DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer, TThreadContext && pThreadContext) :
         DPScoutState_<DPTiled<TBuffer, TThreadContext, void> >(horBuffer, verBuffer, std::move(pThreadContext)),
         DPScoutState_<TSimdSpec>()
@@ -72,7 +77,7 @@ public:
 // Overloaded DPScout to store the corresponding buffer for the current dp tile.
 template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSimdSpec>
 class DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > > :
-    public DPScout_<TDPCell, SimdAlignmentScout<TSimdSpec> >
+    public DPScout_<TDPCell, SimdAlignmentScout<TSimdSpec>>
 {
 public:
     using TBase = DPScout_<TDPCell, SimdAlignmentScout<TSimdSpec> >;
@@ -87,6 +92,9 @@ public:
         TBase(static_cast<DPScoutState_<TSimdSpec>&>(state)),
         state(state),
         mForceTracking(pForceTracking)
+    {}
+
+    DPScout_(DPScoutState_<DPTiled<TBuffer, TThreadContext, TSimdSpec> > & state) : DPScout_(state, false)
     {}
 };
 
@@ -197,7 +205,7 @@ _scoutBestScore(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignment
                 TIsLastRow const & isLastRow)
 {
     using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > >::TBase;
-    if (isTrackingEnabled(dpScout, isLastColumn, isLastRow))
+//    if (isTrackingEnabled(dpScout, isLastColumn, isLastRow))
         _scoutBestScore(static_cast<TScoutBase&>(dpScout), activeCell, navigator, isLastColumn, isLastRow);
 }
 

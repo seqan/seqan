@@ -89,7 +89,7 @@ notify(WavefrontAlignmentTaskEvent & event)
         std::lock_guard<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
         event.mReadyLastTask = true;
     }
-    event.mConditionLastTask.notify_one();
+    event.mConditionLastTask.notify_all();
 }
 
 inline void

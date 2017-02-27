@@ -43,6 +43,8 @@ namespace seqan
 // Forwards
 // ============================================================================
 
+std::atomic_flag _debug_cout_flag = ATOMIC_FLAG_INIT;
+
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
@@ -50,7 +52,8 @@ namespace seqan
 template <typename TSeqHBlocks,
           typename TSeqVBlocks,
           typename TTileBuffer,
-          typename TDPSettings>
+          typename TDPSettings,
+          typename TEvent = WavefrontAlignmentTaskEvent>
 struct WavefrontAlignmentContext
 {
     size_t              mAlignmentId{0};
@@ -58,6 +61,7 @@ struct WavefrontAlignmentContext
     TSeqVBlocks const & mSeqVBlocks;
     TTileBuffer       & mTileBuffer;
     TDPSettings const & mDPSettings;
+    TEvent            * mEventPtr{nullptr};
 };
 
 template <typename TAlignmentContext>
@@ -116,6 +120,11 @@ struct TaskExecutionTraits<WavefrontAlignmentContext<TArgs...>>
     using TTileBuffer       = typename std::decay<decltype(std::declval<TWavefrontBuffer>().horizontalBuffer[0])>::type;
     using TDPScoutState     = DPScoutState_<DPTiled<TTileBuffer>>;
 
+    // Sequence types.
+
+    using TSeqH = typename Value<TSeqHBlocks>::Type;
+    using TSeqV = typename Value<TSeqVBlocks>::Type;
+
     // DPTrait type forwarding.
     using TDPTraits         = typename TDPSettings::TTraits;
     using TScoreValue       = typename Value<typename TDPSettings::TScoringScheme>::Type;
@@ -131,112 +140,20 @@ struct TaskExecutionTraits<WavefrontAlignmentContext<TArgs...>>
 };
 
 
-template <typename TAlgotrithm>
-struct AlgorithmProperty
+template <typename TWavefrontAlignmentContextConcept>
+struct SimdTaskExecutionTraits : public TaskExecutionTraits<TWavefrontAlignmentContextConcept>
 {
-    template <typename TTask>
-    inline static bool
-    isTrackingEnabled(TTask const & tile)
-    {
-        return isLastColumn(tile) && isLastRow(tile);
-    }
-};
+    using TBase = TaskExecutionTraits<TWavefrontAlignmentContextConcept>;
 
-template <typename TFreeEndGaps>
-struct AlgorithmProperty<GlobalAlignment_<TFreeEndGaps>>
-{
-    template <typename TTask>
-    inline static bool
-    isTrackingEnabled(TTask const & tile)
-    {
-        return (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE && inLastColumn(tile)) ||
-               (IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE && inLastRow(tile)) ||
-               (inLastColumn(tile) && inLastRow(tile));
-    }
-};
-
-template <typename TSpec>
-struct AlgorithmProperty<LocalAlignment_<TSpec>>
-{
-    template <typename TTask>
-    inline static bool
-    isTrackingEnabled(TTask const & /*tile*/)
-    {
-        return true;
-    }
+    using TScoreValue = typename TBase::TDPSettings::TScoreValueSimd;
+    using TDPCell     = DPCell_<TScoreValue, typename TBase::TGapType>;
+    using TTraceValue = typename TraceBitMap_<TScoreValue>::Type;
+    using TBufferValue = Pair<TDPCell, TTraceValue>;
 };
 
 // ============================================================================
 // Functions
 // ============================================================================
-
-namespace impl
-{
-    // ----------------------------------------------------------------------------
-    // Function computeTile()
-    // ----------------------------------------------------------------------------
-
-template <typename TScoreValue, typename TTraceValue, typename TScoreMatHost, typename TTraceMatHost,
-          typename TDPScout,
-          typename TSequenceH,
-          typename TSequenceV,
-          typename TDPSettings>
-inline void
-computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & dpContext,
-            TDPScout & scout,
-            TSequenceH const & seqH,
-            TSequenceV const & seqV,
-            TDPSettings const & settings)
-{
-    using TDPTraits = typename TDPSettings::TTraits;
-
-    using TScoreMatrixSpec = typename DefaultScoreMatrixSpec_<typename TDPTraits::TAlgorithmType>::Type;
-
-    using TDPScoreMatrix = DPMatrix_<TScoreValue, TScoreMatrixSpec, TScoreMatHost>;
-    using TDPTraceMatrix = DPMatrix_<TTraceValue, FullDPMatrix, TTraceMatHost>;
-
-    using TDPScoreMatrixNavigator = DPMatrixNavigator_<TDPScoreMatrix, DPScoreMatrix, NavigateColumnWise>;
-    using TDPTraceMatrixNavigator = DPMatrixNavigator_<TDPTraceMatrix, DPTraceMatrix<typename TDPTraits::TTracebackType>, NavigateColumnWise>;
-
-    using TDPProfile = DPProfile_<typename TDPTraits::TAlgorithmType,
-                                  typename TDPTraits::TGapType,
-                                  typename TDPTraits::TTracebackType,
-                                  Parallel>;
-
-    // Setup the score and trace matrix.
-    TDPScoreMatrix dpScoreMatrix;
-    TDPTraceMatrix dpTraceMatrix;
-
-    setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
-    setLength(dpScoreMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
-
-    setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1);
-    setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
-
-    // Resue the buffer from the cache.
-    setHost(dpScoreMatrix, getDpScoreMatrix(dpContext));
-    setHost(dpTraceMatrix, getDpTraceMatrix(dpContext));
-
-    resize(dpScoreMatrix);
-    // We do not need to allocate the memory for the trace matrix if the traceback is disabled.
-    if /*constexpr*/(IsTracebackEnabled_<typename TDPTraits::TTracebackType>::VALUE)
-    {
-        static_assert(std::is_same<typename TDPTraits::TTracebackType, TracebackOff>::value, "Traceback not implemented!");
-        resize(dpTraceMatrix);
-    }
-
-    // Initialize the navigators.
-    TDPScoreMatrixNavigator dpScoreMatrixNavigator;
-    TDPTraceMatrixNavigator dpTraceMatrixNavigator;
-    
-    _init(dpScoreMatrixNavigator, dpScoreMatrix, DPBandConfig<BandOff>());
-    _init(dpTraceMatrixNavigator, dpTraceMatrix, DPBandConfig<BandOff>());
-    
-    // Execute the alignment.
-    _computeUnbandedAlignment(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
-                              settings.mScoringScheme, TDPProfile());
-}
-}  // namespace impl
 
 template <typename ...TArgs>
 inline void
@@ -360,10 +277,11 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
     impl::computeTile(dpCache, scout,
                       taskContext.mSeqHBlocks[column(task)],
                       taskContext.mSeqVBlocks[row(task)],
+                      taskContext.mDPSettings.mScoringScheme,
                       taskContext.mDPSettings);
 
     // We want to get the state here from the scout.
-    if(AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
+    if(impl::AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
     {
         // TODO(rrahn): Implement the interface.
         // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
@@ -391,6 +309,231 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
 //    #ifdef DP_ALIGN_STATS
 //        ++serialCounter;
 //    #endif
+}
+
+template <typename TBuffer>
+inline void
+printSimdBuffer(TBuffer const & buffer, size_t const l)
+{
+    for (auto simdHolder : buffer)
+    {
+        std::cout << "<";
+        unsigned i = 0;
+        for (; i < l - 1; ++i)
+        {
+            std::cout << simdHolder.i1._score[i] << ", ";
+        }
+        std::cout << simdHolder.i1._score[i] << ">\n";
+    }
+}
+
+template <typename TTasks, typename TDPLocalData>
+inline void
+executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
+{
+//    for (auto task : tasks)
+//    {
+//        executeScalar(*task, dpLocal);
+//    }
+    using TTask = typename std::remove_pointer<typename Value<TTasks>::Type>::type;
+    using TExecTraits = SimdTaskExecutionTraits<typename TTask::TContext>;
+
+//    auto& taskContext = context(task);
+//    // Load the cache from the local data.
+//    auto & dpCache = cache(dpLocal, taskContext.mAlignmentId);
+//    auto & buffer = taskContext.mTileBuffer;
+//
+//    // Capture the buffer.
+//    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
+//                                                   buffer.verticalBuffer[row(task)]);  // Task local
+//
+//    typename TExecTraits::TDPScout scout(scoutState);
+
+
+    // Has to be adapted to take the correct buffer from the corresponding task.
+    auto simdBufferH = impl::gatherSimdBuffer(tasks,
+                                              [](auto& task)
+                                              {
+                                                  return &context(task).mTileBuffer.horizontalBuffer[column(task)];
+                                              },
+                                              TExecTraits{});
+    auto simdBufferV = impl::gatherSimdBuffer(tasks,
+                                              [](auto& task)
+                                              {
+                                                  return &context(task).mTileBuffer.verticalBuffer[row(task)];
+                                              },
+                                              TExecTraits{});
+
+    // Does not really make sense.
+    auto & cache = simdCache(dpLocal, 0);
+    // Run alignment.
+    impl::computeSimdBatch(cache, simdBufferH, simdBufferV, tasks, dpLocal, TExecTraits{});
+
+//    while (_debug_cout_flag.test_and_set(std::memory_order_acquire))
+//    {}
+//    std::cout << "SimdBufferH:\n";
+//    printSimdBuffer(simdBufferH, length(tasks));
+//    std::cout << "SimdBufferV:\n";
+//    printSimdBuffer(simdBufferV, length(tasks));
+//    std::cout << "######################\n\n";
+//    _debug_cout_flag.clear(std::memory_order_release);
+
+    // Call in simd block!
+    //        debug::compareToScalar(tasks, pTls,
+    //                               _taskContext.getTileBuffer().horizontalBuffer, _taskContext.getTileBuffer().verticalBuffer,
+    //                               simdBufferH, simdBufferV, dpContext,
+    //                               typename TTaskConfig::TDPConfig());
+
+    //    if (IsTracebackEnabled_<typename TTaskConfig::TDPConfig>::VALUE)
+    //    {
+    //        // Swap trace matrix into local thread store.
+    //        swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localSimdTraceMatrix());
+    //        uint8_t simdLane = 0;
+    //        for (const auto& task : tasks)
+    //        {
+    //            _taskContext.getTraceProxy().insert(std::make_pair(task->_col, task->_row),
+    //                                                TTraceProxyValue{&pTls.mLocalTraceStore,
+    //                                                    {1, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mSimdTraceVec) - 1)},
+    //                                                    simdLane++});
+    //        }
+    //    }
+    //
+    // Write back into buffer.
+    impl::scatterSimdBuffer(tasks,
+                            simdBufferH,
+                            [](auto & task)
+                            {
+                                return &context(task).mTileBuffer.horizontalBuffer[column(task)];
+                            },
+                            TExecTraits{});
+    impl::scatterSimdBuffer(tasks,
+                            simdBufferV,
+                            [](auto & task)
+                            {
+                                return &context(task).mTileBuffer.verticalBuffer[row(task)];
+                            },
+                            TExecTraits{});
+
+    //#ifdef DP_ALIGN_STATS
+    //    ++simdCounter;
+    //#endif
+
+
+    // TODO(rrahn): Implement me!
+//    using TExecTraits = TaskExecutionTraits<typename TTask::TContext>;
+//
+//    auto& taskContext = context(task);
+//    // Load the cache from the local data.
+//    auto & dpCache = simdCache(dpLocal, taskContext.mAlignmentId);
+//    auto & buffer = taskContext.mTileBuffer;
+//
+//    // Capture the buffer.
+//    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
+//                                                   buffer.verticalBuffer[row(task)]);  // Task local
+//
+//    typename TExecTraits::TDPScout scout(scoutState);
+//
+//    // DEBUG: Remove!
+//    //        auto bufHBegin = _taskContext.getTileBuffer().horizontalBuffer[_col];
+//    //        auto bufVBegin = _taskContext.getTileBuffer().verticalBuffer[_row];
+//
+//    impl::computeTile(dpCache, scout,
+//                      taskContext.mSeqHBlocks[column(task)],
+//                      taskContext.mSeqVBlocks[row(task)],
+//                      taskContext.mDPSettings);
+//
+//    // We want to get the state here from the scout.
+//    if(AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
+//    {
+//        // TODO(rrahn): Implement the interface.
+//        // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
+//        updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
+//                  {maxScore(scout), maxHostPosition(scout)},
+//                  column(task),
+//                  row(task));
+//    }
+
+
+
+
+//    using TDPLocalStorage = impl::dp::parallel::DPLocalStorage<TScoreValue, TSimdVec>;
+//    using TLocalTraceStore = typename TDPLocalStorage::TLocalTraceStore;
+//    using TSimdTraceMatrix = typename TLocalTraceStore::TSimdTraceMatrix;
+//    using TTraceProxy = typename std::decay<decltype(_taskContext.getTraceProxy())>::type;
+//    using TTraceProxyValue = typename TTraceProxy::TTraceMatrixIdentifier;
+//
+//    using TStateThreadContext = impl::dp::parallel::StateThreadContext<TTasks const, TDPLocalStorage>;
+
+    // Prepare scout state.
+
+    // DEBUG: Remove!
+    //        for (auto& task : tasks)
+    //        {
+    //            auto& val = _taskContext.getDebugBuffer().matrix[task->_col][task->_row];
+    //            val.hBegin = _taskContext.getTileBuffer().horizontalBuffer[task->_col];
+    //            val.vBegin = _taskContext.getTileBuffer().verticalBuffer[task->_row];
+    //            val.col = task->_col;
+    //            val.row = task->_row;
+    //            val.isSimd = true;
+    //        }
+
+    // Prepare dpContext.
+
+
+
+    // Call in simd block!
+    //        debug::compareToScalar(tasks, pTls,
+    //                               _taskContext.getTileBuffer().horizontalBuffer, _taskContext.getTileBuffer().verticalBuffer,
+    //                               simdBufferH, simdBufferV, dpContext,
+    //                               typename TTaskConfig::TDPConfig());
+
+//    if (IsTracebackEnabled_<typename TTaskConfig::TDPConfig>::VALUE)
+//    {
+//        // Swap trace matrix into local thread store.
+//        swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localSimdTraceMatrix());
+//        uint8_t simdLane = 0;
+//        for (const auto& task : tasks)
+//        {
+//            _taskContext.getTraceProxy().insert(std::make_pair(task->_col, task->_row),
+//                                                TTraceProxyValue{&pTls.mLocalTraceStore,
+//                                                    {1, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mSimdTraceVec) - 1)},
+//                                                    simdLane++});
+//        }
+//    }
+//
+//    // Write back into buffer.
+//    impl::scatterSimdBuffer(_taskContext.getTileBuffer().horizontalBuffer, tasks, simdBufferH, [](auto& task){ return task->_col; });
+//    impl::scatterSimdBuffer(_taskContext.getTileBuffer().verticalBuffer, tasks, simdBufferV, [](auto& task){ return task->_row; });
+//
+//#ifdef DP_ALIGN_STATS
+//    ++simdCounter;
+//#endif
+    // DEBUG: Remove!
+    //        for (auto& task : tasks)
+    //        {
+    //            auto& val = _taskContext.getDebugBuffer().matrix[task->_col][task->_row];
+    //            val.hEnd = _taskContext.getTileBuffer().horizontalBuffer[task->_col];
+    //            val.vEnd = _taskContext.getTileBuffer().verticalBuffer[task->_row];
+    //        }
+
+
+    // DEBUG: Remove!
+    //        _taskContext.getDebugBuffer().matrix[_col][_row] = {bufHBegin, bufVBegin,
+    //                                                            _taskContext.getTileBuffer().horizontalBuffer[_col],
+    //                                                            _taskContext.getTileBuffer().verticalBuffer[_row],
+    //                                                            _col, _row, false};
+    // TODO(rrahn): Add traceback later.
+    //    if (IsTracebackEnabled_<typename TTaskConfig::TDPConfig>::VALUE)
+    //    {
+    //        swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localScalarTraceMatrix());
+    //        _taskContext.getTraceProxy().insert(std::make_pair(_col, _row),
+    //                                            TTraceProxyValue{&pTls.mLocalTraceStore,
+    //                                                             {0, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mScalarTraceVec) - 1)},
+    //                                                              0});
+    //    }
+    //    #ifdef DP_ALIGN_STATS
+    //        ++serialCounter;
+    //    #endif
 }
 
 }  // namespace seqan

@@ -96,9 +96,9 @@ public:
                 callable(id);  // invokes the alignment with assigned id.
             }
             catch(...)
-            {  // Catch any exception thrown by callable. Store exception, and set this invalid.
+            {  // Catch any exception thrown by callable. Store exception, and set *this invalid.
                // We still keep running until the queue is empty. The thread is cleaned either by,
-               // explicit wait or by destruction of this.
+               // explicit wait or by destruction of *this.
                 _mIsValid.store(false, std::memory_order_release);
                 {
                     std::lock_guard<std::mutex> lck(_mMutexPushException);
@@ -108,7 +108,7 @@ public:
 
             // Check if task scheduler is still valid.
             // If not, something went wrong, and we should not continue adding new tasks.
-            // So we propagate the invalid state to this and break exceution chain.
+            // So we propagate the invalid state to *this and break exceution chain.
             if (!isValid(_mTaskScheduler))
             {
                 _mIsValid.store(false, std::memory_order_release);
@@ -246,13 +246,27 @@ scheduleTask(WavefrontAlignmentScheduler & me,
         throw std::runtime_error("Invalid alignment scheduler 2!");
 }
 
-// Only possible if some other thread is signaling the end of it.
 inline void
-signalAndWait(WavefrontAlignmentScheduler & me)
+notify(WavefrontAlignmentScheduler & me)
 {
     unlockWriting(me._mQueue);
     me._mReceivedEndSignal = true;
+}
+
+// Only possible if some other thread is signaling the end of it.
+inline void
+wait(WavefrontAlignmentScheduler & me)
+{
     join(me._mPool);
+    wait(me._mTaskScheduler);
+}
+
+template <typename TNotifiable>
+inline void
+wait2(WavefrontAlignmentScheduler & me, TNotifiable & notifiable)
+{
+    join(me._mPool);
+    notify(notifiable);
     wait(me._mTaskScheduler);
 }
 
