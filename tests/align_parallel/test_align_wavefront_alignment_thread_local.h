@@ -40,6 +40,8 @@ struct TestConfig
 {
     using TCache        = std::vector<int>;
     using TIntermediate = double;
+
+    using TLocalHost    = std::tuple<TIntermediate, TCache>;
 };
 }  // namespace test_align_parallel
 

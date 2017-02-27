@@ -132,3 +132,56 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
         SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme), alignScores[i]);
     }
 }
+
+SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
+{
+    using namespace seqan;
+
+    DnaString seqH = "GGTTTTGTTTGATGGAGAATTGCGCAGAGGGGTTATATCTGCGTGAGGATCTGTCACTCGGCGGTGTGGG"
+    "ATACCTCCCTGCTAAGGCGGGTTGAGTGATGTTCCCTCGGACTGGGGACCGCTGGCTTGCGAGCTATGTC"
+    "CGCTACTCTCAGTACTACACTCTCATTTGAGCCCCCGCTCAGTTTGCTAGCAGAACCCGGCACATGGTTC"
+    "GCCGATACTATGGATTTTCTAAAGAAACACTCTGTTAGGTGGTATGAGTCATGACGCACGCAGGGAGAGG"
+    "CTAAGGCTTATGCTATGCTGATCTCCGTGAATGTCTATCATTCCTCTGCAGGACCC";
+
+    DnaString seqV = "ACAGAGCGCGTACTGTCTGACGACGTATCCGCGCGGACTAGAAGGCTGGTGCCTCGTCCAACAAATAGAT"
+    "ACAGAAATCCACCGAAGTAAAGATCTCCAATTGTGGCACCACCAGGTGGCCACCACTCTTTGAAGTGAGG"
+    "AGACTTGCTTTACGTGTTTGTTCAGCCCGAGCTTTCGCTCGCACTGGAACACTGGTGTTTCGTCCTTTCG"
+    "GACTCATCAGTCAAGGTACGCACCTTGAGACACCGGGAAACAATCGATCAATCTTTCACAGAGCAACGAG"
+    "TTCGCTACTCTTGCAAAAGATCGACTTCCTATTTCGTGGATA";
+
+    StringSet<DnaString> setH;
+    StringSet<DnaString> setV;
+
+    for (unsigned i = 0; i < 100; ++i)
+    {
+        appendValue(setH, (i % 2 == 0) ? seqV : seqH);
+        appendValue(setV, (i % 5 == 0) ? seqH : seqV);
+    }
+
+    ExecutionPolicy<WavefrontAlignment<>, Vectorial> execPolicy;
+    setNumThreads(execPolicy, 4);
+    setParallelAlignments(execPolicy, 8);
+    setBlockSize(execPolicy, 56);
+
+    using TDPSettings = DPSettings<Score<int, Simple>, test_align_parallel::DPTestConfig>;
+    TDPSettings settings;
+    settings.mScoringScheme = Score<int, Simple>{2, -2, -11, -1};
+
+    std::vector<int> alignScores(length(setH), minValue<int>());
+
+    std::atomic_flag aFlag = ATOMIC_FLAG_INIT;
+    impl::alignExecBatch(execPolicy, setH, setV, settings, [&](auto const id, auto const score)
+                         {
+
+                             while (aFlag.test_and_set(std::memory_order_acquire))
+                             {}
+                             std::cout << "Alignment Id: " << id << " score: " << score << '\n';
+                             aFlag.clear(std::memory_order_release);
+                             alignScores[id] = score;
+                         });
+
+    for (unsigned i = 0; i < length(setH); ++i)
+    {
+        SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme), alignScores[i]);
+    }
+}
