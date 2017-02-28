@@ -612,6 +612,7 @@ insert(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
     forEach(ids,[&jst, &coverage](TID seqId)
     {
         SEQAN_ASSERT_LT(static_cast<TSize>(seqId), length(jst));  // Check that id is valid.
+        ignoreUnusedVariableWarning(jst);
         coverage[seqId] = true;
     });
 

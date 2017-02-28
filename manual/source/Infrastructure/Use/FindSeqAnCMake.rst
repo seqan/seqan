@@ -77,26 +77,45 @@ First you should create a build directory, i.e. for cmake-builds everything happ
    # mkdir -p ~/devel/my_project-build/release
    # cd ~/devel/my_project-build/release
 
-By default, the ``cmake`` program will look for ``seqan-config.cmake`` in a predefined set of directories.
-Please read the documentation `find_project <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_ to find out, which standard paths are searched.
-Depending on how you :ref:`installed SeqAn <infra-use-install>` it might be found by cmake automatically. 
-If not, you have to give the path containing the config file to cmake via the ``SeqAn_DIR`` argument on the command line, or you add the installation prefix of ``SeqAn`` via the ``CMAKE_PREFIX_PATH`` variable.
+Cmake supports two different modes to load settings from an external project: The **module** and the **config** mode. 
+Please read the `cmake documentation <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_ to learn more about this feature.
 
-Also, CMake will look for the SeqAn include files in central locations such as ``/usr/local/include``. Again, depending on your installation this might *just work*. If not, you need to specify the location via the ``SEQAN_INCLUDE_PATH`` argument.
+Install SeqAn from package maintainer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When using operating system packages of SeqAn and the default compiler it might look like this:
+The recommended way for SeqAn 2.3 or newer is to use the config mode. 
+If you installed/updated SeqAn from one of the downstream package maintainer listed in :ref:`Getting Started with SeqAn <infra-use-install>`, then a file called ``seqan-config.cmake`` was installed in a system path that is automatically searched by the cmake system (see the cmake documentation for `find_package <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_).
+If everything was done with default settings, than you can simply build your project like:
 
 .. code-block:: console
-
+   
    # cmake ../../my_project
 
-If you instead did a full git checkout to your home-directory in the previous step, it might look like this:
+Install SeqAn into user defined prefix or clone from GitHub
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In case you obtained SeqAn from a git clone, or installed SeqAn into a user defined location, you need to specify the install location by setting the ``CMAKE_PREFIX_PATH`` in your cmake call.
+In addition you also have to specify the ``SEQAN_INCLUDE_PATH`` variable to find the SeqAn headers. 
+Assume you have cloned SeqAn into ``~/devel/seqan``, then your setup could look as the following:
 
 .. code-block:: console
-
+   
    # cmake ../../my_project \
-       -DCMAKE_MODULE_PATH=~/devel/seqan/util/cmake \
-       -DSEQAN_INCLUDE_PATH=~/devel/seqan/include
+      -DCMAKE_PREFIX_PATH="$HOME/devel/seqan/util/cmake" \
+      -DSEQAN_INCLUDE_PATH="$HOME/devel/seqan/include"
+
+Backwards compatibility
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Before SeqAn 2.3 we used the module mode to setup SeqAn as an external project.
+To allow backwards compatibility we added a redirect from the ``FindSeqAn.cmake`` to ``seqan-config.cmake`` in our sources.
+In this case configuing your project with the old approach using the ``CMAKE_MODULE_PATH`` variable, will still work:
+
+.. code-block:: console
+   
+   # cmake ../../my_project \
+      -DCMAKE_MODULE_PATH="$HOME/devel/seqan/util/cmake" \
+      -DSEQAN_INCLUDE_PATH="$HOME/devel/seqan/include"
 
 .. tip::
 
@@ -249,3 +268,8 @@ Required additions to C++ compiler flags are in the following variable:
   .. caution::
 
     Please note that these variables include whatever has been added by the dependencies mentioned above so **do not add** e.g. ``${OpenMP_CXX_FLAGS}`` yourself!
+
+Static builds
+^^^^^^^^^^^^^
+
+If you want to build your app statically, please do not use gcc-4.9 or make sure you add the ``-static`` flag **before** calling ``find_package (SeqAn)``. Otherwise a broken binary will be built that crashes immediately.

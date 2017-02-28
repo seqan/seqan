@@ -107,10 +107,10 @@ public:
 
     inline void updateMasksBottom()
     {
-        for (auto pos : sortedEndsV)
+        for (auto posIt  = begin(sortedEndsV, Standard()); posIt != end(sortedEndsV, Standard()); ++posIt)
             for (auto it = nextEndsH; it != end(sortedEndsH, Standard()); ++it)
             {
-                masks[pos] |= (masksH[*it] & masksV[pos]);
+                masks[*posIt] |= (masksH[*it] & masksV[*posIt]);
             }
     }
 
