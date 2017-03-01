@@ -112,6 +112,7 @@ public:
         {
             spawn(_mThreadPool, job);
         }
+        setCpuAffinity(_mThreadPool, 0, 1);
     }
 
     WavefrontTaskScheduler(size_t const threadCount) : WavefrontTaskScheduler(threadCount, 0)

@@ -35,7 +35,9 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
 
+#if defined(__linux__)
 #include <sched.h>
+#endif  // defined(__linux__)
 
 namespace seqan
 {
@@ -175,6 +177,34 @@ join(ThreadPool & me)
             t.join();
     });
 }
+
+#if defined(__linux__)
+inline bool
+setCpuAffinity(ThreadPool & me, size_t firstCpu = 0, size_t const scale = 1)
+{
+    SEQAN_ASSERT_GEQ(scale, 1);
+    bool success{true};
+    for (auto & t : me._mPool)
+    {
+        // Create a cpu_set_t object representing a set of CPUs. Clear it and mark
+        // only CPU i as set.
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        CPU_SET((firstCpu * scale) % std::thread::hardware_concurrency(), &cpuset);
+        int rc = pthread_setaffinity_np(t.native_handle(),
+                                        sizeof(cpu_set_t), &cpuset);
+        success &= (rc == 0);
+        ++firstCpu;
+    }
+    return success;
+}
+#else
+inline bool
+setCpuAffinity(ThreadPool & /*me*/, size_t /*firstCpu = 0*/, size_t const /*scale = 0*/)
+{
+    return false;
+}
+#endif  // defined(__linux__)
     
 }  // namespace seqan
 
