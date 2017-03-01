@@ -77,12 +77,13 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
 
     WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal>> executor{&scheduler, &tls};
 
-    task(0, executor, [](auto const id, auto const & score)
+    int testScore{};
+    task(0, executor, [&](auto const /*id*/, auto const & score)
     {
-        std::cout << "Alignment: "<< id << " Score = " << score << '\n';
+        testScore = score;
     });
 
-    std::cout << globalAlignmentScore(seqH, seqV, settings.mScoringScheme) << "\n";
+    SEQAN_ASSERT_EQ(testScore, globalAlignmentScore(seqH, seqV, settings.mScoringScheme));
     unlockWriting(scheduler);
 }
 
@@ -168,15 +169,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
     settings.mScoringScheme = Score<int, Simple>{2, -2, -11, -1};
 
     std::vector<int> alignScores(length(setH), minValue<int>());
-
-    std::atomic_flag aFlag = ATOMIC_FLAG_INIT;
     impl::alignExecBatch(execPolicy, setH, setV, settings, [&](auto const id, auto const score)
                          {
-
-                             while (aFlag.test_and_set(std::memory_order_acquire))
-                             {}
-                             std::cout << "Alignment Id: " << id << " score: " << score << '\n';
-                             aFlag.clear(std::memory_order_release);
                              alignScores[id] = score;
                          });
 
