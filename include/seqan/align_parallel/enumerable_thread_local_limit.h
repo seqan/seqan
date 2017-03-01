@@ -54,7 +54,7 @@ public:
     //-------------------------------------------------------------------------
     // Member types.
 
-    using TMap           = std::map<std::thread::id, TValue>;
+    using TMap           = std::unordered_map<std::thread::id, TValue>;
     using TIterator      = Iter<EnumerableThreadLocal, EnumerableThreadLocalIterSpec>;
     using TConstIterator = Iter<EnumerableThreadLocal const, EnumerableThreadLocalIterSpec>;
 
