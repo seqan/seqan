@@ -34,11 +34,21 @@
 
 #include <seqan/align_parallel_2.h>
 
+namespace test_align_parallel
+{
+struct IntermediateTraits_
+{
+    using TScoreValue   = int;
+    using THostPosition = size_t;
+};
+
+}  // namespace test_align_parallel
+
 SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_construct)
 {
     using namespace seqan;
 
-    using TIntermediate = IntermediateDPResult<DPScout_<DPCell_<int, AffineGaps>, Default>>;
+    using TIntermediate = IntermediateDPResult<test_align_parallel::IntermediateTraits_>;
 
     SEQAN_ASSERT(std::is_default_constructible<TIntermediate>::value);
     SEQAN_ASSERT(std::is_copy_constructible<TIntermediate>::value);
@@ -75,7 +85,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_update_max)
 {
     using namespace seqan;
 
-    using TIntermediate = IntermediateDPResult<DPScout_<DPCell_<int, AffineGaps>, Default>>;
+    using TIntermediate = IntermediateDPResult<test_align_parallel::IntermediateTraits_>;
     using TState = typename TIntermediate::TState;
 
     TIntermediate interim{{10, 3u}, 2, 4};
@@ -97,7 +107,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_clear)
 {
     using namespace seqan;
 
-    using TIntermediate = IntermediateDPResult<DPScout_<DPCell_<int, AffineGaps>, Default>>;
+    using TIntermediate = IntermediateDPResult<test_align_parallel::IntermediateTraits_>;
 
     {
         TIntermediate interim{{10, 3u}, 2, 4};
