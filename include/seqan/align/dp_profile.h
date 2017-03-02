@@ -80,7 +80,7 @@ typedef Tag<AlignmentSplitBreakpoint_> SplitBreakpointAlignment;
 //
 // Note, all global alignments have to be specialized versions of GlobalAlignment_<>
 template <typename TSpec = FreeEndGaps_<> >
-struct GlobalAlignment_;
+struct GlobalAlignment_{};
 
 typedef GlobalAlignment_<> DPGlobal;
 
@@ -103,7 +103,7 @@ typedef Tag<AlignmentSuboptimal_> SuboptimalAlignment;
 // Note, all local alignments have to be specialized versions of LocalAlignment_<>
 
 template <typename TSpec = Default>
-struct LocalAlignment_;
+struct LocalAlignment_{};
 
 typedef LocalAlignment_<> DPLocal;
 typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
