@@ -162,13 +162,18 @@ struct WavefrontAlignmentTaskIncubator
 
         typename TWatc::TBufferValue tmp;
 
+        using TDPMetaColH = DPMetaColumn_<typename TWatc::TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn>>;
+        using TDPMetaColV = DPMetaColumn_<typename TWatc::TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn>>;
+
         tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
         for (auto itH = begin(buffer.horizontalBuffer, Standard()); itH != end(buffer.horizontalBuffer, Standard()); ++itH)
         {
             resize(*itH, length(front(seqHBlocks)), Exact());
             for (auto it = begin(*itH, Standard()); it != end(*itH, Standard()); ++it)
             {
-                it->i2 = _doComputeScore(it->i1, TDPCell(), tmp.i1, TDPCell(), Nothing(), Nothing(), score, RecursionDirectionHorizontal(), typename TWatc::TDPProfile());
+                it->i2 = _computeScore(it->i1, TDPCell(), tmp.i1, TDPCell(), Nothing(), Nothing(),
+                              score, typename RecursionDirection_<TDPMetaColH, FirstCell>::Type(),
+                                       typename TWatc::TDPProfile());
                 tmp.i1 = it->i1;
             }
         }
@@ -184,7 +189,9 @@ struct WavefrontAlignmentTaskIncubator
             ++it;
             for (; it != end(*itV, Standard()); ++it)
             {
-                it->i2 = _doComputeScore(it->i1, TDPCell(), TDPCell(), tmp.i1, Nothing(), Nothing(), score, RecursionDirectionVertical(), typename TWatc::TDPProfile());
+                it->i2 = _computeScore(it->i1, TDPCell(), TDPCell(), tmp.i1, Nothing(), Nothing(),
+                                       score, typename RecursionDirection_<TDPMetaColV, InnerCell>::Type(),
+                                       typename TWatc::TDPProfile());
                 tmp.i1 = it->i1;
                 tmp.i2 = it->i2;  // TODO(rrahn): Move out of loop.
             }

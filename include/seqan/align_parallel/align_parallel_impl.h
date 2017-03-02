@@ -103,8 +103,8 @@ _computeCell(TDPScout & scout,
              TCellDescriptor const &,   // One of FirstCell, InnerCell or LastCell.
              DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel> const &)
 {
-//    typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
-//    typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >   TMetaColumn;
+    typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
+    typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >   TMetaColumn;
 
 //    auto pos = coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL);
     activeCell = (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1;
@@ -119,6 +119,10 @@ _computeCell(TDPScout & scout,
 //                         >::Type TIsLastRow;
 //        _scoutBestScore(scout, activeCell, traceMatrixNavigator, False(), TIsLastRow());
 //    }
+    if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
+    {
+        _scoutBestScore(scout, activeCell, traceMatrixNavigator, False(), False());
+    }
 }
 
 // ----------------------------------------------------------------------------

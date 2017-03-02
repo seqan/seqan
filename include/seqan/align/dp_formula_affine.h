@@ -468,7 +468,6 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
 {
     typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
 
-    // Now we have to find a smart version to solve this problem. Which is not as easy I would think.
     activeCell._horizontalScore = _horizontalScoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal);
     TTraceValue tvGap = _internalComputeScore(activeCell,

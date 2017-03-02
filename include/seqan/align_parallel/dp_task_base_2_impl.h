@@ -71,8 +71,8 @@ struct AlgorithmProperty<GlobalAlignment_<TFreeEndGaps>>
     isTrackingEnabled(TTask const & tile)
     {
         return (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE && inLastColumn(tile)) ||
-        (IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE && inLastRow(tile)) ||
-        (inLastColumn(tile) && inLastRow(tile));
+               (IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE && inLastRow(tile)) ||
+               (inLastColumn(tile) && inLastRow(tile));
     }
 };
 
