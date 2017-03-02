@@ -138,6 +138,18 @@ struct DPTraits
         using TGapType          = AffineGaps;
     };
 
+    // Global alignment with affine gap costs.
+    struct SemiGlobalLinear : public GlobalLinear
+    {
+        using TAlgorithmType = GlobalAlignment_<FreeEndGaps_<True, False, True, False>>;
+    };
+
+    // Global alignment with affine gap costs.
+    struct SemiGlobalAffine : public GlobalAffine
+    {
+        using TAlgorithmType = GlobalAlignment_<FreeEndGaps_<True, False, True, False>>;
+    };
+
     // Banded global alignment with linear gap costs.
     struct BandedGlobalLinear : public GlobalLinear
     {
