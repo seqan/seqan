@@ -76,6 +76,7 @@ struct DPSettings
     {}
 };
 
+#if SEQAN_SIMD_ENABLED == 1
 // Aggregate type.
 template <typename TDPSettings>
 struct SimdDPSettings : public TDPSettings
@@ -104,7 +105,7 @@ struct SimdDPSettings : public TDPSettings
         mSimdScoringScheme(score)
     {}
 };
-
+#endif
 // ============================================================================
 // Metafunctions
 // ============================================================================
