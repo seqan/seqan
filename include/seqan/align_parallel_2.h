@@ -101,7 +101,9 @@
 // ============================================================================
 
 #include <seqan/align_parallel/dp_parallel_scout.h>
+#if SEQAN_SIMD_ENABLED
 #include <seqan/align_parallel/dp_parallel_scout_simd.h>
+#endif
 #include <seqan/align_parallel/wavefront_alignment_task_event.h>
 
 #include <seqan/align_parallel/dp_task_base_2_impl.h>

@@ -158,7 +158,7 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
                               scoringScheme, TDPProfile());
 }
 
-
+#if SEQAN_SIMD_ENABLED
 template <typename TDPCell, typename TTrace,
           typename TTasks,
           typename TPos,
@@ -426,6 +426,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     //        }
     //    }
 }
+#endif
 }  // namespace impl
 }  // namespace seqan
 

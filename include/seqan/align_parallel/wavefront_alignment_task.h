@@ -89,6 +89,7 @@ struct WavefrontAlignmentTaskConfig
     using TAlignEvent       = WavefrontAlignmentTaskEvent;
 };
 
+#if SEQAN_SIMD_ENABLED
 template <typename TDPSettings>
 struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TDPSettings>
 {
@@ -126,6 +127,7 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
     using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<SimdAlignThreadLocalConfig_>;
     using TAlignEvent       = WavefrontAlignmentTaskEvent;
 };
+#endif
 
 template <typename WavefrontAlignmentTaskConfigConcept>
 struct WavefrontAlignmentTaskIncubator
