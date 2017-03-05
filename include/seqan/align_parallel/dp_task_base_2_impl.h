@@ -159,15 +159,39 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
 }
 
 #if SEQAN_SIMD_ENABLED
+template <typename TTasks,
+          typename TTaskTraits>
+inline auto
+computeOffset(TTasks const &tasks, TTaskTraits const & /*traits*/)
+{
+    using TDPSettings = typename TTaskTraits::TDPSettings;
+    using TScoreValue       = typename Value<typename TDPSettings::TScoringScheme>::Type;
+    String<TScoreValue> offset;
+    resize(offset, length(tasks), minValue<TScoreValue>(), Exact());
+    size_t pos = 0;
+    for(auto task : tasks)
+    {
+            offset[pos] = front(context(*task).mTileBuffer.horizontalBuffer[column(*task)]).i1._score;
+//            for (auto const & val : buf)
+//            {
+//                offset[pos] = _max(offset[pos], _max(val.i1._score, _max(val.i1._horizontalScore, val.i1._horizontalScore)));
+//            }
+        ++pos;
+    }
+    return offset;
+}
+
 template <typename TDPCell, typename TTrace,
           typename TTasks,
           typename TPos,
-          typename TFunc>
+          typename TFunc,
+          typename TOffset>
 inline void
 loadIntoSimd(Pair<TDPCell, TTrace> & target,
              TTasks const & tasks,
              TPos const pos,
              TFunc && getBuffer,
+             TOffset const & offset,
              AffineGaps const & /*unsused*/)
 {
     using TSimdVec = typename Value<TDPCell>::Type;
@@ -178,7 +202,7 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
     alignas(sizeof(TSimdVec)) std::array<TVecVal, LENGTH<TSimdVec>::VALUE> scoreVerVec;
     alignas(sizeof(TSimdVec)) std::array<TVecVal, LENGTH<TSimdVec>::VALUE> traceVec;
 
-    auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec);
+    auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
     //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
     std::for_each(begin(zipCont), end(zipCont),
@@ -186,10 +210,20 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
                   {
                       auto& buffer = *getBuffer(*std::get<0>(tuple));
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
+                      using TDPCellVar = decltype(val.i1);
+                      using TDPCell16 = DPCell_<int16_t, AffineGaps>;
+
                       // We might access values out of bounds here.
-                      std::get<1>(tuple) = val.i1._score;
-                      std::get<2>(tuple) = val.i1._horizontalScore;
-                      std::get<3>(tuple) = val.i1._verticalScore;
+                      std::get<1>(tuple) = static_cast<int16_t>(val.i1._score - std::get<5>(tuple));
+
+                      std::get<2>(tuple) =
+                        (val.i1._horizontalScore <= DPCellDefaultInfinity<TDPCellVar>::VALUE) ?
+                            DPCellDefaultInfinity<TDPCell16>::VALUE :
+                            static_cast<int16_t>(val.i1._horizontalScore - std::get<5>(tuple));
+                      std::get<3>(tuple) =
+                        (val.i1._verticalScore <= DPCellDefaultInfinity<TDPCellVar>::VALUE) ?
+                        DPCellDefaultInfinity<TDPCell16>::VALUE :
+                        static_cast<int16_t>(val.i1._verticalScore - std::get<5>(tuple));
                       std::get<4>(tuple) = val.i2;
                   });
 
@@ -202,12 +236,14 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
 template <typename TTasks,
           typename TDPCell, typename TTrace,
           typename TPos,
-          typename TFunc>
+          typename TFunc,
+          typename TOffset>
 inline void
 storeIntoBuffer(TTasks & tasks,
                 Pair<TDPCell, TTrace> const & source,
                 TPos const pos,
                 TFunc && getBuffer,
+                TOffset const & offset,
                 AffineGaps const & /*unsused*/)
 {
     using TSimdVec = typename Value<TDPCell>::Type;
@@ -223,30 +259,33 @@ storeIntoBuffer(TTasks & tasks,
     storeu(&scoreVerVec[0], source.i1._verticalScore);
     storeu(&traceVec[0], source.i2);
 
-    auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec);
+    auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
     //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
     std::for_each(begin(zipCont), end(zipCont),
-                  [&, getBuffer = std::move(getBuffer)](auto tuple)
-                  {
-                      auto & buffer = *getBuffer(*std::get<0>(tuple));
-                      if (length(buffer) > pos)
-                      {
-                          auto& pair = buffer[pos];
-                          pair.i1._score = std::get<1>(tuple);
-                          pair.i1._horizontalScore = std::get<2>(tuple);
-                          pair.i1._verticalScore = std::get<3>(tuple);
-                          pair.i2 = std::get<4>(tuple);
-                      }
-                  });
+    [&, getBuffer = std::move(getBuffer)](auto tuple)
+    {
+        auto & buffer = *getBuffer(*std::get<0>(tuple));
+        if (length(buffer) > pos)
+        {
+            auto& pair = buffer[pos];
+            pair.i1._score = std::get<1>(tuple) + std::get<5>(tuple);
+            pair.i1._horizontalScore = std::get<2>(tuple) + std::get<5>(tuple);
+            pair.i1._verticalScore = std::get<3>(tuple) + std::get<5>(tuple);
+            pair.i2 = std::get<4>(tuple);
+//            std::cout << "<S = " << std::get<1>(tuple) << " H = " << std::get<2>(tuple) << " V = " << std::get<3>(tuple) << "> + " << std::get<5>(tuple) << " to " << pair.i1 << "\n";
+        }
+    });
 }
 
 template <typename TTasks,
           typename TFunc,
+          typename TOffset,
           typename TExecTraits>
 inline auto
 gatherSimdBuffer(TTasks const & tasks,
                  TFunc && getBuffer,
+                 TOffset const & offset,
                  TExecTraits const & /*traits*/)
 {
     // Check for valid simd length.
@@ -266,7 +305,7 @@ gatherSimdBuffer(TTasks const & tasks,
     resize(simdSet, maxLength, Exact());
     for (unsigned i = 0; i < length(simdSet); ++i)
     {
-        loadIntoSimd(simdSet[i], tasks, i, std::forward<TFunc>(getBuffer), typename TExecTraits::TGapType());
+        loadIntoSimd(simdSet[i], tasks, i, std::forward<TFunc>(getBuffer), offset, typename TExecTraits::TGapType());
     }
     return simdSet;
 }
@@ -274,18 +313,23 @@ gatherSimdBuffer(TTasks const & tasks,
 template <typename TTasks,
           typename TBufferValue, typename TSpec,
           typename TFunc,
+          typename TOffset,
           typename TExecTraits>
 inline void
 scatterSimdBuffer(TTasks & tasks,
                   String<TBufferValue, TSpec> const & simdSet,
                   TFunc && getBuffer,
+                  TOffset const & offset,
                   TExecTraits const & /*traits*/)
 {
+//    std::cout << "#### Scatter: \n";
     // Check for valid simd length.
     for (unsigned i = 0; i < length(simdSet); ++i)
     {
-        storeIntoBuffer(tasks, simdSet[i], i, std::forward<TFunc>(getBuffer), typename TExecTraits::TGapType());
+        storeIntoBuffer(tasks, simdSet[i], i, std::forward<TFunc>(getBuffer), offset, typename TExecTraits::TGapType());
     }
+
+//    std::cout << "\n\n";
 }
 
 template <typename TDPCell, typename TTraceValue, typename TScoreMat, typename TTraceMat,
@@ -293,6 +337,7 @@ template <typename TDPCell, typename TTraceValue, typename TScoreMat, typename T
           typename TSimdBufferH,
           typename TSimdBufferV,
           typename TDPLocal,
+          typename TOffset,
           typename TExecTraits>
 inline void
 computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
@@ -300,6 +345,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
                  TSimdBufferV                                          & bufferV,
                  TTasks                                                & tasks,
                  TDPLocal                                              & dpLocal,
+                 TOffset                                               & offset,
                  TExecTraits                                     const & /*traits*/)
 {
     // Now what?
@@ -365,7 +411,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
                 _setSimdLane(dpScout, pos);
                 auto & taskContext = context(task);
                 updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
-                          {maxScoreAt(dpScout), 0u},
+                          {maxScoreAt(dpScout) + offset[pos], 0u},
                           column(task),
                           row(task));
             }
@@ -401,7 +447,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
                 _setSimdLane(dpScout, pos);
                 auto & taskContext = context(task);
                 updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
-                          {maxScoreAt(dpScout), 0u},
+                          {maxScoreAt(dpScout) + offset[pos], 0u},
                           column(task),
                           row(task));
             }
