@@ -107,12 +107,12 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
 
     using TDPScout_           = DPScout_<TDPSimdCell, SimdAlignmentScout<> >;
 
-    struct IntermediateTraits_ : public TBase_::IntermediateTraits_
-    {
-        using TScoreValue = decltype(maxScoreAt(std::declval<TDPScout_>()));
-    };
+//    struct IntermediateTraits_ : public TBase_::IntermediateTraits_
+//    {
+//        using TScoreValue = decltype(maxScoreAt(std::declval<TDPScout_>()));
+//    };
 
-    using TDPIntermediate     = IntermediateDPResult<IntermediateTraits_>;
+    using TDPIntermediate     = IntermediateDPResult<typename TBase_::IntermediateTraits_>;
 
     // Parallel Context.
     struct SimdAlignThreadLocalConfig_ {

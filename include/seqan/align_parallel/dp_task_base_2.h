@@ -349,7 +349,9 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
 //                                                   buffer.verticalBuffer[row(task)]);  // Task local
 //
 //    typename TExecTraits::TDPScout scout(scoutState);
+    //offset version:
 
+    auto offset = impl::computeOffset(tasks, TExecTraits{});
 
     // Has to be adapted to take the correct buffer from the corresponding task.
     auto simdBufferH = impl::gatherSimdBuffer(tasks,
@@ -357,18 +359,20 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                                               {
                                                   return &context(task).mTileBuffer.horizontalBuffer[column(task)];
                                               },
+                                              offset,
                                               TExecTraits{});
     auto simdBufferV = impl::gatherSimdBuffer(tasks,
                                               [](auto& task)
                                               {
                                                   return &context(task).mTileBuffer.verticalBuffer[row(task)];
                                               },
+                                              offset,
                                               TExecTraits{});
 
     // Does not really make sense.
     auto & cache = simdCache(dpLocal, 0);
     // Run alignment.
-    impl::computeSimdBatch(cache, simdBufferH, simdBufferV, tasks, dpLocal, TExecTraits{});
+    impl::computeSimdBatch(cache, simdBufferH, simdBufferV, tasks, dpLocal, offset, TExecTraits{});
 
     // Write back into buffer.
     impl::scatterSimdBuffer(tasks,
@@ -377,6 +381,7 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                             {
                                 return &context(task).mTileBuffer.horizontalBuffer[column(task)];
                             },
+                            offset,
                             TExecTraits{});
     impl::scatterSimdBuffer(tasks,
                             simdBufferV,
@@ -384,6 +389,7 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                             {
                                 return &context(task).mTileBuffer.verticalBuffer[row(task)];
                             },
+                            offset,
                             TExecTraits{});
 }
 #endif

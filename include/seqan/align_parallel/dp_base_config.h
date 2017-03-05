@@ -87,7 +87,7 @@ struct SimdDPSettings : public TDPSettings
     using TTraits = typename TDPSettings::TTraits;
     using TScoringScheme = typename TDPSettings::TScoringScheme;
     using TScoreValue = typename Value<TScoringScheme>::Type;
-    using TScoreValueSimd = typename SimdVector<TScoreValue>::Type;
+    using TScoreValueSimd = typename SimdVector<int16_t>::Type;
     using TSimdScoringScheme = Score<TScoreValueSimd, ScoreSimdWrapper<TScoringScheme>>;
 
     //-------------------------------------------------------------------------
