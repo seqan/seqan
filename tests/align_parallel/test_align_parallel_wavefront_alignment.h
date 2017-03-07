@@ -63,7 +63,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
 
     using TDPSettings = DPSettings<Score<int, Simple>, test_align_parallel::DPTestConfig>;
     TDPSettings settings;
-    settings.mScoringScheme = Score<int, Simple>{2, -2, -11, -1};
+    settings.mScoringScheme = Score<int, Simple>{2, -2, -1, -11};
 
     WavefrontAlignmentTask<DnaString, DnaString, TDPSettings> task{seqH, seqV, settings, 37};
 
@@ -71,7 +71,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
 
     EnumerableThreadLocal<TThreadLocal> tls{TThreadLocal{1}};
 
-    WavefrontTaskScheduler scheduler(4, 1);
+    WavefrontTaskScheduler scheduler(1, 1);
     lockWriting(scheduler);
     waitForWriters(scheduler);
 
@@ -83,7 +83,14 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
         testScore = score;
     });
 
-    SEQAN_ASSERT_EQ(testScore, globalAlignmentScore(seqH, seqV, settings.mScoringScheme));
+//    StringSet<DnaString> set;
+//    appendValue(set, seqH);
+//    appendValue(set, seqV);
+//    Align<DnaString> align(set);
+//
+//    SEQAN_ASSERT_EQ(testScore, localAlignment(align, settings.mScoringScheme /*, AlignConfig<true, false, false, true>()*/));
+
+    SEQAN_ASSERT_EQ(globalAlignmentScore(seqH, seqV, settings.mScoringScheme, AlignConfig<false, false, false, false>()), testScore);
     unlockWriting(scheduler);
 }
 
@@ -119,7 +126,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
 
     using TDPSettings = DPSettings<Score<int, Simple>, test_align_parallel::DPTestConfig>;
     TDPSettings settings;
-    settings.mScoringScheme = Score<int, Simple>{2, -2, -11, -1};
+    settings.mScoringScheme = Score<int, Simple>{2, -2, -1, -11};
 
     std::vector<int> alignScores(length(setH), minValue<int>());
 
@@ -128,9 +135,18 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
         alignScores[id] = score;
     });
 
+//    printScore = true;
+
     for (unsigned i = 0; i < length(setH); ++i)
     {
-        SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme), alignScores[i]);
+//        StringSet<DnaString> set;
+//        appendValue(set, setH[i]);
+//        appendValue(set, setV[i]);
+//        Align<DnaString> align(set);
+//
+//        SEQAN_ASSERT_EQ(alignScores[i], localAlignment(align, settings.mScoringScheme /*, AlignConfig<true, false, false, true>()*/));
+
+        SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme, AlignConfig<false, false, false, false>()), alignScores[i]);
     }
 }
 
@@ -166,7 +182,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
 
     using TDPSettings = DPSettings<Score<int, Simple>, test_align_parallel::DPTestConfig>;
     TDPSettings settings;
-    settings.mScoringScheme = Score<int, Simple>{2, -2, -11, -1};
+    settings.mScoringScheme = Score<int, Simple>{2, -2, -1, -11};
 
     std::vector<int> alignScores(length(setH), minValue<int>());
     impl::alignExecBatch(execPolicy, setH, setV, settings, [&](auto const id, auto const score)
@@ -176,6 +192,12 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
 
     for (unsigned i = 0; i < length(setH); ++i)
     {
-        SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme), alignScores[i]);
+//        StringSet<DnaString> set;
+//        appendValue(set, setH[i]);
+//        appendValue(set, setV[i]);
+//        Align<DnaString> align(set);
+//
+//        SEQAN_ASSERT_EQ(alignScores[i], localAlignment(align, settings.mScoringScheme /*, AlignConfig<true, false, false, true>()*/));
+        SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme, AlignConfig<false, false, false, false>()), alignScores[i]);
     }
 }
