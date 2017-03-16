@@ -485,6 +485,7 @@ template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
 {
     me.record.cigar = me.cigarSet[getMember(match, ReadId())];
+    SEQAN_ASSERT_EQ(_getQueryLength(me.record.cigar), length(me.reads.seqs[getMember(match, ReadId())]));
 }
 
 // ----------------------------------------------------------------------------

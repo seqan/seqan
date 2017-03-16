@@ -57,11 +57,12 @@ struct HitsExtender
     typedef typename Traits::TMatchesAppender  TMatches;
     typedef typename Traits::TMatch            TMatch;
     typedef typename Traits::TSeeds            TSeeds;
+    typedef typename Traits::TSeedsDistance    TSeedsDistance;
     typedef typename Traits::THits             THits;
     typedef typename Traits::TRanks            TRanks;
     typedef typename Traits::TSA               TSA;
 
-    typedef Extender<TContigSeqs, TReadSeq, EditDistance> TExtender;
+    typedef Extender<TContigSeqs, TReadSeq>    TExtender;
 
     // Thread-private data.
     TExtender           extender;
@@ -103,13 +104,13 @@ struct HitsExtender
         sa(sa),
         options(options)
     {
-        _extendHitsImpl(*this, typename Traits::TStrategy());
+        _extendReadsImpl(*this);
     }
 
-    template <typename THitsIterator>
-    void operator() (THitsIterator const & hitsIt)
+    template <typename TReadSeqsIterator>
+    void operator() (TReadSeqsIterator const & it)
     {
-        _extendHitImpl(*this, hitsIt, typename Traits::TStrategy());
+        _extendReadImpl(*this, it);
     }
 
     template <typename TMatchPos, typename TErrors>
@@ -124,18 +125,11 @@ struct HitsExtender
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _extendHitsImpl()
+// Function _extendReadsImpl()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits, typename TStrategy>
-inline void _extendHitsImpl(HitsExtender<TSpec, Traits> & me, TStrategy const & /* tag */)
-{
-    // Iterate over all hits.
-    iterate(me.hits, me, Standard(), typename Traits::TThreading());
-}
-
 template <typename TSpec, typename Traits>
-inline void _extendHitsImpl(HitsExtender<TSpec, Traits> & me, Strata)
+inline void _extendReadsImpl(HitsExtender<TSpec, Traits> & me)
 {
     typedef typename Traits::TReadSeqs              TReadSeqs;
     typedef Segment<TReadSeqs const, PrefixSegment> TPrefix;
@@ -147,12 +141,79 @@ inline void _extendHitsImpl(HitsExtender<TSpec, Traits> & me, Strata)
 }
 
 // ----------------------------------------------------------------------------
+// Function _extendReadImpl()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename Traits, typename TReadSeqsIterator>
+inline void _extendReadImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator const & it)
+{
+    typedef typename Traits::TReadSeqs                  TReadSeqs;
+    typedef typename Size<TReadSeqs>::Type              TReadId;
+    typedef typename Traits::TReadSeq                   TReadSeq;
+    typedef typename Size<TReadSeq>::Type               TReadSeqSize;
+
+    typedef typename Traits::TSeeds                     TSeeds;
+    typedef typename Id<TSeeds>::Type                   TSeedId;
+
+    typedef typename Traits::THits                      THits;
+    typedef typename Value<THits>::Type                 THit;
+    typedef typename Id<THit>::Type                     THitId;
+    typedef Pair<THitId>                                THitIds;
+    typedef typename Iterator<THits const, Standard>::Type  THitsIt;
+
+    typedef typename Traits::TRanks                     TRanks;
+    typedef typename Reference<TRanks const>::Type      TRank;
+
+    typedef typename Traits::TMatch                     TMatch;
+
+    // Get readId.
+    TReadId readId = position(it);
+    TReadSeqSize readLength = length(me.readSeqs[readId]);
+    TReadSeqSize readStrata = getReadStrata<TMatch>(me.options, readLength);
+
+    TReadId fwdSeqId = getFirstMateFwdSeqId(me.readSeqs, readId);
+    TReadId revSeqId = getFirstMateRevSeqId(me.readSeqs, readId);
+
+    TRank fwdRank = me.ranks[fwdSeqId];
+    TRank revRank = me.ranks[revSeqId];
+    SEQAN_ASSERT_EQ(length(fwdRank), length(revRank));
+
+    // TODO(esiragusa): Get hits of fwd and rev read seq.
+//    THits fwdHits = getHits(me.hits, fwdSeqId);
+//    THits revHits = getHits(me.hits, revSeqId);
+
+    // Iterate fwd and rev seeds by rank.
+    TSeedId seedRanks = length(fwdRank);
+    for (TSeedId seedRank = 0; seedRank < seedRanks && !isMapped(me.ctx, readId); ++seedRank)
+    {
+        // Get seedIds by rank.
+        TSeedId fwdSeedId = fwdRank[seedRank];
+        TSeedId revSeedId = revRank[seedRank];
+
+        // Get hits.
+        THitIds fwdHitIds = getHitIds(me.hits, fwdSeedId);
+        THitIds revHitIds = getHitIds(me.hits, revSeedId);
+
+        // Verify seed hits.
+        THitsIt hitsBegin = begin(me.hits, Standard());
+        for (THitsIt it = hitsBegin + getValueI1(fwdHitIds); it != hitsBegin + getValueI2(fwdHitIds); ++it)
+            _extendHitImpl(me, it);
+        for (THitsIt it = hitsBegin + getValueI1(revHitIds); it != hitsBegin + getValueI2(revHitIds); ++it)
+            _extendHitImpl(me, it);
+
+        // Mark mapped reads.
+        if (getMinErrors(me.ctx, readId) + readStrata <= seedRank * (me.seedErrors + 1))
+            setMapped(me.ctx, readId);
+    }
+}
+
+// ----------------------------------------------------------------------------
 // Function _extendHitImpl()
 // ----------------------------------------------------------------------------
 // Extends one hit.
 
-template <typename TSpec, typename Traits, typename THitsIterator, typename TStrategy>
-inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const & hitsIt, TStrategy const & /* tag */)
+template <typename TSpec, typename Traits, typename THitsIterator>
+inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const & hitsIt)
 {
     typedef typename Traits::TContigsPos                TContigsPos;
 
@@ -165,6 +226,7 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
 
     typedef typename Traits::TSeeds                     TSeeds;
     typedef typename Id<TSeeds>::Type                   TSeedId;
+    typedef typename Traits::TSeedsDistance             TSeedsDistance;
 
     typedef typename Traits::THits                      THits;
     typedef typename Value<THits>::Type                 THit;
@@ -217,71 +279,9 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
                readSeq,
                contigBegin, contigEnd,
                getValueI1(readPos), getValueI2(readPos),
+               TSeedsDistance(),
                hitErrors, maxErrors,
                me);
-    }
-}
-
-template <typename TSpec, typename Traits, typename TReadSeqsIterator>
-inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator const & it, Strata)
-{
-    typedef typename Traits::TReadSeqs                  TReadSeqs;
-    typedef typename Size<TReadSeqs>::Type              TReadId;
-    typedef typename Traits::TReadSeq                   TReadSeq;
-    typedef typename Size<TReadSeq>::Type               TReadSeqSize;
-
-    typedef typename Traits::TSeeds                     TSeeds;
-    typedef typename Id<TSeeds>::Type                   TSeedId;
-
-    typedef typename Traits::THits                      THits;
-    typedef typename Value<THits>::Type                 THit;
-    typedef typename Id<THit>::Type                     THitId;
-    typedef Pair<THitId>                                THitIds;
-    typedef typename Iterator<THits const, Standard>::Type  THitsIt;
-
-    typedef typename Traits::TRanks                     TRanks;
-    typedef typename Reference<TRanks const>::Type      TRank;
-
-    typedef typename Traits::TMatch                     TMatch;
-
-    // Get readId.
-    TReadId readId = position(it);
-    TReadSeqSize readLength = length(me.readSeqs[readId]);
-    TReadSeqSize readStrata = getReadStrata<TMatch>(me.options, readLength);
-
-    TReadId fwdSeqId = getFirstMateFwdSeqId(me.readSeqs, readId);
-    TReadId revSeqId = getFirstMateRevSeqId(me.readSeqs, readId);
-
-    TRank fwdRank = me.ranks[fwdSeqId];
-    TRank revRank = me.ranks[revSeqId];
-    SEQAN_ASSERT_EQ(length(fwdRank), length(revRank));
-
-    // TODO(esiragusa): Get hits of fwd and rev read seq.
-//    THits fwdHits = getHits(me.hits, fwdSeqId);
-//    THits revHits = getHits(me.hits, revSeqId);
-
-    // Iterate fwd and rev seeds by rank.
-    TSeedId seedRanks = length(fwdRank);
-    for (TSeedId seedRank = 0; seedRank < seedRanks && !isMapped(me.ctx, readId); ++seedRank)
-    {
-        // Get seedIds by rank.
-        TSeedId fwdSeedId = fwdRank[seedRank];
-        TSeedId revSeedId = revRank[seedRank];
-
-        // Get hits.
-        THitIds fwdHitIds = getHitIds(me.hits, fwdSeedId);
-        THitIds revHitIds = getHitIds(me.hits, revSeedId);
-
-        // Verify seed hits.
-        THitsIt hitsBegin = begin(me.hits, Standard());
-        for (THitsIt it = hitsBegin + getValueI1(fwdHitIds); it != hitsBegin + getValueI2(fwdHitIds); ++it)
-            _extendHitImpl(me, it, All());
-        for (THitsIt it = hitsBegin + getValueI1(revHitIds); it != hitsBegin + getValueI2(revHitIds); ++it)
-            _extendHitImpl(me, it, All());
-
-        // Mark mapped reads.
-        if (getMinErrors(me.ctx, readId) + readStrata <= seedRank * (me.seedErrors + 1))
-            setMapped(me.ctx, readId);
     }
 }
 
