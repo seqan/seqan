@@ -190,16 +190,6 @@ struct RankDictionaryBitsPerBlock_<TValue, Levels<TSpec, TConfig> > :
     BitsPerValue<typename RankDictionaryBlock_<TValue, Levels<TSpec, TConfig> >::Type> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction Size
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TSpec, typename TConfig>
-struct Size<RankDictionary<TValue, Levels<TSpec, TConfig> > >
-{
-    typedef typename Size<TConfig>::Type Type;
-};
-
-// ----------------------------------------------------------------------------
 // Metafunction RankDictionaryBlockSize_
 // ----------------------------------------------------------------------------
 
