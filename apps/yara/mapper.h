@@ -65,7 +65,6 @@ struct Options
     bool                uncompressedBam;
     CharString          readGroup;
 
-    MappingMode         mappingMode;
     float               errorRate;
     float               indelRate;
     float               strataRate;
@@ -95,7 +94,6 @@ struct Options
         secondaryAlignments(TAG),
         uncompressedBam(false),
         readGroup("none"),
-        mappingMode(STRATA),
         errorRate(0.05f),
         indelRate(0.25f),
         strataRate(0.00f),
@@ -134,7 +132,7 @@ struct Options
 
 template <typename TThreading_       = Parallel,
           typename TSequencing_      = SingleEnd,
-          typename TStrategy_        = Strata,
+          typename TSeedsDistance_   = HammingDistance,
           typename TContigsSize_     = uint8_t,
           typename TContigsLen_      = uint32_t,
           typename TContigsSum_      = uint32_t,
@@ -144,7 +142,7 @@ struct ReadMapperConfig
 {
     typedef TThreading_         TThreading;
     typedef TSequencing_        TSequencing;
-    typedef TStrategy_          TStrategy;
+    typedef TSeedsDistance_     TSeedsDistance;
     typedef TContigsSize_       TContigsSize;
     typedef TContigsLen_        TContigsLen;
     typedef TContigsSum_        TContigsSum;
@@ -162,7 +160,7 @@ struct MapperTraits
 {
     typedef typename TConfig::TThreading                            TThreading;
     typedef typename TConfig::TSequencing                           TSequencing;
-    typedef typename TConfig::TStrategy                             TStrategy;
+    typedef typename TConfig::TSeedsDistance                        TSeedsDistance;
     typedef typename TConfig::TContigsSize                          TContigsSize;
     typedef typename TConfig::TContigsLen                           TContigsLen;
     typedef typename TConfig::TContigsSum                           TContigsSum;
@@ -602,10 +600,7 @@ inline void findSeeds(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
     {
         // Estimate the number of hits.
         reserve(me.hits[bucketId], lengthSum(me.seeds[bucketId]) * Power<ERRORS, 2>::VALUE, Exact());
-        if (me.options.sensitivity == FULL)
-            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, EditDistance());
-        else
-            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, HammingDistance());
+        _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, typename TConfig::TSeedsDistance());
     }
     else
     {
@@ -1234,51 +1229,15 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void mapReads(Mapper<TSpec, TConfig> & me)
 {
-    _mapReadsImpl(me, me.reads.seqs, typename TConfig::TStrategy());
+    _mapReadsImpl(me, me.reads.seqs);
 }
 
 // ----------------------------------------------------------------------------
-// Function _mapReadsImpl(); All
+// Function _mapReadsImpl()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TReadSeqs>
-inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All)
-{
-    initReadsContext(me, readSeqs);
-    initSeeds(me, readSeqs);
-
-    collectSeeds<0>(me, readSeqs);
-    findSeeds<0>(me, 0);
-    classifyReads(me);
-    collectSeeds<1>(me, readSeqs);
-    collectSeeds<2>(me, readSeqs);
-    findSeeds<1>(me, 1);
-    if (me.options.sensitivity == LOW)
-        findSeeds<1>(me, 2);
-    else
-        findSeeds<2>(me, 2);
-    reserveMatches(me);
-    extendHits<0>(me, 0);
-    extendHits<1>(me, 1);
-    extendHits<2>(me, 2);
-    clearSeeds(me);
-    clearHits(me);
-    aggregateMatches(me, readSeqs);
-    rankMatches(me, readSeqs);
-    if (me.options.verifyMatches)
-        verifyMatches(me);
-    alignMatches(me);
-    writeMatches(me);
-    clearMatches(me);
-    clearAlignments(me);
-}
-
-// ----------------------------------------------------------------------------
-// Function _mapReadsImpl(); Strata
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TConfig, typename TReadSeqs>
-inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Strata)
+inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
 {
     initReadsContext(me, readSeqs);
     initSeeds(me, readSeqs);
@@ -1349,8 +1308,7 @@ inline void printStats(Mapper<TSpec, TConfig> const & me, Timer<TValue> const & 
     std::cerr << "Seeding time:\t\t\t" << me.stats.collectSeeds << " sec" << "\t\t" << me.stats.collectSeeds / total << " %" << std::endl;
     std::cerr << "Filtering time:\t\t\t" << me.stats.findSeeds << " sec" << "\t\t" << me.stats.findSeeds / total << " %" << std::endl;
     std::cerr << "Classification time:\t\t" << me.stats.classifyReads << " sec" << "\t\t" << me.stats.classifyReads / total << " %" << std::endl;
-    if (IsSameType<typename TConfig::TStrategy, Strata>::VALUE)
-        std::cerr << "Ranking time:\t\t\t" << me.stats.rankSeeds << " sec" << "\t\t" << me.stats.rankSeeds / total << " %" << std::endl;
+    std::cerr << "Ranking time:\t\t\t" << me.stats.rankSeeds << " sec" << "\t\t" << me.stats.rankSeeds / total << " %" << std::endl;
     std::cerr << "Extension time:\t\t\t" << me.stats.extendHits << " sec" << "\t\t" << me.stats.extendHits / total << " %" << std::endl;
     std::cerr << "Sorting time:\t\t\t" << me.stats.sortMatches << " sec" << "\t\t" << me.stats.sortMatches / total << " %" << std::endl;
     std::cerr << "Compaction time:\t\t" << me.stats.compactMatches << " sec" << "\t\t" << me.stats.compactMatches / total << " %" << std::endl;
@@ -1420,13 +1378,13 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContigsSize, typename TContigsLen, typename TContigsSum,
-          typename TThreading, typename TSequencing, typename TStrategy>
+          typename TThreading, typename TSequencing, typename TSeedsDistance>
 inline void spawnMapper(Options const & options,
                         TThreading const & /* tag */,
                         TSequencing const & /* tag */,
-                        TStrategy const & /* tag */)
+                        TSeedsDistance const & /* tag */)
 {
-    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy, TContigsSize, TContigsLen, TContigsSum>  TConfig;
+    typedef ReadMapperConfig<TThreading, TSequencing, TSeedsDistance, TContigsSize, TContigsLen, TContigsSum>  TConfig;
 
     Mapper<void, TConfig> mapper(options);
     runMapper(mapper);
