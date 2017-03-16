@@ -46,7 +46,7 @@ endif (NOT BZIP2_FOUND)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.12")
+set (SEQAN_APP_VERSION "1.0.0")
 
 option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
 if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
@@ -136,7 +136,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install yara in ${PREFIX}/bin directory
 install (TARGETS yara_indexer yara_mapper
-         DESTINATION ${CMAKE_INSTALL_BINDIR})
+         DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/yara for SeqAn release builds.
