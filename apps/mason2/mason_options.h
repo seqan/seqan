@@ -50,6 +50,10 @@
 
 #include <seqan/arg_parse.h>
 #include <seqan/sequence.h>
+#include <seqan/seq_io.h>
+#include <seqan/bam_io.h>
+#include <seqan/gff_io.h>
+#include <seqan/vcf_io.h>
 
 #include "mason_types.h"
 
