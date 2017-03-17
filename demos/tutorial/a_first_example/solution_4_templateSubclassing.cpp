@@ -1,5 +1,3 @@
-// Generalize the computeLocalScore function in you file.
-
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>

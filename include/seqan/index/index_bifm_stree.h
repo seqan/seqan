@@ -44,25 +44,31 @@ namespace seqan {
 // ============================================================================
 
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
-inline void update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
+inline void _update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
 {
     typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
 
-    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, TText, typename RevTextFibre<TText>::Type>::Type TDirText;
-    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, typename RevTextFibre<TText>::Type, TText>::Type TOppDirText;
-
-    typedef Iter<Index<TDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TDirIter;
-    typedef Iter<Index<TOppDirText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > TOppDirIter;
-
     _historyPush(_iter(it, TOppositeDirection()));
 
-    TDirIter & dirIter = _iter(it, TDirection());
-    TOppDirIter & oppDirIter = _iter(it, TOppositeDirection());
+    auto & dirIter = _iter(it, TDirection());
+    auto & oppDirIter = _iter(it, TOppositeDirection());
 
     value(oppDirIter).range.i1 += value(dirIter).smaller;
     value(oppDirIter).range.i2 = value(oppDirIter).range.i1 + value(dirIter).range.i2 - value(dirIter).range.i1;
 
-    value(oppDirIter).repLen = value(dirIter).repLen; // do not increment in case of goRight
+    value(oppDirIter).repLen = value(dirIter).repLen;
+}
+
+template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TDirection>
+inline void _updateOnGoRight(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec> > >, VSTree<TopDown<TSpec> > > & it, TDirection)
+{
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
+
+    auto & dirIter = _iter(it, TDirection());
+    auto & oppDirIter = _iter(it, TOppositeDirection());
+
+    value(oppDirIter).range.i1 = nodeUp(oppDirIter).range.i1 + value(dirIter).smaller;
+    value(oppDirIter).range.i2 = value(oppDirIter).range.i1 + value(dirIter).range.i2 - value(dirIter).range.i1;
 }
 
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TString, typename TSize, typename TDirection>
@@ -92,7 +98,7 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
 
         value(_iter(it, TDirection())).range = _range;
         value(_iter(it, TDirection())).smaller = _smaller;
-        update(it, TDirection());
+        _update(it, TDirection());
     }
 
     value(_iter(it, Fwd())).repLen += lcp;

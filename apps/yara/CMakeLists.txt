@@ -46,7 +46,7 @@ endif (NOT BZIP2_FOUND)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
-set (SEQAN_APP_VERSION "0.9.8")
+set (SEQAN_APP_VERSION "0.9.10")
 
 option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
 if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)

@@ -3,6 +3,32 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.3.2
+~~~~~~~~~~~~~
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Argument parser
+   - various fixes in the version checker
+   - fix incompatibilities in CTD file creation with KNIME (introduced in 2.3.0)
+- Build systems
+   - reintroduce ``FindSeqAn.cmake`` for projects that rely on cmake's module mode
+   - fix the pkgconfig file
+- Platform related
+   - improved compliance with warning levels of soon-to-be-released gcc7 and clang4 
+   - because of unresolved bugs we now recommend gcc5 as minimum gcc version when using static linking 
+
+Release 2.3.1
+~~~~~~~~~~~~~
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- Argument parser
+    - bool option negative values
+    - improve and fix version check
+
 Release 2.3.0
 ~~~~~~~~~~~~~
 

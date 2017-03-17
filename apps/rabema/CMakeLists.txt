@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_rabema CXX)
 message (STATUS "Configuring apps/rabema")
 
-set (SEQAN_APP_VERSION "1.2.7")
+set (SEQAN_APP_VERSION "1.2.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies

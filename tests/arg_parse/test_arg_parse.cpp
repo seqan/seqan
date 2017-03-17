@@ -125,6 +125,8 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_double_list_option_not_enough_arguments);
 
     // Test bools
+    SEQAN_CALL_TEST(test_boolean_argument_on);
+    SEQAN_CALL_TEST(test_boolean_argument_off);
     SEQAN_CALL_TEST(test_boolean_flags);
     SEQAN_CALL_TEST(test_combined_boolean_flags);
     SEQAN_CALL_TEST(test_long_short_flag_name);

@@ -310,10 +310,10 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
 
 #ifndef SEQAN_DISABLE_VERSION_CHECK
     // do version check if not turned off by the user
-    std::string version_option;
-    getOptionValue(version_option, me, "version-check");
+    bool check_version = false;
+    getOptionValue(check_version, me, "version-check");
 
-    if (version_option != VersionControlTags_<>::OPTION_OFF)
+    if (check_version)
     {
         VersionCheck app_version(toCString(me._toolDoc._name),
                                  toCString(me._toolDoc._version),
@@ -321,17 +321,6 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
         std::promise<bool> appVersionProm;
         me.appVersionCheckFuture = appVersionProm.get_future();
         app_version(std::move(appVersionProm));
-
-        if (version_option != VersionControlTags_<>::OPTION_APP_ONLY)
-        {
-            std::string seqan_ver_string = std::to_string(SEQAN_VERSION_MAJOR) + "." + 
-                                           std::to_string(SEQAN_VERSION_MINOR) + "." +
-                                           std::to_string(SEQAN_VERSION_PATCH);
-            VersionCheck seqan_version("seqan", seqan_ver_string, errorStream);
-            std::promise<bool> seqanVersionProm;
-            me.seqanVersionCheckFuture = seqanVersionProm.get_future();
-            seqan_version(std::move(seqanVersionProm));
-        }
     }
 #endif  // !SEQAN_DISABLE_VERSION_CHECK
 

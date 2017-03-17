@@ -66,24 +66,20 @@ struct VersionControlTags_
 {
     static constexpr char const * const SEQAN_NAME         = "seqan";
     static constexpr char const * const UNREGISTERED_APP   = "UNREGISTERED_APP";
-    static constexpr char const * const OPTION_OFF         = "OFF";
-    static constexpr char const * const OPTION_DEV         = "DEV";
-    static constexpr char const * const OPTION_APP_ONLY    = "APP_ONLY";
-    static constexpr char const * const OPTIONS            = "DEV APP_ONLY OFF";
 
     static constexpr char const * const MESSAGE_SEQAN_UPDATE =
         "[SEQAN INFO] :: There is a newer SeqAn version available!\n"
         "[SEQAN INFO] :: Please visit www.seqan.de for an update or inform the developer of this app.\n"
-        "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check APP_ONLY\n\n";
+        "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check OFF\n\n";
     static constexpr char const * const MESSAGE_APP_UPDATE =
         "[APP INFO] :: There is a newer version of this application available.\n"
         "[APP INFO] :: If this app is developed by SeqAn, visit www.seqan.de for updates.\n"
         "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF\n\n";
     static constexpr char const * const MESSAGE_UNREGISTERED_APP =
         "[SEQAN INFO] :: Thank you for using SeqAn!\n"
-        "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?!\n"
+        "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?\n"
         "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
-        "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check 2\n\n";
+        "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF\n\n";
     static constexpr char const * const MESSAGE_REGISTERED_APP_UPDATE =
         "[APP INFO] :: We noticed the app version you use is newer than the one registered with us.\n"
         "[APP INFO] :: Please send us an email with the new version so we can correct it (support@seqan.de)\n\n";
@@ -93,14 +89,6 @@ template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::SEQAN_NAME;
 template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::UNREGISTERED_APP;
-template <typename TVoidSpec>
-constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_OFF;
-template <typename TVoidSpec>
-constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_DEV;
-template <typename TVoidSpec>
-constexpr char const * const VersionControlTags_<TVoidSpec>::OPTION_APP_ONLY;
-template <typename TVoidSpec>
-constexpr char const * const VersionControlTags_<TVoidSpec>::OPTIONS;
 template <typename TVoidSpec>
 constexpr char const * const VersionControlTags_<TVoidSpec>::MESSAGE_SEQAN_UPDATE;
 template <typename TVoidSpec>
@@ -121,6 +109,7 @@ struct VersionCheck
     std::string _program;
     std::string _command;
     std::string _path = _getPath();
+    std::string _timestamp_filename;
     std::ostream & errorStream;
 
     // ----------------------------------------------------------------------------
@@ -134,6 +123,11 @@ struct VersionCheck
         errorStream(errorStream)
     {
         std::smatch versionMatch;
+#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+        _timestamp_filename = _path + "/" + _name + "_usr.timestamp";
+#else
+        _timestamp_filename = _path + "/" + _name + "_dev.timestamp";
+#endif
         if (!version.empty() &&
             std::regex_search(version, versionMatch, std::regex("^([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+).*")))
         {
@@ -330,11 +324,11 @@ inline std::string _getPath()
 // Function _getFileTimeDiff()
 // ----------------------------------------------------------------------------
 
-inline double _getFileTimeDiff(std::string const & timestamp_filename)
+inline double _getFileTimeDiff(VersionCheck const & me)
 {
     double curr = static_cast<double>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
     std::ifstream timestamp_file;
-    timestamp_file.open(timestamp_filename.c_str());
+    timestamp_file.open(me._timestamp_filename.c_str());
 
     if (timestamp_file.is_open())
     {
@@ -368,26 +362,31 @@ inline String<int> _getNumbersFromString(std::string const & str)
 // Function _readVersionString()
 // ----------------------------------------------------------------------------
 
-inline std::string _readVersionString(VersionCheck & me, std::string const & version_file)
+inline void _readVersionStrings(std::vector<std::string> & versions, std::string const & version_file)
 {
     std::ifstream myfile;
     myfile.open(version_file.c_str());
-    std::string line;
+    std::string app_version;
+    std::string seqan_version;
     if (myfile.is_open())
     {
-        std::getline(myfile,line); // get first line which should only contain the version number
-        if (!(std::regex_match(line, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$"))))
-        {
-            line.clear();
-        }
-        if (line == VersionControlTags_<>::UNREGISTERED_APP)
-        {
-            me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
-            line.clear();
-        }
+        std::getline(myfile, app_version); // get first line which should only contain the version number of the app
+
+#if !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+        if (app_version == VersionControlTags_<>::UNREGISTERED_APP)
+            versions[0] = app_version;
+#endif // !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+
+        if (std::regex_match(app_version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$")))
+            versions[0] = app_version;
+
+        std::getline(myfile, seqan_version); // get second line which should only contain the version number of seqan
+
+        if (std::regex_match(seqan_version, std::regex("^[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+$")))
+            versions[1] = seqan_version;
+
         myfile.close();
     }
-    return line; // line is an empty string on failure
 }
 
 // ----------------------------------------------------------------------------
@@ -397,8 +396,7 @@ inline std::string _readVersionString(VersionCheck & me, std::string const & ver
 inline void _callServer(VersionCheck const me, std::promise<bool> prom)
 {
     // update timestamp
-    std::string timestamp_filename(me._path + "/" + me._name + ".timestamp");
-    std::ofstream timestamp_file(timestamp_filename.c_str());
+    std::ofstream timestamp_file(me._timestamp_filename.c_str());
     if (timestamp_file.is_open())
     {
         timestamp_file << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -426,9 +424,8 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
     }
 
     std::string version_filename(me._path + "/" + me._name + ".version");
-    std::string timestamp_filename(me._path + "/" + me._name + ".timestamp");
     double min_time_diff(86400);                                 // one day = 86400 seonds
-    double file_time_diff(_getFileTimeDiff(timestamp_filename)); // time difference in seconds
+    double file_time_diff(_getFileTimeDiff(me)); // time difference in seconds
 
     if (file_time_diff < min_time_diff)
     {
@@ -436,23 +433,37 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         return;
     }
 
-    std::string str_server_version(_readVersionString(me, version_filename));
-    if (!str_server_version.empty())
+    std::vector<std::string> str_server_versions{"", ""};
+    _readVersionStrings(str_server_versions, version_filename);
+
+#if !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only check seqan version in debug or testing mode
+    if (!str_server_versions[1].empty()) // seqan version
     {
-        String<int> server_version(_getNumbersFromString(str_server_version));
-        String<int> current_version(_getNumbersFromString(me._version));
-        Lexical<> version_comp(current_version, server_version);
+        std::string seqan_version = std::to_string(SEQAN_VERSION_MAJOR) + "." +
+                                    std::to_string(SEQAN_VERSION_MINOR) + "." +
+                                    std::to_string(SEQAN_VERSION_PATCH);
+        Lexical<> version_comp(_getNumbersFromString(seqan_version), _getNumbersFromString(str_server_versions[1]));
+
         if (isLess(version_comp))
-        {
-            if (me._name == VersionControlTags_<>::SEQAN_NAME)
-                me.errorStream << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
-            else
-                me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
-        }
-        else if (isGreater(version_comp))
-        {
+            me.errorStream << VersionControlTags_<>::MESSAGE_SEQAN_UPDATE;
+    }
+    if (str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)
+        me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
+#endif
+
+    if (!str_server_versions[0].empty() & !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
+    {
+        Lexical<> version_comp(_getNumbersFromString(me._version), _getNumbersFromString(str_server_versions[0]));
+
+#if defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only check app version in release or testing mode
+        if (isLess(version_comp))
+            me.errorStream << VersionControlTags_<>::MESSAGE_APP_UPDATE;
+#endif // defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
+
+#if !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_) // only notify developer that app version should be updated on server
+        if (isGreater(version_comp))
             me.errorStream << VersionControlTags_<>::MESSAGE_REGISTERED_APP_UPDATE;
-        }
+#endif // !defined(NDEBUG) || defined(SEQAN_TEST_VERSION_CHECK_)
     }
 
     if (me._program.empty())

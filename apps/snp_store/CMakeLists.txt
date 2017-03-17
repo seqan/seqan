@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_snp_store CXX)
 message (STATUS "Configuring apps/snp_store")
 
-set (SEQAN_APP_VERSION "1.3.5")
+set (SEQAN_APP_VERSION "1.3.7")
 
 # ----------------------------------------------------------------------------
 # Dependencies

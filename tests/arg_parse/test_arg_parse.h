@@ -76,6 +76,11 @@ const char * A_BOOL_2 = "-c";
 const char * A_BOOL_3 = "-bc";
 const char * A_BOOL_4 = "-cb";
 
+const char * A_BOOL_ARG = "test-boolean-argument";
+const char * A_BOOL_ARG_SHORT = "-b";
+const char * A_BOOL_ARG_OFF = "OFF";
+const char * A_BOOL_ARG_ON  = "ON";
+
 const char * A_IN_FILE_0 = "test";
 const char * A_IN_FILE_1 = "-i";
 const char * A_IN_FILE_2 = "--in";
@@ -148,6 +153,11 @@ void setupOutputFileParser(ArgumentParser & parser)
     addOption(parser, ArgParseOption("o", "out", "set an output file", ArgParseArgument::OUTPUT_FILE));
 }
 
+void setupBooleanParser(ArgumentParser & parser)
+{
+    addOption(parser, ArgParseOption("b", "mybool", "set a bool", ArgParseArgument::BOOL));
+}
+
 SEQAN_DEFINE_TEST(test_unset_value)
 {
     ArgumentParser parser;
@@ -187,6 +197,47 @@ SEQAN_DEFINE_TEST(test_unset_values)
     SEQAN_ASSERT_EQ(values.size(), 0u);
 }
 
+SEQAN_DEFINE_TEST(test_boolean_argument_on)
+{
+
+    ArgumentParser parser;
+    setupBooleanParser(parser);
+
+    int argc = 3;
+    const char * argv[3] = {A_BOOL_ARG, A_BOOL_ARG_SHORT, A_BOOL_ARG_ON};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    bool booleanValue = 0;
+    SEQAN_ASSERT(getOptionValue(booleanValue, parser, "mybool"));
+    SEQAN_ASSERT_EQ(booleanValue, true);
+}
+
+SEQAN_DEFINE_TEST(test_boolean_argument_off)
+{
+
+    ArgumentParser parser;
+    setupBooleanParser(parser);
+
+    int argc = 3;
+    const char * argv[3] = {A_BOOL_ARG, A_BOOL_ARG_SHORT, A_BOOL_ARG_OFF};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    bool booleanValue = 1;
+    SEQAN_ASSERT(getOptionValue(booleanValue, parser, "mybool"));
+    SEQAN_ASSERT_EQ(booleanValue, false);
+}
 
 SEQAN_DEFINE_TEST(test_int_short_argument)
 {

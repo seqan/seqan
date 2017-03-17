@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sam2matrix CXX)
 message (STATUS "Configuring apps/sam2matrix")
 
-set (SEQAN_APP_VERSION "0.3.5")
+set (SEQAN_APP_VERSION "0.3.7")
 
 # ----------------------------------------------------------------------------
 # Dependencies

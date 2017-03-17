@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_gustaf CXX)
 message (STATUS "Configuring apps/gustaf")
 
-set (SEQAN_APP_VERSION "1.0.7")
+set (SEQAN_APP_VERSION "1.0.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies

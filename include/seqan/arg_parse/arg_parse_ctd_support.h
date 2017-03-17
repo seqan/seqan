@@ -165,8 +165,14 @@ _getRestrictions(std::vector<std::string> & restrictions, ArgParseArgument const
 {
     // we only extract non-file restrictions
     if (isOutputFileArgument(opt) || isInputFileArgument(opt) || isInputPrefixArgument(opt) || isOutputPrefixArgument(opt))
+    {
         return;
-
+    }
+    else if (isBooleanArgument(opt))
+    {
+        appendValue(restrictions, "true,false");
+        return;
+    }
     if (length(opt.validValues) != 0)
     {
         for (std::vector<std::string>::const_iterator valid = opt.validValues.begin();
@@ -281,6 +287,50 @@ inline std::string _getManual(ArgumentParser const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function _toValidGKNTypeSpecifier()
+// ----------------------------------------------------------------------------
+// TODO(dadi): similar to  _typeToString() function. Differs only in the case of bool, integer, int64 and types
+//.            that has underscores in them. hyphens are used instead of underscores. e.g. input-file instead
+//             of input_file. This should be removed and _typeToString() should be used instead once GKN is
+//             modified to accept the results of _typeToString() functions directly.
+
+inline std::string _toValidGKNTypeSpecifier(ArgParseArgument const & me)
+{
+    switch (me._argumentType)
+    {
+        case ArgParseArgument::BOOL:
+            return "string";
+
+        case ArgParseArgument::INTEGER:
+            return "int";
+
+        case ArgParseArgument::INT64:
+            return "int";
+
+        case ArgParseArgument::INPUT_FILE:
+            return "input-file";
+
+        case ArgParseArgument::OUTPUT_FILE:
+            return "output-file";
+
+        case ArgParseArgument::INPUT_PREFIX:
+            return "input-prefix";
+
+        case ArgParseArgument::OUTPUT_PREFIX:
+            return "output-prefix";
+
+        case ArgParseArgument::INPUT_DIRECTORY:
+            return "input-prefix";
+
+        case ArgParseArgument::OUTPUT_DIRECTORY:
+            return "output-prefix";
+
+        default:
+            return _typeToString(me);
+    }
+}
+
+// ----------------------------------------------------------------------------
 // Function writeCTD()
 // ----------------------------------------------------------------------------
 
@@ -391,7 +441,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         // prefer short name for options
         std::string optionName = _getOptionName(opt);
 
-        std::string type = _typeToString(opt);
+        std::string type = _toValidGKNTypeSpecifier(opt);
 
         // set up restrictions
         std::vector<std::string> restrictions;
@@ -464,7 +514,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
         argumentNameStream << "argument-" << argIdx;
         std::string optionName = argumentNameStream.str();
 
-        std::string type = _typeToString(arg);
+        std::string type = _toValidGKNTypeSpecifier(arg);
 
         // set up restrictions
         std::vector<std::string> restrictions;

@@ -51,8 +51,8 @@ if(NOT(${PYTHON_VERSION_MAJOR} MATCHES "2"))
     message (STATUS "Found Python 2.x: ${PYTHON_EXECUTABLE}")
 
     # change shell scripts for building dox
-    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../dox/run.sh" run_content)
-    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../dox/dox_only.sh" dox_only_content)
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../dox/run.sh.in" run_content)
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../dox/dox_only.sh.in" dox_only_content)
     string(REPLACE "python2 ../" "${PYTHON_EXECUTABLE} ../" run_content "${run_content}")
     string(REPLACE "python2 ../" "${PYTHON_EXECUTABLE} ../" dox_only_content "${dox_only_content}")
     file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/../dox/run.sh" "${run_content}")

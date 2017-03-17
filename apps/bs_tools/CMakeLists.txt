@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_bs_tools CXX)
 message (STATUS "Configuring apps/bs_tools")
 
-set (SEQAN_APP_VERSION "0.1.7")
+set (SEQAN_APP_VERSION "0.1.9")
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND ("$ENV{MODEL}" STREQUAL "Nightly"))
     message (STATUS "bs_tools skipped on FreeBSD because math.h rounding errors.")
@@ -113,6 +113,11 @@ install (FILES LICENSE
 # ----------------------------------------------------------------------------
 # App Test
 # ----------------------------------------------------------------------------
+
+if (SEQAN_BUILD_SYSTEM STREQUAL "DEVELOP")
+    include("SeqAnConsistentFPFlags")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CONSISTENT_FP_FLAGS}")
+endif()
 
 # (weese:) temporarily disabled app test
 seqan_add_app_test (bs_tools)
