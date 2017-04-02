@@ -60,6 +60,18 @@ else ()
   return()
 endif ()
 
+# Create the payload binary ZIP file.
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set (SEQAN_PLATFORM "lnx")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set (SEQAN_PLATFORM "win")
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set (SEQAN_PLATFORM "mac")
+else ()
+  message (STATUS "Unsupported platform ${CMAKE_SYSTEM_NAME}, disabling CTD support.")
+  return()
+endif ()
+
 # ============================================================================
 # Variable Setup
 # ============================================================================
