@@ -85,7 +85,7 @@ class ConcurrentQueue
 public:
     typedef typename Host<ConcurrentQueue>::Type                TString;
     typedef typename Size<TString>::Type                        TSize;
-    typedef typename Atomic<TSize>::Type                        TAtomicSize;
+    typedef std::atomic<TSize>                                  TAtomicSize;
     typedef typename If<typename IsSameType<TSpec, Limit>::Type,
                         Serial,
                         typename DefaultParallelSpec<ConcurrentQueue>::Type
@@ -101,7 +101,8 @@ public:
     TAtomicSize tailPos;                    char pad6[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
     TAtomicSize tailWritePos;               char pad7[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
     TAtomicSize roundSize;                  char pad8[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
-    Atomic<bool>::Type virgin;              char pad9[SEQAN_CACHE_LINE_SIZE - sizeof(Atomic < bool > ::Type)];
+    // TODO(rrahn): Make this to an atomic_flag?
+    std::atomic<bool> virgin;               char pad9[SEQAN_CACHE_LINE_SIZE - sizeof(std::atomic<bool>)];
 
     ConcurrentQueue() :
         readerCount(0),
@@ -235,7 +236,7 @@ template <typename TValue, typename TSpec>
 inline void
 lockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicInc(me.readerCount);
+    ++me.readerCount;
 }
 
 /*!
@@ -253,7 +254,7 @@ template <typename TValue, typename TSpec>
 inline void
 unlockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicDec(me.readerCount);
+    --me.readerCount;
 }
 
 // ----------------------------------------------------------------------------
@@ -274,7 +275,7 @@ template <typename TValue, typename TSpec>
 inline void
 lockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicInc(me.writerCount);
+    ++me.writerCount;
 }
 
 /*!
@@ -291,7 +292,7 @@ template <typename TValue, typename TSpec>
 inline void
 unlockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicDec(me.writerCount);
+    --me.writerCount;
 }
 
 // ----------------------------------------------------------------------------

@@ -47,6 +47,7 @@
 #include "test_parallel_splitting.h"
 #include "test_parallel_algorithms.h"
 #include "test_parallel_queue.h"
+#include "test_parallel_sequence.h"
 
 SEQAN_BEGIN_TESTSUITE(test_parallel) {
 #if defined(_OPENMP)
@@ -96,5 +97,8 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
 //        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
 //        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
     }
+
+    SEQAN_CALL_TEST(test_parallel_sequence_concurrent_append);
+    SEQAN_CALL_TEST(test_parallel_sequence_concurrent_append_insist);
 }
 SEQAN_END_TESTSUITE

@@ -197,18 +197,16 @@ struct MapperTraits
     typedef Tuple<TSeeds, TConfig::BUCKETS>                         TSeedsBuckets;
 
     typedef Hit<TIndexSize, HammingDistance>                        THit;
-    typedef String<THit>                                            THits;
+    typedef String<THit, Alloc<ConcurrentAppend<> > >               THits;
     typedef Tuple<THits, TConfig::BUCKETS>                          THitsBuckets;
     typedef String<TIndexSize>                                      THitsCounts;
-    typedef ConcurrentAppender<THits>                               THitsAppender;
 
     typedef StringSet<TSeedsCount, Owner<ConcatDirect<> > >         TRanks;
     typedef Tuple<TRanks, TConfig::BUCKETS>                         TRanksBuckets;
 
     typedef Limits<TContigsSize, TContigsLen, TContigsSum>          TMatchSpec;
     typedef Match<TMatchSpec>                                       TMatch;
-    typedef String<TMatch>                                          TMatches;
-    typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
+    typedef String<TMatch, Alloc<ConcurrentAppend<> > >             TMatches;
     typedef StringSet<TMatches, Segment<TMatches> >                 TMatchesSet;
     typedef typename Suffix<TMatches>::Type                         TMates;
     typedef StringSet<TMates, Segment<TMates> >                     TMatesSet;
@@ -628,10 +626,8 @@ inline void _findSeedsImpl(Mapper<TSpec, TConfig> & me, THits & hits, TSeeds & s
 {
     typedef MapperTraits<TSpec, TConfig>            TTraits;
     typedef FilterDelegate<TSpec, TTraits>          TDelegate;
-    typedef typename TTraits::THitsAppender         TAppender;
 
-    TAppender appender(hits);
-    TDelegate delegate(appender);
+    TDelegate delegate(hits);
 
     // Find hits.
     find(me.index, seeds, errors, delegate, Backtracking<TDistance>(), typename TConfig::TThreading());
@@ -729,11 +725,9 @@ inline void extendHits(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
 {
     typedef MapperTraits<TSpec, TConfig>        TTraits;
     typedef HitsExtender<TSpec, TTraits>        THitsExtender;
-    typedef typename TTraits::TMatchesAppender  TMatchesAppender;
 
     start(me.timer);
-    TMatchesAppender appender(me.matchesByCoord);
-    THitsExtender extender(me.ctx, appender, me.contigs.seqs,
+    THitsExtender extender(me.ctx, me.matchesByCoord, me.contigs.seqs,
                            me.seeds[bucketId], me.hits[bucketId], me.ranks[bucketId], ERRORS,
                            indexSA(me.index), me.options);
     stop(me.timer);
@@ -831,7 +825,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     typedef typename Size<TReadSeqs>::Type                  TReadId;
     typedef typename Size<TMatchesSetValue>::Type           TMatchesSize;
     typedef std::uniform_int_distribution<TMatchesSize>     TMatchesRnd;
-    typedef String<unsigned>                                TLibraryLengths;
+    typedef String<unsigned, Alloc<ConcurrentAppend<> > >   TLibraryLengths;
 
     start(me.timer);
     // Create a position modifier of the matches from the identity permutation.
@@ -924,7 +918,6 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         // Collect library lengths from unique optimal pairs.
         TLibraryLengths libraryLengths;
         reserve(libraryLengths, getPairsCount(readSeqs), Exact());
-        ConcurrentAppender<TLibraryLengths> libraryLengthsAppender(libraryLengths);
         forAllMatchesPairs(me.optimalMatchesSet, readSeqs, [&](TMatchesViewSetValue const & firstMatches, TMatchesViewSetValue const & secondMatches)
         {
             if (length(firstMatches) == 1 && length(secondMatches) == 1)
@@ -933,7 +926,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
                 TMatch const & secondMatch = front(secondMatches);
 
                 if (contigEqual(firstMatch, secondMatch) && orientationProper(firstMatch, secondMatch))
-                    appendValue(libraryLengthsAppender, getLibraryLength(firstMatch, secondMatch), Insist(), typename TTraits::TThreading());
+                    appendValue(libraryLengths, getLibraryLength(firstMatch, secondMatch), Insist(), typename TTraits::TThreading());
             }
         },
         typename TTraits::TThreading());
@@ -1089,15 +1082,13 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 {
     typedef MapperTraits<TSpec, TConfig>            TTraits;
     typedef AnchorsVerifier<TSpec, TTraits>         TMatchesVerifier;
-    typedef typename TTraits::TMatchesAppender      TMatchesAppender;
     typedef typename TTraits::TMatch                TMatch;
     typedef typename TTraits::TMatesSet             TMatesSet;
     typedef typename Iterator<TMatesSet>::Type      TMatesSetIt;
 
     start(me.timer);
     unsigned long anchorsCount = length(me.matchesByCoord);
-    TMatchesAppender appender(me.matchesByCoord);
-    TMatchesVerifier verifier(me.ctx, appender,
+    TMatchesVerifier verifier(me.ctx, me.matchesByCoord,
                               me.contigs.seqs, me.reads.seqs,
                               me.optimalMatchesSet,
                               me.libraryLength, me.libraryDev,

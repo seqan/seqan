@@ -40,6 +40,7 @@
 // TODO(holtgrew): The metafunction should go into the alphabet submodule, the functions into the sequence/string module.
 
 #include <new>
+#include <atomic>
 
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_
@@ -57,6 +58,14 @@ namespace seqan {
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+template <typename T>
+struct IsAtomic : False
+{};
+
+template <typename TParam>
+struct IsAtomic<std::atomic<TParam> > : True
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction IsSimple
@@ -245,13 +254,27 @@ struct ValueConstructor_
     }
 
     template <typename TIterator, typename TParam>
-    static inline void
+    static inline
+    SEQAN_FUNC_ENABLE_IF(Not<IsAtomic<typename Value<TIterator>::Type> >, void)
     construct(TIterator it,
               TParam && param_)
     {
         typedef typename Value<TIterator>::Type    TValue;
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
         new( (void*) & value(it) ) TNonConstValue(std::forward<TParam>(param_));
+    }
+
+    // Overload for std::atomic<> types.
+    template <typename TIterator, typename TParam>
+    static inline
+    SEQAN_FUNC_ENABLE_IF(IsAtomic<typename Value<TIterator>::Type>, void)
+    construct(TIterator it,
+              TParam && param_)
+    {
+        typedef typename Value<TIterator>::Type    TValue;
+        typedef typename RemoveConst<TValue>::Type TNonConstValue;
+        new( (void*) & value(it) ) TNonConstValue();
+        value(it).store(param_, std::memory_order_relaxed);  // NOTE(rrahn): Copy-construction is deleted for atomic types.
     }
 };
 
