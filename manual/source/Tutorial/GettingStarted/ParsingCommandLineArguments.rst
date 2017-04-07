@@ -302,7 +302,7 @@ Feature-Complete Example Program
 --------------------------------
 
 The command line parsing part of our program is done now.
-Let us now add a function ``modifyText()`` that is given a ``ModifyStringOptions`` object and text and modifies the text.
+Let us now add a function ``modifyString()`` that is given a ``ModifyStringOptions`` object and text and modifies the text.
 We simply use the C standard library functios ``toupper()`` and ``tolower()`` from the header ``<cctype>`` for converting to upper and lower case.
 
 .. includefrags:: demos/tutorial/parsing_command_line_arguments/example_with_modifyString.cpp
