@@ -837,8 +837,8 @@ seqan_mm256_i16gather_epi(TValue const * memAddr,
 template <typename TValue, typename TSize, TSize SCALE>
 inline __m256i
 seqan_mm256_i32gather_epi(TValue const * memAddr,
-                            __m256i const & idx,
-                            std::integral_constant<TSize, SCALE> const & /*scale*/)
+                          __m256i const & idx,
+                          std::integral_constant<TSize, SCALE> const & /*scale*/)
 {
     using TUnsignedValue = typename MakeUnsigned<TValue>::Type;
     constexpr auto const mask = static_cast<uint32_t>(MaxValue<TUnsignedValue>::VALUE);
