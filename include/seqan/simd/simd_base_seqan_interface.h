@@ -118,7 +118,7 @@ fillVector(TSimdVector &vector, TValue const... args)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-cmpEq (TSimdVector const &a, TSimdVector const &b)
+cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _cmpEq(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -130,7 +130,7 @@ cmpEq (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator == (TSimdVector const &a, TSimdVector const &b)
+operator == (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _cmpEq(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -142,7 +142,7 @@ operator == (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-cmpGt (TSimdVector const &a, TSimdVector const &b)
+cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _cmpGt(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue), TValue>());
@@ -154,7 +154,7 @@ cmpGt (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator > (TSimdVector const &a, TSimdVector const &b)
+operator > (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _cmpGt(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -166,7 +166,7 @@ operator > (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-max(TSimdVector const &a, TSimdVector const &b)
+max(TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _max(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue), TValue>());
@@ -178,7 +178,7 @@ max(TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator | (TSimdVector const &a, TSimdVector const &b)
+operator | (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _bitwiseOr(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -190,7 +190,7 @@ operator | (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator |= (TSimdVector &a, TSimdVector const &b)
+operator |= (TSimdVector &a, TSimdVector const & b)
 {
     a = a | b;
     return a;
@@ -202,7 +202,7 @@ operator |= (TSimdVector &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator & (TSimdVector const &a, TSimdVector const &b)
+operator & (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _bitwiseAnd(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -214,7 +214,7 @@ operator & (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator &= (TSimdVector &a, TSimdVector const &b)
+operator &= (TSimdVector &a, TSimdVector const & b)
 {
     a = a & b;
     return a;
@@ -226,7 +226,7 @@ operator &= (TSimdVector &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator ~ (TSimdVector const &a)
+operator ~ (TSimdVector const & a)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _bitwiseNot(a, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -238,7 +238,7 @@ operator ~ (TSimdVector const &a)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator + (TSimdVector const &a, TSimdVector const &b)
+operator + (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _add(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -250,7 +250,7 @@ operator + (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator - (TSimdVector const &a, TSimdVector const &b)
+operator - (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _sub(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -262,7 +262,7 @@ operator - (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator * (TSimdVector const &a, TSimdVector const &b)
+operator * (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _mult(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -274,7 +274,7 @@ operator * (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator/ (TSimdVector const &a, TSimdVector const &b)
+operator/ (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _div(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -286,7 +286,7 @@ operator/ (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-andNot(TSimdVector const &a, TSimdVector const &b)
+andNot(TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _bitwiseAndNot(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -298,7 +298,7 @@ andNot(TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-shiftRightLogical(TSimdVector const &vector, const int imm)
+shiftRightLogical(TSimdVector const & vector, const int imm)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _shiftRightLogical(vector, imm, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -310,7 +310,7 @@ shiftRightLogical(TSimdVector const &vector, const int imm)
 
 template <typename TSimdVector, typename TSimdVectorMask>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask)
+blend(TSimdVector const & a, TSimdVector const & b, TSimdVectorMask const & mask)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     return _blend(a, b, mask, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -322,7 +322,7 @@ blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask)
 
 template <typename T, typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-storeu(T * memAddr, TSimdVector const &vec)
+storeu(T * memAddr, TSimdVector const & vec)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     _storeu(memAddr, vec, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -358,7 +358,7 @@ gather(TValue const * memAddr, TSimdVector const & idx)
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
-shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices)
+shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices)
 {
     typedef typename Value<TSimdVector1>::Type TValue1;
     typedef typename Value<TSimdVector2>::Type TValue2;
@@ -375,7 +375,7 @@ shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, std::ostream &)
-print(std::ostream &stream, TSimdVector const &vector)
+print(std::ostream &stream, TSimdVector const & vector)
 {
     stream << '<';
     for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)

@@ -119,14 +119,14 @@ struct LENGTH<UME::SIMD::SIMDSwizzle<LENGTH_> > {
 
 template <uint32_t LENGTH, typename TPosition>
 inline typename Value<UME::SIMD::SIMDSwizzle<LENGTH> >::Type
-getValue(UME::SIMD::SIMDSwizzle<LENGTH> const &vector, TPosition const pos)
+getValue(UME::SIMD::SIMDSwizzle<LENGTH> const & vector, TPosition const pos)
 {
     return vector[pos];
 }
 
 template <uint32_t LENGTH, typename TPosition>
 inline typename Value<UME::SIMD::SIMDSwizzle<LENGTH> >::Type
-value(UME::SIMD::SIMDSwizzle<LENGTH> const &vector, TPosition const pos)
+value(UME::SIMD::SIMDSwizzle<LENGTH> const & vector, TPosition const pos)
 {
 
     return vector[pos];
@@ -162,14 +162,14 @@ struct LENGTH<UME::SIMD::SIMDVec_u<TValue, LENGTH_> > {
 
 template <typename TValue, uint32_t LENGTH, typename TPosition>
 inline TValue
-getValue(UME::SIMD::SIMDVec_u<TValue, LENGTH> const &vector, TPosition const pos)
+getValue(UME::SIMD::SIMDVec_u<TValue, LENGTH> const & vector, TPosition const pos)
 {
     return vector[pos];
 }
 
 template <typename TValue, uint32_t LENGTH, typename TPosition>
 inline TValue
-value(UME::SIMD::SIMDVec_u<TValue, LENGTH> const &vector, TPosition const pos)
+value(UME::SIMD::SIMDVec_u<TValue, LENGTH> const & vector, TPosition const pos)
 {
 
     return vector[pos];
@@ -205,14 +205,14 @@ struct LENGTH<UME::SIMD::SIMDVec_i<TValue, LENGTH_> > {
 
 template <typename TValue, uint32_t LENGTH, typename TPosition>
 inline TValue
-getValue(UME::SIMD::SIMDVec_i<TValue, LENGTH> const &vector, TPosition const pos)
+getValue(UME::SIMD::SIMDVec_i<TValue, LENGTH> const & vector, TPosition const pos)
 {
     return vector[pos];
 }
 
 template <typename TValue, uint32_t LENGTH, typename TPosition>
 inline TValue
-value(UME::SIMD::SIMDVec_i<TValue, LENGTH> const &vector, TPosition const pos)
+value(UME::SIMD::SIMDVec_i<TValue, LENGTH> const & vector, TPosition const pos)
 {
 
     return vector[pos];
@@ -248,14 +248,14 @@ struct LENGTH<UME::SIMD::SIMDVec_f<TValue, LENGTH_> > {
 
 template <typename TValue, uint32_t LENGTH, typename TPosition>
 inline TValue
-getValue(UME::SIMD::SIMDVec_f<TValue, LENGTH> const &vector, TPosition const pos)
+getValue(UME::SIMD::SIMDVec_f<TValue, LENGTH> const & vector, TPosition const pos)
 {
     return vector[pos];
 }
 
 template <typename TValue, uint32_t LENGTH, typename TPosition>
 inline TValue
-value(UME::SIMD::SIMDVec_f<TValue, LENGTH> const &vector, TPosition const pos)
+value(UME::SIMD::SIMDVec_f<TValue, LENGTH> const & vector, TPosition const pos)
 {
 
     return vector[pos];
@@ -329,7 +329,7 @@ fillVector(TSimdVector &vector, TValue const... args)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-cmpEq (TSimdVector const &a, TSimdVector const &b)
+cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     TSimdVector retval(0);
@@ -343,7 +343,7 @@ cmpEq (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator == (TSimdVector const &a, TSimdVector const &b)
+operator == (TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     TSimdVector retval(0);
@@ -357,7 +357,7 @@ operator == (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-cmpGt (TSimdVector const &a, TSimdVector const &b)
+cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     TSimdVector retval(0);
@@ -371,7 +371,7 @@ cmpGt (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator > (TSimdVector const &a, TSimdVector const &b)
+operator > (TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     TSimdVector retval(0);
@@ -385,7 +385,7 @@ operator > (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-max(TSimdVector const &a, TSimdVector const &b)
+max(TSimdVector const & a, TSimdVector const & b)
 {
     return a.max(b);
 }
@@ -396,7 +396,7 @@ max(TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator | (TSimdVector const &a, TSimdVector const &b)
+operator | (TSimdVector const & a, TSimdVector const & b)
 {
     return a.bor(b);
 }
@@ -407,7 +407,7 @@ operator | (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator |= (TSimdVector &a, TSimdVector const &b)
+operator |= (TSimdVector &a, TSimdVector const & b)
 {
     return a.bora(b);
 }
@@ -418,7 +418,7 @@ operator |= (TSimdVector &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator & (TSimdVector const &a, TSimdVector const &b)
+operator & (TSimdVector const & a, TSimdVector const & b)
 {
     return a.band(b);
 }
@@ -429,7 +429,7 @@ operator & (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator &= (TSimdVector &a, TSimdVector const &b)
+operator &= (TSimdVector &a, TSimdVector const & b)
 {
     return a.banda(b);
 }
@@ -440,7 +440,7 @@ operator &= (TSimdVector &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator ~ (TSimdVector const &a)
+operator ~ (TSimdVector const & a)
 {
     return a.bnot();
 }
@@ -451,7 +451,7 @@ operator ~ (TSimdVector const &a)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator + (TSimdVector const &a, TSimdVector const &b)
+operator + (TSimdVector const & a, TSimdVector const & b)
 {
     return a.add(b);
 }
@@ -462,7 +462,7 @@ operator + (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator - (TSimdVector const &a, TSimdVector const &b)
+operator - (TSimdVector const & a, TSimdVector const & b)
 {
     return a.sub(b);
 }
@@ -473,7 +473,7 @@ operator - (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator * (TSimdVector const &a, TSimdVector const &b)
+operator * (TSimdVector const & a, TSimdVector const & b)
 {
     return a.mul(b);
 }
@@ -484,7 +484,7 @@ operator * (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator/ (TSimdVector const &a, TSimdVector const &b)
+operator/ (TSimdVector const & a, TSimdVector const & b)
 {
     return a.div(b);
 }
@@ -495,7 +495,7 @@ operator/ (TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-andNot(TSimdVector const &a, TSimdVector const &b)
+andNot(TSimdVector const & a, TSimdVector const & b)
 {
     return a.bandnot(b);
 }
@@ -507,7 +507,7 @@ andNot(TSimdVector const &a, TSimdVector const &b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-shiftRightLogical(TSimdVector const &vector, const int imm)
+shiftRightLogical(TSimdVector const & vector, const int imm)
 {
     return vector.rsh(imm);
 }
@@ -518,7 +518,7 @@ shiftRightLogical(TSimdVector const &vector, const int imm)
 
 template <typename TSimdVector, typename TSimdVectorMask>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask)
+blend(TSimdVector const & a, TSimdVector const & b, TSimdVectorMask const & mask)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     const TSimdVector truemask(~TValue(0));
@@ -535,7 +535,7 @@ blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const & mask)
 
 template <typename T, typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-storeu(T * memAddr, TSimdVector const &vec)
+storeu(T * memAddr, TSimdVector const & vec)
 {
     vec.store(memAddr);
 }
@@ -593,7 +593,7 @@ gather(TValue const * memAddr, TSimdVector const & idx)
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector1> >, TSimdVector1)
-shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices)
+shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices)
 {
     return vector.swizzle(indices);
 }

@@ -521,7 +521,7 @@ inline TSimdVector _max(TSimdVector &a, TSimdVector &b, SimdParams_<32, 4, uint6
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector, typename TSimdVectorMask, int L>
-inline TSimdVector _blend(TSimdVector const &a, TSimdVector const &b, TSimdVectorMask const &mask, SimdParams_<32, L>)
+inline TSimdVector _blend(TSimdVector const & a, TSimdVector const & b, TSimdVectorMask const & mask, SimdParams_<32, L>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
                               _mm256_blendv_epi8(SEQAN_VECTOR_CAST_(const __m256i &, a),
@@ -554,22 +554,22 @@ inline TSimdVector _load(T const * memAddr, SimdParams_<32, L>)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<32, 32>)
+inline TSimdVector _shiftRightLogical(TSimdVector const & vector, const int imm, SimdParams_<32, 32>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_srli_epi16(SEQAN_VECTOR_CAST_(const __m256i &, vector), imm) & _mm256_set1_epi8(0xff >> imm));
 }
 template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<32, 16>)
+inline TSimdVector _shiftRightLogical(TSimdVector const & vector, const int imm, SimdParams_<32, 16>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_srli_epi16(SEQAN_VECTOR_CAST_(const __m256i &, vector), imm));
 }
 template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<32, 8>)
+inline TSimdVector _shiftRightLogical(TSimdVector const & vector, const int imm, SimdParams_<32, 8>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_srli_epi32(SEQAN_VECTOR_CAST_(const __m256i &, vector), imm));
 }
 template <typename TSimdVector>
-inline TSimdVector _shiftRightLogical(TSimdVector const &vector, const int imm, SimdParams_<32, 4>)
+inline TSimdVector _shiftRightLogical(TSimdVector const & vector, const int imm, SimdParams_<32, 4>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector, _mm256_srli_epi64(SEQAN_VECTOR_CAST_(const __m256i &, vector), imm));
 }
@@ -1035,7 +1035,7 @@ inline TSimdVector _gather(TValue const * memAddr,
 // --------------------------------------------------------------------------
 
 inline __m256i
-seqan_m256_shuffle_epi8(__m256i const &vector, __m256i const &indices)
+seqan_m256_shuffle_epi8(__m256i const & vector, __m256i const & indices)
 {
     return _mm256_xor_si256(
         // shuffle bytes from the lower bytes of vector
@@ -1209,7 +1209,7 @@ seqan_m256_shuffle_epi64(const __m256i a, const __m256i b)
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 16>, SimdParams_<16, 16>)
+_shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices, SimdParams_<32, 16>, SimdParams_<16, 16>)
 {
     // copy 2nd 64bit word to 3rd, compute 2*idx
     __m256i idx = _mm256_slli_epi16(_mm256_permute4x64_epi64(_mm256_castsi128_si256(SEQAN_VECTOR_CAST_(const __m128i &, indices)), 0x50), 1);
@@ -1230,7 +1230,7 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices, SimdParams_<32, 32>, SimdParams_<32, 32>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi8(
         SEQAN_VECTOR_CAST_(const __m256i &, vector),
@@ -1240,7 +1240,7 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 16>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices, SimdParams_<32, 16>, SimdParams_<32, 32>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi16(
         SEQAN_VECTOR_CAST_(const __m256i &, vector),
@@ -1250,7 +1250,7 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 8>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices, SimdParams_<32, 8>, SimdParams_<32, 32>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi32(
         SEQAN_VECTOR_CAST_(const __m256i &, vector),
@@ -1260,7 +1260,7 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 
 template <typename TSimdVector1, typename TSimdVector2>
 inline TSimdVector1
-_shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdParams_<32, 4>, SimdParams_<32, 32>)
+_shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices, SimdParams_<32, 4>, SimdParams_<32, 32>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector1, seqan_m256_shuffle_epi64(
         SEQAN_VECTOR_CAST_(const __m256i &, vector),
@@ -1273,13 +1273,13 @@ _shuffleVector(TSimdVector1 const &vector, TSimdVector2 const &indices, SimdPara
 // --------------------------------------------------------------------------
 
 // emulate missing _mm256_unpacklo_epi128/_mm256_unpackhi_epi128 instructions
-inline __m256i _mm256_unpacklo_epi128(__m256i const &a, __m256i const &b)
+inline __m256i _mm256_unpacklo_epi128(__m256i const & a, __m256i const & b)
 {
     return _mm256_permute2x128_si256(a, b, 0x20);
 //    return _mm256_inserti128_si256(a, _mm256_extracti128_si256(b, 0), 1);
 }
 
-inline __m256i _mm256_unpackhi_epi128(__m256i const &a, __m256i const &b)
+inline __m256i _mm256_unpackhi_epi128(__m256i const & a, __m256i const & b)
 {
     return _mm256_permute2x128_si256(a, b, 0x31);
 //    return _mm256_inserti128_si256(b, _mm256_extracti128_si256(a, 1), 0);
@@ -1330,7 +1330,7 @@ _transposeMatrix(TSimdVector matrix[], SimdMatrixParams_<32, 32, 8>)
 
 template <typename TSimdVector>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, int)
-inline _testAllZeros(TSimdVector const &vector, TSimdVector const &mask, SimdParams_<32>)
+inline _testAllZeros(TSimdVector const & vector, TSimdVector const & mask, SimdParams_<32>)
 {
     return _mm256_testz_si256(SEQAN_VECTOR_CAST_(const __m256i &, vector),
                               SEQAN_VECTOR_CAST_(const __m256i &, mask));
@@ -1341,7 +1341,7 @@ inline _testAllZeros(TSimdVector const &vector, TSimdVector const &mask, SimdPar
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline int _testAllOnes(TSimdVector const &vector, SimdParams_<32>)
+inline int _testAllOnes(TSimdVector const & vector, SimdParams_<32>)
 {
     __m256i vec = SEQAN_VECTOR_CAST_(const __m256i &, vector);
     return _mm256_testc_si256(vec, _mm256_cmpeq_epi32(vec, vec));
