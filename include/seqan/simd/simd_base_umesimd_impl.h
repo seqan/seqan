@@ -342,7 +342,7 @@ cmpEq (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator == (TSimdVector const & a, TSimdVector const & b)
+operator==(TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     TSimdVector retval(0);
@@ -370,7 +370,7 @@ cmpGt (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator > (TSimdVector const & a, TSimdVector const & b)
+operator>(TSimdVector const & a, TSimdVector const & b)
 {
     using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
     TSimdVector retval(0);
@@ -395,7 +395,7 @@ max(TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator | (TSimdVector const & a, TSimdVector const & b)
+operator|(TSimdVector const & a, TSimdVector const & b)
 {
     return a.bor(b);
 }
@@ -406,7 +406,7 @@ operator | (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator |= (TSimdVector & a, TSimdVector const & b)
+operator|=(TSimdVector & a, TSimdVector const & b)
 {
     return a.bora(b);
 }
@@ -417,7 +417,7 @@ operator |= (TSimdVector & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator & (TSimdVector const & a, TSimdVector const & b)
+operator&(TSimdVector const & a, TSimdVector const & b)
 {
     return a.band(b);
 }
@@ -428,7 +428,7 @@ operator & (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator &= (TSimdVector & a, TSimdVector const & b)
+operator&=(TSimdVector & a, TSimdVector const & b)
 {
     return a.banda(b);
 }
@@ -439,7 +439,7 @@ operator &= (TSimdVector & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator ~ (TSimdVector const & a)
+operator~(TSimdVector const & a)
 {
     return a.bnot();
 }
@@ -450,7 +450,7 @@ operator ~ (TSimdVector const & a)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator + (TSimdVector const & a, TSimdVector const & b)
+operator+(TSimdVector const & a, TSimdVector const & b)
 {
     return a.add(b);
 }
@@ -461,7 +461,7 @@ operator + (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator - (TSimdVector const & a, TSimdVector const & b)
+operator-(TSimdVector const & a, TSimdVector const & b)
 {
     return a.sub(b);
 }
@@ -472,7 +472,7 @@ operator - (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator * (TSimdVector const & a, TSimdVector const & b)
+operator*(TSimdVector const & a, TSimdVector const & b)
 {
     return a.mul(b);
 }
@@ -483,7 +483,7 @@ operator * (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-operator/ (TSimdVector const & a, TSimdVector const & b)
+operator/(TSimdVector const & a, TSimdVector const & b)
 {
     return a.div(b);
 }
