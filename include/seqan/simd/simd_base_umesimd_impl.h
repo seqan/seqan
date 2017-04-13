@@ -276,8 +276,7 @@ namespace SIMD
 {
     template <typename TStream,
               typename TVector, typename TScalar>
-    inline TStream &
-    operator<<(TStream & stream,
+    inline TStream & operator<<(TStream & stream,
                IntermediateIndex<TVector, TScalar> const & pInterIndex)
     {
         stream << static_cast<TScalar>(pInterIndex);
@@ -295,7 +294,7 @@ namespace seqan
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-clearVector(TSimdVector &vector)
+clearVector(TSimdVector & vector)
 {
     vector = 0;
 }
@@ -318,7 +317,7 @@ createVector(TValue x)
 
 template <typename TSimdVector, typename ...TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-fillVector(TSimdVector &vector, TValue const... args)
+fillVector(TSimdVector & vector, TValue const... args)
 {
     vector = TSimdVector(args...);
 }
@@ -407,7 +406,7 @@ operator | (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator |= (TSimdVector &a, TSimdVector const & b)
+operator |= (TSimdVector & a, TSimdVector const & b)
 {
     return a.bora(b);
 }
@@ -429,7 +428,7 @@ operator & (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator &= (TSimdVector &a, TSimdVector const & b)
+operator &= (TSimdVector & a, TSimdVector const & b)
 {
     return a.banda(b);
 }

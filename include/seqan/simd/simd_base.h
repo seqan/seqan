@@ -136,7 +136,7 @@ value(TSimdVector const & vector, TPosition const pos);
  */
 template <typename TSimdVector, typename TPosition, typename TValue2>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-assignValue(TSimdVector &vector, TPosition const pos, TValue2 const value);
+assignValue(TSimdVector & vector, TPosition const pos, TValue2 const value);
 
 template <int ROWS, typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
@@ -154,7 +154,7 @@ transpose(TSimdVector matrix[ROWS]);
  */
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-clearVector(TSimdVector &vector);
+clearVector(TSimdVector & vector);
 
 /**
  * ```
@@ -184,7 +184,7 @@ createVector(TValue x);
  */
 template <typename TSimdVector, typename ...TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-fillVector(TSimdVector &vector, TValue const... args);
+fillVector(TSimdVector & vector, TValue const... args);
 
 /**
  * ```
@@ -230,7 +230,7 @@ operator | (TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator |= (TSimdVector &a, TSimdVector const & b);
+operator |= (TSimdVector & a, TSimdVector const & b);
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
@@ -238,7 +238,7 @@ operator & (TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator &= (TSimdVector &a, TSimdVector const & b);
+operator &= (TSimdVector & a, TSimdVector const & b);
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)

@@ -73,7 +73,7 @@ transpose(TSimdVector matrix[ROWS])
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-clearVector(TSimdVector &vector)
+clearVector(TSimdVector & vector)
 {
     typedef typename Value<TSimdVector>::Type TValue;
     _clearVector(vector, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue)>());
@@ -97,7 +97,7 @@ createVector(TValue x)
 
 template <typename TSimdVector, typename ...TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, void)
-fillVector(TSimdVector &vector, TValue const... args)
+fillVector(TSimdVector & vector, TValue const... args)
 {
     // On clang (<= 4.0)
     // std::make_tuple(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17) reaches the
@@ -190,7 +190,7 @@ operator | (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator |= (TSimdVector &a, TSimdVector const & b)
+operator |= (TSimdVector & a, TSimdVector const & b)
 {
     a = a | b;
     return a;
@@ -214,7 +214,7 @@ operator & (TSimdVector const & a, TSimdVector const & b)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector &)
-operator &= (TSimdVector &a, TSimdVector const & b)
+operator &= (TSimdVector & a, TSimdVector const & b)
 {
     a = a & b;
     return a;
@@ -375,7 +375,7 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices)
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, std::ostream &)
-print(std::ostream &stream, TSimdVector const & vector)
+print(std::ostream & stream, TSimdVector const & vector)
 {
     stream << '<';
     for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)

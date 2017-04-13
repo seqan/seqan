@@ -74,7 +74,7 @@ namespace seqan {
 #define SEQAN_DEFINE_SIMD_VECTOR_GETVALUE_(TSimdVector)                                                 \
 template <typename TPosition>                                                                           \
 inline typename Value<TSimdVector>::Type                                                                \
-getValue(TSimdVector &vector, TPosition const pos)                                                      \
+getValue(TSimdVector & vector, TPosition const pos)                                                     \
 {                                                                                                       \
     return vector[pos];                                                                                 \
 }
@@ -82,7 +82,7 @@ getValue(TSimdVector &vector, TPosition const pos)                              
 #define SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                    \
 template <typename TPosition>                                                                           \
 inline typename Value<TSimdVector>::Type                                                                \
-value(TSimdVector &vector, TPosition const pos)                                                         \
+value(TSimdVector & vector, TPosition const pos)                                                        \
 {                                                                                                       \
     return getValue(vector, pos);                                                                       \
 }
@@ -90,7 +90,7 @@ value(TSimdVector &vector, TPosition const pos)                                 
 #define SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                              \
 template <typename TPosition, typename TValue2>                                                         \
 inline void                                                                                             \
-assignValue(TSimdVector &vector, TPosition const pos, TValue2 const value)                              \
+assignValue(TSimdVector & vector, TPosition const pos, TValue2 const value)                             \
 {                                                                                                       \
     vector[pos] = value;                                                                                \
 }
