@@ -168,7 +168,7 @@ clearVector(TSimdVector & vector);
  */
 template <typename TSimdVector, typename TValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-createVector(TValue x);
+createVector(TValue const x);
 
 /**
  * ```
@@ -309,7 +309,7 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices);
 // NOTE(rmaerker): Make this function available, also if SIMD is not enabled.
 template <typename TSimdVector, typename TValue>
 inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-createVector(TValue x)
+createVector(TValue const x)
 {
     return x;
 }
