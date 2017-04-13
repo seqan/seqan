@@ -110,7 +110,7 @@ public:
 
     inline void updateMasksBottom()
     {
-        for (auto posIt  = begin(sortedEndsV, Standard()); posIt != end(sortedEndsV, Standard()); ++posIt)
+        for (auto posIt = begin(sortedEndsV, Standard()); posIt != end(sortedEndsV, Standard()); ++posIt)
             for (auto it = nextEndsH; it != end(sortedEndsH, Standard()); ++it)
             {
                 masks[*posIt] |= (masksH[*it] & masksV[*posIt]);
@@ -244,7 +244,7 @@ _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
     dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
                                 static_cast<SimdVector<int32_t>::Type>(cmpLow));
     dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                static_cast<SimdVector<int32_t>::Type>(cmpHigh));
+                                 static_cast<SimdVector<int32_t>::Type>(cmpHigh));
 #elif defined(__AVX2__)
     dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
                                 _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp))));
@@ -463,4 +463,3 @@ _hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTrait
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SIMD_DP_SCOUT_SIMD_H_
-

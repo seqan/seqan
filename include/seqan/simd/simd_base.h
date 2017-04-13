@@ -51,10 +51,9 @@ struct Value<SimdVector<TValue, LENGTH> >
 };
 
 template <typename TValue, int LENGTH>
-struct Value<SimdVector<TValue, LENGTH> const>:
+struct Value<SimdVector<TValue, LENGTH> const> :
     public Value<SimdVector<TValue, LENGTH> >
-{
-};
+{};
 
 template <typename TValue, int LENGTH_>
 struct LENGTH<SimdVector<TValue, LENGTH_> >
@@ -63,10 +62,9 @@ struct LENGTH<SimdVector<TValue, LENGTH_> >
 };
 
 template <typename TValue, int LENGTH_>
-struct LENGTH<SimdVector<TValue, LENGTH_> const>:
+struct LENGTH<SimdVector<TValue, LENGTH_> const> :
     public LENGTH<SimdVector<TValue, LENGTH_> >
-{
-};
+{};
 
 // define a concept and its models
 // they allow us to define generic vector functions
@@ -99,8 +97,7 @@ struct SimdSwizzleVectorImpl;
  */
 template <typename TSimdVector>
 struct SimdSwizzleVector : SimdSwizzleVectorImpl<TSimdVector, typename Is<SimdVectorConcept<TSimdVector> >::Type >
-{
-};
+{};
 
 /**
  * ```
