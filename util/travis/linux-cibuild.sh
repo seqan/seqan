@@ -18,6 +18,9 @@ if [ "$(echo ${CXX} | cut -c1-5)" = "clang" ]; then
   export CXXFLAGS="${CXXFLAGS} -Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
+# Switch version check default to OFF to prevent checks during app tests
+CXXFLAGS="${CXXFLAGS} -DSEQAN_VERSION_CHECK_OPT_IN=YES"
+
 ctest -V -S util/travis/linux-cibuild.cmake
 
 # we indicate build failures if ctest experienced any errors

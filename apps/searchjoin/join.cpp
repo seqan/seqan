@@ -39,22 +39,19 @@
 // EDBT/ICDT ’13, March 18 – 22 2013, Genoa, Italy
 // ==========================================================================
 
-#ifdef _OPENMP
-    #define _GLIBCXX_PARALLEL
+#include <seqan/platform.h>
+
+#if defined(_OPENMP)
     #include <omp.h>
 
-    #if defined(__INTEL_COMPILER)
-        #pragma message("The Intel Compiler crashes with _GLIBCXX_PARALLEL defined (at least until v16.0.2). Therefore, the feature will be disabled.")
-        #if __INTEL_COMPILER < 1600 || (__INTEL_COMPILER == 1600 && __INTEL_COMPILER_UPDATE <= 2)
-            #undef _GLIBCXX_PARALLEL
-        #endif
-    #endif // #if defined(__INTEL_COMPILER)
-
+    #if defined(STDLIB_GNU)
+        #include <parallel/algorithm>
+    #endif
 #else
     #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
         #pragma message("OpenMP not found! Shared-memory parallelization will be disabled in join tool.")
     #endif  // #if !defined(SEQAN_IGNORE_MISSING_OPENMP) || (SEQAN_IGNORE_MISSING_OPENMP == 0)
-#endif
+#endif  // #ifdef _OPENMP
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
