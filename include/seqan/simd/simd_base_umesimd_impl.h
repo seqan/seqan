@@ -113,7 +113,8 @@ struct Value<UME::SIMD::SIMDSwizzle<LENGTH> >
 };
 
 template <uint32_t LENGTH_>
-struct LENGTH<UME::SIMD::SIMDSwizzle<LENGTH_> > {
+struct LENGTH<UME::SIMD::SIMDSwizzle<LENGTH_> >
+{
     enum { VALUE = LENGTH_ };
 };
 
@@ -128,7 +129,6 @@ template <uint32_t LENGTH, typename TPosition>
 inline typename Value<UME::SIMD::SIMDSwizzle<LENGTH> >::Type
 value(UME::SIMD::SIMDSwizzle<LENGTH> const & vector, TPosition const pos)
 {
-
     return vector[pos];
 }
 
