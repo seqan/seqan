@@ -332,16 +332,28 @@ inline TSimdVector _bitwiseNot(TSimdVector & a, SimdParams_<16, 2>)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 16>) { return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi8(a, _mm_set1_epi8(b))); }
+inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 16>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi8(a, _mm_set1_epi8(b)));
+}
 
 template <typename TSimdVector>
-inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 8>){ return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi16(a, _mm_set1_epi16(b))); }
+inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 8>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi16(a, _mm_set1_epi16(b)));
+}
 
 template <typename TSimdVector>
-inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 4>) { return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi32(a, _mm_set1_epi32(b))); }
+inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 4>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi32(a, _mm_set1_epi32(b)));
+}
 
 template <typename TSimdVector>
-inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 2>) { return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi64(a, _mm_set1_epi64x(b))); }
+inline TSimdVector _divide(TSimdVector & a, int b, SimdParams_<16, 2>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector, _mm_div_epi64(a, _mm_set1_epi64x(b)));
+}
 
 // --------------------------------------------------------------------------
 // _add (128bit)
