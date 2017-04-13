@@ -853,10 +853,11 @@ seqan_mm256_i64gather_epi(TValue const * memAddr,
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 32>)
+inline TSimdVector
+_gather(TValue const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 32>)
 {
     return SEQAN_VECTOR_CAST_(TSimdVector,
         seqan_mm256_i8gather_epi(
@@ -868,10 +869,11 @@ inline TSimdVector _gather(TValue const * memAddr,
 }
 
 template <typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(int8_t const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 16>)
+inline TSimdVector
+_gather(int8_t const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 16>)
 {
     // Note that memAddr is a signed integer type, thus a cast would extend the
     // sign. E.g., -3 = 253 in 8 bit, but would be 65533 in 16 bit.
@@ -889,10 +891,11 @@ inline TSimdVector _gather(int8_t const * memAddr,
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 16>)
+inline TSimdVector
+_gather(TValue const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 16>)
 {
     return SEQAN_VECTOR_CAST_(
         TSimdVector,
@@ -905,10 +908,11 @@ inline TSimdVector _gather(TValue const * memAddr,
 }
 
 template <typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(int8_t const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 8>)
+inline TSimdVector
+_gather(int8_t const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 8>)
 {
     // Note that memAddr is a signed integer type, thus a cast would extend the
     // sign.
@@ -925,10 +929,11 @@ inline TSimdVector _gather(int8_t const * memAddr,
 }
 
 template <typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(int16_t const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 8>)
+inline TSimdVector
+_gather(int16_t const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 8>)
 {
     // Note that memAddr is a signed integer type, thus a cast would extend the
     // sign.
@@ -945,10 +950,11 @@ inline TSimdVector _gather(int16_t const * memAddr,
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 8>)
+inline TSimdVector
+_gather(TValue const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 8>)
 {
     return SEQAN_VECTOR_CAST_(
         TSimdVector,
@@ -961,10 +967,11 @@ inline TSimdVector _gather(TValue const * memAddr,
 }
 
 template <typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(int8_t const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 4>)
+inline TSimdVector
+_gather(int8_t const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 4>)
 {
     return SEQAN_VECTOR_CAST_(
         TSimdVector,
@@ -979,10 +986,11 @@ inline TSimdVector _gather(int8_t const * memAddr,
 }
 
 template <typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(int16_t const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 4>)
+inline TSimdVector
+_gather(int16_t const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 4>)
 {
     return SEQAN_VECTOR_CAST_(
         TSimdVector,
@@ -997,10 +1005,11 @@ inline TSimdVector _gather(int16_t const * memAddr,
 }
 
 template <typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(int32_t const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 4>)
+inline TSimdVector
+_gather(int32_t const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 4>)
 {
     return SEQAN_VECTOR_CAST_(
         TSimdVector,
@@ -1015,10 +1024,11 @@ inline TSimdVector _gather(int32_t const * memAddr,
 }
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
-inline TSimdVector _gather(TValue const * memAddr,
-                           TSimdVector const & idx,
-                           std::integral_constant<TSize, SCALE> const & scale,
-                           SimdParams_<32, 4>)
+inline TSimdVector
+_gather(TValue const * memAddr,
+        TSimdVector const & idx,
+        std::integral_constant<TSize, SCALE> const & scale,
+        SimdParams_<32, 4>)
 {
     return SEQAN_VECTOR_CAST_(
         TSimdVector,
