@@ -119,6 +119,16 @@ else()
     set(SEQAN_SIMD_AVX512_CNL_OPTIONS "${SEQAN_SIMD_AVX512_SKX_OPTIONS}" -mavx512ifma -mavx512vbmi)
 endif()
 
+set(SEQAN_SIMD_AVX512_KNL_SOURCE
+"#include <cstdint>
+#include <immintrin.h>
+
+int main() {
+  alignas(64) int64_t a[]{0,1,2,3,4,5,6,7};
+  _mm512_mask_load_epi64(__m512i{}, 0, a);
+  return 0;
+}")
+
 macro(transfer_target_property property source_target target_target)
     get_target_property(_property_value ${source_target} ${property})
 
@@ -356,6 +366,16 @@ macro(add_simd_platform_tests target)
         #   violation or stack overflow. Please contact Intel Support for
         #   assistance.
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+    endif()
+
+    # This check is primarily for travis, which has an old linker
+    set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_KNL_OPTIONS}")
+    check_cxx_source_compiles("${SEQAN_SIMD_AVX512_KNL_SOURCE}" KNL_SOURCE_COMPILES)
+    unset(CMAKE_REQUIRED_FLAGS)
+    if (NOT KNL_SOURCE_COMPILES)
+        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
+        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
+        message(STATUS "Your compiler doesn't support avx512")
     endif()
 
     add_simd_executables("${target}" "${seqansimd_compile_blacklist}")
