@@ -200,12 +200,13 @@ struct FunctorTestAllZeros<String<bool, Packed<THostSpec> > >
     typedef String<bool, Packed<THostSpec> > TPackedString;
     typedef typename Host<TPackedString>::Type TPackedHost;
     typedef typename Value<TPackedHost>::Type TPackedHostValue;
+    typedef typename TPackedHostValue::TBitVector TBitVector;
     typedef typename Size<TPackedHostValue>::Type TSize;
 
     TSize _wastedBits;
 
     template <typename TShift>
-    FunctorTestAllZeros(TShift const & shift) : _wastedBits(shift)
+    FunctorTestAllZeros(TShift const & shift) : _wastedBits((shift == BitsPerValue<TBitVector>::VALUE) ? 0 : shift)
     {}
 
     template <typename TValue>
@@ -241,7 +242,7 @@ struct FunctorTestAllOnes<String<bool, Packed<THostSpec> > >
     TSize _wastedBits;
 
     template <typename TShift>
-    FunctorTestAllOnes(TShift const & shift) : _wastedBits(shift)
+    FunctorTestAllOnes(TShift const & shift) : _wastedBits((shift == BitsPerValue<TBitVector>::VALUE) ? 0 : shift)
     {}
 
     template <typename TValue>
@@ -1373,6 +1374,87 @@ reserve(
     return capacity(seq);
 }
 
+// ----------------------------------------------------------------------------
+// Function isEqual()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec>
+inline bool
+isEqual(String<TValue, Packed<THostSpec> > const & lhs,
+        String<TValue, Packed<THostSpec> > const & rhs)
+{
+    typedef String<TValue, Packed<THostSpec> > TPackedString;
+    typedef typename Host<TPackedString>::Type TPackedHost;
+    typedef typename Iterator<TPackedHost const, Standard>::Type TConstPackedHostIterator;
+    typedef PackedTraits_<TPackedString> TPackedTraits;
+    typedef typename TPackedTraits::THostValue THostValue;
+    typedef typename THostValue::TBitVector TBitVector;
+
+    static const TBitVector ACTIVE_BITS = ~static_cast<TBitVector>(0) >> TPackedTraits::WASTED_BITS;
+
+    if (empty(host(lhs)) || empty(host(rhs)))
+        return (empty(host(lhs)) && empty(host(rhs))) ? true : false;
+
+    TConstPackedHostIterator itLOperand = begin(host(lhs), Standard());
+    TConstPackedHostIterator itROperand = begin(host(rhs), Standard());
+    TConstPackedHostIterator itEndLOperand = end(host(lhs), Standard()) - 1;
+
+    if (*itLOperand != *itROperand)
+        return false;  // Lengths are not equal.
+
+    TBitVector maskE = ACTIVE_BITS & ~(ACTIVE_BITS >> (BitsPerValue<TValue>::VALUE * (length(lhs) % TPackedTraits::VALUES_PER_HOST_VALUE)));
+    while (++itLOperand != itEndLOperand && !((*itLOperand ^ *(++itROperand)) & ACTIVE_BITS))
+    {}
+
+    return (itLOperand != itEndLOperand) ? false : !((*itLOperand ^ *(++itROperand)) & maskE);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator==()
+// ----------------------------------------------------------------------------
+
+// Note the special implementation of the opertor== is needed to work around the
+// comparator stuff used when calling the string_base.h version of this operator.
+template <typename TValue, typename TSpec>
+inline bool operator==(String<TValue, Packed<TSpec> > const & lhs,
+                       String<TValue, Packed<TSpec> > const & rhs)
+{
+    return isEqual(lhs, rhs);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator!=()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+inline bool operator!=(String<TValue, Packed<TSpec> > const & lhs,
+                       String<TValue, Packed<TSpec> > const & rhs)
+{
+    return !isEqual(lhs, rhs);
+}
+
+// ----------------------------------------------------------------------------
+// Function open()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline bool open(String<TValue, Packed<THostspec> > & me, const char *fileName, int openMode)
+{
+    return open(host(me), fileName, openMode);
+}
+
+// ----------------------------------------------------------------------------
+// Function save()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostspec>
+inline bool save(String<TValue, Packed<THostspec> > const & me, const char *fileName, int openMode)
+{
+    // the visible part of the string is kept untouched and the function is thread-safe
+    _clearUnusedBits(const_cast<String<TValue, Packed<THostspec> > &>(me));
+    return save(host(me), fileName, openMode);
+}
+
 // ****************************************************************************
 // Functions for Packed String Iter
 // ****************************************************************************
@@ -1736,6 +1818,10 @@ operator-(Iter<TPackedString, Packed<THostspec> > const & iterLeft,
            (TDiff)iterLeft.localPos - (TDiff)iterRight.localPos;
 }
 
+// ****************************************************************************
+// Special functions for bit vector.
+// ****************************************************************************
+
 // ----------------------------------------------------------------------------
 // Function bitScanReverse()
 // ----------------------------------------------------------------------------
@@ -2010,28 +2096,6 @@ testAllOnes(String<bool, Packed<THostSpec> > const & obj)
 
     return _packedStringTestAll(obj, FunctorTestAllOnes<TPackedString>((TTraits::VALUES_PER_HOST_VALUE -
                                      (length(obj) % TTraits::VALUES_PER_HOST_VALUE))));
-}
-
-// ----------------------------------------------------------------------------
-// Function open()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename THostspec>
-inline bool open(String<TValue, Packed<THostspec> > & me, const char *fileName, int openMode)
-{
-    return open(host(me), fileName, openMode);
-}
-
-// ----------------------------------------------------------------------------
-// Function save()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename THostspec>
-inline bool save(String<TValue, Packed<THostspec> > const & me, const char *fileName, int openMode)
-{
-    // the visible part of the string is kept untouched and the function is thread-safe
-    _clearUnusedBits(const_cast<String<TValue, Packed<THostspec> > &>(me));
-    return save(host(me), fileName, openMode);
 }
 
 }  // namespace seqan
