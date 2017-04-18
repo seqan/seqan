@@ -123,7 +123,7 @@ public:
     template <typename THost_>
     explicit
     ModifiedString(THost_ & host,
-                   SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
+                   SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, typename RemoveReference<THost_>::Type>)) :
             _host(_toPointer(host)),
             _cargo()
     {
