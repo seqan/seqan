@@ -89,38 +89,27 @@ struct SimdAlignVariableLengthTraits
 // Function _createSimdRepImpl()
 // ----------------------------------------------------------------------------
 
-#define SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)    getValue(data[strPos + 1], chrPos), getValue(data[strPos], chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos + 2, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_2(data, strPos, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)    SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos + 4, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_4(data, strPos, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos + 8, chrPos),  SEQAN_CREATE_SIMD_REP_IMPL_8(data, strPos, chrPos)
-#define SEQAN_CREATE_SIMD_REP_IMPL_32(data, strPos, chrPos)   SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos + 16, chrPos), SEQAN_CREATE_SIMD_REP_IMPL_16(data, strPos, chrPos)
-
-#define SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(MACRO, data, chrPos) MACRO(data, 0, chrPos)
-#define SEQAN_CREATE_SIMD_REP_FILL_IMPL(data, chrPos, SIZE) SEQAN_CREATE_SIMD_REP_FILL_IMPL_2(SEQAN_CREATE_SIMD_REP_IMPL_##SIZE, data, chrPos)
-
-#define SEQAN_CREATE_SIMD_REP_IMPL(SIZE)                                                \
-template <typename TSimdVecs, typename TStrings>                                        \
-inline void _createSimdRepImpl(TSimdVecs & simdStr,                                     \
-                               TStrings const & strings,                                \
-                               VectorLength_<SIZE> const & /*size*/)                    \
-{                                                                                       \
-    auto itB = begin(simdStr, Standard());                                              \
-    auto itE = end(simdStr, Standard());                                                \
-    for (auto it = itB; it != itE; ++it)                                                \
-        fillVector(*it, SEQAN_CREATE_SIMD_REP_FILL_IMPL(strings, it - itB, SIZE));      \
+template <typename TSimdVecs,
+          typename TStrings,
+          size_t ...I>
+inline void
+_createSimdRepImpl(TSimdVecs & vecs,
+                   TStrings const & strs,
+                   std::index_sequence<I...> const & /*unsued*/)
+{
+    for (size_t pos = 0; pos < length(vecs); ++pos)
+        fillVector(vecs[pos], strs[I][pos]...);
 }
 
-SEQAN_CREATE_SIMD_REP_IMPL(2)
-SEQAN_CREATE_SIMD_REP_IMPL(4)
-SEQAN_CREATE_SIMD_REP_IMPL(8)
-SEQAN_CREATE_SIMD_REP_IMPL(16)
-SEQAN_CREATE_SIMD_REP_IMPL(32)
-
-template <typename TSimdVecs, typename TStrings>
-inline void _createSimdRepImpl(TSimdVecs & simdStr,
-                               TStrings const & strings)
+template <typename TSimdVecs,
+          typename TStrings>
+inline void
+_createSimdRepImpl(TSimdVecs & simdStr,
+                   TStrings const & strings)
 {
-    _createSimdRepImpl(simdStr, strings, VectorLength_<LENGTH<typename Value<TSimdVecs>::Type>::VALUE>());
+    using TSimdVec = typename Value<TSimdVecs>::Type;
+    constexpr auto length = LENGTH<TSimdVec>::VALUE;
+    _createSimdRepImpl(simdStr, strings, std::make_index_sequence<length>());
 }
 
 // Actually precompute value if scoring scheme is score matrix and simd version.
@@ -514,4 +503,3 @@ _alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSet
 
 }  // namespace seqan
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_
-

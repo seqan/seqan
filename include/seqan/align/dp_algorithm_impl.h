@@ -1374,8 +1374,10 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout)
 {
     _setToPosition(traceNavigator, maxHostPosition(dpScout));
-    TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
-    TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
+    TScoreValue flag = createVector<TScoreValue>(0);
+    assignValue(flag, dpScout._simdLane, ~static_cast<typename Value<TScoreValue>::Type>(0));
+    TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
+    TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
     value(traceNavigator) = blend(value(traceNavigator),
                                   value(traceNavigator) & ~TraceBitMap_<TScoreValue>::DIAGONAL,
                                   cmpV | cmpH);
@@ -1411,8 +1413,10 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout)
 {
     _setToPosition(traceNavigator, maxHostPosition(dpScout));
-    TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical());
-    TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal());
+    TScoreValue flag = createVector<TScoreValue>(0);
+    assignValue(flag, dpScout._simdLane, ~static_cast<typename Value<TScoreValue>::Type>(0));
+    TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical()) & flag;
+    TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal()) & flag;
     value(traceNavigator) = blend(value(traceNavigator),
                                   value(traceNavigator) & ~TraceBitMap_<TScoreValue>::DIAGONAL,
                                   cmpV | cmpH);

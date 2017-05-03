@@ -53,6 +53,7 @@
 #include <algorithm>
 
 #include <seqan/basic.h>
+#include <seqan/simd.h>
 #include <seqan/modifier.h>  // ModifiedAlphabet<>.
 #include <seqan/align/align_metafunctions.h>
 #include <seqan/graph_align.h>  // TODO(holtgrew): We should not have to depend on this.

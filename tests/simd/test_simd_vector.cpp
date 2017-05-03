@@ -30,26 +30,26 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+//         Marcel Ehrhardt <marcel.ehrhardt@fu-berlin.de>
 // ==========================================================================
 // Tests for SIMD vectors.
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include "test_basic_simd_vector.h"
+#include "test_simd_vector.h"
 
-SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
+SEQAN_BEGIN_TESTSUITE(test_simd_vector)
 {
-#ifdef SEQAN_SIMD_ENABLED
-#ifdef SEQAN_SSE4
-    SEQAN_CALL_TEST(test_basic_simd_shuffle);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
-#ifdef __AVX2__
-    SEQAN_CALL_TEST(test_basic_simd_shuffle_avx);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_32x32);
-#endif  // #ifdef __AVX2__
-#endif  // #ifdef SEQAN_SSE4
-#endif
+#if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__SSE4_1__)
+    SEQAN_CALL_TEST(test_simd_transpose_8x8);
+    SEQAN_CALL_TEST(test_simd_transpose_16x16);
+    SEQAN_CALL_TEST(test_simd_types);
+#endif  // defined(SEQAN_SEQANSIMD_ENABLED) && defined(__SSE4_1__)
+
+#if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX2__)
+    SEQAN_CALL_TEST(test_simd_transpose_32x32);
+#endif  // defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX2__)
+
+    return seqan::TestSystem::runAll();
 }
 SEQAN_END_TESTSUITE
-
