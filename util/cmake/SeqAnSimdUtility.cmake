@@ -378,6 +378,13 @@ macro(add_simd_platform_tests target)
         message(STATUS "Your compiler doesn't support avx512")
     endif()
 
+    # don't use simd on 32bit architectures at all
+    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+        set(umesimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+        message(STATUS "SIMD acceleration is only available on 64bit systems")
+    endif()
+
     add_simd_executables("${target}" "${seqansimd_compile_blacklist}")
     add_simd_tests("${target}" "${seqansimd_test_blacklist}")
 

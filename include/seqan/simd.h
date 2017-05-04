@@ -60,6 +60,16 @@
     #undef SEQAN_UMESIMD_ENABLED
 #endif
 
+// SIMD operations make only sense on modern 64bit architectures.
+#if SEQAN_IS_32_BIT
+    #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
+    #pragma message("SIMD acceleration is only available on 64bit systems")
+    #endif
+    #undef SEQAN_SIMD_ENABLED
+    #undef SEQAN_SEQANSIMD_ENABLED
+    #undef SEQAN_UMESIMD_ENABLED
+#endif
+
 // Fallback to seqan's simd implementation if nothing was specified.
 #if defined(SEQAN_SIMD_ENABLED) && !defined(SEQAN_UMESIMD_ENABLED) && !defined(SEQAN_SEQANSIMD_ENABLED)
     #define SEQAN_SEQANSIMD_ENABLED
