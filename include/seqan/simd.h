@@ -87,8 +87,10 @@
 
 // Define maximal size of vector in byte.
 #if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
+    #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
     #pragma message("SEQAN_SIMD doesn't support AVX512, thus falling back to AVX2 " \
                     "(we are using some back ported instruction for AVX2 which where introduced since AVX512)")
+    #endif
     #define SEQAN_SIZEOF_MAX_VECTOR 32
 #elif defined(__AVX512F__)
     #define SEQAN_SIZEOF_MAX_VECTOR 64
