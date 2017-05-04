@@ -306,6 +306,14 @@ macro(add_simd_platform_tests target)
         set(umesimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
         set(seqansimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
 
+        ## seqan-simd:
+        # avx2: clang 3.7.x fails test cases:
+        #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed char __vector(32) FAILED
+        #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed short __vector(16) FAILED
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.8)
+            set(seqansimd_compile_blacklist "avx2;${seqansimd_compile_blacklist}")
+        endif()
+
         if (STDLIB_VS)
             ## ume-simd:
             # avx2: Also, it can't handle avx2 on windows, because some
