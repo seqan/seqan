@@ -398,6 +398,13 @@ macro(add_simd_platform_tests target)
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
+    if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
+        # Disable avx2 on travis, because sometimes gcc 5.x and 6.x crashes
+        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx2")
+        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx2")
+        message(STATUS "Disabling avx2 on travis, because gcc<=6.x crashes occasionally")
+    endif()
+
     # This checks if a simple avx2 program builds
     set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX2_OPTIONS}")
     check_cxx_source_compiles("${SEQAN_SIMD_AVX2_SOURCE}" AVX2_SOURCE_COMPILES)
