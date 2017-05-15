@@ -119,6 +119,14 @@ else()
     set(SEQAN_SIMD_AVX512_CNL_OPTIONS "${SEQAN_SIMD_AVX512_SKX_OPTIONS}" -mavx512ifma -mavx512vbmi)
 endif()
 
+set(SEQAN_SIMD_AVX2_SOURCE
+"#include <immintrin.h>
+
+int main() {
+  _mm256_add_epi32(__m256i{}, __m256i{});
+  return 0;
+}")
+
 set(SEQAN_SIMD_AVX512_KNL_SOURCE
 "#include <cstdint>
 #include <immintrin.h>
@@ -390,6 +398,16 @@ macro(add_simd_platform_tests target)
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
+    # This checks if a simple avx2 program builds
+    set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX2_OPTIONS}")
+    check_cxx_source_compiles("${SEQAN_SIMD_AVX2_SOURCE}" AVX2_SOURCE_COMPILES)
+    unset(CMAKE_REQUIRED_FLAGS)
+    if (NOT AVX2_SOURCE_COMPILES)
+        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx2")
+        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx2")
+        message(STATUS "Your compiler/linker doesn't support avx2")
+    endif()
+
     # This check is primarily for travis, which has an old linker
     set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_KNL_OPTIONS}")
     check_cxx_source_compiles("${SEQAN_SIMD_AVX512_KNL_SOURCE}" KNL_SOURCE_COMPILES)
@@ -397,7 +415,7 @@ macro(add_simd_platform_tests target)
     if (NOT KNL_SOURCE_COMPILES)
         set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
         set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
-        message(STATUS "Your compiler doesn't support avx512")
+        message(STATUS "Your compiler/linker doesn't support avx512")
     endif()
 
     # don't use simd on 32bit architectures at all
