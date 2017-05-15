@@ -88,6 +88,7 @@
 #         (e.g. sse4, avx2, avx512_knl, avx512_skx, avx512_cnl)
 #
 
+find_package (SeqAn CONFIG REQUIRED)
 find_package (SDE)
 find_package (Umesimd)
 
