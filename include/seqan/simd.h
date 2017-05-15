@@ -60,6 +60,17 @@
     #undef SEQAN_UMESIMD_ENABLED
 #endif
 
+// SIMD operations make only sense on modern 64bit architectures.
+#if SEQAN_IS_32_BIT
+    // TODO(marehr): If we switch to jenkins, filter out these warnings
+    #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
+        #pragma message("SIMD acceleration is only available on 64bit systems")
+    #endif
+    #undef SEQAN_SIMD_ENABLED
+    #undef SEQAN_SEQANSIMD_ENABLED
+    #undef SEQAN_UMESIMD_ENABLED
+#endif // SEQAN_IS_32_BIT
+
 // Fallback to seqan's simd implementation if nothing was specified.
 #if defined(SEQAN_SIMD_ENABLED) && !defined(SEQAN_UMESIMD_ENABLED) && !defined(SEQAN_SEQANSIMD_ENABLED)
     #define SEQAN_SEQANSIMD_ENABLED
@@ -77,8 +88,11 @@
 
 // Define maximal size of vector in byte.
 #if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
-    #pragma message("SEQAN_SIMD doesn't support AVX512, thus falling back to AVX2 " \
-                    "(we are using some back ported instruction for AVX2 which where introduced since AVX512)")
+    // TODO(marehr): If we switch to jenkins, filter out these warnings
+    #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
+        #pragma message("SEQAN_SIMD doesn't support AVX512, thus falling back to AVX2 " \
+                        "(we are using some back ported instruction for AVX2 which where introduced since AVX512)")
+    #endif
     #define SEQAN_SIZEOF_MAX_VECTOR 32
 #elif defined(__AVX512F__)
     #define SEQAN_SIZEOF_MAX_VECTOR 64

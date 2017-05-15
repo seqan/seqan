@@ -268,7 +268,7 @@ macro (seqan_build_system_init)
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2 -xHOST")
         endif ()
     elseif (SEQAN_ARCH_SSE4)
-        include (SeqanSimdUtility)
+        include (SeqAnSimdUtility)
 
         if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mpopcnt")

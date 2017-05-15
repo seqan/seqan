@@ -88,6 +88,7 @@
 #         (e.g. sse4, avx2, avx512_knl, avx512_skx, avx512_cnl)
 #
 
+find_package (SeqAn CONFIG REQUIRED)
 find_package (SDE)
 find_package (Umesimd)
 
@@ -118,6 +119,14 @@ else()
     set(SEQAN_SIMD_AVX512_SKX_OPTIONS -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl)
     set(SEQAN_SIMD_AVX512_CNL_OPTIONS "${SEQAN_SIMD_AVX512_SKX_OPTIONS}" -mavx512ifma -mavx512vbmi)
 endif()
+
+set(SEQAN_SIMD_AVX2_SOURCE
+"#include <immintrin.h>
+
+int main() {
+  _mm256_add_epi32(__m256i{}, __m256i{});
+  return 0;
+}")
 
 set(SEQAN_SIMD_AVX512_KNL_SOURCE
 "#include <cstdint>
@@ -264,6 +273,20 @@ macro(add_simd_platform_tests target)
         set(seqansimd_compile_blacklist "avx2;avx512_knl;avx512_skx;avx512_cnl")
     endif()
 
+    if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0.1)
+            message(STATUS "Clang 4.0.0 crashes for AVX512_skx (seqan-simd only), see https://llvm.org/bugs/show_bug.cgi?id=31731")
+            set(umesimd_compile_blacklist "")
+            set(seqansimd_compile_blacklist "avx512_skx;avx512_cnl")
+        endif()
+
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.0.0)
+            message(AUTHOR_WARNING "Clang >=4.0.1 reevaluate if AVX512_skx (seqan-simd only) binaries are working.")
+            set(umesimd_compile_blacklist "")
+            set(seqansimd_compile_blacklist "")
+        endif()
+    endif()
+
     # Build the executables, but don't execute them, because clang <= 3.9.x
     # produces executables which contain invalid instructions for AVX512.
     if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
@@ -305,6 +328,14 @@ macro(add_simd_platform_tests target)
         #             it also for 3.7.x and 3.8.x, where avx512_knl works
         set(umesimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
         set(seqansimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
+
+        ## seqan-simd:
+        # avx2: clang 3.7.x fails test cases:
+        #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed char __vector(32) FAILED
+        #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed short __vector(16) FAILED
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.8))
+            set(seqansimd_compile_blacklist "avx2;${seqansimd_compile_blacklist}")
+        endif()
 
         if (STDLIB_VS)
             ## ume-simd:
@@ -368,6 +399,23 @@ macro(add_simd_platform_tests target)
         set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
+    if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
+        # Disable avx2 on travis, because sometimes gcc 5.x and 6.x crashes
+        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx2")
+        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx2")
+        message(STATUS "Disabling avx2 on travis, because gcc<=6.x crashes occasionally")
+    endif()
+
+    # This checks if a simple avx2 program builds
+    set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX2_OPTIONS}")
+    check_cxx_source_compiles("${SEQAN_SIMD_AVX2_SOURCE}" AVX2_SOURCE_COMPILES)
+    unset(CMAKE_REQUIRED_FLAGS)
+    if (NOT AVX2_SOURCE_COMPILES)
+        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx2")
+        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx2")
+        message(STATUS "Your compiler/linker doesn't support avx2")
+    endif()
+
     # This check is primarily for travis, which has an old linker
     set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_KNL_OPTIONS}")
     check_cxx_source_compiles("${SEQAN_SIMD_AVX512_KNL_SOURCE}" KNL_SOURCE_COMPILES)
@@ -375,7 +423,14 @@ macro(add_simd_platform_tests target)
     if (NOT KNL_SOURCE_COMPILES)
         set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
         set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
-        message(STATUS "Your compiler doesn't support avx512")
+        message(STATUS "Your compiler/linker doesn't support avx512")
+    endif()
+
+    # don't use simd on 32bit architectures at all
+    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+        set(umesimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+        message(STATUS "SIMD acceleration is only available on 64bit systems")
     endif()
 
     add_simd_executables("${target}" "${seqansimd_compile_blacklist}")

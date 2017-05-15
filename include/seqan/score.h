@@ -38,6 +38,7 @@
 #define SEQAN_SH_
 
 #include <seqan/basic.h>
+#include <seqan/simd.h>
 
 #include <seqan/stream.h>
 
