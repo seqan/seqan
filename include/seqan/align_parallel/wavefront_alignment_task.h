@@ -89,7 +89,7 @@ struct WavefrontAlignmentTaskConfig
     using TAlignEvent       = WavefrontAlignmentTaskEvent;
 };
 
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 template <typename TDPSettings>
 struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TDPSettings>
 {
@@ -259,7 +259,7 @@ public:
     TSeqV const &       mSeqV;
     TDPSettings const & mDPSettings;
     size_t              mBlockSize;
-    
+
     // ----------------------------------------------------------------------------
     // Constructors.
     // ----------------------------------------------------------------------------
@@ -342,13 +342,13 @@ public:
             // spawn(task) -> adds task* to the internal queue.
             // wait_for_all() clause to wait for finishing execution.
             // unlock writers and join threads. -> leave no threads dangling around. -> all tasks need to be computed.
-        
+
             // tbb -> create task_group
             // spawn(first task of tg)
             // tg.run(with task->execution method)
             // tg.wait()  // barrier.
             // execute last task graph
-        
+
             // omp -> more difficult to model.
             // global prallel section
             // master part triggers execution with queue.

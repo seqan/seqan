@@ -44,6 +44,8 @@ SEQAN_BEGIN_TESTSUITE(test_align_parallel_algorithm)
 
     SEQAN_CALL_TEST(test_align_parallel_wavefront_single_global_alignment);
     SEQAN_CALL_TEST(test_align_parallel_wavefront_multiple_global_alignment);
+#ifdef SEQAN_SIMD_ENABLED
     SEQAN_CALL_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd);
+#endif
 }
 SEQAN_END_TESTSUITE

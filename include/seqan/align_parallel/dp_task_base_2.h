@@ -291,7 +291,7 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
                   row(task));
     }
 
-    
+
     // DEBUG: Remove!
 //        _taskContext.getDebugBuffer().matrix[_col][_row] = {bufHBegin, bufVBegin,
 //                                                            _taskContext.getTileBuffer().horizontalBuffer[_col],
@@ -327,7 +327,7 @@ printSimdBuffer(TBuffer const & buffer, size_t const l)
     }
 }
 
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 template <typename TTasks, typename TDPLocalData>
 inline void
 executeSimd(TTasks & tasks, TDPLocalData & dpLocal)

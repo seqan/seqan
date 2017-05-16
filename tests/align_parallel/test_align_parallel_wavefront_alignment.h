@@ -150,6 +150,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
     }
 }
 
+#ifdef SEQAN_SIMD_ENABLED
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
 {
     using namespace seqan;
@@ -201,3 +202,4 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
         SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.mScoringScheme, AlignConfig<false, false, false, false>()), alignScores[i]);
     }
 }
+#endif
