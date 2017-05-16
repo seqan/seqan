@@ -37,7 +37,7 @@
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -76,7 +76,7 @@ struct DPSettings
     {}
 };
 
-#if SEQAN_SIMD_ENABLED == 1
+#ifdef SEQAN_SIMD_ENABLED
 // Aggregate type.
 template <typename TDPSettings>
 struct SimdDPSettings : public TDPSettings
@@ -99,7 +99,7 @@ struct SimdDPSettings : public TDPSettings
     // Constructor.
 
     SimdDPSettings() = default;
-    
+
     explicit SimdDPSettings(TScoringScheme score) :
         TDPSettings(std::move(score)),
         mSimdScoringScheme(score)
@@ -113,7 +113,7 @@ struct SimdDPSettings : public TDPSettings
 // ============================================================================
 // Functions
 // ============================================================================
-    
+
 }  // namespace seqan
 
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_BASE_CONFIG_H_

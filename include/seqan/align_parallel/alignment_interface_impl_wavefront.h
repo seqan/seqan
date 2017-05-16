@@ -105,7 +105,7 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, Serial> const & execPo
     wait(alignScheduler);
 }
 
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 template <typename TSpec,
           typename TSetH,
           typename TSetV,
@@ -161,7 +161,7 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, Vectorial> const & exe
     notify(alignScheduler);
     wait2(alignScheduler, simdTaskQueue);
 }
-#endif 
+#endif
 }  // namespace impl
 }  // namespace seqan
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGNMENT_IMPL_WAVEFRONT_H_

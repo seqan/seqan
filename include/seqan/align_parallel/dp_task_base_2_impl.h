@@ -158,7 +158,7 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
                               scoringScheme, TDPProfile());
 }
 
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 template <typename TTasks,
           typename TTaskTraits>
 inline auto

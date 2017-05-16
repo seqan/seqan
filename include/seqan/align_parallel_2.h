@@ -60,7 +60,7 @@
 // ============================================================================
 
 #include <seqan/basic.h>
-#include <seqan/basic/basic_simd_vector.h>
+#include <seqan/simd.h>
 #include <seqan/align.h>
 #include <seqan/parallel.h>
 
@@ -101,7 +101,7 @@
 // ============================================================================
 
 #include <seqan/align_parallel/dp_parallel_scout.h>
-#if SEQAN_SIMD_ENABLED
+#ifdef SEQAN_SIMD_ENABLED
 #include <seqan/align_parallel/dp_parallel_scout_simd.h>
 #endif
 #include <seqan/align_parallel/wavefront_alignment_task_event.h>
