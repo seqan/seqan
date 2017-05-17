@@ -160,25 +160,48 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
 
 #ifdef SEQAN_SIMD_ENABLED
 template <typename TTasks,
-          typename TTaskTraits>
+          typename TScoreValueScalar,
+          typename TScoreValueSimd>
 inline auto
-computeOffset(TTasks const &tasks, TTaskTraits const & /*traits*/)
+doComputeOffset(TTasks const &tasks,
+                TScoreValueScalar const & /*scalarScore*/,
+                TScoreValueSimd const & /*simdScore*/)
 {
-    using TDPSettings = typename TTaskTraits::TDPSettings;
-    using TScoreValue       = typename Value<typename TDPSettings::TScoringScheme>::Type;
-    String<TScoreValue> offset;
-    resize(offset, length(tasks), minValue<TScoreValue>(), Exact());
+    String<TScoreValueScalar> offset;
+    resize(offset, length(tasks), minValue<TScoreValueScalar>(), Exact());
+
     size_t pos = 0;
     for(auto task : tasks)
     {
             offset[pos] = front(context(*task).mTileBuffer.horizontalBuffer[column(*task)]).i1._score;
-//            for (auto const & val : buf)
-//            {
-//                offset[pos] = _max(offset[pos], _max(val.i1._score, _max(val.i1._horizontalScore, val.i1._horizontalScore)));
-//            }
         ++pos;
     }
     return offset;
+}
+
+template <typename TTasks,
+          typename TScoreValue>
+inline auto
+doComputeOffset(TTasks const &tasks,
+                TScoreValue const & /*scalarScore*/,
+                TScoreValue const & /*simdScore*/)
+{
+    String<TScoreValue> offset;
+    resize(offset, length(tasks), 0, Exact());
+    return offset;
+}
+
+template <typename TTasks,
+          typename TTaskTraits>
+inline auto
+computeOffset(TTasks const &tasks, TTaskTraits const & /*traits*/)
+{
+    using TDPSettings       = typename TTaskTraits::TDPSettings;
+    using TScoreValueScalar = typename Value<typename TDPSettings::TScoringScheme>::Type;
+    using TScoreValueSimd   = typename Value<typename TDPSettings::TSimdScoringScheme>::Type;
+    using TDPSimdValue      = typename Value<TScoreValueSimd>::Type;
+
+    return doComputeOffset(tasks, TScoreValueScalar{}, TDPSimdValue{});
 }
 
 template <typename TDPCell, typename TTrace,

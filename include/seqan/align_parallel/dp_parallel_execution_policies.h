@@ -47,6 +47,9 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+struct BlockOffsetOptimization_;
+using BlockOffsetOptimization = Tag<BlockOffsetOptimization_>;
+
 template <typename TSpec = void>
 struct WavefrontAlignment;
 

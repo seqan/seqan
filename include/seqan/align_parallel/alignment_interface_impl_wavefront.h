@@ -122,7 +122,11 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, Vectorial> const & exe
     using TSeqV = typename Value<TSetV const>::Type;
 
     // Translate dp settings into simd settings.
-    using TSimdSettings = SimdDPSettings<TSettings>;
+    using TSimdSettings = SimdDPSettings<TSettings,
+                                         std::conditional_t<std::is_same<TSpec, BlockOffsetOptimization>::value,
+                                                            True,
+                                                            False>
+                                        >;
     TSimdSettings simdSettings{settings.mScoringScheme};
 
     // Initialize instance of alignment scheduler.
