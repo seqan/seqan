@@ -78,7 +78,7 @@ struct DPSettings
 
 #ifdef SEQAN_SIMD_ENABLED
 // Aggregate type.
-template <typename TDPSettings>
+template <typename TDPSettings, typename TOffsetSpec = False>
 struct SimdDPSettings : public TDPSettings
 {
     //-------------------------------------------------------------------------
@@ -87,7 +87,7 @@ struct SimdDPSettings : public TDPSettings
     using TTraits = typename TDPSettings::TTraits;
     using TScoringScheme = typename TDPSettings::TScoringScheme;
     using TScoreValue = typename Value<TScoringScheme>::Type;
-    using TScoreValueSimd = typename SimdVector<int16_t>::Type;
+    using TScoreValueSimd = typename SimdVector<std::conditional_t<TOffsetSpec::VALUE, int16_t, TScoreValue>>::Type;
     using TSimdScoringScheme = Score<TScoreValueSimd, ScoreSimdWrapper<TScoringScheme>>;
 
     //-------------------------------------------------------------------------
