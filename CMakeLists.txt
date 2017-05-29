@@ -180,3 +180,12 @@ include (package)
 # ===========================================================================
 
 include (SeqAnCtdSetup)
+
+# ===========================================================================
+# Install pkg-config file on Unix-like systems
+# ===========================================================================
+
+if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
+	configure_file("pkg-config/seqan-2.pc.in" "pkg-config/seqan-2.pc" @ONLY)
+	install(FILES "${CMAKE_BINARY_DIR}/pkg-config/seqan-2.pc" DESTINATION "${CMAKE_INSTALL_PREFIX}/share/pkgconfig")
+endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
