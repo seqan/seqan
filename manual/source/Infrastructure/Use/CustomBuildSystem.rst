@@ -211,6 +211,21 @@ meaning
 usage
  add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHECK`` 
 
+SEQAN_BGZF_NUM_THREADS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+possible value
+ positive integer
+
+default
+ 16
+
+meaning
+ Number of threads to use for BGZF I/O.
+
+usage
+ add compiler flag: ``-DSEQAN_BGZF_NUM_THREADS=value`` 
+
 Settings Projects Using Seqan
 -----------------------------
 
