@@ -112,7 +112,7 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
-    
+
     //TODO(rrahn): implement the assignment operator.
 };
 
@@ -165,8 +165,7 @@ template <typename TValue, typename TScore, typename TVal1, typename TVal2>
 inline SEQAN_FUNC_ENABLE_IF(IsScoreMatrix_<TScore>, TValue)
 score(Score<TValue, ScoreSimdWrapper<TScore> > const & sc, TVal1 const & val1, TVal2 const & val2)
 {
-    SEQAN_ASSERT(sc._baseScorePtr != nullptr);
-    return gather(&sc._baseScorePtr->data_tab[0], val1 + val2);
+    return gather(&sc._baseScore.data_tab[0], val1 + val2);
 }
 
 }
