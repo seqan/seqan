@@ -12,9 +12,11 @@ message (STATUS "Configuring tests/align")
 
 set (ALIGN_SIMD_TEST TRUE CACHE INTERNAL "Whether to build test_align_simd.")
 # workaround a bug in llvm35 on FreeBSD
-if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
+if (((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
     (COMPILER_CLANG) AND
-    (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
+    (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0)) OR
+    ((COMPILER_GCC) AND
+    (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)))
     set (ALIGN_SIMD_TEST FALSE CACHE INTERNAL "Whether to build test_align_simd.")
 endif ()
 
@@ -72,6 +74,8 @@ if (ALIGN_SIMD_TEST)
 
     # Add dependencies found by find_package (SeqAn).
     target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})
+else()
+    message (STATUS "   * Not building align_simd_test")
 endif()
 
 # Add CXX flags found by find_package (SeqAn).
