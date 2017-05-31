@@ -87,7 +87,10 @@ struct SimdDPSettings : public TDPSettings
     using TTraits = typename TDPSettings::TTraits;
     using TScoringScheme = typename TDPSettings::TScoringScheme;
     using TScoreValue = typename Value<TScoringScheme>::Type;
-    using TScoreValueSimd = typename SimdVector<std::conditional_t<TOffsetSpec::VALUE, int16_t, TScoreValue>>::Type;
+    using TScoreValueSimd = typename SimdVector<
+                                        std::conditional_t<std::is_same<TOffsetSpec, BlockOffsetOptimization>::value,
+                                                           int16_t,
+                                                           TScoreValue>>::Type;
     using TSimdScoringScheme = Score<TScoreValueSimd, ScoreSimdWrapper<TScoringScheme>>;
 
     //-------------------------------------------------------------------------

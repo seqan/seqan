@@ -92,7 +92,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontSimdDPTasks<TValue, VECTOR_SIZE>>
     execute(TResource & resource, TWavefrontExecutor & wavefrontExec)
     {
         using TWaveTaskExec = WavefrontTaskExecutor<TResource, TWavefrontExecutor>;
-        
+
         typename TResource::ResultType tasks;
         if (!tryPopTasks(tasks, resource))
             return;
