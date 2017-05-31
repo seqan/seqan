@@ -74,7 +74,6 @@ public:
 
     std::atomic<bool>               _mIsValid{true};
 
-
     std::function<void()> job = [this]()
     {
         for (;;)
@@ -165,7 +164,7 @@ public:
             lockWriting(_mTaskScheduler);
         waitForWriters(_mTaskScheduler);  // Invoke task scheduler.
     }
-    
+
     // Default constructor.
     WavefrontAlignmentScheduler() : WavefrontAlignmentScheduler(16, 8)
     {}
@@ -173,7 +172,6 @@ public:
     // Copy & Move C'tor
     WavefrontAlignmentScheduler(WavefrontAlignmentScheduler const &)              = delete;
     WavefrontAlignmentScheduler(WavefrontAlignmentScheduler &&)                   = delete;
-
 
     ///-------------------------------------------------------------------------
     // Destructor.

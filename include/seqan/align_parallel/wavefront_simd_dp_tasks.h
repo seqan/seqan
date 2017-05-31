@@ -66,6 +66,7 @@ public:
     TQueue      mQueue;
     std::mutex  mMutexPopQueue;
     bool        mHasNotified{false};
+
     //-------------------------------------------------------------------------
     // Constructors.
 

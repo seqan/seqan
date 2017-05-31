@@ -317,8 +317,7 @@ public:
         context(*taskGraph.back().back()).mEventPtr = &event;
 
         // Kick off the execution.
-        using TWavefrontTaskExec = WavefrontTaskExecutor<typename std::decay<decltype(*taskGraph[0][0])>::type,
-                                                         TWavefrontExecutor>;
+        using TWavefrontTaskExec = WavefrontTaskExecutor<std::decay_t<decltype(*taskGraph[0][0])>, TWavefrontExecutor>;
         spawn(executor, TWavefrontTaskExec{taskGraph[0][0].get(), &executor});
 
         // Wait for alignment to finish.
