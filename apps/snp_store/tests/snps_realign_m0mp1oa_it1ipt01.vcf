@@ -1,15 +1,27 @@
-#snp_store human-chr22-inf2.fa human-reads2.sam -it 1 -ipt 0.1 -osc -re -oa -hq -o snps_realign_m0mp1oa_it1ipt01.vcf -id indels_realign_m0mp1oa_it1ipt01.gff 
-#chr	pos	ref	[A+]	[C+]	[G+]	[T+]	[A-]	[C-]	[G-]	[T-]	cov	call	quality	snpQ
-22	1710	T	1	11	0	1	0	22	0	0	35	C	94	237
-22	1854	G	0	16	0	0	0	17	0	0	33	C	126	292
-22	2300	T	0	0	13	1	0	0	18	1	33	G	79	268
-22	2925	G	27	1	0	0	26	0	0	0	54	A	168	306
-22	2966	T	1	25	0	1	0	26	0	0	53	C	150	296
-22	3588	A	0	14	0	1	0	22	0	0	37	C	103	280
-22	5630	C	19	0	0	0	5	2	0	0	26	A	69	225
-22	6370	A	0	0	14	0	0	0	9	1	24	G	71	248
-22	6642	C	21	0	0	0	10	0	0	0	31	A	120	278
-22	7136	T	0	12	0	0	0	21	0	1	34	C	110	278
-22	7276	C	0	0	0	16	0	0	0	18	34	T	129	307
-22	7979	A	0	0	11	0	0	0	19	0	30	G	117	255
-22	9768	T	0	4	0	0	0	12	0	0	16	C	75	209
+##fileformat=VCFv4.2
+##fileDate=20160603
+##source=Seqan-SnpStoreV1.3.3
+##reference=../../../apps/snp_store/tests/human-chr22-inf2.fa
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth">
+##INFO=<ID=A+,Number=1,Type=Integer,Description="Number of base 'A' observations on forward strand">
+##INFO=<ID=C+,Number=1,Type=Integer,Description="Number of base 'C' observations on forward strand">
+##INFO=<ID=G+,Number=1,Type=Integer,Description="Number of base 'G' observations on forward strand">
+##INFO=<ID=T+,Number=1,Type=Integer,Description="Number of base 'T' observations on forward strand">
+##INFO=<ID=A-,Number=1,Type=Integer,Description="Number of base 'A' observations on reverse strand">
+##INFO=<ID=C-,Number=1,Type=Integer,Description="Number of base 'C' observations on reverse strand">
+##INFO=<ID=G-,Number=1,Type=Integer,Description="Number of base 'G' observations on reverse strand">
+##INFO=<ID=T-,Number=1,Type=Integer,Description="Number of base 'T' observations on reverse strand">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT
+22	1710	.	T	C	237	.	DP=35;A+=1;C+=11;G+=0;T+=1;A-=0;C-=22;G-=0;T-=0	
+22	1854	.	G	C	292	.	DP=33;A+=0;C+=16;G+=0;T+=0;A-=0;C-=17;G-=0;T-=0	
+22	2300	.	T	G	268	.	DP=33;A+=0;C+=0;G+=13;T+=1;A-=0;C-=0;G-=18;T-=1	
+22	2925	.	G	A	306	.	DP=54;A+=27;C+=1;G+=0;T+=0;A-=26;C-=0;G-=0;T-=0	
+22	2966	.	T	C	296	.	DP=53;A+=1;C+=25;G+=0;T+=1;A-=0;C-=26;G-=0;T-=0	
+22	3588	.	A	C	280	.	DP=37;A+=0;C+=14;G+=0;T+=1;A-=0;C-=22;G-=0;T-=0	
+22	5630	.	C	A	225	.	DP=26;A+=19;C+=0;G+=0;T+=0;A-=5;C-=2;G-=0;T-=0	
+22	6370	.	A	G	248	.	DP=24;A+=0;C+=0;G+=14;T+=0;A-=0;C-=0;G-=9;T-=1	
+22	6642	.	C	A	278	.	DP=31;A+=21;C+=0;G+=0;T+=0;A-=10;C-=0;G-=0;T-=0	
+22	7136	.	T	C	278	.	DP=34;A+=0;C+=12;G+=0;T+=0;A-=0;C-=21;G-=0;T-=1	
+22	7276	.	C	T	307	.	DP=34;A+=0;C+=0;G+=0;T+=16;A-=0;C-=0;G-=0;T-=18	
+22	7979	.	A	G	255	.	DP=30;A+=0;C+=0;G+=11;T+=0;A-=0;C-=0;G-=19;T-=0	
+22	9768	.	T	C	209	.	DP=16;A+=0;C+=4;G+=0;T+=0;A-=0;C-=12;G-=0;T-=0	
