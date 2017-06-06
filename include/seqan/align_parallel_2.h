@@ -124,6 +124,7 @@
 // ============================================================================
 
 #include <seqan/align_parallel/alignment_interface_impl_wavefront.h>
+#include <seqan/align_parallel/global_alignment_interface.h>
 //#include <seqan/align_parallel/align_parallel_impl.h>
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_2_H_
