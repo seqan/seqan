@@ -81,6 +81,38 @@ public:
     }
 };
 
+template <typename ...TArgs,
+          typename TSeqH,
+          typename TSeqV,
+          typename TCallable>
+inline void
+submit(AsyncWaveAlignExecutor<TArgs...> & me,
+       TSeqH const & seqH,
+       TSeqV const & seqV,
+       TCallable && callback)
+{
+    using TAlignTask = typename AsyncWaveAlignExecutor<TArgs...>::TAlignmentTask;
+
+    std::function<std::function<void(uint16_t)>(TAlignTask)> aiCaller =
+    [&me, &callback](auto && func) mutable
+    {
+        return [&me, &callback, func = std::move(func)](uint16_t id) mutable
+        {
+            func(id, me._executor, std::forward<TCallable>(callback));
+        };
+    };
+    scheduleTask(me._alignScheduler, aiCaller(TAlignTask{me._alignCounter++, seqH, seqV, me._settings, me._blockSize}));
+}
+
+template <typename ...TArgs>
+inline void
+wait(AsyncWaveAlignExecutor<TArgs...> & me)
+{
+    notify(me._alignScheduler);
+    wait(me._alignScheduler);
+}
+
+#ifdef SEQAN_SIMD_ENABLED
 template <typename TSeqH, typename TSeqV, typename TSettings, typename TWaveSpec>
 class AsyncWaveAlignExecutorSimd
 {
@@ -120,45 +152,6 @@ public:
     }
 };
 
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-template <typename ...TArgs,
-          typename TSeqH,
-          typename TSeqV,
-          typename TCallable>
-inline void
-submit(AsyncWaveAlignExecutor<TArgs...> & me,
-       TSeqH const & seqH,
-       TSeqV const & seqV,
-       TCallable && callback)
-{
-    using TAlignTask = typename AsyncWaveAlignExecutor<TArgs...>::TAlignmentTask;
-
-    std::function<std::function<void(uint16_t)>(TAlignTask)> aiCaller =
-    [&me, &callback](auto && func) mutable
-    {
-        return [&me, &callback, func = std::move(func)](uint16_t id) mutable
-        {
-            func(id, me._executor, std::forward<TCallable>(callback));
-        };
-    };
-    scheduleTask(me._alignScheduler, aiCaller(TAlignTask{me._alignCounter++, seqH, seqV, me._settings, me._blockSize}));
-}
-
-template <typename ...TArgs>
-inline void
-wait(AsyncWaveAlignExecutor<TArgs...> & me)
-{
-    notify(me._alignScheduler);
-    wait(me._alignScheduler);
-}
-
 template <typename ...TArgs,
           typename TSeqH,
           typename TSeqV,
@@ -190,6 +183,7 @@ wait(AsyncWaveAlignExecutorSimd<TArgs...> & me)
     notify(me._alignScheduler);
     wait2(me._alignScheduler, me._simdTaskQueue);
 }
+#endif // SEQAN_SIMD_ENABLED
 
 template <typename TSpec, typename TSimdSpec,
           typename TSetH,
