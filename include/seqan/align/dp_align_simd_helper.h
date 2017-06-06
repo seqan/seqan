@@ -163,11 +163,6 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
     using TPadStringH = ModifiedString<typename Value<TSequencesH const>::Type, ModPadding>;
     using TPadStringV = ModifiedString<typename Value<TSequencesV const>::Type, ModPadding>;
 
-//    String<TResult, Alloc<OverAligned> > stringSimdH;
-//    String<TResult, Alloc<OverAligned> > stringSimdV;
-
-//    DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult, TSequencesH, TSequencesV> > > state;
-
     resize(state.lengthsH, length(seqH));
     resize(state.lengthsV, length(seqV));
     resize(state.endsH, length(seqH));
@@ -275,14 +270,20 @@ _prepareAndRunSimdAlignment(TResult & results,
 // Function _alignWrapperSimd(); Score; StringSet vs. StringSet
 // ----------------------------------------------------------------------------
 
-template <typename TString1, typename TSpec1,
-          typename TString2, typename TSpec2,
+template <typename TSetH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSetH>>,
+                                   Is<ContainerConcept<typename Value<TSetH>::Type>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<ContainerConcept<typename Value<TSetV>::Type>>>
+                               >::VALUE,
+                          int> = 0>
 inline auto
-_alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
-                  StringSet<TString2, TSpec2> const & stringsV,
+_alignWrapperSimd(TSetH const & stringsH,
+                  TSetV const & stringsV,
                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
                   TAlignConfig const & config,
                   TGapModel const & /*gaps*/)
@@ -306,8 +307,8 @@ _alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
         TSimdAlign resultsBatch;
         if (SEQAN_UNLIKELY(numAlignments < pos + sizeBatch))
         {
-            StringSet<TString1, Dependent<> > depSetH;
-            StringSet<TString2, Dependent<> > depSetV;
+            StringSet<std::remove_const_t<typename Value<TSetH>::Type>, Dependent<> > depSetH;
+            StringSet<std::remove_const_t<typename Value<TSetV>::Type>, Dependent<> > depSetV;
             for (unsigned i = pos; i < fullSize; ++i)
             {
                 if (i >= numAlignments)
@@ -345,14 +346,20 @@ _alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
 // Function _alignWrapperSimd(); Score; String vs. StringSet
 // ----------------------------------------------------------------------------
 
-template <typename TString1,
-          typename TString2, typename TSpec,
+template <typename TSeqH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSeqH>>,
+                                   Not<Is<ContainerConcept<typename Value<TSeqH>::Type>>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<ContainerConcept<typename Value<TSetV>::Type>>>
+                              >::VALUE,
+                           int> = 0>
 inline auto
-_alignWrapperSimd(TString1 const & stringH,
-                  StringSet<TString2, TSpec> const & stringsV,
+_alignWrapperSimd(TSeqH const & stringH,
+                  TSetV const & stringsV,
                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
                   TAlignConfig const & config,
                   TGapModel const & /*gaps*/)
@@ -367,7 +374,7 @@ _alignWrapperSimd(TString1 const & stringH,
     resize(results, numAlignments);
 
     // Prepare strings.
-    StringSet<TString1, Dependent<> > setH;
+    StringSet<TSeqH, Dependent<> > setH;
     for (auto i = 0u; i < sizeBatch; ++i)
         appendValue(setH, stringH);
 
@@ -381,7 +388,7 @@ _alignWrapperSimd(TString1 const & stringH,
         TSimdAlign resultsBatch;
         if (SEQAN_UNLIKELY(numAlignments < pos + sizeBatch))
         {
-            StringSet<TString2, Dependent<> > depSetV;
+            StringSet<std::remove_const_t<typename Value<TSetV>::Type>, Dependent<> > depSetV;
             for (unsigned i = pos; i < fullSize; ++i)
             {
                 if (i >= numAlignments)
@@ -409,20 +416,26 @@ _alignWrapperSimd(TString1 const & stringH,
 // Function _alignWrapperSimd(); Gaps
 // ----------------------------------------------------------------------------
 
-template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
-          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+template <typename TSetH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSetH>>,
+                                   Is<AlignedSequenceConcept<typename Value<TSetH>::Type>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<AlignedSequenceConcept<typename Value<TSetV>::Type>>>
+                              >::VALUE,
+                          int> = 0>
 inline auto
-_alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
-                  StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+_alignWrapperSimd(TSetH & gapSeqSetH,
+                  TSetV & gapSeqSetV,
                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
                   TAlignConfig const & config,
                   TGapModel const & /*gaps*/)
 {
-    typedef Gaps<TSequenceH, TGapsSpecH>                                TGapSequenceH;
-    typedef Gaps<TSequenceV, TGapsSpecV>                                TGapSequenceV;
+    typedef typename Value<TSetH>::Type                                 TGapSequenceH;
+    typedef typename Value<TSetV>::Type                                 TGapSequenceV;
     typedef typename Size<TGapSequenceH>::Type                          TSize;
     typedef typename Position<TGapSequenceH>::Type                      TPosition;
     typedef TraceSegment_<TPosition, TSize>                             TTraceSegment;
@@ -444,8 +457,8 @@ _alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSet
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
     // Prepare string sets with sequences.
-    StringSet<typename Source<TGapSequenceH>::Type, Dependent<> > depSetH;
-    StringSet<typename Source<TGapSequenceV>::Type, Dependent<> > depSetV;
+    StringSet<std::remove_const_t<typename Source<TGapSequenceH>::Type>, Dependent<> > depSetH;
+    StringSet<std::remove_const_t<typename Source<TGapSequenceV>::Type>, Dependent<> > depSetV;
     reserve(depSetH, fullSize);
     reserve(depSetV, fullSize);
     for (unsigned i = 0; i < fullSize; ++i)
