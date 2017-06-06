@@ -215,6 +215,43 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
              TPos const pos,
              TFunc && getBuffer,
              TOffset const & offset,
+             LinearGaps const & /*unsused*/)
+{
+    using TSimdVec = typename Value<TDPCell>::Type;
+    using TVecVal = typename Value<TSimdVec>::Type;
+
+    alignas(sizeof(TSimdVec)) std::array<TVecVal, LENGTH<TSimdVec>::VALUE> scoreVec;
+    alignas(sizeof(TSimdVec)) std::array<TVecVal, LENGTH<TSimdVec>::VALUE> traceVec;
+
+    auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
+
+    //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
+    std::for_each(begin(zipCont), end(zipCont),
+                  [&, getBuffer = std::move(getBuffer)](auto tuple)
+                  {
+                      auto& buffer = *getBuffer(*std::get<0>(tuple));
+                      auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
+
+                      // We might access values out of bounds here.
+                      std::get<1>(tuple) = static_cast<int16_t>(val.i1._score - std::get<3>(tuple));
+                      std::get<2>(tuple) = val.i2;
+                  });
+
+    target.i1._score = load<TSimdVec>(&scoreVec[0]);
+    target.i2 = load<TSimdVec>(&traceVec[0]);
+}
+
+template <typename TDPCell, typename TTrace,
+          typename TTasks,
+          typename TPos,
+          typename TFunc,
+          typename TOffset>
+inline void
+loadIntoSimd(Pair<TDPCell, TTrace> & target,
+             TTasks const & tasks,
+             TPos const pos,
+             TFunc && getBuffer,
+             TOffset const & offset,
              AffineGaps const & /*unsused*/)
 {
     using TSimdVec = typename Value<TDPCell>::Type;
@@ -254,6 +291,44 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
     target.i1._horizontalScore = load<TSimdVec>(&scoreHorVec[0]);
     target.i1._verticalScore = load<TSimdVec>(&scoreVerVec[0]);
     target.i2 = load<TSimdVec>(&traceVec[0]);
+}
+
+template <typename TTasks,
+          typename TDPCell, typename TTrace,
+          typename TPos,
+          typename TFunc,
+          typename TOffset>
+inline void
+storeIntoBuffer(TTasks & tasks,
+                Pair<TDPCell, TTrace> const & source,
+                TPos const pos,
+                TFunc && getBuffer,
+                TOffset const & offset,
+                LinearGaps const & /*unsused*/)
+{
+    using TSimdVec = typename Value<TDPCell>::Type;
+    using TVecVal = typename Value<TSimdVec>::Type;
+
+    alignas(sizeof(TSimdVec)) std::array<TVecVal, LENGTH<TSimdVec>::VALUE> scoreVec;
+    alignas(sizeof(TSimdVec)) std::array<TVecVal, LENGTH<TSimdVec>::VALUE> traceVec;
+
+    storeu(&scoreVec[0], source.i1._score);
+    storeu(&traceVec[0], source.i2);
+
+    auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
+
+    //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
+    std::for_each(begin(zipCont), end(zipCont),
+    [&, getBuffer = std::move(getBuffer)](auto tuple)
+    {
+        auto & buffer = *getBuffer(*std::get<0>(tuple));
+        if (length(buffer) > pos)
+        {
+            auto& pair = buffer[pos];
+            pair.i1._score = std::get<1>(tuple) + std::get<3>(tuple);
+            pair.i2 = std::get<2>(tuple);
+        }
+    });
 }
 
 template <typename TTasks,
