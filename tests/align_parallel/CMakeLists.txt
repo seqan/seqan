@@ -41,11 +41,19 @@ add_executable (test_align_parallel_algorithm
                 test_align_parallel_algorithm.cpp
                 test_align_parallel_wavefront_alignment.h)
 
+add_executable (test_align_parallel_interface
+                test_align_parallel_interface.cpp
+                test_align_parallel_interface.h
+                ../align/test_mock.h)
+
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align_parallel_data_structures ${SEQAN_LIBRARIES})
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align_parallel_algorithm ${SEQAN_LIBRARIES})
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_align_parallel_interface ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -55,3 +63,5 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_align_parallel_data_structures COMMAND $<TARGET_FILE:test_align_parallel_algorithm>)
+add_test (NAME test_align_parallel_algorithm COMMAND $<TARGET_FILE:test_align_parallel_algorithm>)
+add_test (NAME test_align_parallel_interface COMMAND $<TARGET_FILE:test_align_parallel_interface>)
