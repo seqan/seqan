@@ -162,7 +162,7 @@ _fillVector(TSimdVector & vector,
     // _mm_set_epi64x has no reverse equivalent
     vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<1>(args), std::get<0>(args)));
 #else
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(static_cast<int64_t>(std::get<sizeof...(INDICES) - 1 - INDICES>(args))...));
 #endif
 }
 
