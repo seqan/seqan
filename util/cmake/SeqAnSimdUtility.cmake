@@ -185,18 +185,22 @@ set(SEQAN_SIMD_AVX512_KNL_SOURCE
 "#include <cstdint>
 #include <immintrin.h>
 #include <iostream>
+#include <random>
 
 int main() {
+  std::random_device r;
+  std::default_random_engine e(r());
+  std::uniform_int_distribution<int64_t> d(1, 10);
+
   alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
   alignas(64) uint64_t t[]{0,0,0,0,0,0,0,0};
 
   // gcc 4.9 does not know _mm512_cmpgt_epu64_mask
-  volatile auto a = _mm512_setr_epi64(7,6,5,4,3,2,1,0);
+  volatile auto a = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
   volatile auto m = _mm512_cmpgt_epu64_mask(a, _mm512_set1_epi64(4)); // m = a > 4
   volatile auto z = _mm512_mask_load_epi64(a, m, s); // (a > 4) ? s : a
   _mm512_store_epi64(t, z);
 
-  // (9, 9, 9, 4, 3, 2, 1, 0)
   std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \", ...)\" << std::endl;
   return 0;
 }")
