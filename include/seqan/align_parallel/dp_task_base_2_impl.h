@@ -233,7 +233,7 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
 
                       // We might access values out of bounds here.
-                      std::get<1>(tuple) = static_cast<int16_t>(val.i1._score - std::get<3>(tuple));
+                      std::get<1>(tuple) = static_cast<TVecVal>(val.i1._score - std::get<3>(tuple));
                       std::get<2>(tuple) = val.i2;
                   });
 
@@ -271,19 +271,19 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
                       auto& buffer = *getBuffer(*std::get<0>(tuple));
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
                       using TDPCellVar = decltype(val.i1);
-                      using TDPCell16 = DPCell_<int16_t, AffineGaps>;
+                      using TDPCell16 = DPCell_<TVecVal, AffineGaps>;
 
                       // We might access values out of bounds here.
-                      std::get<1>(tuple) = static_cast<int16_t>(val.i1._score - std::get<5>(tuple));
+                      std::get<1>(tuple) = static_cast<TVecVal>(val.i1._score - std::get<5>(tuple));
 
                       std::get<2>(tuple) =
                         (val.i1._horizontalScore <= DPCellDefaultInfinity<TDPCellVar>::VALUE) ?
                             DPCellDefaultInfinity<TDPCell16>::VALUE :
-                            static_cast<int16_t>(val.i1._horizontalScore - std::get<5>(tuple));
+                            static_cast<TVecVal>(val.i1._horizontalScore - std::get<5>(tuple));
                       std::get<3>(tuple) =
                         (val.i1._verticalScore <= DPCellDefaultInfinity<TDPCellVar>::VALUE) ?
                         DPCellDefaultInfinity<TDPCell16>::VALUE :
-                        static_cast<int16_t>(val.i1._verticalScore - std::get<5>(tuple));
+                        static_cast<TVecVal>(val.i1._verticalScore - std::get<5>(tuple));
                       std::get<4>(tuple) = val.i2;
                   });
 
