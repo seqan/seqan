@@ -144,7 +144,7 @@ inline void
 swap(IntermediateDPResult<TArgs...> & lhs,
      IntermediateDPResult<TArgs...> & rhs)
 {
-    IntermediateDPResult<TArgs...> tmp{std::move(lhs)};
+    IntermediateDPResult<TArgs...> tmp = std::move(lhs);
     lhs = std::move(rhs);
     rhs = std::move(tmp);
 }
