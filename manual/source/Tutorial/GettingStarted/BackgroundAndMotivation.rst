@@ -139,7 +139,7 @@ In SeqAn, we use a technique called `template subclassing <tutorial-getting-star
 This technique provides `polymorphism <http://en.wikipedia.org/wiki/Polymorphism_in_object-oriented_programming>`_ into C++ programs at **compile time** using templates.
 Such static polymorphism is different from **runtime polymorphism** which is supported in C++ using subclassing and virtual functions.
 It comes at the cost of some additional typing but has the advantage that the compiler can inline all function calls and thus achieve better performance.
-An example will be given in `the section "From OOP to SeqAn" in the First Steps Tutorial <tutorial-getting-started-first-steps-in-seqan>`_.
+An example will be given in :ref:`the section "From OOP to SeqAn" in the First Steps Tutorial <oop-to-seqan>`.
 
 .. todo::
     We need a little code example here.
