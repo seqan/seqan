@@ -379,11 +379,16 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
     TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
+    // There is never a match for the most instantiations of this test.
+    a[1] = 23;
+    b[1] = 23;
+
     auto c = cmpEq(a, b);
 
     for (auto i = 0; i < length; ++i)
     {
-        TValue a_i = -3 + i * 3, b_i = length - i;
+        TValue a_i = (i == 1) ? 23 : (-3 + i * 3);
+        TValue b_i = (i == 1) ? 23 : (length - i);
         // std::cout << i << " / " << length << ": " << (int)c[i] << " = " << (int)a[i] << " == " << (int)b[i] << std::endl;
         SEQAN_ASSERT_EQ(c[i], a[i] == b[i] ? true_ : false_);
         SEQAN_ASSERT_EQ(c[i], a_i == b_i ? true_ : false_);
