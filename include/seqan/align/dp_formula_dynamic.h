@@ -88,7 +88,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionDiagonal const &)
 {
-    TScoreValue cmp = cmpGt(diagCompare, _scoreOfCell(activeCell));
+    auto cmp = cmpGt(diagCompare, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, diagCompare, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
     return TraceBitMap_<TScoreValue>::NONE;
@@ -121,7 +121,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const &,
                       RecursionDirectionDiagonal const &)
 {
-    TScoreValue cmp = cmpGt(_scoreOfCell(activeCell), diagCompare);
+    auto cmp = cmpGt(_scoreOfCell(activeCell), diagCompare);
     activeCell._score = blend(diagCompare, activeCell._score, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
     return blend(TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
@@ -159,7 +159,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &,
                       RecursionDirectionDiagonal const &)
 {
-    TScoreValue cmp = cmpGt(diagCompare, _scoreOfCell(activeCell));
+    auto cmp = cmpGt(diagCompare, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, diagCompare, cmp);
     setGapExtension(activeCell, False(), False(), cmp);
     return blend(blend(leftTrace | gapTrace,
@@ -298,7 +298,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TracebackOn<TTraceConfig> const &,
                       RecursionDirectionVertical const &)
 {
-    TScoreValue cmp = isGapExtension(prevCell, DynamicGapExtensionVertical());
+    auto cmp = isGapExtension(prevCell, DynamicGapExtensionVertical());
     activeCell._score = blend(_scoreOfCell(prevCell) + scoreGapOpenVertical(score, valH, valV), activeCell._score, cmp);
     return blend(TraceBitMap_<TScoreValue>::VERTICAL_OPEN,
                  TraceBitMap_<TScoreValue>::VERTICAL,
@@ -331,7 +331,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOff const &)
 {
-    TScoreValue cmp = cmpGt(horizontalComp, _scoreOfCell(activeCell));
+    auto cmp = cmpGt(horizontalComp, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, horizontalComp, cmp);
     setGapExtension(activeCell, False(), True(), cmp);
     setGapExtension(activeCell, True(), False(), cmpEq(cmp, TraceBitMap_<TScoreValue>::NONE));
@@ -360,7 +360,7 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &)
 {
-    TScoreValue cmp = cmpGt(horizontalComp, _scoreOfCell(activeCell));
+    auto cmp = cmpGt(horizontalComp, _scoreOfCell(activeCell));
     activeCell._score = blend(activeCell._score, horizontalComp, cmp);
     setGapExtension(activeCell, False(), True(), cmp);
     setGapExtension(activeCell, True(), False(), cmpEq(cmp, TraceBitMap_<TScoreValue>::NONE));
@@ -396,8 +396,8 @@ _internalComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                       TScoreValue const & horizontalComp,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &)
 {
-    TScoreValue cmpG = cmpGt(horizontalComp, _scoreOfCell(activeCell));
-    TScoreValue cmpE = cmpEq(horizontalComp, _scoreOfCell(activeCell));
+    auto cmpG = cmpGt(horizontalComp, _scoreOfCell(activeCell));
+    auto cmpE = cmpEq(horizontalComp, _scoreOfCell(activeCell));
     setGapExtension(activeCell, True(), False(), createVector<TScoreValue>(-1));
     setGapExtension(activeCell, False(), True(), cmpG);
     setGapExtension(activeCell, True(), True(), cmpE);

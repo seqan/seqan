@@ -80,7 +80,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR,
                       TracebackOff const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._score);
+    auto cmp = cmpGt(rightCompare, activeCell._score);
     activeCell._score = blend(activeCell._score, rightCompare, cmp);
     return TraceBitMap_<TScoreValue>::NONE;
 }
@@ -109,7 +109,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR const & rightTrace,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._score);
+    auto cmp = cmpGt(rightCompare, activeCell._score);
     activeCell._score = blend(activeCell._score, rightCompare, cmp);
     return blend(leftTrace, rightTrace, cmp);
 }
@@ -139,7 +139,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> > const &)
 {
     // Check for greater values.
-    TScoreValue cmp = cmpGt(activeCell._score, rightCompare);  // cmp greater
+    auto cmp = cmpGt(activeCell._score, rightCompare);  // cmp greater
     activeCell._score = blend(rightCompare, activeCell._score, cmp);  // activeCell._score
 
     // Check for equality.

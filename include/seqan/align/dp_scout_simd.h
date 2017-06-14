@@ -169,19 +169,20 @@ _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> >
 // ----------------------------------------------------------------------------
 
 template<typename TDPCell, typename TScoutSpec,
-         typename TSimdVec,
+         typename TMask,
          typename TNavigator>
 inline void
 _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
-                     TSimdVec const & cmp,
+                     TMask const & cmp,
                      TNavigator const & navi)
 {
+    using TSimdVector = typename Value<TDPCell>::Type;
     dpScout.mHorizontalPos = blend(dpScout.mHorizontalPos,
-                                   createVector<TSimdVec>(coordinate(navi, +DPMatrixDimension_::HORIZONTAL)),
+                                   createVector<TSimdVector>(coordinate(navi, +DPMatrixDimension_::HORIZONTAL)),
                                    cmp);
 
     dpScout.mVerticalPos = blend(dpScout.mVerticalPos,
-                                 createVector<TSimdVec>(coordinate(navi, +DPMatrixDimension_::VERTICAL)),
+                                 createVector<TSimdVector>(coordinate(navi, +DPMatrixDimension_::VERTICAL)),
                                  cmp);
 }
 
