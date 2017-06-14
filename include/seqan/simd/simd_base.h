@@ -68,15 +68,22 @@ struct LENGTH<SimdVector<TValue, LENGTH_> const> :
 
 // define a concept and its models
 // they allow us to define generic vector functions
-SEQAN_CONCEPT(SimdVectorConcept, (TSimdVector)) {
-    typedef typename Reference<TSimdVector>::Type TReference;
+SEQAN_CONCEPT(SimdMaskVectorConcept, (TSimdMaskVector))
+{
+    typedef typename Reference<TSimdMaskVector>::Type TReference;
 
-    TSimdVector a;
+    TSimdMaskVector a;
 
-    SEQAN_CONCEPT_USAGE(SimdVectorConcept)
+    SEQAN_CONCEPT_USAGE(SimdMaskVectorConcept)
     {
         static_assert(IsSameType<decltype(a[0]), TReference>::VALUE, "Type of a[] should be the same as the reference type of a.");
     }
+};
+
+SEQAN_CONCEPT_REFINE(SimdVectorConcept, (TSimdVector), (SimdMaskVectorConcept))
+{
+    SEQAN_CONCEPT_USAGE(SimdVectorConcept)
+    {}
 };
 
 template <typename TSimdVector, typename TIsSimdVec>
@@ -357,12 +364,38 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices);
 
 // NOTE(rmaerker): Make this function available, also if SIMD is not enabled.
 template <typename TSimdVector, typename TValue>
-inline SEQAN_FUNC_DISABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TSimdVector>>, TSimdVector)
 createVector(TValue const x)
 {
     return x;
 }
 
-} // namespace seqan
+// --------------------------------------------------------------------------
+// Function print()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdMaskVectorConcept<TSimdVector> >, std::ostream &)
+print(std::ostream & stream, TSimdVector const & vector)
+{
+    stream << '<';
+    for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)
+        stream << '\t' << vector[i];
+    stream << "\t>\n";
+    return stream;
+}
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdMaskVectorConcept<TSimdVector> >, std::ostream &)
+operator<<(std::ostream & stream, TSimdVector const & vector)
+{
+    stream << '<';
+    for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)
+        stream << '\t' << vector[i];
+    stream << "\t>";
+    return stream;
+}
+
+}  // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
