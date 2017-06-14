@@ -385,17 +385,6 @@ print(std::ostream & stream, TSimdVector const & vector)
     return stream;
 }
 
-template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdMaskVectorConcept<TSimdVector> >, std::ostream &)
-operator<<(std::ostream & stream, TSimdVector const & vector)
-{
-    stream << '<';
-    for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)
-        stream << '\t' << vector[i];
-    stream << "\t>";
-    return stream;
-}
-
 }  // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
