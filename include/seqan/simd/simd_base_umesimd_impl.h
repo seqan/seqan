@@ -103,6 +103,49 @@ using SimdVector8Int64   = UME::SIMD::SIMDVec<int64_t, 8>;
 using SimdVector8UInt64  = UME::SIMD::SIMDVec<uint64_t, 8>;
 
 // ============================================================================
+// SIMDMaskVector
+// ============================================================================
+
+template <uint32_t LENGTH>
+SEQAN_CONCEPT_IMPL((typename UME::SIMD::SIMDVecMask<LENGTH>),       (SimdMaskVectorConcept));
+
+template <uint32_t LENGTH>
+SEQAN_CONCEPT_IMPL((typename UME::SIMD::SIMDVecMask<LENGTH> const), (SimdMaskVectorConcept));
+
+template <uint32_t LENGTH>
+struct Value<UME::SIMD::SIMDVecMask<LENGTH> >
+{
+    typedef bool Type;
+};
+
+template <uint32_t LENGTH_>
+struct LENGTH<UME::SIMD::SIMDVecMask<LENGTH_> >
+{
+    enum { VALUE = LENGTH_ };
+};
+
+template <uint32_t LENGTH, typename TPosition>
+inline typename Value<UME::SIMD::SIMDVecMask<LENGTH> >::Type
+getValue(UME::SIMD::SIMDVecMask<LENGTH> const & vector, TPosition const pos)
+{
+    return vector[pos];
+}
+
+template <uint32_t LENGTH, typename TPosition>
+inline typename Value<UME::SIMD::SIMDVecMask<LENGTH> >::Type
+value(UME::SIMD::SIMDVecMask<LENGTH> const & vector, TPosition const pos)
+{
+    return vector[pos];
+}
+
+template <uint32_t LENGTH, typename TPosition, typename TValue2>
+inline void
+assignValue(UME::SIMD::SIMDVecMask<LENGTH> &vector, TPosition const pos, TValue2 const value)
+{
+    vector.insert(pos, value);
+}
+
+// ============================================================================
 // SIMDSwizzle
 // ============================================================================
 
@@ -305,6 +348,17 @@ clearVector(TSimdVector & vector)
     vector = 0;
 }
 
+// --------------------------------------------------------------------------
+// Function createVector()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<SimdMaskVectorConcept<TSimdVector>>,
+                                Not<Is<SimdVectorConcept<TSimdVector>>>>, TSimdVector)
+createVector(TValue const x)
+{
+    return TSimdVector(static_cast<bool>(x));
+}
 
 // --------------------------------------------------------------------------
 // Function createVector()

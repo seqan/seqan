@@ -375,21 +375,6 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices)
                 SimdParams_<sizeof(TSimdVector2), sizeof(TSimdVector2) / sizeof(TValue2)>());
 }
 
-// --------------------------------------------------------------------------
-// Function print()
-// --------------------------------------------------------------------------
-
-template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, std::ostream &)
-print(std::ostream & stream, TSimdVector const & vector)
-{
-    stream << '<';
-    for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)
-    stream << '\t' << vector[i];
-    stream << "\t>\n";
-    return stream;
-}
-
 } // namespace seqan
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_INTERFACE_H_
