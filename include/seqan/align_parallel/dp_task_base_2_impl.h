@@ -517,7 +517,8 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     }
     else
     {
-        using TSimdScoutTrait = SimdAlignVariableLengthTraits<TSimdVec, decltype(depSetH), decltype(depSetV)>;
+        using TMaskType = typename SimdMaskVector<TSimdVec>::Type;
+        using TSimdScoutTrait = SimdAlignVariableLengthTraits<TMaskType, decltype(depSetH), decltype(depSetV)>;
         using TScoutState = DPScoutState_<DPTiled<TSimdBufferH, Default, SimdAlignVariableLength<TSimdScoutTrait>>>;
 
         TScoutState scoutState(bufferH, bufferV);
