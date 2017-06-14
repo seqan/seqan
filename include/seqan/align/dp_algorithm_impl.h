@@ -1397,13 +1397,14 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, void)
 _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout)
 {
+    using TMaskType = typename SimdMaskVector<TScoreValue>::Type;
     _setToPosition(traceNavigator, toGlobalPosition(traceNavigator,
                                                     maxHostCoordinate(dpScout, +DPMatrixDimension_::HORIZONTAL),
                                                     maxHostCoordinate(dpScout, +DPMatrixDimension_::VERTICAL)));
-    TScoreValue flag = createVector<TScoreValue>(0);
-    assignValue(flag, dpScout._simdLane, ~static_cast<typename Value<TScoreValue>::Type>(0));
-    TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
-    TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
+    TMaskType flag = createVector<TMaskType>(0);
+    assignValue(flag, dpScout._simdLane, -1);
+    auto cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
+    auto cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
 
     value(traceNavigator) = blend(value(traceNavigator),
                                   value(traceNavigator) & ~TraceBitMap_<TScoreValue>::DIAGONAL,
@@ -1439,11 +1440,13 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, void)
 _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout)
 {
+    using TMaskType = typename SimdMaskVector<TScoreValue>::Type;
+
     _setToPosition(traceNavigator, maxHostPosition(dpScout));
-    TScoreValue flag = createVector<TScoreValue>(0);
-    assignValue(flag, dpScout._simdLane, ~static_cast<typename Value<TScoreValue>::Type>(0));
-    TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical()) & flag;
-    TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal()) & flag;
+    TMaskType flag = createVector<TMaskType>(0);
+    assignValue(flag, dpScout._simdLane, -1);
+    auto cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical()) & flag;
+    auto cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal()) & flag;
     value(traceNavigator) = blend(value(traceNavigator),
                                   value(traceNavigator) & ~TraceBitMap_<TScoreValue>::DIAGONAL,
                                   cmpV | cmpH);

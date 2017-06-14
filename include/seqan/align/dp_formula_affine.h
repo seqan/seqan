@@ -112,7 +112,7 @@ _internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const &,
                       RecursionDirectionDiagonal const &)
 {
-    TScoreValue cmp = cmpGt(activeCell._score, rightCompare);
+    auto cmp = cmpGt(activeCell._score, rightCompare);
     activeCell._score = blend(rightCompare, activeCell._score, cmp);
     return blend(TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace,
                  leftTrace | gapTrace,
@@ -147,8 +147,8 @@ _internalComputeScore(DPCell_<TScoreValue, TAffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &,
                       RecursionDirectionDiagonal const &)
 {
-    TScoreValue cmpG = cmpGt(rightCompare, activeCell._score);
-    TScoreValue cmpE = cmpEq(rightCompare, activeCell._score);
+    auto cmpG = cmpGt(rightCompare, activeCell._score);
+    auto cmpE = cmpEq(rightCompare, activeCell._score);
     TScoreValue result = leftTrace | gapTrace;
     activeCell._score = blend(activeCell._score, rightCompare, cmpG);
     result = blend(result, TraceBitMap_<TScoreValue>::DIAGONAL | leftTrace, cmpG);
@@ -184,7 +184,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionHorizontal const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._horizontalScore);
+    auto cmp = cmpGt(rightCompare, activeCell._horizontalScore);
     activeCell._horizontalScore = blend(activeCell._horizontalScore, rightCompare, cmp);
     activeCell._score = activeCell._horizontalScore;
     return TraceBitMap_<TScoreValue>::NONE;
@@ -217,7 +217,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &,
                       RecursionDirectionHorizontal const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._horizontalScore);
+    auto cmp = cmpGt(rightCompare, activeCell._horizontalScore);
     activeCell._horizontalScore = blend(activeCell._horizontalScore, rightCompare, cmp);
     activeCell._score = activeCell._horizontalScore;
     return blend(leftTrace, rightTrace, cmp);
@@ -252,8 +252,8 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &,
                       RecursionDirectionHorizontal const &)
 {
-    TScoreValue cmpG = cmpGt(rightCompare, activeCell._horizontalScore);
-    TScoreValue cmpE = cmpEq(rightCompare, activeCell._horizontalScore);
+    auto cmpG = cmpGt(rightCompare, activeCell._horizontalScore);
+    auto cmpE = cmpEq(rightCompare, activeCell._horizontalScore);
     activeCell._horizontalScore = blend(activeCell._horizontalScore, rightCompare, cmpG);
     activeCell._score = activeCell._horizontalScore;
 
@@ -291,7 +291,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOff const &,
                       RecursionDirectionVertical const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._verticalScore);
+    auto cmp = cmpGt(rightCompare, activeCell._verticalScore);
     activeCell._verticalScore = blend(activeCell._verticalScore, rightCompare, cmp);
     activeCell._score = activeCell._verticalScore;
     return TraceBitMap_<TScoreValue>::NONE;
@@ -324,7 +324,7 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &,
                       RecursionDirectionVertical const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._verticalScore);
+    auto cmp = cmpGt(rightCompare, activeCell._verticalScore);
     activeCell._verticalScore = blend(activeCell._verticalScore, rightCompare, cmp);
     activeCell._score = activeCell._verticalScore;
     return blend(leftTrace, rightTrace, cmp);
@@ -359,8 +359,8 @@ _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &,
                       RecursionDirectionVertical const &)
 {
-    TScoreValue cmpG = cmpGt(rightCompare, activeCell._verticalScore);
-    TScoreValue cmpE = cmpEq(rightCompare, activeCell._verticalScore);
+    auto cmpG = cmpGt(rightCompare, activeCell._verticalScore);
+    auto cmpE = cmpEq(rightCompare, activeCell._verticalScore);
     activeCell._verticalScore = blend(activeCell._verticalScore, rightCompare, cmpG);
     activeCell._score = activeCell._verticalScore;
 
@@ -411,7 +411,7 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceB
 _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &)
 {
-    TScoreValue cmp = cmpGt(activeCell._horizontalScore, activeCell._score);
+    auto cmp = cmpGt(activeCell._horizontalScore, activeCell._score);
     activeCell._score = blend(activeCell._score, activeCell._horizontalScore, cmp);
     return blend(TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
                  TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
@@ -438,8 +438,8 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceB
 _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &)
 {
-    TScoreValue cmpG = cmpGt(activeCell._horizontalScore, activeCell._score);
-    TScoreValue cmpE = cmpEq(activeCell._horizontalScore, activeCell._score);
+    auto cmpG = cmpGt(activeCell._horizontalScore, activeCell._score);
+    auto cmpE = cmpEq(activeCell._horizontalScore, activeCell._score);
     activeCell._score = blend(activeCell._score, activeCell._horizontalScore, cmpG);
 
     return blend(blend(TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,

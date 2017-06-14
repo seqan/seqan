@@ -158,7 +158,7 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
     SEQAN_ASSERT_EQ(length(seqH), length(seqV));
     SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<typename Value<TStringSimdH>::Type>::VALUE), length(seqH));
 
-    using TSimd = typename Value<TStringSimdH>::Type;
+    using TSimdMask = typename TTraits::TSimdVector;
     using TPadStringH = ModifiedString<typename Value<TSequencesH const>::Type, ModPadding>;
     using TPadStringV = ModifiedString<typename Value<TSequencesV const>::Type, ModPadding>;
 
@@ -188,9 +188,9 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
     size_t maxV = back(state.sortedEndsV);
 
     // and we have to prepare the bit masks of the DPScoutState
-    resize(state.masks,  maxV + 1, createVector<TSimd>(0));
-    resize(state.masksV, maxV + 1, createVector<TSimd>(0));
-    resize(state.masksH, maxH + 1, createVector<TSimd>(0));
+    resize(state.masks,  maxV + 1, createVector<TSimdMask>(0));
+    resize(state.masksV, maxV + 1, createVector<TSimdMask>(0));
+    resize(state.masksH, maxH + 1, createVector<TSimdMask>(0));
 
     // Create Stringset with padded strings.
     StringSet<TPadStringH> paddedH;
@@ -253,7 +253,8 @@ _prepareAndRunSimdAlignment(TResult & results,
     }
     else
     {
-        DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult, TSequencesH, TSequencesV> > > state;
+        using TSimdMask = typename SimdMaskVector<TResult>::Type;
+        DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TSimdMask, TSequencesH, TSequencesV> > > state;
         _prepareSimdAlignment(stringSimdH, stringSimdV, seqH, seqV, state);
 
         state.dimV = length(stringSimdV) + 1;

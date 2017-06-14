@@ -158,7 +158,7 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                                            seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
     {
-        TScoreValue cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
+        auto cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
         _setScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
         _setHorizontalScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
         _setVerticalScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
