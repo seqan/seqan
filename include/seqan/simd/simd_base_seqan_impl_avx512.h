@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: René Rahn <rene.rahn@fu-berlin.de>
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 // SIMD implementation of AVX512
 // ==========================================================================
@@ -180,8 +180,8 @@ inline void
 _fillVector(TSimdVector & vector,
             std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<64, 8>)
 {
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm512_setr_epi64(std::get<7>(args),  std::get<6>(args),  std::get<5>(args),  std::get<4>(args),
-    std::get<3>(args),  std::get<2>(args),  std::get<1>(args),  std::get<0>(args)));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm512_set_epi64(static_cast<int64_t>(std::get<sizeof...(INDICES) - 1 - INDICES>(args))...));/*std::get<7>(args),  std::get<6>(args),  std::get<5>(args),  std::get<4>(args),
+    std::get<3>(args),  std::get<2>(args),  std::get<1>(args),  std::get<0>(args)));*/
 }
 
 // --------------------------------------------------------------------------
@@ -1034,18 +1034,18 @@ inline TSimdVector _shiftRightLogical(TSimdVector const & vector, const unsigned
 //     );
 // }
 //
-// template <typename TValue, typename TSize, TSize SCALE>
-// inline __m512i
-// seqan_mm512_i64gather_epi(TValue const * memAddr,
-//                           __m512i const & idx,
-//                           std::integral_constant<TSize, SCALE> const & /*scale*/)
-// {
-//     using TUnsignedValue = typename MakeUnsigned<TValue>::Type;
-//     constexpr auto const mask = static_cast<uint64_t>(MaxValue<TUnsignedValue>::VALUE);
-//
-//     return _mm512_and_si512(_mm512_i64gather_epi64(idx, (long long const *) memAddr, SCALE),
-//                             _mm512_set1_epi64x(mask));
-// }
+template <typename TValue, typename TSize, TSize SCALE>
+inline __m512i
+seqan_mm512_i64gather_epi(TValue const * memAddr,
+                          __m512i const & idx,
+                          std::integral_constant<TSize, SCALE> const & /*scale*/)
+{
+    using TUnsignedValue = typename MakeUnsigned<TValue>::Type;
+    constexpr auto const mask = static_cast<uint64_t>(MaxValue<TUnsignedValue>::VALUE);
+
+    return _mm512_and_si512(_mm512_i64gather_epi64(idx, (long long const *) memAddr, SCALE),
+                            _mm512_set1_epi64(mask));
+}
 
 template <typename TValue, typename TSimdVector, typename TSize, TSize SCALE>
 inline TSimdVector
