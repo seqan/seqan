@@ -51,17 +51,19 @@ namespace impl
 
 struct ParallelAlignmentExecutor
 {
-    template <typename TSetH,
+    template <typename TKernel,
+              typename TSetH,
               typename TSetV,
               typename ...TArgs>
     auto operator()(Sequential const & /*execPolicy*/,
+                    TKernel && kernel,
                     TSetH const & setH,
                     TSetV const & setV,
                     TArgs && ...args)
     {
         SEQAN_ASSERT_EQ(length(setH), length(setV));
 
-        using TResult = decltype(globalAlignmentScore(setH, setV, std::forward<TArgs>(args)...));
+        using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
         TResult superSet;
         resize(superSet, length(setH));
@@ -70,24 +72,27 @@ struct ParallelAlignmentExecutor
 
         for (auto && pwInst : zipCont)
         {
-            std::get<2>(pwInst) = globalAlignmentScore(std::get<0>(pwInst), std::get<1>(pwInst),
-                                                       std::forward<TArgs>(args)...);
+            std::get<2>(pwInst) = kernel(std::get<0>(pwInst), std::get<1>(pwInst), std::forward<TArgs>(args)...);
         }
         return superSet;
     }
 
-    template <typename ...TArgs>
+    template <typename TKernel,
+              typename ...TArgs>
     auto operator()(ExecutionPolicy<Serial, Vectorial> const & /*execPolicy*/,
+                    TKernel && kernel,
                     TArgs && ...args)
     {
         // Automaically chooses vectorized code, or falls back to sequential code.
-        return globalAlignmentScore(std::forward<TArgs>(args)...);
+        return kernel(std::forward<TArgs>(args)...);
     }
 
-    template <typename TSetH,
+    template <typename TKernel,
+              typename TSetH,
               typename TSetV,
               typename ...TArgs>
     auto operator()(ExecutionPolicy<Parallel, Vectorial> const & execPolicy,
+                    TKernel && kernel,
                     TSetH const & setH,
                     TSetV const & setV,
                     TArgs && ...args)
@@ -96,7 +101,7 @@ struct ParallelAlignmentExecutor
         SEQAN_ASSERT_EQ(length(setH), length(setV));
 
         using TPos = decltype(length(setH));
-        using TResult = decltype(globalAlignmentScore(setH, setV, std::forward<TArgs>(args)...));
+        using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
         Splitter<TPos> splitter(0, length(setH), numThreads(execPolicy));
 
@@ -109,7 +114,7 @@ struct ParallelAlignmentExecutor
             auto infSetH = infix(setH, splitter[job], splitter[job + 1]);
             auto infSetV = infix(setV, splitter[job], splitter[job + 1]);
 
-            superSet[job] = globalAlignmentScore(infSetH, infSetV, std::forward<TArgs>(args)...);
+            superSet[job] = kernel(infSetH, infSetV, std::forward<TArgs>(args)...);
         }
         // Reduce the result.
         TResult res;
@@ -123,10 +128,12 @@ struct ParallelAlignmentExecutor
         return res;
     }
 
-    template <typename TSetH,
+    template <typename TKernel,
+              typename TSetH,
               typename TSetV,
               typename ...TArgs>
     auto operator()(ExecutionPolicy<Parallel, Serial> const & execPolicy,
+                    TKernel && kernel,
                     TSetH const & setH,
                     TSetV const & setV,
                     TArgs && ...args)
@@ -135,7 +142,7 @@ struct ParallelAlignmentExecutor
         SEQAN_ASSERT_EQ(length(setH), length(setV));
 
         using TPos = decltype(length(setH));
-        using TResult = decltype(globalAlignmentScore(setH, setV, std::forward<TArgs>(args)...));
+        using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
         Splitter<TPos> splitter(0, length(setH), numThreads(execPolicy));
 
@@ -152,36 +159,15 @@ struct ParallelAlignmentExecutor
 
             std::for_each(it, itEnd, [&](auto && seqPair)
             {
-                std::get<2>(seqPair) = globalAlignmentScore(std::get<0>(seqPair), std::get<1>(seqPair),
-                                                            std::forward<TArgs>(args)...);
+                std::get<2>(seqPair) = kernel(std::get<0>(seqPair), std::get<1>(seqPair), std::forward<TArgs>(args)...);
             });
         }
         return superSet;
     }
 };
 
-} // namespace impl
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
-// Functions
-// ============================================================================
-
-template <typename TParallelPolicy, typename TVectorizationPolicy,
-          typename ...TArgs,
-          std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
-                           std::is_same<TParallelPolicy, Parallel>::value,
-                           int> = 0>
-auto globalAlignmentScore(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
-                          TArgs && ...args)
-{
-    return impl::ParallelAlignmentExecutor{}(execPolicy, std::forward<TArgs>(args)...);
-}
-
 template <typename TWaveSpec, typename TVectorizationPolicy,
+          typename TAlgorithmSpec,
           typename TSetH,
           typename TSetV,
           typename TScore,
@@ -189,11 +175,13 @@ template <typename TWaveSpec, typename TVectorizationPolicy,
           std::enable_if_t<!std::is_same<WavefrontAlignment<TWaveSpec>, Serial>::value &&
                            !std::is_same<WavefrontAlignment<TWaveSpec>, Parallel>::value,
                            int> = 0>
-auto globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPolicy> const & execPolicy,
-                          TSetH const & setH,
-                          TSetV const & setV,
-                          TScore const & scoringScheme,
-                          TArgs && .../*args*/)
+inline auto
+doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPolicy> const & execPolicy,
+                TAlgorithmSpec const & /*tag*/,
+                TSetH const & setH,
+                TSetV const & setV,
+                TScore const & scoringScheme,
+                TArgs && .../*args*/)
 {
     using TScoreValue = typename Value<TScore>::Type;
 
@@ -214,9 +202,13 @@ auto globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVector
     // TODO(rrahn): Setup configuration cascade.
     if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
     {
-        struct DPConfigTraits : public DPTraits::GlobalLinear
+        struct DPConfigTraits
         {
-            using TTracebackType [[gnu::unused]] = seqan::TracebackOff;
+            using TAlgorithmType [[gnu::unused]] = TAlgorithmSpec;
+            using TGapType       [[gnu::unused]] = LinearGaps;
+            using TBandType      [[gnu::unused]] = BandOff;
+            using TTracebackType [[gnu::unused]] = TracebackOff;
+            using TFormat        [[gnu::unused]] = ArrayGaps;
         };
 
         using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
@@ -227,9 +219,13 @@ auto globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVector
     }
     else
     {
-        struct DPConfigTraits : public DPTraits::GlobalAffine
+        struct DPConfigTraits
         {
-            using TTracebackType [[gnu::unused]] = seqan::TracebackOff;
+            using TAlgorithmType [[gnu::unused]] = TAlgorithmSpec;
+            using TGapType       [[gnu::unused]] = AffineGaps;
+            using TBandType      [[gnu::unused]] = BandOff;
+            using TTracebackType [[gnu::unused]] = TracebackOff;
+            using TFormat        [[gnu::unused]] = ArrayGaps;
         };
 
         using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
@@ -239,6 +235,100 @@ auto globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVector
         dispatcher(execPolicy, setH, setV, settings);
     }
     return res;
+}
+
+} // namespace impl
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TParallelPolicy, typename TVectorizationPolicy,
+          typename ...TArgs,
+          std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
+                           std::is_same<TParallelPolicy, Parallel>::value,
+                           int> = 0>
+inline auto
+globalAlignmentScore(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
+                     TArgs && ...args)
+{
+    auto kernel = [](auto && ...args)
+    {
+        return globalAlignmentScore(std::forward<decltype(args)>(args)...);
+    };
+    return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
+}
+
+template <typename TParallelPolicy, typename TVectorizationPolicy,
+          typename ...TArgs,
+          std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
+                           std::is_same<TParallelPolicy, Parallel>::value,
+                           int> = 0>
+inline auto
+localAlignmentScore(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
+                    TArgs && ...args)
+{
+    auto kernel = [](auto && ...args)
+    {
+        return localAlignmentScore(std::forward<decltype(args)>(args)...);
+    };
+    return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
+}
+
+template <typename TWaveSpec, typename TVectorizationPolicy,
+          typename TSetH,
+          typename TSetV,
+          typename TScore,
+          typename TConfig,
+          std::enable_if_t<!std::is_same<WavefrontAlignment<TWaveSpec>, Serial>::value &&
+                           !std::is_same<WavefrontAlignment<TWaveSpec>, Parallel>::value,
+                           int> = 0>
+
+inline auto
+globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPolicy> const & execPolicy,
+                     TSetH const & setH,
+                     TSetV const & setV,
+                     TScore const & scoringScheme,
+                     TConfig const & /*config*/)
+{
+    return impl::doWaveAlignment(execPolicy,
+                                 GlobalAlignment_<typename SubstituteAlignConfig_<TConfig>::Type>{},
+                                 setH,
+                                 setV,
+                                 scoringScheme);
+}
+
+template <typename TWaveSpec, typename TVectorizationPolicy,
+          typename TSetH,
+          typename TSetV,
+          typename TScore,
+          std::enable_if_t<!std::is_same<WavefrontAlignment<TWaveSpec>, Serial>::value &&
+                           !std::is_same<WavefrontAlignment<TWaveSpec>, Parallel>::value,
+                           int> = 0>
+
+inline auto
+globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPolicy> const & execPolicy,
+                     TSetH const & setH,
+                     TSetV const & setV,
+                     TScore const & scoringScheme)
+{
+    return globalAlignmentScore(execPolicy, setH, setV, scoringScheme, AlignConfig<>{});
+}
+
+template <typename TWaveSpec, typename TVectorizationPolicy,
+          typename ...TArgs,
+          std::enable_if_t<!std::is_same<WavefrontAlignment<TWaveSpec>, Serial>::value &&
+                           !std::is_same<WavefrontAlignment<TWaveSpec>, Parallel>::value,
+                           int> = 0>
+inline auto
+localAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPolicy> const & execPolicy,
+                    TArgs && ...args)
+{
+    return impl::doWaveAlignment(execPolicy, LocalAlignment_<>{}, std::forward<TArgs>(args)...);
 }
 
 }  // namespace seqan
