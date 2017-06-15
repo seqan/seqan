@@ -44,7 +44,7 @@ namespace seqan {
 template <typename TSimdVector>
 struct SimdMaskVectorImpl<TSimdVector, True>
 {
-    using Type = TSimdVector;
+    using Type = typename SimdVectorTraits<TSimdVector, SimdParams_<sizeof(TSimdVector), LENGTH<TSimdVector>::VALUE>>::MaskType;
 };
 
 template <typename TSimdVector>

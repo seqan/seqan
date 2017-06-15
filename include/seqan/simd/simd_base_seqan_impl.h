@@ -115,6 +115,13 @@ template <int VEC_SIZE, int LENGTH = 0, typename SCALAR_TYPE = void>
 struct SimdParams_
 {};
 
+// internal traits meta-function to capture correct the mask type.
+template <typename TSimdVector, typename TSimdParams>
+struct SimdVectorTraits
+{
+    using MaskType = TSimdVector;
+};
+
 // internal struct to specialize for matrix parameters
 template <int ROWS, int COLS, int BITS_PER_VALUE>
 struct SimdMatrixParams_
