@@ -376,6 +376,68 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
         return localAlignment(align, scoringScheme, LinearGaps());
 }
 
+// ----------------------------------------------------------------------------
+// Function localAlignmentScore()                         [unbanded, TSequence]
+// ----------------------------------------------------------------------------
+
+template <typename TSequenceH,
+          typename TSequenceV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+SEQAN_FUNC_DISABLE_IF(And<And<Is<ContainerConcept<TSequenceH>>, Is<ContainerConcept<typename Value<TSequenceH>::Type>>>,
+                          And<Is<ContainerConcept<TSequenceV>>, Is<ContainerConcept<typename Value<TSequenceV>::Type>>>
+                         >, TScoreValue)
+localAlignmentScore(TSequenceH const & seqH,
+                    TSequenceV const & seqV,
+                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                    TAlgoTag const & /*algoTag*/)
+{
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<>, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    DPScoutState_<Default> dpScoutState;
+    String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
+    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, TAlignConfig2{}, TGapModel{});
+}
+
+// ----------------------------------------------------------------------------
+// Function localAlignmentScore()                   [unbanded, Simd, TSequence]
+// ----------------------------------------------------------------------------
+
+template <typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+inline
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >, String<TScoreValue>)
+localAlignmentScore(TSeqH const & stringsH,
+                     TSeqV const & stringsV,
+                     Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                     TAlgoTag const & /*algoTag*/)
+{
+    SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<>, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    return _alignWrapper(stringsH, stringsV, scoringScheme, TAlignConfig2(), TGapModel());
+}
+
+// Interface without algorithm tag.
+template <typename TSequenceH,
+          typename TSequenceV,
+          typename TScoreValue, typename TScoreSpec>
+auto localAlignmentScore(TSequenceH const & seqH,
+                         TSequenceV const & seqV,
+                         Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return localAlignmentScore(seqH, seqV, scoringScheme, NeedlemanWunsch());
+    else
+        return localAlignmentScore(seqH, seqV, scoringScheme, Gotoh());
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_

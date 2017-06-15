@@ -41,9 +41,9 @@ namespace test_align_parallel
 
 template <typename TSets, typename TResults, typename ...TParams>
 inline void
-validate(TSets const & sets,
-         TResults const & res,
-         TParams && ...params)
+validateGlobal(TSets const & sets,
+               TResults const & res,
+               TParams && ...params)
 {
     auto z = makeZipView(std::get<0>(sets), std::get<1>(sets), res);
 
@@ -53,6 +53,22 @@ validate(TSets const & sets,
         SEQAN_ASSERT_EQ(tmp, std::get<2>(inst));
     }
 }
+
+template <typename TSets, typename TResults, typename ...TParams>
+inline void
+validateLocal(TSets const & sets,
+              TResults const & res,
+              TParams && ...params)
+{
+    auto z = makeZipView(std::get<0>(sets), std::get<1>(sets), res);
+
+    for (auto && inst : z)
+    {
+        auto tmp = localAlignmentScore(std::get<0>(inst), std::get<1>(inst), std::forward<TParams>(params)...);
+        SEQAN_ASSERT_EQ(tmp, std::get<2>(inst));
+    }
+}
+
 
 }  // namespace test_align_parallel
 
@@ -79,13 +95,17 @@ class ParallelAlignInterfaceTestCommon : public ParallelAlignInterfaceTest<T>
 typedef
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Serial>>,
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Serial>>,
+        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<>,                               seqan::Serial>>,
+        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<seqan::BlockOffsetOptimization>, seqan::Serial>>
+#ifdef SEQAN_SIMD_ENABLED
+        ,
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Vectorial>>,
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Vectorial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<>,                               seqan::Serial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<seqan::BlockOffsetOptimization>, seqan::Serial>>,
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<>,                               seqan::Vectorial>>,
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<seqan::BlockOffsetOptimization>, seqan::Vectorial>>
-        > > > > > > > > ParallelAlignInterfaceTestCommonTypes;
+        > > > >
+#endif // SEQAN_SIMD_ENABLED
+        > > > > ParallelAlignInterfaceTestCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(ParallelAlignInterfaceTestCommon, ParallelAlignInterfaceTestCommonTypes);
 
@@ -103,9 +123,47 @@ SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Global_Score)
     setNumThreads(execPolicy, 4);
     auto score = globalAlignmentScore(execPolicy, std::get<0>(sets), std::get<1>(sets), scoreLinear);
 
-    test_align_parallel::validate(sets, score, scoreLinear);
+    test_align_parallel::validateGlobal(sets, score, scoreLinear);
 
     Score<int, Simple> scoreAffine(4, -2, -4, -10);
     score = globalAlignmentScore(execPolicy, std::get<0>(sets), std::get<1>(sets), scoreAffine);
-    test_align_parallel::validate(sets, score, scoreAffine);
+    test_align_parallel::validateGlobal(sets, score, scoreAffine);
+}
+
+SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Semi_Global_Score)
+{
+    using namespace seqan;
+    using TExecPolicy = typename TestFixture::TExecPolicy;
+
+    auto sets = ::impl::test_align_mock::TestSequences_<Dna, ::impl::test_align_mock::EqualLengthSimd>::getSequences();
+
+    Score<int, Simple> scoreLinear(4, -2, -4);
+    TExecPolicy execPolicy;
+    setNumThreads(execPolicy, 4);
+    auto score = globalAlignmentScore(execPolicy, std::get<0>(sets), std::get<1>(sets), scoreLinear, AlignConfig<true, false, false, true>());
+
+    test_align_parallel::validateGlobal(sets, score, scoreLinear, AlignConfig<true, false, false, true>());
+
+    Score<int, Simple> scoreAffine(4, -2, -4, -10);
+    score = globalAlignmentScore(execPolicy, std::get<0>(sets), std::get<1>(sets), scoreAffine, AlignConfig<true, false, false, true>());
+    test_align_parallel::validateGlobal(sets, score, scoreAffine, AlignConfig<true, false, false, true>());
+}
+
+SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Local_Score)
+{
+    using namespace seqan;
+    using TExecPolicy = typename TestFixture::TExecPolicy;
+
+    auto sets = ::impl::test_align_mock::TestSequences_<Dna, ::impl::test_align_mock::EqualLengthSimd>::getSequences();
+
+    Score<int, Simple> scoreLinear(4, -2, -4);
+    TExecPolicy execPolicy;
+    setNumThreads(execPolicy, 4);
+    auto score = localAlignmentScore(execPolicy, std::get<0>(sets), std::get<1>(sets), scoreLinear);
+
+    test_align_parallel::validateLocal(sets, score, scoreLinear);
+
+    Score<int, Simple> scoreAffine(4, -2, -4, -10);
+    score = localAlignmentScore(execPolicy, std::get<0>(sets), std::get<1>(sets), scoreAffine);
+    test_align_parallel::validateLocal(sets, score, scoreAffine);
 }

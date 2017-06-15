@@ -200,9 +200,13 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, TSimdSpec> const & exe
     using TSeqH = typename Value<TSetH const>::Type;
     using TSeqV = typename Value<TSetV const>::Type;
 
+#ifdef SEQAN_SIMD_ENABLED
     using TExecutor = std::conditional_t<std::is_same<TSimdSpec, Vectorial>::value,
                                          AsyncWaveAlignExecutorSimd<TSeqH, TSeqV, TSettings, TSpec>,
                                          AsyncWaveAlignExecutor<TSeqH, TSeqV, TSettings>>;
+#else
+    using TExecutor = AsyncWaveAlignExecutor<TSeqH, TSeqV, TSettings>;
+#endif
     TExecutor executor(settings, execPolicy);
 
     for(size_t i = 0u; i < length(setH); ++i)
