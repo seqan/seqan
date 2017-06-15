@@ -59,6 +59,34 @@ SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Int64,     int64_t,        64)
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UInt64,    uint64_t,       64)
 
 // ============================================================================
+// Metafunctions
+// ============================================================================
+
+template <typename TSimdVector>
+struct SimdVectorTraits<TSimdVector, SimdParams_<64, 64>>
+{
+    using MaskType = __mmask64;
+};
+
+template <typename TSimdVector>
+struct SimdVectorTraits<TSimdVector, SimdParams_<64, 32>>
+{
+    using MaskType = __mmask32;
+};
+
+template <typename TSimdVector>
+struct SimdVectorTraits<TSimdVector, SimdParams_<64, 16>>
+{
+    using MaskType = __mmask16;
+};
+
+template <typename TSimdVector>
+struct SimdVectorTraits<TSimdVector, SimdParams_<64, 8>>
+{
+    using MaskType = __mmask8;
+};
+
+// ============================================================================
 // Functions
 // ============================================================================
 
@@ -257,14 +285,12 @@ template <typename TSimdVector>
 inline auto _cmpGt(TSimdVector & a, TSimdVector & b, SimdParams_<64, 64, int8_t>)
 {
     return _mm512_cmpgt_epi8_mask(SEQAN_VECTOR_CAST_(const __m256i&, a), SEQAN_VECTOR_CAST_(const __m512i&, b));
-    return a;
 }
 
 template <typename TSimdVector>
 inline auto _cmpGt(TSimdVector & a, TSimdVector & b, SimdParams_<64, 64, uint8_t>)
 {
     return _mm512_cmpgt_epu8_mask(SEQAN_VECTOR_CAST_(const __m512i&, a), SEQAN_VECTOR_CAST_(const __m512i&, b));
-    return a;
 }
 
 // AVX512BW
@@ -292,7 +318,7 @@ inline auto _cmpGt(TSimdVector & a, TSimdVector & b, SimdParams_<64, L, TInt>)
 template <typename TSimdVector>
 inline auto _cmpGt(TSimdVector & a, TSimdVector & b, SimdParams_<64, 16, int32_t>)
 {
-    return _mm512_cmpgt_epi16_mask(SEQAN_VECTOR_CAST_(const __m512i&, a), SEQAN_VECTOR_CAST_(const __m512i&, b));
+    return _mm512_cmpgt_epi32_mask(SEQAN_VECTOR_CAST_(const __m512i&, a), SEQAN_VECTOR_CAST_(const __m512i&, b));
 }
 
 template <typename TSimdVector>
@@ -1465,7 +1491,14 @@ _gather(TValue const * memAddr,
 //         SEQAN_VECTOR_CAST_(const __m256i &, indices)
 //     ));
 // }
-//
+template <typename TSimdVector1, typename TSimdVector2, int L, int T, int S>
+inline TSimdVector1
+_shuffleVector(TSimdVector1 const & /*vector*/, TSimdVector2 const & /*indices*/, SimdParams_<L, T>, SimdParams_<L, S>)
+{
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("Not yet implemented.");
+}
+
 // // --------------------------------------------------------------------------
 // // _transposeMatrix (512bit)
 // // --------------------------------------------------------------------------
@@ -1527,18 +1560,22 @@ _gather(TValue const * memAddr,
 //         matrix[bitRev[i+16]] = SEQAN_VECTOR_CAST_(TSimdVector, _mm256_unpackhi_epi128(tmp2[2*i],tmp2[2*i+1]));
 //     }
 // }
-//
-// --------------------------------------------------------------------------
-// Function _testAllZeros (512bit)
+
+template <typename TSimdVector, int L, int S, int T>
+inline void
+_transposeMatrix(TSimdVector /*matrix*/[], SimdMatrixParams_<L, S, T>)// --------------------------------------------------------------------------
+{ 
+    SEQAN_SKIP_TEST;
+    SEQAN_ASSERT_FAIL("Not implemented!");
+}                                                                  // Function _testAllZeros (512bit)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector, int L>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, int)
 inline _testAllZeros(TSimdVector const & vector, TSimdVector const & mask, SimdParams_<64, L>)
 {
-    // return SEQAN_VECTOR_CAST_(int8_t, _mm512_test_epi64_mask(SEQAN_VECTOR_CAST_(const __m512i &, vector),
-    //                                                         SEQAN_VECTOR_CAST_(const __m512i &, mask))) == 0;
-    return 0;
+    return SEQAN_VECTOR_CAST_(int8_t, _mm512_test_epi64_mask(SEQAN_VECTOR_CAST_(const __m512i &, vector),
+                                                             SEQAN_VECTOR_CAST_(const __m512i &, mask))) == 0;
 }
 
 // --------------------------------------------------------------------------
@@ -1549,11 +1586,10 @@ template <typename TSimdVector, int L>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, int)
 inline _testAllOnes(TSimdVector const & vector, TSimdVector const & mask, SimdParams_<64, L>)
 {
-    // return SEQAN_VECTOR_CAST_(int8_t,
-    //                           mm512_test_epi64_mask(SEQAN_VECTOR_CAST_(const __m512i &,
-    //                                                                    _bitwiseNot(vector, SimdParams_<64, L>())),
-    //                                                 SEQAN_VECTOR_CAST_(const __m512i &, mask))) == 0;
-    return 0;
+     return SEQAN_VECTOR_CAST_(int8_t,
+                               _mm512_test_epi64_mask(SEQAN_VECTOR_CAST_(const __m512i &,
+                                                                         _bitwiseNot(vector, SimdParams_<64, L>())),
+                                                      SEQAN_VECTOR_CAST_(const __m512i &, mask))) == 0;
 }
 
 } // namespace seqan
