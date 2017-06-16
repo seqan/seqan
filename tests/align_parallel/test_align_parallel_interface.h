@@ -32,6 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
+// #define DP_PARALLEL_SHOW_PROGRESS // Enable when debugging.
+
 #include <seqan/align_parallel_2.h>
 
 #include "../align/test_mock.h"

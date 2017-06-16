@@ -69,7 +69,9 @@ struct ParallelAlignmentExecutor
         resize(superSet, length(setH));
 
         auto zipCont = makeZipView(setH, setV, superSet);
-
+#ifdef DP_PARALLEL_SHOW_PROGRESS
+        ::impl::dp_parallel_progress::show_progress(length(setH));
+#endif  // DP_PARALLEL_SHOW_PROGRESS
         for (auto && pwInst : zipCont)
         {
             std::get<2>(pwInst) = kernel(std::get<0>(pwInst), std::get<1>(pwInst), std::forward<TArgs>(args)...);
@@ -78,13 +80,18 @@ struct ParallelAlignmentExecutor
     }
 
     template <typename TKernel,
+              typename TSetH,
               typename ...TArgs>
     auto operator()(ExecutionPolicy<Serial, Vectorial> const & /*execPolicy*/,
                     TKernel && kernel,
+                    TSetH const & setH,
                     TArgs && ...args)
     {
+#ifdef DP_PARALLEL_SHOW_PROGRESS
+        ::impl::dp_parallel_progress::show_progress(length(setH));
+#endif  // DP_PARALLEL_SHOW_PROGRESS
         // Automaically chooses vectorized code, or falls back to sequential code.
-        return kernel(std::forward<TArgs>(args)...);
+        return kernel(setH, std::forward<TArgs>(args)...);
     }
 
     template <typename TKernel,
@@ -107,6 +114,10 @@ struct ParallelAlignmentExecutor
 
         std::vector<TResult> superSet;
         superSet.resize(length(splitter));
+
+#ifdef DP_PARALLEL_SHOW_PROGRESS
+        ::impl::dp_parallel_progress::show_progress(length(setH));
+#endif  // DP_PARALLEL_SHOW_PROGRESS
 
         SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
         for (TPos job = 0; job < length(splitter); ++job)
@@ -150,6 +161,10 @@ struct ParallelAlignmentExecutor
         resize(superSet, length(setH));
 
         auto zipCont = makeZipView(setH, setV, superSet);
+
+#ifdef DP_PARALLEL_SHOW_PROGRESS
+        ::impl::dp_parallel_progress::show_progress(length(setH));
+#endif  // DP_PARALLEL_SHOW_PROGRESS
 
         SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
         for (TPos job = 0; job < length(splitter); ++job)
