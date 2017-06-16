@@ -55,6 +55,43 @@
 //#include <atomic>
 //#include <condition_variable>
 
+#include <seqan/parallel.h>
+
+#ifdef DP_PARALLEL_SHOW_PROGRESS
+
+namespace impl{
+namespace dp_parallel_progress {
+
+std::atomic<unsigned> counter;
+
+void show_progress(unsigned total)
+{
+    using namespace std::chrono_literals;
+
+    auto check_progress = [total]()
+    {
+        unsigned mark = 0;
+        unsigned tick = (total + 9)/10;
+
+        while (counter.load() < total)
+        {
+            unsigned c = counter.load();
+            if (c >= mark * tick)
+            {
+                std::cout << mark * 10 << "% ";
+                mark = (c/tick) + 1;
+            }
+            //std::this_thread::sleep_for(2s);
+        }
+        std::cout << "100%\n";
+    };
+    counter.store(0);
+    std::thread(check_progress).detach();
+}
+}
+}
+#endif  // DP_PARALLEL_SHOW_PROGRESS
+
 // ============================================================================
 // SeqAn Prerequisites
 // ============================================================================
@@ -62,7 +99,6 @@
 #include <seqan/basic.h>
 #include <seqan/simd.h>
 #include <seqan/align.h>
-#include <seqan/parallel.h>
 
 #include <seqan/align_parallel/dp_parallel_execution_policies.h>
 
