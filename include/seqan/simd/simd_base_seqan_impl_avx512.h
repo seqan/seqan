@@ -37,8 +37,6 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX512_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX512_H_
 
-#include <avx512fintrin.h>
-
 namespace seqan {
 
 // SimdParams_<64, 64>: 512bit = 64 elements * 8bit
@@ -167,12 +165,7 @@ inline void
 _fillVector(TSimdVector & vector,
             std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<64, 16>)
 {
-    // vector = static_cast<TSimdVector>(_mm512_setr_epi32((std::get<INDICES>(args))...));
-    // static_assert(sizeof...(INDICES) != 16, "Warning");
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm512_setr_epi32(std::get<15>(args), std::get<14>(args), std::get<13>(args), std::get<12>(args),
-                                                               std::get<11>(args), std::get<10>(args), std::get<9>(args),  std::get<8>(args),
-                                                               std::get<7>(args),  std::get<6>(args),  std::get<5>(args),  std::get<4>(args),
-                                                               std::get<3>(args),  std::get<2>(args),  std::get<1>(args),  std::get<0>(args)));
+    vector = static_cast<TSimdVector>(_mm512_setr_epi32((std::get<INDICES>(args))...));
 }
 
 template <typename TSimdVector, typename ...TValue, size_t ...INDICES>
@@ -180,8 +173,7 @@ inline void
 _fillVector(TSimdVector & vector,
             std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<64, 8>)
 {
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm512_set_epi64(static_cast<int64_t>(std::get<sizeof...(INDICES) - 1 - INDICES>(args))...));/*std::get<7>(args),  std::get<6>(args),  std::get<5>(args),  std::get<4>(args),
-    std::get<3>(args),  std::get<2>(args),  std::get<1>(args),  std::get<0>(args)));*/
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm512_setr_epi64(static_cast<int64_t>(std::get<INDICES>(args))...));
 }
 
 // --------------------------------------------------------------------------
@@ -215,7 +207,7 @@ template <typename TSimdVector, typename TValue, int L>
 inline TSimdVector _createVector(TValue const x, SimdParams_<64, L>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return TSimdVector{};
+    return TSimdVector();
 }
 #endif // __AVX512BW__
 
@@ -256,7 +248,7 @@ inline auto
 _cmpEq(TSimdVector & a, TSimdVector & b, SimdParams_<64, L>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return __mmask16{};
+    return __mmask16();
 }
 #endif // __AVX512BW__
 
@@ -284,7 +276,7 @@ _cmpEq(TSimdVector & a, TSimdVector & b, SimdParams_<64, 8>)
 template <typename TSimdVector>
 inline auto _cmpGt(TSimdVector & a, TSimdVector & b, SimdParams_<64, 64, int8_t>)
 {
-    return _mm512_cmpgt_epi8_mask(SEQAN_VECTOR_CAST_(const __m256i&, a), SEQAN_VECTOR_CAST_(const __m512i&, b));
+    return _mm512_cmpgt_epi8_mask(SEQAN_VECTOR_CAST_(const __m512i&, a), SEQAN_VECTOR_CAST_(const __m512i&, b));
 }
 
 template <typename TSimdVector>
@@ -310,7 +302,7 @@ template <typename TSimdVector, int L, typename TInt>
 inline auto _cmpGt(TSimdVector & a, TSimdVector & b, SimdParams_<64, L, TInt>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return __mmask16{};
+    return __mmask16();
 }
 #endif  // __AVX512BW__
 
@@ -456,7 +448,7 @@ template <typename TSimdVector, int L>
 inline TSimdVector _add(TSimdVector & a, TSimdVector & b, SimdParams_<64, L>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return TSimdVector{};
+    return TSimdVector();
 }
 #endif  // __AVX512BW__
 
@@ -501,7 +493,7 @@ template <typename TSimdVector, int L>
 inline TSimdVector _sub(TSimdVector & a, TSimdVector & b, SimdParams_<64, L>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return TSimdVector{};
+    return TSimdVector();
 }
 #endif  // __AVX512BW__
 
@@ -547,7 +539,7 @@ template <typename TSimdVector, int L>
 inline TSimdVector _mult(TSimdVector & a, TSimdVector & b, SimdParams_<64, L>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return TSimdVector{};
+    return TSimdVector();
 }
 #endif  // __AVX512BW__
 
@@ -609,7 +601,7 @@ template <typename TSimdVector, int L, typename TInt>
 inline TSimdVector _max(TSimdVector & a, TSimdVector & b, SimdParams_<64, L, TInt>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return TSimdVector{};
+    return TSimdVector();
 }
 #endif  // __AVX512BW__
 
@@ -685,7 +677,7 @@ _blend(TSimdVector const & a,
        SimdParams_<64, L>)
 {
     SEQAN_ASSERT_FAIL("Not implemented for KNL.");
-    return TSimdVector{};
+    return TSimdVector();
 }
 #endif  // defined(__AVX512VL__) &&  defined(__AVX512BW__)
 // AVX512F
@@ -1564,7 +1556,7 @@ _shuffleVector(TSimdVector1 const & /*vector*/, TSimdVector2 const & /*indices*/
 template <typename TSimdVector, int L, int S, int T>
 inline void
 _transposeMatrix(TSimdVector /*matrix*/[], SimdMatrixParams_<L, S, T>)// --------------------------------------------------------------------------
-{ 
+{
     SEQAN_SKIP_TEST;
     SEQAN_ASSERT_FAIL("Not implemented!");
 }                                                                  // Function _testAllZeros (512bit)
