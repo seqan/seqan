@@ -303,6 +303,7 @@ int main(int argc, const char *argv[])
 #ifdef RAZERS_MATEPAIRS
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE 1\\fP> <\\fIREADS FILE 2\\fP>");
 #endif
+    setShortDescription(parser, "Split-map read sequences");
     addDescription(parser,
             "SplazerS uses a prefix-suffix mapping strategy to split-map read sequences."
             "If a SAM file of mapped reads is given as input, all unmapped but anchored"

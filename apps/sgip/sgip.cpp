@@ -168,7 +168,7 @@ template <typename TParser>
 void _setupParser(TParser & parser)
 {
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
-    addDescription(parser, " SGIP - Solution of Graph Isomorphism Problem");
+    setShortDescription(parser, "Solution of Graph Isomorphism Problem");
     addUsageLine(parser, "-o <original graph> [Option]");    
     addSection(parser, "Mandatory Options");
     addOption(parser, ArgParseOption("o", "original", "File containing original graph", ArgParseArgument::INPUT_FILE,"IN"));
