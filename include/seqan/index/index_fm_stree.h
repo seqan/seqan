@@ -359,10 +359,13 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
     typedef Pair<TSize2>                                        TRange;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
-    _historyPush(it);
-
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
+
+    if (stringIt == stringEnd)
+        return true;
+
+    _historyPush(it);
 
     for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
     {

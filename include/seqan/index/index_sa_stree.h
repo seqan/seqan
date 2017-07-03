@@ -543,15 +543,15 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
 
-    // Save vertex descriptor.
-    _historyPush(it);
-
 #ifdef SEQAN_DEBUG
     std::cout << "parent: " << value(it).range << std::endl;
 #endif
 
     if (!empty(pattern))
     {
+        // Save vertex descriptor.
+        _historyPush(it);
+
         TIndex const & index = container(it);
         TSA const & sa = indexSA(index);
         TText const & text = indexText(index);
