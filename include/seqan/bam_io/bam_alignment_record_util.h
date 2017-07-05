@@ -237,7 +237,7 @@ bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, Bam
     // TODO(holtgrew): Clipping better than copying infix? But is it generic?
     resize(rows(result), 2);
 
-    unsigned len = record.beginPos + getAlignmentLengthInRef(record) - countPaddings(record.cigar);
+    unsigned len = getAlignmentLengthInRef(record) - countPaddings(record.cigar);
 
     setSource(row(result, 0), reference);
     setClippedEndPosition(row(result, 0), record.beginPos + len);
