@@ -94,6 +94,24 @@ class DPMatrixNavigator_;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction MatrixType
+// ----------------------------------------------------------------------------
+
+template <typename TNavigator>
+struct MatrixType;
+
+template <typename TDPMatrix, typename TDPMatrixType, typename TNavigationSpec>
+struct MatrixType<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> >
+{
+    using Type = TDPMatrixType;
+};
+
+template <typename TDPMatrix, typename TDPMatrixType, typename TNavigationSpec>
+struct MatrixType<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> const> :
+    MatrixType<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> >
+{};
+
+// ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 

@@ -2438,8 +2438,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
         SEQAN_ASSERT_EQ(prevVertical._score, 10);
@@ -2449,13 +2449,12 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
         SEQAN_ASSERT_EQ(prevVertical._score, 10);
     }
-
 }
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
@@ -2515,8 +2514,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
         SEQAN_ASSERT_EQ(prevVertical._score, 10);
@@ -2526,8 +2525,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
         SEQAN_ASSERT_EQ(prevVertical._score, 10);
@@ -2591,8 +2590,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, -3);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
         SEQAN_ASSERT_EQ(prevVertical._score, 1);
@@ -2602,8 +2601,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, -3);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
         SEQAN_ASSERT_EQ(prevVertical._score, 1);
@@ -2668,8 +2667,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
         SEQAN_ASSERT_EQ(prevVertical._score, 10);
@@ -2679,8 +2678,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
         SEQAN_ASSERT_EQ(prevVertical._score, 10);
@@ -2745,8 +2744,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
         SEQAN_ASSERT_EQ(prevVertical._score, 1);
@@ -2756,8 +2755,8 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
 
         SEQAN_ASSERT_EQ(traceValue, +TraceBitMap_<>::NONE);
         SEQAN_ASSERT_EQ(activeCell._score, 0);
-        SEQAN_ASSERT_EQ(activeCell._horizontalScore, 0);
-        SEQAN_ASSERT_EQ(activeCell._verticalScore, 0);
+        SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
+        SEQAN_ASSERT_EQ(activeCell._verticalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
         SEQAN_ASSERT_EQ(prevVertical._score, 1);
