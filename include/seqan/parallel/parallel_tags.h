@@ -85,7 +85,7 @@ struct ExecutionPolicy
 // ----------------------------------------------------------------------------
 
 using Sequential = ExecutionPolicy<>;
-constexpr ExecutionPolicy<> seq{};
+// constexpr ExecutionPolicy<> seq{};
 
 // ----------------------------------------------------------------------------
 // Tag Vectorial
@@ -93,7 +93,7 @@ constexpr ExecutionPolicy<> seq{};
 
 struct Vectorial_;
 using Vectorial = Tag<Vectorial_>;
-ExecutionPolicy<Serial, Vectorial> vec{};
+// ExecutionPolicy<Serial, Vectorial> vec{};
 
 // ----------------------------------------------------------------------------
 // Tag Parallel Flags depending on parallel option.
@@ -103,20 +103,20 @@ ExecutionPolicy<Serial, Vectorial> vec{};
 struct ParallelTbb_;
 using ParallelTbb = Tag<ParallelTbb_>;
 using Parallel = ParallelTbb;
-ExecutionPolicy<ParallelTbb> par{std::thread::hardware_concurrency()};
-ExecutionPolicy<ParallelTbb, Vectorial> parVec{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelTbb> par{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelTbb, Vectorial> parVec{std::thread::hardware_concurrency()};
 #elif defined(_OPENMP)
 struct ParallelOmp_;
 using ParallelOmp = Tag<ParallelOmp_>;
 using Parallel = ParallelOmp;
-ExecutionPolicy<ParallelOmp> par{std::thread::hardware_concurrency()};
-ExecutionPolicy<ParallelOmp, Vectorial> parVec{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelOmp> par{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelOmp, Vectorial> parVec{std::thread::hardware_concurrency()};
 #else
 struct ParallelStd_;
 using ParallelStd = Tag<ParallelStd_>;
 using Parallel = ParallelStd;
-ExecutionPolicy<ParallelStd> par{std::thread::hardware_concurrency()};
-ExecutionPolicy<ParallelStd, Vectorial> parVec{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelStd> par{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelStd, Vectorial> parVec{std::thread::hardware_concurrency()};
 #endif
 
 // ============================================================================
