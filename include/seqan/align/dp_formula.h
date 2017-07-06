@@ -128,14 +128,15 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
     TTraceValue traceDir = _doComputeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal,
                                            seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
+    {
         if (activeCell._score <= 0)
         {
             _setScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            _setHorizontalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            _setVerticalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
+            // _setHorizontalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
+            // _setVerticalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
             return TraceBitMap_<TScoreValue>::NONE;
         }
-
+    }
     return traceDir;
 }
 
@@ -160,8 +161,6 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
     {
         auto cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
         _setScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
-        _setHorizontalScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
-        _setVerticalScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
         return blend(traceDir, TraceBitMap_<TScoreValue>::NONE, cmp);
     }
 
@@ -211,7 +210,7 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 RecursionDirectionZero const &,
                 DPProfile_<TAlgoTag, TGapCosts, TTraceFlag, TExecPolicy> const &)
 {
-    _scoreOfCell(activeCell) = createVector<TScoreValue>(0);
+    _scoreOfCell(activeCell) = TraceBitMap_<TScoreValue>::NONE;
     return TraceBitMap_<TScoreValue>::NONE;
 }
 

@@ -193,31 +193,51 @@ struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAl
 // Function _copySimdCell()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TScoreValue>
+template <typename TValue, typename TSpec,
+          typename TScoreValue>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, LinearGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, LinearGaps> const & activeCell,
-              TScoreValue const & cmp)
+              TScoreValue const & cmp,
+              DPTraceMatrix<TracebackOff> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
 }
 
-template <typename TValue, typename TSpec, typename TScoreValue>
+template <typename TValue, typename TSpec,
+          typename TScoreValue,
+          typename TTraceConfig>
+inline void
+_copySimdCell(DPScout_<DPCell_<TValue, LinearGaps>, SimdAlignmentScout<TSpec> > & dpScout,
+              DPCell_<TValue, LinearGaps> const & activeCell,
+              TScoreValue const & cmp,
+              DPTraceMatrix<TTraceConfig> const & /**/)
+{
+    dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
+}
+
+template <typename TValue, typename TSpec,
+          typename TScoreValue,
+          typename TTraceConfig>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, AffineGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, AffineGaps> const & activeCell,
-              TScoreValue const & cmp)
+              TScoreValue const & cmp,
+              DPTraceMatrix<TTraceConfig> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
     dpScout._maxScore._horizontalScore = blend(dpScout._maxScore._horizontalScore, activeCell._horizontalScore, cmp);
     dpScout._maxScore._verticalScore = blend(dpScout._maxScore._verticalScore, activeCell._verticalScore, cmp);
 }
 
-template <typename TValue, typename TSpec, typename TScoreValue>
+template <typename TValue, typename TSpec,
+          typename TScoreValue,
+          typename TTraceConfig>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, DynamicGaps> const & activeCell,
-              TScoreValue const & cmp)
+              TScoreValue const & cmp,
+              DPTraceMatrix<TTraceConfig> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
     dpScout._maxScore._flagMask = blend(dpScout._maxScore._flagMask, activeCell._flagMask, cmp);
@@ -227,13 +247,26 @@ _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> >
 // Function _updateHostPositions()
 // ----------------------------------------------------------------------------
 
+// No trace needed, hence we do not track the max positions.
 template<typename TDPCell, typename TScoutSpec,
          typename TMask,
          typename TNavigator>
 inline void
+_updateHostPositions(DPScout_<TDPCell, TScoutSpec> & /*dpScout*/,
+                     TMask const & /*cmp*/,
+                     TNavigator const & /*navi*/,
+                     DPTraceMatrix<TracebackOff> const & /**/)
+{}
+
+template<typename TDPCell, typename TScoutSpec,
+         typename TMask,
+         typename TNavigator,
+         typename TTraceConfig>
+inline void
 _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
                      TMask const & cmp,
-                     TNavigator const & navi)
+                     TNavigator const & navi,
+                     DPTraceMatrix<TTraceConfig> const & /**/)
 {
     using TSimdVector = typename Value<TDPCell>::Type;
     dpScout.mHorizontalPos = blend(dpScout.mHorizontalPos,
@@ -249,7 +282,10 @@ _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
 // Function _scoutBestScore()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
+template <typename TDPCell,
+          typename TTraceMatrixNavigator,
+          typename TIsLastColumn,
+          typename TIsLastRow>
 inline void
 _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & dpScout,
                 TDPCell const & activeCell,
@@ -257,9 +293,10 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & d
                 TIsLastColumn const & /**/,
                 TIsLastRow const & /**/)
 {
+    using TMatrixType = typename MatrixType<TTraceMatrixNavigator>::Type;
     auto cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
-    _copySimdCell(dpScout, activeCell, cmp);
-    _updateHostPositions(dpScout, cmp, navigator);
+    _copySimdCell(dpScout, activeCell, cmp, TMatrixType());
+    _updateHostPositions(dpScout, cmp, navigator, TMatrixType());
 }
 
 template <typename TDPCell, typename TTraits,
@@ -273,10 +310,11 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTr
                 TIsLastColumn const & /**/,
                 TIsLastRow const & /**/)
 {
+    using TMatrixType = typename MatrixType<TTraceMatrixNavigator>::Type;
     auto cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
     cmp &= dpScout.state->masks[dpScout.state->posV];
-    _copySimdCell(dpScout, activeCell, cmp);
-    _updateHostPositions(dpScout, cmp, navigator);
+    _copySimdCell(dpScout, activeCell, cmp, TMatrixType());
+    _updateHostPositions(dpScout, cmp, navigator, TMatrixType());
 }
 
 template <typename TDPCell, typename TScoutSpec>
