@@ -1186,7 +1186,7 @@ _computeAlignment(TTraceTarget & traceSegments,
                   DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, TExecPolicy> const & dpProfile)
 {
     typedef typename Value<TScoreScheme>::Type TScoreValue;
-    typedef DPContext<DPCell_<TScoreValue, TGapScheme>, typename TraceBitMap_::TTraceValue> TDPContext;
+    typedef DPContext<DPCell_<TScoreValue, TGapScheme>, typename TraceBitMap_<TScoreValue>::Type> TDPContext;
     TDPContext dpContext;
     return _computeAlignment(dpContext, traceSegments, scoutState, seqH, seqV, scoreScheme, band, dpProfile);
 }
