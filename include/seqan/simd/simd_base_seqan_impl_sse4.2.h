@@ -1035,7 +1035,8 @@ template <typename TSimdVector>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, int)
 inline _testAllZeros(TSimdVector const & vector, TSimdVector const & mask, SimdParams_<16>)
 {
-    return _mm_testz_si128(vector, mask);
+    return _mm_testz_si128(SEQAN_VECTOR_CAST_(const __m128i &, vector),
+                           SEQAN_VECTOR_CAST_(const __m128i &, mask));
 }
 
 // --------------------------------------------------------------------------
