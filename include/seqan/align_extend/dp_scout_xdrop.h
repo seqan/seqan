@@ -131,7 +131,7 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
     typedef typename Value<TDPCell>::Type TScoreValue;
     typedef XDrop_<TScoreValue> TXDrop;
     typedef DPScout_<TDPCell, Terminator_<TXDrop> > TDPScout;
-    typedef typename TDPScout::TParent TParent;
+    typedef typename TDPScout::TBase TParent;
 
     // global maximum
     _scoutBestScore(static_cast<TParent &>( dpScout ), activeCell, navigator);

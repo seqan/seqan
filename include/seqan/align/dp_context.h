@@ -89,7 +89,7 @@ getDpScoreMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost>
 }
 
 template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
-inline TScoreMatHost &
+inline TScoreMatHost const &
 getDpScoreMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> const & dpContext)
 {
     return dpContext._scoreMatrix;
@@ -107,7 +107,7 @@ getDpTraceMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost>
 }
 
 template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
-inline TTraceMatHost &
+inline TTraceMatHost const &
 getDpTraceMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> const & dpContext)
 {
     return dpContext._traceMatrix;
