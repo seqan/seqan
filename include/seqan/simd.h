@@ -76,18 +76,40 @@
     #define SEQAN_SEQANSIMD_ENABLED
 #endif
 
+// Seqan's simd implementation supports only avx2 and sse4.
+#if defined(SEQAN_SEQANSIMD_ENABLED) && !(defined(__AVX2__) || (defined(__SSE4_1__) && defined(__SSE4_2__)))
+    #undef SEQAN_SIMD_ENABLED
+    #undef SEQAN_SEQANSIMD_ENABLED
+#endif
+
 #if defined(SEQAN_SEQANSIMD_ENABLED) && (defined(COMPILER_MSVC) || defined(COMPILER_WINTEL))
     #error SEQAN::SIMD (vector extension) is not supported by msvc and windows intel compiler, try compiling with -DSEQAN_UMESIMD_ENABLED
 #endif
 
 // Define maximal size of vector in byte.
-#if defined(__AVX512F__)
+// Define maximal size of vector in byte.
+#if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
+    // TODO(marehr): If we switch to jenkins, filter out these warnings
+    #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
+        #pragma message("SEQAN_SIMD doesn't support AVX512, thus falling back to AVX2 " \
+                        "(we are using some back ported instruction for AVX2 which where introduced since AVX512)")
+    #endif
+    #define SEQAN_SIZEOF_MAX_VECTOR 32
+#elif defined(__AVX512F__)
     #define SEQAN_SIZEOF_MAX_VECTOR 64
 #elif defined(__AVX2__)
     #define SEQAN_SIZEOF_MAX_VECTOR 32
 #elif defined(__SSE4_1__) && defined(__SSE4_2__)
     #define SEQAN_SIZEOF_MAX_VECTOR 16
 #endif
+
+// #if defined(__AVX512F__)
+//     #define SEQAN_SIZEOF_MAX_VECTOR 64
+// #elif defined(__AVX2__)
+//     #define SEQAN_SIZEOF_MAX_VECTOR 32
+// #elif defined(__SSE4_1__) && defined(__SSE4_2__)
+//     #define SEQAN_SIZEOF_MAX_VECTOR 16
+// #endif
 
 #include "simd/simd_base.h"
 #include "simd/simd_base_seqan_impl.h"
@@ -102,7 +124,7 @@
     #endif // defined(__AVX2__)
 
     #if defined(__AVX512F__)
-    #include "simd/simd_base_seqan_impl_avx512.h"
+    // #include "simd/simd_base_seqan_impl_avx512.h"
     #endif // defined(__AVX512F__)
 
     #include "simd/simd_base_seqan_interface.h"
