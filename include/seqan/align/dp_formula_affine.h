@@ -477,7 +477,8 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                                   scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     TTraceValue tvGap =
         _internalComputeScore(activeCell,
-                              _scoreOfCell(previousHorizontal) + scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal),
+                              static_cast<TScoreValue>(_scoreOfCell(previousHorizontal) +
+                                                       scoreGapOpenHorizontal(scoringScheme, seqHVal, seqVVal)),
                               TraceBitMap_<TScoreValue>::HORIZONTAL,
                               TraceBitMap_<TScoreValue>::HORIZONTAL_OPEN,
                               TTracebackConfig(),
@@ -488,7 +489,8 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                                 scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
     tvGap |=
         _internalComputeScore(activeCell,
-                              _scoreOfCell(previousVertical) + scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal),
+                              static_cast<TScoreValue>(_scoreOfCell(previousVertical) +
+                                                       scoreGapOpenVertical(scoringScheme, seqHVal, seqVVal)),
                               TraceBitMap_<TScoreValue>::VERTICAL,
                               TraceBitMap_<TScoreValue>::VERTICAL_OPEN,
                               TTracebackConfig(),
@@ -498,7 +500,8 @@ _doComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
     // Stores the flag for coming from a potential direction.
     TTraceValue tvMax = _internalComputeScore(activeCell, TTracebackConfig());
     return _internalComputeScore(activeCell,
-                                 _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal),
+                                 static_cast<TScoreValue>(_scoreOfCell(previousDiagonal) +
+                                                          score(scoringScheme, seqHVal, seqVVal)),
                                  tvGap,
                                  tvMax,
                                  TTracebackConfig(),
