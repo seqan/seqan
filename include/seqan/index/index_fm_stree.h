@@ -56,18 +56,18 @@ struct HistoryStackFM_
     TSize       repLen;
     TAlphabet   lastChar;
 
-   
+
     HistoryStackFM_() {}
 
     template <typename TSize_, typename TAlphabet_>
-   
+
     HistoryStackFM_(Pair<TSize_> const &_range, TSize_ _repLen, TAlphabet_ _lastChar):
         range(_range),
         repLen(_repLen),
         lastChar(_lastChar)
     {}
 
-   
+
     HistoryStackFM_ const &
     operator=(HistoryStackFM_ const & _origin)
     {
@@ -90,7 +90,7 @@ struct VertexFM
     TSize       repLen;
     TAlphabet   lastChar;
 
-   
+
     VertexFM() :
         range(0, 0),
         smaller(0),
@@ -98,7 +98,7 @@ struct VertexFM
         lastChar(0)
     {}
 
-   
+
     VertexFM(MinimalCtor) :
         range(0, 0),
         smaller(0),
@@ -106,7 +106,7 @@ struct VertexFM
         lastChar(0)
     {}
 
-   
+
     VertexFM(Pair<TSize> newCurrentRange, TSize newSmallerValue, TSize newRepLen, TAlphabet newChar) :
         range(newCurrentRange),
         smaller(newSmallerValue),
@@ -114,7 +114,7 @@ struct VertexFM
         lastChar(newChar)
     {}
 
-   
+
     VertexFM(VertexFM const & other) :
         range(other.range),
         smaller(other.smaller),
@@ -362,7 +362,7 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
 
-    if (stringIt == stringEnd)
+    if (SEQAN_UNLIKELY(stringIt == stringEnd))
         return true;
 
     _historyPush(it);
