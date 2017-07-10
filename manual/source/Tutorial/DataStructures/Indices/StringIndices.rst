@@ -50,8 +50,9 @@ A SeqAn index needs two pieces of information: the type of the :dox:`String` or 
 .. important::
 
     Indices based on suffix arrays (also including the FM index) are built using secondary memory.
-    Building large indices can throw errors when you are running out of disk space or quota.
-    The directory used for temporary storage can be changed by specifying the TMPDIR environment variable (on UNIX)
+    When building large indices, it is therefore possible to run out of disk space (in which case an exception will be
+    thrown).
+    To circumvent this, the directory used for temporary storage can be changed by specifying the TMPDIR environment variable (on UNIX)
     respectively TEMP environment variable (on Windows):
 
     .. code-block:: console
