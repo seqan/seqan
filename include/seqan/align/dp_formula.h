@@ -159,11 +159,18 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                                            seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
     {
-        auto cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
-        _setScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
-        return blend(traceDir, TraceBitMap_<TScoreValue>::NONE, cmp);
+        if (std::is_same<typename DPProfileType<TDPProfile, DPProfileTypeId::TRACE_CONFIG>::Type, TracebackOff>::value)
+        {
+            activeCell._score = max(activeCell._score, TraceBitMap_<TScoreValue>::NONE);
+            return TraceBitMap_<TScoreValue>::NONE;
+        }
+        else
+        {
+            auto cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
+            _setScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
+            return blend(traceDir, TraceBitMap_<TScoreValue>::NONE, cmp);
+        }
     }
-
     return traceDir;
 }
 
