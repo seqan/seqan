@@ -52,9 +52,7 @@ struct IntermediateDPResult
     // ----------------------------------------------------------------------------
     // Member Types.
 
-//    using TScoreValue = typename TTraits::TScoreValue;
-//    using THostPos    = typename TTraits::THostPosition;
-    using TState      = std::pair<typename TTraits::TScoreValue, typename TTraits::THostPosition>;
+    using TState = std::pair<typename TTraits::TScoreValue, typename TTraits::THostPosition>;
 
     // ----------------------------------------------------------------------------
     // Member Variables
@@ -65,6 +63,10 @@ struct IntermediateDPResult
 
     // ----------------------------------------------------------------------------
     // Constructors.
+
+    // Note: Although, this could be an aggregate type, the icpc-17 crashes,
+    // when compiling without the defaulted constructor.
+    IntermediateDPResult() = default;
 
     // ----------------------------------------------------------------------------
     // Member Functions.
