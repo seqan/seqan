@@ -290,6 +290,22 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_at_end)
     SEQAN_ASSERT_EQ(atEnd(test), true);
 }
 
+SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_is_base)
+{
+    typedef JournaledStringTree<DnaString> TJst;
+    typedef TraverserImpl<TJst, JstTraversalSpec<> > TTraverser;
+
+    TJst jst = JstMockGenerator::_createSimpleJst<TJst>();
+    TTraverser test(jst, 1);
+
+    SEQAN_ASSERT(!isBase(test));
+    for (unsigned i = 0; i < 31; ++i)
+    {
+        advance(test, 1);
+    }
+    SEQAN_ASSERT(isBase(test));
+}
+
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_context_size)
 {
     typedef JournaledStringTree<DnaString> TJst;

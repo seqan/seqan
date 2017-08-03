@@ -36,7 +36,7 @@
 
 if (WIN32)
   # For all contrib versions...
-  foreach (_SEQAN_CONTRIB_VERSION D20160115)
+  foreach (_SEQAN_CONTRIB_VERSION D20170601 D20160115)
     set (_SEQAN_CONTRIB_DIR "seqan-contrib-${_SEQAN_CONTRIB_VERSION}")
 
 	  # Determine architecture for the precompiled contribs.

@@ -1731,10 +1731,10 @@ inline void fail()
 
 // This macro returns from the current function and logs a "skipped"
 // event for the current test.
-#define SEQAN_SKIP_TEST                         \
-    do {                                        \
-        ::seqan::ClassTest::skipCurrentTest();  \
-        return;                                 \
+#define SEQAN_SKIP_TEST                                       \
+    do {                                                      \
+        ::seqan::ClassTest::skipCurrentTest();                \
+        throw ::seqan::ClassTest::AssertionFailedException(); \
     } while (false)
 #endif  // #if SEQAN_ENABLE_TESTING
 

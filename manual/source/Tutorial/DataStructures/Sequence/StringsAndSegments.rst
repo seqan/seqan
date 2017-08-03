@@ -112,7 +112,7 @@ To empty a :dox:`String`, the function :dox:`StringConcept#clear` resets the obj
 .. includefrags:: demos/tutorial/sequences/example_functionality2.cpp
     :fragment: clear
 
-SeqAn offers a range of other functions for the work with the :dox:`String` class, e.g. :dox:`AssignableConcept#assign`, :dox:`RandomAccessContainerConcept#assignValue`, :dox:`RandomAccessContainerConcept#value`, :dox:`IteratorAssociatedTypesConcept#getValue`, :dox:`ContainerConcept#empty`, etc.
+SeqAn offers a range of other functions for the work with the :dox:`String` class, e.g. :dox:`AssignableConcept#assign`, :dox:`RandomAccessContainerConcept#assignValue`, :dox:`ContainerConcept#empty`, etc.
 The full list of functions you can find in the documentation :dox:`String`.
 
 Assignment 1

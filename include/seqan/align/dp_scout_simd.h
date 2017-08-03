@@ -72,17 +72,20 @@ public:
     using TSizeH = typename Size<typename TTraits::TSeqH>::Type;
     using TSizeV = typename Size<typename TTraits::TSeqV>::Type;
 
+    using TModString = ModifiedString<String<size_t>, ModPos<String<size_t> > >;
+    using TIterator = typename Iterator<TModString, Standard>::Type;
+
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksH;
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masksV;
     String<typename TTraits::TSimdVector, Alloc<OverAligned> > masks;
 
-    String<size_t> endsH;
-    String<size_t> endsV;
-    ModifiedString<String<size_t>, ModPos<String<size_t> > > sortedEndsH;
-    ModifiedString<String<size_t>, ModPos<String<size_t> > > sortedEndsV;
+    String<size_t>  endsH;
+    String<size_t>  endsV;
+    TModString      sortedEndsH;
+    TModString      sortedEndsV;
 
-    decltype(begin(sortedEndsH, Standard())) nextEndsH;
-    decltype(begin(sortedEndsV, Standard())) nextEndsV;
+    TIterator nextEndsH;
+    TIterator nextEndsV;
 
     size_t dimV;
     size_t posH;
@@ -107,7 +110,7 @@ public:
 
     inline void updateMasksBottom()
     {
-        for (auto posIt  = begin(sortedEndsV, Standard()); posIt != end(sortedEndsV, Standard()); ++posIt)
+        for (auto posIt = begin(sortedEndsV, Standard()); posIt != end(sortedEndsV, Standard()); ++posIt)
             for (auto it = nextEndsH; it != end(sortedEndsH, Standard()); ++it)
             {
                 masks[*posIt] |= (masksH[*it] & masksV[*posIt]);
@@ -233,7 +236,16 @@ _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
                      SimdVector<int32_t>::Type positionNavigator)
 {
 // TODO(rrahn): Refactor!
-#if defined(__AVX2__)
+#if SEQAN_UMESIMD_ENABLED
+    using TSimdHalfVec = typename UME::SIMD::SIMDTraits<TSimdVec>::HALF_LEN_VEC_T;
+    TSimdHalfVec cmpLow, cmpHigh;
+    cmp.unpack(cmpLow, cmpHigh);
+
+    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
+                                static_cast<SimdVector<int32_t>::Type>(cmpLow));
+    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
+                                 static_cast<SimdVector<int32_t>::Type>(cmpHigh));
+#elif defined(__AVX2__)
     dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
                                 _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp))));
     dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
@@ -451,4 +463,3 @@ _hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTrait
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SIMD_DP_SCOUT_SIMD_H_
-

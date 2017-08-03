@@ -83,5 +83,6 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 add_test (NAME test_test_align COMMAND $<TARGET_FILE:test_align>)
 if (ALIGN_SIMD_TEST)
-    add_test (NAME test_test_align_simd COMMAND $<TARGET_FILE:test_align_simd>)
+    include (SeqAnSimdUtility)
+    add_simd_platform_tests(test_align_simd)
 endif ()
