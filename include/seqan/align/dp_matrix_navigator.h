@@ -83,6 +83,14 @@ struct NavigateColumnWise_;
 typedef Tag<NavigateColumnWise_> NavigateColumnWise;
 
 // ----------------------------------------------------------------------------
+// Tag NavigateColumnWiseBanded
+// ----------------------------------------------------------------------------
+
+// Facilitates banded column wise navigation through the dp-matrix.
+struct NavigateColumnWiseBanded_;
+typedef Tag<NavigateColumnWiseBanded_> NavigateColumnWiseBanded;
+
+// ----------------------------------------------------------------------------
 // Class DPMatrixNavigator_
 // ----------------------------------------------------------------------------
 
