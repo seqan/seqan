@@ -77,8 +77,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
     value(traceMatrix, 2, 3) = +TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::MAX_FROM_HORIZONTAL_MATRIX;
     value(traceMatrix, 3, 3) = +TraceBitMap_<>::DIAGONAL;
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
     DnaString str0 = "ACG";
     DnaString str1 = "ACG";
@@ -177,8 +176,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
     value(traceMatrix, 2, 3) = +TraceBitMap_<>::NONE;
     value(traceMatrix, 3, 3) = +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::VERTICAL  | +TraceBitMap_<>::HORIZONTAL;
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>{}};
 
     DnaString str0 = "ACG";
     DnaString str1 = "ACG";
@@ -202,7 +200,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWiseBanded> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -233,8 +231,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
     value(traceMatrix, 2, 4) = +TraceBitMap_<>::NONE;
 
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOn>(-1, 1));
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOn>{-1, 1}};
 
     DnaString str0 = "ACGT";
     DnaString str1 = "ACGT";
@@ -259,7 +256,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWiseBanded> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -325,8 +322,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
     value(traceMatrix, 5, 6) = +TraceBitMap_<>::NONE;
     value(traceMatrix, 6, 6) = +TraceBitMap_<>::NONE;
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOn>(-4, 4));
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOn>{-4, 4}};
 
     DnaString str0 = "ACGTAC";
     DnaString str1 = "ACGTAC";
@@ -350,7 +346,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TTraceMatrix;
 
-    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWise> TDPTraceNavigator;
+    typedef DPMatrixNavigator_<TTraceMatrix, DPTraceMatrix<TracebackOn<> >, NavigateColumnWiseBanded> TDPTraceNavigator;
 
     String<TTraceSegment> target;
     TTraceMatrix traceMatrix;
@@ -368,8 +364,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
 
     value(traceMatrix, 0, 3) = +TraceBitMap_<>::DIAGONAL;
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOn>(0, 0));
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOn>{0, 0}};
 
     DnaString str0 = "ACG";
     DnaString str1 = "ACG";
@@ -416,8 +411,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_linear_gaps)
     value(traceMatrix, 3, 2) = +TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::DIAGONAL;
 
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
     DnaString str0 = "AC";
     DnaString str1 = "CCC";
@@ -465,8 +459,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
     value(traceMatrix, 3, 2) = +TraceBitMap_<>::VERTICAL | +TraceBitMap_<>::DIAGONAL | +TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX;
 
 
-    TDPTraceNavigator navigator;
-    _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+    TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
     DnaString str0 = "AC";
     DnaString str1 = "CCC";
@@ -516,8 +509,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
         value(traceMatrix, 3, 2) = TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::DIAGONAL;
 
 
-        TDPTraceNavigator navigator;
-        _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+        TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
         DnaString str0 = "AC";
         DnaString str1 = "CCC";
@@ -563,8 +555,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
         value(traceMatrix, 2, 4) = TraceBitMap_<>::NONE;
         value(traceMatrix, 3, 4) = TraceBitMap_<>::DIAGONAL;
 
-        TDPTraceNavigator navigator;
-        _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+        TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
         DnaString str0 = "ACCA";
         DnaString str1 = "ACA";
@@ -617,8 +608,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
         value(traceMatrix, 3, 2) = TraceBitMap_<>::VERTICAL_OPEN | TraceBitMap_<>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<>::DIAGONAL;
 
 
-        TDPTraceNavigator navigator;
-        _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+        TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
         DnaString str0 = "AC";
         DnaString str1 = "CCC";
@@ -663,8 +653,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
         value(traceMatrix, 2, 4) = TraceBitMap_<>::NONE;
         value(traceMatrix, 3, 4) = TraceBitMap_<>::DIAGONAL;
 
-        TDPTraceNavigator navigator;
-        _init(navigator, traceMatrix, DPBandConfig<BandOff>());
+        TDPTraceNavigator navigator{traceMatrix, DPBandConfig<BandOff>()};
 
         DnaString str0 = "ACCA";
         DnaString str1 = "ACA";

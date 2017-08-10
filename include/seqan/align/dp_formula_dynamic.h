@@ -530,12 +530,14 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                                  TTracebackConfig(), tag) | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX;
 }
 
+// NOTE(rrahn): Here we copy the previousCellHorizontal as it might refer to the same value as acticeCell.
+// Since we cannot assure here to read the value before we write it, we have to take a copy from it.
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
           typename TAlgorithm, typename TTracebackConfig>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
-                DPCell_<TScoreValue, DynamicGaps> const previousHorizontal, // NOTE(rrahn): We want the copy here. Don't change!!!
+                DPCell_<TScoreValue, DynamicGaps> const previousHorizontal, // NOTE(rrahn): Don't change!!!
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousVertical*/,
                 TSequenceHValue const & seqHVal,
                 TSequenceVValue const & seqVVal,

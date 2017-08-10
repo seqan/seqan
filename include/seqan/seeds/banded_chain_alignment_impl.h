@@ -407,17 +407,20 @@ _applyBandedChainTracking(TDPScout & scout,
 // ----------------------------------------------------------------------------
 
 // Overload of _computeCell function to add functionality specific to the bande chain alignment.
-template <typename TDPScout, typename TTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TColumnDescriptor,
-          typename TCellDescriptor, typename TFreeEndGaps, typename TDPMatrixLocation, typename TTracebackConfig,
+template <typename TDPScout,
+          typename TTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TColumnDescriptor,
+          typename TCellDescriptor,
+          typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig,
           typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-             DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-             DPCell_<TScoreValue, TGapCosts> const & previousVertical,
+             TCellTuple recursionCells,
              TSeqHValue const & seqHVal,
              TSeqVValue const & seqVVal,
              TScoringScheme const & scoringScheme,
@@ -430,27 +433,32 @@ _computeCell(TDPScout & scout,
 
     assignValue(
         traceMatrixNavigator,
-        _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal, seqVVal,
+        _computeScore(recursionCells, seqHVal, seqVVal,
                       scoringScheme, typename RecursionDirection_<TMetaColumnProfile, TCellDescriptor>::Type(),
                       TDPProfile()));
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
-        _applyBandedChainTracking(scout, traceMatrixNavigator, activeCell, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
+        _applyBandedChainTracking(scout, traceMatrixNavigator, std::get<0>(recursionCells),
+                                  TColumnDescriptor(), TCellDescriptor(), TDPProfile());
 }
 
 // ----------------------------------------------------------------------------
 // Function _computeCell()              [BandedChainAlignment, DPInitialColumn]
 // ----------------------------------------------------------------------------
 
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TColumnType, typename TCellDescriptor,
-          typename TSpec, typename TDPMatrixLocation, typename TTracebackConfig, typename TExecPolicy>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TColumnType,
+          typename TCellDescriptor,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig,
+          typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TCellTuple recursionCells,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const & /*scoringScheme*/,
@@ -462,10 +470,11 @@ _computeCell(TDPScout & scout,
     typedef MetaColumnDescriptor<DPInitialColumn, TColumnType> TColumnDescriptor;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
-    activeCell = _verticalCellInitialization(scout, traceMatrixNavigator);
+    std::get<0>(recursionCells) = _verticalCellInitialization(scout, traceMatrixNavigator);
     assignValue(traceMatrixNavigator, +TraceBitMap_<>::NONE);
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
-        _applyBandedChainTracking(scout, traceMatrixNavigator, activeCell, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
+        _applyBandedChainTracking(scout, traceMatrixNavigator, std::get<0>(recursionCells),
+                                  TColumnDescriptor(), TCellDescriptor(), TDPProfile());
 }
 
 // ----------------------------------------------------------------------------
@@ -495,16 +504,17 @@ _computeHorizontalInitCell(TDPScout & scout,
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig, typename TExecPolicy>
+template <typename TDPScout, typename TDPTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig,
+          typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TCellTuple recursionCells,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
@@ -513,21 +523,23 @@ _computeCell(TDPScout & scout,
              DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
     typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, std::get<0>(recursionCells),
                                MetaColumnDescriptor<DPInnerColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
 }
 
 // For DPFinalColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig, typename TExecPolicy>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig,
+          typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TCellTuple recursionCells,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
@@ -536,7 +548,7 @@ _computeCell(TDPScout & scout,
              DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
     typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, std::get<0>(recursionCells),
                                MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
 }
 
@@ -545,16 +557,18 @@ _computeCell(TDPScout & scout,
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig, typename TExecPolicy>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig,
+          typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TCellTuple recursionCells,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
@@ -563,21 +577,23 @@ _computeCell(TDPScout & scout,
              DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
     typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, std::get<0>(recursionCells),
                                MetaColumnDescriptor<DPInnerColumn, FullColumn>(), FirstCell(), TDPProfile());
 }
 
 // For DPFinalColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig, typename TExecPolicy>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig,
+          typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TCellTuple recursionCells,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
@@ -586,7 +602,7 @@ _computeCell(TDPScout & scout,
              DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
     typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, std::get<0>(recursionCells),
                                MetaColumnDescriptor<DPFinalColumn, FullColumn>(), FirstCell(), TDPProfile());
 }
 
@@ -694,7 +710,8 @@ _initiaizeBeginningOfBandedChain(TScoutState & scoutState,
     typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy> TDPProfile;
 
     TDPCell dpInitCellHorizontal;
-    _computeScore(dpInitCellHorizontal, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), Nothing(),
+    _computeScore(std::forward_as_tuple(dpInitCellHorizontal, TDPCell(), TDPCell(), TDPCell()),
+                  Nothing(), Nothing(), Nothing(),
                   RecursionDirectionZero(), TDPProfile());
     scoutState._nextInitializationCells.insert(TInitCell(0,0, dpInitCellHorizontal));
 
@@ -702,26 +719,31 @@ _initiaizeBeginningOfBandedChain(TScoutState & scoutState,
     {
         TDPCell prevCell = dpInitCellHorizontal;
         if (IsFreeEndGap_<TFreeEndGaps, DPFirstRow>::VALUE)
-            _computeScore(dpInitCellHorizontal, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), scoreScheme,
+            _computeScore(std::forward_as_tuple(dpInitCellHorizontal, TDPCell(), TDPCell(), TDPCell()),
+                  Nothing(), Nothing(), scoreScheme,
                   RecursionDirectionZero(), TDPProfile());
         else
-            _computeScore(dpInitCellHorizontal, TDPCell(), prevCell, TDPCell(), Nothing(), Nothing(), scoreScheme,
+            _computeScore(std::forward_as_tuple(dpInitCellHorizontal, TDPCell(), prevCell, TDPCell()),
+                  Nothing(), Nothing(), scoreScheme,
                   RecursionDirectionHorizontal(), TDPProfile());
         scoutState._nextInitializationCells.insert(TInitCell(activeColumn, 0, dpInitCellHorizontal));
     }
 
     TDPCell dpInitCellVertical;
-    _computeScore(dpInitCellVertical, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), Nothing(),
+    _computeScore(std::forward_as_tuple(dpInitCellVertical, TDPCell(), TDPCell(), TDPCell()),
+                  Nothing(), Nothing(), Nothing(),
                   RecursionDirectionZero(), TDPProfile());
     for(TSizeV activeRow = 1; activeRow < sizeV; ++activeRow)
     {
         TDPCell prevCell = dpInitCellVertical;
         if (IsFreeEndGap_<TFreeEndGaps, DPFirstColumn>::VALUE)
-            _computeScore(dpInitCellVertical, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), scoreScheme,
-                  RecursionDirectionZero(), TDPProfile());
+            _computeScore(std::forward_as_tuple(dpInitCellVertical, TDPCell(), TDPCell(), TDPCell()),
+                          Nothing(), Nothing(), scoreScheme,
+                          RecursionDirectionZero(), TDPProfile());
         else
-            _computeScore(dpInitCellVertical, TDPCell(), TDPCell(), prevCell, Nothing(), Nothing(), scoreScheme,
-                  RecursionDirectionVertical(), TDPProfile());
+            _computeScore(std::forward_as_tuple(dpInitCellVertical, TDPCell(), TDPCell(), prevCell),
+                          Nothing(), Nothing(), scoreScheme,
+                          RecursionDirectionVertical(), TDPProfile());
         scoutState._nextInitializationCells.insert(TInitCell(0, activeRow, dpInitCellVertical));
     }
 

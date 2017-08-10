@@ -361,8 +361,7 @@ void _computeSplitTrace(TTarget & target,
     setHost(matrix, getDpTraceMatrix(dpContext));
     resize(matrix);
     SEQAN_ASSERT_EQ(length(getDpTraceMatrix(dpContext)), length(matrix));
-    TDPTraceMatrixNavigator navi;
-    _init(navi, matrix, config._band);
+    TDPTraceMatrixNavigator navi{matrix, config._band};
     _computeTraceback(target, navi, matPos, seqH, seqV, config._band, TDPProfile());
 }
 
