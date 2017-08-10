@@ -609,7 +609,7 @@ template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVVal
 inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
-                DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
+                DPCell_<TScoreValue, DynamicGaps> const previousHorizontal,  // NOTE(rrahn): We want the copy here. Don't change!!!
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousVertical*/,
                 TSequenceHValue const & seqHVal,
                 TSequenceVValue const & seqVVal,
@@ -628,7 +628,7 @@ template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVVal
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
 _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousDiagonal*/,
-                DPCell_<TScoreValue, DynamicGaps> const & previousHorizontal,
+                DPCell_<TScoreValue, DynamicGaps> const previousHorizontal, // NOTE(rrahn): We want the copy here. Don't change!!!
                 DPCell_<TScoreValue, DynamicGaps> const & /*previousVertical*/,
                 TSequenceHValue const & seqHVal,
                 TSequenceVValue const & seqVVal,
