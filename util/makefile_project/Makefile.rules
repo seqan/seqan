@@ -1,5 +1,5 @@
-SRC=../src
-CXXFLAGS+=-I../include -std=c++14
+SRC=./src
+CXXFLAGS+=-I../../include -std=c++14
 
 default: all
 all: main
