@@ -164,6 +164,8 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
     using TSimdVector = typename TTraits::TSimdVector;
     using TSimdValueType = typename Value<TSimdVector>::Type;
 
+    using TSimdValueType = typename Value<TResult>::Type;
+
     using TPadStringH = ModifiedString<typename Value<TSequencesH const>::Type, ModPadding>;
     using TPadStringV = ModifiedString<typename Value<TSequencesV const>::Type, ModPadding>;
 

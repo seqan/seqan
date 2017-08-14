@@ -320,6 +320,172 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
            (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
 }
 
+// ----------------------------------------------------------------------------
+// Function _getCompareMask()
+// ----------------------------------------------------------------------------
+
+// Helper functions to resolve the correct tracking of cells for different
+// alignment modes.
+
+// Standard global alignment.
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            True const & /*lastCol*/,
+                            True const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, False>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return ((dpScout.state->endPosVecH) == createVector<TSimdVec>(dpScout.state->posH)) &
+           ((dpScout.state->endPosVecV) == createVector<TSimdVec>(dpScout.state->posV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, False>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// Tracking the last row is enabled
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, False>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) == (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            TIsLastColumn const & /*lastCol*/,
+                            False const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, False>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// Tracking if the last column is enabled
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, True>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) == (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            False const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, True>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// Tracking if the last column and last row is enabled
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            True const & /*lastCol*/,
+                            True const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return ((createVector<TSimdVec>(dpScout.state->posH) == (dpScout.state->endPosVecH)) &
+            (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV))) |
+           ((createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+            (createVector<TSimdVec>(dpScout.state->posV) == (dpScout.state->endPosVecV)));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            False const & /*lastCol*/,
+                            True const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) == (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            True const & /*lastCol*/,
+                            False const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) == (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            False const & /*lastCol*/,
+                            False const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// If local alignment.
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TAlgoSpec, typename TGapModel, typename TTraceConfig>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<LocalAlignment_<TAlgoSpec>, TGapModel, TTraceConfig> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
+}
+
+// ----------------------------------------------------------------------------
+// Function _scoutBestScore()                         [SimdAlignVariableLength]
+// ----------------------------------------------------------------------------
+
 template <typename TDPCell, typename TTraits,
           typename TIsLastRow,
           typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig>
