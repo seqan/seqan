@@ -147,15 +147,12 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
     }
 
     // Initialize the navigators.
-    TDPScoreMatrixNavigator dpScoreMatrixNavigator;
-    TDPTraceMatrixNavigator dpTraceMatrixNavigator;
-
-    _init(dpScoreMatrixNavigator, dpScoreMatrix, DPBandConfig<BandOff>());
-    _init(dpTraceMatrixNavigator, dpTraceMatrix, DPBandConfig<BandOff>());
+    TDPScoreMatrixNavigator dpScoreMatrixNavigator{dpScoreMatrix, DPBandConfig<BandOff>{}};
+    TDPTraceMatrixNavigator dpTraceMatrixNavigator{dpTraceMatrix, DPBandConfig<BandOff>{}};
 
     // Execute the alignment.
-    _computeUnbandedAlignment(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
-                              scoringScheme, TDPProfile());
+    _computeAlignmentImpl(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
+                          scoringScheme, DPBandConfig<BandOff>{}, TDPProfile(), NavigateColumnWise{});
 }
 
 #ifdef SEQAN_SIMD_ENABLED
@@ -517,20 +514,34 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     }
     else
     {
+        using TDPSettings = std::decay_t<decltype(context(*tasks[0]).mDPSettings)>;
+        using TDPTraits = typename TDPSettings::TTraits;
+
+        using TDPProfile = DPProfile_<typename TDPTraits::TAlgorithmType,
+                                      typename TDPTraits::TGapType,
+                                      typename TDPTraits::TTracebackType,
+                                      Parallel>;
+
         using TMaskType = typename SimdMaskVector<TSimdVec>::Type;
-        using TSimdScoutTrait = SimdAlignVariableLengthTraits<TMaskType, decltype(depSetH), decltype(depSetV)>;
+        using TSimdScoutTrait = SimdAlignVariableLengthTraits<TMaskType,
+                                                              decltype(depSetH),
+                                                              decltype(depSetV),
+                                                              TDPProfile>;
         using TScoutState = DPScoutState_<DPTiled<TSimdBufferH, Default, SimdAlignVariableLength<TSimdScoutTrait>>>;
 
+        String<size_t> lengthsH;
+        String<size_t> lengthsV;
+
         TScoutState scoutState(bufferH, bufferV);
-        _prepareSimdAlignment(stringSimdH, stringSimdV, depSetH, depSetV, scoutState);
+        _prepareSimdAlignment(stringSimdH, stringSimdV, depSetH, depSetV, lengthsH, lengthsV, scoutState);
 
         using TScoutSpec = typename ScoutSpecForAlignmentAlgorithm_<typename TExecTraits::TAlgorithmType, TScoutState>::Type;
         using TDPScout = DPScout_<TDPCell, TScoutSpec>;
-
-        scoutState.dimV = length(stringSimdV) + 1;
-        scoutState.isLocalAlignment = IsLocalAlignment_<typename TExecTraits::TAlgorithmType>::VALUE;
-        scoutState.right = IsFreeEndGap_<typename TExecTraits::TAlgorithmType, DPLastColumn>::VALUE;
-        scoutState.bottom = IsFreeEndGap_<typename TExecTraits::TAlgorithmType, DPLastRow>::VALUE;
+        //
+        // scoutState.dimV = length(stringSimdV) + 1;
+        // scoutState.isLocalAlignment = IsLocalAlignment_<typename TExecTraits::TAlgorithmType>::VALUE;
+        // scoutState.right = IsFreeEndGap_<typename TExecTraits::TAlgorithmType, DPLastColumn>::VALUE;
+        // scoutState.bottom = IsFreeEndGap_<typename TExecTraits::TAlgorithmType, DPLastRow>::VALUE;
 
         TDPScout dpScout(scoutState);
         computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).mDPSettings);

@@ -173,7 +173,8 @@ struct WavefrontAlignmentTaskIncubator
             resize(*itH, length(front(seqHBlocks)), Exact());
             for (auto it = begin(*itH, Standard()); it != end(*itH, Standard()); ++it)
             {
-                it->i2 = _computeScore(it->i1, TDPCell(), tmp.i1, TDPCell(), Nothing(), Nothing(),
+                it->i2 = _computeScore(std::forward_as_tuple(it->i1, TDPCell(), tmp.i1, TDPCell()),
+                                       Nothing(), Nothing(),
                               score, typename RecursionDirection_<TDPMetaColH, FirstCell>::Type(),
                                        typename TWatc::TDPProfile());
                 tmp.i1 = it->i1;
@@ -191,7 +192,8 @@ struct WavefrontAlignmentTaskIncubator
             ++it;
             for (; it != end(*itV, Standard()); ++it)
             {
-                it->i2 = _computeScore(it->i1, TDPCell(), TDPCell(), tmp.i1, Nothing(), Nothing(),
+                it->i2 = _computeScore(std::forward_as_tuple(it->i1, TDPCell(), TDPCell(), tmp.i1),
+                                       Nothing(), Nothing(),
                                        score, typename RecursionDirection_<TDPMetaColV, InnerCell>::Type(),
                                        typename TWatc::TDPProfile());
                 tmp.i1 = it->i1;

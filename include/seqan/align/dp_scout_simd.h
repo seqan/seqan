@@ -447,6 +447,17 @@ maxHostCoordinates(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dp
 }
 
 // ----------------------------------------------------------------------------
+// Function maxScoreAt()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TScoutSpec>
+inline auto
+maxScoreAt(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
+{
+    return maxScore(dpScout)[dpScout._simdLane];
+}
+
+// ----------------------------------------------------------------------------
 // Function maxHostPosition()
 // ----------------------------------------------------------------------------
 
