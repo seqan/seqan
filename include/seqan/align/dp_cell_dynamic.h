@@ -67,12 +67,6 @@ struct FlagMaskType
 // Tags, Classes, Enums
 // ============================================================================
 
-struct DynamicGapExtensionHorizontal_;
-typedef Tag<DynamicGapExtensionHorizontal_> DynamicGapExtensionHorizontal;
-
-struct DynamicGapExtensionVertical_;
-typedef Tag<DynamicGapExtensionVertical_> DynamicGapExtensionVertical;
-
 enum DynamicGapsMask
 {
     MASK_VERTICAL_GAP = 1,

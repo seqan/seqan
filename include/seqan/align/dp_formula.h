@@ -102,6 +102,10 @@ typedef Tag<RecursionDirectionZero_> RecursionDirectionZero;
 // Metafunctions
 // ============================================================================
 
+// Helper typedef to get the correct score value type from the score-matrix navigator.
+template <typename TCellTuple>
+using ExtractedScoreValueType_ = std::decay_t<decltype(_scoreOfCell(std::get<0>(std::declval<TCellTuple>())))>;
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -110,64 +114,71 @@ typedef Tag<RecursionDirectionZero_> RecursionDirectionZero;
 // Function _computeScore
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue,
-          typename TScoringScheme, typename TRecursionDirection, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
-_computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
-              DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-              DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-              DPCell_<TScoreValue, TGapCosts> const & previousVertical,
+template <typename TRecursionCellTuple,
+          typename TSequenceHValue,
+          typename TSequenceVValue,
+          typename TScoringScheme,
+          typename TRecursionDirection,
+          typename TDPProfile>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<ExtractedScoreValueType_<TRecursionCellTuple>>>>,
+                            typename TraceBitMap_<ExtractedScoreValueType_<TRecursionCellTuple>>::Type)
+_computeScore(TRecursionCellTuple && recursionCells,
               TSequenceHValue const & seqHVal,
               TSequenceVValue const & seqVVal,
               TScoringScheme const & scoringScheme,
               TRecursionDirection const & recDir,
               TDPProfile const & dpProfile)
 {
-    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
-
-    TTraceValue traceDir = _doComputeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal,
-                                           seqVVal, scoringScheme, recDir, dpProfile);
+    auto traceDir = _doComputeScore(std::get<0>(recursionCells),
+                                    std::get<1>(recursionCells),
+                                    std::get<2>(recursionCells),
+                                    std::get<3>(recursionCells),
+                                    seqHVal, seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
     {
-        if (activeCell._score <= 0)
+        if (_scoreOfCell(std::get<0>(recursionCells)) <= 0)
         {
-            _setScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            // _setHorizontalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            // _setVerticalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            return TraceBitMap_<TScoreValue>::NONE;
+            _setScoreOfCell(std::get<0>(recursionCells), static_cast<ExtractedScoreValueType_<TRecursionCellTuple>>(0));
+            return TraceBitMap_<ExtractedScoreValueType_<TRecursionCellTuple>>::NONE;
         }
     }
     return traceDir;
 }
 
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue,
-          typename TScoringScheme, typename TRecursionDirection, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
-_computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
-              DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-              DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-              DPCell_<TScoreValue, TGapCosts> const & previousVertical,
+template <typename TRecursionCellTuple,
+          typename TSequenceHValue,
+          typename TSequenceVValue,
+          typename TScoringScheme,
+          typename TRecursionDirection,
+          typename TDPProfile>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<ExtractedScoreValueType_<TRecursionCellTuple>>>,
+                            typename TraceBitMap_<ExtractedScoreValueType_<TRecursionCellTuple>>::Type)
+_computeScore(TRecursionCellTuple && recursionCells,
               TSequenceHValue const & seqHVal,
               TSequenceVValue const & seqVVal,
               TScoringScheme const & scoringScheme,
               TRecursionDirection const & recDir,
               TDPProfile const & dpProfile)
 {
-    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
+    using TScoreValue = ExtractedScoreValueType_<TRecursionCellTuple>;
 
-    TTraceValue traceDir = _doComputeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal,
-                                           seqVVal, scoringScheme, recDir, dpProfile);
+    auto traceDir = _doComputeScore(std::get<0>(recursionCells),
+                                    std::get<1>(recursionCells),
+                                    std::get<2>(recursionCells),
+                                    std::get<3>(recursionCells),
+                                    seqHVal, seqVVal, scoringScheme, recDir, dpProfile);
     if (IsLocalAlignment_<TDPProfile>::VALUE)
     {
         if (std::is_same<typename DPProfileType<TDPProfile, DPProfileTypeId::TRACE_CONFIG>::Type, TracebackOff>::value)
         {
-            activeCell._score = max(activeCell._score, TraceBitMap_<TScoreValue>::NONE);
+            _scoreOfCell(std::get<0>(recursionCells)) = max(_scoreOfCell(std::get<0>(recursionCells)),
+                                                            TraceBitMap_<TScoreValue>::NONE);
             return TraceBitMap_<TScoreValue>::NONE;
         }
         else
         {
-            auto cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
-            _setScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
+            auto cmp = cmpGt(createVector<TScoreValue>(1), _scoreOfCell(std::get<0>(recursionCells)));
+            _setScoreOfCell(std::get<0>(recursionCells), TraceBitMap_<TScoreValue>::NONE, cmp);
             return blend(traceDir, TraceBitMap_<TScoreValue>::NONE, cmp);
         }
     }
@@ -177,10 +188,13 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 // ----------------------------------------------------------------------------
 // Function _doComputeScore                        [RecursionDirectionDiagonal]
 // ----------------------------------------------------------------------------
-
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+// Independent of gap cost model.
+template <typename TScoreValue, typename TGapCosts,
+          typename TSequenceHValue,
+          typename TSequenceVValue,
+          typename TScoringScheme,
           typename TDPProfile>
-inline typename TraceBitMap_<TScoreValue>::Type
+inline auto
 _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,
@@ -191,12 +205,11 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 RecursionDirectionDiagonal const &,
                 TDPProfile const &)
 {
-    activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
+    _scoreOfCell(activeCell) = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
     setGapExtension(activeCell, False(), False(), createVector<TScoreValue>(-1));
 
     if (!IsTracebackEnabled_<TDPProfile>::VALUE)
         return TraceBitMap_<TScoreValue>::NONE;
-
     return TraceBitMap_<TScoreValue>::DIAGONAL;
 }
 
@@ -204,9 +217,13 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 // Function _doComputeScore                            [RecursionDirectionZero]
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
+// Independent of gap cost model.
+template <typename TScoreValue, typename TGapCosts,
+          typename TSequenceHValue,
+          typename TSequenceVValue,
+          typename TScoringScheme,
           typename TAlgoTag, typename TTraceFlag, typename TExecPolicy>
-inline typename TraceBitMap_<TScoreValue>::Type
+inline auto
 _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousDiagonal*/,
                 DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,

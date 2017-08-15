@@ -466,7 +466,7 @@ nodeUp(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree< TopDown< Paren
     typedef typename VertexDescriptor<TIndex>::Type         TVertexDescriptor;
 
     if (!empty(it.history))
-        return TVertexDescriptor(back(it.history).range, back(it.history).repLen, back(it.history).lastChar);
+        return TVertexDescriptor(back(it.history).range, 0, back(it.history).repLen, back(it.history).lastChar);
     else
         return value(it);
 }
