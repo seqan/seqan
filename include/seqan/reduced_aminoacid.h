@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -42,20 +42,35 @@
 
 #include <seqan/reduced_aminoacid/reduced_aminoacid_base.h>
 
-#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_base.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_tables.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_bacardit5cn_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_bacardit5cn_tables.h>
 
-#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy5_base.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy5_tables.h>
-
-#include <seqan/reduced_aminoacid/reduced_aminoacid_wang5_base.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_wang5_tables.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_bacardit5sa_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_bacardit5sa_tables.h>
 
 #include <seqan/reduced_aminoacid/reduced_aminoacid_buchfink11_base.h>
 #include <seqan/reduced_aminoacid/reduced_aminoacid_buchfink11_tables.h>
 
-#include <seqan/reduced_aminoacid/reduced_aminoacid_bacardit5cn_base.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_bacardit5cn_tables.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_cannata10_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_cannata10_tables.h>
+
+#include <seqan/reduced_aminoacid/reduced_aminoacid_li10_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_li10_tables.h>
+
+#include <seqan/reduced_aminoacid/reduced_aminoacid_melo5_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_melo5_tables.h>
+
+#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy5_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy5_tables.h>
+
+#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_tables.h>
+
+#include <seqan/reduced_aminoacid/reduced_aminoacid_solis10_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_solis10_tables.h>
+
+#include <seqan/reduced_aminoacid/reduced_aminoacid_wang5_base.h>
+#include <seqan/reduced_aminoacid/reduced_aminoacid_wang5_tables.h>
 
 // #include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_base.h>
 // #include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_20_to_n_b62.h>
