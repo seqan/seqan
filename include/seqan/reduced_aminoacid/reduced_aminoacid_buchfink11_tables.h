@@ -116,7 +116,6 @@ char const TranslateTableCharToRedAA_<Buchfink11, TVoidSpec>::VALUE[256] =
      0
 };
 
-//lexicographically
 template <typename TVoidSpec>
 char const TranslateTableAAToRedAA_<Buchfink11, TVoidSpec>::VALUE[27] =
 {

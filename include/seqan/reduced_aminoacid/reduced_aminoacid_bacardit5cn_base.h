@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Kristin Knorr <kristin.knorr@fu-berlin.de>
 // ==========================================================================
-// Bacardit5cn (Contactnumber) reduction of AminoAcid alphabet
+// Bacardit5cn (Contact Number) reduction of AminoAcid alphabet
 // ==========================================================================
 
 #ifndef SEQAN_REDUCED_AMINOACID_BACARDIT5CN_BASE_H_
@@ -58,7 +58,7 @@ namespace seqan {
  *
  * @signature typedef Bacardit5cn Tag<Bacardit5cn_>;
  *
- * This is the 5-character reduction defined by Bacardit et al,
+ * This is the 5-character reduction depending on Contact Number defined by Bacardit et al,
  * 2009, <a href="https://www.ncbi.nlm.nih.gov/pubmed/19126227">https://www.ncbi.nlm.nih.gov/pubmed/19126227</a>
  *
  * Since it was created from the 20-letter alphabet the clusters in SeqAn are

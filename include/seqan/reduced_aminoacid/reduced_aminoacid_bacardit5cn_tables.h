@@ -110,7 +110,6 @@ char const TranslateTableCharToRedAA_<Bacardit5cn, TVoidSpec>::VALUE[256] =
      0
 };
 
-//endet auf Y Z X*
 template <typename TVoidSpec>
 char const TranslateTableAAToRedAA_<Bacardit5cn, TVoidSpec>::VALUE[27] =
 {
