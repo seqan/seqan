@@ -69,6 +69,12 @@ if (WIN32)
 		  set (SEQAN_CONTRIB_BASE "C:\\${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
 		endif ()
 	  endif (NOT DEFINED SEQAN_CONTRIB_BASE)
+    # Try to find in specific environment variable
+    if (DEFINED ENV{SEQAN_WIN_CONTRIB_DIRECTORY})
+        if (IS_DIRECTORY "$ENV{SEQAN_WIN_CONTRIB_DIRECTORY}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+            set (SEQAN_CONTRIB_BASE "$ENV{SEQAN_WIN_CONTRIB_DIRECTORY}/${_SEQAN_CONTRIB_DIR}-${CONTRIB_ARCH}")
+        endif ()
+    endif ()
       # Try to fall back to x64 on C:\ (MinGW is only available as 32 bit).
       set (CONTRIB_ARCH "x64")
       if (NOT DEFINED SEQAN_CONTRIB_BASE)
@@ -114,4 +120,3 @@ if (WIN32)
 
     endforeach ()  # all contrib versions.
 endif (WIN32)
-
