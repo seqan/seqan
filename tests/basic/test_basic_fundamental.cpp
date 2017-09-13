@@ -34,7 +34,7 @@
 // Tests for the sub module basic_fundamental.
 // ==========================================================================
 
-#pragma message "jenkins test"
+#pragma message "OpenMP not found! jenkins test"
 
 #include <seqan/basic.h>
 
