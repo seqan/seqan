@@ -38,7 +38,7 @@
 
 #define SEQAN_DEBUG
 
-#pragma message "some diagnostic message"
+#pragma message "OpenMP not found! And some diagnostic message"
 
 #include <seqan/basic.h>
 
