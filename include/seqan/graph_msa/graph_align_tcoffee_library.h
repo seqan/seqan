@@ -995,17 +995,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
         // Alignment
         TSize from = length(matches);
-        TScoreValue myScore{};
-        try {
-            myScore = globalAlignment(matches, pairSet, score_type, ac, Gotoh());
-        }
-        catch (const std::bad_alloc & exception)
-        {
-            std::cerr << "Allocation for globalAlignment failed. Use smaller data or try seeded alignment. \n"
-                      << exception.what() << std::endl;
-            exit(1);
-        }
-
+        TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, Gotoh());
         TSize to = length(matches);
 
         _recordScores(scores, myScore, from, to);
