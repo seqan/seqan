@@ -416,7 +416,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
 {
     if (scoreGapOpen(scoreScheme) == scoreGapExtend(scoreScheme))
     {
-        typedef DPContext<TScoreValue, LinearGaps> TDPContext;
+        typedef DPContext<DPCell_<TScoreValue, LinearGaps>, typename TraceBitMap_<TScoreValue>::Type> TDPContext;
         typedef AliExtContext_<Gaps<TStringInfix, TAlignSpec>,
                                Gaps<TStringInfix, TAlignSpec>,
                                TDPContext> TAliExtContext_;
@@ -426,7 +426,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     }
     else
     {
-        typedef DPContext<TScoreValue, AffineGaps> TDPContext;
+        typedef DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_<TScoreValue>::Type> TDPContext;
         typedef AliExtContext_<Gaps<TStringInfix, TAlignSpec>,
                                Gaps<TStringInfix, TAlignSpec>,
                                TDPContext> TAliExtContext_;

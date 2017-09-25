@@ -131,7 +131,7 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
     typedef typename Value<TDPCell>::Type TScoreValue;
     typedef XDrop_<TScoreValue> TXDrop;
     typedef DPScout_<TDPCell, Terminator_<TXDrop> > TDPScout;
-    typedef typename TDPScout::TParent TParent;
+    typedef typename TDPScout::TBase TParent;
 
     // global maximum
     _scoutBestScore(static_cast<TParent &>( dpScout ), activeCell, navigator);
@@ -164,16 +164,15 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
 // ----------------------------------------------------------------------------
 
 // Computes the score and tracks it if enabled.
-template <typename TDPScout, typename TTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
+template <typename TDPScout, typename TTraceMatrixNavigator,
+          typename TCellTuple,
+          typename TScoreValue, typename TGapCosts,
           typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme, typename TColumnDescriptor,
           typename TCellDescriptor, typename TTraceback>
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-             DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-             DPCell_<TScoreValue, TGapCosts> const & previousVertical,
+             TCellTuple recursionCells,
              TSequenceHValue const & seqHVal,
              TSequenceVValue const & seqVVal,
              TScoringScheme const & scoringScheme,
@@ -185,7 +184,7 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<AlignExtend_<XDrop_<TScoreValue> >, TGapCosts, TTraceback> TDPProfile;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumn;
 
-    assignValue(traceMatrixNavigator, _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical,
+    assignValue(traceMatrixNavigator, _computeScore(recursionCells,
                                                     seqHVal, seqVVal, scoringScheme,
                                                     typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
                                                     TDPProfile()));
@@ -197,7 +196,7 @@ _computeCell(TDPScout & scout,
         // for the evaluation of the termination criterium we treat
         // all lastCells as lastRows
         typedef typename IsSameType<TCellDescriptor, LastCell>::Type TIsLastRow;
-        _scoutBestScore(scout, activeCell, traceMatrixNavigator, TIsLastColumn(), TIsLastRow());
+        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, TIsLastColumn(), TIsLastRow());
     }
 }
 

@@ -80,7 +80,7 @@ template <typename THost>
 struct ModPaddingCargo
 {
     using TSize  = typename Size<THost>::Type;
-    using TValue = typename Value<THost>::Type;
+    using TValue = typename std::remove_const<typename Value<THost>::Type>::type;
 
     TSize   _numPaddedChar  = 0;
     TSize   _remainingSteps = 0;

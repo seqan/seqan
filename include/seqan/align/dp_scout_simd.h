@@ -93,16 +93,12 @@ class DPScout_<TDPCell, SimdAlignmentScout<TSpec> > :
     public DPScout_<TDPCell, Default>
 {
 public:
+    using TSimdVec    = typename Value<TDPCell>::Type;
     using TBase       = DPScout_<TDPCell, Default>;
     using TScoutState = DPScoutState_<TSpec>;
 
-    //used in the SIMD version to keep track of all host positions
-    //SIMD register size divided by 16bit is the amount of alignments
-    //so we need two vectors of type 32bit to save the host for all alignments
-
-    // TODO(rrahn): Abstract into a struct, so we can model different configurations.
-    SimdVector<int32_t>::Type _maxHostLow; //first half of alignments
-    SimdVector<int32_t>::Type _maxHostHigh; //other half
+    TSimdVec    mHorizontalPos;
+    TSimdVec    mVerticalPos;
     TScoutState * state = nullptr;
     unsigned _simdLane  = 0;
 
@@ -138,31 +134,51 @@ struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAl
 // Function _copySimdCell()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TScoreValue>
+template <typename TValue, typename TSpec,
+          typename TScoreValue>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, LinearGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, LinearGaps> const & activeCell,
-              TScoreValue const & cmp)
+              TScoreValue const & cmp,
+              DPTraceMatrix<TracebackOff> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
 }
 
-template <typename TValue, typename TSpec, typename TScoreValue>
+template <typename TValue, typename TSpec,
+          typename TScoreValue,
+          typename TTraceConfig>
+inline void
+_copySimdCell(DPScout_<DPCell_<TValue, LinearGaps>, SimdAlignmentScout<TSpec> > & dpScout,
+              DPCell_<TValue, LinearGaps> const & activeCell,
+              TScoreValue const & cmp,
+              DPTraceMatrix<TTraceConfig> const & /**/)
+{
+    dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
+}
+
+template <typename TValue, typename TSpec,
+          typename TScoreValue,
+          typename TTraceConfig>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, AffineGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, AffineGaps> const & activeCell,
-              TScoreValue const & cmp)
+              TScoreValue const & cmp,
+              DPTraceMatrix<TTraceConfig> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
     dpScout._maxScore._horizontalScore = blend(dpScout._maxScore._horizontalScore, activeCell._horizontalScore, cmp);
     dpScout._maxScore._verticalScore = blend(dpScout._maxScore._verticalScore, activeCell._verticalScore, cmp);
 }
 
-template <typename TValue, typename TSpec, typename TScoreValue>
+template <typename TValue, typename TSpec,
+          typename TScoreValue,
+          typename TTraceConfig>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, DynamicGaps> const & activeCell,
-              TScoreValue const & cmp)
+              TScoreValue const & cmp,
+              DPTraceMatrix<TTraceConfig> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
     dpScout._maxScore._flagMask = blend(dpScout._maxScore._flagMask, activeCell._flagMask, cmp);
@@ -172,40 +188,45 @@ _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> >
 // Function _updateHostPositions()
 // ----------------------------------------------------------------------------
 
-template<typename TDPCell, typename TScoutSpec, typename TSimdVec>
+// No trace needed, hence we do not track the max positions.
+template<typename TDPCell, typename TScoutSpec,
+         typename TMask,
+         typename TNavigator>
+inline void
+_updateHostPositions(DPScout_<TDPCell, TScoutSpec> & /*dpScout*/,
+                     TMask const & /*cmp*/,
+                     TNavigator const & /*navi*/,
+                     DPTraceMatrix<TracebackOff> const & /**/)
+{}
+
+template<typename TDPCell, typename TScoutSpec,
+         typename TMask,
+         typename TNavigator,
+         typename TTraceConfig>
 inline void
 _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
-                     TSimdVec & cmp,
-                     SimdVector<int32_t>::Type positionNavigator)
+                     TMask const & cmp,
+                     TNavigator const & navi,
+                     DPTraceMatrix<TTraceConfig> const & /**/)
 {
-// TODO(rrahn): Refactor!
-#if SEQAN_UMESIMD_ENABLED
-    using TSimdHalfVec = typename UME::SIMD::SIMDTraits<TSimdVec>::HALF_LEN_VEC_T;
-    TSimdHalfVec cmpLow, cmpHigh;
-    cmp.unpack(cmpLow, cmpHigh);
+    using TSimdVector = typename Value<TDPCell>::Type;
+    dpScout.mHorizontalPos = blend(dpScout.mHorizontalPos,
+                                   createVector<TSimdVector>(coordinate(navi, +DPMatrixDimension_::HORIZONTAL)),
+                                   cmp);
 
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
-                                static_cast<SimdVector<int32_t>::Type>(cmpLow));
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                 static_cast<SimdVector<int32_t>::Type>(cmpHigh));
-#elif defined(__AVX2__)
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
-                                _mm256_cvtepi16_epi32(_mm256_castsi256_si128(reinterpret_cast<__m256i&>(cmp))));
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                 _mm256_cvtepi16_epi32(_mm256_extractf128_si256(reinterpret_cast<__m256i&>(cmp),1)));
-#elif defined(__SSE3__)
-    dpScout._maxHostLow = blend(dpScout._maxHostLow, positionNavigator,
-                                _mm_unpacklo_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
-    dpScout._maxHostHigh = blend(dpScout._maxHostHigh, positionNavigator,
-                                 _mm_unpackhi_epi16(reinterpret_cast<__m128i&>(cmp), reinterpret_cast<__m128i&>(cmp)));
-#endif
+    dpScout.mVerticalPos = blend(dpScout.mVerticalPos,
+                                 createVector<TSimdVector>(coordinate(navi, +DPMatrixDimension_::VERTICAL)),
+                                 cmp);
 }
 
 // ----------------------------------------------------------------------------
 // Function _scoutBestScore()                            [SimdAlignEqualLength]
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
+template <typename TDPCell,
+          typename TTraceMatrixNavigator,
+          typename TIsLastColumn,
+          typename TIsLastRow>
 inline void
 _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & dpScout,
                 TDPCell const & activeCell,
@@ -213,9 +234,61 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & d
                 TIsLastColumn const & /**/,
                 TIsLastRow const & /**/)
 {
+    using TMatrixType = typename MatrixType<TTraceMatrixNavigator>::Type;
     auto cmp = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore));
-    _copySimdCell(dpScout, activeCell, cmp);
-    _updateHostPositions(dpScout, cmp, createVector<SimdVector<int32_t>::Type>(position(navigator)));
+    _copySimdCell(dpScout, activeCell, cmp, TMatrixType());
+    _updateHostPositions(dpScout, cmp, navigator, TMatrixType());
+}
+
+// ----------------------------------------------------------------------------
+// Function _getCompareMask()
+// ----------------------------------------------------------------------------
+
+// Helper functions to resolve the correct tracking of cells for different
+// alignment modes.
+
+// Standard global alignment.
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            True const & /*lastCol*/,
+                            True const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, False>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return ((dpScout.state->endPosVecH) == createVector<TSimdVec>(dpScout.state->posH)) &
+           ((dpScout.state->endPosVecV) == createVector<TSimdVec>(dpScout.state->posV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, False>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// Tracking the last row is enabled
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, False>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) == (dpScout.state->endPosVecV));
 }
 
 // ----------------------------------------------------------------------------
@@ -385,6 +458,121 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            TIsLastColumn const & /*lastCol*/,
+                            False const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, False>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// Tracking if the last column is enabled
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, True>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) == (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TIsLastRow,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            False const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, True>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// Tracking if the last column and last row is enabled
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            True const & /*lastCol*/,
+                            True const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return ((createVector<TSimdVec>(dpScout.state->posH) == (dpScout.state->endPosVecH)) &
+            (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV))) |
+           ((createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+            (createVector<TSimdVec>(dpScout.state->posV) == (dpScout.state->endPosVecV)));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            False const & /*lastCol*/,
+                            True const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) == (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            True const & /*lastCol*/,
+                            False const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) == (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
+}
+
+template <typename TDPCell, typename TTraits,
+          typename TTop, typename TLeft, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & /*dpScout*/,
+                            False const & /*lastCol*/,
+                            False const & /*lastRow*/,
+                            DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
+                                       TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return createVector<TSimdVec>(0);
+}
+
+// If local alignment.
+template <typename TDPCell, typename TTraits,
+          typename TIsLastColumn,
+          typename TIsLastRow,
+          typename TAlgoSpec, typename TGapModel, typename TTraceConfig, typename TExecPolicy>
+inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & dpScout,
+                            TIsLastColumn const & /*lastCol*/,
+                            TIsLastRow const & /*lastRow*/,
+                            DPProfile_<LocalAlignment_<TAlgoSpec>, TGapModel, TTraceConfig, TExecPolicy> const &)
+{
+    using TSimdVec = typename TTraits::TSimdVector;
+    return (createVector<TSimdVec>(dpScout.state->posH) <= (dpScout.state->endPosVecH)) &
+           (createVector<TSimdVec>(dpScout.state->posV) <= (dpScout.state->endPosVecV));
+}
+
+// ----------------------------------------------------------------------------
+// Function _scoutBestScore()                         [SimdAlignVariableLength]
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TTraits,
           typename TTraceMatrixNavigator,
           typename TIsLastColumn,
           typename TIsLastRow>
@@ -395,10 +583,44 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTr
                 TIsLastColumn const & /**/,
                 TIsLastRow const & /**/)
 {
+    using TMatrixType = typename MatrixType<TTraceMatrixNavigator>::Type;
     auto mask = cmpGt(_scoreOfCell(activeCell), _scoreOfCell(dpScout._maxScore)) &
                 _getCompareMask(dpScout, TIsLastColumn{}, TIsLastRow{}, typename TTraits::TDPProfile{});
-    _copySimdCell(dpScout, activeCell, mask);
-    _updateHostPositions(dpScout, mask, createVector<SimdVector<int32_t>::Type>(position(navigator)));
+    _copySimdCell(dpScout, activeCell, mask, TMatrixType());
+    _updateHostPositions(dpScout, mask, navigator, TMatrixType());
+}
+
+// ----------------------------------------------------------------------------
+// Function maxHostCoordinate()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TScoutSpec,
+          typename TDimension>
+inline auto
+maxHostCoordinate(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout,
+                  TDimension const dimension)
+{
+    return (dimension == DPMatrixDimension_::HORIZONTAL) ? dpScout.mHorizontalPos[dpScout._simdLane] :
+            dpScout.mVerticalPos[dpScout._simdLane];
+}
+
+template <typename TDPCell, typename TScoutSpec>
+inline auto
+maxHostCoordinates(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
+{
+    return std::make_pair(maxHostCoordinate(dpScout, DPMatrixDimension_::HORIZONTAL),
+                          maxHostCoordinate(dpScout, DPMatrixDimension_::VERTICAL));
+}
+
+// ----------------------------------------------------------------------------
+// Function maxScoreAt()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell, typename TScoutSpec>
+inline auto
+maxScoreAt(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
+{
+    return maxScore(dpScout)[dpScout._simdLane];
 }
 
 // ----------------------------------------------------------------------------
@@ -406,14 +628,9 @@ _scoutBestScore(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTr
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TScoutSpec>
-inline unsigned int
-maxHostPosition(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & dpScout)
-{
-    if(dpScout._simdLane < LENGTH<SimdVector<int32_t>::Type>::VALUE)
-        return value(dpScout._maxHostLow, dpScout._simdLane);
-    else
-        return value(dpScout._maxHostHigh, dpScout._simdLane - LENGTH<SimdVector<int32_t>::Type>::VALUE);
-}
+[[deprecated("Use maxHostCoordinate instead!")]] auto
+maxHostPosition(DPScout_<TDPCell, SimdAlignmentScout<TScoutSpec> > const & /*unused*/)
+{}
 
 // ----------------------------------------------------------------------------
 // Function _setSimdLane()

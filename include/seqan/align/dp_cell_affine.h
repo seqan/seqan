@@ -105,6 +105,19 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+// Needed for banded chain alignment for the set.
+template <typename TStream, typename TScore>
+inline TStream& operator<<(TStream & stream,
+                           DPCell_<TScore, AffineGaps> const & dpCell)
+{
+    stream << "<S = " << dpCell._score << " H = " << dpCell._horizontalScore << " V = " << dpCell._verticalScore << ">";
+    return stream;
+}
+
+// ----------------------------------------------------------------------------
 // Function operator<()
 // ----------------------------------------------------------------------------
 
@@ -195,7 +208,7 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue
 
 template <typename TScoreValue>
 inline void 
-swap(DPCell_<TScoreValue, AffineGaps> & lhs, 
+swap(DPCell_<TScoreValue, AffineGaps> & lhs,
      DPCell_<TScoreValue, AffineGaps> & rhs)
 {
     std::swap(lhs._score, rhs._score);

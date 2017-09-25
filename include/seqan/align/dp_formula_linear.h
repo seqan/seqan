@@ -67,8 +67,8 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR,
                       TracebackOff const &)
 {
-    if (activeCell._score < rightCompare)
-        activeCell._score = rightCompare;
+    using std::max;
+    activeCell._score = max(activeCell._score, rightCompare);
     return TraceBitMap_<TScoreValue>::NONE;
 }
 
@@ -80,7 +80,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR,
                       TracebackOff const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._score);
+    auto cmp = cmpGt(rightCompare, activeCell._score);
     activeCell._score = blend(activeCell._score, rightCompare, cmp);
     return TraceBitMap_<TScoreValue>::NONE;
 }
@@ -93,12 +93,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR rightTrace,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const &)
 {
-    if (activeCell._score < rightCompare)
-    {
-        activeCell._score = rightCompare;
-        return rightTrace;
-    }
-    return leftTrace;
+    return (activeCell._score <= rightCompare) ? (activeCell._score = rightCompare, rightTrace) : (leftTrace);
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueR, typename TGapsPlacement>
@@ -109,7 +104,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR const & rightTrace,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const &)
 {
-    TScoreValue cmp = cmpGt(rightCompare, activeCell._score);
+    auto cmp = cmpGt(rightCompare, activeCell._score);
     activeCell._score = blend(activeCell._score, rightCompare, cmp);
     return blend(leftTrace, rightTrace, cmp);
 }
@@ -122,12 +117,10 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR rightTrace,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> > const &)
 {
-    if (activeCell._score < rightCompare)
-    {
-        activeCell._score = rightCompare;
-        return rightTrace;
-    }
-    return (activeCell._score == rightCompare) ? (rightTrace | leftTrace) : (leftTrace);
+    return (activeCell._score <= rightCompare) ?
+        ((activeCell._score == rightCompare) ? (rightTrace | leftTrace) :
+                                               (activeCell._score = rightCompare, rightTrace)) :
+        (leftTrace);
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueR, typename TGapsPlacement>
@@ -139,7 +132,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> > const &)
 {
     // Check for greater values.
-    TScoreValue cmp = cmpGt(activeCell._score, rightCompare);  // cmp greater
+    auto cmp = cmpGt(activeCell._score, rightCompare);  // cmp greater
     activeCell._score = blend(rightCompare, activeCell._score, cmp);  // activeCell._score
 
     // Check for equality.
@@ -151,7 +144,7 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
+          typename TAlgorithm, typename TTracebackConfig, typename TExecPolicy>
 inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 DPCell_<TScoreValue, LinearGaps> const & previousDiagonal,
@@ -161,23 +154,26 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 TSequenceVValue const & seqVVal,
                 TScoringScheme const & scoringScheme,
                 RecursionDirectionAll const &,
-                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig> const &)
+                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig, TExecPolicy> const &)
 {
     typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
-    activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
 
-    TScoreValue tmpScore = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
+    _scoreOfCell(activeCell) = _scoreOfCell(previousHorizontal) +
+                               scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
 
-    TTraceValue tv = _internalComputeScore(activeCell,
-                                           tmpScore,
-                                           TraceBitMap_<TScoreValue>::DIAGONAL,
-                                           TraceBitMap_<TScoreValue>::VERTICAL | TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
-                                           TTracebackConfig());
-    tmpScore = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    TTraceValue tv =
+        _internalComputeScore(activeCell,
+                              static_cast<TScoreValue>(_scoreOfCell(previousVertical) +
+                                                       scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal)),
+                              TraceBitMap_<TScoreValue>::HORIZONTAL | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
+                              TraceBitMap_<TScoreValue>::VERTICAL | TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
+                              TTracebackConfig());
+
     return _internalComputeScore(activeCell,
-                                 tmpScore,
+                                 static_cast<TScoreValue>(_scoreOfCell(previousDiagonal) +
+                                                          score(scoringScheme, seqHVal, seqVVal)),
                                  tv,
-                                 TraceBitMap_<TScoreValue>::HORIZONTAL | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
+                                 TraceBitMap_<TScoreValue>::DIAGONAL,
                                  TTracebackConfig());
 }
 
@@ -186,7 +182,7 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
+          typename TAlgorithm, typename TTracebackConfig, typename TExecPolicy>
 inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 DPCell_<TScoreValue, LinearGaps> const & previousDiagonal,
@@ -196,14 +192,15 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 TSequenceVValue const & seqVVal,
                 TScoringScheme const & scoringScheme,
                 RecursionDirectionUpperDiagonal const &,
-                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig> const &)
+                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig, TExecPolicy> const &)
 {
-    activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    TScoreValue tmpScore = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    _scoreOfCell(activeCell) = _scoreOfCell(previousHorizontal) +
+                               scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
     return _internalComputeScore(activeCell,
-                                 tmpScore,
-                                 TraceBitMap_<TScoreValue>::DIAGONAL,
+                                 static_cast<TScoreValue>(_scoreOfCell(previousDiagonal) +
+                                                          score(scoringScheme, seqHVal, seqVVal)),
                                  TraceBitMap_<TScoreValue>::HORIZONTAL | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
+                                 TraceBitMap_<TScoreValue>::DIAGONAL,
                                  TTracebackConfig());
 }
 
@@ -212,7 +209,7 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
+          typename TAlgorithm, typename TTracebackConfig, typename TExecPolicy>
 inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 DPCell_<TScoreValue, LinearGaps> const & previousDiagonal,
@@ -222,15 +219,14 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 TSequenceVValue const & seqVVal,
                 TScoringScheme const & scoringScheme,
                 RecursionDirectionLowerDiagonal const &,
-                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig> const &)
+                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig, TExecPolicy> const &)
 {
-    activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    TScoreValue tmpScore = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
-
+    _scoreOfCell(activeCell) = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
     return _internalComputeScore(activeCell,
-                                 tmpScore,
-                                 TraceBitMap_<TScoreValue>::DIAGONAL,
+                                 static_cast<TScoreValue>(_scoreOfCell(previousDiagonal) +
+                                                          score(scoringScheme, seqHVal, seqVVal)),
                                  TraceBitMap_<TScoreValue>::VERTICAL | TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
+                                 TraceBitMap_<TScoreValue>::DIAGONAL,
                                  TTracebackConfig());
 }
 
@@ -239,7 +235,7 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
+          typename TAlgorithm, typename TTracebackConfig, typename TExecPolicy>
 inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 DPCell_<TScoreValue, LinearGaps> const & /*previousDiagonal*/,
@@ -249,9 +245,10 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 TSequenceVValue const & seqVVal,
                 TScoringScheme const & scoringScheme,
                 RecursionDirectionHorizontal const &,
-                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig> const &)
+                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig, TExecPolicy> const &)
 {
-    activeCell._score = _scoreOfCell(previousHorizontal) + scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
+    _scoreOfCell(activeCell) = _scoreOfCell(previousHorizontal) +
+                               scoreGapExtendHorizontal(scoringScheme, seqHVal, seqVVal);
 
     if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
         return TraceBitMap_<TScoreValue>::NONE;
@@ -265,7 +262,7 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
 // ----------------------------------------------------------------------------
 
 template <typename TScoreValue, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgorithm, typename TTracebackConfig>
+          typename TAlgorithm, typename TTracebackConfig, typename TExecPolicy>
 inline typename TraceBitMap_<TScoreValue>::Type
 _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 DPCell_<TScoreValue, LinearGaps> const & /*previousDiagonal*/,
@@ -275,9 +272,9 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                 TSequenceVValue const & seqVVal,
                 TScoringScheme const & scoringScheme,
                 RecursionDirectionVertical const &,
-                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig> const &)
+                DPProfile_<TAlgorithm, LinearGaps, TTracebackConfig, TExecPolicy> const &)
 {
-    activeCell._score = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
+    _scoreOfCell(activeCell) = _scoreOfCell(previousVertical) + scoreGapExtendVertical(scoringScheme, seqHVal, seqVVal);
 
     if (!IsTracebackEnabled_<TTracebackConfig>::VALUE)
         return TraceBitMap_<TScoreValue>::NONE;

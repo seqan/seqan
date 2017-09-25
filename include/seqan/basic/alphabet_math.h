@@ -223,8 +223,7 @@ template <typename T>
 inline T const &
 maxValue()
 {
-    T * _tag = 0;
-    return supremumValueImpl(_tag);
+    return MaxValue<T>::VALUE;
 }
 
 template <typename T>

@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
+//         Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 // Tags to select serial/parallel algorithms.
 // ==========================================================================
@@ -64,12 +65,109 @@ namespace seqan {
  * @brief Tag to select the serial implementation of an algorithm.
  */
 
-struct Parallel_;
-typedef Tag<Parallel_> Parallel;
+//struct Parallel_;
+//typedef Tag<Parallel_> Parallel;
+
+// ----------------------------------------------------------------------------
+// Tag ExecutionPolicy
+// ----------------------------------------------------------------------------
+
+// Dynamic execution policy.
+template <typename TThreadModel = Serial, typename TVectorSpec = Serial>
+struct ExecutionPolicy
+{
+    // Member variables.
+    size_t mNumThreads = 1;
+};
+
+// ----------------------------------------------------------------------------
+// Tag ExecutionPolicy  [Sequential]
+// ----------------------------------------------------------------------------
+
+using Sequential = ExecutionPolicy<>;
+// constexpr ExecutionPolicy<> seq{};
+
+// ----------------------------------------------------------------------------
+// Tag Vectorial
+// ----------------------------------------------------------------------------
+
+struct Vectorial_;
+using Vectorial = Tag<Vectorial_>;
+// ExecutionPolicy<Serial, Vectorial> vec{};
+
+// ----------------------------------------------------------------------------
+// Tag Parallel Flags depending on parallel option.
+// ----------------------------------------------------------------------------
+
+#if defined(SEQAN_TBB)
+struct ParallelTbb_;
+using ParallelTbb = Tag<ParallelTbb_>;
+using Parallel = ParallelTbb;
+// constexpr ExecutionPolicy<ParallelTbb> par{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelTbb, Vectorial> parVec{std::thread::hardware_concurrency()};
+#elif defined(_OPENMP)
+struct ParallelOmp_;
+using ParallelOmp = Tag<ParallelOmp_>;
+using Parallel = ParallelOmp;
+// constexpr ExecutionPolicy<ParallelOmp> par{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelOmp, Vectorial> parVec{std::thread::hardware_concurrency()};
+#else
+struct ParallelStd_;
+using ParallelStd = Tag<ParallelStd_>;
+using Parallel = ParallelStd;
+// constexpr ExecutionPolicy<ParallelStd> par{std::thread::hardware_concurrency()};
+// constexpr ExecutionPolicy<ParallelStd, Vectorial> parVec{std::thread::hardware_concurrency()};
+#endif
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction IsVectorized
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsVectorized : False
+{};
+
+template <>
+struct IsVectorized<Vectorial> : True
+{};
+
+template <typename TPar, typename TVec>
+struct IsVectorized<ExecutionPolicy<TPar, TVec> > :
+    public IsVectorized<TVec>
+{};
+
+// ----------------------------------------------------------------------------
+// Metafunction IsParallel
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsParallel : False
+{};
+
+template <>
+struct IsParallel<Parallel> : True
+{};
+
+template <typename TPar, typename TVec>
+struct IsParallel<ExecutionPolicy<TPar, TVec> > :
+    public IsParallel<TPar>
+{};
+
+// ----------------------------------------------------------------------------
+// Metafunction IsExecutionPolicy
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsExecutionPolicy : False
+{};
+
+template <typename TPar, typename TVec>
+struct IsExecutionPolicy<ExecutionPolicy<TPar, TVec> > : True
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultParallelSpec
@@ -80,6 +178,25 @@ struct DefaultParallelSpec
 {
     typedef Parallel Type;
 };
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+template <typename TParallelSpec, typename TVectorizationSpec>
+inline auto
+numThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> const & p)
+{
+    return p.mNumThreads;
+}
+
+template <typename TParallelSpec, typename TVectorizationSpec>
+inline void
+setNumThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> & p,
+              size_t const nt)
+{
+    p.mNumThreads = nt;
+}
 
 }  // namespace seqan
 

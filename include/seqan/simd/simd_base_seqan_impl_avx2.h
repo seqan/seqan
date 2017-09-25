@@ -147,7 +147,8 @@ _fillVector(TSimdVector & vector,
                 )
             );
 #else
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm256_set_epi64x(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, 
+                                _mm256_set_epi64x(static_cast<int64_t>(std::get<sizeof...(INDICES) - 1 - INDICES>(args))...));
 #endif
 }
 

@@ -42,6 +42,12 @@
 namespace seqan {
 
 template <typename TSimdVector>
+struct SimdMaskVectorImpl<TSimdVector, True>
+{
+    using Type = typename SimdVectorTraits<TSimdVector, SimdParams_<sizeof(TSimdVector), LENGTH<TSimdVector>::VALUE>>::MaskType;
+};
+
+template <typename TSimdVector>
 struct SimdSwizzleVectorImpl<TSimdVector, True>
 {
     typedef typename SimdVector<uint8_t, sizeof(TSimdVector)>::Type Type;
@@ -117,7 +123,7 @@ fillVector(TSimdVector & vector, TValue const... args)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -129,7 +135,7 @@ cmpEq (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator==(TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -141,7 +147,7 @@ operator==(TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -153,7 +159,7 @@ cmpGt (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator>(TSimdVector const & a, TSimdVector const & b)
 {
     typedef typename Value<TSimdVector>::Type TValue;
@@ -367,21 +373,6 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices)
                 indices,
                 SimdParams_<sizeof(TSimdVector1), sizeof(TSimdVector1) / sizeof(TValue1)>(),
                 SimdParams_<sizeof(TSimdVector2), sizeof(TSimdVector2) / sizeof(TValue2)>());
-}
-
-// --------------------------------------------------------------------------
-// Function print()
-// --------------------------------------------------------------------------
-
-template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, std::ostream &)
-print(std::ostream & stream, TSimdVector const & vector)
-{
-    stream << '<';
-    for (int i = 0; i < LENGTH<TSimdVector>::VALUE; ++i)
-    stream << '\t' << vector[i];
-    stream << "\t>\n";
-    return stream;
 }
 
 } // namespace seqan

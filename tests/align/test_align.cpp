@@ -274,7 +274,6 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // Test DPMatrix Navigator.
     // ----------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_constructor);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_banded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_cell);
@@ -286,7 +285,6 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_container);
 
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_constructor);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_banded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next);
@@ -298,7 +296,6 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_container);
 
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_constructor);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_banded);
@@ -308,6 +305,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_container);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_to_global_position);
 
     // ----------------------------------------------------------------------------
     // Test Recursion Formula.

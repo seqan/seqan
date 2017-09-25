@@ -242,6 +242,7 @@ endmacro(add_simd_tests)
 macro(add_simd_platform_tests target)
     if (UMESIMD_FOUND)
         clone_target("${target}" "${target}_umesimd")
+        target_include_directories("${target}_umesimd" PUBLIC "${UMESIMD_INCLUDE_DIR}")
         target_compile_definitions("${target}_umesimd" PUBLIC SEQAN_UMESIMD_ENABLED=1)
     endif()
 

@@ -43,6 +43,12 @@ namespace seqan
 {
 
 template <typename TSimdVector>
+struct SimdMaskVectorImpl<TSimdVector, True>
+{
+    using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::MASK_T;
+};
+
+template <typename TSimdVector>
 struct SimdSwizzleVectorImpl<TSimdVector, True>
 {
     using Type = typename UME::SIMD::SIMDTraits<TSimdVector>::SWIZZLE_T;
@@ -95,6 +101,49 @@ using SimdVector16Int    = UME::SIMD::SIMDVec<int, 16>;
 using SimdVector16UInt   = UME::SIMD::SIMDVec<unsigned int, 16>;
 using SimdVector8Int64   = UME::SIMD::SIMDVec<int64_t, 8>;
 using SimdVector8UInt64  = UME::SIMD::SIMDVec<uint64_t, 8>;
+
+// ============================================================================
+// SIMDMaskVector
+// ============================================================================
+
+template <uint32_t LENGTH>
+SEQAN_CONCEPT_IMPL((typename UME::SIMD::SIMDVecMask<LENGTH>),       (SimdMaskVectorConcept));
+
+template <uint32_t LENGTH>
+SEQAN_CONCEPT_IMPL((typename UME::SIMD::SIMDVecMask<LENGTH> const), (SimdMaskVectorConcept));
+
+template <uint32_t LENGTH>
+struct Value<UME::SIMD::SIMDVecMask<LENGTH> >
+{
+    typedef bool Type;
+};
+
+template <uint32_t LENGTH_>
+struct LENGTH<UME::SIMD::SIMDVecMask<LENGTH_> >
+{
+    enum { VALUE = LENGTH_ };
+};
+
+template <uint32_t LENGTH, typename TPosition>
+inline typename Value<UME::SIMD::SIMDVecMask<LENGTH> >::Type
+getValue(UME::SIMD::SIMDVecMask<LENGTH> const & vector, TPosition const pos)
+{
+    return vector[pos];
+}
+
+template <uint32_t LENGTH, typename TPosition>
+inline typename Value<UME::SIMD::SIMDVecMask<LENGTH> >::Type
+value(UME::SIMD::SIMDVecMask<LENGTH> const & vector, TPosition const pos)
+{
+    return vector[pos];
+}
+
+template <uint32_t LENGTH, typename TPosition, typename TValue2>
+inline void
+assignValue(UME::SIMD::SIMDVecMask<LENGTH> &vector, TPosition const pos, TValue2 const value)
+{
+    vector.insert(pos, value);
+}
 
 // ============================================================================
 // SIMDSwizzle
@@ -299,6 +348,17 @@ clearVector(TSimdVector & vector)
     vector = 0;
 }
 
+// --------------------------------------------------------------------------
+// Function createVector()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(And<Is<SimdMaskVectorConcept<TSimdVector>>,
+                                Not<Is<SimdVectorConcept<TSimdVector>>>>, TSimdVector)
+createVector(TValue const x)
+{
+    return TSimdVector(static_cast<bool>(x));
+}
 
 // --------------------------------------------------------------------------
 // Function createVector()
@@ -327,13 +387,10 @@ fillVector(TSimdVector & vector, TValue const... args)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpEq (TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpeq(b), ~TValue(0));
-    return retval;
+    return a.cmpeq(b);
 }
 
 // --------------------------------------------------------------------------
@@ -341,13 +398,10 @@ cmpEq (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator==(TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpeq(b), ~TValue(0));
-    return retval;
+    return a.cmpeq(b);
 }
 
 // --------------------------------------------------------------------------
@@ -355,13 +409,10 @@ operator==(TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 cmpGt (TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpgt(b), ~TValue(0));
-    return retval;
+    return a.cmpgt(b);
 }
 
 // --------------------------------------------------------------------------
@@ -369,13 +420,10 @@ cmpGt (TSimdVector const & a, TSimdVector const & b)
 // --------------------------------------------------------------------------
 
 template <typename TSimdVector>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, typename SimdMaskVector<TSimdVector>::Type)
 operator>(TSimdVector const & a, TSimdVector const & b)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    TSimdVector retval(0);
-    retval.assign(a.cmpgt(b), ~TValue(0));
-    return retval;
+    return a.cmpgt(b);
 }
 
 // --------------------------------------------------------------------------
@@ -519,13 +567,7 @@ template <typename TSimdVector, typename TSimdVectorMask>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 blend(TSimdVector const & a, TSimdVector const & b, TSimdVectorMask const & mask)
 {
-    using TValue = typename UME::SIMD::SIMDTraits<TSimdVector>::SCALAR_T;
-    const TSimdVector truemask(~TValue(0));
-
-    return a.blend(
-        mask.cmpeq(truemask), // convert mask into umesimd's mask type
-        b
-    );
+    return a.blend(mask, b);
 }
 
 // --------------------------------------------------------------------------

@@ -80,7 +80,7 @@ typedef Tag<AlignmentSplitBreakpoint_> SplitBreakpointAlignment;
 //
 // Note, all global alignments have to be specialized versions of GlobalAlignment_<>
 template <typename TSpec = FreeEndGaps_<> >
-struct GlobalAlignment_;
+struct GlobalAlignment_{};
 
 typedef GlobalAlignment_<> DPGlobal;
 
@@ -103,7 +103,7 @@ typedef Tag<AlignmentSuboptimal_> SuboptimalAlignment;
 // Note, all local alignments have to be specialized versions of LocalAlignment_<>
 
 template <typename TSpec = Default>
-struct LocalAlignment_;
+struct LocalAlignment_{};
 
 typedef LocalAlignment_<> DPLocal;
 typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
@@ -310,9 +310,8 @@ typedef Tag<DynamicGaps_> DynamicGaps;
 // TAlignment: The type to select the pairwise alignment algorithm.
 // TGapCosts:  The gap cost function (LinearGaps or AffineGaps).
 // TTraceback: The traceback switch (TracebackOn or TracebackOff).
-template <typename TAlignment, typename TGapCosts, typename TTraceback>
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy = Serial>
 struct DPProfile_ {};
-
 
 // ----------------------------------------------------------------------------
 // Tag DPFirstRow
@@ -363,6 +362,63 @@ public:
 // Metafunctions
 // ============================================================================
 
+enum class DPProfileTypeId : uint8_t
+{
+    ALGORITHM = 0,
+    GAP_MODEL = 1,
+    TRACE_CONFIG = 2,
+    EXEC_POLICY = 3
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction DPContextSpec
+// ----------------------------------------------------------------------------
+
+template <typename TDPProfile, DPProfileTypeId ID>
+struct DPProfileType;
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::ALGORITHM>
+{
+    using Type = TAlignment;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::GAP_MODEL>
+{
+    using Type = TGapCosts;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::TRACE_CONFIG>
+{
+    using Type = TTraceback;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::EXEC_POLICY>
+{
+    using Type = TExecPolicy;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction GapTraits
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct GapTraits;
+
+template <typename T>
+struct GapTraits<T const> :
+    GapTraits<T>
+{};
+
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct GapTraits<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >
+{
+    typedef TGapCosts Type;
+};
+
 // ----------------------------------------------------------------------------
 // Metafunction IsGlobalAlignment
 // ----------------------------------------------------------------------------
@@ -380,12 +436,12 @@ template <typename TSpec>
 struct IsGlobalAlignment_<GlobalAlignment_<TSpec> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsGlobalAlignment_<TAlgoSpec>{};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsGlobalAlignment_<TAlgoSpec>{};
 
 // ----------------------------------------------------------------------------
@@ -434,12 +490,12 @@ template <typename TSpec>
 struct IsLocalAlignment_<LocalAlignment_<TSpec> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsLocalAlignment_<TAlgoSpec>{};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsLocalAlignment_<TAlgoSpec>{};
 
 // ----------------------------------------------------------------------------
@@ -459,12 +515,12 @@ template <typename TTracebackConfig>
 struct IsTracebackEnabled_<TracebackOn<TTracebackConfig> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsTracebackEnabled_<TTraceFlag>{};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsTracebackEnabled_<TTraceFlag>{};
 
 // ----------------------------------------------------------------------------
@@ -478,8 +534,8 @@ template <typename TTraceSpec>
 struct IsGapsLeft_<TracebackOn<TracebackConfig_<TTraceSpec, GapsLeft > > >
         : True{};
 
-template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig>
-struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig> >
+template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig, typename TExecPolicy>
+struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> >
         : IsGapsLeft_<TTraceConfig>{};
 
 // ----------------------------------------------------------------------------
@@ -487,15 +543,16 @@ struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig> >
 // ----------------------------------------------------------------------------
 
 template <typename TTraceConfig>
-struct IsSingleTrace_ : False{};
+struct IsSingleTrace_ : False
+{};
 
 template <typename TGapsPlacement>
-struct IsSingleTrace_<TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > >
-: True{};
+struct IsSingleTrace_<TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > > : True
+{};
 
-template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig>
-struct IsSingleTrace_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig> >
-: IsSingleTrace_<TTraceConfig>{};
+template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig, typename TExecPolicy>
+struct IsSingleTrace_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> > : IsSingleTrace_<TTraceConfig>
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction IsFreeEndGap_
@@ -506,12 +563,12 @@ template <typename TAlignmentSpec, typename TDPSide>
 struct IsFreeEndGap_ :
     False {};
 
-template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TDPSide>
-struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec> const, TDPSide>:
+template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TExecPolicy, typename TDPSide>
+struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec, TExecPolicy> const, TDPSide>:
     IsFreeEndGap_<TAlignmentSpec, TDPSide>{};
 
-template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TDPSide>
-struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec>, TDPSide>:
+template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TExecPolicy, typename TDPSide>
+struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec, TExecPolicy>, TDPSide>:
     IsFreeEndGap_<TAlignmentSpec, TDPSide>{};
 
 template <typename TLocalSpec, typename TDPSide>
