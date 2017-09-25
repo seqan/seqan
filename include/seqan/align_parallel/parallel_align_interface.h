@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_GLOBAL_ALIGNMENT_INTERFACE_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_GLOBAL_ALIGNMENT_INTERFACE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
 
 namespace seqan
 {
@@ -348,4 +348,4 @@ localAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizatio
 
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_GLOBAL_ALIGNMENT_INTERFACE_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_

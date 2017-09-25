@@ -36,7 +36,7 @@
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_H_
 
 // ============================================================================
-// Prerequisites
+// STD Prerequisites
 // ============================================================================
 
 #if SEQAN_DEBUG_ENABLED
@@ -48,54 +48,66 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#include <unordered_map>
+#include <shared_mutex>
+
+// ============================================================================
+// SeqAn Prerequisites
+// ============================================================================
 
 #include <seqan/basic.h>
+#include <seqan/simd.h>
 #include <seqan/align.h>
 #include <seqan/parallel.h>
+
+// ============================================================================
+// Parallel DP Prerequisites and Adaptors
+// ============================================================================
+
+#include <seqan/align_parallel/dp_parallel_execution_policies.h>
+#include <seqan/align_parallel/dp_traits.h>
+#include <seqan/align_parallel/dp_kernel_adaptor.h>
+#include <seqan/align_parallel/dp_settings.h>
+#include <seqan/align_parallel/dp_parallel_scout.h>
+#ifdef SEQAN_SIMD_ENABLED
+#include <seqan/align_parallel/dp_parallel_scout_simd.h>
+#endif
 
 // ============================================================================
 // Parallel DataStructures
 // ============================================================================
 
-//#include <seqan/align_parallel/parallel_thread_pool_base.h>
-//#include <seqan/align_parallel/parallel_thread_pool_std.h>
-//#include <seqan/align_parallel/parallel_task_pool_base.h>
-//#include <seqan/align_parallel/parallel_task_pool_std.h>
-#include <seqan/align_parallel/parallel_alignment_instance.h>
-#include <seqan/align_parallel/parallel_alignment_scheduler.h>
+#include <seqan/align_parallel/enumerable_thread_local.h>
+#include <seqan/align_parallel/enumerable_thread_local_limit.h>
+#include <seqan/align_parallel/enumerable_thread_local_iterator.h>
+#include <seqan/align_parallel/parallel_thread_pool_std.h>
 
 // ============================================================================
-// DP Task
+// Wavefront  Task
 // ============================================================================
 
-#include <seqan/align_parallel/dp_parallel_base.h>
-#include <seqan/align_parallel/dp_parallel_scout.h>
-
-// Simd specific code.
-#include <seqan/align_parallel/dp_parallel_scout_simd.h>
-#include <seqan/align_parallel/dp_task_base_simd.h>
-
-#include <seqan/align_parallel/dp_task_base.h>
-#if defined(SEQAN_TBB)
-#include <seqan/align_parallel/dp_task_tbb.h>
-#endif
-#if defined(_OPENMP)
-#include <seqan/align_parallel/dp_task_omp.h>
-#endif
-#include <seqan/align_parallel/dp_task_std.h>
+#include <seqan/align_parallel/wavefront_task_scheduler.h>
+#include <seqan/align_parallel/wavefront_task_queue.h>  // TODO(rrahn): Write tests!
+#include <seqan/align_parallel/wavefront_task_event.h>
+#include <seqan/align_parallel/wavefront_task_util.h>
+#include <seqan/align_parallel/wavefront_task.h>
+#include <seqan/align_parallel/wavefront_task_executor.h>
 
 // ============================================================================
-// Helper
+// Wavefront Alignment Tasks
 // ============================================================================
 
-#include <seqan/align_parallel/dp_trace_matrix_navigator_block_wise.h>
+#include <seqan/align_parallel/wavefront_alignment_scheduler.h>
+#include <seqan/align_parallel/wavefront_alignment_result.h>     // TODO(rrahn): rename! refactor!
+#include <seqan/align_parallel/wavefront_alignment_thread_local_storage.h>
+#include <seqan/align_parallel/wavefront_alignment_executor.h>
+#include <seqan/align_parallel/wavefront_alignment_task.h>
 
 // ============================================================================
 // Interfaces
 // ============================================================================
 
-#include <seqan/align_parallel/align_interface.h>
-#include <seqan/align_parallel/align_instance.h>
-#include <seqan/align_parallel/align_parallel_impl.h>
+#include <seqan/align_parallel/async_wave_execution_interface.h>
+#include <seqan/align_parallel/parallel_align_interface.h>
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_H_

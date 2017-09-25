@@ -76,7 +76,7 @@ struct WavefrontAlignmentTaskConfig
         using THostPosition = decltype(maxHostPosition(std::declval<TDPScout>()));
     };
 
-    using TDPIntermediate     = IntermediateDPResult<IntermediateTraits_>;
+    using TDPIntermediate     = WavefrontAlignmentResult<IntermediateTraits_>;
 
     struct AlignThreadLocalConfig_ {
         using TIntermediate = TDPIntermediate;
@@ -86,7 +86,7 @@ struct WavefrontAlignmentTaskConfig
     };
 
     using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<AlignThreadLocalConfig_>;
-    using TAlignEvent       = WavefrontAlignmentTaskEvent;
+    using TAlignEvent       = WavefrontTaskEvent;
 };
 
 #ifdef SEQAN_SIMD_ENABLED
@@ -112,7 +112,7 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
 //        using TScoreValue = decltype(maxScoreAt(std::declval<TDPScout_>()));
 //    };
 
-    using TDPIntermediate     = IntermediateDPResult<typename TBase_::IntermediateTraits_>;
+    using TDPIntermediate     = WavefrontAlignmentResult<typename TBase_::IntermediateTraits_>;
 
     // Parallel Context.
     struct SimdAlignThreadLocalConfig_ {
@@ -125,7 +125,7 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
     };
 
     using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<SimdAlignThreadLocalConfig_>;
-    using TAlignEvent       = WavefrontAlignmentTaskEvent;
+    using TAlignEvent       = WavefrontTaskEvent;
 };
 #endif
 
@@ -315,7 +315,7 @@ public:
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
-        WavefrontAlignmentTaskEvent event;
+        WavefrontTaskEvent event;
         context(*taskGraph.back().back()).mEventPtr = &event;
 
         // Kick off the execution.
@@ -381,8 +381,7 @@ public:
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
-        // Prepare event.
-        WavefrontAlignmentTaskEvent event;
+        WavefrontTaskEvent event;
         context(*taskGraph.back().back()).mEventPtr = &event;
 
         // Kick off the execution.

@@ -79,7 +79,7 @@ SEQAN_BEGIN_TESTSUITE(test_align_parallel_data_structures)
     SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_combine_binary);
 
     // -----------------------------------------------------------------------
-    // Test IntermediateDPResult
+    // Test WavefrontAlignmentResult
     // -----------------------------------------------------------------------
 
     SEQAN_CALL_TEST(test_align_parallel_intermediate_dp_result_construct);

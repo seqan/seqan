@@ -32,7 +32,7 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/align_parallel_2.h>
+#include <seqan/align_parallel.h>
 
 namespace test_align_parallel
 {
@@ -48,7 +48,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_construct)
 {
     using namespace seqan;
 
-    using TIntermediate = IntermediateDPResult<test_align_parallel::IntermediateTraits_>;
+    using TIntermediate = WavefrontAlignmentResult<test_align_parallel::IntermediateTraits_>;
 
     SEQAN_ASSERT(std::is_default_constructible<TIntermediate>::value);
     SEQAN_ASSERT(std::is_copy_constructible<TIntermediate>::value);
@@ -85,7 +85,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_update_max)
 {
     using namespace seqan;
 
-    using TIntermediate = IntermediateDPResult<test_align_parallel::IntermediateTraits_>;
+    using TIntermediate = WavefrontAlignmentResult<test_align_parallel::IntermediateTraits_>;
     using TState = typename TIntermediate::TState;
 
     TIntermediate interim{{10, 3u}, 2, 4};
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_clear)
 {
     using namespace seqan;
 
-    using TIntermediate = IntermediateDPResult<test_align_parallel::IntermediateTraits_>;
+    using TIntermediate = WavefrontAlignmentResult<test_align_parallel::IntermediateTraits_>;
 
     {
         TIntermediate interim{{10, 3u}, 2, 4};

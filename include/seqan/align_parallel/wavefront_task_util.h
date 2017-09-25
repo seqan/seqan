@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_IMPL_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_IMPL_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_UTIL_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_UTIL_H_
 
 namespace seqan
 {
@@ -261,7 +261,6 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
 
     auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
-    //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
     std::for_each(begin(zipCont), end(zipCont),
                   [&, getBuffer = std::move(getBuffer)](auto tuple)
                   {
@@ -314,7 +313,6 @@ storeIntoBuffer(TTasks & tasks,
 
     auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
 
-    //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
     std::for_each(begin(zipCont), end(zipCont),
     [&, getBuffer = std::move(getBuffer)](auto tuple)
     {
@@ -356,7 +354,6 @@ storeIntoBuffer(TTasks & tasks,
 
     auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
-    //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
     std::for_each(begin(zipCont), end(zipCont),
     [&, getBuffer = std::move(getBuffer)](auto tuple)
     {
@@ -368,7 +365,6 @@ storeIntoBuffer(TTasks & tasks,
             pair.i1._horizontalScore = std::get<2>(tuple) + std::get<5>(tuple);
             pair.i1._verticalScore = std::get<3>(tuple) + std::get<5>(tuple);
             pair.i2 = std::get<4>(tuple);
-//            std::cout << "<S = " << std::get<1>(tuple) << " H = " << std::get<2>(tuple) << " V = " << std::get<3>(tuple) << "> + " << std::get<5>(tuple) << " to " << pair.i1 << "\n";
         }
     });
 }
@@ -389,7 +385,6 @@ gatherSimdBuffer(TTasks const & tasks,
     String<typename TExecTraits::TBufferValue, Alloc<OverAligned> > simdSet;
 
     auto maxLength = length(*getBuffer(*tasks[0]));
-//    bool allSameLength = true;
     std::for_each(begin(tasks, Standard()) + 1, end(tasks, Standard()),
                   [&](auto& task)
                   {
@@ -417,14 +412,10 @@ scatterSimdBuffer(TTasks & tasks,
                   TOffset const & offset,
                   TExecTraits const & /*traits*/)
 {
-//    std::cout << "#### Scatter: \n";
-    // Check for valid simd length.
     for (unsigned i = 0; i < length(simdSet); ++i)
     {
         storeIntoBuffer(tasks, simdSet[i], i, std::forward<TFunc>(getBuffer), offset, typename TExecTraits::TGapType());
     }
-
-//    std::cout << "\n\n";
 }
 
 template <typename TDPCell, typename TTraceValue, typename TScoreMat, typename TTraceMat,
@@ -458,11 +449,6 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
 
     for (auto taskPtr : tasks)
     {
-        //        if (stateThreadContext.mTask[0]->_col == 88 && stateThreadContext.mTask[0]->_row == 8)
-        //        {
-        //            std::cout << "SeqH " << seqH[task->_col] << "\n";
-        //            std::cout << "SeqV " << seqV[task->_row] << "\n";
-        //        }
         appendValue(depSetH, context(*taskPtr).mSeqHBlocks[column(*taskPtr)]);
         appendValue(depSetV, context(*taskPtr).mSeqVBlocks[row(*taskPtr)]);
         if (lenH != length(context(*taskPtr).mSeqHBlocks[column(*taskPtr)]) ||
@@ -537,11 +523,6 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
 
         using TScoutSpec = typename ScoutSpecForAlignmentAlgorithm_<typename TExecTraits::TAlgorithmType, TScoutState>::Type;
         using TDPScout = DPScout_<TDPCell, TScoutSpec>;
-        //
-        // scoutState.dimV = length(stringSimdV) + 1;
-        // scoutState.isLocalAlignment = IsLocalAlignment_<typename TExecTraits::TAlgorithmType>::VALUE;
-        // scoutState.right = IsFreeEndGap_<typename TExecTraits::TAlgorithmType, DPLastColumn>::VALUE;
-        // scoutState.bottom = IsFreeEndGap_<typename TExecTraits::TAlgorithmType, DPLastRow>::VALUE;
 
         TDPScout dpScout(scoutState);
         computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).mDPSettings);
@@ -563,27 +544,9 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
             }
         }
     }
-    //
-    //    if (stateThreadContext.mTask[0]->_col == 88 && stateThreadContext.mTask[0]->_row == 8)
-    //    {
-    //        for (unsigned j = 0; j < length(stateThreadContext.mTask); ++j)
-    //        {
-    //            std::cout << "\n\nSeqH ";
-    //            for (unsigned i = 0; i < length(stringSimdH); ++i)
-    //            {
-    //                std::cout << static_cast<Dna>(stringSimdH[i][j]);
-    //            }
-    //            std::cout << "\nSeqV ";
-    //            for (unsigned i = 0; i < length(stringSimdV); ++i)
-    //            {
-    //                std::cout << static_cast<Dna>(stringSimdV[i][j]);
-    //            }
-    //            std::cout << "\n";
-    //        }
-    //    }
 }
 #endif
 }  // namespace impl
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_IMPL_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_UTIL_H_

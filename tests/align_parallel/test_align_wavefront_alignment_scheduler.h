@@ -32,7 +32,7 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/align_parallel_2.h>
+#include <seqan/align_parallel.h>
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_construct)
 {

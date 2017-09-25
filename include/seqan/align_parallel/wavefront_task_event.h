@@ -32,12 +32,12 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_LOCAL_DP_RESULT_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_LOCAL_DP_RESULT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EVENT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EVENT_H_
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -46,14 +46,32 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TDPScout>
-WavefrontLocalDPResult
+class WavefrontTaskEvent
 {
-    using TScore = typename std::decay<delctype(maxScore(declval<TDPScout>()))>::type;
+public:
+    std::mutex                  mMutexLastTask{};
+    std::condition_variable     mConditionLastTask{};
+    bool                        mReadyLastTask{false};
 
-    TScore  mMaxScore{minValue<TScore>()};
-    size_t  mMaxTileH{0};
-    size_t  mMaxTileV{0};
+    WavefrontTaskEvent() = default;
+
+    WavefrontTaskEvent(WavefrontTaskEvent const &) = delete;
+    WavefrontTaskEvent(WavefrontTaskEvent &&) = delete;
+
+    WavefrontTaskEvent& operator=(WavefrontTaskEvent const &) = delete;
+    WavefrontTaskEvent& operator=(WavefrontTaskEvent &&) = delete;
+
+    ~WavefrontTaskEvent()
+    {
+        if (!mReadyLastTask)
+        {
+            {
+                std::lock_guard<decltype(mMutexLastTask)> lck(mMutexLastTask);
+                mReadyLastTask = true;
+            }
+            mConditionLastTask.notify_one();
+        }
+    }
 };
 
 // ============================================================================
@@ -64,15 +82,24 @@ WavefrontLocalDPResult
 // Functions
 // ============================================================================
 
-template <typename ...TArgs>
 inline void
-reset(WavefrontLocalDPResult<TArgs...> & me)
+notify(WavefrontTaskEvent & event)
 {
-    me.mMaxScore = minValue<typename WavefrontLocalDPResult<TArgs...>::TScore>();
-    mMaxTileH = 0;
-    mMaxTileV = 0;
+    {
+        std::lock_guard<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
+        event.mReadyLastTask = true;
+    }
+    event.mConditionLastTask.notify_one();
 }
-    
+
+inline void
+wait(WavefrontTaskEvent & event)
+{
+    std::unique_lock<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
+    if (!event.mReadyLastTask)
+        event.mConditionLastTask.wait(lck, [&]{ return event.mReadyLastTask; });
+}
+
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_LOCAL_DP_RESULT_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EVENT_H_

@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_GRAPH_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_GRAPH_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRAITS_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRAITS_H_
 
 namespace seqan
 {
@@ -46,61 +46,64 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTask, template <typename> typename TAllocator = std::allocator>
-class WavefrontTaskGraph
+struct DPTraits
 {
-    //-------------------------------------------------------------------------
-    // Helper
-
-    template <typename TDimType>
-    struct Dimension
+    // Gocal alignment with linear gap costs.
+    struct GlobalLinear
     {
-        TDimType mDimH;
-        TDimType mDimV;
-
-        void setDimensionH(TDimType const dimH)
-        {
-            mDimH = dimH;
-        }
-
-        void setDimensionV(TDimType const dimV)
-        {
-            mDimV = dimV;
-        }
+        // The algorithm to choose.
+        using TAlgorithmType    = GlobalAlignment_<>;
+        // The Gaps to choos
+        using TGapType          = LinearGaps;
+        // The Band to choose.
+        using TBandType         = BandOff;
+        // The traceback.
+        using TTracebackType    = TracebackOn<TracebackConfig_<SingleTrace, GapsLeft>>;
+        // The output to choose.
+        using TFormat           = ArrayGaps;
     };
 
-    //-------------------------------------------------------------------------
-    // Typedefs
-
-    using TTaskAllocator = TAllocator<TTask>;
-    using TPointer       = typename TTaskAllocator<>
-    using TDimension     = Dimension<TDimType>;
-
-    //-------------------------------------------------------------------------
-    // Private Member Variables
-
-    // we could use a bare array, but this does not make sense.
-    // Unless, we cannot use the 
-    std::vector<std::vector<TTask>>     _mTaskDag;
-
-
-    //-------------------------------------------------------------------------
-    // Member Functions
-
-    inline auto&
-    operator[](TDimension const & dim)
+    // Global alignment with affine gap costs.
+    struct GlobalAffine : public GlobalLinear
     {
-        return
-    }
-};
+        using TGapType          = AffineGaps;
+    };
 
-template <typename TGraph>
-struct TaskGraphTraits;
+    // Global alignment with affine gap costs.
+    struct SemiGlobalLinear : public GlobalLinear
+    {
+        using TAlgorithmType = GlobalAlignment_<FreeEndGaps_<True, False, True, False>>;
+    };
 
-template <typename ...TArgs>
-struct TaskGraphTraits<WavefrontTaskGraph<TArgs...>>
-{
-    using TDimension = typename WavefrontTaskGraph<TArgs...>::TDimension;
+    // Global alignment with affine gap costs.
+    struct SemiGlobalAffine : public GlobalAffine
+    {
+        using TAlgorithmType = GlobalAlignment_<FreeEndGaps_<True, False, True, False>>;
+    };
+
+    // Banded global alignment with linear gap costs.
+    struct BandedGlobalLinear : public GlobalLinear
+    {
+        using TBandType         = BandOn;
+    };
+
+    // Banded global alignment with affine gap costs.
+    struct BandedGlobalAffine : public BandedGlobalLinear
+    {
+        using TGapType          = AffineGaps;
+    };
+
+    // Local alignment with linear gap costs.
+    struct LocalLinear : public GlobalLinear
+    {
+        using TAlgorithmType    = LocalAlignment_<>;
+    };
+
+    // Local alignment with affine gap costs.
+    struct LocalAffine : public LocalLinear
+    {
+        using TGapType          = AffineGaps;
+    };
 };
 
 // ============================================================================
@@ -111,22 +114,6 @@ struct TaskGraphTraits<WavefrontTaskGraph<TArgs...>>
 // Functions
 // ============================================================================
 
-template <typename ...TArgs>
-inline auto&
-root(WavefrontTaskGraph<TArgs...> & me)
-{
-    return typename WavefrontTaskGraph<TArgs...>::TAllocator::reference(me._mTaskDag[0][0]);
-}
-
-template <typename ...TArgs>
-inline auto&
-sink(WavefrontTaskGraph<TArgs...> & me)
-{
-    using WavefrontTaskGraph<TArgs...>::Dimensions;
-    return typename WavefrontTaskGraph<TArgs...>::TAllocator::reference(me._mTaskDag[length(me, HORIZONTAL) - 1][length(me, VERTICAL) - 1]);
-}
-
-
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_GRAPH_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRAITS_H_

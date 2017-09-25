@@ -31,11 +31,9 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-//  Implementation of the wavefront based alignment computation.
-// ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGNMENT_IMPL_WAVEFRONT_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGNMENT_IMPL_WAVEFRONT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ASYNC_WAVE_EXECUTION_INTERFACE_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_ASYNC_WAVE_EXECUTION_INTERFACE_H_
 
 namespace seqan
 {
@@ -57,14 +55,14 @@ public:
 
     using TAlignmentTask = WavefrontAlignmentTask<TSeqH, TSeqV, TSettings>;
     using TThreadLocal   = typename WavefrontAlignmentTaskConfig<TSettings>::TThreadLocal;
-    using TExecutor      = WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
+    using TExecutor      = WavefrontAlignmentExecutor<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
 
     TSettings                                   _settings;
     // Initialize the alignment scheduler.
-    WavefrontAlignmentScheduler                 _alignScheduler;//{parallelAlignments(execPolicy), numThreads(execPolicy)};
+    WavefrontAlignmentScheduler                 _alignScheduler;
 
-    EnumerableThreadLocal<TThreadLocal, Limit>  _threadLocalStorage;//{numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}};
-    TExecutor                                   _executor{}; //{&taskScheduler(_alignScheduler), &_threadLocalStorage};
+    EnumerableThreadLocal<TThreadLocal, Limit>  _threadLocalStorage;
+    TExecutor                                   _executor{};
     unsigned                                    _alignCounter{0};
     unsigned                                    _blockSize{};
 
@@ -121,20 +119,20 @@ public:
     // Translate dp settings into simd settings.
     using TSimdSettings = SimdDPSettings<TSettings, TWaveSpec>;
 
-    using TAlignmentTask = WavefrontAlignmentTask<TSeqH, TSeqV, TSimdSettings, WavefrontAlignmentSimdTaskConfig<TSimdSettings>>;
+    using TAlignmentTask = WavefrontAlignmentTask<TSeqH, TSeqV, TSimdSettings,
+                                                  WavefrontAlignmentSimdTaskConfig<TSimdSettings>>;
     using TWavefrontTask = WavefrontTask<typename TAlignmentTask::TTaskContext>;
-    using TSimdTaskQueue = WavefrontSimdDPTasks<TWavefrontTask, LENGTH<typename TSimdSettings::TScoreValueSimd>::VALUE>;
+    using TSimdTaskQueue = WavefrontTaskQueue<TWavefrontTask, LENGTH<typename TSimdSettings::TScoreValueSimd>::VALUE>;
 
     using TThreadLocal  = typename WavefrontAlignmentSimdTaskConfig<TSimdSettings>::TThreadLocal;
-    using TExecutor     = WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
+    using TExecutor     = WavefrontAlignmentExecutor<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
 
     TSimdSettings                               _settings;
     // Initialize the alignment scheduler.
-    WavefrontAlignmentScheduler                 _alignScheduler; //{parallelAlignments(execPolicy), numThreads(execPolicy)};
+    WavefrontAlignmentScheduler                 _alignScheduler;
 
-    //    EnumerableThreadLocal<TThreadLocal> tls{TThreadLocal{parallelAlignments(execPolicy)}};
-    EnumerableThreadLocal<TThreadLocal, Limit>  _threadLocalStorage; //{numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}};
-    TExecutor                                   _executor{}; //{&taskScheduler(_alignScheduler), &_threadLocalStorage};
+    EnumerableThreadLocal<TThreadLocal, Limit>  _threadLocalStorage;
+    TExecutor                                   _executor{};
     TSimdTaskQueue                              _simdTaskQueue{};
     unsigned                                    _alignCounter{0};
     unsigned                                    _blockSize{};
@@ -218,4 +216,4 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, TSimdSpec> const & exe
 
 }  // namespace impl
 }  // namespace seqan
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGNMENT_IMPL_WAVEFRONT_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ASYNC_WAVE_EXECUTION_INTERFACE_H_

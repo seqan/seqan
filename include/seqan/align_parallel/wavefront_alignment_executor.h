@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_STD_TASK_CONTEXT_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_STD_TASK_CONTEXT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PWAVEFRONT_ALIGNMENT_EXECUTOR_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_EXECUTOR_H_
 
 namespace seqan
 {
@@ -47,7 +47,7 @@ namespace seqan
 // ============================================================================
 
 template <typename TScheduler, typename TThreadLocalStore>
-struct WavefrontExecutorStd
+struct WavefrontAlignmentExecutor
 {
     // Shared data in parallel context.
     TScheduler *                  mTaskSchedulerPtr{nullptr};
@@ -58,7 +58,7 @@ struct WavefrontExecutorStd
 //struct WavefrontExecutorEvent
 //{
 //    TGlobalExecutor             & mExecutor;
-//    WavefrontAlignmentTaskEvent mThreadEvent;
+//    WavefrontTaskEvent mThreadEvent;
 //
 //    WavefrontExecutorEvent(TGlobalExecutor & exec) : mExecutor(exec)
 //    {}
@@ -87,7 +87,7 @@ struct WavefrontExecutorStd
 template <typename ...TArgs,
           typename TTaskExecutor>
 inline void
-spawn(WavefrontExecutorStd<TArgs...> & executor,
+spawn(WavefrontAlignmentExecutor<TArgs...> & executor,
       TTaskExecutor && taskExec)
 {
     SEQAN_ASSERT(executor.mTaskSchedulerPtr != nullptr);
@@ -96,7 +96,7 @@ spawn(WavefrontExecutorStd<TArgs...> & executor,
 
 template <typename ...TArgs>
 inline auto&
-local(WavefrontExecutorStd<TArgs...> & executor)
+local(WavefrontAlignmentExecutor<TArgs...> & executor)
 {
     SEQAN_ASSERT(executor.mThreadLocalPtr != nullptr);
     return local(*executor.mThreadLocalPtr);
@@ -104,7 +104,7 @@ local(WavefrontExecutorStd<TArgs...> & executor)
 
 //template <typename ...TArgs>
 //inline void
-//notify(WavefrontExecutorStd<TArgs...> & executor)
+//notify(WavefrontAlignmentExecutor<TArgs...> & executor)
 //{
 //    SEQAN_ASSERT(executor.mThreadEventPtr != nullptr);
 //    notify(*executor.mThreadEventPtr);
@@ -112,7 +112,7 @@ local(WavefrontExecutorStd<TArgs...> & executor)
 //
 //template <typename ...TArgs>
 //inline void
-//wait(WavefrontExecutorStd<TArgs...> & executor)
+//wait(WavefrontAlignmentExecutor<TArgs...> & executor)
 //{
 //    SEQAN_ASSERT(executor.mThreadEventPtr != nullptr);
 //    wait(*executor.mThreadEventPtr);
@@ -182,4 +182,4 @@ local(WavefrontExecutorStd<TArgs...> & executor)
 
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_STD_TASK_CONTEXT_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_EXECUTOR_H_
