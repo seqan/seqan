@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,16 +32,10 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRACE_STORE_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRACE_STORE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SETTINGS_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SETTINGS_H_
 
 namespace seqan
-{
-namespace impl
-{
-namespace dp
-{
-namespace parallel
 {
 
 // ============================================================================
@@ -52,42 +46,56 @@ namespace parallel
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TScalarTraceValue, typename TSimdTraceValue>
-class DPTraceStore
+// Use interface as: DPSettings<TScore, TBand, Traits<>>
+template <typename TScoringScheme_, typename TDPTraits = DPTraits::GlobalLinear>
+struct DPSettings
 {
-public:
-    // Typedefs
-    // ----------------------------------------------------------------------------
+    using TTraits        = TDPTraits;
+    using TScoringScheme = TScoringScheme_;
+    using TBandConfig    = DPBandConfig<typename TDPTraits::TBandType>;
 
-    // We store them as shared pointers.
-    using TScalarTraceMatrix = String<TScalarTraceValue>;
-    using TSimdTraceMatrix   = String<TSimdTraceValue, Alloc<OverAligned> >;
+    TScoringScheme  mScoringScheme;
+    TBandConfig     mBandScheme;
 
-    // Members
-    // ----------------------------------------------------------------------------
+    DPSettings() = default;
 
-    String<TScalarTraceMatrix> mScalarTraceVec;
-    String<TSimdTraceMatrix>   mSimdTraceVec;
-
-    // Constructors - default generated!
-    // ----------------------------------------------------------------------------
-
-    // Member functions
-    // ----------------------------------------------------------------------------
-
-    inline auto& localScalarTraceMatrix()
-    {
-        resize(mScalarTraceVec, length(mScalarTraceVec) + 1, Generous());
-        return back(mScalarTraceVec);
-    }
-
-    inline auto& localSimdTraceMatrix()
-    {
-        resize(mSimdTraceVec, length(mSimdTraceVec) + 1, Generous());
-        return back(mSimdTraceVec);
-    }
+    explicit DPSettings(TScoringScheme score) : mScoringScheme(std::move(score))
+    {}
 };
 
+#ifdef SEQAN_SIMD_ENABLED
+// Aggregate type.
+template <typename TDPSettings, typename TOffsetSpec = False>
+struct SimdDPSettings : public TDPSettings
+{
+    //-------------------------------------------------------------------------
+    // Member Types.
+
+    using TTraits = typename TDPSettings::TTraits;
+    using TScoringScheme = typename TDPSettings::TScoringScheme;
+    using TScoreValue = typename Value<TScoringScheme>::Type;
+    using TScoreValueSimd = typename SimdVector<
+                                        std::conditional_t<std::is_same<TOffsetSpec, BlockOffsetOptimization>::value,
+                                                           int16_t,
+                                                           TScoreValue>>::Type;
+    using TSimdScoringScheme = Score<TScoreValueSimd, ScoreSimdWrapper<TScoringScheme>>;
+
+    //-------------------------------------------------------------------------
+    // Members.
+
+    TSimdScoringScheme  mSimdScoringScheme;
+
+    //-------------------------------------------------------------------------
+    // Constructor.
+
+    SimdDPSettings() = default;
+
+    explicit SimdDPSettings(TScoringScheme score) :
+        TDPSettings(std::move(score)),
+        mSimdScoringScheme(score)
+    {}
+};
+#endif  // SEQAN_SIMD_ENABLED
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -96,9 +104,6 @@ public:
 // Functions
 // ============================================================================
 
-}  // namespace parallel
-}  // namespace dp
-}  // namespace impl
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRACE_STORE_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SETTINGS_H_

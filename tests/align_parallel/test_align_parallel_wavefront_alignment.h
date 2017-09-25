@@ -32,7 +32,7 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/align_parallel_2.h>
+#include <seqan/align_parallel.h>
 
 namespace test_align_parallel
 {
@@ -75,7 +75,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
     lockWriting(scheduler);
     waitForWriters(scheduler);
 
-    WavefrontExecutorStd<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal>> executor{&scheduler, &tls};
+    WavefrontAlignmentExecutor<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal>> executor{&scheduler, &tls};
 
     int testScore{};
     task(0, executor, [&](auto const /*id*/, auto const & score)

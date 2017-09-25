@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_INTERMEDIATE_DP_RESULT_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_INTERMEDIATE_DP_RESULT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_WAVEFRONT_TASK_QUEUE_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_WAVEFRONT_TASK_QUEUE_H_
 
 namespace seqan
 {
@@ -46,30 +46,48 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TTraits>
-struct IntermediateDPResult
+template <typename TValue,
+          size_t VECTOR_SIZE_>
+class WavefrontTaskQueue
 {
-    // ----------------------------------------------------------------------------
+public:
+
+    //-------------------------------------------------------------------------
     // Member Types.
 
-    using TState = std::pair<typename TTraits::TScoreValue, typename TTraits::THostPosition>;
+    using TQueue = ConcurrentQueue<TValue*>;
+    using ResultType = std::vector<TValue*>;
+    using ValueType = TValue;
 
-    // ----------------------------------------------------------------------------
-    // Member Variables
+    //-------------------------------------------------------------------------
+    // Members.
+    static constexpr size_t VECTOR_SIZE{VECTOR_SIZE_};
 
-    TState  mMaxState{minValue<typename TTraits::TScoreValue>(), typename TTraits::THostPosition{}};
-    size_t  mTileCol{0};
-    size_t  mTileRow{0};
+    TQueue      mQueue;
+    std::mutex  mMutexPopQueue;
+    bool        mHasNotified{false};
 
-    // ----------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // Constructors.
 
-    // Note: Although, this could be an aggregate type, the icpc-17 crashes,
-    // when compiling without the defaulted constructor.
-    IntermediateDPResult() = default;
+    WavefrontTaskQueue()
+    {
+        lockWriting(mQueue);
+        lockReading(mQueue);
+    }
 
-    // ----------------------------------------------------------------------------
-    // Member Functions.
+    WavefrontTaskQueue(WavefrontTaskQueue const&) = delete;
+    WavefrontTaskQueue(WavefrontTaskQueue &&) = delete;
+
+    WavefrontTaskQueue& operator=(WavefrontTaskQueue const &) = delete;
+    WavefrontTaskQueue& operator=(WavefrontTaskQueue &&) = delete;
+
+    ~WavefrontTaskQueue()
+    {
+        if (!mHasNotified)
+            unlockWriting(mQueue);
+        unlockReading(mQueue);
+    }
 };
 
 // ============================================================================
@@ -80,77 +98,45 @@ struct IntermediateDPResult
 // Functions
 // ============================================================================
 
-namespace impl
+template <typename TValue, size_t VECTOR_SIZE>
+inline bool
+tryPopTasks(typename WavefrontTaskQueue<TValue, VECTOR_SIZE>::ResultType & tasks,
+            WavefrontTaskQueue<TValue, VECTOR_SIZE> & me)
 {
-
-template <typename TIntermediate,
-          typename TState>
-inline void
-updateMax(TIntermediate & me,
-          TState const & state,
-          size_t const tileCol,
-          size_t const tileRow)
-{
-    if (state.first > me.mMaxState.first)
+    clear(tasks);
+    std::lock_guard<std::mutex> lck(me.mMutexPopQueue);
+    if (length(me.mQueue) < WavefrontTaskQueue<TValue, VECTOR_SIZE>::VECTOR_SIZE)
     {
-        me.mMaxState = state;
-        me.mTileCol = tileCol;
-        me.mTileRow = tileRow;
+        resize(tasks, 1);
+        if (!popFront(tasks[0], me.mQueue, Serial()))
+        {
+            return false;
+        }
     }
+    else
+    {
+        for (size_t lane = 0u; lane < VECTOR_SIZE; ++lane)
+            tasks.push_back(popFront(me.mQueue, Serial()));
+    }
+    return true;
 }
-}  // namespace impl
 
-template <typename ...TArgs>
+template <typename TValue, size_t VECTOR_SIZE>
 inline void
-updateMax(IntermediateDPResult<TArgs...> & me,
-          typename IntermediateDPResult<TArgs...>::TState const & state,
-          size_t const tileCol,
-          size_t const tileRow)
+appendValue(WavefrontTaskQueue<TValue, VECTOR_SIZE> & me,
+            TValue & newTask)
 {
-    impl::updateMax(me, state, tileCol, tileRow);
+    appendValue(me.mQueue, &newTask);
 }
 
-template <typename ...TArgs>
+template <typename TValue, size_t VECTOR_SIZE>
 inline void
-updateMax(IntermediateDPResult<TArgs...> & lhs,
-          IntermediateDPResult<TArgs...> const & rhs)
+notify(WavefrontTaskQueue<TValue, VECTOR_SIZE> & me)
 {
-    impl::updateMax(lhs, rhs.mMaxState, rhs.mTileCol, rhs.mTileRow);
-}
-
-template <typename ...TArgs>
-inline void
-clear(IntermediateDPResult<TArgs...> & me)
-{
-    IntermediateDPResult<TArgs...> tmp;
-    swap(me, tmp);
-}
-
-template <typename ...TArgs>
-inline void
-clear(IntermediateDPResult<TArgs...> && me)
-{
-    IntermediateDPResult<TArgs...> tmp;
-    swap(me, tmp);
-}
-
-template <typename ...TArgs>
-inline typename IntermediateDPResult<TArgs...>::TState const &
-value(IntermediateDPResult<TArgs...> const & me)
-{
-    return me.mMaxState;
-}
-
-template <typename ...TArgs>
-inline void
-swap(IntermediateDPResult<TArgs...> & lhs,
-     IntermediateDPResult<TArgs...> & rhs)
-{
-    IntermediateDPResult<TArgs...> tmp = std::move(lhs);
-    lhs = std::move(rhs);
-    rhs = std::move(tmp);
+    me.mHasNotified = true;
+    unlockWriting(me.mQueue);
 }
 
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_INTERMEDIATE_DP_RESULT_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_WAVEFRONT_TASK_QUEUE_H_

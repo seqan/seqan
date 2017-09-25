@@ -32,7 +32,7 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/align_parallel_2.h>
+#include <seqan/align_parallel.h>
 
 namespace test_align_parallel
 {

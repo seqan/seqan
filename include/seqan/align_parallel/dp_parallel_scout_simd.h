@@ -45,6 +45,7 @@ namespace seqan
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
 // ----------------------------------------------------------------------------
 // Class DPScoutState_; DPTiled
 // ----------------------------------------------------------------------------
@@ -107,13 +108,17 @@ public:
 // ----------------------------------------------------------------------------
 
 template<typename TAlignmentAlgorithm, typename TBuffer, typename TThreadContext>
-struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<DPTiled<TBuffer, TThreadContext, SimdAlignEqualLength> > >
+struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm,
+                                       DPScoutState_<DPTiled<TBuffer, TThreadContext, SimdAlignEqualLength> > >
 {
     using Type = DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignEqualLength> >;
 };
 
 template<typename TAlignmentAlgorithm, typename TBuffer, typename TThreadContext, typename TTraits>
-struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<DPTiled<TBuffer, TThreadContext, SimdAlignVariableLength<TTraits> > > >
+struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm,
+                                       DPScoutState_<DPTiled<TBuffer,
+                                                             TThreadContext,
+                                                             SimdAlignVariableLength<TTraits> > > >
 {
     using Type = DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > >;
 };

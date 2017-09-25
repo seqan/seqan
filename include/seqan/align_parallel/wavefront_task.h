@@ -31,11 +31,9 @@
 // ==========================================================================
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-//  DP base task.
-// ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_H_
 
 namespace seqan
 {
@@ -53,7 +51,7 @@ template <typename TSeqHBlocks,
           typename TSeqVBlocks,
           typename TTileBuffer,
           typename TDPSettings,
-          typename TEvent = WavefrontAlignmentTaskEvent>
+          typename TEvent = WavefrontTaskEvent>
 struct WavefrontAlignmentContext
 {
     size_t              mAlignmentId{0};
@@ -392,7 +390,8 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                             offset,
                             TExecTraits{});
 }
-#endif
+#endif  // namespace seqan
 
 }  // namespace seqan
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TASK_BASE_2_H_
+
+#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_H_

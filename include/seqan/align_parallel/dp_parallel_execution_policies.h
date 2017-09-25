@@ -94,7 +94,7 @@ parallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec
 template <typename TSpec, typename TVectorizationSpec>
 inline void
 setParallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> & p,
-                     size_t const pi)
+                      size_t const pi)
 {
     p.mParallelAlignments = pi;
 }

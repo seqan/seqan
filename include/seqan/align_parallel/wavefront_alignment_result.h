@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_ALIGNMENT_CONFIGURATOR_GLOBAL_H_
-#define INCLUDE_SEQAN_ALIGN_ALIGNMENT_CONFIGURATOR_GLOBAL_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_RESULT_H_
+#define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_RESULT_H_
 
 namespace seqan
 {
@@ -46,17 +46,30 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TScoringScheme>
-class AlignmentConfigurator<TScoringScheme, GlobalAlignment>
+template <typename TTraits>
+struct WavefrontAlignmentResult
 {
-    //  Traits
     // ----------------------------------------------------------------------------
+    // Member Types.
 
-    //  Member Variables
+    using TState = std::pair<typename TTraits::TScoreValue, typename TTraits::THostPosition>;
+
     // ----------------------------------------------------------------------------
+    // Member Variables
 
-    TScoringScheme mScoringScheme;
+    TState  mMaxState{minValue<typename TTraits::TScoreValue>(), typename TTraits::THostPosition{}};
+    size_t  mTileCol{0};
+    size_t  mTileRow{0};
 
+    // ----------------------------------------------------------------------------
+    // Constructors.
+
+    // Note: Although, this could be an aggregate type, the icpc-17 crashes,
+    // when compiling without the defaulted constructor.
+    WavefrontAlignmentResult() = default;
+
+    // ----------------------------------------------------------------------------
+    // Member Functions.
 };
 
 // ============================================================================
@@ -66,8 +79,79 @@ class AlignmentConfigurator<TScoringScheme, GlobalAlignment>
 // ============================================================================
 // Functions
 // ============================================================================
-    
-    
+
+namespace impl
+{
+
+template <typename TIntermediate,
+          typename TState>
+inline void
+updateMax(TIntermediate & me,
+          TState const & state,
+          size_t const tileCol,
+          size_t const tileRow)
+{
+    if (state.first > me.mMaxState.first)
+    {
+        me.mMaxState = state;
+        me.mTileCol = tileCol;
+        me.mTileRow = tileRow;
+    }
+}
+}  // namespace impl
+
+template <typename ...TArgs>
+inline void
+updateMax(WavefrontAlignmentResult<TArgs...> & me,
+          typename WavefrontAlignmentResult<TArgs...>::TState const & state,
+          size_t const tileCol,
+          size_t const tileRow)
+{
+    impl::updateMax(me, state, tileCol, tileRow);
+}
+
+template <typename ...TArgs>
+inline void
+updateMax(WavefrontAlignmentResult<TArgs...> & lhs,
+          WavefrontAlignmentResult<TArgs...> const & rhs)
+{
+    impl::updateMax(lhs, rhs.mMaxState, rhs.mTileCol, rhs.mTileRow);
+}
+
+template <typename ...TArgs>
+inline void
+clear(WavefrontAlignmentResult<TArgs...> & me)
+{
+    WavefrontAlignmentResult<TArgs...> tmp;
+    swap(me, tmp);
+}
+
+template <typename ...TArgs>
+inline void
+clear(WavefrontAlignmentResult<TArgs...> && me)
+{
+    WavefrontAlignmentResult<TArgs...> tmp;
+    swap(me, tmp);
+}
+
+template <typename ...TArgs>
+inline typename WavefrontAlignmentResult<TArgs...>::TState const &
+value(WavefrontAlignmentResult<TArgs...> const & me)
+{
+    return me.mMaxState;
+}
+
+template <typename ...TArgs>
+inline void
+swap(WavefrontAlignmentResult<TArgs...> & lhs,
+     WavefrontAlignmentResult<TArgs...> & rhs)
+{
+    // TODO (rrahn): report issue with Intel
+    WavefrontAlignmentResult<TArgs...> tmp = std::move(lhs);
+    lhs = std::move(rhs);
+    rhs = std::move(tmp);
+}
+
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_ALIGNMENT_CONFIGURATOR_GLOBAL_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_RESULT_H_

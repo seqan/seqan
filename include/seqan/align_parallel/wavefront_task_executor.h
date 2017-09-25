@@ -85,7 +85,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
 };
 
 template <typename TValue, size_t VECTOR_SIZE>
-struct WavefrontTaskExecutionPolicy<WavefrontSimdDPTasks<TValue, VECTOR_SIZE>>
+struct WavefrontTaskExecutionPolicy<WavefrontTaskQueue<TValue, VECTOR_SIZE>>
 {
     template <typename TResource, typename TWavefrontExecutor>
     inline static void

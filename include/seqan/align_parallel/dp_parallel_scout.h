@@ -47,6 +47,18 @@ namespace seqan
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class DPTileBuffer
+// ----------------------------------------------------------------------------
+
+// The structure owning the horizontal/vertical buffer.
+template <typename TDPCellBuff, typename TBuffer = String<TDPCellBuff> >
+struct DPTileBuffer
+{
+    TBuffer horizontalBuffer;
+    TBuffer verticalBuffer;
+};
+
+// ----------------------------------------------------------------------------
 // Tag DPTiled<TBuffer>
 // ----------------------------------------------------------------------------
 
@@ -72,8 +84,6 @@ public:
     TThreadContext mThreadContext{};
 
     DPScoutState_() = default;
-//    DPScoutState_() : ptrHorBuffer(nullptr), ptrVerBuffer(nullptr)
-//    {}
 
     DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer) :
         ptrHorBuffer(&horBuffer),
@@ -100,10 +110,11 @@ public:
     using TBase = DPScout_<TDPCell, Default>;
 
     DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state;
+
     size_t   mHorizontalPos;
     size_t   mVerticalPos;
-    bool mForceTracking;
-    
+    bool     mForceTracking;
+
     DPScout_(DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state,
              bool pForceTracking = false) :
         TBase(),
