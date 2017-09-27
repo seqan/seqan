@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
-#define INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
+#ifndef INCLUDE_SEQAN_PARALLEL_PARALLEL_THREAD_POOL_H_
+#define INCLUDE_SEQAN_PARALLEL_PARALLEL_THREAD_POOL_H_
 
 #if defined(__linux__)
 #include <sched.h>
@@ -41,7 +41,7 @@
 
 namespace seqan
 {
-    
+
 // ============================================================================
 // Forwards
 // ============================================================================
@@ -49,49 +49,6 @@ namespace seqan
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
-
-std::mutex _globalMutexCout;
-
-class TestThread
-{
-public:
-
-    std::string name;
-    unsigned id;
-    std::thread thread;
-
-    TestThread(TestThread && moveable) = default;
-
-    template <typename TFunc, typename ...TArgs>
-    TestThread(std::string _name, unsigned const _id, TFunc && f, TArgs && ...args) :
-        name(std::move(_name)),
-        id(_id),
-        thread(std::forward<TFunc>(f), std::forward<TArgs>(args)...)
-    {
-        std::lock_guard<std::mutex> lck(_globalMutexCout);
-        std::cout << "Created Thread: " << name << " with id: " << id << '\n';
-    }
-
-    bool joinable()
-    {
-        return thread.joinable();
-    }
-
-    void join()
-    {
-        {
-            std::lock_guard<std::mutex> lck(_globalMutexCout);
-            std::cout << "Join Thread: " << name << " with id: " << id << '\n';
-        }
-        thread.join();
-    }
-
-    ~TestThread()
-    {
-        std::lock_guard<std::mutex> lck(_globalMutexCout);
-        std::cout << "Killed Thread: " << name << " with id: " << id << '\n';
-    }
-};
 
 // Simple Thread Pool.
 class ThreadPool
@@ -131,33 +88,6 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
-
-//template <typename TCallable, typename ...TArgs>
-//inline void
-//spawn(ThreadPool & pool,
-//      std::string const & str,
-//      unsigned id,
-//      TCallable callable, TArgs && ...args)
-//{
-//    pool._mPool.emplace_back(str, id, callable, std::forward<TArgs>(args)...);
-//}
-
-//template <typename TCallable, typename ...TArgs>
-//inline void
-//spawn(ThreadPool & pool,
-//      size_t const cpuId,
-//      TCallable callable, TArgs && ...args)
-//{
-//    pool._mPool.emplace_back(callable, std::forward<TArgs>(args)...);
-//    cpu_set_t cpuset;
-//    CPU_ZERO(&cpuset);
-//    CPU_SET(cpuId, &cpuset);
-//    int rc = pthread_setaffinity_np(back(pool).native_handle(),
-//                                    sizeof(cpu_set_t), &cpuset);
-//    if (rc != 0) {
-//        std::cerr << "Error calling pthread_setaffinity_np: " << rc << "\n";
-//    }
-//}
 
 template <typename TCallable, typename ...TArgs>
 inline void
@@ -205,7 +135,7 @@ setCpuAffinity(ThreadPool & /*me*/, size_t /*firstCpu = 0*/, size_t const /*scal
     return false;
 }
 #endif  // defined(__linux__)
-    
+
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_PARALLEL_THREAD_POOL_STD_H_
+#endif  // INCLUDE_SEQAN_PARALLEL_PARALLEL_THREAD_POOL_H_

@@ -65,11 +65,18 @@ namespace seqan {
  * @brief Tag to select the serial implementation of an algorithm.
  */
 
-//struct Parallel_;
-//typedef Tag<Parallel_> Parallel;
+struct Parallel_;
+typedef Tag<Parallel_> Parallel;
 
 // ----------------------------------------------------------------------------
-// Tag ExecutionPolicy
+// Tag Vectorial
+// ----------------------------------------------------------------------------
+
+struct Vectorial_;
+using Vectorial = Tag<Vectorial_>;
+
+// ----------------------------------------------------------------------------
+// Class ExecutionPolicy
 // ----------------------------------------------------------------------------
 
 // Dynamic execution policy.
@@ -85,39 +92,6 @@ struct ExecutionPolicy
 // ----------------------------------------------------------------------------
 
 using Sequential = ExecutionPolicy<>;
-// constexpr ExecutionPolicy<> seq{};
-
-// ----------------------------------------------------------------------------
-// Tag Vectorial
-// ----------------------------------------------------------------------------
-
-struct Vectorial_;
-using Vectorial = Tag<Vectorial_>;
-// ExecutionPolicy<Serial, Vectorial> vec{};
-
-// ----------------------------------------------------------------------------
-// Tag Parallel Flags depending on parallel option.
-// ----------------------------------------------------------------------------
-
-#if defined(SEQAN_TBB)
-struct ParallelTbb_;
-using ParallelTbb = Tag<ParallelTbb_>;
-using Parallel = ParallelTbb;
-// constexpr ExecutionPolicy<ParallelTbb> par{std::thread::hardware_concurrency()};
-// constexpr ExecutionPolicy<ParallelTbb, Vectorial> parVec{std::thread::hardware_concurrency()};
-#elif defined(_OPENMP)
-struct ParallelOmp_;
-using ParallelOmp = Tag<ParallelOmp_>;
-using Parallel = ParallelOmp;
-// constexpr ExecutionPolicy<ParallelOmp> par{std::thread::hardware_concurrency()};
-// constexpr ExecutionPolicy<ParallelOmp, Vectorial> parVec{std::thread::hardware_concurrency()};
-#else
-struct ParallelStd_;
-using ParallelStd = Tag<ParallelStd_>;
-using Parallel = ParallelStd;
-// constexpr ExecutionPolicy<ParallelStd> par{std::thread::hardware_concurrency()};
-// constexpr ExecutionPolicy<ParallelStd, Vectorial> parVec{std::thread::hardware_concurrency()};
-#endif
 
 // ============================================================================
 // Metafunctions

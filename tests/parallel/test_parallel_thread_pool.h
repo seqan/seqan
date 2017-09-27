@@ -32,9 +32,9 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/align_parallel.h>
+#include <seqan/parallel.h>
 
-SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_construct)
+SEQAN_DEFINE_TEST(test_parallel_thread_pool_construct)
 {
     using namespace seqan;
     // We need to be able to construct a thread pool.
@@ -45,7 +45,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_construct)
     SEQAN_ASSERT(!std::is_move_assignable<ThreadPool>::value);
 }
 
-SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_spawn)
+SEQAN_DEFINE_TEST(test_parallel_thread_pool_spawn)
 {
     using namespace seqan;
     // We need to be able to construct a thread pool
@@ -62,7 +62,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_spawn)
     SEQAN_ASSERT(res);
 }
 
-SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_join)
+SEQAN_DEFINE_TEST(test_parallel_thread_pool_join)
 {
     using namespace seqan;
 
@@ -93,7 +93,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_join)
 
 
 
-SEQAN_DEFINE_TEST(test_align_parallel_thread_pool_destruct)
+SEQAN_DEFINE_TEST(test_parallel_thread_pool_destruct)
 {
     using namespace seqan;
 
