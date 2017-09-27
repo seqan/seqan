@@ -32,7 +32,7 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/align_parallel.h>
+#include <seqan/parallel.h>
 
 namespace test_align_parallel
 {
@@ -50,10 +50,6 @@ run(TEtl & tls)
     // spawn sveral threads that call for a number of repetitions the local variable.
     auto task = [&counter, &mutexCout, &tls](unsigned const tid)
     {
-//        {
-//            std::lock_guard<std::mutex> lck(mutexCout);
-//            std::cout << "Started thread: " << tid << std::endl;
-//        }
         while (true)
         {
             auto & val = local(tls);
@@ -62,10 +58,6 @@ run(TEtl & tls)
                 std::stringstream ss;
                 ss << "thread_" << tid;
                 val.first = ss.str();
-//                {
-//                    std::lock_guard<std::mutex> lck(mutexCout);
-//                    std::cout << "Thread: " << tid << " updated: " << local(tls).first << "\n";
-//                }
             }
             {
                 std::lock_guard<std::mutex> lck(mutexCout);

@@ -48,8 +48,6 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <unordered_map>
-#include <shared_mutex>
 
 // ============================================================================
 // SeqAn Prerequisites
@@ -72,15 +70,6 @@
 #ifdef SEQAN_SIMD_ENABLED
 #include <seqan/align_parallel/dp_parallel_scout_simd.h>
 #endif
-
-// ============================================================================
-// Parallel DataStructures
-// ============================================================================
-
-#include <seqan/align_parallel/enumerable_thread_local.h>
-#include <seqan/align_parallel/enumerable_thread_local_limit.h>
-#include <seqan/align_parallel/enumerable_thread_local_iterator.h>
-#include <seqan/align_parallel/parallel_thread_pool_std.h>
 
 // ============================================================================
 // Wavefront  Task

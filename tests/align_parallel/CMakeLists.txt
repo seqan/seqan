@@ -30,10 +30,8 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_align_parallel_data_structures
                 test_align_parallel_data_structures.cpp
-                test_align_thread_pool.h
                 test_align_wavefront_task_scheduler.h
                 test_align_wavefront_alignment_scheduler.h
-                test_parallel_enumerable_thread_local.h
                 test_align_wavefront_intermediate_dp_result.h
                 test_align_wavefront_alignment_thread_local.h)
 

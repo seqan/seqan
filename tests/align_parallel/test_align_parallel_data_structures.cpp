@@ -34,24 +34,13 @@
 
 #include <seqan/basic.h>
 
-#include "test_align_thread_pool.h"
 #include "test_align_wavefront_task_scheduler.h"
 #include "test_align_wavefront_alignment_scheduler.h"
-#include "test_parallel_enumerable_thread_local.h"
 #include "test_align_wavefront_intermediate_dp_result.h"
 #include "test_align_wavefront_alignment_thread_local.h"
 
 SEQAN_BEGIN_TESTSUITE(test_align_parallel_data_structures)
 {
-    // -----------------------------------------------------------------------
-    // Test simple thread pool.
-    // -----------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_align_parallel_thread_pool_construct);
-    SEQAN_CALL_TEST(test_align_parallel_thread_pool_spawn);
-    SEQAN_CALL_TEST(test_align_parallel_thread_pool_join);
-    SEQAN_CALL_TEST(test_align_parallel_thread_pool_destruct);
-
     // -----------------------------------------------------------------------
     // Test wavefront task scheduler.
     // -----------------------------------------------------------------------
@@ -66,17 +55,6 @@ SEQAN_BEGIN_TESTSUITE(test_align_parallel_data_structures)
     SEQAN_CALL_TEST(test_align_parallel_wavefront_alignment_scheduler_construct);
     SEQAN_CALL_TEST(test_align_parallel_wavefront_alignment_scheduler_async);
     SEQAN_CALL_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_exception);
-
-    // TODO(rrahn): Push to parallel module.
-    // -----------------------------------------------------------------------
-    // Test Enumerable Thread Specific.
-    // -----------------------------------------------------------------------
-
-    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_construct);
-    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_local);
-    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_enumerate);
-    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_combine_unary);
-    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_combine_binary);
 
     // -----------------------------------------------------------------------
     // Test WavefrontAlignmentResult
