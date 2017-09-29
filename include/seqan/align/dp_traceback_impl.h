@@ -562,7 +562,7 @@ _computeTraceback(TTarget & target,
                   DPBandConfig<TBandFlag> const & band,
                   DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, TExecPolicy> const & dpProfile)
 {
-    using TSize = typename Size<TTarget>::Type;
+    using TSize SEQAN_TYPEDEF_FOR_DEBUG = typename Size<TTarget>::Type;
     // Set the navigator to the position where the maximum was found.
     _setToPosition(matrixNavigator, maxHostPosition);
 
