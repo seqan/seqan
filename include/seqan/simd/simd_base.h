@@ -364,7 +364,7 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices);
 
 // NOTE(rmaerker): Make this function available, also if SIMD is not enabled.
 template <typename TSimdVector, typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TSimdVector>>, TSimdVector)
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TSimdVector>>, TSimdVector)
 createVector(TValue const x)
 {
     return x;
