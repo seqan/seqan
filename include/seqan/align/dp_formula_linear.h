@@ -80,8 +80,8 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR,
                       TracebackOff const &)
 {
-    auto cmp = cmpGt(rightCompare, activeCell._score);
-    activeCell._score = blend(activeCell._score, rightCompare, cmp);
+    auto cmp = cmpGt(activeCell._score, rightCompare);
+    activeCell._score = blend(rightCompare, activeCell._score, cmp);
     return TraceBitMap_<TScoreValue>::NONE;
 }
 
@@ -104,9 +104,9 @@ _internalComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                       TTraceValueR const & rightTrace,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const &)
 {
-    auto cmp = cmpGt(rightCompare, activeCell._score);
-    activeCell._score = blend(activeCell._score, rightCompare, cmp);
-    return blend(leftTrace, rightTrace, cmp);
+    auto cmp = cmpGt(activeCell._score, rightCompare);
+    activeCell._score = blend(rightCompare, activeCell._score, cmp);
+    return blend(rightTrace, leftTrace, cmp);
 }
 
 template <typename TScoreValue, typename TTraceValueL, typename TTraceValueR, typename TGapsPlacement>
@@ -168,7 +168,6 @@ _doComputeScore(DPCell_<TScoreValue, LinearGaps> & activeCell,
                               TraceBitMap_<TScoreValue>::HORIZONTAL | TraceBitMap_<TScoreValue>::MAX_FROM_HORIZONTAL_MATRIX,
                               TraceBitMap_<TScoreValue>::VERTICAL | TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
                               TTracebackConfig());
-
     return _internalComputeScore(activeCell,
                                  static_cast<TScoreValue>(_scoreOfCell(previousDiagonal) +
                                                           score(scoringScheme, seqHVal, seqVVal)),

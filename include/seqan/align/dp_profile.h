@@ -635,6 +635,27 @@ struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True> const
 // Functions
 // ============================================================================
 
+namespace impl
+{
+    template <typename TStream>
+    inline TStream &
+    printTraceValue(TStream & stream, char traceValue)
+    {
+        if (traceValue & (TraceBitMap_<char>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<char>::VERTICAL))
+        {
+            stream << "|";
+        }
+        if (traceValue & (TraceBitMap_<char>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<char>::HORIZONTAL))
+        {
+            stream << "-";
+        }
+        if (traceValue & TraceBitMap_<char>::DIAGONAL)
+        {
+            stream << "\\";
+        }
+        return stream;
+    }
+}  // namespace impl
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
