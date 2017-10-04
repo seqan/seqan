@@ -1214,9 +1214,6 @@ _finishAlignment(TTraceTarget & /*traceSegments*/,
                  DPBandConfig<TBandSwitch> const & /*band*/,
                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, TExecPolicy> const & /*dpProfile*/)
 {
-    #ifdef DP_PARALLEL_SHOW_PROGRESS
-        ++::impl::dp_parallel_progress::counter;
-    #endif // DP_PARALLEL_SHOW_PROGRESS
     return maxScore(dpScout);
 }
 
@@ -1253,9 +1250,6 @@ _finishAlignment(TTraceTarget & traceSegments,
                                            maxHostCoordinate(scout, +DPMatrixDimension_::VERTICAL)),
                           _hostLengthH(scout, seqH),
                           _hostLengthV(scout, seqV), band, dpProfile);
-        #ifdef DP_PARALLEL_SHOW_PROGRESS
-            ++::impl::dp_parallel_progress::counter;
-        #endif // DP_PARALLEL_SHOW_PROGRESS
     }
     return maxScore(scout);
 }
@@ -1279,9 +1273,6 @@ _finishAlignment(TTraceTarget & traceSegments,
     if (IsSingleTrace_<TTraceFlag>::VALUE)
         _correctTraceValue(dpTraceMatrixNavigator, dpScout);
 
-    #ifdef DP_PARALLEL_SHOW_PROGRESS
-        ++::impl::dp_parallel_progress::counter;
-    #endif // DP_PARALLEL_SHOW_PROGRESS
     _computeTraceback(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
     return maxScore(dpScout);
 }

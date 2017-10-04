@@ -152,7 +152,6 @@ isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > co
     return false;
 }
 
-
 template <typename TDPCell, typename TBuffer, typename TThreadContext>
 inline bool
 isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > const & dpScout,

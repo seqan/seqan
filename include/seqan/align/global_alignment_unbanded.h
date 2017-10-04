@@ -653,46 +653,7 @@ globalAlignmentScore(TSeqH const & stringsH,
 
     return _alignWrapper(stringsH, stringsV, scoringScheme, TAlignConfig2(), TGapModel());
 }
-/*
-// Interface without AlignConfig<>.
-template <typename TString1, typename TString2, typename TSpec,
-          typename TScoreValue, typename TScoreSpec,
-          typename TAlgoTag>
-String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
-                                         StringSet<TString2, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         TAlgoTag const & algoTag)
-{
-    AlignConfig<> alignConfig;
-    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, algoTag);
-}
 
-// Interface without algorithm tag.
-template <typename TString1, typename TString2, typename TSpec,
-          typename TScoreValue, typename TScoreSpec,
-          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
-String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
-                                         StringSet<TString2, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
-{
-    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
-        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, NeedlemanWunsch());
-    else
-        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, Gotoh());
-}
-
-// Interface without AlignConfig<> and algorithm tag.
-template <typename TString1, typename TString2, typename TSpec,
-          typename TScoreValue, typename TScoreSpec>
-String<TScoreValue> globalAlignmentScore(StringSet<TString1, TSpec> const & stringsH,
-                                         StringSet<TString2, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme)
-{
-    AlignConfig<> alignConfig;
-    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig);
-}
-*/
 // --------------------------------------------------------------------------------
 // Function globalAlignmentScore()    [unbanded, SIMD version, String vs StringSet]
 // --------------------------------------------------------------------------------
