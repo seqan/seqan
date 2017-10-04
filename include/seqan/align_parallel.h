@@ -76,7 +76,7 @@
 // ============================================================================
 
 #include <seqan/align_parallel/wavefront_task_scheduler.h>
-#include <seqan/align_parallel/wavefront_task_queue.h>  // TODO(rrahn): Write tests!
+#include <seqan/align_parallel/wavefront_task_queue.h>
 #include <seqan/align_parallel/wavefront_task_event.h>
 #include <seqan/align_parallel/wavefront_task_util.h>
 #include <seqan/align_parallel/wavefront_task.h>

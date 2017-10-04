@@ -177,7 +177,6 @@ _prepareSimdAlignment(TStringSimdH & stringSimdH,
     }
 
     // Sort and remove unique elements from length vectors.
-
     auto maxLengthLambda = [](auto& lengthLhs, auto& lengthRhs) { return lengthLhs < lengthRhs; };
     std::sort(begin(lengthsH, Standard{}), end(lengthsH, Standard{}), maxLengthLambda);
     std::sort(begin(lengthsV, Standard{}), end(lengthsV, Standard{}), maxLengthLambda);
