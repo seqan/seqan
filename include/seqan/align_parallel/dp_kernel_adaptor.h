@@ -103,8 +103,8 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >   TMetaColumn;
 
-    std::get<0>(recursionCells) = (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1;
-    assignValue(traceMatrixNavigator, (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i2);
+    std::get<0>(recursionCells) = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1;
+    assignValue(traceMatrixNavigator, (*scout.state.ptrVerBuffer)[scout.verticalPos].i2);
 
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
@@ -135,8 +135,8 @@ _computeCell(TDPScout & scout,
              FirstCell const &,   // One of FirstCell, InnerCell or LastCell.
              DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel> const &)
 {
-    std::get<0>(recursionCells) = (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1;
-    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2);
+    std::get<0>(recursionCells) = (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1;
+    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2);
 }
 
 // ----------------------------------------------------------------------------
@@ -170,10 +170,10 @@ _computeCell(TDPScout & scout,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
     // Copy values into horizontal buffer for the tile below this tile in vertical direction.
-    (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1 = std::get<0>(recursionCells);
+    (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = std::get<0>(recursionCells);
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
-        (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2 = value(traceMatrixNavigator);
+        (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2 = value(traceMatrixNavigator);
     }
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
@@ -211,8 +211,8 @@ _computeCell(TDPScout & scout,
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
     std::get<0>(recursionCells) =
-        front(*scout.state.ptrVerBuffer).i1 = (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1;  // Copy horizontal buffer value in active cell and in
-    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2);
+        front(*scout.state.ptrVerBuffer).i1 = (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1;  // Copy horizontal buffer value in active cell and in
+    assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2);
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
         front(*scout.state.ptrVerBuffer).i2 = value(traceMatrixNavigator);   // Store trace value in vertical buffer.
@@ -255,10 +255,10 @@ _computeCell(TDPScout & scout,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, InnerCell>::Type(),
                               TDPProfile()));
     // Store values in vertical buffer.
-    (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1 = std::get<0>(recursionCells);
+    (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = std::get<0>(recursionCells);
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
-        (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i2 = value(traceMatrixNavigator);
+        (*scout.state.ptrVerBuffer)[scout.verticalPos].i2 = value(traceMatrixNavigator);
     }
 
     if (TrackingEnabled_<TMetaColumn, InnerCell>::VALUE)
@@ -299,11 +299,11 @@ _computeCell(TDPScout & scout,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
     // Store values in vertical and horizontal buffer.
-    (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i1 = (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i1 = std::get<0>(recursionCells);
+    (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = std::get<0>(recursionCells);
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
-        (*scout.state.ptrHorBuffer)[scout.mHorizontalPos - 1].i2 =
-            (*scout.state.ptrVerBuffer)[scout.mVerticalPos].i2 = value(traceMatrixNavigator);
+        (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2 =
+            (*scout.state.ptrVerBuffer)[scout.verticalPos].i2 = value(traceMatrixNavigator);
     }
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)

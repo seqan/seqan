@@ -59,19 +59,19 @@ public:
     //-------------------------------------------------------------------------
     // Member Variables
 
-    ThreadPool  _mThreadPool;
-    TTaskQueue  _mTaskQueue;
+    ThreadPool  _threadPool;
+    TTaskQueue  _taskQueue;
 
-    unsigned    _mWriterCount;
+    unsigned    _writerCount;
 
-    std::mutex                      _mMutexPushException;
-    std::vector<std::exception_ptr> _mExceptionPtrs;
-    std::atomic<bool>               _mIsValid{true};
+    std::mutex                      _mutexPushException;
+    std::vector<std::exception_ptr> _exceptionPtrs;
+    std::atomic<bool>               _isValid{true};
 
     std::function<void()> job = [this]()
     {
-        lockReading(_mTaskQueue);
-        waitForFirstValue(_mTaskQueue);  // Wait for all writers to be setup.
+        lockReading(_taskQueue);
+        waitForFirstValue(_taskQueue);  // Wait for all writers to be setup.
 
         std::function<void()> _dummy = []()
         {  // TODO(rrahn): Could throw exception to signal something went terribly wrong.
@@ -82,7 +82,7 @@ public:
 
         while (true)
         {
-            if (!popFront(task, _mTaskQueue))
+            if (!popFront(task, _taskQueue))
             {
                 break;  // Empty queue and no writer registered.
             }
@@ -93,26 +93,26 @@ public:
             catch(...)
             {  // Catch exception, and signal failure. Continue running until queue is empty.
                 {
-                    std::lock_guard<std::mutex> lck(_mMutexPushException);
-                    _mExceptionPtrs.push_back(std::current_exception());
+                    std::lock_guard<std::mutex> lck(_mutexPushException);
+                    _exceptionPtrs.push_back(std::current_exception());
                 }
-                _mIsValid.store(false, std::memory_order_release);
+                _isValid.store(false, std::memory_order_release);
             }
         }
-        unlockReading(_mTaskQueue);
+        unlockReading(_taskQueue);
     };
 
     //-------------------------------------------------------------------------
     // Constructor
 
     WavefrontTaskScheduler(size_t const threadCount, size_t const writerCount) :
-        _mWriterCount(writerCount)
+        _writerCount(writerCount)
     {
         for (unsigned i = 0; i < threadCount; ++i)
         {
-            spawn(_mThreadPool, job);
+            spawn(_threadPool, job);
         }
-        setCpuAffinity(_mThreadPool, 0, 1);
+        setCpuAffinity(_threadPool, 0, 1);
     }
 
     WavefrontTaskScheduler(size_t const threadCount) : WavefrontTaskScheduler(threadCount, 0)
@@ -160,31 +160,31 @@ struct SchedulerTraits<WavefrontTaskScheduler>
 inline void
 setWriterCount(WavefrontTaskScheduler & me, size_t const count) noexcept
 {
-    me._mWriterCount = count;
+    me._writerCount = count;
 }
 
 inline void
 lockWriting(WavefrontTaskScheduler & me) noexcept
 {
-    lockWriting(me._mTaskQueue);
+    lockWriting(me._taskQueue);
 }
 
 inline void
 unlockWriting(WavefrontTaskScheduler & me) noexcept
 {
-    unlockWriting(me._mTaskQueue);
+    unlockWriting(me._taskQueue);
 }
 
 inline void
 waitForWriters(WavefrontTaskScheduler & me) noexcept
 {
-    waitForWriters(me._mTaskQueue, me._mWriterCount);
+    waitForWriters(me._taskQueue, me._writerCount);
 }
 
 inline bool
 isValid(WavefrontTaskScheduler & me) noexcept
 {
-    return me._mIsValid.load(std::memory_order_acquire);
+    return me._isValid.load(std::memory_order_acquire);
 }
 
 inline void
@@ -195,24 +195,24 @@ scheduleTask(WavefrontTaskScheduler & me,
     {  // TODO(rrahn): Improve error handling.
         throw std::runtime_error("Invalid Task Scheduler");
     }
-    appendValue(me._mTaskQueue, std::move(task));
+    appendValue(me._taskQueue, std::move(task));
 }
 
 inline void
 wait(WavefrontTaskScheduler & me)
 {
-    SEQAN_ASSERT(me._mTaskQueue.writerCount == 0);
+    SEQAN_ASSERT(me._taskQueue.writerCount == 0);
 
-    join(me._mThreadPool);
+    join(me._threadPool);
 
-    SEQAN_ASSERT(empty(me._mTaskQueue));
-    SEQAN_ASSERT(me._mTaskQueue.readerCount == 0);
+    SEQAN_ASSERT(empty(me._taskQueue));
+    SEQAN_ASSERT(me._taskQueue.readerCount == 0);
 }
 
 inline auto
 getExceptions(WavefrontTaskScheduler & me)
 {
-    return me._mExceptionPtrs;
+    return me._exceptionPtrs;
 }
 
 }  // namespace seqan

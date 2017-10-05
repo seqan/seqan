@@ -104,14 +104,14 @@ public:
         *_activeColIterator = TValue{};
     }
 
-    TDPMatrixPointer_ _ptrDataContainer   = nullptr;  // Pointer to the underlying matrix to navigate on.
-    TValue* _prevCellDiagonal             = nullptr;  // Cached value for diagonal direction.
-    TValue* _prevCellHorizontal           = nullptr;  // Cached value for horizontal direction.
-    TValue* _prevCellVertical             = nullptr;  // Cached value for vertical direction.
-    int _laneLeap                         = 0;  // The distance to leap when going to the next column.
-    size_t _prevColIteratorOffset         = 0;  // Offset to reset the previous column iterator when going to the next cell.
-    TDPMatrixIterator _activeColIterator  = TDPMatrixIterator();  // The iterator over the active column.
-    TDPMatrixIterator _prevColIterator    = TDPMatrixIterator();  // The iterator over the previous column. Only needed in the banded case.
+    TDPMatrixPointer_ _ptrDataContainer{nullptr};   // Pointer to the underlying matrix to navigate on.
+    TValue*           _prevCellDiagonal{nullptr};   // Cached value for diagonal direction.
+    TValue*           _prevCellHorizontal{nullptr}; // Cached value for horizontal direction.
+    TValue*           _prevCellVertical{nullptr};   // Cached value for vertical direction.
+    int               _laneLeap{0};                 // The distance to leap when going to the next column.
+    size_t            _prevColIteratorOffset{0};    // Offset to reset the previous column iterator when going to the next cell.
+    TDPMatrixIterator _activeColIterator{};         // The iterator over the active column.
+    TDPMatrixIterator _prevColIterator{};           // The iterator over the previous column. Only needed in the banded case.
 };
 
 // ============================================================================
@@ -219,7 +219,7 @@ inline typename Reference<DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix, T
                                              DPScoreMatrix,
                                              TNavigationSpec>
                           >::Type
-previousCellDiagonal(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>, 
+previousCellDiagonal(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix>,
                                         DPScoreMatrix,
                                         TNavigationSpec> & dpNavigator)
 {

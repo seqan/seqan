@@ -52,12 +52,12 @@ struct WavefrontTaskExecutionPolicy;
 template <typename TResource, typename TWavefrontExecutor>
 struct WavefrontTaskExecutor
 {
-    TResource*            _mResource{nullptr};
-    TWavefrontExecutor *  _mWavefrontExecutor{nullptr};
+    TResource*            _ptrResource{nullptr};
+    TWavefrontExecutor *  _ptrWavefrontExecutor{nullptr};
 
     inline void operator()()
     {
-        WavefrontTaskExecutionPolicy<TResource>::execute(*_mResource, *_mWavefrontExecutor);
+        WavefrontTaskExecutionPolicy<TResource>::execute(*_ptrResource, *_ptrWavefrontExecutor);
     }
 };
 
@@ -79,7 +79,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
         }
         if (isLastTask(task))
         {
-            notify(*(context(task).mEventPtr));
+            notify(*(context(task).ptrEvent));
         }
     }
 };
@@ -115,7 +115,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTaskQueue<TValue, VECTOR_SIZE>>
             }
             if (isLastTask(*task))
             {
-                notify(*(context(*task).mEventPtr));
+                notify(*(context(*task).ptrEvent));
             }
         }
     }

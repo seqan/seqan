@@ -108,17 +108,17 @@ public:
         }
         // Set previous iterator to same position, one column left.
         _prevColIterator = _activeColIterator - _prevColIteratorOffset;
-        *_activeColIterator =TValue{};
+        *_activeColIterator = TValue{};
     }
 
-    TDPMatrixPointer_ _ptrDataContainer     = nullptr;  // Pointer to the matrix this navigator is working on.
-    TValue* _prevCellDiagonal               = nullptr;  // The previous diagonal cell
-    TValue* _prevCellHorizontal             = nullptr;  // The previous Horizontal cell
-    TValue* _prevCellVertical               = nullptr;  // The previous Vertical cell
-    int _laneLeap                           = 0;  // Stores the jump to the next column
-    size_t _prevColIteratorOffset           = 0;  // Offset to reset the previous column iterator when going to the next cell.
-    TDPMatrixIterator _activeColIterator    = TDPMatrixIterator();  // The active column iterator.
-    TDPMatrixIterator _prevColIterator      = TDPMatrixIterator();  // The previous column iterator.
+    TDPMatrixPointer_ _ptrDataContainer{nullptr};   // Pointer to the matrix this navigator is working on.
+    TValue*           _prevCellDiagonal{nullptr};   // The previous diagonal cell
+    TValue*           _prevCellHorizontal{nullptr}; // The previous Horizontal cell
+    TValue*           _prevCellVertical{nullptr};   // The previous Vertical cell
+    int               _laneLeap{0};                 // Stores the jump to the next column
+    size_t            _prevColIteratorOffset{0};    // Offset to reset the previous column iterator when going to the next cell.
+    TDPMatrixIterator _activeColIterator{};         // The active column iterator.
+    TDPMatrixIterator _prevColIterator{};           // The previous column iterator.
 };
 
 // ============================================================================

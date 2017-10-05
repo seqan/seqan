@@ -81,7 +81,7 @@ public:
 
     TBuffer* ptrHorBuffer = nullptr;
     TBuffer* ptrVerBuffer = nullptr;
-    TThreadContext mThreadContext{};
+    TThreadContext threadContext{};
 
     DPScoutState_() = default;
 
@@ -93,7 +93,7 @@ public:
     DPScoutState_(TBuffer & horBuffer, TBuffer & verBuffer, TThreadContext pThreadContext) :
         ptrHorBuffer(&horBuffer),
         ptrVerBuffer(&verBuffer),
-        mThreadContext(std::move(pThreadContext))
+        threadContext(std::move(pThreadContext))
     {}
 };
 
@@ -111,15 +111,15 @@ public:
 
     DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state;
 
-    size_t   mHorizontalPos;
-    size_t   mVerticalPos;
-    bool     mForceTracking;
+    size_t   horizontalPos;
+    size_t   verticalPos;
+    bool     forceTracking;
 
     DPScout_(DPScoutState_<DPTiled<TBuffer, TThreadContext, void> > state,
              bool pForceTracking = false) :
         TBase(),
         state(state),
-        mForceTracking(pForceTracking)
+        forceTracking(pForceTracking)
     {}
 };
 
@@ -158,8 +158,8 @@ isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > con
                   True const & /*unused*/,
                   True const & /*unused*/)
 {
-    return (dpScout.mForceTracking || (dpScout.state.mThreadContext.mTask._lastHBlock &&
-                                       dpScout.state.mThreadContext.mTask._lastVBlock));
+    return (dpScout.forceTracking || (dpScout.state.threadContext.task._lastHBlock &&
+                                       dpScout.state.threadContext.task._lastVBlock));
 }
 
 template <typename TDPCell, typename TBuffer, typename TThreadContext>
@@ -168,7 +168,7 @@ isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > con
                   True const & /*unused*/,
                   False const & /*unused*/)
 {
-    return (dpScout.mForceTracking || dpScout.state.mThreadContext.mTask._lastHBlock);
+    return (dpScout.forceTracking || dpScout.state.threadContext.task._lastHBlock);
 }
 
 template <typename TDPCell, typename TBuffer, typename TThreadContext>
@@ -177,7 +177,7 @@ isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > con
                   False const & /*unused*/,
                   True const & /*unused*/)
 {
-    return (dpScout.mForceTracking || dpScout.state.mThreadContext.mTask._lastVBlock);
+    return (dpScout.forceTracking || dpScout.state.threadContext.task._lastVBlock);
 }
 
 // ----------------------------------------------------------------------------
@@ -230,15 +230,15 @@ combineMaxScore(TThreadContext & pContext,
     using TBaseScout = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> >::TBase;
 
     // We want to encapsulate this away from the DPScout.
-    if (pContext.mDpLocalStore.mMaxScore < maxScore(static_cast<TBaseScout const &>(dpScout)))
+    if (pContext.mDpLocalStore.maxScore < maxScore(static_cast<TBaseScout const &>(dpScout)))
     {
-        pContext.mDpLocalStore.mMaxScore    = maxScore(static_cast<TBaseScout const &>(dpScout));
+        pContext.mDpLocalStore.maxScore    = maxScore(static_cast<TBaseScout const &>(dpScout));
         if (traceEnabled)
         {
-            pContext.mDpLocalStore.mMaxBlockPos = maxHostPosition(static_cast<TBaseScout const &>(dpScout));
+            pContext.mDpLocalStore.maxBlockPos = maxHostPosition(static_cast<TBaseScout const &>(dpScout));
         }
-        pContext.mDpLocalStore.mMaxBlockHId = pContext.mTask._col;
-        pContext.mDpLocalStore.mMaxBlockVId = pContext.mTask._row;
+        pContext.mDpLocalStore.maxBlockHId = pContext.task._col;
+        pContext.mDpLocalStore.maxBlockVId = pContext.task._row;
     }
 }
 
@@ -250,7 +250,7 @@ template <typename TDPCell, typename TBuffer, typename TThreadContext, typename 
 inline void
 _preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
 {
-    scout.mHorizontalPos = 0;
+    scout.horizontalPos = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -261,7 +261,7 @@ template <typename TDPCell, typename TBuffer, typename TThreadContext, typename 
 inline void
 _preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
 {
-    scout.mVerticalPos = 0;
+    scout.verticalPos = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -272,7 +272,7 @@ template <typename TDPCell, typename TBuffer, typename TThreadContext, typename 
 inline void
 _incHorizontalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
 {
-    ++scout.mHorizontalPos;
+    ++scout.horizontalPos;
 }
 
 // ----------------------------------------------------------------------------
@@ -283,7 +283,7 @@ template <typename TDPCell, typename TBuffer, typename TThreadContext, typename 
 inline void
 _incVerticalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
 {
-    ++scout.mVerticalPos;
+    ++scout.verticalPos;
 }
 
 }  // namespace seqan

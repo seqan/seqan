@@ -63,17 +63,17 @@ public:
     // Members.
     static constexpr size_t VECTOR_SIZE{VECTOR_SIZE_};
 
-    TQueue      mQueue;
-    std::mutex  mMutexPopQueue;
-    bool        mHasNotified{false};
+    TQueue      queue;
+    std::mutex  mutexPopQueue;
+    bool        hasNotified{false};
 
     //-------------------------------------------------------------------------
     // Constructors.
 
     WavefrontTaskQueue()
     {
-        lockWriting(mQueue);
-        lockReading(mQueue);
+        lockWriting(queue);
+        lockReading(queue);
     }
 
     WavefrontTaskQueue(WavefrontTaskQueue const&) = delete;
@@ -84,9 +84,9 @@ public:
 
     ~WavefrontTaskQueue()
     {
-        if (!mHasNotified)
-            unlockWriting(mQueue);
-        unlockReading(mQueue);
+        if (!hasNotified)
+            unlockWriting(queue);
+        unlockReading(queue);
     }
 };
 
@@ -104,11 +104,11 @@ tryPopTasks(typename WavefrontTaskQueue<TValue, VECTOR_SIZE>::ResultType & tasks
             WavefrontTaskQueue<TValue, VECTOR_SIZE> & me)
 {
     clear(tasks);
-    std::lock_guard<std::mutex> lck(me.mMutexPopQueue);
-    if (length(me.mQueue) < WavefrontTaskQueue<TValue, VECTOR_SIZE>::VECTOR_SIZE)
+    std::lock_guard<std::mutex> lck(me.mutexPopQueue);
+    if (length(me.queue) < WavefrontTaskQueue<TValue, VECTOR_SIZE>::VECTOR_SIZE)
     {
         resize(tasks, 1);
-        if (!popFront(tasks[0], me.mQueue, Serial()))
+        if (!popFront(tasks[0], me.queue, Serial()))
         {
             return false;
         }
@@ -116,7 +116,7 @@ tryPopTasks(typename WavefrontTaskQueue<TValue, VECTOR_SIZE>::ResultType & tasks
     else
     {
         for (size_t lane = 0u; lane < VECTOR_SIZE; ++lane)
-            tasks.push_back(popFront(me.mQueue, Serial()));
+            tasks.push_back(popFront(me.queue, Serial()));
     }
     return true;
 }
@@ -126,15 +126,15 @@ inline void
 appendValue(WavefrontTaskQueue<TValue, VECTOR_SIZE> & me,
             TValue & newTask)
 {
-    appendValue(me.mQueue, &newTask);
+    appendValue(me.queue, &newTask);
 }
 
 template <typename TValue, size_t VECTOR_SIZE>
 inline void
 notify(WavefrontTaskQueue<TValue, VECTOR_SIZE> & me)
 {
-    me.mHasNotified = true;
-    unlockWriting(me.mQueue);
+    me.hasNotified = true;
+    unlockWriting(me.queue);
 }
 
 }  // namespace seqan

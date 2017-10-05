@@ -170,7 +170,7 @@ doComputeOffset(TTasks const &tasks,
     size_t pos = 0;
     for(auto task : tasks)
     {
-            offset[pos] = front(context(*task).mTileBuffer.horizontalBuffer[column(*task)]).i1._score;
+            offset[pos] = front(context(*task).tileBuffer.horizontalBuffer[column(*task)]).i1._score;
         ++pos;
     }
     return offset;
@@ -444,15 +444,15 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     StringSet<TSeqV, Dependent<> > depSetV;
     bool allSameLength = true;
     auto taskPtr = tasks[0];
-    auto lenH = length(context(*taskPtr).mSeqHBlocks[column(*taskPtr)]);
-    auto lenV = length(context(*taskPtr).mSeqVBlocks[row(*taskPtr)]);
+    auto lenH = length(context(*taskPtr).seqHBlocks[column(*taskPtr)]);
+    auto lenV = length(context(*taskPtr).seqVBlocks[row(*taskPtr)]);
 
     for (auto taskPtr : tasks)
     {
-        appendValue(depSetH, context(*taskPtr).mSeqHBlocks[column(*taskPtr)]);
-        appendValue(depSetV, context(*taskPtr).mSeqVBlocks[row(*taskPtr)]);
-        if (lenH != length(context(*taskPtr).mSeqHBlocks[column(*taskPtr)]) ||
-            lenV != length(context(*taskPtr).mSeqVBlocks[row(*taskPtr)]))
+        appendValue(depSetH, context(*taskPtr).seqHBlocks[column(*taskPtr)]);
+        appendValue(depSetV, context(*taskPtr).seqVBlocks[row(*taskPtr)]);
+        if (lenH != length(context(*taskPtr).seqHBlocks[column(*taskPtr)]) ||
+            lenV != length(context(*taskPtr).seqVBlocks[row(*taskPtr)]))
             allSameLength = false;
     }
 
@@ -460,7 +460,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     StringSet<String<Nothing> > trace;  // We need to instantiate it, but it will not be used.
 
     // We can compute with one simd score, but might collect them here.
-    auto const & scoringScheme = context(*tasks[0]).mDPSettings.mSimdScoringScheme;
+    auto const & scoringScheme = context(*tasks[0]).dpSettings.simdScoringScheme;
 
     // Preapare and run alingment.
     String<TSimdVec, Alloc<OverAligned> > stringSimdH;
@@ -477,7 +477,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
 
         TDPScout dpScout(scoutState);
         // We rather want to set
-        computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).mDPSettings);
+        computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).dpSettings);
 
         // Now we need to run the scout check for all tasks.
 
@@ -491,7 +491,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
                 // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
                 _setSimdLane(dpScout, pos);
                 auto & taskContext = context(task);
-                updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
+                updateMax(intermediate(dpLocal, taskContext.alignmentId),
                           {maxScoreAt(dpScout) + offset[pos], 0u},
                           column(task),
                           row(task));
@@ -500,7 +500,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     }
     else
     {
-        using TDPSettings = std::decay_t<decltype(context(*tasks[0]).mDPSettings)>;
+        using TDPSettings = std::decay_t<decltype(context(*tasks[0]).dpSettings)>;
         using TDPTraits = typename TDPSettings::TTraits;
 
         using TDPProfile = DPProfile_<typename TDPTraits::TAlgorithmType,
@@ -525,7 +525,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
         using TDPScout = DPScout_<TDPCell, TScoutSpec>;
 
         TDPScout dpScout(scoutState);
-        computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).mDPSettings);
+        computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).dpSettings);
 
         // We want to get the state here from the scout.
         for (size_t pos = 0; pos < length(tasks); ++pos)
@@ -537,7 +537,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
                 // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
                 _setSimdLane(dpScout, pos);
                 auto & taskContext = context(task);
-                updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
+                updateMax(intermediate(dpLocal, taskContext.alignmentId),
                           {maxScoreAt(dpScout) + offset[pos], 0u},
                           column(task),
                           row(task));

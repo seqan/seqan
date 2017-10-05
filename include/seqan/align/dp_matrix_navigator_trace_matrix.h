@@ -124,10 +124,10 @@ public:
         *_activeColIterator = TValue{};
     }
 
-    TDPMatrixPointer_   _ptrDataContainer  = nullptr;  // The pointer to the underlying Matrix.
-    int                 _laneLeap          = 0;  // Keeps track of the jump size from one column to another.
-    unsigned            _simdLane          = 0;  // Used for tracing the correct cell in case of simd vectors.
-    TDPMatrixIterator   _activeColIterator = TDPMatrixIterator();  // The current column iterator.
+    TDPMatrixPointer_   _ptrDataContainer{nullptr}; // The pointer to the underlying Matrix.
+    int                 _laneLeap{0};               // Keeps track of the jump size from one column to another.
+    unsigned            _simdLane{0};               // Used for tracing the correct cell in case of simd vectors.
+    TDPMatrixIterator   _activeColIterator{};       // The current column iterator.
 };
 
 // ============================================================================

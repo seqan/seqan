@@ -58,12 +58,12 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_thread_local_storage_c
 
     {
         TLocalStorage store;
-        SEQAN_ASSERT_EQ(store._mMultiAlignmentThreadLocal.size(), 1u);
+        SEQAN_ASSERT_EQ(store._multiAlignmentThreadLocal.size(), 1u);
     }
 
     {
         TLocalStorage store{3};
-        SEQAN_ASSERT_EQ(store._mMultiAlignmentThreadLocal.size(), 3u);
+        SEQAN_ASSERT_EQ(store._multiAlignmentThreadLocal.size(), 3u);
     }
 }
 
