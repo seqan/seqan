@@ -214,20 +214,20 @@ struct WavefrontAlignmentTaskIncubator
 
         std::vector<std::vector<std::shared_ptr<TDagTask>>> graph;
 
-        resize(graph, length(taskContext.mSeqHBlocks));
-        for (int i = length(taskContext.mSeqHBlocks); --i >= 0;)
+        resize(graph, length(taskContext.seqHBlocks));
+        for (int i = length(taskContext.seqHBlocks); --i >= 0;)
         {
-            resize(graph[i], length(taskContext.mSeqVBlocks));
-            for (int j = length(taskContext.mSeqVBlocks); --j >= 0;)
+            resize(graph[i], length(taskContext.seqVBlocks));
+            for (int j = length(taskContext.seqVBlocks); --j >= 0;)
             {
-                using TSize = decltype(length(taskContext.mSeqHBlocks));
-                auto successorRight = (static_cast<TSize>(i + 1) < length(taskContext.mSeqHBlocks)) ? graph[i+1][j].get() : nullptr;
-                auto successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.mSeqVBlocks)) ? graph[i][j+1].get() : nullptr;
+                using TSize = decltype(length(taskContext.seqHBlocks));
+                auto successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks)) ? graph[i+1][j].get() : nullptr;
+                auto successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks)) ? graph[i][j+1].get() : nullptr;
                 graph[i][j] = std::make_shared<TDagTask>(taskContext, std::array<TDagTask*, 2>{{successorRight, successorDown}},
                                                          static_cast<size_t>(i), static_cast<size_t>(j),
                                                          static_cast<size_t>(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0)),
-                                                         (static_cast<TSize>(i + 1) == length(taskContext.mSeqHBlocks)),
-                                                         (static_cast<TSize>(j + 1) == length(taskContext.mSeqVBlocks)));
+                                                         (static_cast<TSize>(i + 1) == length(taskContext.seqHBlocks)),
+                                                         (static_cast<TSize>(j + 1) == length(taskContext.seqVBlocks)));
             }
         }
         return graph;
@@ -256,11 +256,11 @@ public:
     // Member Variables.
     // ----------------------------------------------------------------------------
 
-    size_t              mAlignmentId{0};
-    TSeqH const &       mSeqH;
-    TSeqV const &       mSeqV;
-    TDPSettings const & mDPSettings;
-    size_t              mBlockSize;
+    size_t              alignmentId{0};
+    TSeqH const &       seqH;
+    TSeqV const &       seqV;
+    TDPSettings const & dpSettings;
+    size_t              blockSize;
 
     // ----------------------------------------------------------------------------
     // Constructors.
@@ -272,10 +272,10 @@ public:
                            TSeqV const & seqV,
                            TDPSettings const & dpSetting,
                            size_t const & blockSize) :
-        mSeqH(seqH),
-        mSeqV(seqV),
-        mDPSettings(dpSetting),
-        mBlockSize(blockSize)
+        seqH(seqH),
+        seqV(seqV),
+        dpSettings(dpSetting),
+        blockSize(blockSize)
     {}
 
 
@@ -284,11 +284,11 @@ public:
                            TSeqV const & seqV,
                            TDPSettings const & dpSetting,
                            size_t const & blockSize) :
-        mAlignmentId(id),
-        mSeqH(seqH),
-        mSeqV(seqV),
-        mDPSettings(dpSetting),
-        mBlockSize(blockSize)
+        alignmentId(id),
+        seqH(seqH),
+        seqV(seqV),
+        dpSettings(dpSetting),
+        blockSize(blockSize)
     {}
 
     // ----------------------------------------------------------------------------
@@ -304,19 +304,19 @@ public:
                TCallback && callback)
     {
         // Initialize the strings.
-        auto seqHBlocks = TIncubator::createBlocks(mSeqH, mBlockSize);
-        auto seqVBlocks = TIncubator::createBlocks(mSeqV, mBlockSize);
+        auto seqHBlocks = TIncubator::createBlocks(seqH, blockSize);
+        auto seqVBlocks = TIncubator::createBlocks(seqV, blockSize);
 
         // Create the buffer for the matrix.
-        auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, mDPSettings.mScoringScheme);
+        auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, dpSettings.scoringScheme);
 
         // Setup the task context and create task graph.
-        TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, mDPSettings};
+        TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, dpSettings};
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
         WavefrontTaskEvent event;
-        context(*taskGraph.back().back()).mEventPtr = &event;
+        context(*taskGraph.back().back()).ptrEvent = &event;
 
         // Kick off the execution.
         using TWavefrontTaskExec = WavefrontTaskExecutor<std::decay_t<decltype(*taskGraph[0][0])>, TWavefrontExecutor>;
@@ -332,7 +332,7 @@ public:
             updateMax(interMax, intermediate(threadLocalStorage, instanceId));
             clear(intermediate(threadLocalStorage, instanceId));
         };
-        combineEach(*executor.mThreadLocalPtr, collectAndReset);
+        combineEach(*executor.ptrThreadLocal, collectAndReset);
 
         // We know finished the alignment.
         // Now we have to call the correct method to combine the result for
@@ -357,7 +357,7 @@ public:
         // We have to compute the trace here.
 
         // Continue execution.
-        callback(mAlignmentId, interMax.mMaxState.first);
+        callback(alignmentId, interMax._maxState.first);
     }
 
     template <typename TWavefrontExecutor,
@@ -370,19 +370,19 @@ public:
                TCallback && callback)
     {
         // Initialize the strings.
-        auto seqHBlocks = TIncubator::createBlocks(mSeqH, mBlockSize);
-        auto seqVBlocks = TIncubator::createBlocks(mSeqV, mBlockSize);
+        auto seqHBlocks = TIncubator::createBlocks(seqH, blockSize);
+        auto seqVBlocks = TIncubator::createBlocks(seqV, blockSize);
 
         // Create the buffer for the matrix.
-        auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, mDPSettings.mScoringScheme);
+        auto buffer = TIncubator::createBlockBuffer(seqHBlocks, seqVBlocks, dpSettings.scoringScheme);
 
         // Setup the task context and create task graph.
-        TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, mDPSettings};
+        TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, dpSettings};
         auto taskGraph = TIncubator::createTaskGraph(taskContext);
 
         // Prepare event.
         WavefrontTaskEvent event;
-        context(*taskGraph.back().back()).mEventPtr = &event;
+        context(*taskGraph.back().back()).ptrEvent = &event;
 
         // Kick off the execution.
         using TWavefrontTaskExec = WavefrontTaskExecutor<TSimdTaskQueue, TWavefrontExecutor>;
@@ -399,8 +399,8 @@ public:
             updateMax(interMax, intermediate(threadLocalStorage, instanceId));
             clear(intermediate(threadLocalStorage, instanceId));
         };
-        combineEach(*executor.mThreadLocalPtr, collectAndReset);
-        callback(mAlignmentId, interMax.mMaxState.first);
+        combineEach(*executor.ptrThreadLocal, collectAndReset);
+        callback(alignmentId, interMax._maxState.first);
     }
 };
 

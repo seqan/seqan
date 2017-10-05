@@ -355,13 +355,13 @@ localAlignment(StringSet<Align<TSequence, TAlignSpec> > & alignSet,
     StringSet<TGapSequence, Dependent<> > gapSetV;
     reserve(gapSetH, length(alignSet));
     reserve(gapSetV, length(alignSet));
-    
+
     for (auto & align : alignSet)
     {
         appendValue(gapSetH, row(align, 0));
         appendValue(gapSetV, row(align, 1));
     }
-    
+
     return localAlignment(gapSetH, gapSetV, scoringScheme, algoTag);
 }
 
@@ -413,9 +413,9 @@ SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<ty
                          And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
                         >, String<TScoreValue>)
 localAlignmentScore(TSeqH const & stringsH,
-                     TSeqV const & stringsV,
-                     Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                     TAlgoTag const & /*algoTag*/)
+                    TSeqV const & stringsV,
+                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                    TAlgoTag const & /*algoTag*/)
 {
     SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
     typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<>, TracebackOff> TAlignConfig2;

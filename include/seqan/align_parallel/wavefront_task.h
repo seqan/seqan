@@ -54,12 +54,12 @@ template <typename TSeqHBlocks,
           typename TEvent = WavefrontTaskEvent>
 struct WavefrontAlignmentContext
 {
-    size_t              mAlignmentId{0};
-    TSeqHBlocks const & mSeqHBlocks;
-    TSeqVBlocks const & mSeqVBlocks;
-    TTileBuffer       & mTileBuffer;
-    TDPSettings const & mDPSettings;
-    TEvent            * mEventPtr{nullptr};
+    size_t              alignmentId{0};
+    TSeqHBlocks const & seqHBlocks;
+    TSeqVBlocks const & seqVBlocks;
+    TTileBuffer       & tileBuffer;
+    TDPSettings const & dpSettings;
+    TEvent            * ptrEvent{nullptr};
 };
 
 template <typename TAlignmentContext>
@@ -69,15 +69,15 @@ public:
 
     using TContext  = TAlignmentContext;
 
-    TContext &              mContext;
+    TContext &              context;
 
-    std::array<WavefrontTask*, 2>  mSuccessor{nullptr, nullptr};
-    size_t                  mCol{0};
-    size_t                  mRow{0};
-    std::atomic<size_t>     mRefCount{0};
+    std::array<WavefrontTask*, 2>  successor{nullptr, nullptr};
+    size_t                  col{0};
+    size_t                  row{0};
+    std::atomic<size_t>     refCount{0};
 
-    bool                    mLastTileH{false};
-    bool                    mLastTileV{false};
+    bool                    lastTileH{false};
+    bool                    lastTileV{false};
 
 
     //-------------------------------------------------------------------------
@@ -90,11 +90,11 @@ public:
                   size_t const refCount,
                   bool const lastTileH,
                   bool const lastTileV) :
-                mContext(context),
-                mSuccessor(std::move(successor)),
-                mCol(col), mRow(row),
-            	mRefCount(refCount),
-                mLastTileH(lastTileH), mLastTileV(lastTileV)
+                context(context),
+                successor(std::move(successor)),
+                col(col), row(row),
+            	refCount(refCount),
+                lastTileH(lastTileH), lastTileV(lastTileV)
     {}
 };
 
@@ -110,10 +110,10 @@ struct TaskExecutionTraits<WavefrontAlignmentContext<TArgs...>>
 {
     using TaskContext_      = WavefrontAlignmentContext<TArgs...>;
 
-    using TSeqHBlocks       = typename std::decay<decltype(std::declval<TaskContext_>().mSeqHBlocks)>::type;
-    using TSeqVBlocks       = typename std::decay<decltype(std::declval<TaskContext_>().mSeqVBlocks)>::type;
-    using TWavefrontBuffer  = typename std::decay<decltype(std::declval<TaskContext_>().mTileBuffer)>::type;
-    using TDPSettings       = typename std::decay<decltype(std::declval<TaskContext_>().mDPSettings)>::type;
+    using TSeqHBlocks       = typename std::decay<decltype(std::declval<TaskContext_>().seqHBlocks)>::type;
+    using TSeqVBlocks       = typename std::decay<decltype(std::declval<TaskContext_>().seqVBlocks)>::type;
+    using TWavefrontBuffer  = typename std::decay<decltype(std::declval<TaskContext_>().tileBuffer)>::type;
+    using TDPSettings       = typename std::decay<decltype(std::declval<TaskContext_>().dpSettings)>::type;
 
     using TTileBuffer       = typename std::decay<decltype(std::declval<TWavefrontBuffer>().horizontalBuffer[0])>::type;
     using TDPScoutState     = DPScoutState_<DPTiled<TTileBuffer>>;
@@ -157,49 +157,49 @@ template <typename ...TArgs>
 inline void
 setRefCount(WavefrontTask<TArgs...> & me, size_t const count)
 {
-    me.mRefCount.store(count, std::memory_order_relaxed);
+    me.refCount.store(count, std::memory_order_relaxed);
 }
 
 template <typename ...TArgs>
 inline unsigned
 decrementRefCount(WavefrontTask<TArgs...> & me)
 {
-    return --me.mRefCount;
+    return --me.refCount;
 }
 
 template <typename ...TArgs>
 inline unsigned
 incrementRefCount(WavefrontTask<TArgs...> & me)
 {
-    return ++me.mRefCount;
+    return ++me.refCount;
 }
 
 template <typename TTask>
 inline auto
 column(TTask const & task)
 {
-    return task.mCol;
+    return task.col;
 }
 
 template <typename TTask>
 inline auto
 row(TTask const & task)
 {
-    return task.mRow;
+    return task.row;
 }
 
 template <typename TTask>
 inline bool
 inLastColumn(TTask const & task)
 {
-    return task.mLastTileH;
+    return task.lastTileH;
 }
 
 template <typename TTask>
 inline auto
 inLastRow(TTask const & task)
 {
-    return task.mLastTileV;
+    return task.lastTileV;
 }
 
 template <typename TTask>
@@ -213,28 +213,28 @@ template <typename TTask>
 inline auto &
 successor(TTask & task)
 {
-    return task.mSuccessor;
+    return task.successor;
 }
 
 template <typename TTask>
 inline auto const &
 successor(TTask const & task)
 {
-    return task.mSuccessor;
+    return task.successor;
 }
 
 template <typename TTask>
 inline auto &
 context(TTask & task)
 {
-    return task.mContext;
+    return task.context;
 }
 
 template <typename TTask>
 inline auto const &
 context(TTask const & task)
 {
-    return task.mContext;
+    return task.context;
 }
 
 template <typename TAlgorithm, typename TTask>
@@ -259,8 +259,8 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
 
     auto& taskContext = context(task);
     // Load the cache from the local data.
-    auto & dpCache = cache(dpLocal, taskContext.mAlignmentId);
-    auto & buffer = taskContext.mTileBuffer;
+    auto & dpCache = cache(dpLocal, taskContext.alignmentId);
+    auto & buffer = taskContext.tileBuffer;
 
     // Capture the buffer.
     typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
@@ -273,17 +273,17 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
 //        auto bufVBegin = _taskContext.getTileBuffer().verticalBuffer[_row];
 
     impl::computeTile(dpCache, scout,
-                      taskContext.mSeqHBlocks[column(task)],
-                      taskContext.mSeqVBlocks[row(task)],
-                      taskContext.mDPSettings.mScoringScheme,
-                      taskContext.mDPSettings);
+                      taskContext.seqHBlocks[column(task)],
+                      taskContext.seqVBlocks[row(task)],
+                      taskContext.dpSettings.scoringScheme,
+                      taskContext.dpSettings);
 
     // We want to get the state here from the scout.
     if(impl::AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
     {
         // TODO(rrahn): Implement the interface.
         // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
-        updateMax(intermediate(dpLocal, taskContext.mAlignmentId),
+        updateMax(intermediate(dpLocal, taskContext.alignmentId),
                   {maxScore(scout), maxHostPosition(scout)},
                   column(task),
                   row(task));
@@ -339,8 +339,8 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
 
 //    auto& taskContext = context(task);
 //    // Load the cache from the local data.
-//    auto & dpCache = cache(dpLocal, taskContext.mAlignmentId);
-//    auto & buffer = taskContext.mTileBuffer;
+//    auto & dpCache = cache(dpLocal, taskContext.alignmentId);
+//    auto & buffer = taskContext.tileBuffer;
 //
 //    // Capture the buffer.
 //    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
@@ -355,14 +355,14 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
     auto simdBufferH = impl::gatherSimdBuffer(tasks,
                                               [](auto& task)
                                               {
-                                                  return &context(task).mTileBuffer.horizontalBuffer[column(task)];
+                                                  return &context(task).tileBuffer.horizontalBuffer[column(task)];
                                               },
                                               offset,
                                               TExecTraits{});
     auto simdBufferV = impl::gatherSimdBuffer(tasks,
                                               [](auto& task)
                                               {
-                                                  return &context(task).mTileBuffer.verticalBuffer[row(task)];
+                                                  return &context(task).tileBuffer.verticalBuffer[row(task)];
                                               },
                                               offset,
                                               TExecTraits{});
@@ -377,7 +377,7 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                             simdBufferH,
                             [](auto & task)
                             {
-                                return &context(task).mTileBuffer.horizontalBuffer[column(task)];
+                                return &context(task).tileBuffer.horizontalBuffer[column(task)];
                             },
                             offset,
                             TExecTraits{});
@@ -385,7 +385,7 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                             simdBufferV,
                             [](auto & task)
                             {
-                                return &context(task).mTileBuffer.verticalBuffer[row(task)];
+                                return &context(task).tileBuffer.verticalBuffer[row(task)];
                             },
                             offset,
                             TExecTraits{});

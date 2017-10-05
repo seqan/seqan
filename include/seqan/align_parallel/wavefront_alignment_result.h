@@ -57,9 +57,9 @@ struct WavefrontAlignmentResult
     // ----------------------------------------------------------------------------
     // Member Variables
 
-    TState  mMaxState{minValue<typename TTraits::TScoreValue>(), typename TTraits::THostPosition{}};
-    size_t  mTileCol{0};
-    size_t  mTileRow{0};
+    TState  _maxState{minValue<typename TTraits::TScoreValue>(), typename TTraits::THostPosition{}};
+    size_t  _tileCol{0};
+    size_t  _tileRow{0};
 
     // ----------------------------------------------------------------------------
     // Constructors.
@@ -91,11 +91,11 @@ updateMax(TIntermediate & me,
           size_t const tileCol,
           size_t const tileRow)
 {
-    if (state.first > me.mMaxState.first)
+    if (state.first > me._maxState.first)
     {
-        me.mMaxState = state;
-        me.mTileCol = tileCol;
-        me.mTileRow = tileRow;
+        me._maxState = state;
+        me._tileCol = tileCol;
+        me._tileRow = tileRow;
     }
 }
 }  // namespace impl
@@ -115,7 +115,7 @@ inline void
 updateMax(WavefrontAlignmentResult<TArgs...> & lhs,
           WavefrontAlignmentResult<TArgs...> const & rhs)
 {
-    impl::updateMax(lhs, rhs.mMaxState, rhs.mTileCol, rhs.mTileRow);
+    impl::updateMax(lhs, rhs._maxState, rhs._tileCol, rhs._tileRow);
 }
 
 template <typename ...TArgs>
@@ -138,7 +138,7 @@ template <typename ...TArgs>
 inline typename WavefrontAlignmentResult<TArgs...>::TState const &
 value(WavefrontAlignmentResult<TArgs...> const & me)
 {
-    return me.mMaxState;
+    return me._maxState;
 }
 
 template <typename ...TArgs>

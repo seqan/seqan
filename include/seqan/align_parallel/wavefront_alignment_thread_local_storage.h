@@ -58,13 +58,13 @@ public:
     //-------------------------------------------------------------------------
     // Private Members.
 
-    std::vector<TAlignmentLocal>   _mMultiAlignmentThreadLocal;
+    std::vector<TAlignmentLocal>   _multiAlignmentThreadLocal;
 
     //-------------------------------------------------------------------------
     // Constructor.
 
     explicit WavefrontAlignmentThreadLocalStorage(size_t const numAlignments) :
-        _mMultiAlignmentThreadLocal(numAlignments)
+        _multiAlignmentThreadLocal(numAlignments)
     {}
 
     // Delegating default constructor.
@@ -99,8 +99,8 @@ inline auto &
 intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
              size_t const alignId)
 {
-    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
-    return std::get<typename TConfig::TIntermediate>(me._mMultiAlignmentThreadLocal[alignId]);
+    SEQAN_ASSERT_LT(alignId, me._multiAlignmentThreadLocal.size());
+    return std::get<typename TConfig::TIntermediate>(me._multiAlignmentThreadLocal[alignId]);
 }
 
 template <typename TConfig>
@@ -108,8 +108,8 @@ inline auto &
 cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
       size_t const alignId)
 {
-    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
-    return std::get<typename TConfig::TCache>(me._mMultiAlignmentThreadLocal[alignId]);
+    SEQAN_ASSERT_LT(alignId, me._multiAlignmentThreadLocal.size());
+    return std::get<typename TConfig::TCache>(me._multiAlignmentThreadLocal[alignId]);
 }
 
 template <typename TConfig>
@@ -117,8 +117,8 @@ inline auto &
 simdCache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
           size_t const alignId)
 {
-    SEQAN_ASSERT_LT(alignId, me._mMultiAlignmentThreadLocal.size());
-    return std::get<typename TConfig::TSimdCache>(me._mMultiAlignmentThreadLocal[alignId]);
+    SEQAN_ASSERT_LT(alignId, me._multiAlignmentThreadLocal.size());
+    return std::get<typename TConfig::TSimdCache>(me._multiAlignmentThreadLocal[alignId]);
 }
 
 }  // namespace seqan

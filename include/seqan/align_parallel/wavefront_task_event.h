@@ -49,9 +49,9 @@ namespace seqan
 class WavefrontTaskEvent
 {
 public:
-    std::mutex                  mMutexLastTask{};
-    std::condition_variable     mConditionLastTask{};
-    bool                        mReadyLastTask{false};
+    std::mutex                  mutexLastTask{};
+    std::condition_variable     conditionLastTask{};
+    bool                        readyLastTask{false};
 
     WavefrontTaskEvent() = default;
 
@@ -63,13 +63,13 @@ public:
 
     ~WavefrontTaskEvent()
     {
-        if (!mReadyLastTask)
+        if (!readyLastTask)
         {
             {
-                std::lock_guard<decltype(mMutexLastTask)> lck(mMutexLastTask);
-                mReadyLastTask = true;
+                std::lock_guard<decltype(mutexLastTask)> lck(mutexLastTask);
+                readyLastTask = true;
             }
-            mConditionLastTask.notify_one();
+            conditionLastTask.notify_one();
         }
     }
 };
@@ -86,18 +86,18 @@ inline void
 notify(WavefrontTaskEvent & event)
 {
     {
-        std::lock_guard<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
-        event.mReadyLastTask = true;
+        std::lock_guard<decltype(event.mutexLastTask)> lck(event.mutexLastTask);
+        event.readyLastTask = true;
     }
-    event.mConditionLastTask.notify_one();
+    event.conditionLastTask.notify_one();
 }
 
 inline void
 wait(WavefrontTaskEvent & event)
 {
-    std::unique_lock<decltype(event.mMutexLastTask)> lck(event.mMutexLastTask);
-    if (!event.mReadyLastTask)
-        event.mConditionLastTask.wait(lck, [&]{ return event.mReadyLastTask; });
+    std::unique_lock<decltype(event.mutexLastTask)> lck(event.mutexLastTask);
+    if (!event.readyLastTask)
+        event.conditionLastTask.wait(lck, [&]{ return event.readyLastTask; });
 }
 
 }  // namespace seqan

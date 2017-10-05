@@ -54,12 +54,12 @@ struct DPSettings
     using TScoringScheme = TScoringScheme_;
     using TBandConfig    = DPBandConfig<typename TDPTraits::TBandType>;
 
-    TScoringScheme  mScoringScheme;
-    TBandConfig     mBandScheme;
+    TScoringScheme  scoringScheme;
+    TBandConfig     bandScheme;
 
     DPSettings() = default;
 
-    explicit DPSettings(TScoringScheme score) : mScoringScheme(std::move(score))
+    explicit DPSettings(TScoringScheme score) : scoringScheme(std::move(score))
     {}
 };
 
@@ -83,7 +83,7 @@ struct SimdDPSettings : public TDPSettings
     //-------------------------------------------------------------------------
     // Members.
 
-    TSimdScoringScheme  mSimdScoringScheme;
+    TSimdScoringScheme  simdScoringScheme;
 
     //-------------------------------------------------------------------------
     // Constructor.
@@ -92,7 +92,7 @@ struct SimdDPSettings : public TDPSettings
 
     explicit SimdDPSettings(TScoringScheme score) :
         TDPSettings(std::move(score)),
-        mSimdScoringScheme(score)
+        simdScoringScheme(score)
     {}
 };
 #endif  // SEQAN_SIMD_ENABLED

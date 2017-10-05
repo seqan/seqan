@@ -57,8 +57,8 @@ template <typename TSpec, typename TVectorizationSpec>
 struct ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> :
     public ExecutionPolicy<Parallel, TVectorizationSpec>
 {
-    size_t mBlockSize{100};
-    size_t mParallelAlignments{std::thread::hardware_concurrency()};
+    size_t blockSize{100};
+    size_t parallelAlignments{std::thread::hardware_concurrency()};
 };
 
 // ============================================================================
@@ -73,7 +73,7 @@ template <typename TSpec, typename TVectorizationSpec>
 inline auto
 blockSize(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> const & p)
 {
-    return p.mBlockSize;
+    return p.blockSize;
 }
 
 template <typename TSpec, typename TVectorizationSpec>
@@ -81,14 +81,14 @@ inline void
 setBlockSize(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> & p,
              size_t const bs)
 {
-    p.mBlockSize = bs;
+    p.blockSize = bs;
 }
 
 template <typename TSpec, typename TVectorizationSpec>
 inline auto
 parallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> const & p)
 {
-    return p.mParallelAlignments;
+    return p.parallelAlignments;
 }
 
 template <typename TSpec, typename TVectorizationSpec>
@@ -96,7 +96,7 @@ inline void
 setParallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationSpec> & p,
                       size_t const pi)
 {
-    p.mParallelAlignments = pi;
+    p.parallelAlignments = pi;
 }
 
 }  // namespace seqan

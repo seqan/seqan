@@ -58,26 +58,26 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_construct)
 
     {
         TIntermediate interim;
-        SEQAN_ASSERT_EQ(interim.mMaxState.first, minValue<int>());
-        SEQAN_ASSERT_EQ(interim.mMaxState.second, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileCol, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileRow, 0u);
+        SEQAN_ASSERT_EQ(interim._maxState.first, minValue<int>());
+        SEQAN_ASSERT_EQ(interim._maxState.second, 0u);
+        SEQAN_ASSERT_EQ(interim._tileCol, 0u);
+        SEQAN_ASSERT_EQ(interim._tileRow, 0u);
     }
 
     {
         TIntermediate interim{{10, 3u}};
-        SEQAN_ASSERT_EQ(interim.mMaxState.first, 10);
-        SEQAN_ASSERT_EQ(interim.mMaxState.second, 3u);
-        SEQAN_ASSERT_EQ(interim.mTileCol, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileRow, 0u);
+        SEQAN_ASSERT_EQ(interim._maxState.first, 10);
+        SEQAN_ASSERT_EQ(interim._maxState.second, 3u);
+        SEQAN_ASSERT_EQ(interim._tileCol, 0u);
+        SEQAN_ASSERT_EQ(interim._tileRow, 0u);
     }
 
     {
         TIntermediate interim{{10, 3u}, 2u, 4u};
-        SEQAN_ASSERT_EQ(interim.mMaxState.first, 10);
-        SEQAN_ASSERT_EQ(interim.mMaxState.second, 3u);
-        SEQAN_ASSERT_EQ(interim.mTileCol, 2u);
-        SEQAN_ASSERT_EQ(interim.mTileRow, 4u);
+        SEQAN_ASSERT_EQ(interim._maxState.first, 10);
+        SEQAN_ASSERT_EQ(interim._maxState.second, 3u);
+        SEQAN_ASSERT_EQ(interim._tileCol, 2u);
+        SEQAN_ASSERT_EQ(interim._tileRow, 4u);
     }
 }
 
@@ -90,16 +90,16 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_update_max)
 
     TIntermediate interim{{10, 3u}, 2, 4};
     updateMax(interim, TState{9, 7u}, 3, 5);
-    SEQAN_ASSERT_EQ(interim.mMaxState.first, 10);
-    SEQAN_ASSERT_EQ(interim.mMaxState.second, 3u);
-    SEQAN_ASSERT_EQ(interim.mTileCol, 2u);
-    SEQAN_ASSERT_EQ(interim.mTileRow, 4u);
+    SEQAN_ASSERT_EQ(interim._maxState.first, 10);
+    SEQAN_ASSERT_EQ(interim._maxState.second, 3u);
+    SEQAN_ASSERT_EQ(interim._tileCol, 2u);
+    SEQAN_ASSERT_EQ(interim._tileRow, 4u);
 
     updateMax(interim, TState{11, 7u}, 3, 5);
-    SEQAN_ASSERT_EQ(interim.mMaxState.first, 11);
-    SEQAN_ASSERT_EQ(interim.mMaxState.second, 7u);
-    SEQAN_ASSERT_EQ(interim.mTileCol, 3u);
-    SEQAN_ASSERT_EQ(interim.mTileRow, 5u);
+    SEQAN_ASSERT_EQ(interim._maxState.first, 11);
+    SEQAN_ASSERT_EQ(interim._maxState.second, 7u);
+    SEQAN_ASSERT_EQ(interim._tileCol, 3u);
+    SEQAN_ASSERT_EQ(interim._tileRow, 5u);
 
 }
 
@@ -113,10 +113,10 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_clear)
         TIntermediate interim{{10, 3u}, 2, 4};
         clear(interim);
 
-        SEQAN_ASSERT_EQ(interim.mMaxState.first, minValue<int>());
-        SEQAN_ASSERT_EQ(interim.mMaxState.second, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileCol, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileRow, 0u);
+        SEQAN_ASSERT_EQ(interim._maxState.first, minValue<int>());
+        SEQAN_ASSERT_EQ(interim._maxState.second, 0u);
+        SEQAN_ASSERT_EQ(interim._tileCol, 0u);
+        SEQAN_ASSERT_EQ(interim._tileRow, 0u);
     }
 
 
@@ -124,9 +124,9 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_clear)
         TIntermediate interim{{10, 3u}, 2, 4};
         clear(std::move(interim));
 
-        SEQAN_ASSERT_EQ(interim.mMaxState.first, minValue<int>());
-        SEQAN_ASSERT_EQ(interim.mMaxState.second, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileCol, 0u);
-        SEQAN_ASSERT_EQ(interim.mTileRow, 0u);
+        SEQAN_ASSERT_EQ(interim._maxState.first, minValue<int>());
+        SEQAN_ASSERT_EQ(interim._maxState.second, 0u);
+        SEQAN_ASSERT_EQ(interim._tileCol, 0u);
+        SEQAN_ASSERT_EQ(interim._tileRow, 0u);
     }
 }

@@ -74,8 +74,8 @@ public:
         _threadLocalStorage(numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}),
         _blockSize(blockSize(execPolicy))
     {
-        _executor.mTaskSchedulerPtr = &taskScheduler(_alignScheduler);
-        _executor.mThreadLocalPtr   = &_threadLocalStorage;
+        _executor.ptrTaskScheduler = &taskScheduler(_alignScheduler);
+        _executor.ptrThreadLocal   = &_threadLocalStorage;
     }
 };
 
@@ -91,15 +91,12 @@ submit(AsyncWaveAlignExecutor<TArgs...> & me,
 {
     using TAlignTask = typename AsyncWaveAlignExecutor<TArgs...>::TAlignmentTask;
 
-    std::function<std::function<void(uint16_t)>(TAlignTask)> aiCaller =
-    [&me, &callback](auto && func) mutable
-    {
-        return [&me, &callback, func = std::move(func)](uint16_t id) mutable
+    std::function<void(uint16_t)> f =
+        [&, func = TAlignTask{me._alignCounter++, seqH, seqV, me._settings, me._blockSize}](uint16_t id) mutable
         {
             func(id, me._executor, std::forward<TCallable>(callback));
         };
-    };
-    scheduleTask(me._alignScheduler, aiCaller(TAlignTask{me._alignCounter++, seqH, seqV, me._settings, me._blockSize}));
+    scheduleTask(me._alignScheduler, f);
 }
 
 template <typename ...TArgs>
@@ -140,13 +137,13 @@ public:
     template <typename TSpec>
     AsyncWaveAlignExecutorSimd(TSettings const & settings,
                                ExecutionPolicy<WavefrontAlignment<TSpec>, Vectorial> const & execPolicy) :
-        _settings(settings.mScoringScheme),
+        _settings(settings.scoringScheme),
         _alignScheduler(parallelAlignments(execPolicy), numThreads(execPolicy)),
         _threadLocalStorage(numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}),
         _blockSize(blockSize(execPolicy))
     {
-        _executor.mTaskSchedulerPtr = &taskScheduler(_alignScheduler);
-        _executor.mThreadLocalPtr   = &_threadLocalStorage;
+        _executor.ptrTaskScheduler = &taskScheduler(_alignScheduler);
+        _executor.ptrThreadLocal   = &_threadLocalStorage;
     }
 };
 
@@ -163,15 +160,12 @@ submit(AsyncWaveAlignExecutorSimd<TArgs...> & me,
     using TAlignTask = typename AsyncWaveAlignExecutorSimd<TArgs...>::TAlignmentTask;
 
     // Continuator for calling the alignment instance functor.
-    std::function<std::function<void(uint16_t)>(TAlignTask)> aiCaller =
-    [&me, &callback](auto && func) mutable
-    {
-        return [&me, &callback, func = std::move(func)](uint16_t id) mutable
+    std::function<void(uint16_t)> f =
+        [&, func = TAlignTask{me._alignCounter++, seqH, seqV, me._settings, me._blockSize}](uint16_t id) mutable
         {
             func(id, me._executor, me._simdTaskQueue, std::forward<TCallable>(callback));
         };
-    };
-    scheduleTask(me._alignScheduler, aiCaller(TAlignTask{me._alignCounter++, seqH, seqV, me._settings, me._blockSize}));
+    scheduleTask(me._alignScheduler, f);
 }
 
 template <typename ...TArgs>
@@ -207,7 +201,7 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, TSimdSpec> const & exe
 #endif
     TExecutor executor(settings, execPolicy);
 
-    for(size_t i = 0u; i < length(setH); ++i)
+    for (size_t i = 0u; i < length(setH); ++i)
     {
         submit(executor, setH[i], setV[i], std::forward<TCallable>(callback));
     }

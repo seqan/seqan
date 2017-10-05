@@ -229,7 +229,7 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
         using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
 
         TDPSettings settings;
-        settings.mScoringScheme = scoringScheme;
+        settings.scoringScheme = scoringScheme;
         dispatcher(execPolicy, setH, setV, settings);
     }
     else
@@ -246,7 +246,7 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
         using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
 
         TDPSettings settings;
-        settings.mScoringScheme = scoringScheme;
+        settings.scoringScheme = scoringScheme;
         dispatcher(execPolicy, setH, setV, settings);
     }
     return res;

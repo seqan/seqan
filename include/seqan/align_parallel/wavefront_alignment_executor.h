@@ -50,8 +50,8 @@ template <typename TScheduler, typename TThreadLocalStore>
 struct WavefrontAlignmentExecutor
 {
     // Shared data in parallel context.
-    TScheduler *                  mTaskSchedulerPtr{nullptr};
-    TThreadLocalStore *           mThreadLocalPtr{nullptr};
+    TScheduler *                  ptrTaskScheduler{nullptr};
+    TThreadLocalStore *           ptrThreadLocal{nullptr};
 };
 
 // ============================================================================
@@ -68,16 +68,16 @@ inline void
 spawn(WavefrontAlignmentExecutor<TArgs...> & executor,
       TTaskExecutor && taskExec)
 {
-    SEQAN_ASSERT(executor.mTaskSchedulerPtr != nullptr);
-    scheduleTask(*executor.mTaskSchedulerPtr, std::forward<TTaskExecutor>(taskExec));
+    SEQAN_ASSERT(executor.ptrTaskScheduler != nullptr);
+    scheduleTask(*executor.ptrTaskScheduler, std::forward<TTaskExecutor>(taskExec));
 }
 
 template <typename ...TArgs>
 inline auto&
 local(WavefrontAlignmentExecutor<TArgs...> & executor)
 {
-    SEQAN_ASSERT(executor.mThreadLocalPtr != nullptr);
-    return local(*executor.mThreadLocalPtr);
+    SEQAN_ASSERT(executor.ptrThreadLocal != nullptr);
+    return local(*executor.ptrThreadLocal);
 }
 
 }  // namespace seqan
