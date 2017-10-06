@@ -54,7 +54,6 @@ public:
     //-------------------------------------------------------------------------
     // Member Types.
 
-
     using TMap = typename TEnumerableThreadLocal::TMap;
     using TMapIterator = typename IfC<std::is_const<TEnumerableThreadLocal>::value,
                                       typename TMap::const_iterator,

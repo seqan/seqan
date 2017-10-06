@@ -63,6 +63,10 @@ namespace seqan {
  * @tag ParallelismTags#Serial
  * @headerfile <seqan/parallel.h>
  * @brief Tag to select the serial implementation of an algorithm.
+ *
+ * @tag ParallelismTags#Vectorial
+ * @headerfile <seqan/parallel.h>
+ * @brief Tag to select the vectorized implementation of an algorithm.
  */
 
 struct Parallel_;
@@ -79,11 +83,31 @@ using Vectorial = Tag<Vectorial_>;
 // Class ExecutionPolicy
 // ----------------------------------------------------------------------------
 
+/*!
+ * @class ExecutionPolicy
+ * @headerfile <seqan/parallel.h>
+ * @brief Policy to select runtime execution mode for algorithms.
+ * @signature template<typename TThreadingMode, typename TVectorizationMode>
+ *            struct ExecutionPolicy;
+ * @tparam TThreadingMode Type specifying the threading model.
+ *         Can be @link ParallelismTags#Parallel @endlink or @link ParallelismTags#Serial @endlink (default).
+ * @tparam TVectorizationMode Type specifying the vectorization model.
+ *         Can be @link ParallelismTags#Vectorial @endlink or @link ParallelismTags#Serial @endlink (default).
+ *
+ * The <tt>ExecutionPolicy</tt> class is used to select different execution models for certain algorithms.
+ * Depending on the specialization of the template parameters 4 different modes are possible: sequential, parallel,
+ * vectorized and parallel+vectorized. The number of threads for the parallel execution modes can be configured via a
+ * member variable.
+ */
 // Dynamic execution policy.
 template <typename TThreadModel = Serial, typename TVectorSpec = Serial>
 struct ExecutionPolicy
 {
     // Member variables.
+    /*!
+     * @var size_t ExecutionPolicy::numThreads
+     * @brief The number of threads to use for the parallel execution. Defaults to 1.
+     */
     size_t mNumThreads = 1;
 };
 
@@ -91,6 +115,13 @@ struct ExecutionPolicy
 // Tag ExecutionPolicy  [Sequential]
 // ----------------------------------------------------------------------------
 
+/*!
+ * @typedef Sequential
+ * @brief A typedef for the sequential @link ExecutionPolicy @endlink version.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature using Sequential = ExecutionPolicy<Serial, Serial>;
+ */
 using Sequential = ExecutionPolicy<>;
 
 // ============================================================================
@@ -101,6 +132,17 @@ using Sequential = ExecutionPolicy<>;
 // Metafunction IsVectorized
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn ExecutionPolicy#IsVectorized
+ * @brief Evaluates to @link LogicalValuesTags#True @endlink if the execution policy is
+ *        specialized with @link ParallelismTags#Vectorial @endlink.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature IsVectorized<TExecPolicy>::VALUE
+ * @tparam TTExecPolicy The @link ExecutionPolicy @endlink to check.
+ * @return bool <tt>true</tt> if @link ExecutionPolicy @endlink is @link ParallelismTags#Vectorial @endlink,
+ *              otherwise <tt>false</tt>.
+ */
 template <typename T>
 struct IsVectorized : False
 {};
@@ -118,6 +160,17 @@ struct IsVectorized<ExecutionPolicy<TPar, TVec> > :
 // Metafunction IsParallel
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn ExecutionPolicy#IsParallel
+ * @brief Evaluates to @link LogicalValuesTags#True @endlink if the execution policy is
+ *        specialized with @link ParallelismTags#Parallel @endlink.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature IsParallel<TExecPolicy>::VALUE
+ * @tparam TTExecPolicy The @link ExecutionPolicy @endlink to check.
+ * @return bool <tt>true</tt> if @link ExecutionPolicy @endlink is @link ParallelismTags#Parallel @endlink,
+ *              otherwise <tt>false</tt>.
+ */
 template <typename T>
 struct IsParallel : False
 {};
@@ -135,6 +188,16 @@ struct IsParallel<ExecutionPolicy<TPar, TVec> > :
 // Metafunction IsExecutionPolicy
 // ----------------------------------------------------------------------------
 
+/*!
+ * @mfn ExecutionPolicy#IsExecutionPolicy
+ * @brief Checks if a given type is an @link ExecutionPolicy @endlink.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature IsExecutionPolicy<T>::VALUE
+ * @tparam T The type to check.
+ * @return bool <tt>true</tt> if the <tt>T</tt> is an @link ExecutionPolicy @endlink type,
+ *              otherwise <tt>false</tt>.
+ */
 template <typename T>
 struct IsExecutionPolicy : False
 {};
@@ -157,6 +220,15 @@ struct DefaultParallelSpec
 // Functions
 // ============================================================================
 
+/*!
+ * @fn ExecutionPolicy#numThreads
+ * @brief Getter function for the thread number.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature auto numThreads(exec);
+ * @param[in] exec The @link ExecutionPolicy @endlink to get the number of threads for.
+ * @return auto The number of threads.
+ */
 template <typename TParallelSpec, typename TVectorizationSpec>
 inline auto
 numThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> const & p)
@@ -164,6 +236,15 @@ numThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> const & p)
     return p.mNumThreads;
 }
 
+/*!
+ * @fn ExecutionPolicy#setNumThreads
+ * @brief Setter function for the thread number.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature void setNumThreads(exec, n);
+ * @param[in,out] exec The @link ExecutionPolicy @endlink to set the number of threads for.
+ * @param[in] n The number of threads used for the parallel execution.
+ */
 template <typename TParallelSpec, typename TVectorizationSpec>
 inline void
 setNumThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> & p,
