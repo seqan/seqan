@@ -76,7 +76,7 @@ public:
     Iter(typename TMap::const_iterator const & cit) : _mInnerIter(cit)
     {}
 
-    Iter(TEnumerableThreadLocal & iterable) : Iter(iterable._mMap.begin())
+    Iter(TEnumerableThreadLocal & iterable) : Iter(iterable._map.begin())
     {}
 
     //-------------------------------------------------------------------------

@@ -55,13 +55,14 @@ public:
 
     using TAlignmentTask = WavefrontAlignmentTask<TSeqH, TSeqV, TSettings>;
     using TThreadLocal   = typename WavefrontAlignmentTaskConfig<TSettings>::TThreadLocal;
-    using TExecutor      = WavefrontAlignmentExecutor<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
+    using TStorage       = EnumerableThreadLocal<TThreadLocal, CountingThreadLocalManager>;
+    using TExecutor      = WavefrontAlignmentExecutor<WavefrontTaskScheduler, TStorage>;
 
     TSettings                                   _settings;
     // Initialize the alignment scheduler.
     WavefrontAlignmentScheduler                 _alignScheduler;
 
-    EnumerableThreadLocal<TThreadLocal, Limit>  _threadLocalStorage;
+    TStorage                                    _threadLocalStorage{};
     TExecutor                                   _executor{};
     unsigned                                    _alignCounter{0};
     unsigned                                    _blockSize{};
@@ -71,11 +72,12 @@ public:
                            ExecutionPolicy<WavefrontAlignment<TSpec>, Serial> const & execPolicy) :
         _settings(std::move(settings)),
         _alignScheduler(parallelAlignments(execPolicy), numThreads(execPolicy)),
-        _threadLocalStorage(numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}),
+        _threadLocalStorage(TThreadLocal{parallelAlignments(execPolicy)}),
         _blockSize(blockSize(execPolicy))
     {
         _executor.ptrTaskScheduler = &taskScheduler(_alignScheduler);
         _executor.ptrThreadLocal   = &_threadLocalStorage;
+        setCount(storageManager(_threadLocalStorage), parallelAlignments(execPolicy));
     }
 };
 
@@ -122,13 +124,15 @@ public:
     using TSimdTaskQueue = WavefrontTaskQueue<TWavefrontTask, LENGTH<typename TSimdSettings::TScoreValueSimd>::VALUE>;
 
     using TThreadLocal  = typename WavefrontAlignmentSimdTaskConfig<TSimdSettings>::TThreadLocal;
-    using TExecutor     = WavefrontAlignmentExecutor<WavefrontTaskScheduler, EnumerableThreadLocal<TThreadLocal, Limit>>;
+    using TStorage      = EnumerableThreadLocal<TThreadLocal, CountingThreadLocalManager>;
+    using TExecutor     = WavefrontAlignmentExecutor<WavefrontTaskScheduler, TStorage>;
+
 
     TSimdSettings                               _settings;
     // Initialize the alignment scheduler.
     WavefrontAlignmentScheduler                 _alignScheduler;
 
-    EnumerableThreadLocal<TThreadLocal, Limit>  _threadLocalStorage;
+    TStorage                                    _threadLocalStorage;
     TExecutor                                   _executor{};
     TSimdTaskQueue                              _simdTaskQueue{};
     unsigned                                    _alignCounter{0};
@@ -139,11 +143,12 @@ public:
                                ExecutionPolicy<WavefrontAlignment<TSpec>, Vectorial> const & execPolicy) :
         _settings(settings.scoringScheme),
         _alignScheduler(parallelAlignments(execPolicy), numThreads(execPolicy)),
-        _threadLocalStorage(numThreads(execPolicy), TThreadLocal{parallelAlignments(execPolicy)}),
+        _threadLocalStorage(TThreadLocal{parallelAlignments(execPolicy)}),
         _blockSize(blockSize(execPolicy))
     {
         _executor.ptrTaskScheduler = &taskScheduler(_alignScheduler);
         _executor.ptrThreadLocal   = &_threadLocalStorage;
+        setCount(storageManager(_threadLocalStorage), parallelAlignments(execPolicy));
     }
 };
 

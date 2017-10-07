@@ -92,7 +92,6 @@
 #include <seqan/parallel/parallel_resource_pool.h>
 #include <seqan/parallel/parallel_serializer.h>
 #include <seqan/parallel/enumerable_thread_local.h>
-#include <seqan/parallel/enumerable_thread_local_limit.h>
 #include <seqan/parallel/enumerable_thread_local_iterator.h>
 #include <seqan/parallel/parallel_thread_pool.h>
 
