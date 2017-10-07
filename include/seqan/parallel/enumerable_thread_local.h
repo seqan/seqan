@@ -49,12 +49,78 @@ using EnumerableThreadLocalIterSpec = Tag<EnumerableThreadLocalIterSpec_>;
 // Tags, Classes, Enums
 // ============================================================================
 
-// We leave it open but we do not use it yet.
-template <typename TValue>
-struct EnumerableThreadLocalTraits
-{};
+struct SimpleThreadLocalManager
+{
+    std::shared_timed_mutex  _mutex{};        // TODO(rrahn): Replace by shared_mutex when c++17 is available.
 
-template <typename TValue, typename TTraits = EnumerableThreadLocalTraits<TValue>>
+    template <typename TResourceMap, typename TValue>
+    inline auto local(TResourceMap & map, TValue const & initValue)
+    {
+        decltype(map.find(std::this_thread::get_id())) elemIt;
+        bool exists;
+        { // try to read
+            std::shared_lock<decltype(_mutex)> read_lck(_mutex);
+            elemIt = map.find(std::this_thread::get_id());
+            exists = elemIt != map.end();
+        }
+        if (!exists)
+        {
+            {  // Create new entry.
+                std::unique_lock<decltype(_mutex)> write_lck(_mutex);
+                std::tie(elemIt, exists) = map.emplace(std::this_thread::get_id(), initValue);
+            }
+            SEQAN_ASSERT(exists);
+            exists = false;  // Notify that element was added for the first time.
+        }
+        return std::forward_as_tuple(elemIt->second, exists);
+    }
+};
+
+struct CountingThreadLocalManager
+{
+    std::atomic<size_t>      _count{0};
+    std::shared_timed_mutex  _mutex{};        // TODO(rrahn): Replace by shared_mutex when c++17 is available.
+
+    template <typename TResourceMap, typename TValue>
+    inline auto
+    local(TResourceMap & map, TValue const & initValue)
+    {
+        bool exists{true};
+        if (_count.load(std::memory_order_relaxed) == 0)
+            return std::forward_as_tuple(map.find(std::this_thread::get_id())->second, exists);
+
+
+        decltype(map.find(std::this_thread::get_id())) elemIt;
+        { // try to read
+            std::shared_lock<decltype(_mutex)> read_lck(_mutex);
+            elemIt = map.find(std::this_thread::get_id());
+            exists = elemIt != map.end();
+        }
+        if (!exists)
+        {
+            {  // Create new entry.
+                std::unique_lock<decltype(_mutex)> write_lck(_mutex);
+                std::tie(elemIt, exists) = map.emplace(std::this_thread::get_id(), initValue);
+            }
+            --_count;
+            SEQAN_ASSERT(exists);
+            exists = false;  // Notify that element was added for the first time.
+        }
+        return std::forward_as_tuple(elemIt->second, exists);
+    }
+};
+
+// ----------------------------------------------------------------------------
+//  Function setCount()
+// ----------------------------------------------------------------------------
+
+inline void
+setCount(CountingThreadLocalManager & mngr, size_t const count)
+{
+    mngr._count.store(count, std::memory_order_relaxed);
+}
+
+template <typename TValue, typename TManager = SimpleThreadLocalManager, typename TSpec = void>
 class EnumerableThreadLocal
 {
 public:
@@ -69,16 +135,16 @@ public:
     //-------------------------------------------------------------------------
     // Private Members.
 
-    TMap                     _mMap{};
-    std::shared_timed_mutex  _mMutex{};        // TODO(rrahn): Replace by shared_mutex when c++17 is available.
-    TValue                   _mInitValue{};
+    TMap                     _map{};
+    TValue                   _initValue{};
+    TManager                 _manager{};
 
     //-------------------------------------------------------------------------
     // Constructor.
 
     EnumerableThreadLocal() = default;
 
-    EnumerableThreadLocal(TValue initValue) : _mInitValue(std::move(initValue))
+    explicit EnumerableThreadLocal(TValue initValue) : _initValue(std::move(initValue))
     {}
 
     EnumerableThreadLocal(EnumerableThreadLocal const &) = delete;
@@ -96,70 +162,59 @@ public:
 // ============================================================================
 
 // TODO(rrahn): Legacy metafunction to work with SeqAn 2.x
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TIterTag>
-struct Iterator<EnumerableThreadLocal<TValue, TTraits>, TIterTag>
+struct Iterator<EnumerableThreadLocal<TValue, TManager, TSpec>, TIterTag>
 {
-    using Type = typename EnumerableThreadLocal<TValue, TTraits>::TIterator;
+    using Type = typename EnumerableThreadLocal<TValue, TManager, TSpec>::TIterator;
 };
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TIterTag>
-struct Iterator<EnumerableThreadLocal<TValue, TTraits> const, TIterTag>
+struct Iterator<EnumerableThreadLocal<TValue, TManager, TSpec> const, TIterTag>
 {
-    using Type = typename EnumerableThreadLocal<TValue, TTraits>::TConstIterator;
+    using Type = typename EnumerableThreadLocal<TValue, TManager, TSpec>::TConstIterator;
 };
 
 // ============================================================================
 // Functions
 // ============================================================================
 
-namespace impl
-{
-
 // ----------------------------------------------------------------------------
-//  Function createNewEntry()
+//  Function storageManager()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
-inline auto
-createNewEntry(EnumerableThreadLocal<TValue, TTraits> & me)
+template <typename TValue, typename TManager, typename TSpec>
+inline TManager &
+storageManager(EnumerableThreadLocal<TValue, TManager, TSpec> & me)
 {
-    // TODO(rrahn): Make cache aligned allocation of value and only store pointer in map.
-    return me._mMap.emplace(std::this_thread::get_id(), me._mInitValue);
+    return me._manager;
 }
-}  // namespace impl
+
+template <typename TValue, typename TManager, typename TSpec>
+inline TManager const &
+storageManager(EnumerableThreadLocal<TValue, TManager, TSpec> const & me)
+{
+    return me._manager;
+}
 
 // ----------------------------------------------------------------------------
 //  Function local()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits>
+template <typename TValue, typename TManager, typename TSpec>
 inline auto&
-local(EnumerableThreadLocal<TValue, TTraits> & me,
+local(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
       bool & exists)
 {
-    decltype(me._mMap.find(std::this_thread::get_id())) elemIt;
-    { // try to read
-        std::shared_lock<decltype(me._mMutex)> read_lck(me._mMutex);
-        elemIt = me._mMap.find(std::this_thread::get_id());
-        exists = elemIt != me._mMap.end();
-    }
-    if (!exists)
-    {
-        {  // Create new entry.
-            std::unique_lock<decltype(me._mMutex)> write_lck(me._mMutex);
-            std::tie(elemIt, exists) = impl::createNewEntry(me);
-        }
-        SEQAN_ASSERT(exists);
-        exists = false;  // Notify that element was added for the first time.
-    }
-    return elemIt->second;
+    auto res = me._manager.local(me._map, me._initValue);
+    exists = std::get<1>(res);
+    return std::get<0>(res);
 }
 
-template <typename TValue, typename TTraits>
+template <typename TValue, typename TManager, typename TSpec>
 inline auto&
-local(EnumerableThreadLocal<TValue, TTraits> & me)
+local(EnumerableThreadLocal<TValue, TManager, TSpec> & me)
 {
     bool exists{true};
     return local(me, exists); // Double indirection to to iterator and pointer to therad_local storage.
@@ -169,63 +224,63 @@ local(EnumerableThreadLocal<TValue, TTraits> & me)
 // Function begin()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TIterSpec>
 inline auto
-begin(EnumerableThreadLocal<TValue, TTraits> & me,
+begin(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
       Tag<TIterSpec> const & /*tag*/)
 {
-    return typename EnumerableThreadLocal<TValue, TTraits>::TIterator{me};
+    return typename EnumerableThreadLocal<TValue, TManager, TSpec>::TIterator{me};
 }
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TIterSpec>
 inline auto
-begin(EnumerableThreadLocal<TValue, TTraits> const & me,
+begin(EnumerableThreadLocal<TValue, TManager, TSpec> const & me,
       Tag<TIterSpec> const & /*tag*/)
 {
-    return typename EnumerableThreadLocal<TValue, TTraits>::TConstIterator{me};
+    return typename EnumerableThreadLocal<TValue, TManager, TSpec>::TConstIterator{me};
 }
 
 // ----------------------------------------------------------------------------
 // Function end()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TIterSpec>
 inline auto
-end(EnumerableThreadLocal<TValue, TTraits> & me,
+end(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
     Tag<TIterSpec> const & /*tag*/)
 {
-    return typename EnumerableThreadLocal<TValue, TTraits>::TIterator{me._mMap.end()};
+    return typename EnumerableThreadLocal<TValue, TManager, TSpec>::TIterator{me._map.end()};
 }
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TIterSpec>
 inline auto
-end(EnumerableThreadLocal<TValue, TTraits> const & me,
+end(EnumerableThreadLocal<TValue, TManager, TSpec> const & me,
     Tag<TIterSpec> const & /*tag*/)
 {
-    return typename EnumerableThreadLocal<TValue, TTraits>::TConstIterator{me._mMap.cend()};
+    return typename EnumerableThreadLocal<TValue, TManager, TSpec>::TConstIterator{me._map.cend()};
 }
 
 // ----------------------------------------------------------------------------
 // Function combine()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TUnaryCombine>
 inline void
-combineEach(EnumerableThreadLocal<TValue, TTraits> & me,
+combineEach(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
              TUnaryCombine && fUnaryCombine)
 {
     std::for_each(begin(me), end(me), std::forward<TUnaryCombine>(fUnaryCombine));
 }
 
-template <typename TValue, typename TTraits,
+template <typename TValue, typename TManager, typename TSpec,
           typename TBinaryCombine>
 inline auto
-combine(EnumerableThreadLocal<TValue, TTraits> & me,
+combine(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
         TBinaryCombine && fBinaryCombine)
 {
     TValue init{};
