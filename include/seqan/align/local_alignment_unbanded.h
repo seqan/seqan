@@ -385,13 +385,15 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
  * @headerfile <seqan/align.h>
  * @brief Computes the best global pairwise alignment score.
  *
- * @signature TScoreVal localAlignmentScore([exec,] subject, query, scoringScheme);
+ * @signature TScoreVal localAlignmentScore([exec,] subject, query, scoringScheme[, lowerDiag, upperDiag]);
  *
  * @param[in] exec          @link ExecutionPolicy Policy@endlink to select execution mode of alignment algorithm.
  * @param[in] subject       Subject sequence(s) (horizontal in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
  * @param[in] query         Query sequence(s) (vertical in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
  * @param[in] scoringScheme The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
  *                          that the scoring scheme is compatible with <tt>algorithmTag</tt>.  Type: @link Score @endlink.
+ * @param[in] lowerDiag     Optional lower diagonal.  Types: <tt>int</tt>
+ * @param[in] upperDiag     Optional upper diagonal.  Types: <tt>int</tt>
  *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
  *                     the type of <tt>scoringScheme</tt>). If subject and query are sets the function returns a
@@ -410,7 +412,9 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
  * The wave-front execution can be selected via the @link WavefrontExecutionPolicy @endlink, which can also be combined
  * with a vectorized execution. In addition the wave-front execution parallelizes a single pairwise alignment, while the
  * standard @link ParallelismTags#Parallel @endlink specialization does only parallelizes the sequence set via chunking.
- * Note, that the banded version is at the moment not supported for parallel and/or vectorized execution.
+ * Note, the banded version is at the moment only supported for the following execution modes: <i>sequential</i>,
+ * <i>parallel</i>, <i>vectorized</i> and <i>parallel+vectorized</i>. At the moment the vectorized version only works
+ * reliable if all subject sequences and respectively all query sequences have the same length.
  *
  * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see localAlignment
