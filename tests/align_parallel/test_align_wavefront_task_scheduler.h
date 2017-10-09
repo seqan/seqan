@@ -92,7 +92,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_task_scheduler_async)
     unlockWriting(scheduler);
 
     // Wait until schduler is done with all jobs.
-    wait(scheduler);
+    seqan::wait(scheduler);
 
     SEQAN_ASSERT(t1Executed);
     SEQAN_ASSERT(t2Executed);
