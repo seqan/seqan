@@ -105,6 +105,27 @@ struct GlobalAlignScoreTester_
             return globalAlignmentScore(strH, strV, score, config, lDiag, uDiag);
     }
 };
+
+struct LocalScoreTester_
+{
+    template <typename TStringsH,
+              typename TStringsV,
+              typename TScoreValue, typename TScoreSpec,
+              typename TConfig>
+    static auto
+    run(TStringsH const & strH,
+        TStringsV const & strV,
+        seqan::Score<TScoreValue, TScoreSpec> const & score,
+        TConfig const & /*config*/,
+        int const lDiag,
+        int const uDiag)
+    {
+        if (lDiag == seqan::MinValue<int>::VALUE && uDiag == seqan::MaxValue<int>::VALUE)
+            return localAlignmentScore(strH, strV, score);
+        else
+            return localAlignmentScore(strH, strV, score, lDiag, uDiag);
+    }
+};
 }  // namespace test_align_simd
 }  // namespace impl
 
@@ -350,6 +371,18 @@ SEQAN_TYPED_TEST(SimdAlignLocalTestCommon, Linear_Align)
                                     TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
+SEQAN_TYPED_TEST(SimdAlignLocalTestCommon, Linear_Score)
+{
+    using TAlignConf = typename TestFixture::TAlignConfig;
+    using TLengthParam = typename TestFixture::TLengthParam;
+    using TBandSwitch = typename TestFixture::TBandSwitch;
+
+    testAlignSimdScore<seqan::Dna>(impl::test_align_simd::LocalScoreTester_(), seqan::Score<int>(2, -1, -1),
+                                   TAlignConf(), TLengthParam(), TBandSwitch());
+    testAlignSimdScore<seqan::AminoAcid>(impl::test_align_simd::LocalScoreTester_(), seqan::Blosum62(-2),
+                                         TAlignConf(), TLengthParam(), TBandSwitch());
+}
+
 SEQAN_TYPED_TEST(SimdAlignLocalTestCommon, Affine_Align)
 {
     using TAlignConf = typename TestFixture::TAlignConfig;
@@ -360,6 +393,18 @@ SEQAN_TYPED_TEST(SimdAlignLocalTestCommon, Affine_Align)
                               TAlignConf(), TLengthParam(), TBandSwitch());
     testAlignSimd<seqan::AminoAcid>(impl::test_align_simd::LocalAlignTester_(), seqan::Blosum62(-2, -4),
                                     TAlignConf(), TLengthParam(), TBandSwitch());
+}
+
+SEQAN_TYPED_TEST(SimdAlignLocalTestCommon, Affine_Score)
+{
+    using TAlignConf = typename TestFixture::TAlignConfig;
+    using TLengthParam = typename TestFixture::TLengthParam;
+    using TBandSwitch = typename TestFixture::TBandSwitch;
+
+    testAlignSimdScore<seqan::Dna>(impl::test_align_simd::LocalScoreTester_(), seqan::Score<int>(2, -1, -1, -3),
+                                   TAlignConf(), TLengthParam(), TBandSwitch());
+    testAlignSimdScore<seqan::AminoAcid>(impl::test_align_simd::LocalScoreTester_(), seqan::Blosum62(-2, -4),
+                                         TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
 #endif  // #ifndef TESTS_ALIGN_TEST_ALIGN_SIMD_H_
