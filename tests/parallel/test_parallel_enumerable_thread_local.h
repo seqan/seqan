@@ -121,12 +121,12 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_construct)
 
     {  // Default construction.
         EnumerableThreadLocal<test_align_parallel::TestValue> tls;
-        SEQAN_ASSERT_EQ(tls._mInitValue.mMsg, "default constructed");
+        SEQAN_ASSERT_EQ(tls._initValue.mMsg, "default constructed");
     }
 
     {  // Predefined initialization value.
         EnumerableThreadLocal<test_align_parallel::TestValue> tls{test_align_parallel::TestValue{"predefined"}};
-        SEQAN_ASSERT_EQ(tls._mInitValue.mMsg, "predefined");
+        SEQAN_ASSERT_EQ(tls._initValue.mMsg, "predefined");
     }
 }
 
@@ -139,9 +139,9 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_local)
 
     test_align_parallel::run(tls);
 
-    SEQAN_ASSERT_EQ(tls._mMap.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
 
-    std::for_each(std::begin(tls._mMap), std::end(tls._mMap),
+    std::for_each(std::begin(tls._map), std::end(tls._map),
     [](auto const & mapValue)
     {
         auto const& val = mapValue.second;
@@ -160,7 +160,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_enumerate)
 
     test_align_parallel::run(tls);
 
-    SEQAN_ASSERT_EQ(tls._mMap.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
 
     test_align_parallel::testEnumerate(tls);
     test_align_parallel::testEnumerateConst(tls);
@@ -175,7 +175,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_unary)
 
     test_align_parallel::run(tls);
 
-    SEQAN_ASSERT_EQ(tls._mMap.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
 
     unsigned count{0};
     combineEach(tls, [&](TPair const & p)
@@ -194,7 +194,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_binary)
 
     test_align_parallel::run(tls);
 
-    SEQAN_ASSERT_EQ(tls._mMap.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
 
     TPair count = combine(tls, [](TPair const & initial, TPair const & val)
                           {

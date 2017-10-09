@@ -32,7 +32,7 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_KERNEL_ADAPTOR_
+#ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_KERNEL_ADAPTOR_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_KERNEL_ADAPTOR_H_
 
 namespace seqan

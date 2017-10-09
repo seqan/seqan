@@ -222,11 +222,11 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
     {
         struct DPConfigTraits
         {
-            using TAlgorithmType [[gnu::unused]] = TAlgorithmSpec;
-            using TGapType       [[gnu::unused]] = LinearGaps;
-            using TBandType      [[gnu::unused]] = BandOff;
-            using TTracebackType [[gnu::unused]] = TracebackOff;
-            using TFormat        [[gnu::unused]] = ArrayGaps;
+            using TAlgorithmType SEQAN_UNUSED = TAlgorithmSpec;
+            using TGapType       SEQAN_UNUSED = LinearGaps;
+            using TBandType      SEQAN_UNUSED = BandOff;
+            using TTracebackType SEQAN_UNUSED = TracebackOff;
+            using TFormat        SEQAN_UNUSED = ArrayGaps;
         };
 
         using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
@@ -239,11 +239,11 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
     {
         struct DPConfigTraits
         {
-            using TAlgorithmType [[gnu::unused]] = TAlgorithmSpec;
-            using TGapType       [[gnu::unused]] = AffineGaps;
-            using TBandType      [[gnu::unused]] = BandOff;
-            using TTracebackType [[gnu::unused]] = TracebackOff;
-            using TFormat        [[gnu::unused]] = ArrayGaps;
+            using TAlgorithmType SEQAN_UNUSED = TAlgorithmSpec;
+            using TGapType       SEQAN_UNUSED = AffineGaps;
+            using TBandType      SEQAN_UNUSED = BandOff;
+            using TTracebackType SEQAN_UNUSED = TracebackOff;
+            using TFormat        SEQAN_UNUSED = ArrayGaps;
         };
 
         using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
