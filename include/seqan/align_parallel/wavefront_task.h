@@ -41,12 +41,11 @@ namespace seqan
 // Forwards
 // ============================================================================
 
-std::atomic_flag _debug_cout_flag = ATOMIC_FLAG_INIT;
-
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
+// Context used per task. Access information like the infixes of the sequences for this block and other.
 template <typename TSeqHBlocks,
           typename TSeqVBlocks,
           typename TTileBuffer,
@@ -62,6 +61,7 @@ struct WavefrontAlignmentContext
     TEvent            * ptrEvent{nullptr};
 };
 
+// The abstract task that is executed as separat alignment instance.
 template <typename TAlignmentContext>
 class WavefrontTask
 {
@@ -268,10 +268,6 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
 
     typename TExecTraits::TDPScout scout(scoutState);
 
-    // DEBUG: Remove!
-//        auto bufHBegin = _taskContext.getTileBuffer().horizontalBuffer[_col];
-//        auto bufVBegin = _taskContext.getTileBuffer().verticalBuffer[_row];
-
     impl::computeTile(dpCache, scout,
                       taskContext.seqHBlocks[column(task)],
                       taskContext.seqVBlocks[row(task)],
@@ -288,25 +284,6 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
                   column(task),
                   row(task));
     }
-
-
-    // DEBUG: Remove!
-//        _taskContext.getDebugBuffer().matrix[_col][_row] = {bufHBegin, bufVBegin,
-//                                                            _taskContext.getTileBuffer().horizontalBuffer[_col],
-//                                                            _taskContext.getTileBuffer().verticalBuffer[_row],
-//                                                            _col, _row, false};
-    // TODO(rrahn): Add traceback later.
-//    if (IsTracebackEnabled_<typename TTaskConfig::TDPConfig>::VALUE)
-//    {
-//        swap(getDpTraceMatrix(dpContext), pTls.mLocalTraceStore.localScalarTraceMatrix());
-//        _taskContext.getTraceProxy().insert(std::make_pair(_col, _row),
-//                                            TTraceProxyValue{&pTls.mLocalTraceStore,
-//                                                             {0, static_cast<uint16_t>(length(pTls.mLocalTraceStore.mScalarTraceVec) - 1)},
-//                                                              0});
-//    }
-//    #ifdef DP_ALIGN_STATS
-//        ++serialCounter;
-//    #endif
 }
 
 template <typename TBuffer>
@@ -330,27 +307,10 @@ template <typename TTasks, typename TDPLocalData>
 inline void
 executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
 {
-//    for (auto task : tasks)
-//    {
-//        executeScalar(*task, dpLocal);
-//    }
     using TTask = typename std::remove_pointer<typename Value<TTasks>::Type>::type;
     using TExecTraits = SimdTaskExecutionTraits<typename TTask::TContext>;
 
-//    auto& taskContext = context(task);
-//    // Load the cache from the local data.
-//    auto & dpCache = cache(dpLocal, taskContext.alignmentId);
-//    auto & buffer = taskContext.tileBuffer;
-//
-//    // Capture the buffer.
-//    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
-//                                                   buffer.verticalBuffer[row(task)]);  // Task local
-//
-//    typename TExecTraits::TDPScout scout(scoutState);
-    //offset version:
-
     auto offset = impl::computeOffset(tasks, TExecTraits{});
-
     // Has to be adapted to take the correct buffer from the corresponding task.
     auto simdBufferH = impl::gatherSimdBuffer(tasks,
                                               [](auto& task)
@@ -390,7 +350,7 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
                             offset,
                             TExecTraits{});
 }
-#endif  // namespace seqan
+#endif  // SEQAN_SIMD_ENABLED
 
 }  // namespace seqan
 

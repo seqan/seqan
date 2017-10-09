@@ -46,6 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Central task queue used in simd mode to gather multiple blocks to gather full simd registers.
 template <typename TValue,
           size_t VECTOR_SIZE_>
 class WavefrontTaskQueue

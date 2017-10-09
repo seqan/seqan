@@ -46,7 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// Use interface as: DPSettings<TScore, TBand, Traits<>>
+// Translates global function interface into setting struct.
 template <typename TScoringScheme_, typename TDPTraits = DPTraits::GlobalLinear>
 struct DPSettings
 {
@@ -64,7 +64,7 @@ struct DPSettings
 };
 
 #ifdef SEQAN_SIMD_ENABLED
-// Aggregate type.
+// Simd version of DP settings.
 template <typename TDPSettings, typename TOffsetSpec = False>
 struct SimdDPSettings : public TDPSettings
 {

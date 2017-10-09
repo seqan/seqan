@@ -45,6 +45,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Config structre for the execution of one alignment using the wave-front model.
 template <typename TDPSettings>
 struct WavefrontAlignmentTaskConfig
 {
@@ -129,6 +130,7 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
 };
 #endif
 
+// Incubator to setup the alignment job.
 template <typename WavefrontAlignmentTaskConfigConcept>
 struct WavefrontAlignmentTaskIncubator
 {
@@ -234,6 +236,7 @@ struct WavefrontAlignmentTaskIncubator
     }
 };
 
+// The actual alignment task that is executed by the wave-front model.
 template <typename TSeqH,
           typename TSeqV,
           typename TDPSettings,
@@ -333,29 +336,6 @@ public:
             clear(intermediate(threadLocalStorage, instanceId));
         };
         combineEach(*executor.ptrThreadLocal, collectAndReset);
-
-        // We know finished the alignment.
-        // Now we have to call the correct method to combine the result for
-        // EnumerableThreadSpecific
-        // invoke
-            // std::threads -> vector of threads -> get executed with a shared queue.
-            // per alignment instance
-            // spawn(task) -> adds task* to the internal queue.
-            // wait_for_all() clause to wait for finishing execution.
-            // unlock writers and join threads. -> leave no threads dangling around. -> all tasks need to be computed.
-
-            // tbb -> create task_group
-            // spawn(first task of tg)
-            // tg.run(with task->execution method)
-            // tg.wait()  // barrier.
-            // execute last task graph
-
-            // omp -> more difficult to model.
-            // global prallel section
-            // master part triggers execution with queue.
-            // sets barrier to end of parallel execution
-        // We have to compute the trace here.
-
         // Continue execution.
         callback(alignmentId, interMax._maxState.first);
     }

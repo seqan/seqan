@@ -46,6 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Event to signal end of one alignment instance.
 class WavefrontTaskEvent
 {
 public:

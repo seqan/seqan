@@ -46,6 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Traits for DP configuration. Currently used only internally.
 struct DPTraits
 {
     // Gocal alignment with linear gap costs.

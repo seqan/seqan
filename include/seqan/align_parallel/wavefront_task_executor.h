@@ -49,6 +49,7 @@ struct WavefrontTaskExecutionPolicy;
 // Tags, Classes, Enums
 // ============================================================================
 
+// Task executor. Manages the execution of single alignment blocks.
 template <typename TResource, typename TWavefrontExecutor>
 struct WavefrontTaskExecutor
 {
@@ -61,6 +62,7 @@ struct WavefrontTaskExecutor
     }
 };
 
+// Policy for no SIMD execution.
 template <typename ...TArgs>
 struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
 {
@@ -84,6 +86,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
     }
 };
 
+// Policy for SIMD execution.
 template <typename TValue, size_t VECTOR_SIZE>
 struct WavefrontTaskExecutionPolicy<WavefrontTaskQueue<TValue, VECTOR_SIZE>>
 {

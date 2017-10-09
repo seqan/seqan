@@ -46,6 +46,8 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Executor class for an alignment task in the wave-front model.
+// Stores the scheduler and the thread local storage.
 template <typename TScheduler, typename TThreadLocalStore>
 struct WavefrontAlignmentExecutor
 {
@@ -62,6 +64,7 @@ struct WavefrontAlignmentExecutor
 // Functions
 // ============================================================================
 
+// Asynchronosly schedule a new alignment job.
 template <typename ...TArgs,
           typename TTaskExecutor>
 inline void
@@ -72,6 +75,7 @@ spawn(WavefrontAlignmentExecutor<TArgs...> & executor,
     scheduleTask(*executor.ptrTaskScheduler, std::forward<TTaskExecutor>(taskExec));
 }
 
+// Access thread local storage.
 template <typename ...TArgs>
 inline auto&
 local(WavefrontAlignmentExecutor<TArgs...> & executor)

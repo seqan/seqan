@@ -46,6 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Shared thread local storage for the parallel alignment instances.
 template <typename TConfig>
 class WavefrontAlignmentThreadLocalStorage
 {
@@ -94,6 +95,7 @@ public:
 // Functions
 // ============================================================================
 
+// Gets the intermediate result for the specific alignment job.
 template <typename TConfig>
 inline auto &
 intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
@@ -103,6 +105,7 @@ intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
     return std::get<typename TConfig::TIntermediate>(me._multiAlignmentThreadLocal[alignId]);
 }
 
+// Gets the chache for the specific alignment job.
 template <typename TConfig>
 inline auto &
 cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
@@ -112,6 +115,7 @@ cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
     return std::get<typename TConfig::TCache>(me._multiAlignmentThreadLocal[alignId]);
 }
 
+// Gets the simd chache for the specific alignment job.
 template <typename TConfig>
 inline auto &
 simdCache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,

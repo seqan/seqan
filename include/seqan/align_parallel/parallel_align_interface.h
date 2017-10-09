@@ -49,6 +49,9 @@ namespace seqan
 namespace impl
 {
 
+/*
+ * Executor class that implements the correct execution mode.
+ */
 struct ParallelAlignmentExecutor
 {
     template <typename TKernel,
@@ -262,6 +265,10 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
 // Functions
 // ============================================================================
 
+/*
+ * Wrapper functions for calling globalAlignmentScore and localAlignmentScore with an ExecutionPolicy.
+ * Note the parallel interfaces are documented as part of the standard documentation in seqan/align module.
+ */
 template <typename TParallelPolicy, typename TVectorizationPolicy,
           typename ...TArgs,
           std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
@@ -294,6 +301,7 @@ localAlignmentScore(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const
     return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
 }
 
+// Wavefront execution of globalAlignmentScore w/ config.
 template <typename TWaveSpec, typename TVectorizationPolicy,
           typename TSetH,
           typename TSetV,
@@ -317,6 +325,7 @@ globalAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizati
                                  scoringScheme);
 }
 
+// Wavefront execution of globalAlignmentScore w/o config.
 template <typename TWaveSpec, typename TVectorizationPolicy,
           typename TSetH,
           typename TSetV,
