@@ -46,6 +46,20 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Yet internal class. Might need some redesign to make it truly generic.
+/*
+ * @class WavefrontAlignmentScheduler
+ * @headerfile <align_parallel.h>
+ * @brief A generic scheduler allowing to execute callables with a ring buffer for the stored tasks.
+ *
+ * @signature class WavefrontAlignmentScheduler;
+ *
+ * This schedule is at the moment only used for the wave-front alignment execution but could be generalized later.
+ * It stores all scheduled callables in a @link ConcurrentSuspendableQueue @endlink which can hold a user defined
+ * number of callables at the same time. It then uses recycable ids to fill up the queue with waiting jobs.
+ * If the queue is full and a thread tries to add a new job, it will be suspended, until resources are freed by
+ * the scheduler.
+ */
 class WavefrontAlignmentScheduler
 {
 public:
@@ -213,12 +227,23 @@ struct SchedulerTraits<WavefrontAlignmentScheduler>
 // Functions
 // ============================================================================
 
+/*
+ * @fn WavefrontAlignmentScheduler#isValid
+ * @headerfile <align_parallel.h>
+ * @brief Checks if scheduler is in a valid state. This means that no callable has terminated with an exception.
+ */
 inline bool
 isValid(WavefrontAlignmentScheduler const & me)
 {
     return me._isValid.load(std::memory_order_acquire);
 }
 
+/*
+ * @fn WavefrontAlignmentScheduler#scheduleTask
+ * @headerfile <align_parallel.h>
+ * @brief Adds a new task to the scheduler. Suspends until resources become available.
+ * @throws ExceptionType?
+ */
 // basic exception-safety guarantee.
 // Throws if appendValue failed.
 inline void
@@ -244,6 +269,11 @@ scheduleTask(WavefrontAlignmentScheduler & me,
         throw std::runtime_error("Invalid alignment scheduler 2!");
 }
 
+/*
+ * @fn WavefrontAlignmentScheduler#notify
+ * @headerfile <align_parallel.h>
+ * @brief Notify the scheduler that no more jobs will follow.
+ */
 inline void
 notify(WavefrontAlignmentScheduler & me)
 {
@@ -251,6 +281,13 @@ notify(WavefrontAlignmentScheduler & me)
     me._receivedEndSignal = true;
 }
 
+/*
+ * @fn WavefrontAlignmentScheduler#wait
+ * @headerfile <align_parallel.h>
+ * @brief Explicit barrier on the scheduler. Suspends until all scheduled jobs have been finsihed.
+ *
+ * Note, can dead lock if notify is never called.
+ */
 // Only possible if some other thread is signaling the end of it.
 inline void
 wait(WavefrontAlignmentScheduler & me)
@@ -259,6 +296,13 @@ wait(WavefrontAlignmentScheduler & me)
     wait(me._taskScheduler);
 }
 
+/*
+ * @fn WavefrontAlignmentScheduler#wait2
+ * @headerfile <align_parallel.h>
+ * @brief Explicit barrier on the scheduler. Suspends until all scheduled jobs have been finsihed.
+ *
+ * Note, can dead lock if notify is never called.
+ */
 template <typename TNotifiable>
 inline void
 wait2(WavefrontAlignmentScheduler & me, TNotifiable & notifiable)
@@ -268,6 +312,13 @@ wait2(WavefrontAlignmentScheduler & me, TNotifiable & notifiable)
     wait(me._taskScheduler);
 }
 
+/*
+ * @fn WavefrontAlignmentScheduler#getExceptions
+ * @headerfile <align_parallel.h>
+ * @brief Returns vector of captured exceptions if any was thrown by the callable.
+ *
+ * Note, can dead lock if notify is never called.
+ */
 inline auto
 getExceptions(WavefrontAlignmentScheduler & me)
 {
@@ -277,6 +328,11 @@ getExceptions(WavefrontAlignmentScheduler & me)
     return vec;
 }
 
+/*
+ * @fn WavefrontAlignmentScheduler#taskScheduler
+ * @headerfile <align_parallel.h>
+ * @brief Returns lvalue reference to the underlying task_scheduler.
+ */
 inline auto&
 taskScheduler(WavefrontAlignmentScheduler & me)
 {

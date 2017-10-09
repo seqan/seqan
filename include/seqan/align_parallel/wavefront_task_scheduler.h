@@ -46,6 +46,7 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// Scheduler for wavefront tasks.
 class WavefrontTaskScheduler
 {
 public:

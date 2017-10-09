@@ -380,6 +380,45 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
 // Function localAlignmentScore()                         [unbanded, TSequence]
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn localAlignmentScore
+ * @headerfile <seqan/align.h>
+ * @brief Computes the best global pairwise alignment score.
+ *
+ * @signature TScoreVal localAlignmentScore([exec,] subject, query, scoringScheme);
+ *
+ * @param[in] exec          @link ExecutionPolicy Policy@endlink to select execution mode of alignment algorithm.
+ * @param[in] subject       Subject sequence(s) (horizontal in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
+ * @param[in] query         Query sequence(s) (vertical in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
+ * @param[in] scoringScheme The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
+ *                          that the scoring scheme is compatible with <tt>algorithmTag</tt>.  Type: @link Score @endlink.
+ *
+ * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
+ *                     the type of <tt>scoringScheme</tt>). If subject and query are sets the function returns a
+ *                     set of scores representing the score for each pairwise alignment (<tt>subject[i]</tt> with <tt>query[i]</tt>).
+ *
+ * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
+ * step. Local alignment score can be either used with two sequences or two sets of sequences of equal size.
+ *
+ * @section Parallel execution
+ *
+ * Some of the local alingment score functions are parallelized and vectorized.
+ * The parallelization mode can be selected via the @link ExecutionPolicy @endlink as first argument.
+ * Following execution modes are possible: <i>sequential</i>, <i>parallel</i>, <i>wave-front</i>, <i>vectorized</i>,
+ * <i>parallel+vectorized</i> and <i>wave-front+vectorized</i>.
+ *
+ * The wave-front execution can be selected via the @link WavefrontExecutionPolicy @endlink, which can also be combined
+ * with a vectorized execution. In addition the wave-front execution parallelizes a single pairwise alignment, while the
+ * standard @link ParallelismTags#Parallel @endlink specialization does only parallelizes the sequence set via chunking.
+ * Note, that the banded version is at the moment not supported for parallel and/or vectorized execution.
+ *
+ * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * @see localAlignment
+ *
+ * @datarace thread-safe. No shared state is modified during the execution and concurrent invocations of this function
+ * on the same data does not cause any race conditions.
+ */
+
 template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,

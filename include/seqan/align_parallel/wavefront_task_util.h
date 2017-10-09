@@ -52,6 +52,7 @@ namespace impl
 // Metafunctions
 // ============================================================================
 
+// Helper meta-function to extract the correct DP Property.
 template <typename TAlgotrithm>
 struct AlgorithmProperty
 {
@@ -95,6 +96,7 @@ struct AlgorithmProperty<LocalAlignment_<TSpec>>
 // Function computeTile()
 // ----------------------------------------------------------------------------
 
+// Wrapper function to call alignment core for the specific block.
 template <typename TScoreValue, typename TTraceValue, typename TScoreMatHost, typename TTraceMatHost,
           typename TDPScout,
           typename TSequenceH,
@@ -156,6 +158,7 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
 }
 
 #ifdef SEQAN_SIMD_ENABLED
+// Some utility functions.
 template <typename TTasks,
           typename TScoreValueScalar,
           typename TScoreValueSimd>
@@ -418,6 +421,7 @@ scatterSimdBuffer(TTasks & tasks,
     }
 }
 
+// Compute tasks as simd alignment.
 template <typename TDPCell, typename TTraceValue, typename TScoreMat, typename TTraceMat,
           typename TTasks,
           typename TSimdBufferH,

@@ -46,6 +46,8 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
+// The intermediate result stored by each thread independently.
+// After an alignment has been finished, the intermediate results are reduced to a global result.
 template <typename TTraits>
 struct WavefrontAlignmentResult
 {
@@ -100,6 +102,7 @@ updateMax(TIntermediate & me,
 }
 }  // namespace impl
 
+// Update the intermediate result if new optimum has been found.
 template <typename ...TArgs>
 inline void
 updateMax(WavefrontAlignmentResult<TArgs...> & me,
@@ -118,6 +121,7 @@ updateMax(WavefrontAlignmentResult<TArgs...> & lhs,
     impl::updateMax(lhs, rhs._maxState, rhs._tileCol, rhs._tileRow);
 }
 
+// Reset the intermediate result.
 template <typename ...TArgs>
 inline void
 clear(WavefrontAlignmentResult<TArgs...> & me)
@@ -134,6 +138,7 @@ clear(WavefrontAlignmentResult<TArgs...> && me)
     swap(me, tmp);
 }
 
+// Get the intermediate result.
 template <typename ...TArgs>
 inline typename WavefrontAlignmentResult<TArgs...>::TState const &
 value(WavefrontAlignmentResult<TArgs...> const & me)
@@ -141,6 +146,7 @@ value(WavefrontAlignmentResult<TArgs...> const & me)
     return me._maxState;
 }
 
+// Swap two intermediate results.
 template <typename ...TArgs>
 inline void
 swap(WavefrontAlignmentResult<TArgs...> & lhs,

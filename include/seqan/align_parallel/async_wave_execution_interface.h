@@ -48,6 +48,13 @@ namespace impl
 // Tags, Classes, Enums
 // ============================================================================
 
+/*
+ * @class AsyncWaveAlignExecutor
+ * @brief Executor of the wave-front alignment mode with no SIMD vectorization.
+ * @headerfile <seqan/align_parallel.h>
+ *
+ * Manges shared data for the wave-front execution before executing the alignments.
+ */
 template <typename TSeqH, typename TSeqV, typename TSettings>
 class AsyncWaveAlignExecutor
 {
@@ -81,6 +88,10 @@ public:
     }
 };
 
+/*
+ * @fn AsyncWaveAlignExecutor#submit
+ * @brief Submits a new alignment job asynchronosly.
+ */
 template <typename ...TArgs,
           typename TSeqH,
           typename TSeqV,
@@ -101,6 +112,10 @@ submit(AsyncWaveAlignExecutor<TArgs...> & me,
     scheduleTask(me._alignScheduler, f);
 }
 
+/*
+ * @fn AsyncWaveAlignExecutor#wait
+ * @brief Explicit barrier to wait for all submitted jobs to be finished.
+ */
 template <typename ...TArgs>
 inline void
 wait(AsyncWaveAlignExecutor<TArgs...> & me)
@@ -109,6 +124,13 @@ wait(AsyncWaveAlignExecutor<TArgs...> & me)
     wait(me._alignScheduler);
 }
 
+/*
+ * @class AsyncWaveAlignExecutorSimd
+ * @brief Executor of the wave-front alignment mode with SIMD vectorization.
+ * @headerfile <seqan/align_parallel.h>
+ *
+ * Manges shared data for the wave-front execution before executing the alignments.
+ */
 #ifdef SEQAN_SIMD_ENABLED
 template <typename TSeqH, typename TSeqV, typename TSettings, typename TWaveSpec>
 class AsyncWaveAlignExecutorSimd
@@ -152,6 +174,10 @@ public:
     }
 };
 
+/*
+ * @fn AsyncWaveAlignExecutorSimd#submit
+ * @brief Submits a new alignment job asynchronosly.
+ */
 template <typename ...TArgs,
           typename TSeqH,
           typename TSeqV,
@@ -173,6 +199,10 @@ submit(AsyncWaveAlignExecutorSimd<TArgs...> & me,
     scheduleTask(me._alignScheduler, f);
 }
 
+/*
+ * @fn AsyncWaveAlignExecutorSimd#wait
+ * @brief Explicit barrier to wait for all submitted jobs to be finished.
+ */
 template <typename ...TArgs>
 inline void
 wait(AsyncWaveAlignExecutorSimd<TArgs...> & me)
@@ -182,6 +212,10 @@ wait(AsyncWaveAlignExecutorSimd<TArgs...> & me)
 }
 #endif // SEQAN_SIMD_ENABLED
 
+/*
+ * @fn alignExecBatch
+ * @brief Global interface for scheduling and running all alignment jobs with wave-front model.
+ */
 template <typename TSpec, typename TSimdSpec,
           typename TSetH,
           typename TSetV,

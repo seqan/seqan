@@ -457,13 +457,14 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * @headerfile <seqan/align.h>
  * @brief Computes the best global pairwise alignment score.
  *
- * @signature TScoreVal globalAlignmentScore(seqH, seqV, scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
+ * @signature TScoreVal globalAlignmentScore([exec,] subject, query, scoringScheme[, alignConfig][, lowerDiag, upperDiag]);
  * @signature TScoreVal globalAlignmentScore(strings,    scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
  * @signature TScoreVal globalAlignmentScore(seqH, seqV, {MyersBitVector | MyersHirschberg});
  * @signature TScoreVal globalAlignmentScore(strings,    {MyersBitVector | MyersHirschberg});
  *
- * @param[in] seqH          Horizontal gapped sequence in alignment matrix.  Types: String
- * @param[in] seqV          Vertical gapped sequence in alignment matrix.  Types: String
+ * @param[in] exec          @link ExecutionPolicy Policy@endlink to select execution mode of alignment algorithm.
+ * @param[in] subject       Subject sequence(s) (horizontal in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
+ * @param[in] query         Query sequence(s) (vertical in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
  * @param[in] strings       A @link StringSet @endlink containing two sequences.  Type: StringSet.
  * @param[in] alignConfig   The @link AlignConfig @endlink to use for the alignment.  Type: AlignConfig
  * @param[in] scoringScheme The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
@@ -474,17 +475,36 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  *                          @endlink.
  *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
- *                     the type of <tt>scoringScheme</tt>).
+ *                     the type of <tt>scoringScheme</tt>). If subject and query are sets the function returns a
+ *                     set of scores representing the score for each pairwise alignment (<tt>subject[i]</tt> with <tt>query[i]</tt>).
  *
  * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
  * step.  Note that Myers' bit-vector algorithm does not compute an alignment (only in the Myers-Hirschberg variant) but
  * scores can be computed using <tt>globalAlignmentScore</tt>.
+ * Global alignment score can be either used with two sequences or two sets of sequences of equal size.
  *
  * The same limitations to algorithms as in @link globalAlignment @endlink apply.  Furthermore, the
  * <tt>MyersBitVector</tt> and <tt>MyersHirschberg</tt> variants can only be used without any other parameter.
  *
+ * @section Parallel execution
+ *
+ * Some of the global alingment score functions are parallelized and vectorized and work on sets of sequences.
+ * The parallelization mode can be selected via the @link ExecutionPolicy @endlink as first argument.
+ * Following execution modes are possible: <i>sequential</i>, <i>parallel</i>, <i>wave-front</i>, <i>vectorized</i>,
+ * <i>parallel+vectorized</i> and <i>wave-front+vectorized</i>.
+ *
+ * The wave-front execution can be selected via the @link WavefrontExecutionPolicy @endlink, which can also be combined
+ * with a vectorized execution. In addition the wave-front execution parallelizes a single pairwise alignment, while the
+ * standard @link ParallelismTags#Parallel @endlink specialization does only parallelizes the sequence set via chunking.
+ * Note, the banded version is at the moment only supported for the following execution modes: <i>sequential</i>,
+ * <i>parallel</i>, <i>vectorized</i> and <i>parallel+vectorized</i>. At the moment the vectorized version only works
+ * reliable if all subject sequences and respectively all query sequences have the same length.
+ *
  * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see globalAlignment
+ *
+ * @datarace thread-safe. No shared state is modified during the execution and concurrent invocations of this function
+ * on the same data does not cause any race conditions.
  */
 
 // ----------------------------------------------------------------------------
