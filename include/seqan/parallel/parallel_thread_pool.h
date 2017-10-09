@@ -190,7 +190,7 @@ join(ThreadPool & me)
 inline bool
 setCpuAffinity(ThreadPool & me, size_t firstCpu = 0, size_t const scale = 1)
 {
-    SEQAN_ASSERT_GEQ(scale, 1);
+    SEQAN_ASSERT_GEQ(scale, static_cast<size_t>(1));
     bool success{true};
     for (auto & t : me._mPool)
     {

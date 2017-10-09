@@ -71,7 +71,7 @@ public:
 
     TContext &              context;
 
-    std::array<WavefrontTask*, 2>  successor{nullptr, nullptr};
+    std::array<WavefrontTask*, 2>  successor{{nullptr, nullptr}};
     size_t                  col{0};
     size_t                  row{0};
     std::atomic<size_t>     refCount{0};
