@@ -170,9 +170,6 @@ readRecord(VcfRecord & record,
            TForwardIter & iter,
            Vcf const & /*tag*/)
 {
-    if (SEQAN_UNLIKELY(atEnd(iter)))
-        throw UnexpectedEnd();
-
     clear(record);
     CharString &buffer = context.buffer;
 
@@ -180,12 +177,14 @@ readRecord(VcfRecord & record,
     clear(buffer);
 
     readLine(buffer, iter);
-    // Split line, get filed and sample values.
+    // Split line, get field and sample values.
+    // The first 8(9) columns are fields and the rest are values for samples
+    //"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT")
     StringSet<CharString> field_values;
     strSplit(field_values, buffer, IsTab(), false);
 
     unsigned numSamples = length(sampleNames(context));
-//    unsigned numFileds = length(field_values);
+
     if (length(field_values) < 8u + numSamples)
         SEQAN_THROW(ParseError("Not enough values in a line."));
 
@@ -193,7 +192,8 @@ readRecord(VcfRecord & record,
     record.beginPos = lexicalCast<int32_t>(field_values[1]) - 1; // Translate from 1-based to 0-based.
     record.id       = field_values[2];
     record.ref      = field_values[3];
-    record.alt       = field_values[4];
+    record.alt      = field_values[4];
+
     if (field_values[5] == ".")
         record.qual = VcfRecord::MISSING_QUAL();
     else
@@ -202,15 +202,15 @@ readRecord(VcfRecord & record,
     record.filter       = field_values[6];
     record.info       = field_values[7];
 
-    //check if we have an extra column for FORMAT
+    //check if we have a spare column for FORMAT
     unsigned samplesColStart = 8;
-    if (length(field_values) > 8u + numSamples)
+    if (length(field_values) > 8u + numSamples) // we have extara column for FORMAT
     {
         record.format = field_values[8];
         samplesColStart = 9;
     }
 
-    // Get sample names.
+    // Get sample name values .
     for (unsigned i = samplesColStart; i < length(field_values); ++i)
     {
         appendValue(record.genotypeInfos, field_values[i]);
