@@ -144,12 +144,16 @@ readHeader(VcfHeader & header,
             // Split line, get sample names.
             StringSet<CharString> fields;
             strSplit(fields, buffer, IsTab());
-            if (length(fields) < 9u)
+            if (length(fields) < 8u)
                 SEQAN_THROW(ParseError("Not enough fields."));
 
             // Get sample names.
-            for (unsigned i = 9; i < length(fields); ++i)
+            for (unsigned i = 8; i < length(fields); ++i)
+            {
+                if(i == 8 && fields[i] == "FORMAT")
+                    continue;
                 appendName(sampleNamesCache(context), fields[i]);
+            }
         }
     }
 }
@@ -166,109 +170,51 @@ readRecord(VcfRecord & record,
            TForwardIter & iter,
            Vcf const & /*tag*/)
 {
-    typedef OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Vcf> > NextEntry;
+    if (SEQAN_UNLIKELY(atEnd(iter)))
+        throw UnexpectedEnd();
 
     clear(record);
     CharString &buffer = context.buffer;
 
-    // CHROM
+    // get the next line on the buffer.
     clear(buffer);
-    readUntil(buffer, iter, NextEntry());
-    if (empty(buffer))
-        SEQAN_THROW(EmptyFieldError("CHROM"));
-    record.rID = nameToId(contigNamesCache(context), buffer);
-    skipOne(iter);
 
-    // POS
-    clear(buffer);
-    readUntil(buffer, iter, NextEntry());
-    if (empty(buffer))
-        SEQAN_THROW(EmptyFieldError("POS"));
-    record.beginPos = lexicalCast<int32_t>(buffer) - 1; // Translate from 1-based to 0-based.
-    skipOne(iter);
+    readLine(buffer, iter);
+    // Split line, get filed and sample values.
+    StringSet<CharString> field_values;
+    strSplit(field_values, buffer, IsTab(), false);
 
-    // ID
-    readUntil(record.id, iter, NextEntry());
-    if (empty(record.id))
-        SEQAN_THROW(EmptyFieldError("ID"));
-    skipOne(iter);
+    unsigned numSamples = length(sampleNames(context));
+//    unsigned numFileds = length(field_values);
+    if (length(field_values) < 8u + numSamples)
+        SEQAN_THROW(ParseError("Not enough values in a line."));
 
-    // REF
-    readUntil(record.ref, iter, NextEntry());
-    if (empty(record.id))
-        SEQAN_THROW(EmptyFieldError("REF"));
-    skipOne(iter);
-
-    // ALT
-    readUntil(record.alt, iter, NextEntry());
-    if (empty(record.id))
-        SEQAN_THROW(EmptyFieldError("ALT"));
-    skipOne(iter);
-
-    // QUAL
-    clear(buffer);
-    readUntil(buffer, iter, NextEntry());
-    if (empty(buffer))
-        SEQAN_THROW(EmptyFieldError("QUAL"));
-
-    if (buffer == ".")
+    record.rID      = nameToId(contigNamesCache(context), field_values[0]);
+    record.beginPos = lexicalCast<int32_t>(field_values[1]) - 1; // Translate from 1-based to 0-based.
+    record.id       = field_values[2];
+    record.ref      = field_values[3];
+    record.alt       = field_values[4];
+    if (field_values[5] == ".")
         record.qual = VcfRecord::MISSING_QUAL();
     else
-        lexicalCastWithException(record.qual, buffer);
+        lexicalCastWithException(record.qual, field_values[5]);
 
-    skipOne(iter);
+    record.filter       = field_values[6];
+    record.info       = field_values[7];
 
-    // FILTER
-    readUntil(record.filter, iter, NextEntry());
-    if (empty(record.filter))
-        SEQAN_THROW(EmptyFieldError("FILTER"));
-    skipOne(iter);
-
-    // INFO
-    readUntil(record.info, iter, OrFunctor<IsTab, IsNewline>());
-    if (empty(record.info))
-        SEQAN_THROW(EmptyFieldError("INFO"));
-
-    // the following columns are optional
-    if (atEnd(iter) || IsNewline()(value(iter)))
+    //check if we have an extra column for FORMAT
+    unsigned samplesColStart = 8;
+    if (length(field_values) > 8u + numSamples)
     {
-        skipLine(iter);
-        return;
-    }
-    skipOne(iter);
-
-    // FORMAT
-    readUntil(record.format, iter, NextEntry());
-    if (empty(record.format))
-        SEQAN_THROW(EmptyFieldError("FORMAT"));
-    skipOne(iter);
-
-    // The samples.
-    unsigned numSamples = length(sampleNames(context));
-    for (unsigned i = 0; i < numSamples; ++i)
-    {
-        clear(buffer);
-        if (i + 1 != numSamples)
-        {
-            readUntil(buffer, iter, NextEntry());
-            skipOne(iter);
-        }
-        else
-        {
-            readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
-        }
-
-        if (empty(buffer))
-        {
-            char buffer[30];    // == 9 (GENOTYPE_) + 20 (#digits in MIN_INT64) + 1 (trailing zero)
-            snprintf(buffer, 30, "GENOTYPE_%u", i + 1);
-            SEQAN_THROW(EmptyFieldError(buffer));
-        }
-        appendValue(record.genotypeInfos, buffer);
+        record.format = field_values[8];
+        samplesColStart = 9;
     }
 
-    // skip line break and optional additional columns
-    skipLine(iter);
+    // Get sample names.
+    for (unsigned i = samplesColStart; i < length(field_values); ++i)
+    {
+        appendValue(record.genotypeInfos, field_values[i]);
+    }
 }
 
 }  // namespace seqan
