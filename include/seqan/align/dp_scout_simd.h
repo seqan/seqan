@@ -271,8 +271,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, False>>,
                                        TGapModel, TTraceConfig, TExecPolicy> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // Tracking the last row is enabled
@@ -322,8 +322,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, False>>,
                                        TGapModel, TTraceConfig> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // Tracking the last row is enabled
@@ -351,8 +351,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, False>>,
                                        TGapModel, TTraceConfig> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // Tracking if the last column is enabled
@@ -380,8 +380,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, False, True>>,
                                        TGapModel, TTraceConfig> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // Tracking if the last column and last row is enabled
@@ -434,8 +434,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
                                        TGapModel, TTraceConfig> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // If local alignment.
@@ -466,8 +466,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, False>>,
                                        TGapModel, TTraceConfig, TExecPolicy> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // Tracking if the last column is enabled
@@ -549,8 +549,8 @@ inline auto _getCompareMask(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariab
                             DPProfile_<GlobalAlignment_<FreeEndGaps_<TTop, TLeft, True, True>>,
                                        TGapModel, TTraceConfig, TExecPolicy> const &)
 {
-    using TSimdVec = typename TTraits::TSimdVector;
-    return createVector<TSimdVec>(0);
+    using TSimdMaskVec = typename SimdMaskVector<typename TTraits::TSimdVector>::Type;
+    return createVector<TSimdMaskVec>(0);
 }
 
 // If local alignment.

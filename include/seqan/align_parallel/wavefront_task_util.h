@@ -512,8 +512,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
                                       typename TDPTraits::TTracebackType,
                                       Parallel>;
 
-        using TMaskType = typename SimdMaskVector<TSimdVec>::Type;
-        using TSimdScoutTrait = SimdAlignVariableLengthTraits<TMaskType,
+        using TSimdScoutTrait = SimdAlignVariableLengthTraits<TSimdVec,
                                                               decltype(depSetH),
                                                               decltype(depSetV),
                                                               TDPProfile>;

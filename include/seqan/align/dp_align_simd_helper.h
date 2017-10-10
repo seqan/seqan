@@ -256,10 +256,9 @@ _prepareAndRunSimdAlignment(TResult & results,
     }
     else
     {
-        using TSimdMask = typename SimdMaskVector<TResult>::Type;
         using TDPProfile = typename SetupAlignmentProfile_<TAlgo, TFreeEndGaps, TGapModel, TTraceback>::Type;
 
-        DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TSimdMask,
+        DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult,
                                                                             TSequencesH,
                                                                             TSequencesV,
                                                                             TDPProfile>>> state;
