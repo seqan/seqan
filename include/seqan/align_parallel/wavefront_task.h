@@ -176,14 +176,14 @@ incrementRefCount(WavefrontTask<TArgs...> & me)
 
 template <typename TTask>
 inline auto
-column(TTask const & task)
+column(TTask const & task) -> decltype(task.col)
 {
     return task.col;
 }
 
 template <typename TTask>
 inline auto
-row(TTask const & task)
+row(TTask const & task) -> decltype(task.row)
 {
     return task.row;
 }
@@ -196,7 +196,7 @@ inLastColumn(TTask const & task)
 }
 
 template <typename TTask>
-inline auto
+inline bool
 inLastRow(TTask const & task)
 {
     return task.lastTileV;
@@ -210,29 +210,29 @@ isLastTask(TTask const & task)
 }
 
 template <typename TTask>
-inline auto &
-successor(TTask & task)
+inline auto
+successor(TTask & task) -> std::add_lvalue_reference_t<decltype(task.successor)>
 {
     return task.successor;
 }
 
 template <typename TTask>
-inline auto const &
-successor(TTask const & task)
+inline auto
+successor(TTask const & task) -> std::add_lvalue_reference_t<std::add_const_t<decltype(task.successor)>>
 {
     return task.successor;
 }
 
 template <typename TTask>
-inline auto &
-context(TTask & task)
+inline auto
+context(TTask & task) -> std::add_lvalue_reference_t<decltype(task.context)>
 {
     return task.context;
 }
 
 template <typename TTask>
-inline auto const &
-context(TTask const & task)
+inline auto
+context(TTask const & task) -> std::add_lvalue_reference_t<std::add_const_t<decltype(task.context)>>
 {
     return task.context;
 }

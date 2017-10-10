@@ -128,40 +128,6 @@ struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm,
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function combineMaxScore()
-// ----------------------------------------------------------------------------
-
-template <typename TThreadContext,
-          typename TDPCell, typename TBuffer, typename TSimdSpec,
-          typename TDPTraceMatrix>
-inline void
-combineMaxScore(TThreadContext & pContext,
-                DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > > & pDpScout,
-                TDPTraceMatrix const & pDpMatrix,
-                bool const traceEnabled)
-{
-    unsigned simdLane = 0;
-    for (auto const & task : pContext.task)
-    {
-        _setSimdLane(pDpScout, simdLane);
-        if (pContext.mDpLocalStore.maxScore < maxScore(pDpScout)[simdLane])
-        {
-            pContext.mDpLocalStore.maxScore = maxScore(pDpScout)[simdLane];
-            if (traceEnabled)
-            {
-                pContext.mDpLocalStore.maxBlockPos =
-                    toGlobalPosition(pDpMatrix,
-                                     maxHostCoordinate(pDpScout, DPMatrixDimension_::HORIZONTAL),
-                                     maxHostCoordinate(pDpScout, DPMatrixDimension_::VERTICAL));
-            }
-            pContext.mDpLocalStore.maxBlockHId = task->_col;
-            pContext.mDpLocalStore.maxBlockVId = task->_row;
-        }
-        ++simdLane;
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function isTrackingEnabled()
 // ----------------------------------------------------------------------------
 

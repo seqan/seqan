@@ -215,34 +215,6 @@ _scoutBestScore(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > & dpS
 }
 
 // ----------------------------------------------------------------------------
-// Function combineMaxScore()
-// ----------------------------------------------------------------------------
-
-template <typename TThreadContext,
-          typename TDPCell, typename TBuffer,
-          typename TDPMatrix>
-inline void
-combineMaxScore(TThreadContext & pContext,
-                DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > const & dpScout,
-                TDPMatrix const & /*unused*/,
-                bool const traceEnabled)
-{
-    using TBaseScout = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> >::TBase;
-
-    // We want to encapsulate this away from the DPScout.
-    if (pContext.mDpLocalStore.maxScore < maxScore(static_cast<TBaseScout const &>(dpScout)))
-    {
-        pContext.mDpLocalStore.maxScore    = maxScore(static_cast<TBaseScout const &>(dpScout));
-        if (traceEnabled)
-        {
-            pContext.mDpLocalStore.maxBlockPos = maxHostPosition(static_cast<TBaseScout const &>(dpScout));
-        }
-        pContext.mDpLocalStore.maxBlockHId = pContext.task._col;
-        pContext.mDpLocalStore.maxBlockVId = pContext.task._row;
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
