@@ -118,15 +118,4 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_clear)
         SEQAN_ASSERT_EQ(interim._tileCol, 0u);
         SEQAN_ASSERT_EQ(interim._tileRow, 0u);
     }
-
-
-    {
-        TIntermediate interim{{10, 3u}, 2, 4};
-        clear(std::move(interim));
-
-        SEQAN_ASSERT_EQ(interim._maxState.first, minValue<int>());
-        SEQAN_ASSERT_EQ(interim._maxState.second, 0u);
-        SEQAN_ASSERT_EQ(interim._tileCol, 0u);
-        SEQAN_ASSERT_EQ(interim._tileRow, 0u);
-    }
 }
