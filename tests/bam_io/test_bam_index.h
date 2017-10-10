@@ -95,6 +95,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_open)
     SEQAN_ASSERT(found);
     SEQAN_ASSERT_NOT(jumpToRegion(bamFile, found, 1, 1, 10, baiIndex));
     SEQAN_ASSERT_NOT(found);
+    SEQAN_ASSERT(jumpToRegion(bamFile, found, 0, 20, 100, baiIndex));
+    SEQAN_ASSERT_NOT(found);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_index_save)
