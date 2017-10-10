@@ -97,7 +97,7 @@ public:
 
 // Gets the intermediate result for the specific alignment job.
 template <typename TConfig>
-inline auto &
+inline typename TConfig::TIntermediate &
 intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
              size_t const alignId)
 {
@@ -107,7 +107,7 @@ intermediate(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
 
 // Gets the chache for the specific alignment job.
 template <typename TConfig>
-inline auto &
+inline typename TConfig::TCache &
 cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
       size_t const alignId)
 {
@@ -117,7 +117,7 @@ cache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
 
 // Gets the simd chache for the specific alignment job.
 template <typename TConfig>
-inline auto &
+inline typename TConfig::TSimdCache &
 simdCache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
           size_t const alignId)
 {

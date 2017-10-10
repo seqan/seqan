@@ -32,6 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
+#include <algorithm>
+
 #include <seqan/parallel.h>
 
 namespace test_align_parallel
@@ -43,7 +45,7 @@ struct alignas(128) TestValue
 
 template <typename TEtl>
 inline void
-run(TEtl & tls)
+run(TEtl & tls, size_t const threadCount)
 {
     unsigned counter{0};
     std::mutex mutexCout;
@@ -63,14 +65,14 @@ run(TEtl & tls)
                 std::lock_guard<std::mutex> lck(mutexCout);
                 if (counter == 1000)
                     break;
+                ++counter;
             }
             --val.second;
-            ++counter;
         }
     };
 
     std::vector<std::thread> pool;
-    for (unsigned tid = 0; tid < std::thread::hardware_concurrency(); ++tid)
+    for (unsigned tid = 0; tid < threadCount; ++tid)
         pool.emplace_back(task, tid);
 
     std::for_each(std::begin(pool), std::end(pool),
@@ -137,16 +139,17 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_local)
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
 
-    test_align_parallel::run(tls);
+    size_t threadCount = std::min(std::thread::hardware_concurrency(), static_cast<unsigned>(4));
+    test_align_parallel::run(tls, threadCount);
 
-    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), threadCount);
 
     std::for_each(std::begin(tls._map), std::end(tls._map),
     [](auto const & mapValue)
     {
         auto const& val = mapValue.second;
         SEQAN_ASSERT_NEQ(val.first, "master");
-        SEQAN_ASSERT_LT(val.second, 1000u);
+        SEQAN_ASSERT_LEQ(val.second, 1000u);
         SEQAN_ASSERT_GEQ(val.second, 0u);
     });
 }
@@ -158,9 +161,10 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_enumerate)
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
 
-    test_align_parallel::run(tls);
+    size_t threadCount = std::min(std::thread::hardware_concurrency(), static_cast<unsigned>(4));
+    test_align_parallel::run(tls, threadCount);
 
-    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), threadCount);
 
     test_align_parallel::testEnumerate(tls);
     test_align_parallel::testEnumerateConst(tls);
@@ -173,9 +177,10 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_unary)
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
 
-    test_align_parallel::run(tls);
+    size_t threadCount = std::min(std::thread::hardware_concurrency(), static_cast<unsigned>(4));
+    test_align_parallel::run(tls, threadCount);
 
-    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), threadCount);
 
     unsigned count{0};
     combineEach(tls, [&](TPair const & p)
@@ -192,9 +197,10 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_binary)
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
 
-    test_align_parallel::run(tls);
+    size_t threadCount = std::min(std::thread::hardware_concurrency(), static_cast<unsigned>(4));
+    test_align_parallel::run(tls, threadCount);
 
-    SEQAN_ASSERT_EQ(tls._map.size(), std::thread::hardware_concurrency());
+    SEQAN_ASSERT_EQ(tls._map.size(), threadCount);
 
     TPair count = combine(tls, [](TPair const & initial, TPair const & val)
                           {
