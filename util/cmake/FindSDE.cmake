@@ -45,21 +45,28 @@
 #   SDE_EXECUTABLE - the Intel® SDE executable (full path)
 #   SDE_VERSION_STRING - the version of Intel® SDE found
 
-find_program(SDE_EXECUTABLE
-    NAMES sde
-    PATHS
-        /usr/bin
-        /usr/local/bin
-        /opt/local/bin
-    DOC "Intel Software Development Emulator"
-)
+set(SDE_EXECUTABLE)
+set(SDE_VERSION_STRING)
 
-if (SDE_EXECUTABLE)
-    execute_process(COMMAND "${SDE_EXECUTABLE}" "--version" OUTPUT_VARIABLE SDE_OUTPUT_VERSION)
-    if (SDE_OUTPUT_VERSION MATCHES "Software Development Emulator")
-        string(REGEX REPLACE ".*Software Development Emulator.*Version:[ ]*([0-9]+\\.[^ ]+).*" "\\1" SDE_VERSION_STRING "${SDE_OUTPUT_VERSION}")
+# first try 64bit and then 32bit version of sde
+foreach(sde_exec "sde64" "sde")
+    find_program(SDE_EXECUTABLE
+        NAMES "${sde_exec}"
+        PATHS
+            /usr/bin
+            /usr/local/bin
+            /opt/local/bin
+        DOC "Intel Software Development Emulator"
+    )
+
+    if (SDE_EXECUTABLE)
+      execute_process(COMMAND "${SDE_EXECUTABLE}" "--version" OUTPUT_VARIABLE SDE_OUTPUT_VERSION)
+      if (SDE_OUTPUT_VERSION MATCHES "Software Development Emulator")
+          string(REGEX REPLACE ".*Software Development Emulator.*Version:[ ]*([0-9]+\\.[^ ]+).*" "\\1" SDE_VERSION_STRING "${SDE_OUTPUT_VERSION}")
+          break()
+      endif()
     endif()
-endif()
+endforeach()
 
 include(FindPackageHandleStandardArgs)
 
