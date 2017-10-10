@@ -199,8 +199,8 @@ readRecord(VcfRecord & record,
     else
         lexicalCastWithException(record.qual, field_values[5]);
 
-    record.filter       = field_values[6];
-    record.info       = field_values[7];
+    record.filter   = field_values[6];
+    record.info     = field_values[7];
 
     //check if we have a spare column for FORMAT
     unsigned samplesColStart = 8;
