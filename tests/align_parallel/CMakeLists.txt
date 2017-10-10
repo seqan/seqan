@@ -14,6 +14,14 @@ message (STATUS "Configuring tests/align_parallel")
 # Dependencies
 # ----------------------------------------------------------------------------
 
+set (ALIGN_PARALLEL_SIMD_TEST TRUE CACHE INTERNAL "Whether to build test_align_parallel.")
+# workaround a bug in llvm35 on FreeBSD
+if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
+    (COMPILER_CLANG) AND
+    (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
+    set (ALIGN_PARALLEL_SIMD_TEST FALSE CACHE INTERNAL "Whether to build test_align_parallel.")
+endif ()
+
 # Search SeqAn and select dependencies.
 find_package (SeqAn REQUIRED)
 
@@ -61,5 +69,8 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_align_parallel_data_structures COMMAND $<TARGET_FILE:test_align_parallel_algorithm>)
-add_test (NAME test_align_parallel_algorithm COMMAND $<TARGET_FILE:test_align_parallel_algorithm>)
-add_test (NAME test_align_parallel_interface COMMAND $<TARGET_FILE:test_align_parallel_interface>)
+if (ALIGN_PARALLEL_SIMD_TEST)
+    include (SeqAnSimdUtility)
+    add_simd_platform_tests(test_align_parallel_interface)
+    add_simd_platform_tests(test_align_parallel_algorithm)
+endif ()

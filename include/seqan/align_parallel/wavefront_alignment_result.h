@@ -126,16 +126,7 @@ template <typename ...TArgs>
 inline void
 clear(WavefrontAlignmentResult<TArgs...> & me)
 {
-    WavefrontAlignmentResult<TArgs...> tmp;
-    swap(me, tmp);
-}
-
-template <typename ...TArgs>
-inline void
-clear(WavefrontAlignmentResult<TArgs...> && me)
-{
-    WavefrontAlignmentResult<TArgs...> tmp;
-    swap(me, tmp);
+    me = WavefrontAlignmentResult<TArgs...>{};
 }
 
 // Get the intermediate result.

@@ -80,10 +80,10 @@ struct SimpleThreadLocalManager
      * access of the given thread-id.
      */
     template <typename TResourceMap, typename TValue>
-    inline auto local(TResourceMap & map, TValue const & initValue)
+    inline auto & 
+    local(TResourceMap & map, TValue const & initValue, bool & exists)
     {
         decltype(map.find(std::this_thread::get_id())) elemIt;
-        bool exists;
         { // try to read
             std::shared_lock<decltype(_mutex)> read_lck(_mutex);
             elemIt = map.find(std::this_thread::get_id());
@@ -98,7 +98,7 @@ struct SimpleThreadLocalManager
             SEQAN_ASSERT(exists);
             exists = false;  // Notify that element was added for the first time.
         }
-        return std::forward_as_tuple(elemIt->second, exists);
+        return elemIt->second;
     }
 };
 
@@ -138,12 +138,11 @@ struct CountingThreadLocalManager
      * access of the given thread-id.
      */
     template <typename TResourceMap, typename TValue>
-    inline auto
-    local(TResourceMap & map, TValue const & initValue)
+    inline auto &
+    local(TResourceMap & map, TValue const & initValue, bool & exists)
     {
-        bool exists{true};
         if (_count.load(std::memory_order_relaxed) == 0)
-            return std::forward_as_tuple(map.find(std::this_thread::get_id())->second, exists);
+            return map.find(std::this_thread::get_id())->second;
 
 
         decltype(map.find(std::this_thread::get_id())) elemIt;
@@ -162,7 +161,7 @@ struct CountingThreadLocalManager
             SEQAN_ASSERT(exists);
             exists = false;  // Notify that element was added for the first time.
         }
-        return std::forward_as_tuple(elemIt->second, exists);
+        return elemIt->second;
     }
 };
 
@@ -332,9 +331,7 @@ inline auto&
 local(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
       bool & exists)
 {
-    auto res = me._manager.local(me._map, me._initValue);
-    exists = std::get<1>(res);
-    return std::get<0>(res);
+    return  me._manager.local(me._map, me._initValue, exists);
 }
 
 template <typename TValue, typename TManager, typename TSpec>
@@ -439,6 +436,7 @@ inline void
 combineEach(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
             TUnaryCombine && fUnaryCombine)
 {
+    std::shared_lock<decltype(storageManager(me)._mutex)> read_lck(storageManager(me)._mutex);
     std::for_each(begin(me), end(me), std::forward<TUnaryCombine>(fUnaryCombine));
 }
 
@@ -464,6 +462,7 @@ inline auto
 combine(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
         TBinaryCombine && fBinaryCombine)
 {
+    std::shared_lock<decltype(storageManager(me)._mutex)> read_lck(storageManager(me)._mutex);
     return std::accumulate(begin(me), end(me), TValue{}, std::forward<TBinaryCombine>(fBinaryCombine));
 }
 
