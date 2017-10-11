@@ -41,6 +41,12 @@ namespace test_align_parallel
 struct alignas(128) TestValue
 {
     std::string mMsg{"default constructed"};
+
+    //NOTE(rrahn) Bug in g++-4.9 prevents us from using as aggregate type.
+    TestValue() = default;
+
+    TestValue(std::string const _msg) : mMsg(std::move(_msg))
+    {}
 };
 
 template <typename TEtl>

@@ -56,6 +56,15 @@ struct WavefrontTaskExecutor
     TResource*            _ptrResource{nullptr};
     TWavefrontExecutor *  _ptrWavefrontExecutor{nullptr};
 
+    //NOTE(rrahn) Bug in g++-4.9 prevents us from using as aggregate type.
+    WavefrontTaskExecutor() = default;
+
+    WavefrontTaskExecutor(TResource * _resource,
+                          TWavefrontExecutor * _wavefrontExecutor) :
+            _ptrResource{_resource},
+            _ptrWavefrontExecutor(_wavefrontExecutor)
+    {}
+
     inline void operator()()
     {
         WavefrontTaskExecutionPolicy<TResource>::execute(*_ptrResource, *_ptrWavefrontExecutor);

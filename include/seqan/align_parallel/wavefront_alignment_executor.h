@@ -54,6 +54,15 @@ struct WavefrontAlignmentExecutor
     // Shared data in parallel context.
     TScheduler *                  ptrTaskScheduler{nullptr};
     TThreadLocalStore *           ptrThreadLocal{nullptr};
+
+    //NOTE(rrahn) Bug in g++-4.9 prevents us from using as aggregate type.
+    WavefrontAlignmentExecutor() = default;
+
+    WavefrontAlignmentExecutor(TScheduler * _ptrScheduler,
+                               TThreadLocalStore * _ptrTls) :
+            ptrTaskScheduler{_ptrScheduler},
+            ptrThreadLocal(_ptrTls)
+    {}
 };
 
 // ============================================================================
