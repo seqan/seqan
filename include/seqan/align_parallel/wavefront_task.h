@@ -59,6 +59,19 @@ struct WavefrontAlignmentContext
     TTileBuffer       & tileBuffer;
     TDPSettings const & dpSettings;
     TEvent            * ptrEvent{nullptr};
+
+    //NOTE(rrahn) Bug in g++-4.9 prevents us from using as aggregate type.
+    WavefrontAlignmentContext(size_t const _alignmentId,
+                              TSeqHBlocks const & _seqHBlocks,
+                              TSeqVBlocks const & _seqVBlocks,
+                              TTileBuffer       & _tileBuffer,
+                              TDPSettings const & _dpSettings) :
+        alignmentId(_alignmentId),
+        seqHBlocks(_seqHBlocks),
+        seqVBlocks(_seqVBlocks),
+        tileBuffer(_tileBuffer),
+        dpSettings(_dpSettings)
+    {}
 };
 
 // The abstract task that is executed as separat alignment instance.

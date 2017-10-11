@@ -63,12 +63,23 @@ struct WavefrontAlignmentResult
     size_t  _tileCol{0};
     size_t  _tileRow{0};
 
+    //NOTE(rrahn) Bug in g++-4.9 prevents us from using as aggregate type.
     // ----------------------------------------------------------------------------
     // Constructors.
 
     // Note: Although, this could be an aggregate type, the icpc-17 crashes,
     // when compiling without the defaulted constructor.
     WavefrontAlignmentResult() = default;
+
+    WavefrontAlignmentResult(TState const maxState) :
+        _maxState(std::move(maxState))
+    {}
+
+    WavefrontAlignmentResult(TState const maxState, size_t const tileCol, size_t  const tileRow) :
+        _maxState(std::move(maxState)),
+        _tileCol(tileCol),
+        _tileRow(tileRow)
+    {}
 
     // ----------------------------------------------------------------------------
     // Member Functions.
