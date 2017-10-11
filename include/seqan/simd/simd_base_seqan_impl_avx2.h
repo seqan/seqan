@@ -135,7 +135,7 @@ _fillVector(TSimdVector & vector,
             std::tuple<TValue...> const & args, std::index_sequence<INDICES...> const &, SimdParams_<32, 4>)
 {
     // reverse argument list 0, 1, 2, 3 -> 3, 2, 1, 0
-#if defined(COMPILER_LINTEL)
+    // NOTE(rrahn): Bug in g++-4.9 which implements this intrinsic as Macro which does not work with parameter pack extension.
     // NOTE(marehr): Intel linux fails to reverse argument list and only
     // _mm256_set_epi64x has no reverse equivalent
     vector = SEQAN_VECTOR_CAST_(TSimdVector,
@@ -146,10 +146,6 @@ _fillVector(TSimdVector & vector,
                     std::get<0>(args)
                 )
             );
-#else
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, 
-                                _mm256_set_epi64x(static_cast<int64_t>(std::get<sizeof...(INDICES) - 1 - INDICES>(args))...));
-#endif
 }
 
 // --------------------------------------------------------------------------
