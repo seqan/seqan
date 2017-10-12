@@ -391,7 +391,7 @@ typedef int8_t __int8;     // nolint
 
 // A macro to eliminate warnings on GCC and Clang
 #if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
-#define SEQAN_UNUSED __attribute__((unused))
+#define SEQAN_UNUSED [[gnu::unused]]
 #else
 #define SEQAN_UNUSED
 #endif
