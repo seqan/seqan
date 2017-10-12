@@ -399,6 +399,7 @@ macro(detect_simd_support)
         endforeach()
 
         # test seqan simd
+        set(CMAKE_REQUIRED_FLAGS "")
         check_cxx_source_compiles("${SEQAN_SIMD_SEQANSIMD_SOURCE}" SEQAN_SIMD_SEQANSIMD_SUPPORTED)
 
         # try-compile known compiler crashes/errors with seqan-simd and exclude them
