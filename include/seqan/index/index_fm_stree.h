@@ -56,7 +56,6 @@ struct HistoryStackFM_
     TSize       repLen;
     TAlphabet   lastChar;
 
-
     HistoryStackFM_() {}
 
     template <typename TSize_, typename TAlphabet_>
@@ -66,7 +65,6 @@ struct HistoryStackFM_
         repLen(_repLen),
         lastChar(_lastChar)
     {}
-
 
     HistoryStackFM_ const &
     operator=(HistoryStackFM_ const & _origin)
@@ -90,14 +88,12 @@ struct VertexFM
     TSize       repLen;
     TAlphabet   lastChar;
 
-
     VertexFM() :
         range(0, 0),
         smaller(0),
         repLen(0),
         lastChar(0)
     {}
-
 
     VertexFM(MinimalCtor) :
         range(0, 0),
@@ -106,14 +102,12 @@ struct VertexFM
         lastChar(0)
     {}
 
-
     VertexFM(Pair<TSize> newCurrentRange, TSize newSmallerValue, TSize newRepLen, TAlphabet newChar) :
         range(newCurrentRange),
         smaller(newSmallerValue),
         repLen(newRepLen),
         lastChar(newChar)
     {}
-
 
     VertexFM(VertexFM const & other) :
         range(other.range),
