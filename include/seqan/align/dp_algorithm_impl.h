@@ -359,6 +359,7 @@ _computeTrack(TDPScout & scout,
     // Compute the inner cells of the current track.
     for (; iter != itEnd; ++iter)
     {
+        _incVerticalPos(scout);
         // Set the iterator to the next cell within the track.
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
         _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
@@ -382,8 +383,8 @@ _computeTrack(TDPScout & scout,
                          sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                          TColumnDescriptor(), InnerCell(), TDPProfile());
         }
-        _incVerticalPos(scout);
     }
+    _incVerticalPos(scout);
     // Set the iterator to the last cell of the track.
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
     _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
@@ -458,6 +459,7 @@ _computeUnbandedAlignment(TDPScout & scout,
     TConstSeqHIterator seqHIterEnd = end(seqH, Rooted()) - 1;
     for (; seqHIter != seqHIterEnd; ++seqHIter)
     {
+        _incHorizontalPos(scout);
         // We might only select it if SIMD version is available.
         if (SEQAN_UNLIKELY(_reachedHorizontalEndPoint(scout, seqHIter)))
         {
@@ -480,13 +482,12 @@ _computeUnbandedAlignment(TDPScout & scout,
         {
             return;
         }
-        _incHorizontalPos(scout);
     }
 
     // ============================================================================
     // POSTPROCESSING
     // ============================================================================
-
+    _incHorizontalPos(scout);
     _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                   sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                   sequenceEntryForScore(scoringScheme, seqV, 0),
@@ -1374,8 +1375,10 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, AffineGaps>, TDPScoutSpec>  const & dpScout)
 {
     _setToPosition(traceNavigator, maxHostPosition(dpScout));
-    TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
-    TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore));
+    TScoreValue flag = createVector<TScoreValue>(0);
+    assignValue(flag, dpScout._simdLane, ~static_cast<typename Value<TScoreValue>::Type>(0));
+    TScoreValue cmpV = cmpEq(_verticalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
+    TScoreValue cmpH = cmpEq(_horizontalScoreOfCell(dpScout._maxScore), _scoreOfCell(dpScout._maxScore)) & flag;
     value(traceNavigator) = blend(value(traceNavigator),
                                   value(traceNavigator) & ~TraceBitMap_<TScoreValue>::DIAGONAL,
                                   cmpV | cmpH);
@@ -1411,8 +1414,10 @@ _correctTraceValue(TTraceNavigator & traceNavigator,
                    DPScout_<DPCell_<TScoreValue, DynamicGaps>, TDPScoutSpec>  const & dpScout)
 {
     _setToPosition(traceNavigator, maxHostPosition(dpScout));
-    TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical());
-    TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal());
+    TScoreValue flag = createVector<TScoreValue>(0);
+    assignValue(flag, dpScout._simdLane, ~static_cast<typename Value<TScoreValue>::Type>(0));
+    TScoreValue cmpV = isGapExtension(dpScout._maxScore, DynamicGapExtensionVertical()) & flag;
+    TScoreValue cmpH = isGapExtension(dpScout._maxScore, DynamicGapExtensionHorizontal()) & flag;
     value(traceNavigator) = blend(value(traceNavigator),
                                   value(traceNavigator) & ~TraceBitMap_<TScoreValue>::DIAGONAL,
                                   cmpV | cmpH);

@@ -451,7 +451,7 @@ struct TrackingEnabled_<TDPMetaColumn, LastCell>:
 template <typename TAlgo, typename TColumnDescriptor>
 struct LastColumnEnabled_
 {
-    typedef typename IsSameType<typename TColumnDescriptor::TColumnProperty, DPLastColumn>::Type Type;
+    typedef typename IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::Type Type;
 };
 
 template <typename TAlgo, typename TGapSpec, typename TTraceSpec, typename TColumnDescriptor>

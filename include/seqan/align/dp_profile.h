@@ -119,6 +119,7 @@ struct InitSimdTrace_;
 #define SEQAN_SIMD_INIT_FILL_VALUE_16_ SEQAN_SIMD_INIT_FILL_VALUE_8_, SEQAN_SIMD_INIT_FILL_VALUE_8_
 #define SEQAN_SIMD_INIT_FILL_VALUE_32_ SEQAN_SIMD_INIT_FILL_VALUE_16_, SEQAN_SIMD_INIT_FILL_VALUE_16_
 
+#ifdef COMPILER_MSVC
 #define SEQAN_SIMD_TRACE_SETUP_2_(SIZE, ...)                                                        \
 template <typename TVector, __uint8 FILL_VALUE>                                                     \
 struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                                    \
@@ -128,6 +129,17 @@ struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                
                                                                                                     \
 template <typename TVector, __uint8 FILL_VALUE>                                                     \
 const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE = TVector{__VA_ARGS__};
+#else // COMPILER_MSVC
+#define SEQAN_SIMD_TRACE_SETUP_2_(SIZE, ...)                                                        \
+template <typename TVector, __uint8 FILL_VALUE>                                                     \
+struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                                    \
+{                                                                                                   \
+    static const TVector VALUE;                                                                     \
+};                                                                                                  \
+                                                                                                    \
+template <typename TVector, __uint8 FILL_VALUE>                                                     \
+const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE{__VA_ARGS__};
+#endif // COMPILER_MSVC
 
 #define SEQAN_SIMD_TRACE_SETUP_1_(SIZE, MACRO) SEQAN_SIMD_TRACE_SETUP_2_(SIZE, MACRO)
 #define SEQAN_SIMD_TRACE_SETUP_(SIZE) SEQAN_SIMD_TRACE_SETUP_1_(SIZE, SEQAN_SIMD_INIT_FILL_VALUE_ ## SIZE ## _)

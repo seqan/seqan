@@ -298,10 +298,10 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
         readRecord(record, bamFile);
 
         // std::cerr << "record.beginPos == " << record.beginPos << "\n";
-        // int32_t endPos = record.beginPos + getAlignmentLengthInRef(record);
+         int32_t endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (!hasAlignments || record.beginPos <= pos)
+        if (!hasAlignments && record.beginPos <= posEnd && pos <= endPos)
         {
             // Found a valid alignment.
             hasAlignments = true;

@@ -17,6 +17,8 @@ Lesser General Public License for more details.
 
 //#define SEQAN_TCOFFEE_DEBUG
 
+#include <cstdlib>
+
 #include <seqan/basic.h>
 #include <seqan/graph_msa.h>
 #include <seqan/modifier.h>
@@ -67,7 +69,16 @@ customizedMsaAlignment(MsaOptions<TAlphabet, TScore> const& msaOpt)
     Graph<Alignment<StringSet<TSequence, Dependent<> >, void, WithoutEdgeId> > gAlign;
 
     // MSA
-    globalMsaAlignment(gAlign, sequenceSet, sequenceNames, msaOpt);
+    try
+    {
+        globalMsaAlignment(gAlign, sequenceSet, sequenceNames, msaOpt);
+    }
+    catch (const std::bad_alloc & exception)
+    {
+        std::cerr << "Allocation for globalAlignment failed. Use smaller data or try a seeded alignment. \n"
+                  << exception.what() << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
 
     // Alignment output
     TOutStream outStream;
@@ -323,6 +334,26 @@ _initScoreMatrix(ArgumentParser& parser, Rna5 const)
 //////////////////////////////////////////////////////////////////////////////////
 
 inline void
+_initScoreMatrix(ArgumentParser& parser, Iupac const)
+{
+    String<char> matrix;
+    getOptionValue(matrix, parser, "matrix");
+    if (isSet(parser, "matrix"))
+    {
+        Score<int, ScoreMatrix<> > sc;
+        loadScoreMatrix(sc, toCString(matrix));
+        _initMsaParams<Iupac>(parser, sc);
+    }
+    else
+    {
+        Score<int> sc;
+        _initMsaParams<Iupac>(parser, sc);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+inline void
 _initScoreMatrix(ArgumentParser& parser, AminoAcid const)
 {
     String<char> matrix;
@@ -359,7 +390,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     setValidValues(parser, "seq", getFileExtensions(Fasta()));  // allow only fasta files as input
 
     addOption(parser, ArgParseOption("a", "alphabet", "The used sequence alphabet.", ArgParseArgument::STRING));
-    setValidValues(parser, "alphabet", "protein dna rna");
+    setValidValues(parser, "alphabet", "protein dna rna iupac");
     setDefaultValue(parser, "alphabet", "protein");
 
     addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUT_FILE));
@@ -500,6 +531,8 @@ int main(int argc, const char *argv [])
         _initScoreMatrix(parser, Dna5());
     else if (alphabet == "rna")
         _initScoreMatrix(parser, Rna5());
+    else if (alphabet == "iupac")
+        _initScoreMatrix(parser, Iupac());
     else
         _initScoreMatrix(parser, AminoAcid());
 

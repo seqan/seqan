@@ -768,6 +768,17 @@ inline void assign(Rna & target, char c_source)
 }
 
 template <>
+struct CompareTypeImpl<Rna5, Iupac>
+{
+    typedef Rna5 Type;
+};
+
+inline void assign(Rna5 & target, Iupac const & source)
+{
+    target.value = TranslateTableIupacToDna5_<>::VALUE[source.value];
+}
+
+template <>
 struct CompareTypeImpl<Rna, Rna5>
 {
     typedef Rna Type;

@@ -86,6 +86,9 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
 
+    if (SEQAN_UNLIKELY(stringIt == stringEnd))
+        return true;
+
     _historyPush(_iter(it, TDirection()));
 
     for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)

@@ -518,6 +518,18 @@ atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
     return length(*me._stackPtr) == 1 && back(*me._stackPtr).curEdgeIt == sourceEnd(impl::buffer(me));
 }
 
+// ----------------------------------------------------------------------------
+// Function isBase();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline bool
+isBase(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    SEQAN_ASSERT(me._stackPtr != nullptr);
+    return length(*me._stackPtr) == 1;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_
