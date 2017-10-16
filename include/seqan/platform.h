@@ -330,7 +330,9 @@ typedef int8_t __int8;     // nolint
 
 // The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
 // whether we are on a 32 bit or on a 64 bit machine.
-#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__ia64__) || defined(__ppc64__) || defined(_WIN64)
+#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__arch64__) || \
+    defined(__ia64__) || defined(__ppc64__) || defined(__PPC64__) || defined(_WIN64) || \
+    defined(__LP64__) || defined(_LP64)
 #define SEQAN_IS_64_BIT 1
 #define SEQAN_IS_32_BIT 0
 #else
