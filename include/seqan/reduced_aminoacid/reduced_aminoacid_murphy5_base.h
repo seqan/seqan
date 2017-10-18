@@ -64,7 +64,7 @@ namespace seqan {
  * Since it was created from the 20-letter alphabet the clusters in SeqAn are
  * not identical (they contain more symbols). This is the clustering:
  * @code{.txt}
- *   'A', // A G P S T X (O)
+ *   'A', // A G P S T X
  *   'B', // B D E N Q Z
  *   'C', // C I J L M U V
  *   'F', // F W Y *
