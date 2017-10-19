@@ -42,6 +42,11 @@
 SEQAN_BEGIN_TESTSUITE(test_reduced_aminoacid)
 {
 //     SEQAN_CALL_TEST(test_reduced_aminoacid_cluster_red);
+    SEQAN_CALL_TEST(test_reduced_aminoacid_buchfink11);
+    SEQAN_CALL_TEST(test_reduced_aminoacid_cannata10);
+    SEQAN_CALL_TEST(test_reduced_aminoacid_li10);
+    SEQAN_CALL_TEST(test_reduced_aminoacid_solis10);
+    SEQAN_CALL_TEST(test_reduced_aminoacid_murphy5);
     SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10);
     SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10_moditerators);
     SEQAN_CALL_TEST(test_reduced_aminoacid_murphy10_modview_fmindex);
