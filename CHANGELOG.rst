@@ -118,6 +118,11 @@ Infrastructure Updates
   - Enforce using Python 2.x for documentation
   - Improvements to CMake and PkgConfig files
 
+Infrastructure Updates
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Test jenkins 4
+
 Release 2.2.0
 ~~~~~~~~~~~~~
 
