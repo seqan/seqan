@@ -472,4 +472,72 @@ typedef int8_t __int8;     // nolint
 #undef COMPILER_VERSION
 #endif
 
-#endif
+// BYTE-ORDER DETECTION (default is little-endian)
+#ifdef __GLIBC__
+    #include <endian.h>
+#endif // __GLIBC__
+
+#if defined(__FreeBSD__) || (defined(__has_include) && __has_include(<sys/endian.h>))
+    #include <sys/endian.h>
+#endif // defined(__FreeBSD__)
+
+#ifndef SEQAN_BIG_ENDIAN
+    #if (defined( _BYTE_ORDER  ) && ( _BYTE_ORDER   ==        _BIG_ENDIAN  )) || \
+        (defined(__BYTE_ORDER  ) && (__BYTE_ORDER   ==       __BIG_ENDIAN  )) || \
+        (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)) || \
+                                                     defined(__BIG_ENDIAN__)
+        #define SEQAN_BIG_ENDIAN 1
+    #else
+        #define SEQAN_BIG_ENDIAN 0
+    #endif
+#endif // SEQAN_BIG_ENDIAN
+
+namespace seqan
+{
+
+template <typename T>
+constexpr void enforceLittleEndian(T &)
+{}
+
+#if SEQAN_BIG_ENDIAN
+inline void enforceLittleEndian(int16_t & in)
+{
+    in = htole16(in);
+}
+inline void enforceLittleEndian(uint16_t & in)
+{
+    in = htole16(in);
+}
+inline void enforceLittleEndian(int32_t & in)
+{
+    in = htole32(in);
+}
+inline void enforceLittleEndian(uint32_t & in)
+{
+    in = htole32(in);
+}
+inline void enforceLittleEndian(int64_t & in)
+{
+    in = htole64(in);
+}
+inline void enforceLittleEndian(uint64_t & in)
+{
+    in = htole64(in);
+}
+inline void enforceLittleEndian(float & in)
+{
+    uint32_t tmp = htole32(*reinterpret_cast<uint32_t*>(&in));
+    char *out = reinterpret_cast<char*>(&in);
+    *out = *reinterpret_cast<char*>(&tmp);
+}
+inline void enforceLittleEndian(double & in)
+{
+    uint64_t tmp = htole64(*reinterpret_cast<uint64_t*>(&in));
+    char *out = reinterpret_cast<char*>(&in);
+    *out = *reinterpret_cast<char*>(&tmp);
+}
+#endif // SEQAN_BIG_ENDIAN
+
+} // namespace seqan
+
+#endif // HEADER GUARD
