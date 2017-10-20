@@ -117,12 +117,12 @@ struct BamTypeChar
     {
         VALUE =
             (IsSameType<TValue, char>::VALUE)?              'A':
-            (IsSameType<TValue, signed char>::VALUE)?       'c':
-            (IsSameType<TValue, unsigned char>::VALUE)?     'C':
-            (IsSameType<TValue, short>::VALUE)?             's':
-            (IsSameType<TValue, unsigned short>::VALUE)?    'S':
-            (IsSameType<TValue, int>::VALUE)?               'i':
-            (IsSameType<TValue, unsigned int>::VALUE)?      'I':
+            (IsSameType<TValue, int8_t>::VALUE)?            'c':
+            (IsSameType<TValue, uint8_t>::VALUE)?           'C':
+            (IsSameType<TValue, int16_t>::VALUE)?           's':
+            (IsSameType<TValue, uint16_t>::VALUE)?          'S':
+            (IsSameType<TValue, int32_t>::VALUE)?           'i':
+            (IsSameType<TValue, uint32_t>::VALUE)?          'I':
             (IsSameType<TValue, float>::VALUE)?             'f':
 //          (IsSameType<TValue, double>::VALUE)?            'd':
             (IsSequence<TValue>::VALUE)?                    'Z':
@@ -131,14 +131,14 @@ struct BamTypeChar
 };
 
 // List of primitive BAM types (ordered by expected usage frequency)
-typedef TagList<int,
-        TagList<unsigned int,
+typedef TagList<int32_t,
+        TagList<uint32_t,
         TagList<float,
-        TagList<short,
-        TagList<unsigned short,
+        TagList<int16_t,
+        TagList<uint16_t,
         TagList<char,
-        TagList<unsigned char,
-        TagList<signed char
+        TagList<uint8_t,
+        TagList<int8_t
 //      TagList<double
         > > > > > > > > BamTagTypes;
 

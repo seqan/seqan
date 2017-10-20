@@ -128,7 +128,7 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
                     ++nEntries;
 
             // Write out array length.
-            appendRawPod(target, (uint32_t)nEntries);
+            appendRawPod(target, nEntries);
 
             // Write out array values.
             size_t startPos = 1;
