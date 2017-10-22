@@ -374,7 +374,7 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceB
 _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> >  const &)
 {
-    TScoreValue cmp = cmpGt(activeCell._horizontalScore, activeCell._verticalScore);
+    auto cmp = cmpGt(activeCell._horizontalScore, activeCell._verticalScore);
     activeCell._score = blend(activeCell._verticalScore, activeCell._horizontalScore, cmp);
 
     return blend(TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,
@@ -401,8 +401,8 @@ inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceB
 _internalComputeScore(DPCell_<TScoreValue, AffineGaps> & activeCell,
                       TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> >  const &)
 {
-    TScoreValue cmpG = cmpGt(activeCell._horizontalScore, activeCell._verticalScore);
-    TScoreValue cmpE = cmpEq(activeCell._horizontalScore, activeCell._verticalScore);
+    auto cmpG = cmpGt(activeCell._horizontalScore, activeCell._verticalScore);
+    auto cmpE = cmpEq(activeCell._horizontalScore, activeCell._verticalScore);
     activeCell._score = blend(activeCell._verticalScore, activeCell._horizontalScore, cmpG);
 
     return blend(blend(TraceBitMap_<TScoreValue>::MAX_FROM_VERTICAL_MATRIX,

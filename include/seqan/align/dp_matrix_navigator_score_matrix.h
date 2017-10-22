@@ -75,7 +75,7 @@ public:
         _activeColIterator = begin(matrix, Standard());
         _prevColIterator = _activeColIterator - _prevColIteratorOffset;
         _laneLeap = 1;
-        *_activeColIterator = TValue{};
+        *_activeColIterator = TValue();
     }
 
     template <typename TBandSpec,
@@ -108,7 +108,7 @@ public:
         }
         // Set previous iterator to same position, one column left.
         _prevColIterator = _activeColIterator - _prevColIteratorOffset;
-        *_activeColIterator = TValue{};
+        *_activeColIterator = TValue();
     }
 
     TDPMatrixPointer_ _ptrDataContainer{nullptr};   // Pointer to the matrix this navigator is working on.

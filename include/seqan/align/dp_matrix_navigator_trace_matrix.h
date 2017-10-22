@@ -84,7 +84,7 @@ public:
         _ptrDataContainer = &matrix;
         _activeColIterator = begin(matrix, Standard());
         _laneLeap = 1;
-        *_activeColIterator = TValue{};
+        *_activeColIterator = TValue();
     }
 
     template <typename TBandSpec,
@@ -121,7 +121,7 @@ public:
             _laneLeap = lengthVertical + lastPos;
             _activeColIterator = begin(matrix, Standard()) + _laneLeap - 1;
         }
-        *_activeColIterator = TValue{};
+        *_activeColIterator = TValue();
     }
 
     TDPMatrixPointer_   _ptrDataContainer{nullptr}; // The pointer to the underlying Matrix.

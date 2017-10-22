@@ -753,7 +753,8 @@ inline auto
 _hostLengthH(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
              TSeqH const & /*seqH*/)
 {
-    return (scout.state->endPosVecH)[scout._simdLane];
+    using TInnerValue = typename Value<typename TTraits::TSimdVector>::Type;
+    return static_cast<TInnerValue>(scout.state->endPosVecH[scout._simdLane]);
 }
 
 // ----------------------------------------------------------------------------
@@ -773,7 +774,8 @@ inline auto
 _hostLengthV(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > const & scout,
              TSeqV const & /*seqV*/)
 {
-    return (scout.state->endPosVecV)[scout._simdLane];
+    using TInnerValue = typename Value<typename TTraits::TSimdVector>::Type;
+    return static_cast<TInnerValue>(scout.state->endPosVecV[scout._simdLane]);
 }
 
 }  // namespace seqan

@@ -72,7 +72,7 @@ public:
         _activeColIterator = begin(matrix, Standard());
         _prevColIterator = _activeColIterator;
         _laneLeap = 1 - _dataLengths(matrix)[DPMatrixDimension_::VERTICAL];
-        *_activeColIterator = TValue{};
+        *_activeColIterator = TValue();
     }
 
     template <typename TBandSpec,
@@ -101,7 +101,7 @@ public:
             _activeColIterator = begin(matrix, Standard()) + length(matrix, DPMatrixDimension_::VERTICAL) + _laneLeap - 1;
         }
         _prevColIterator = _activeColIterator;
-        *_activeColIterator = TValue{};
+        *_activeColIterator = TValue();
     }
 
     TDPMatrixPointer_ _ptrDataContainer{nullptr};   // Pointer to the underlying matrix to navigate on.
