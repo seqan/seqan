@@ -84,7 +84,7 @@ public:
     {
         _executor.ptrTaskScheduler = &taskScheduler(_alignScheduler);
         _executor.ptrThreadLocal   = &_threadLocalStorage;
-        setCount(storageManager(_threadLocalStorage), parallelAlignments(execPolicy));
+        setCount(storageManager(_threadLocalStorage), numThreads(execPolicy));
     }
 };
 
@@ -170,7 +170,7 @@ public:
     {
         _executor.ptrTaskScheduler = &taskScheduler(_alignScheduler);
         _executor.ptrThreadLocal   = &_threadLocalStorage;
-        setCount(storageManager(_threadLocalStorage), parallelAlignments(execPolicy));
+        setCount(storageManager(_threadLocalStorage), numThreads(execPolicy));
     }
 };
 

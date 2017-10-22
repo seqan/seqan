@@ -286,17 +286,20 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
                       taskContext.seqVBlocks[row(task)],
                       taskContext.dpSettings.scoringScheme,
                       taskContext.dpSettings);
-
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     // We want to get the state here from the scout.
     if(impl::AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
     {
         // TODO(rrahn): Implement the interface.
         // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
+        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
         updateMax(intermediate(dpLocal, taskContext.alignmentId),
                   {maxScore(scout), maxHostPosition(scout)},
                   column(task),
                   row(task));
+        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     }
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
 }
 
 template <typename TBuffer>

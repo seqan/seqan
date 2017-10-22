@@ -169,21 +169,24 @@ struct WavefrontAlignmentTaskIncubator
         using TDPMetaColH = DPMetaColumn_<typename TWatc::TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn>>;
         using TDPMetaColV = DPMetaColumn_<typename TWatc::TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn>>;
 
-        tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
+        TDPCell dummyCellD;
+        TDPCell dummyCellH;
+        TDPCell dummyCellV;
+        tmp.i2 = _doComputeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
         for (auto itH = begin(buffer.horizontalBuffer, Standard()); itH != end(buffer.horizontalBuffer, Standard()); ++itH)
         {
             resize(*itH, length(front(seqHBlocks)), Exact());
             for (auto it = begin(*itH, Standard()); it != end(*itH, Standard()); ++it)
             {
-                it->i2 = _computeScore(std::forward_as_tuple(it->i1, TDPCell(), tmp.i1, TDPCell()),
+                it->i2 = _computeScore(it->i1, dummyCellD, tmp.i1, dummyCellV,
                                        Nothing(), Nothing(),
-                              score, typename RecursionDirection_<TDPMetaColH, FirstCell>::Type(),
+                                       score, typename RecursionDirection_<TDPMetaColH, FirstCell>::Type(),
                                        typename TWatc::TDPProfile());
                 tmp.i1 = it->i1;
             }
         }
         tmp.i1 = decltype(tmp.i1){};
-        tmp.i2 = _doComputeScore(tmp.i1, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
+        tmp.i2 = _doComputeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
 
         for (auto itV = begin(buffer.verticalBuffer, Standard()); itV != end(buffer.verticalBuffer, Standard()); ++itV)
         {
@@ -194,10 +197,11 @@ struct WavefrontAlignmentTaskIncubator
             ++it;
             for (; it != end(*itV, Standard()); ++it)
             {
-                it->i2 = _computeScore(std::forward_as_tuple(it->i1, TDPCell(), TDPCell(), tmp.i1),
+                it->i2 = _computeScore(it->i1, dummyCellD, dummyCellH, dummyCellV,
                                        Nothing(), Nothing(),
                                        score, typename RecursionDirection_<TDPMetaColV, InnerCell>::Type(),
                                        typename TWatc::TDPProfile());
+                _setVerticalScoreOfCell(it->i1, _verticalScoreOfCell(dummyCellV));
                 tmp.i1 = it->i1;
                 tmp.i2 = it->i2;  // TODO(rrahn): Move out of loop.
             }
@@ -335,9 +339,12 @@ public:
             updateMax(interMax, intermediate(threadLocalStorage, instanceId));
             clear(intermediate(threadLocalStorage, instanceId));
         };
+        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
         combineEach(*executor.ptrThreadLocal, collectAndReset);
+        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
         // Continue execution.
         callback(alignmentId, interMax._maxState.first);
+        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     }
 
     template <typename TWavefrontExecutor,

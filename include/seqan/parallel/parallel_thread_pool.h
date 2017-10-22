@@ -104,7 +104,7 @@ public:
     //-------------------------------------------------------------------------
     // Private Member Variables.
 
-    std::vector<std::thread> _mPool;
+    std::deque<std::thread> _mPool;
 };
 
 // ============================================================================
@@ -114,6 +114,30 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+/*!
+ * @fn ThreadPool#reserve
+ * @brief Spawns a new thread and registers it in the thread pool.
+ * @headerfile <seqan/parallel.h>
+ *
+ * @signature void spawn(pool, callable, ...args);
+ * @param[in,out] pool The @link ThreadPool @endlink to register the new spawned thread in.
+ * @param[in] callable A callable object (e.g. functor or function) that should be executed by the spawned thread.
+ * @param     args Any number of arguments passed to the callable object.
+ *
+ * Emplaces the thread in the <tt>pool</tt> and associates the thread with the callable by passing the <tt>args</tt>
+ * to the callable instance.
+ *
+ * @datarace This function is not thread safe. Concurrent invocations of this function for the same <tt>pool</tt> might
+ * result in undefined behavior.
+ */
+// template <typename TCallable, typename ...TArgs>
+// inline void
+// reserve(ThreadPool & pool,
+//         size_t const newSize)
+// {
+//     pool._mPool.reserve(newSize);
+// }
 
 /*!
  * @fn ThreadPool#spawn

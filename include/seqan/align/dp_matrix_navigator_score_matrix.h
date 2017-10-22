@@ -112,9 +112,6 @@ public:
     }
 
     TDPMatrixPointer_ _ptrDataContainer{nullptr};   // Pointer to the matrix this navigator is working on.
-    TValue*           _prevCellDiagonal{nullptr};   // The previous diagonal cell
-    TValue*           _prevCellHorizontal{nullptr}; // The previous Horizontal cell
-    TValue*           _prevCellVertical{nullptr};   // The previous Vertical cell
     int               _laneLeap{0};                 // Stores the jump to the next column
     size_t            _prevColIteratorOffset{0};    // Offset to reset the previous column iterator when going to the next cell.
     TDPMatrixIterator _activeColIterator{};         // The active column iterator.
@@ -174,8 +171,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
 {
     --dpNavigator._laneLeap;
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset;
-    _scoreOfCell(*dpNavigator._prevCellHorizontal) = _scoreOfCell(*(++dpNavigator._prevColIterator));
+    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset + 1;
 }
 
 template <typename TValue, typename TDPMatrixSpec, typename THost,
@@ -187,7 +183,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
 {
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
     dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset;
-    _scoreOfCell(*dpNavigator._prevCellHorizontal) = _scoreOfCell(*dpNavigator._prevColIterator);
 }
 
 // version for all other column types and locations.
@@ -199,9 +194,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             FirstCell const &)
 {
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset;
-    _scoreOfCell(*dpNavigator._prevCellDiagonal) = _scoreOfCell(*dpNavigator._prevColIterator);
-    _scoreOfCell(*dpNavigator._prevCellHorizontal) = _scoreOfCell(*(++dpNavigator._prevColIterator));
+    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset + 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -229,8 +222,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMa
     // Set to begin of column.
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
     dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset;
-    // Cache prevDiagH value. Becomes the next diagonal reference value.
-    _scoreOfCell(*dpNavigator._prevCellHorizontal) = _scoreOfCell(*dpNavigator._prevColIterator);
 
 }
 
@@ -246,7 +237,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             MetaColumnDescriptor<DPInitialColumn, TColumnLocation> const &,
             InnerCell const &)
 {
-    _cachePrevVertical(dpNavigator);
     ++dpNavigator._activeColIterator;
 }
 
@@ -258,10 +248,8 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             MetaColumnDescriptor<TColumnType, TColumnLocation> const &,
             InnerCell const &)
 {
-    _cachePrevVertical(dpNavigator);
-    _scoreOfCell(*dpNavigator._prevCellDiagonal) = _scoreOfCell(*dpNavigator._prevCellHorizontal);
     ++dpNavigator._activeColIterator;
-    _scoreOfCell(*dpNavigator._prevCellHorizontal) = _scoreOfCell(*(++dpNavigator._prevColIterator));
+    ++dpNavigator._prevColIterator;
 }
 
 // ----------------------------------------------------------------------------
@@ -275,7 +263,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMa
             MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
             InnerCell const &)
 {
-    _cachePrevVertical(dpNavigator);
     ++dpNavigator._activeColIterator;
 }
 
@@ -287,12 +274,8 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMa
             MetaColumnDescriptor<TColumnType, FullColumn> const &,
             InnerCell const &)
 {
-    _cachePrevVertical(dpNavigator);
-    // Cache prevDiag from prevDiagH;
-    _scoreOfCell(*dpNavigator._prevCellDiagonal) = _scoreOfCell(*dpNavigator._prevCellHorizontal);
-    // Cache prevDiagH from current;
-    _scoreOfCell(*dpNavigator._prevCellHorizontal) = _scoreOfCell(*(++dpNavigator._prevColIterator));
     ++dpNavigator._activeColIterator;
+    ++dpNavigator._prevColIterator;
 }
 
 // ----------------------------------------------------------------------------
@@ -306,8 +289,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom> const &,
             LastCell const &)
 {
-    // dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
-    _cachePrevVertical(dpNavigator);
     ++dpNavigator._activeColIterator;
 }
 
@@ -319,7 +300,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             MetaColumnDescriptor<DPInitialColumn, TColumnLocation> const &,
             LastCell const &)
 {
-    _cachePrevVertical(dpNavigator);
     ++dpNavigator._activeColIterator;
 }
 
@@ -331,8 +311,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             MetaColumnDescriptor<TColumnType, PartialColumnBottom> const &,
             LastCell const &)
 {
-    _cachePrevVertical(dpNavigator);
-    _scoreOfCell(*dpNavigator._prevCellDiagonal) = _scoreOfCell(*dpNavigator._prevCellHorizontal);
     ++dpNavigator._activeColIterator;
     ++dpNavigator._prevColIterator;
     ++dpNavigator._laneLeap;
@@ -346,8 +324,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreM
             MetaColumnDescriptor<TColumnType, TColumnLocation> const &,
             LastCell const &)
 {
-    _cachePrevVertical(dpNavigator);
-    _scoreOfCell(*dpNavigator._prevCellDiagonal) = _scoreOfCell(*dpNavigator._prevCellHorizontal);
     ++dpNavigator._activeColIterator;
     ++dpNavigator._prevColIterator;
 }
@@ -363,7 +339,6 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMa
             MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
             LastCell const &)
 {
-    _cachePrevVertical(dpNavigator);
     ++dpNavigator._activeColIterator;
 }
 
@@ -375,62 +350,45 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMa
             MetaColumnDescriptor<TColumnType, FullColumn> const &,
             LastCell const &)
 {
-    // Cache the vertical cells: prevDiagV and vertical.
-    _cachePrevVertical(dpNavigator);
-    // Cache prevDiag from prevDiagH
-    _scoreOfCell(*dpNavigator._prevCellDiagonal) = _scoreOfCell(*dpNavigator._prevCellHorizontal);
     ++dpNavigator._activeColIterator; // go to next cell.
     ++dpNavigator._prevColIterator; // go to next cell.
 }
 
 // ----------------------------------------------------------------------------
-// Function _cachePrevVertical()
+// Function _preInitCacheDiagonal()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TGapSpec, typename TMatrixSpec, typename THost, typename TNavigationSpec>
+template <typename TDPCell,
+          typename TValue, typename TMatrixSpec, typename THost,
+          typename TColumnType>
 inline void
-_cachePrevVertical(DPMatrixNavigator_<
-                    DPMatrix_<DPCell_<TValue, TGapSpec>,
-                              TMatrixSpec,
-                              THost>,
-                    DPScoreMatrix,
-                    TNavigationSpec> & dpNavigator)
+_preInitCacheDiagonal(TDPCell & cacheDiagonal,
+                      DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> const & dpNavigator,
+                      MetaColumnDescriptor<TColumnType, PartialColumnMiddle> const & /*tag*/)
 {
-    // Cache prevVerical.
-    *dpNavigator._prevCellVertical = *dpNavigator._activeColIterator;
+    _scoreOfCell(cacheDiagonal) = _scoreOfCell(*(dpNavigator._prevColIterator - 1));
 }
 
-template <typename TValue, typename TMatrixSpec, typename THost, typename TNavigationSpec>
+template <typename TDPCell,
+          typename TValue, typename TMatrixSpec, typename THost,
+          typename TColumnType>
 inline void
-_cachePrevVertical(DPMatrixNavigator_<
-                    DPMatrix_<DPCell_<TValue, AffineGaps>,
-                              TMatrixSpec,
-                              THost>,
-                    DPScoreMatrix,
-                    TNavigationSpec> & dpNavigator)
+_preInitCacheDiagonal(TDPCell & cacheDiagonal,
+                      DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> const & dpNavigator,
+                      MetaColumnDescriptor<TColumnType, PartialColumnBottom> const & /*tag*/)
 {
-    // Cache prevDiagV.
-    _verticalScoreOfCell(*dpNavigator._prevCellVertical) = _verticalScoreOfCell(*dpNavigator._activeColIterator);
-    // Cache prevVerical.
-    _scoreOfCell(*dpNavigator._prevCellVertical) = _scoreOfCell(*dpNavigator._activeColIterator);
+    _scoreOfCell(cacheDiagonal) = _scoreOfCell(*(dpNavigator._prevColIterator - 1));
 }
 
-// ----------------------------------------------------------------------------
-// Function previousCellDiagonal()
-// ----------------------------------------------------------------------------
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> >::Type
-previousCellDiagonal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> & dpNavigator)
+template <typename TDPCell,
+          typename TValue, typename TMatrixSpec, typename THost, typename TNavigationSpec,
+          typename TColumnType, typename TColumnLocation>
+inline void
+_preInitCacheDiagonal(TDPCell & /*cacheDiagonal*/,
+                      DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, TNavigationSpec> const & /*dpNavigator*/,
+                      MetaColumnDescriptor<TColumnType, TColumnLocation> const & /*tag*/)
 {
-    return *dpNavigator._prevCellDiagonal;
-}
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const>::Type
-previousCellDiagonal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const & dpNavigator)
-{
-    return *dpNavigator._prevCellDiagonal;
+    // no-op
 }
 
 // ----------------------------------------------------------------------------
@@ -449,40 +407,6 @@ inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigati
 previousCellHorizontal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const & dpNavigator)
 {
     return *dpNavigator._prevColIterator;
-}
-
-// ----------------------------------------------------------------------------
-// Function previousCellVertical()
-// ----------------------------------------------------------------------------
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> >::Type
-previousCellVertical(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> & dpNavigator)
-{
-    return *dpNavigator._prevCellVertical;
-}
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const>::Type
-previousCellVertical(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const & dpNavigator)
-{
-    return *dpNavigator._prevCellVertical;
-}
-
-// ----------------------------------------------------------------------------
-// Function setCachedCells()
-// ----------------------------------------------------------------------------
-
-template <typename TValue, typename TMatrixSpec, typename THost, typename TNavigationSpec>
-inline void
-setCachedCells(DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, TNavigationSpec> & dpNavigator,
-               TValue & prevDiag,
-               TValue & prevHor,
-               TValue & prevVer)
-{
-    dpNavigator._prevCellDiagonal = &prevDiag;
-    dpNavigator._prevCellHorizontal = &prevHor;
-    dpNavigator._prevCellVertical = &prevVer;
 }
 
 }  // namespace seqan

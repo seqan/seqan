@@ -62,7 +62,7 @@ public:
     TScoreValue _score              = DPCellDefaultInfinity<DPCell_>::VALUE;
     TScoreValue _horizontalScore    = DPCellDefaultInfinity<DPCell_>::VALUE;
     TScoreValue _verticalScore      = DPCellDefaultInfinity<DPCell_>::VALUE;
-    
+
     DPCell_() = default;
     // Copy c'tor.
     DPCell_(DPCell_<TScoreValue, AffineGaps> const & other) :
@@ -70,7 +70,7 @@ public:
         _horizontalScore(other._horizontalScore),
         _verticalScore(other._verticalScore)
     {}
-    
+
     // Move c-tor
     DPCell_(DPCell_ && other) : DPCell_()
     {
@@ -163,6 +163,13 @@ _setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue c
 
 template <typename TScoreValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore)
+{
+    dpCell._verticalScore = newVerticalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
 _setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore, TScoreValue const & mask)
 {
     dpCell._verticalScore = blend(dpCell._verticalScore, newVerticalScore, mask);
@@ -201,13 +208,20 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue
 
 template <typename TScoreValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore)
+{
+    dpCell._horizontalScore = newHorizontalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
 _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore, TScoreValue const & mask)
 {
     dpCell._horizontalScore = blend(dpCell._horizontalScore, newHorizontalScore, mask);
 }
 
 template <typename TScoreValue>
-inline void 
+inline void
 swap(DPCell_<TScoreValue, AffineGaps> & lhs,
      DPCell_<TScoreValue, AffineGaps> & rhs)
 {

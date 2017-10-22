@@ -83,9 +83,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitUnbanded()
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._ptrDataContainer, &dpMatrix);
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix, Standard()), -10);
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, 1);
-    SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-    SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-    SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
 }
 
 void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
@@ -109,9 +106,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator._activeColIterator), TDPCell{});
     SEQAN_ASSERT_EQ(value(dpScoreMatrixNavigator._prevColIterator), TDPCell{});
     SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, -9);
-    SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-    SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-    SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
 }
 
 void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
@@ -135,9 +129,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 3);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix, Standard()), -5);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, 4);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
     }
 
     {
@@ -154,9 +145,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix2, Standard()), 7);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix2, Standard()), -1);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, 8);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
     }
 
     {
@@ -171,9 +159,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix3, Standard()), 0);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix3, Standard()), -8);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, 1);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
     }
 }
 
@@ -197,9 +182,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix, Standard()), 3);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix, Standard()), 3);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, -4);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
     }
 
     {
@@ -214,9 +196,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix2, Standard()), 7);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix2, Standard()), 7);  // Behind the last cell.
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, 0);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
     }
 
     {
@@ -231,9 +210,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._activeColIterator - begin(dpMatrix3, Standard()), 0);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._prevColIterator - begin(dpMatrix3, Standard()), 0);
         SEQAN_ASSERT_EQ(dpScoreMatrixNavigator._laneLeap, -7);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellDiagonal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellHorizontal == nullptr);
-        SEQAN_ASSERT(dpScoreMatrixNavigator._prevCellVertical == nullptr);
     }
 }
 
@@ -262,11 +238,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
         navi{dpMatrix, DPBandConfig<BandOff>{}};
 
-    TDPCell prevDiag{};
-    TDPCell prevVert{};
-    TDPCell prevHori{};
-    setCachedCells(navi, prevDiag, prevHori, prevVert);
-
     // Initialize with 0.
     _setScoreOfCell(value(navi), 0);
     // Move along initial column.
@@ -276,11 +247,9 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     {
         _goNextCell(navi, MetaColumnDescriptor<DPInitialColumn, FullColumn>{}, InnerCell{});
         SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), v_pos);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), v_pos - 1);
     }
     _goNextCell(navi, MetaColumnDescriptor<DPInitialColumn, FullColumn>{}, LastCell{});
     SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), 3);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), 2);
 
     // Move along inner columns.
     for (int h_pos = 1; h_pos < 3; ++h_pos)
@@ -292,15 +261,11 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
         {
             _goNextCell(navi, MetaColumnDescriptor<DPInnerColumn, FullColumn>{}, InnerCell{});
             SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), h_pos * 4 + v_pos);
-            SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), (h_pos - 1) * 4 + (v_pos - 1));
             SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), (h_pos - 1) * 4 + v_pos);
-            SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), (h_pos) * 4 + (v_pos - 1));
         }
         _goNextCell(navi, MetaColumnDescriptor<DPInnerColumn, FullColumn>{}, LastCell{});
         SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), h_pos * 4 + 3);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), (h_pos - 1) * 4 + 2);
         SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), (h_pos - 1) * 4 + 3);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), (h_pos) * 4 + 2);
     }
 
     // Move along last column.
@@ -311,15 +276,11 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
     {
         _goNextCell(navi, MetaColumnDescriptor<DPFinalColumn, FullColumn>{}, InnerCell{});
         SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), 12 + v_pos);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), 8 + (v_pos - 1));
         SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), 8 + v_pos);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), 12 + (v_pos - 1));
     }
     _goNextCell(navi, MetaColumnDescriptor<DPFinalColumn, FullColumn>{}, LastCell{});
     SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), 15);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), 10);
     SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), 11);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), 14);
 }
 
 void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
@@ -347,11 +308,6 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
     DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
         navi{dpMatrix, DPBandConfig<BandOff>()};
 
-    TDPCell prevDiag{};
-    TDPCell prevVert{};
-    TDPCell prevHori{};
-    setCachedCells(navi, prevDiag, prevHori, prevVert);
-
     // Initialize with 0.
     _setScoreOfCell(value(navi), 0);
     // Move along initial column.
@@ -361,11 +317,9 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
     {
         _goNextCell(navi, MetaColumnDescriptor<DPInitialColumn, FullColumn>{}, InnerCell{});
         SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), v_pos);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), v_pos - 1);
     }
     _goNextCell(navi, MetaColumnDescriptor<DPInitialColumn, FullColumn>{}, LastCell{});
     SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), 3);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), 2);
 
     // Move along inner columns.
     for (int h_pos = 1; h_pos < 3; ++h_pos)
@@ -377,15 +331,11 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
         {
             _goNextCell(navi, MetaColumnDescriptor<DPInnerColumn, FullColumn>{}, InnerCell{});
             SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), v_pos);
-            SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), v_pos - 1);
             SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), v_pos);
-            SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), v_pos - 1);
         }
         _goNextCell(navi, MetaColumnDescriptor<DPInnerColumn, FullColumn>{}, LastCell{});
         SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), 3);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), 2);
         SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), 3);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), 2);
     }
 
     // Move along last column.
@@ -396,15 +346,11 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
     {
         _goNextCell(navi, MetaColumnDescriptor<DPFinalColumn, FullColumn>{}, InnerCell{});
         SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), v_pos);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), v_pos - 1);
         SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), v_pos);
-        SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), v_pos - 1);
     }
     _goNextCell(navi, MetaColumnDescriptor<DPFinalColumn, FullColumn>{}, LastCell{});
     SEQAN_ASSERT_EQ(_scoreOfCell(value(navi)), 3);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(navi)), 2);
     SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(navi)), 3);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(navi)), 2);
 }
 
 template <typename TDPMatrixSpec>
@@ -457,38 +403,6 @@ void testAlignmentDPScoreMatrixNavigatorValue(TDPMatrixSpec const)
 }
 
 template <typename TDPMatrixSpec>
-void testAlignmentDPScoreMatrixNavigatorPreviousCellDiagonal(TDPMatrixSpec const)
-{
-    using namespace seqan;
-
-    typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
-    typedef typename Value<TDPMatrix>::Type TDPCell;
-
-    TDPMatrix dpMatrix;
-    setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
-    setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
-    resize(dpMatrix, TDPCell{});
-
-    DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
-        dpScoreMatrixNavigator{dpMatrix, DPBandConfig<BandOff>{}};
-
-    TDPCell prevDiag{};
-    TDPCell prevHori{};
-    TDPCell prevVert{};
-
-    setCachedCells(dpScoreMatrixNavigator, prevDiag, prevHori, prevVert);
-
-    SEQAN_ASSERT_EQ(*dpScoreMatrixNavigator._prevCellDiagonal, TDPCell{});
-
-    *dpScoreMatrixNavigator._prevCellDiagonal = 20;
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(dpScoreMatrixNavigator)), 20);
-
-    const DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
-        dpScoreMatrixNavigatorConst(dpScoreMatrixNavigator);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellDiagonal(dpScoreMatrixNavigatorConst)), 20);
-}
-
-template <typename TDPMatrixSpec>
 void testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(TDPMatrixSpec const)
 {
     using namespace seqan;
@@ -504,14 +418,6 @@ void testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(TDPMatrixSpec con
     DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
         dpScoreMatrixNavigator{dpMatrix, DPBandConfig<BandOff>{}};
 
-    TDPCell prevDiag{};
-    TDPCell prevHori{};
-    TDPCell prevVert{};
-
-    setCachedCells(dpScoreMatrixNavigator, prevDiag, prevHori, prevVert);
-
-    SEQAN_ASSERT_EQ(*dpScoreMatrixNavigator._prevCellHorizontal, TDPCell{});
-
     // A hacky way to test the previous cell function.
     dpScoreMatrixNavigator._prevColIterator = dpScoreMatrixNavigator._activeColIterator;
     *dpScoreMatrixNavigator._activeColIterator = 20;
@@ -520,38 +426,6 @@ void testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(TDPMatrixSpec con
     const DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
         dpScoreMatrixNavigatorConst(dpScoreMatrixNavigator);
     SEQAN_ASSERT_EQ(_scoreOfCell(previousCellHorizontal(dpScoreMatrixNavigatorConst)), 20);
-}
-
-template <typename TDPMatrixSpec>
-void testAlignmentDPScoreMatrixNavigatorPreviousCellVertical(TDPMatrixSpec const)
-{
-    using namespace seqan;
-
-    typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
-    typedef typename Value<TDPMatrix>::Type TDPCell;
-
-    TDPMatrix dpMatrix;
-    setLength(dpMatrix, DPMatrixDimension_::HORIZONTAL, 10);
-    setLength(dpMatrix, DPMatrixDimension_::VERTICAL, 10);
-    resize(dpMatrix, TDPCell{});
-
-    DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
-        dpScoreMatrixNavigator{dpMatrix, DPBandConfig<BandOff>{}};
-
-    TDPCell prevDiag{};
-    TDPCell prevHori{};
-    TDPCell prevVert{};
-
-    setCachedCells(dpScoreMatrixNavigator, prevDiag, prevHori, prevVert);
-
-    SEQAN_ASSERT_EQ(*dpScoreMatrixNavigator._prevCellVertical, TDPCell{});
-
-    prevVert = 20;
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(dpScoreMatrixNavigator)), 20);
-
-    const DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, NavigateColumnWise>
-        dpScoreMatrixNavigatorConst(dpScoreMatrixNavigator);
-    SEQAN_ASSERT_EQ(_scoreOfCell(previousCellVertical(dpScoreMatrixNavigatorConst)), 20);
 }
 
 template <typename TDPMatrixSpec>
@@ -624,19 +498,9 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_value)
     testAlignmentDPScoreMatrixNavigatorValue(seqan::FullDPMatrix());
 }
 
-SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_diagonal)
-{
-    testAlignmentDPScoreMatrixNavigatorPreviousCellDiagonal(seqan::FullDPMatrix());
-}
-
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_horizontal)
 {
     testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(seqan::FullDPMatrix());
-}
-
-SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_vertical)
-{
-    testAlignmentDPScoreMatrixNavigatorPreviousCellVertical(seqan::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_cell)
@@ -682,19 +546,9 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_value)
     testAlignmentDPScoreMatrixNavigatorValue(seqan::SparseDPMatrix());
 }
 
-SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_diagonal)
-{
-    testAlignmentDPScoreMatrixNavigatorPreviousCellDiagonal(seqan::SparseDPMatrix());
-}
-
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_horizontal)
 {
     testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(seqan::SparseDPMatrix());
-}
-
-SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_vertical)
-{
-    testAlignmentDPScoreMatrixNavigatorPreviousCellVertical(seqan::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next)

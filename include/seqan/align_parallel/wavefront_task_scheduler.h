@@ -109,6 +109,7 @@ public:
     WavefrontTaskScheduler(size_t const threadCount, size_t const writerCount) :
         _writerCount(writerCount)
     {
+
         for (unsigned i = 0; i < threadCount; ++i)
         {
             spawn(_threadPool, job);

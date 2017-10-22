@@ -83,7 +83,7 @@ struct CorrectLastRow_<True, True> : True
 // Vertical initialization values are copied from buffer.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
-          typename TRecursionCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoringScheme,
@@ -92,7 +92,10 @@ template <typename TDPScout,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TRecursionCellTuple recursionCells,
+             TDPCell & current,
+             TDPCell & /*cacheDiag*/,
+             TDPCell const & /*cacheHori*/,
+             TDPCell & /*cacheVert*/,
              TSequenceHValue const & /*seqHVal*/,
              TSequenceVValue const & /*seqVVal*/,
              TScoringScheme const & /*scoringScheme*/,
@@ -103,12 +106,13 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >   TMetaColumn;
 
-    std::get<0>(recursionCells) = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1;
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
+    current = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1;
     assignValue(traceMatrixNavigator, (*scout.state.ptrVerBuffer)[scout.verticalPos].i2);
 
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, False(), False());
+        _scoutBestScore(scout, current, traceMatrixNavigator, False(), False());
     }
 }
 
@@ -119,7 +123,7 @@ _computeCell(TDPScout & scout,
 // Horizontal initialization values are copied from buffer for all first cells.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
-          typename TRecursionCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoringScheme,
@@ -127,7 +131,10 @@ template <typename TDPScout,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TRecursionCellTuple recursionCells,
+             TDPCell & current,
+             TDPCell & cacheDiag,
+             TDPCell const & cacheHori,
+             TDPCell & cacheVert,
              TSequenceHValue const & /*seqHVal*/,
              TSequenceVValue const & /*seqVVal*/,
              TScoringScheme const & /*scoringScheme*/,
@@ -135,7 +142,10 @@ _computeCell(TDPScout & scout,
              FirstCell const &,   // One of FirstCell, InnerCell or LastCell.
              DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel> const &)
 {
-    std::get<0>(recursionCells) = (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1;
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
+    _scoreOfCell(cacheDiag) = _scoreOfCell(cacheHori);
+    current = (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1;
+    cacheVert = current;
     assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2);
 }
 
@@ -146,7 +156,7 @@ _computeCell(TDPScout & scout,
 // Values of last call are copied into the horizontal buffer for initializing next tile below.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
-          typename TRecursionCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoringScheme,
@@ -154,7 +164,10 @@ template <typename TDPScout,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TRecursionCellTuple recursionCells,
+             TDPCell & current,
+             TDPCell & cacheDiag,
+             TDPCell const & cacheHori,
+             TDPCell & cacheVert,
              TSequenceHValue const & seqHVal,
              TSequenceVValue const & seqVVal,
              TScoringScheme const & scoringScheme,
@@ -165,12 +178,15 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >     TMetaColumn;
 
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     assignValue(traceMatrixNavigator,
-                _computeScore(recursionCells, seqHVal, seqVVal,
+                _computeScore(current, cacheDiag, cacheHori, cacheVert, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
     // Copy values into horizontal buffer for the tile below this tile in vertical direction.
-    (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = std::get<0>(recursionCells);
+    // TODO(rrahn): We need to do this only for affine gaps?
+    _setVerticalScoreOfCell(current, _verticalScoreOfCell(cacheVert));
+    (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = current;
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
         (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2 = value(traceMatrixNavigator);
@@ -178,7 +194,7 @@ _computeCell(TDPScout & scout,
 
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, False(), True());
+        _scoutBestScore(scout, current, traceMatrixNavigator, False(), True());
     }
 }
 
@@ -191,7 +207,7 @@ _computeCell(TDPScout & scout,
 // Vertical buffer is filled with value.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
-          typename TRecursionCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoringScheme,
@@ -199,7 +215,10 @@ template <typename TDPScout,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TRecursionCellTuple recursionCells,
+             TDPCell & current,
+             TDPCell & cacheDiag,
+             TDPCell const & cacheHori,
+             TDPCell & cacheVert,
              TSequenceHValue const & /*seqHVal*/,
              TSequenceVValue const & /*seqVVal*/,
              TScoringScheme const & /*scoringScheme*/,
@@ -210,9 +229,13 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
-    std::get<0>(recursionCells) =
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
+    // cache previous diagonal.
+    _scoreOfCell(cacheDiag) = _scoreOfCell(cacheHori);
+    current =
         front(*scout.state.ptrVerBuffer).i1 = (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1;  // Copy horizontal buffer value in active cell and in
     assignValue(traceMatrixNavigator, (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2);
+    cacheVert = current;
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
         front(*scout.state.ptrVerBuffer).i2 = value(traceMatrixNavigator);   // Store trace value in vertical buffer.
@@ -220,7 +243,7 @@ _computeCell(TDPScout & scout,
 
     if (TrackingEnabled_<TMetaColumn, FirstCell>::VALUE)
     {
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, True(), False());
+        _scoutBestScore(scout, current, traceMatrixNavigator, True(), False());
     }
 }
 
@@ -231,7 +254,7 @@ _computeCell(TDPScout & scout,
 // Stores computed values in vertical buffer for initializing next tile right of the current.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
-          typename TRecursionCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoringScheme,
@@ -239,7 +262,10 @@ template <typename TDPScout,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TRecursionCellTuple recursionCells,
+             TDPCell & current,
+             TDPCell & cacheDiag,
+             TDPCell const & cacheHori,
+             TDPCell & cacheVert,
              TSequenceHValue const & seqHVal,
              TSequenceVValue const & seqVVal,
              TScoringScheme const & scoringScheme,
@@ -250,12 +276,14 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     assignValue(traceMatrixNavigator,
-                _computeScore(recursionCells, seqHVal, seqVVal,
+                _computeScore(current, cacheDiag, cacheHori, cacheVert, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, InnerCell>::Type(),
                               TDPProfile()));
     // Store values in vertical buffer.
-    (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = std::get<0>(recursionCells);
+    _setVerticalScoreOfCell(current, _verticalScoreOfCell(cacheVert));
+    (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = current;
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
         (*scout.state.ptrVerBuffer)[scout.verticalPos].i2 = value(traceMatrixNavigator);
@@ -263,7 +291,7 @@ _computeCell(TDPScout & scout,
 
     if (TrackingEnabled_<TMetaColumn, InnerCell>::VALUE)
     {
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, True(), False());
+        _scoutBestScore(scout, current, traceMatrixNavigator, True(), False());
     }
 }
 
@@ -275,7 +303,7 @@ _computeCell(TDPScout & scout,
 // Stores computed values in horizontal buffer for initializing next tile below.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
-          typename TRecursionCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoringScheme,
@@ -283,7 +311,10 @@ template <typename TDPScout,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TRecursionCellTuple recursionCells,
+             TDPCell & current,
+             TDPCell & cacheDiag,
+             TDPCell const & cacheHori,
+             TDPCell & cacheVert,
              TSequenceHValue const & seqHVal,
              TSequenceVValue const & seqVVal,
              TScoringScheme const & scoringScheme,
@@ -294,22 +325,27 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     assignValue(traceMatrixNavigator,
-                _computeScore(recursionCells, seqHVal, seqVVal,
+                _computeScore(current, cacheDiag, cacheHori, cacheVert, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
-    // Store values in vertical and horizontal buffer.
-    (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = std::get<0>(recursionCells);
+    // Store values in vertical and horizontal buffer
+//    std::cout << __FILE__ << ": " << __LINE__ << std::endl;
+    _setVerticalScoreOfCell(current, _verticalScoreOfCell(cacheVert));
+    (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = current;
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
         (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2 =
             (*scout.state.ptrVerBuffer)[scout.verticalPos].i2 = value(traceMatrixNavigator);
     }
-
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, True(), True());
+        _scoutBestScore(scout, current, traceMatrixNavigator, True(), True());
     }
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
 }
 
 }  // namespace seqan

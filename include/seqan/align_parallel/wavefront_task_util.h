@@ -155,6 +155,7 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
     // Execute the alignment.
     _computeAlignmentImpl(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
                           scoringScheme, DPBandConfig<BandOff>{}, TDPProfile(), NavigateColumnWise{});
+    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
 }
 
 #ifdef SEQAN_SIMD_ENABLED
@@ -529,7 +530,6 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
 
         TDPScout dpScout(scoutState);
         computeTile(cache, dpScout, stringSimdH, stringSimdV, scoringScheme, context(*tasks[0]).dpSettings);
-
         // We want to get the state here from the scout.
         for (size_t pos = 0; pos < length(tasks); ++pos)
         {
