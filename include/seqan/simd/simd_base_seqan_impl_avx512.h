@@ -120,6 +120,25 @@ inline TSimdVector _cmpEq(TSimdVector & a, TSimdVector & b, SimdParams_<64, L>)
     return a == b;
 }
 
+// bad auto-vectorization for gcc
+#ifndef __AVX512BW__
+template <typename TSimdVector>
+inline TSimdVector _cmpEq(TSimdVector const & a, TSimdVector const & b, SimdParams_<64, 32>)
+{
+    auto aLow = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, a), 0);
+    auto bLow = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, b), 0);
+    auto cmpLow = _mm256_cmpeq_epi16(aLow, bLow);
+
+    auto aHigh = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, a), 1);
+    auto bHigh = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, b), 1);
+    auto cmpHigh = _mm256_cmpeq_epi16(aHigh, bHigh);
+
+    auto result = _mm512_broadcast_i64x4(cmpLow);
+    result = _mm512_inserti64x4(result, cmpHigh, 1);
+    return SEQAN_VECTOR_CAST_(TSimdVector, result);
+}
+#endif
+
 // --------------------------------------------------------------------------
 // _cmpGt (512bit)
 // --------------------------------------------------------------------------
