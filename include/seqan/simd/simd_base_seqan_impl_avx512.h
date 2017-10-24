@@ -170,6 +170,27 @@ inline TSimdVector _blend(TSimdVector const & a, TSimdVector const & b, TSimdVec
     return mask ? b : a;
 }
 
+// bad auto-vectorization for gcc
+#ifndef __AVX512BW__
+template <typename TSimdVector, typename TSimdVectorMask>
+inline TSimdVector _blend(TSimdVector const & a, TSimdVector const & b, TSimdVectorMask const & mask, SimdParams_<64, 32>)
+{
+    auto aLow = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, a), 0);
+    auto bLow = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, b), 0);
+    auto maskLow = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, mask), 0);
+    auto blendLow = _mm256_blendv_epi8(aLow, bLow, maskLow);
+
+    auto aHigh = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, a), 1);
+    auto bHigh = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, b), 1);
+    auto maskHigh = _mm512_extracti64x4_epi64(SEQAN_VECTOR_CAST_(const __m512i&, mask), 1);
+    auto blendHigh = _mm256_blendv_epi8(aHigh, bHigh, maskHigh);
+
+    auto result = _mm512_broadcast_i64x4(blendLow);
+    result = _mm512_inserti64x4(result, blendHigh, 1);
+    return SEQAN_VECTOR_CAST_(TSimdVector, result);
+}
+#endif
+
 // --------------------------------------------------------------------------
 // _storeu (512bit)
 // --------------------------------------------------------------------------
