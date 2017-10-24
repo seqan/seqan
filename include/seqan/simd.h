@@ -99,10 +99,13 @@
 #endif // defined(COMPILER_GCC) && __GNUC__ <= 4
 
 // Define maximal size of vector in byte.
-#if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
+#if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__) && defined(COMPILER_GCC)
+    // gcc compiler supports auto vectorization
+    #define SEQAN_SIZEOF_MAX_VECTOR 64
+#elif defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
     // TODO(marehr): If we switch to jenkins, filter out these warnings
     #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
-        #pragma message("SEQAN_SIMD doesn't support AVX512, thus falling back to AVX2 " \
+        #pragma message("SEQAN_SIMD doesn't support AVX512 (except gcc), thus falling back to AVX2 " \
                         "(we are using some back ported instruction for AVX2 which where introduced since AVX512)")
     #endif
     #define SEQAN_SIZEOF_MAX_VECTOR 32
@@ -118,13 +121,17 @@
 #include "simd/simd_base_seqan_impl.h"
 
 #if defined(SEQAN_SEQANSIMD_ENABLED)
-    #if defined(__SSE4_2__)
+    #if SEQAN_SIZEOF_MAX_VECTOR >= 16
     #include "simd/simd_base_seqan_impl_sse4.2.h"
-    #endif // defined(SEQAN_SSE4)
+    #endif // SEQAN_SIZEOF_MAX_VECTOR >= 16
 
-    #if defined(__AVX2__)
+    #if SEQAN_SIZEOF_MAX_VECTOR >= 32
     #include "simd/simd_base_seqan_impl_avx2.h"
-    #endif // defined(__AVX2__)
+    #endif // SEQAN_SIZEOF_MAX_VECTOR >= 32
+
+    #if SEQAN_SIZEOF_MAX_VECTOR >= 64
+    #include "simd/simd_base_seqan_impl_avx512.h"
+    #endif // SEQAN_SIZEOF_MAX_VECTOR >= 64
 
     #include "simd/simd_base_seqan_interface.h"
 #endif // defined(SEQAN_SEQANSIMD_ENABLED)
