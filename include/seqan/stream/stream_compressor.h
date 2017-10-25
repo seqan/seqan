@@ -276,16 +276,20 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
 // Helper Function _bgzfUnpackXX()
 // ----------------------------------------------------------------------------
 
-inline unsigned short
+inline uint16_t
 _bgzfUnpack16(char const * buffer)
 {
-    return *reinterpret_cast<unsigned short const *>(buffer);
+    uint16_t tmp = *reinterpret_cast<uint16_t const *>(buffer);
+    enforceLittleEndian(tmp);
+    return tmp;
 }
 
-inline unsigned
+inline uint32_t
 _bgzfUnpack32(char const * buffer)
 {
-    return *reinterpret_cast<unsigned const *>(buffer);
+    uint32_t tmp = *reinterpret_cast<uint32_t const *>(buffer);
+    enforceLittleEndian(tmp);
+    return tmp;
 }
 
 // ----------------------------------------------------------------------------
@@ -293,15 +297,17 @@ _bgzfUnpack32(char const * buffer)
 // ----------------------------------------------------------------------------
 
 inline void
-_bgzfPack16(char * buffer, unsigned short value)
+_bgzfPack16(char * buffer, uint16_t value)
 {
-    *reinterpret_cast<unsigned short *>(buffer) = value;
+    enforceLittleEndian(value);
+    *reinterpret_cast<uint16_t *>(buffer) = value;
 }
 
 inline void
-_bgzfPack32(char * buffer, unsigned value)
+_bgzfPack32(char * buffer, uint32_t value)
 {
-    *reinterpret_cast<unsigned *>(buffer) = value;
+    enforceLittleEndian(value);
+    *reinterpret_cast<uint32_t *>(buffer) = value;
 }
 
 
