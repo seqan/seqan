@@ -540,4 +540,10 @@ inline void enforceLittleEndian(double & in)
 
 } // namespace seqan
 
+// DEFAULT PAGESIZE FOR MMAP
+#ifndef SEQAN_DEFAULT_PAGESIZE
+    // 64K is supported on all platforms (whereas 4K is not)
+    #define SEQAN_DEFAULT_PAGESIZE 64 * 1024
+#endif
+
 #endif // HEADER GUARD
