@@ -48,10 +48,10 @@ http://www.seqan.de/downloads/projects.html
 
 Gustaf is distributed with SeqAn - The C++ Sequence Analysis Library (see
 http://www.seqan.de). To build Gustaf yourself, you can check out the latest
-SVN version of Gustaf and SeqAn with:
+Git version of Gustaf and SeqAn with:
 
-  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
-  2)  cd seqan/build/
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
   3)  cmake .. -DCMAKE_BUILD_TYPE=Release
   4)  make gustaf
   5)  ./bin/gustaf --help
