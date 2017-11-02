@@ -207,6 +207,7 @@ readRecord(BamAlignmentRecord & record,
 
     // BamAlignmentRecordCore.
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&record));
+    enforceLittleEndian(*reinterpret_cast<BamAlignmentRecordCore*>(&record));
     it += sizeof(BamAlignmentRecordCore);
 
     remainingBytes -= sizeof(BamAlignmentRecordCore) + record._l_qname +

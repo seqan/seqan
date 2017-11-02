@@ -115,6 +115,7 @@ inline int32_t readBamRecord(TIdString & meta,
     // BamAlignmentRecordCore.
     BamAlignmentRecordCore recordCore;
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char *>(&recordCore));
+    enforceLittleEndian(recordCore);
     it += sizeof(BamAlignmentRecordCore);
 
     clear(meta);

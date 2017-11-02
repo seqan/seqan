@@ -611,11 +611,9 @@ getAlignmentLengthInRef(BamAlignmentRecord const & record)
 // Function appendRawPod()
 // ----------------------------------------------------------------------------
 
-// This function is guarded so that we save the copy on little endian systems
 #if SEQAN_BIG_ENDIAN
-template <typename TTarget>
 inline void
-appendRawPod(TTarget & target, BamAlignmentRecordCore r)
+enforceLittleEndian(BamAlignmentRecordCore & r)
 {
     enforceLittleEndian(r.rID);
     enforceLittleEndian(r.beginPos);
@@ -628,6 +626,14 @@ appendRawPod(TTarget & target, BamAlignmentRecordCore r)
     enforceLittleEndian(r.rNextId);
     enforceLittleEndian(r.pNext);
     enforceLittleEndian(r.tLen);
+}
+
+// This function is guarded so that we save the copy on little endian systems
+template <typename TTarget>
+inline void
+appendRawPod(TTarget & target, BamAlignmentRecordCore r)
+{
+    enforceLittleEndian(r);
     appendRawPodImpl(target, r);
 }
 #endif
