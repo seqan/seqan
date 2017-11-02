@@ -28,12 +28,12 @@ N2 similarity measure.
 ---------------------------------------------------------------------------
 
 ALF is distributed with SeqAn - The C++ Sequence Analysis Library (see
-http://www.seqan.de). To build ALF from SVN do the following:
+http://www.seqan.de). To build ALF from Git do the following:
 
-  1) svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
+  1) git clone https://github.com/seqan/seqan.git
   2) mkdir -p build/Release
   3) cd build/Release
-  4) cmake ../.. -DCMAKE_BUILD_TYPE=Release
+  4) cmake ../../seqan -DCMAKE_BUILD_TYPE=Release
   5) make alf
   6) ./apps/alf/alf --help
 
@@ -42,7 +42,7 @@ was dumped.
 
 For more information about retrieving SeqAn and prerequisites please visit
 
-  http://trac.seqan.de/wiki/Tutorial/GettingStarted
+  https://www.seqan.de/getting-started/
 
 ---------------------------------------------------------------------------
 3. Usage

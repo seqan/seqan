@@ -43,16 +43,14 @@ MicroRazerS is distributed with SeqAn - The C++ Sequence Analysis Library
   5)  cd micro_razers
   6)  ./micro_razers --help
 
-Alternatively you can check out the latest SVN version of MicroRazerS and SeqAn
+Alternatively you can check out the latest Git version of MicroRazerS and SeqAn
 with:
 
-  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
-  2)  cd seqan
-  3)  make forwards
-  4)  cd projects/library/apps
-  5)  make micro_razers
-  6)  cd micro_razers
-  7)  ./micro_razers --help
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  4)  make micro_razers
+  5)  ./bin/micro_razers --help
 
 On success, an executable file micro_razers was built and a brief usage 
 description was dumped.

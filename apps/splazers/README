@@ -43,14 +43,13 @@ SeqAn projects download page: http://www.seqan.de/downloads/projects.html
 
 SplazerS is distributed with SeqAn - The C++ Sequence Analysis Library (see 
 http://www.seqan.de). To build SplazerS yourself you can check out the latest 
-SVN version of SplazerS and SeqAn with:
+Git version of SplazerS and SeqAn with:
 
-  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
-  2)  mkdir seqan-trunk/build/
-  3)  cd seqan-trunk/build/
-  4)  cmake .. -DCMAKE_BUILD_TYPE=Release
-  5)  make splazers
-  6)  ./apps/splazers/splazers --help
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  4)  make splazers
+  5)  ./bin/splazers --help
 
 Alternatively, you can download the latest SeqAn snapshot and build SplazerS
 with:

@@ -26,7 +26,7 @@ Reads can optionally be realigned, using the ReAligner algorithm by Anson
 and Myers.
 
 Please note: SnpStore is work in progress! Keep yourself up to date by 
-checking out the latest version of SnpStore from the SeqAn SVN repository
+checking out the latest version of SnpStore from the SeqAn Git repository
 (instructions follow below).
 
 
@@ -45,13 +45,13 @@ http://www.seqan.de). To build SnpStore do the following:
   6)  ./apps/snp_store
 
 Alternatively - and this is what I recommend - you can check out the latest 
-SVN version of SnpStore and SeqAn with:
+Git version of SnpStore and SeqAn with:
 
-  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
-  2)  cd seqan/build
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
   3)  cmake .. -DCMAKE_BUILD_TYPE=Release
-  5)  make snp_store
-  7)  ./apps/snp_store
+  4)  make snp_store
+  5)  ./bin/snp_store --help
 
 If successful, an executable file snp_store was built and a brief usage 
 description was dumped.
