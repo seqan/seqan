@@ -200,7 +200,18 @@ allocate(T const &,
 #else
     data = (TValue *) malloc(count * sizeof(TValue));
 #endif*/
-  data = (TValue *) operator new(count * sizeof(TValue));
+// suppress -Walloc-size-larger-than= warning; a simple static_cast does not work
+// a working solution would be to downcast std::size_t to unsigned, but this
+// would loose information; thus disabling this for gcc 7 and upwards
+    SEQAN_ASSERT_LEQ(static_cast<std::size_t>(count), std::numeric_limits<std::size_t>::max() / sizeof(TValue));
+#   if defined(COMPILER_GCC) &&  __GNUC__ >= 7
+#       pragma GCC diagnostic push
+#       pragma GCC diagnostic ignored "-Walloc-size-larger-than="
+#   endif //COMPILER_GCC
+    data = (TValue *) operator new(count * sizeof(TValue));
+#   if defined(COMPILER_GCC) &&  __GNUC__ >= 7
+#       pragma GCC diagnostic pop
+#   endif //COMPILER_GCC
 #endif
 
 #ifdef SEQAN_PROFILE
@@ -227,7 +238,18 @@ allocate(T &,
 #else
     data = (TValue *) malloc(count * sizeof(TValue));
 #endif*/
-  data = (TValue *) operator new(count * sizeof(TValue));
+    // suppress -Walloc-size-larger-than= warning; a simple static_cast does not work
+    // a working solution would be to downcast std::size_t to unsigned, but this
+    // would loose information; thus disabling this for gcc 7 and upwards
+    SEQAN_ASSERT_LEQ(static_cast<std::size_t>(count), std::numeric_limits<std::size_t>::max() / sizeof(TValue));
+#   if defined(COMPILER_GCC) &&  __GNUC__ >= 7
+#       pragma GCC diagnostic push
+#       pragma GCC diagnostic ignored "-Walloc-size-larger-than="
+#   endif //COMPILER_GCC
+    data = (TValue *) operator new(count * sizeof(TValue));
+#   if defined(COMPILER_GCC) &&  __GNUC__ >= 7
+#       pragma GCC diagnostic pop
+#   endif //COMPILER_GCC
 #endif
 
 #ifdef SEQAN_PROFILE
