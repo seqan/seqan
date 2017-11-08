@@ -523,10 +523,10 @@ void _computeTraceback(TTarget & target,
     {
         if (tracebackCoordinator._currRow != static_cast<TSize>(seqVSize))
             _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
-                           +TraceBitMap_<>::VERTICAL);
+                           TraceBitMap_<>::VERTICAL);
         if (tracebackCoordinator._currColumn != static_cast<TSize>(seqHSize))
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, seqHSize -
-                           tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
+                           tracebackCoordinator._currColumn, TraceBitMap_<>::HORIZONTAL);
     }
 
     TSize fragmentLength = 0;
@@ -539,9 +539,9 @@ void _computeTraceback(TTarget & target,
     {
         // Record leading gaps if any.
         if (tracebackCoordinator._currRow != 0u)
-            _recordSegment(target, 0, 0, tracebackCoordinator._currRow, +TraceBitMap_<>::VERTICAL);
+            _recordSegment(target, 0, 0, tracebackCoordinator._currRow, TraceBitMap_<>::VERTICAL);
         if (tracebackCoordinator._currColumn != 0u)
-            _recordSegment(target, 0, 0, tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
+            _recordSegment(target, 0, 0, tracebackCoordinator._currColumn, TraceBitMap_<>::HORIZONTAL);
     }
 }
 

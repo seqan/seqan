@@ -271,18 +271,6 @@ _isBandEnabled(DPBandConfig<TBandSpec> const & /*band*/)
 // Function _computeCell()
 // ----------------------------------------------------------------------------
 
-template <typename ...TArgs>
-inline void _track(True const & /**/, TArgs && ...args)
-{
-    _scoutBestScore(std::forward<TArgs>(args)...);
-}
-
-template <typename ...TArgs>
-inline void _track(False const & /**/, TArgs && .../**/)
-{
-    // no-op.
-}
-
 // Computes the score and tracks it if enabled.
 template <typename TDPScout,
           typename TTraceMatrixNavigator,
@@ -316,8 +304,10 @@ _computeCell(TDPScout & scout,
         typedef typename LastRowEnabled_<TDPProfile, TCellDescriptor, TColumnDescriptor>::Type TIsLastRow;
 
         // TODO(rrahn): Refactor to set vertical score only when max is updated.
-        // TODO(rrahn): Only if traceback is enabled.
-        _setVerticalScoreOfCell(current, _verticalScoreOfCell(vertical));
+        if (IsTracebackEnabled_<TDPProfile>::VALUE)
+        {
+            _setVerticalScoreOfCell(current, _verticalScoreOfCell(vertical));
+        }
         _scoutBestScore(scout, current, traceMatrixNavigator,
                         TIsLastColumn(), TIsLastRow());
     }

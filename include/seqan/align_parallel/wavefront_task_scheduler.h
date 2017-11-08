@@ -133,9 +133,7 @@ public:
     // Destructor
 
     ~WavefrontTaskScheduler()
-    {
-//        std::cout << "Start destructing" << std::endl;
-    }
+    {}
     // In destructor of thread pool we wait for the outstanding alignments to be finished
     // and then continue destruction of the remaining members and cleaning up the stack.
     // Note the number of writers must be set to 0, for the queue to stop spinning.

@@ -155,7 +155,6 @@ computeTile(DPContext<TScoreValue, TTraceValue, TScoreMatHost, TTraceMatHost> & 
     // Execute the alignment.
     _computeAlignmentImpl(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator, seqH, seqV,
                           scoringScheme, DPBandConfig<BandOff>{}, TDPProfile(), NavigateColumnWise{});
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
 }
 
 #ifdef SEQAN_SIMD_ENABLED

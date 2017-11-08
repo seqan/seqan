@@ -172,7 +172,7 @@ struct WavefrontAlignmentTaskIncubator
         TDPCell dummyCellD;
         TDPCell dummyCellH;
         TDPCell dummyCellV;
-        tmp.i2 = _doComputeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
+        tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
         for (auto itH = begin(buffer.horizontalBuffer, Standard()); itH != end(buffer.horizontalBuffer, Standard()); ++itH)
         {
             resize(*itH, length(front(seqHBlocks)), Exact());
@@ -186,7 +186,7 @@ struct WavefrontAlignmentTaskIncubator
             }
         }
         tmp.i1 = decltype(tmp.i1){};
-        tmp.i2 = _doComputeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
+        tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
 
         for (auto itV = begin(buffer.verticalBuffer, Standard()); itV != end(buffer.verticalBuffer, Standard()); ++itV)
         {
@@ -339,12 +339,9 @@ public:
             updateMax(interMax, intermediate(threadLocalStorage, instanceId));
             clear(intermediate(threadLocalStorage, instanceId));
         };
-        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
         combineEach(*executor.ptrThreadLocal, collectAndReset);
-        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
         // Continue execution.
         callback(alignmentId, interMax._maxState.first);
-        // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     }
 
     template <typename TWavefrontExecutor,

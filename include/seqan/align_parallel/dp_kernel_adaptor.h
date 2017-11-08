@@ -106,7 +106,6 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInitialColumn, FullColumn> >   TMetaColumn;
 
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     current = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1;
     assignValue(traceMatrixNavigator, (*scout.state.ptrVerBuffer)[scout.verticalPos].i2);
 
@@ -142,7 +141,6 @@ _computeCell(TDPScout & scout,
              FirstCell const &,   // One of FirstCell, InnerCell or LastCell.
              DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel> const &)
 {
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     _scoreOfCell(cacheDiag) = _scoreOfCell(cacheHori);
     current = (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1;
     cacheVert = current;
@@ -178,7 +176,6 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPInnerColumn, FullColumn> >     TMetaColumn;
 
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     assignValue(traceMatrixNavigator,
                 _computeScore(current, cacheDiag, cacheHori, cacheVert, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
@@ -229,7 +226,6 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     // cache previous diagonal.
     _scoreOfCell(cacheDiag) = _scoreOfCell(cacheHori);
     current =
@@ -276,7 +272,6 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     assignValue(traceMatrixNavigator,
                 _computeScore(current, cacheDiag, cacheHori, cacheVert, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, InnerCell>::Type(),
@@ -325,27 +320,22 @@ _computeCell(TDPScout & scout,
     typedef DPProfile_<TAlgo, TGapCosts, TTraceConfig, Parallel>                            TDPProfile;
     typedef DPMetaColumn_<TDPProfile, MetaColumnDescriptor<DPFinalColumn, FullColumn> >     TMetaColumn;
 
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     assignValue(traceMatrixNavigator,
                 _computeScore(current, cacheDiag, cacheHori, cacheVert, seqHVal, seqVVal,
                               scoringScheme, typename RecursionDirection_<TMetaColumn, LastCell>::Type(),
                               TDPProfile()));
     // Store values in vertical and horizontal buffer
-//    std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     _setVerticalScoreOfCell(current, _verticalScoreOfCell(cacheVert));
     (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i1 = (*scout.state.ptrVerBuffer)[scout.verticalPos].i1 = current;
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     if (IsTracebackEnabled_<TTraceConfig>::VALUE)
     {
         (*scout.state.ptrHorBuffer)[scout.horizontalPos - 1].i2 =
             (*scout.state.ptrVerBuffer)[scout.verticalPos].i2 = value(traceMatrixNavigator);
     }
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
     if (TrackingEnabled_<TMetaColumn, LastCell>::VALUE)
     {
         _scoutBestScore(scout, current, traceMatrixNavigator, True(), True());
     }
-    // std::cout << __FILE__ << ": " << __LINE__ << std::endl;
 }
 
 }  // namespace seqan

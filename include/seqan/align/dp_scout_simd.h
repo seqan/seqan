@@ -134,23 +134,12 @@ struct ScoutSpecForAlignmentAlgorithm_<TAlignmentAlgorithm, DPScoutState_<SimdAl
 // Function _copySimdCell()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec,
-          typename TScoreValue>
-inline void
-_copySimdCell(DPScout_<DPCell_<TValue, LinearGaps>, SimdAlignmentScout<TSpec> > & dpScout,
-              DPCell_<TValue, LinearGaps> const & activeCell,
-              TScoreValue const & cmp,
-              DPTraceMatrix<TracebackOff> const & /**/)
-{
-    dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
-}
-
-template <typename TValue, typename TSpec,
+template <typename TValue, typename TGapSpec, typename TSpec,
           typename TScoreValue,
           typename TTraceConfig>
 inline void
-_copySimdCell(DPScout_<DPCell_<TValue, LinearGaps>, SimdAlignmentScout<TSpec> > & dpScout,
-              DPCell_<TValue, LinearGaps> const & activeCell,
+_copySimdCell(DPScout_<DPCell_<TValue, TGapSpec>, SimdAlignmentScout<TSpec> > & dpScout,
+              DPCell_<TValue, TGapSpec> const & activeCell,
               TScoreValue const & cmp,
               DPTraceMatrix<TTraceConfig> const & /**/)
 {
@@ -164,7 +153,7 @@ inline void
 _copySimdCell(DPScout_<DPCell_<TValue, AffineGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, AffineGaps> const & activeCell,
               TScoreValue const & cmp,
-              DPTraceMatrix<TTraceConfig> const & /**/)
+              DPTraceMatrix<TracebackOn<TTraceConfig>> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
     dpScout._maxScore._horizontalScore = blend(dpScout._maxScore._horizontalScore, activeCell._horizontalScore, cmp);
@@ -173,12 +162,12 @@ _copySimdCell(DPScout_<DPCell_<TValue, AffineGaps>, SimdAlignmentScout<TSpec> > 
 
 template <typename TValue, typename TSpec,
           typename TScoreValue,
-          typename TTraceConfig>
+          typename TTraceConfig, typename TGapsPlacement>
 inline void
 _copySimdCell(DPScout_<DPCell_<TValue, DynamicGaps>, SimdAlignmentScout<TSpec> > & dpScout,
               DPCell_<TValue, DynamicGaps> const & activeCell,
               TScoreValue const & cmp,
-              DPTraceMatrix<TTraceConfig> const & /**/)
+              DPTraceMatrix<TracebackOn<TTraceConfig>> const & /**/)
 {
     dpScout._maxScore._score = blend(dpScout._maxScore._score, activeCell._score, cmp);
     dpScout._maxScore._flagMask = blend(dpScout._maxScore._flagMask, activeCell._flagMask, cmp);

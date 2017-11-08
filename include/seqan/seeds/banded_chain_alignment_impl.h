@@ -484,7 +484,7 @@ _computeCell(TDPScout & scout,
 
     _scoreOfCell(diagonal) = _scoreOfCell(horizontal);
     current = _verticalCellInitialization(scout, traceMatrixNavigator);
-    assignValue(traceMatrixNavigator, +TraceBitMap_<>::NONE);
+    assignValue(traceMatrixNavigator, TraceBitMap_<>::NONE);
     _scoreOfCell(vertical) = _scoreOfCell(current);
     _setVerticalScoreOfCell(vertical, _verticalScoreOfCell(current));
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
@@ -509,7 +509,7 @@ _computeHorizontalInitCell(TDPScout & scout,
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
     activeCell = _horizontalCellInitialization(scout, traceMatrixNavigator);
-    assignValue(traceMatrixNavigator, +TraceBitMap_<>::NONE);
+    assignValue(traceMatrixNavigator, TraceBitMap_<>::NONE);
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
         _applyBandedChainTracking(scout, traceMatrixNavigator, activeCell, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
 }
