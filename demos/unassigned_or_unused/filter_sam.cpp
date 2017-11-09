@@ -112,7 +112,7 @@ void performWork(Options const & options)
     // Copy over at most options.limit alignments per read.
     std::cerr << "Filtering reads..." << std::endl;
     FragmentStore<>::TAlignedReadStore rsCopy;
-    size_t readId = MaxValue<size_t>::VALUE;
+    size_t readId = std::numeric_limits<size_t>::max();
     size_t alignmentCount = 0;
     for (TIterator it = begin(fragmentStore.alignedReadStore), itEnd = end(fragmentStore.alignedReadStore); it != itEnd; ++it)
     {

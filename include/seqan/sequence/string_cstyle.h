@@ -582,11 +582,10 @@ struct CreateArrayStringExpand_
                 _deallocateStorage(target, buf, old_target_capacity);
             }
         }
-        assignValue(begin(target, Standard()), 0); //set target length to 0
+        assign(*begin(target, Standard()), 0); //set target length to 0
         assign(begin(target, Standard()), source, Insist());
         typedef typename Iterator<TTarget>::Type TTargetIterator;
         _setEnd(target, TTargetIterator( begin(target) + source_length));
-
     }
 
     template <typename TTarget, typename TSource, typename TLimit>

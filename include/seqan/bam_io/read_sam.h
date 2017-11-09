@@ -353,7 +353,7 @@ readRecord(BamAlignmentRecord & record,
     // TLEN
     if (value(iter) == '*')
     {
-        record.tLen = MaxValue<int32_t>::VALUE;
+        record.tLen = std::numeric_limits<int32_t>::max();
         skipOne(iter);
     }
     else

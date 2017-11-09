@@ -190,7 +190,7 @@ void compactSplicedMatches(TMatches &matches,
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int scoreDistCutOff = MinValue<int>::VALUE;
+	int scoreDistCutOff = std::numeric_limits<int>::min();
 	
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
@@ -271,7 +271,7 @@ void compactSplicedMatchesPurgeAmbiguous(TMatches &matches, TCounts & /*cnts*/, 
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int scoreDistCutOff = MinValue<int>::VALUE;
+	int scoreDistCutOff = std::numeric_limits<int>::min();
 	
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
@@ -355,7 +355,7 @@ void countSplitMatches(TMatches &matches, TCounts &cnt)
 	unsigned readNo = -1;
 	short editDist = -1;
 	int64_t count = 0;
-	int64_t maxVal = MaxValue<TValue>::VALUE;
+	int64_t maxVal = std::numeric_limits<TValue>::max();
 
 	for (; it != itEnd; ++it) 
 	{
@@ -477,7 +477,7 @@ matchVerify(
 #endif
 	
 	unsigned ndlLength = _min(sequenceLength(rseqNo, readSet),options.minMatchLen);
-	int maxScore = MinValue<int>::VALUE;
+	int maxScore = std::numeric_limits<int>::min();
 	int minScore = -(int)(ndlLength * options.errorRate);
 	TMyersFinder maxPos;
 	
@@ -950,7 +950,7 @@ findBestSplitPosition(String<Pair<TScore,int> > & maxColsL,
 	::std::cout << "findBestSplitEditForward\n";
 #endif
 
-	TScore maxSum = minValue<TScore>();
+	TScore maxSum = std::numeric_limits<TScore>::min();
 	int bestL = rowPosL1;
 	int bestR = rowPosR1;
 	while (rowPosL1 <= rowPosL2 && rowPosR1 >= rowPosR2)
@@ -991,7 +991,7 @@ findBestSplitPosition(String<Pair<TScore,int> > & maxColsL,
 	::std::cout << "findBestSplitEditReverse\n";
 #endif
 
-	TScore maxSum = minValue<TScore>();
+	TScore maxSum = std::numeric_limits<TScore>::min();
 	int bestL = rowPosL2;
 	int bestR = rowPosR2;
 

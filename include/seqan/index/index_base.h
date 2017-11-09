@@ -201,6 +201,7 @@ SEQAN_CONCEPT_REFINE(StringTrieConcept, (TIndex), (StringIndexConcept)) {};
  * @headerfile <seqan/index.h>
  * @brief Default @link String @endlink specialization type of the @link Fibre
  *        @endlink of an @link Index @endlink.
+ * @deprecated Deprecated in favor of StringSpec.
  *
  * @signature DefaultIndexStringSpec<TIndex>::Type;
  *
@@ -217,7 +218,7 @@ SEQAN_CONCEPT_REFINE(StringTrieConcept, (TIndex), (StringIndexConcept)) {};
  */
 
     template <typename TObject>
-    struct DefaultIndexStringSpec : StringSpec<TObject> {};
+    struct [[deprecated("Deprecated in favor of StringSpec.")]] DefaultIndexStringSpec : StringSpec<TObject> {};
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1317,13 +1318,13 @@ template <
 
     template <typename TValue>
     inline void _setSizeInval(TValue &v) {
-        v = MaxValue<TValue>::VALUE;
+        v = std::numeric_limits<TValue>::max();
     }
 
     template <typename TValue>
     inline bool _isSizeInval(TValue const &v) {
 //IOREV _notio_
-        return v == MaxValue<TValue>::VALUE;
+        return v == std::numeric_limits<TValue>::max();
     }
 
 //////////////////////////////////////////////////////////////////////////////

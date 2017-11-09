@@ -46,7 +46,7 @@ using namespace seqan;
 inline void
 _test_blast_read_tabular_match_lowlevel(std::string const & path)
 {
-    std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + std::string(path);
+    std::string inPath = seqan::getAbsolutePath(path.c_str());
 
     std::ifstream ifstream(toCString(inPath),
                            std::ios_base::in | std::ios_base::binary);
@@ -159,8 +159,7 @@ void _testReadTabularWithoutComments(TContext &,
 {
     typedef BlastMatchField<> TField;
 
-    std::string inPath = std::string(SEQAN_PATH_TO_ROOT());
-    inPath += path;
+    std::string inPath = seqan::getAbsolutePath(path.c_str());
 
     BlastRecord<> r;
 
@@ -366,8 +365,7 @@ void _testReadTabularWithComments(TContext &,
 {
     typedef BlastMatchField<> TField;
 
-    std::string inPath = std::string(SEQAN_PATH_TO_ROOT());
-    inPath += path;
+    std::string inPath = seqan::getAbsolutePath(path.c_str());
 
     BlastRecord<> r;
 

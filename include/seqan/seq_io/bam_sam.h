@@ -143,9 +143,9 @@ inline int32_t readBamRecord(TIdString & meta,
     {
         unsigned char ui = getValue(it);
         ++it;
-        assignValue(sit, Iupac(ui >> 4));
+        *sit =  Iupac(ui >> 4);
         ++sit;
-        assignValue(sit, Iupac(ui & 0x0f));
+        *sit =  Iupac(ui & 0x0f);
         ++sit;
     }
     if (recordCore._l_qseq & 1)

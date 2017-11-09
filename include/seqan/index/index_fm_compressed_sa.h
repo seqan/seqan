@@ -84,8 +84,8 @@ typedef Tag<FibreSparseString_> const FibreSparseString;
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-struct DefaultIndexStringSpec<CompressedSA<TText, TSpec, TConfig> > :
-    DefaultIndexStringSpec<TText> {};
+struct StringSpec<CompressedSA<TText, TSpec, TConfig> > :
+    StringSpec<TText> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Fibre
@@ -97,7 +97,7 @@ struct Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>
     // TODO(esiragusa): Change SparseString spec to be SparseString<TValue, TSpec, TConfig>.
     typedef CompressedSA<TText, TSpec, TConfig>         TCSA;
     typedef typename SAValue<TText>::Type               TSAValue_;
-    typedef typename DefaultIndexStringSpec<TCSA>::Type TSASpec_;
+    typedef typename StringSpec<TCSA>::Type TSASpec_;
     typedef String<TSAValue_, TSASpec_>                 TSA_;
     typedef SparseString<TSA_, TConfig>                 Type;
 };
@@ -305,7 +305,7 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
 
     for (TSASize pos = offset; saIt != saItEnd; ++saIt, ++pos)
     {
-        if (getSeqOffset(getValue(saIt)) % TConfig::SAMPLING == 0)
+        if (getSeqOffset(*saIt) % TConfig::SAMPLING == 0)
             setValue(indicators, pos, true);
         else
             setValue(indicators, pos, false);
@@ -319,7 +319,7 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
     {
         if (getValue(indicators, pos))
         {
-            assignValue(values, counter, getValue(saIt));
+            assignValue(values, counter, *saIt);
             ++counter;
         }
     }

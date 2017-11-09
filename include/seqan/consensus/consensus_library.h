@@ -483,7 +483,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
     typedef typename Iterator<TBegEndPos const, Standard>::Type TBegEndIter;
     TBegEndIter begEndIt = begin(begEndPos, Standard());
     TBegEndIter begEndItEnd = end(begEndPos, Standard());
-    TSize minVal = maxValue<TSize>();
+    TSize minVal = std::numeric_limits<TSize>::max();
     TSize maxVal = 0;
     for(;begEndIt != begEndItEnd; ++begEndIt) {
         TSize pos1 = begEndIt->i1;

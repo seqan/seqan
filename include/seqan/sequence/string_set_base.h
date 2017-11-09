@@ -1345,7 +1345,7 @@ assign(StringSet<TString, TSpec> & target,
     TSourceIterator it = begin(source, Standard());
     TSourceIterator itEnd = end(source, Standard());
     for (; it != itEnd; ++it)
-        appendValue(target, getValue(it), tag);
+        appendValue(target, *it, tag);
 }
 
 template <typename TString, typename TSpec, typename TSource>
@@ -1619,6 +1619,7 @@ concat(StringSet<TString, TSpec> const & constMe)
 
 // this function is deprecated and the return value is very ungeneric, e.g. doesn't work if strings are std::string
 template <typename TStrings, typename TDelim>
+[[deprecated]]
 inline String<typename Value<typename Value<TStrings>::Type>::Type>
 concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
 {
@@ -1665,7 +1666,7 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
     // Compute symbol frequencies.
     TIter itEnd = end(concat(text), Standard());
     for (TIter it = begin(concat(text), Standard()); it != itEnd; goNext(it))
-        sums[ordValue(static_cast<TValue>(value(it))) + 1]++;
+        sums[ordValue(static_cast<TValue>(*it)) + 1]++;
 
     // Cumulate symbol frequencies.
     partialSum(sums);

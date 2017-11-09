@@ -628,7 +628,7 @@ void testStringPackedExtensionBitScanForward()
 
     {
         TBitString str;
-        SEQAN_ASSERT_EQ(bitScanForward(str), MaxValue<TPosition>::VALUE);
+        SEQAN_ASSERT_EQ(bitScanForward(str), std::numeric_limits<TPosition>::max());
     }
 }
 
@@ -662,7 +662,7 @@ void testStringPackedExtensionBitScanReverse()
 
     {
         TBitString str;
-        SEQAN_ASSERT_EQ(bitScanForward(str), MaxValue<TPosition>::VALUE);
+        SEQAN_ASSERT_EQ(bitScanForward(str), std::numeric_limits<TPosition>::max());
     }
 }
 

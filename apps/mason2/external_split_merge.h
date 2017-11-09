@@ -302,15 +302,15 @@ bool FastxJoiner<TTag>::_loadNext(TSeq & id, TSeq & seq, TSeq & qual, unsigned i
 template <typename TTag>
 int FastxJoiner<TTag>::get(seqan::CharString & id, seqan::CharString & seq, seqan::CharString & qual)
 {
-    unsigned idx = seqan::maxValue<unsigned>();
+    unsigned idx = std::numeric_limits<unsigned>::max();
     for (unsigned i = 0; i < length(ids); ++i)
     {
         if (!active[i])
             continue;
-        if (idx == seqan::maxValue<unsigned>() || strnum_cmp(toCString(ids[i]), toCString(ids[idx])) < 0)
+        if (idx == std::numeric_limits<unsigned>::max() || strnum_cmp(toCString(ids[i]), toCString(ids[idx])) < 0)
             idx = i;
     }
-    if (idx == seqan::maxValue<unsigned>())
+    if (idx == std::numeric_limits<unsigned>::max())
         return 1;
 
     // We use double-buffering and the input parameters as buffers.

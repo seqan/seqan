@@ -48,7 +48,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_local_match_constructor)
     // Default constructor.
     {
         TLocalMatch localMatch;
-        unsigned const maxU = MaxValue<unsigned>::VALUE;
+        unsigned const maxU = std::numeric_limits<unsigned>::max();
 
         SEQAN_ASSERT_EQ(maxU, localMatch.id);
         SEQAN_ASSERT_EQ(maxU, localMatch.subjectId);

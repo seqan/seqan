@@ -460,9 +460,7 @@ _arrayConstructCopyDefault(TSource1 source_begin,
 {
     while (source_begin != source_end)
     {
-        // NOTE(holtgrew): getValue() is used here since value() could return
-        // a proxy!
-        valueConstruct(target_begin, getValue(source_begin));
+        valueConstruct(target_begin, *source_begin);
         ++source_begin;
         ++target_begin;
     }

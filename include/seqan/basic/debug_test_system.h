@@ -2316,7 +2316,6 @@ inline void fail()
 #define SEQAN_PATH_TO_ROOT()                      \
     ::seqan::ClassTest::StaticData::pathToRoot()
 
-
 // Returns the POSIX int file handle to an open file.
 // TODO(holtgrewe): Uncomment if openTempFile has been implemented.
 // #define SEQAN_OPEN_TEMP_FILE() (::seqan::ClassTest::openTempFile())
@@ -2384,7 +2383,7 @@ inline void fail()
 
 inline std::string getAbsolutePath(const char * path)
 {
-    return std::string(SEQAN_PATH_TO_ROOT()) + "/" + path;
+    return std::string(::seqan::ClassTest::StaticData::pathToRoot()) + "/" + path;
 }
 
 }  // namespace seqan

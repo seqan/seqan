@@ -917,7 +917,7 @@ void countMatches(TMatches &matches, TCounts &cnt)
 	unsigned readNo = -1;
 	short editDist = -1;
 	int64_t count = 0;
-	int64_t maxVal = MaxValue<TValue>::VALUE;
+	int64_t maxVal = std::numeric_limits<TValue>::max();
 
 	for (; it != itEnd; ++it) 
 	{
@@ -954,7 +954,7 @@ setMaxErrors(TSwift &swift, TReadNo readNo, TMaxErrors maxErrors)
 	int minT = _qgramLemma(swift, readNo, maxErrors);
 	if (minT > 1)
 	{
-		if (maxErrors < 0) minT = MaxValue<int>::VALUE;
+		if (maxErrors < 0) minT = std::numeric_limits<int>::max();
 //		::std::cout<<" read:"<<readNo<<" newThresh:"<<minT;
 		setMinThreshold(swift, readNo, (unsigned)minT);
 	}
@@ -1002,7 +1002,7 @@ void compactMatches(TMatches &matches, TCounts &
 		++hitCountCutOff;	// we keep one more match than we actually want, so we can later decide
 							// whether the read mapped more than maxhits times 
 #endif
-	int editDistCutOff = MaxValue<int>::VALUE;
+	int editDistCutOff = std::numeric_limits<int>::max();
 
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
@@ -1165,7 +1165,7 @@ void purgeAmbiguousRnaMatches(TMatches &matches, RazerSOptions<TSpec> &options)
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int editDistCutOff = MaxValue<int>::VALUE;
+	int editDistCutOff = std::numeric_limits<int>::max();
 
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
@@ -1406,7 +1406,7 @@ matchVerify(
 #endif
 
     unsigned ndlLength = sequenceLength(rseqNo, readSet);
-	int maxScore = MinValue<int>::VALUE;
+	int maxScore = std::numeric_limits<int>::min();
 	int minScore = -(int)(ndlLength * options.errorRate);
 	TMyersFinder maxPos;
 

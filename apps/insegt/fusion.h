@@ -192,7 +192,7 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 										itSecTupleEnd = end(tempSecTupleSet);
 										for ( ; itSecTuple != itSecTupleEnd; goNext(itSecTuple))
 										{										
-											appendValue(secTupleSet, getValue(itSecTuple));
+											appendValue(secTupleSet, *itSecTuple);
 										}
 									}
 								}
@@ -209,25 +209,25 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 						itTupleEnd = end(tupleSet);
 						for ( ; itTuple != itTupleEnd; goNext(itTuple))	
 						{
-							firstAnnoId1 = front(getValue(itTuple));
+							firstAnnoId1 = front(*itTuple);
 							erase(value(itTuple), 0);			// first id is not stored; is know by position in tupleCountStore
 
 							// readConnections:
-							if (!empty(getValue(itTuple)))
+							if (!empty(*itTuple))
 							{
-								if (searchValue(pos, getValue(itTuple), getValue(tupleCountStore, firstAnnoId1).readConnections)) 
+								if (searchValue(pos, *itTuple, getValue(tupleCountStore, firstAnnoId1).readConnections))
 									++value(value(tupleCountStore, firstAnnoId1).readConnectionCounts, pos);
 								else 
 								{
 									if (pos != endPosition(getValue(tupleCountStore, firstAnnoId1).readConnections) )
 									{
 										resizeSpace(value(tupleCountStore, firstAnnoId1).readConnections, 1, pos, pos, Generous());
-										assignValue(value(tupleCountStore, firstAnnoId1).readConnections, pos, getValue(itTuple));
+										assignValue(value(tupleCountStore, firstAnnoId1).readConnections, pos, *itTuple);
 										insertValue(value(tupleCountStore, firstAnnoId1).readConnectionCounts, pos, 1, Generous());
 									}
 									else
 									{
-										appendValue(value(tupleCountStore, firstAnnoId1).readConnections, getValue(itTuple), Generous());
+										appendValue(value(tupleCountStore, firstAnnoId1).readConnections, *itTuple, Generous());
 										appendValue(value(tupleCountStore, firstAnnoId1).readConnectionCounts, 1, Generous());
 									}
 								}
@@ -239,29 +239,29 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 								itSecTupleEnd = end(secTupleSet);
 								for ( ; itSecTuple != itSecTupleEnd; goNext(itSecTuple) )
 								{
-									matePairTuple = getValue(itTuple);
+									matePairTuple = *itTuple;
 									// INVALID_ID: sign for connection by matepair (apart from that, there are no INVALID_IDs in the list)
 									appendValue(matePairTuple, INVALID_ANNO_ID, Generous());				
-									if (!empty(getValue(itTuple)) && back(getValue(itTuple)) == front(getValue(itSecTuple)) )		// no id 2x allowed
+									if (!empty(*itTuple) && back(*itTuple) == front(*itSecTuple))		// no id 2x allowed
 									{	
 										if (exact_nTuple == 0 && n == 0) erase(value(itSecTuple), 0);
 										else continue;							// tupel would be created double or tupel wouldn't have the length n anymore
 									}
-									append(matePairTuple, getValue(itSecTuple), Generous());
+									append(matePairTuple, *itSecTuple, Generous());
 					
-									if (empty(getValue(itTuple))) 							
+									if (empty(*itTuple))
 									{
 										beginPos1 = getValue(fragStore.annotationStore, firstAnnoId1).beginPos;
 										endPos1 = getValue(fragStore.annotationStore, firstAnnoId1).endPos;
 									}
 									else
 									{
-										beginPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).beginPos;
-										endPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).endPos;
+										beginPos1 = getValue(fragStore.annotationStore, back(*itTuple)).beginPos;
+										endPos1 = getValue(fragStore.annotationStore, back(*itTuple)).endPos;
 									}
 									// begin position of first annotation in tuple of second read
-									beginPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).beginPos; 
-									endPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).endPos;
+									beginPos2 = getValue(fragStore.annotationStore, front(*itSecTuple)).beginPos;
+									endPos2 = getValue(fragStore.annotationStore, front(*itSecTuple)).endPos;
 									if ( (beginPos1 <= endPos1 && endPos1 < beginPos2) ||			// no overlapping annotations allowed
 									     (endPos1 < beginPos1 && beginPos1 < endPos2) )
 									{
@@ -292,37 +292,37 @@ buildTupleCountStore_Fusion(TTupleCountStore & tupleCountStore,
 						itTupleEnd = end(tupleSet);
 						for ( ; itTuple != itTupleEnd; goNext(itTuple))	
 						{
-							firstAnnoId1 = front(getValue(itTuple));
+							firstAnnoId1 = front(*itTuple);
 							erase(value(itTuple), 0);			// first id is not stored; is know by position in tupleCountStore
 			
 							itSecTuple = begin(secTupleSet);
 							itSecTupleEnd = end(secTupleSet);
 							for ( ; itSecTuple != itSecTupleEnd; goNext(itSecTuple) )
 							{
-								matePairTuple = getValue(itTuple);
+								matePairTuple = *itTuple;
 								// INVALID_ID: sign for connection by matepair (apart from that, there are no INVALID_IDs in the list)
 								appendValue(matePairTuple, INVALID_ANNO_ID, Generous());				
-								if (!empty(getValue(itTuple)) && back(getValue(itTuple)) == front(getValue(itSecTuple)) )		// no id 2x allowed
+								if (!empty(*itTuple) && back(*itTuple) == front(*itSecTuple))		// no id 2x allowed
 								{	
 									if (exact_nTuple == 0 && n == 0) erase(value(itSecTuple), 0);
 									else continue;							// tupel would be created double or tupel wouldn't have the length n anymore
 								}
-								append(matePairTuple, getValue(itSecTuple), Generous());
+								append(matePairTuple, *itSecTuple, Generous());
 						
-								if (empty(getValue(itTuple))) 							
+								if (empty(*itTuple))
 								{
 									beginPos1 = getValue(fragStore.annotationStore, firstAnnoId1).beginPos;
 									endPos1 = getValue(fragStore.annotationStore, firstAnnoId1).endPos;
 								}
 								else
 								{
-									beginPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).beginPos;
-									endPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).endPos;
+									beginPos1 = getValue(fragStore.annotationStore, back(*itTuple)).beginPos;
+									endPos1 = getValue(fragStore.annotationStore, back(*itTuple)).endPos;
 								}
 	
 								// begin position of first annotation in tuple of second read
-								beginPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).beginPos; 
-								endPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).endPos;
+								beginPos2 = getValue(fragStore.annotationStore, front(*itSecTuple)).beginPos;
+								endPos2 = getValue(fragStore.annotationStore, front(*itSecTuple)).endPos;
 								if ( (beginPos1 <= endPos1 && endPos1 < beginPos2) ||			// no overlapping annotations allowed
 								     (endPos1 < beginPos1 && beginPos1 < endPos2) )
 								{

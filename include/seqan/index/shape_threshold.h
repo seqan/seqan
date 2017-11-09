@@ -841,7 +841,7 @@ void computeExactQGramThreshold(
     // columns n-1 and n for recursion
     TMatrixCol col0;    // addressing is colx[errors * statesCount + state]
     TMatrixCol col1;
-    const TThresh infty = MaxValue<TThresh>::VALUE >> 1;
+    const TThresh infty = std::numeric_limits<TThresh>::max() >> 1;
 
     resize(col0, maxErrors * statesCount, infty);
     resize(col1, maxErrors * statesCount);

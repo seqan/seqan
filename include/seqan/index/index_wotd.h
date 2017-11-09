@@ -977,7 +977,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         TTextIterator itText = begin(text, Standard());
         TTextIterator itTextEnd = end(text, Standard());
         for (; itText != itTextEnd; ++itText)
-            ++buckets[ordValue(getValue(itText))];
+            ++buckets[ordValue(*itText)];
     }
 
 
@@ -993,7 +993,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
             TTextIterator itText = begin(text, Standard());
             TTextIterator itTextEnd = end(text, Standard());
             for (; itText != itTextEnd; ++itText)
-                ++buckets[ordValue(getValue(itText))];
+                ++buckets[ordValue(*itText)];
         }
     }
 
@@ -1196,7 +1196,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
             TTextIterator itText = begin(text, Standard());
             TTextIterator itTextEnd = end(text, Standard());
             for(TSize i = 0; itText != itTextEnd; ++itText, ++i)
-                *(saBeg + (*(boundBeg + ordValue(getValue(itText))))++) = i;
+                *(saBeg + (*(boundBeg + ordValue(*itText)))++) = i;
         }
         index.sentinelOcc = 0;
         index.sentinelBound = 0;
@@ -1247,7 +1247,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
             TTextIterator itTextEnd = end(text, Standard());
             for(; itText != itTextEnd; ++itText)
             {
-                *(saBeg + (*(boundBeg + ordValue(getValue(itText))))++) = localPos;
+                *(saBeg + (*(boundBeg + ordValue(*itText)))++) = localPos;
                 assignValueI2(localPos, getValueI2(localPos) + 1);
             }
         }

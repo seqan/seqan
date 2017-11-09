@@ -1225,7 +1225,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
 
     // Handle case of empty seed set.
     if (length(seedSet) < 1)
-        return MinValue<TScoreValue>::VALUE;
+        return std::numeric_limits<TScoreValue>::min();
 
     // Find the first anchor that is not covered by the region between the beginning of the matrix and the next anchor
     // considering the minbandwidh parameter.

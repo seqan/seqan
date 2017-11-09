@@ -50,9 +50,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
 
     // File has same contents as in the SAM test.
     CharString bamFilename;
-    append(bamFilename, SEQAN_PATH_TO_ROOT());
-    //append(bamFilename, "/tests/bam_io/small.bam");
-    append(bamFilename, "/tests/bam_io/test_small.bam");
+    append(bamFilename, getAbsolutePath("/tests/bam_io/test_small.bam"));
+    //append(bamFilename, getAbsolutPath("/tests/bam_io/small.bam"));
 
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));
@@ -105,9 +104,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     // -----------------------------------------------------------------------
 
     CharString bamFilename;
-    append(bamFilename, SEQAN_PATH_TO_ROOT());
-    //append(bamFilename, "/tests/bam_io/small.bam");
-    append(bamFilename, "/tests/bam_io/test_small.bam");
+    append(bamFilename, getAbsolutePath("/tests/bam_io/test_small.bam"));
+    //append(bamFilename, getAbsolutePath("/tests/bam_io/small.bam"));
 
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));

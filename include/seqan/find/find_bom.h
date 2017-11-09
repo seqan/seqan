@@ -98,6 +98,7 @@ struct Trie {}; //Trie Tag => "BTM"
 template <typename TSpec = Oracle>
 struct Bfam; //backward factor automaton searching
 
+[[deprecated]]
 typedef Bfam<Oracle> BomAlgo; //deprecated, still there for compatibility reasons
 
 //////////////////////////////////////////////////////////////////////////////

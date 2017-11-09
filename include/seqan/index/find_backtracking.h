@@ -284,7 +284,7 @@ template <typename TPrefix>
 inline unsigned
 getScore(PrefixAligner_<TPrefix, HammingDistance> const & me, bool atEnd)
 {
-    return atEnd ? me.errors : MaxValue<unsigned>::VALUE;
+    return atEnd ? me.errors : std::numeric_limits<unsigned>::max();
 }
 
 template <typename TPrefix>
