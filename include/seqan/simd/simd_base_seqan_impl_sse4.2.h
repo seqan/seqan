@@ -602,6 +602,83 @@ inline TSimdVector _max(TSimdVector & a, TSimdVector & b, SimdParams_<16, 2, uin
 #endif // defined(__AVX512VL__)
 }
 
+
+// --------------------------------------------------------------------------
+// _min (128bit)
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 16, int8_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epi8(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                           SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 16, uint8_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epu8(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                           SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 8, int16_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epi16(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 8, uint16_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epu16(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 4, int32_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epi32(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 4, uint32_t>)
+{
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epu32(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 2, int64_t>)
+{
+#if defined(__AVX512VL__)
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epi64(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+#else // defined(__AVX512VL__)
+    return blend(a, b, cmpGt(a, b));
+#endif // defined(__AVX512VL__)
+}
+
+template <typename TSimdVector>
+inline TSimdVector _min(TSimdVector const & a, TSimdVector const & b, SimdParams_<16, 2, uint64_t>)
+{
+#if defined(__AVX512VL__)
+    return SEQAN_VECTOR_CAST_(TSimdVector,
+                              _mm_min_epu64(SEQAN_VECTOR_CAST_(const __m128i&, a),
+                                            SEQAN_VECTOR_CAST_(const __m128i&, b)));
+#else // defined(__AVX512VL__)
+    return blend(a, b, cmpGt(a, b));
+#endif // defined(__AVX512VL__)
+}
+
 // --------------------------------------------------------------------------
 // _blend (128bit)
 // --------------------------------------------------------------------------

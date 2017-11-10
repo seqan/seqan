@@ -173,6 +173,18 @@ max(TSimdVector const & a, TSimdVector const & b)
 }
 
 // --------------------------------------------------------------------------
+// Function min()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+min(TSimdVector const & a, TSimdVector const & b)
+{
+    typedef typename Value<TSimdVector>::Type TValue;
+    return _min(a, b, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TValue), TValue>());
+}
+
+// --------------------------------------------------------------------------
 // Function operator|()
 // --------------------------------------------------------------------------
 

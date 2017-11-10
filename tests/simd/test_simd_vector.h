@@ -441,6 +441,27 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
     }
 }
 
+SEQAN_TYPED_TEST(SimdVectorTestCommon, Min)
+{
+    using namespace seqan;
+    using TSimdVector = typename TestFixture::TSimdVector;
+    using TValue = typename TestFixture::TValue;
+    constexpr auto length = TestFixture::LENGTH;
+
+    TSimdVector a{0u}, b{0u};
+    fillVectors(a, b);
+
+    auto c = min(a, b);
+
+    for (auto i = 0; i < length; ++i)
+    {
+        TValue a_i = -3 + i * 3, b_i = length - i;
+        // std::cout << i << " / " << length << ": " << (int)c[i] << " = min (" << (int)a[i] << ", " << (int)b[i] << ")" << std::endl;
+        SEQAN_ASSERT_EQ(c[i], std::min(a[i], b[i]));
+        SEQAN_ASSERT_EQ(c[i], std::min(a_i, b_i));
+    }
+}
+
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOr)
 {
     using namespace seqan;
