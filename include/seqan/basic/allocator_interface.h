@@ -220,44 +220,6 @@ allocate(T const &,
 #endif
 }
 
-template <typename T, typename TValue, typename TSize, typename TUsage>
-inline void
-allocate(T &,
-         TValue * & data,
-         TSize count,
-         Tag<TUsage> const &)
-{
-//  data = (TValue *) operator new(count * sizeof(TValue));
-#ifdef STDLIB_VS
-    data = (TValue *) _aligned_malloc(count * sizeof(TValue), __alignof(TValue));
-#else
-/*#if _POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600
-    const size_t align = (__alignof__(TValue) < sizeof(void*)) ? sizeof(void*) : __alignof__(TValue);
-    if (posix_memalign(&(void* &)data, align, count * sizeof(TValue)))
-      data = NULL;
-#else
-    data = (TValue *) malloc(count * sizeof(TValue));
-#endif*/
-    // suppress -Walloc-size-larger-than= warning; a simple static_cast does not work
-    // a working solution would be to downcast std::size_t to unsigned, but this
-    // would loose information; thus disabling this for gcc 7 and upwards
-    SEQAN_ASSERT_LEQ(static_cast<std::size_t>(count), std::numeric_limits<std::size_t>::max() / sizeof(TValue));
-#   if defined(COMPILER_GCC) &&  __GNUC__ >= 7
-#       pragma GCC diagnostic push
-#       pragma GCC diagnostic ignored "-Walloc-size-larger-than="
-#   endif //COMPILER_GCC
-    data = (TValue *) operator new(count * sizeof(TValue));
-#   if defined(COMPILER_GCC) &&  __GNUC__ >= 7
-#       pragma GCC diagnostic pop
-#   endif //COMPILER_GCC
-#endif
-
-#ifdef SEQAN_PROFILE
-    if (data)
-        SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
-#endif
-}
-
 // NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
 // allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
 // See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
