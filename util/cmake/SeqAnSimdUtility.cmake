@@ -206,6 +206,7 @@ set(SEQAN_SIMD_AVX512_CNL_SOURCE "${SEQAN_SIMD_AVX512_KNL_SOURCE}")
 
 set(SEQAN_SIMD_SEQANSIMD_SOURCE
 "#include <cstdint>
+#include <iostream>
 using int32x4_t = int32_t __attribute__ ((__vector_size__(4 * sizeof(int32_t)))); // SSE4 = 128bit
 using int32x8_t = int32_t __attribute__ ((__vector_size__(8 * sizeof(int32_t)))); // AVX2 = 256bit
 
@@ -266,7 +267,12 @@ int main() {
   auto z = x + y;
 
   // gcc 4.9 bug
-  constexpr auto length = LENGTH<int32x8_t>::VALUE;
+  constexpr auto length1 = LENGTH<int32x4_t>::VALUE;
+  constexpr auto length2 = LENGTH<int32x8_t>::VALUE;
+  static_assert(length1 == 4u, \"\");
+  static_assert(length2 == 8u, \"\");
+  std::cout << \"length1: \" << length1 << std::endl;
+  std::cout << \"length2: \" << length2 << std::endl;
 
   // icc 16.0.0, 16.0.1 bug
   assign(a, 0, 4);
