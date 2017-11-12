@@ -89,9 +89,11 @@ template <typename TDist,
 inline bool _checkScoreOverflow(TDist const distance,
                                 Score<TScoreValue, TScoreSpec> const & score)
 {
-    auto mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
-    return static_cast<decltype(BitsPerValue<TScoreValue>::VALUE)>(bitScanReverse(mxScore) + bitScanReverse(distance))
-            <= BitsPerValue<TScoreValue>::VALUE - 1;
+    using TBits = decltype(BitsPerValue<TScoreValue>::VALUE);
+    TScoreValue mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
+
+    TBits bits = bitScanReverse(mxScore) + bitScanReverse(distance);
+    return bits <= BitsPerValue<TScoreValue>::VALUE - 1;
 }
 
 // ----------------------------------------------------------------------------
