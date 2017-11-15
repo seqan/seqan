@@ -92,7 +92,7 @@ struct ReadStoreElement
 
 template <typename TSpec>
 const typename Id<ReadStoreElement<TSpec> >::Type
-ReadStoreElement<TSpec>::INVALID_ID = MaxValue<typename Id<ReadStoreElement<TSpec> >::Type>::VALUE;
+ReadStoreElement<TSpec>::INVALID_ID = std::numeric_limits<typename Id<ReadStoreElement<TSpec> >::Type>::max();
 
 //////////////////////////////////////////////////////////////////////////////
 

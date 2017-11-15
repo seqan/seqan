@@ -39,8 +39,7 @@
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_build)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/adeno_genome.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
     seqan::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(build(faiIndex, toCString(filePath)), true);
@@ -54,8 +53,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_build)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_write)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/adeno_genome.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
     seqan::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(build(faiIndex, toCString(filePath)), true);
@@ -64,15 +62,13 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_write)
     seqan::CharString tmpOut = SEQAN_TEMP_FILENAME();
     SEQAN_ASSERT_EQ(save(faiIndex, toCString(tmpOut)), true);
 
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/adeno_genome.fa.fai");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/adeno_genome.fa.fai");
     SEQAN_ASSERT_MSG(seqan::_compareTextFiles(toCString(pathToExpected), toCString(tmpOut)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/adeno_genome.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
     seqan::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
@@ -86,8 +82,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_sequence)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/adeno_genome.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
     seqan::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
@@ -102,8 +97,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
 {
     // From integers.
     {
-        seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-        append(filePath, "/tests/seq_io/adeno_genome.fa");
+        seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
         seqan::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
@@ -114,8 +108,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
     }
     // From integers, over the end of the sequence.
     {
-        seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-        append(filePath, "/tests/seq_io/adeno_genome.fa");
+        seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
         seqan::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
@@ -126,8 +119,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
     }
     // From GenomicRegion.
     {
-        seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-        append(filePath, "/tests/seq_io/adeno_genome.fa");
+        seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
         seqan::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);

@@ -353,8 +353,8 @@ writeBackToLocal(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore, TFi
     unsigned const DELTA = getMaxDeviationOfOrder(tls.filterPattern);
     // std::cerr << "(DELTA=" << DELTA << ")";
     //std::cerr << "[DELTA=" << DELTA << std::endl;
-    size_t firstBeginPos = MaxValue<size_t>::VALUE;  // Leftmost sort position, required later for masking.
-    size_t firstWindowBegin = MaxValue<size_t>::VALUE;  // Leftmost sort position, required later for masking.
+    size_t firstBeginPos = std::numeric_limits<size_t>::max();  // Leftmost sort position, required later for masking.
+    size_t firstWindowBegin = std::numeric_limits<size_t>::max();  // Leftmost sort position, required later for masking.
     unsigned bucketsWrittenBack = 0;
     // (2) Write back the longest contiguous sequence of full buckets.
     for (; tls.nextBucketToWriteBack < length(tls.missingInBucket) && tls.missingInBucket[tls.nextBucketToWriteBack] == 0u; ++tls.nextBucketToWriteBack, ++bucketsWrittenBack)
@@ -394,7 +394,7 @@ writeBackToLocal(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore, TFi
         size_t dPos = 1;
         // Exponential search backwards.  After masking, reads are sorted by begin position.
         size_t windowBegin = tls.options.windowSize * idx;
-        if (firstWindowBegin == MaxValue<size_t>::VALUE)
+        if (firstWindowBegin == std::numeric_limits<size_t>::max())
             firstWindowBegin = windowBegin;
         while (beginPos > 0u &&
                static_cast<size_t>(tls.matches[beginPos].beginPos) < windowBegin &&
@@ -414,7 +414,7 @@ writeBackToLocal(ThreadLocalStorage<MapSingleReads<TMatches, TFragmentStore, TFi
         // LessBeginPos<TMatch> cmp;
         // TIterator it = std::lower_bound(begin(tls.matches, Standard()) + beginPos, end(tls.matches, Standard()), m, cmp);
         // beginPos = it - begin(tls.matches, Standard());
-        if (firstBeginPos == MaxValue<size_t>::VALUE)
+        if (firstBeginPos == std::numeric_limits<size_t>::max())
             firstBeginPos = beginPos;
 
 // SEQAN_OMP_PRAGMA(critical)
@@ -675,7 +675,7 @@ void _mapSingleReadsParallelToContig(
 // SEQAN_OMP_PRAGMA(critical)
 //         std::cerr << "window count: " << length(tls.verificationResultBuckets) << std::endl;
         clear(tls.missingInBucket);
-        resize(tls.missingInBucket, length(tls.verificationResultBuckets), MaxValue<unsigned>::VALUE);
+        resize(tls.missingInBucket, length(tls.verificationResultBuckets), std::numeric_limits<unsigned>::max());
 
         // For each filtration window...
         bool hasMore = !empty(host(tls.filterFinder));
@@ -841,7 +841,7 @@ void initializeThreadLocalStoragesSingle(TThreadLocalStorages & threadLocalStora
         typedef typename TThreadLocalStorage::TMatchFilter TMatchFilter;
         double READ_FRAC_WITH_HISTO = 0.01;
         tls.matchFilter.reset(new TMatchFilter(tls.splitters[tls.threadId + 1] - tls.splitters[tls.threadId], options.matchHistoStartThreshold, READ_FRAC_WITH_HISTO, tls, tls.splitters[tls.threadId], tls.globalStore->readSeqStore, tls.options));
-        tls.options.compactThresh = MaxValue<unsigned>::VALUE;
+        tls.options.compactThresh = std::numeric_limits<unsigned>::max();
 #endif // #ifdef RAZERS_DEFER_COMPACTION
 
         // Clear pattern and set parameters.
@@ -1022,7 +1022,7 @@ int _mapSingleReadsParallel(
 
     // Save compaction threshold and set global threshold to infinity, so matchVerify does not compact!
     int oldThreshold = options.compactThresh;
-    options.compactThresh = MaxValue<unsigned>::VALUE;
+    options.compactThresh = std::numeric_limits<unsigned>::max();
 
     // For each contig: Map reads in parallel.
     SEQAN_PROTIMESTART(findTime);

@@ -455,7 +455,7 @@ bool isGap(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @fn Gaps#isCharacer
  * @brief Query positions in a Gaps object for being a character.
  *
- * @signature bool isGap(gaps, viewPos);
+ * @signature bool isCharacter(gaps, viewPos);
  *
  * @param[in] gaps    The Gaps object to query.
  * @param[in] viewPos The view position (including clipping and gaps).

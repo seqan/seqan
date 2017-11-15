@@ -121,7 +121,7 @@ struct RankDictionary;
 // ----------------------------------------------------------------------------
 
 template <typename TValue, template <typename, typename> class TRankDictionary, typename TSpec, typename TConfig>
-struct DefaultIndexStringSpec<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
+struct StringSpec<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
 {
     typedef typename TConfig::Fibre Type;
 };
@@ -255,7 +255,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
     TTextIterator textBegin = begin(text, Standard());
     TTextIterator textEnd = end(text, Standard());
     for (TTextIterator textIt = textBegin; textIt != textEnd; ++textIt)
-        setValue(dict, textIt - textBegin, value(textIt));
+        setValue(dict, textIt - textBegin, *textIt);
 
     // Update all ranks.
     updateRanks(dict);

@@ -154,7 +154,7 @@ inline void
 assignValue(DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> & dpNavigator,
             TValue const & element)
 {
-    assignValue(dpNavigator._activeColIterator, element);
+    *dpNavigator._activeColIterator = element;
 }
 
 // ----------------------------------------------------------------------------

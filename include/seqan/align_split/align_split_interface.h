@@ -389,7 +389,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     // We actually need to first compute the scores, than trace from the choosen split position.
     DPContext<TScoreValue, TGapModel> dpContextL;
     DPScoutState_<SplitAlignmentScout> scoutStateL;
-    resize(scoutStateL.splitScore, length(source(gapsContigL)) + 1, minValue<TScoreValue>() / 2);
+    resize(scoutStateL.splitScore, length(source(gapsContigL)) + 1, std::numeric_limits<TScoreValue>::min() / 2);
     resize(scoutStateL.splitPos, length(scoutStateL.splitScore));
 
     String<TTraceSegment> traceL;
@@ -402,7 +402,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     // Compute trace and split score sequence for the right alignment.
     DPContext<TScoreValue, TGapModel> dpContextR;
     DPScoutState_<SplitAlignmentScout> scoutStateR;
-    resize(scoutStateR.splitScore, length(source(gapsContigR)) + 1, minValue<TScoreValue>() / 2);
+    resize(scoutStateR.splitScore, length(source(gapsContigR)) + 1, std::numeric_limits<TScoreValue>::min() / 2);
     resize(scoutStateR.splitPos, length(scoutStateR.splitScore));
 
     String<TTraceSegment> traceR;
@@ -482,7 +482,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 {
     typedef typename SubstituteAlignConfig_<AlignConfig<TTop, TRight, TLeft, TBottom> >::Type TFreeEndGaps;
     // Check whether we need to run the banded versions.
-    if (lowerDiagonal != minValue<int>() && upperDiagonal != maxValue<int>())
+    if (lowerDiagonal != std::numeric_limits<int>::min() && upperDiagonal != std::numeric_limits<int>::max())
     {
         typedef AlignConfig2<SplitAlignmentAlgo, DPBandConfig<BandOn>, TFreeEndGaps,
         TracebackOn<TracebackConfig_<CompleteTrace, GapsLeft> > > TAlignConfigL;
@@ -513,8 +513,8 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
                          Gaps<TReadSeqR> & gapsReadR,
                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
                          AlignConfig<TTop, TRight, TLeft, TBottom, TConfigSpec> const & config,
-                         int lowerDiagonal = minValue<int>(),
-                         int upperDiagonal = maxValue<int>())
+                         int lowerDiagonal = std::numeric_limits<int>::min(),
+                         int upperDiagonal = std::numeric_limits<int>::max())
 {
     if (_usesAffineGaps(scoringScheme, source(gapsContigL), source(gapsReadL)))
         return _splitAlignmentImpl(gapsContigL, gapsReadL, gapsContigR, gapsReadR,

@@ -158,8 +158,8 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
     --mIt;
 
     // We will use minCoord/maxCoord to store the temporarily minimal and maximal coordinates in the window.
-    int minCoord = maxValue<int>();
-    int maxCoord = minValue<int>();
+    int minCoord = std::numeric_limits<int>::max();
+    int maxCoord = std::numeric_limits<int>::min();
     //CharString str = "discBef";
     //_dumpMatches(fragmentStore, str);
 
@@ -187,9 +187,9 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
     }
 
     // Write minimal and maximal coordinate from reads in this window to options.minCoord/options.maxCoord.
-    if (minCoord != maxValue<int>())
+    if (minCoord != std::numeric_limits<int>::max())
         options.minCoord = minCoord;
-    if (maxCoord != minValue<int>())
+    if (maxCoord != std::numeric_limits<int>::min())
         options.maxCoord = maxCoord;
 
     if(options._debugLevel > 1)
@@ -817,7 +817,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
         TReadCounts tmpReadCounts;
         TReadClips tmpReadClips;
         TReadCigars tmpReadCigars;
-        options.minCoord = MaxValue<unsigned>::VALUE;
+        options.minCoord = std::numeric_limits<unsigned>::max();
         options.maxCoord = 0;
 
         // snp calling is done for all positions between windowBegin and windowEnd

@@ -200,14 +200,14 @@ inline typename DeltaValue<typename Container<Iter<TDeltaMap, DeltaMapIteratorSp
 deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter, TTag const & tag)
 {
     SEQAN_ASSERT(isDeltaType(deltaType(iter), TTag()));
-    return deltaValue(container(iter)._deltaStore, getDeltaRecord(value(iter)).i2, tag);
+    return deltaValue(container(iter)._deltaStore, getDeltaRecord(*iter).i2, tag);
 }
 
 template <typename TDeltaMap, typename TTag>
 inline typename DeltaValue<typename Container<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type, TTag>::Type &
 deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter, TTag const & tag)
 {
-    return deltaValue(container(iter)._deltaStore, getDeltaRecord(value(iter)).i2, tag);
+    return deltaValue(container(iter)._deltaStore, getDeltaRecord(*iter).i2, tag);
 }
 
 namespace impl

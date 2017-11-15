@@ -42,17 +42,15 @@ INSEGT is distributed with SeqAn - The C++ Sequence Analysis Library (see
 http://www.seqan.de). To build INSEGT do the following:
 
 Follow the "Getting Started" section on http://trac.seqan.de/wiki and check
-out the latest SVN trunk. Instead of creating a project file in Debug mode,
+out the latest Git repo. Instead of creating a project file in Debug mode,
 switch to Release mode (-DCMAKE_BUILD_TYPE=Release) and compile insegt. This
 can be done as follows:
 
-  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
-  mkdir seqan-trunk-build
-  mkdir seqan-trunk-build/release
-  cd seqan-trunk-build/release
-  cmake ../../seqan-trunk -DCMAKE_BUILD_TYPE=Release
-  make insegt
-
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  4)  make insegt
+  5)  ./bin/insegt --help
 
 ---------------------------------------------------------------------------
 3. Usage

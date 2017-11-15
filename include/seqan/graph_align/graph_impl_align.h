@@ -1947,7 +1947,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     // Remember for each vertex descriptor the position in the sequence
     typedef String<TSize> TMapVertexPos;
     TMapVertexPos map;
-    resize(map, getIdUpperBound(_getVertexIdManager(g)), MaxValue<TSize>::VALUE);
+    resize(map, getIdUpperBound(_getVertexIdManager(g)), std::numeric_limits<TSize>::max());
     typedef typename Iterator<TString const, Standard>::Type TStringIterConst;
     typedef typename Iterator<TVertexSet const, Standard>::Type TVertexSetIterConst;
     TStringIterConst itStr1 = begin(str1, Standard());
@@ -1978,7 +1978,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
             for(;!atEnd(itOut); ++itOut) {
                 // Target vertex must be in the map
                 pPos = map[targetVertex(itOut)];
-                if (pPos != MaxValue<TSize>::VALUE)
+                if (pPos != std::numeric_limits<TSize>::max())
                     appendValue(occupiedPositions, pPos * n + (TSize) (n - posItStr2 - 1), Generous());
             }
         }
@@ -1989,7 +1989,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     typedef typename Iterator<TSlotToPos, Standard>::Type TSlotToPosIter;
     TSlotToPos slotToPos;
     TSize counter = 0;
-    TSize oldVal = MaxValue<TSize>::VALUE;
+    TSize oldVal = std::numeric_limits<TSize>::max();
     TOccIter occIt = begin(occupiedPositions, Standard());
     TOccIter occItEnd = end(occupiedPositions, Standard());
     for(;occIt != occItEnd; ++occIt) {
@@ -2015,7 +2015,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
             for(;!atEnd(itOut); ++itOut) {
                 // Target vertex must be in the map
                 pPos = map[targetVertex(itOut)];
-                if ( pPos != MaxValue<TSize>::VALUE)
+                if ( pPos != std::numeric_limits<TSize>::max())
                     weights[std::distance(begin(slotToPos, Standard()), std::lower_bound(begin(slotToPos, Standard()), end(slotToPos, Standard()), pPos * n + (TSize) (n - posItStr2 - 1)))] += (TCargo) cargo(*itOut);
             }
         }

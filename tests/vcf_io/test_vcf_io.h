@@ -44,8 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 {
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/vcf_io/example.vcf");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(vcfPath)));
@@ -106,8 +105,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/vcf_io/example_records_with_errors.vcf");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example_records_with_errors.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     open(mmapString, toCString(vcfPath));
@@ -171,8 +169,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 {
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/vcf_io/example.vcf");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
 
     seqan::VcfFileIn vcfStream(toCString(vcfPath));
     seqan::VcfHeader header;
@@ -322,14 +319,14 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
     writeHeader(iter, vcfHeader, vcfIOContext, seqan::Vcf());
     file.close();
 
-    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/vcf_header.vcf";
+    std::string goldPath = seqan::getAbsolutePath("/tests/vcf_io/vcf_header.vcf");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
 {
-    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/example_records.vcf";
+    std::string goldPath = seqan::getAbsolutePath("/tests/vcf_io/example_records.vcf");
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
 
     std::ifstream file(goldPath.c_str());
@@ -462,8 +459,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 
     close(vcfStream);
 
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/tests/vcf_io/example.vcf");
+    seqan::CharString goldPath(seqan::getAbsolutePath("/tests/vcf_io/example.vcf"));
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 

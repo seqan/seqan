@@ -146,7 +146,7 @@ public:
     String<TBinIndex_> _binIndices;
     String<TLinearIndex_> _linearIndices;
 
-    BamIndex() : _unalignedCount(maxValue<uint64_t>())
+    BamIndex() : _unalignedCount(std::numeric_limits<uint64_t>::max())
     {}
 };
 
@@ -218,7 +218,7 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
     // ------------------------------------------------------------------------
     // Compute offset in BGZF file.
     // ------------------------------------------------------------------------
-    uint64_t offset = MaxValue<uint64_t>::VALUE;
+    uint64_t offset = std::numeric_limits<uint64_t>::max();
 
     // Retrieve the candidate bin identifiers for [pos, posEnd).
     String<uint16_t> candidateBins;
@@ -298,10 +298,10 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
         readRecord(record, bamFile);
 
         // std::cerr << "record.beginPos == " << record.beginPos << "\n";
-        // int32_t endPos = record.beginPos + getAlignmentLengthInRef(record);
+         int32_t endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (!hasAlignments || record.beginPos <= pos)
+        if (!hasAlignments && record.beginPos <= posEnd && pos <= endPos)
         {
             // Found a valid alignment.
             hasAlignments = true;
@@ -312,7 +312,7 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
             break;  // Cannot find overlapping any more.
     }
 
-    if (offset != MaxValue<uint64_t>::VALUE)
+    if (offset != std::numeric_limits<uint64_t>::max())
         setPosition(bamFile, offset);
 
     // Finding no overlapping alignment is not an error, hasAlignments is false.
@@ -345,19 +345,19 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
     hasAlignments = false;
 
     // Search linear indices for the largest entry of all references.
-    uint64_t aliOffset = MaxValue<uint64_t>::VALUE;
+    uint64_t aliOffset = std::numeric_limits<uint64_t>::max();
     for (int i = length(index._linearIndices) - 1; i >= 0; --i)
         if (!empty(index._linearIndices[i]))
         {
             aliOffset = back(index._linearIndices[i]);
             break;
         }
-    if (aliOffset == MaxValue<uint64_t>::VALUE)
+    if (aliOffset == std::numeric_limits<uint64_t>::max())
         return false;  // No offset found.
 
     // Get index of the first orphan alignment by seeking from linear index bucket.
     BamAlignmentRecord record;
-    uint64_t offset = MaxValue<uint64_t>::VALUE;
+    uint64_t offset = std::numeric_limits<uint64_t>::max();
     uint64_t result = 0;
     if (!setPosition(bamFile, aliOffset))
         return false;  // Error while seeking.
@@ -375,7 +375,7 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
     }
 
     // Jump back to the first alignment.
-    if (offset != MaxValue<uint64_t>::VALUE)
+    if (offset != std::numeric_limits<uint64_t>::max())
     {
         if (!setPosition(bamFile, offset))
             return false;  // Error while seeking.
@@ -590,7 +590,7 @@ inline bool save(BamIndex<Bai> const & index, char const * baiFilename)
 
     // Write the number of unaligned reads if set.
     //std::cerr << "UNALIGNED\t" << index._unalignedCount << std::endl;
-    if (index._unalignedCount != maxValue<uint64_t>())
+    if (index._unalignedCount != std::numeric_limits<uint64_t>::max())
         out.write(reinterpret_cast<char const *>(&index._unalignedCount), 8);
 
     return out.good();  // false on error, true on success.
@@ -656,13 +656,13 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
 
     // Scan over BAM file and create index.
     BamAlignmentRecord record;
-    uint32_t currBin    = maxValue<uint32_t>();
-    uint32_t prevBin    = maxValue<uint32_t>();
+    uint32_t currBin    = std::numeric_limits<uint32_t>::max();
+    uint32_t prevBin    = std::numeric_limits<uint32_t>::max();
     int32_t currRefId   = BamAlignmentRecord::INVALID_REFID;
     int32_t prevRefId   = BamAlignmentRecord::INVALID_REFID;
     uint64_t currOffset = position(bamFile);
     uint64_t prevOffset = currOffset;
-    int32_t prevPos     = minValue<int32_t>();
+    int32_t prevPos     = std::numeric_limits<int32_t>::min();
 
     while (!atEnd(bamFile))
     {
@@ -710,7 +710,7 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
 
             // Update reference book keeping.
             prevRefId = record.rID;
-            prevBin = minValue<int32_t>();
+            prevBin = std::numeric_limits<int32_t>::min();
         }
 
         // If the alignment's reference id is valid and its bin is not a leaf.
@@ -736,7 +736,7 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
         if (record.bin != prevBin)
         {
             // If not first bin of reference, save previous bin data.
-            if (currBin != maxValue<uint32_t>())
+            if (currBin != std::numeric_limits<uint32_t>::max())
                 _baiAddAlignmentChunkToBin(index, currBin, currOffset, prevOffset);
 
             // Update markers.

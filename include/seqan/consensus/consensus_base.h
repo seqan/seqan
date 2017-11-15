@@ -1354,7 +1354,7 @@ return;
 //
 //    // Parse the file and convert the internal ids
 //    TPos maxPos = 0;
-//    TPos minPos = MaxValue<TPos>::VALUE;
+//    TPos minPos = std::numeric_limits<TPos>::max();
 //    TId count = 0;
 //    if (atEnd(reader))
 //        return false;

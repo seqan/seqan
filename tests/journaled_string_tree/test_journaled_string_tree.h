@@ -290,7 +290,7 @@ SEQAN_DEFINE_TEST(test_journaled_string_tree_max_size)
     typedef typename Member<JournaledStringTree<Dna5String>, JstDeltaMapMember>::Type TDeltaMap;
     typedef typename Size<TDeltaMap>::Type TSize;
 
-    SEQAN_ASSERT_EQ(maxSize(jst), MaxValue<TSize>::VALUE);
+    SEQAN_ASSERT_EQ(maxSize(jst), std::numeric_limits<TSize>::max());
 }
 
 #endif // TESTS_JOURNALED_STRING_TREE_TEST_JOURNALED_STRING_TREE_H_

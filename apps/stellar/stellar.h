@@ -78,7 +78,7 @@ _appendNegativeSegment(TAlign const & align,
         }
         ++pos;
     }
-    if (pos == len) appendValue(queue, TMerger(beginPos, pos, minValue<TScoreValue>()+1));
+    if (pos == len) appendValue(queue, TMerger(beginPos, pos, MinValue<TScoreValue>::VALUE + 1));
     else appendValue(queue, TMerger(beginPos, pos, score));
 }
 
@@ -172,7 +172,7 @@ _splitAtXDrops(TAlign & align,
     String<TMerger> queue;
     TPos pos = _min(toViewPosition(row(align, 0), beginPosition(row(align, 0))),
                     toViewPosition(row(align, 1), beginPosition(row(align, 1))));
-    appendValue(queue, TMerger(pos, pos, minValue<TScoreValue1>()+1));
+    appendValue(queue, TMerger(pos, pos, MinValue<TScoreValue1>::VALUE + 1));
 
     TPos aliLength = _max(toViewPosition(row(align, 0), endPosition(row(align, 0))),
                           toViewPosition(row(align, 1), endPosition(row(align, 1))));
@@ -510,7 +510,7 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
     TScore match = 1;
     TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(infH)));
     Score<TScore> scoreMatrix(match, mismatchIndel, mismatchIndel);
-    TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), minValue<TScore>()+1);
+    TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), MinValue<TScore>::VALUE + 1);
 
     // diagonals for banded alignment
     int64_t upperDiag = 0;
@@ -576,7 +576,7 @@ verifySwiftHit(Segment<TInfix, InfixSegment> const & infH,
     TScore match = 1;
     TScore mismatchIndel = (TScore)_max((TScore) ceil(-1/eps) + 1, -(TScore)length(host(infH)));
     Score<TScore> scoreMatrix(match, mismatchIndel, mismatchIndel);
-    TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), minValue<TScore>()+1);
+    TScore scoreDropOff = (TScore) _max((TScore) xDrop * (-mismatchIndel), MinValue<TScore>::VALUE + 1);
 
     // calculate minimal score for local alignments
     TEpsilon e = floor(eps*minLength);

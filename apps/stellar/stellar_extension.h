@@ -294,7 +294,7 @@ _align_banded_nw_best_ends(TTrace& trace,
 		TTraceIter traceIt = begin(trace, Standard()) + row * diagonalWidth + lo_diag;
 		TRowIter matIt = begin(mat, Standard()) + lo_diag;
 		TRowIter lenIt = begin(len, Standard()) + lo_diag;
-		hori_val = MinValue<TScoreValue>::VALUE;
+		hori_val = std::numeric_limits<TScoreValue>::min();
 		hori_len = len1+len2+1;
 		for(TSize col = lo_diag; col<hi_diag; ++col, ++matIt, ++traceIt, ++lenIt) {
 			actualCol = col + diagL + actualRow;
@@ -308,7 +308,7 @@ _align_banded_nw_best_ends(TTrace& trace,
 				++(*lenIt);
 				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) +
 				    scoreGapExtendVertical(sc,sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : std::numeric_limits<TScoreValue>::min()) > *matIt)
 				{
 					*matIt = verti_val;
 					*traceIt = Vertical;
@@ -316,7 +316,7 @@ _align_banded_nw_best_ends(TTrace& trace,
 				}						
 				if ((hori_val = (col > 0) ? hori_val +
 				    scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : std::numeric_limits<TScoreValue>::min()) > *matIt)
 				{
 					*matIt = hori_val;
 					*traceIt = Horizontal;

@@ -129,7 +129,7 @@ struct GffRecord
      * @var int32_t GffRecord::INVALID_IDX;
      * @brief Static member with invalid/sentinel rID value.
      */
-    static int32_t const INVALID_POS = 2147483647;  // TODO(singer): Should be MaxValue<int32_t>::VALUE, but that is not a constant expression :(
+    static int32_t const INVALID_POS = 2147483647;  // TODO(singer): Should be std::numeric_limits<int32_t>::max(), but that is not a constant expression :(
 
     /*!
      * @var CharString GffRecord::ref;

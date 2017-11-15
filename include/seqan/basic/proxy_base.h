@@ -429,7 +429,7 @@ operator>>(TStream & strm,
     typedef typename Value<TProxy>::Type TValue;
     TValue temp;
     strm >> temp;
-    assignValue(iter(proxy), temp);
+    *iter(proxy) = temp;
     return strm;
 }
 
@@ -442,7 +442,7 @@ operator>>(TStream & strm,
     typedef typename Value<TProxy>::Type TValue;
     TValue temp;
     strm >> temp;
-    assignValue(iter(proxy), temp);
+    *iter(proxy) = temp;
     return strm;
 }
 

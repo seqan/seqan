@@ -92,51 +92,344 @@ find_package (SeqAn CONFIG REQUIRED)
 find_package (SDE)
 find_package (Umesimd)
 
+include(CheckCXXSourceCompiles)
+include(CheckCXXSourceRuns)
+
+set(SEQAN_SIMD_UTILITY_VERBOSE OFF)
 set(SEQAN_SIMD_SUPPORTED_EXTENSIONS "sse4;avx2;avx512_knl;avx512_skx;avx512_cnl")
 
 if (COMPILER_MSVC)
-    set(SEQAN_SIMD_SSE4_OPTIONS /arch:AVX)
-    set(SEQAN_SIMD_AVX2_OPTIONS /arch:AVX2)
-    set(SEQAN_SIMD_AVX512_KNL_OPTIONS "")
-    set(SEQAN_SIMD_AVX512_SKX_OPTIONS "")
-    set(SEQAN_SIMD_AVX512_CNL_OPTIONS "")
+    set(SEQAN_SIMD_SSE4_FLAGS "/arch:AVX")
+    set(SEQAN_SIMD_AVX2_FLAGS "/arch:AVX2")
+    set(SEQAN_SIMD_AVX512_KNL_FLAGS "")
+    set(SEQAN_SIMD_AVX512_SKX_FLAGS "")
+    set(SEQAN_SIMD_AVX512_CNL_FLAGS "")
 elseif (COMPILER_WINTEL)
-    set(SEQAN_SIMD_SSE4_OPTIONS /QxSSE4.2)
-    set(SEQAN_SIMD_AVX2_OPTIONS /QxCORE-AVX2)
-    set(SEQAN_SIMD_AVX512_KNL_OPTIONS /QxMIC-AVX512)
-    set(SEQAN_SIMD_AVX512_SKX_OPTIONS /QxCORE-AVX512)
-    set(SEQAN_SIMD_AVX512_CNL_OPTIONS /QxCORE-AVX512)
+    set(SEQAN_SIMD_SSE4_FLAGS "/QxSSE4.2")
+    set(SEQAN_SIMD_AVX2_FLAGS "/QxCORE-AVX2")
+    set(SEQAN_SIMD_AVX512_KNL_FLAGS "/QxMIC-AVX512")
+    set(SEQAN_SIMD_AVX512_SKX_FLAGS "/QxCORE-AVX512")
+    set(SEQAN_SIMD_AVX512_CNL_FLAGS "/QxCORE-AVX512")
 elseif (COMPILER_LINTEL)
-    set(SEQAN_SIMD_SSE4_OPTIONS -xSSE4.2)
-    set(SEQAN_SIMD_AVX2_OPTIONS -xCORE-AVX2)
-    set(SEQAN_SIMD_AVX512_KNL_OPTIONS -xMIC-AVX512)
-    set(SEQAN_SIMD_AVX512_SKX_OPTIONS -xCORE-AVX512)
-    set(SEQAN_SIMD_AVX512_CNL_OPTIONS -xCORE-AVX512)
+    set(SEQAN_SIMD_SSE4_FLAGS "-xSSE4.2")
+    set(SEQAN_SIMD_AVX2_FLAGS "-xCORE-AVX2")
+    set(SEQAN_SIMD_AVX512_KNL_FLAGS "-xMIC-AVX512")
+    set(SEQAN_SIMD_AVX512_SKX_FLAGS "-xCORE-AVX512")
+    set(SEQAN_SIMD_AVX512_CNL_FLAGS "-xCORE-AVX512")
 else()
-    set(SEQAN_SIMD_SSE4_OPTIONS -msse4)
-    set(SEQAN_SIMD_AVX2_OPTIONS -mavx2)
-    set(SEQAN_SIMD_AVX512_KNL_OPTIONS -mavx512f -mavx512cd -mavx512er -mavx512pf)
-    set(SEQAN_SIMD_AVX512_SKX_OPTIONS -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl)
-    set(SEQAN_SIMD_AVX512_CNL_OPTIONS "${SEQAN_SIMD_AVX512_SKX_OPTIONS}" -mavx512ifma -mavx512vbmi)
+    set(SEQAN_SIMD_SSE4_FLAGS "-msse4")
+    set(SEQAN_SIMD_AVX2_FLAGS "-mavx2")
+    set(SEQAN_SIMD_AVX512_KNL_FLAGS "-mavx512f -mavx512cd -mavx512er -mavx512pf")
+    set(SEQAN_SIMD_AVX512_SKX_FLAGS "-mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl")
+    set(SEQAN_SIMD_AVX512_CNL_FLAGS "${SEQAN_SIMD_AVX512_SKX_FLAGS} -mavx512ifma -mavx512vbmi")
 endif()
 
-set(SEQAN_SIMD_AVX2_SOURCE
-"#include <immintrin.h>
+# offer flags (string) as list for functions like target_compile_options
+string (REPLACE " " ";" SEQAN_SIMD_SSE4_OPTIONS "${SEQAN_SIMD_SSE4_FLAGS}")
+string (REPLACE " " ";" SEQAN_SIMD_AVX2_OPTIONS "${SEQAN_SIMD_AVX2_FLAGS}")
+string (REPLACE " " ";" SEQAN_SIMD_AVX512_KNL_OPTIONS "${SEQAN_SIMD_AVX512_KNL_FLAGS}")
+string (REPLACE " " ";" SEQAN_SIMD_AVX512_SKX_OPTIONS "${SEQAN_SIMD_AVX512_SKX_FLAGS}")
+string (REPLACE " " ";" SEQAN_SIMD_AVX512_CNL_OPTIONS "${SEQAN_SIMD_AVX512_CNL_FLAGS}")
+
+set(SEQAN_SIMD_SSE4_SDE_OPTIONS "-snb")
+set(SEQAN_SIMD_AVX2_SDE_OPTIONS "-hsw")
+set(SEQAN_SIMD_AVX512_KNL_SDE_OPTIONS "-knl")
+set(SEQAN_SIMD_AVX512_SKX_SDE_OPTIONS "-skx")
+set(SEQAN_SIMD_AVX512_CNL_SDE_OPTIONS "-cnl")
+
+set(SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS)
+set(SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD)
+set(SEQAN_SIMD_HOST_CPU_SUPPORTS)
+
+set(SEQAN_SIMD_SSE4_SOURCE
+"#include <cstdint>
+#include <immintrin.h>
+#include <iostream>
+#include <random>
 
 int main() {
-  _mm256_add_epi32(__m256i{}, __m256i{});
+  std::random_device r;
+  std::default_random_engine e(r());
+  std::uniform_int_distribution<int32_t> d(1, 10);
+
+  alignas(16) int32_t t[]{0,0,0,0};
+  volatile auto a = _mm_set_epi32(d(e),d(e),d(e),d(e));
+  volatile auto b = _mm_set_epi32(d(e),d(e),d(e),d(e));
+  volatile auto z = _mm_max_epi32(a, b);
+  _mm_store_si128((__m128i*)t, z);
+  std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \")\" << std::endl;
+  return 0;
+}")
+
+set(SEQAN_SIMD_AVX2_SOURCE
+"#include <cstdint>
+#include <immintrin.h>
+#include <iostream>
+#include <random>
+
+int main() {
+  std::random_device r;
+  std::default_random_engine e(r());
+  std::uniform_int_distribution<int32_t> d(1, 10);
+
+  alignas(32) int64_t t[]{0,0,0,0};
+  volatile auto a = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
+  volatile auto b = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
+  volatile auto z = _mm256_add_epi64(a, b);
+  _mm256_store_si256((__m256i*)t, z);
+  std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \")\" << std::endl;
   return 0;
 }")
 
 set(SEQAN_SIMD_AVX512_KNL_SOURCE
 "#include <cstdint>
 #include <immintrin.h>
+#include <iostream>
 
 int main() {
-  alignas(64) int64_t a[]{0,1,2,3,4,5,6,7};
-  _mm512_mask_load_epi64(__m512i{}, 0, a);
+  alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
+  alignas(64) uint64_t t[]{0,0,0,0,0,0,0,0};
+
+  // gcc 4.9 does not know _mm512_cmpgt_epu64_mask
+  volatile auto a = _mm512_setr_epi64(7,6,5,4,3,2,1,0);
+  volatile auto m = _mm512_cmpgt_epu64_mask(a, _mm512_set1_epi64(4)); // m = a > 4
+  volatile auto z = _mm512_mask_load_epi64(a, m, s); // (a > 4) ? s : a
+  _mm512_store_epi64(t, z);
+
+  // (9, 9, 9, 4, 3, 2, 1, 0)
+  std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \", ...)\" << std::endl;
   return 0;
 }")
+
+set(SEQAN_SIMD_AVX512_SKX_SOURCE "${SEQAN_SIMD_AVX512_KNL_SOURCE}")
+set(SEQAN_SIMD_AVX512_CNL_SOURCE "${SEQAN_SIMD_AVX512_KNL_SOURCE}")
+
+set(SEQAN_SIMD_SEQANSIMD_SOURCE
+"#include <cstdint>
+using int32x4_t = int32_t __attribute__ ((__vector_size__(4 * sizeof(int32_t)))); // SSE4 = 128bit
+using int32x8_t = int32_t __attribute__ ((__vector_size__(8 * sizeof(int32_t)))); // AVX2 = 256bit
+
+// gcc 4.9 bug (-fabi-version=6 (or =0) avoids this error with a change in mangling)
+template <typename vector_t>
+struct LENGTH;
+
+template <>
+struct LENGTH<int32x4_t>{
+    static const std::size_t VALUE = 4;
+};
+
+template <>
+struct LENGTH<int32x8_t>{
+    static const std::size_t VALUE = 8;
+};
+
+// icc 16.0.0, 16.0.1 bug
+template <typename TSimdVector, typename TValue>
+void assign(TSimdVector & a, int index, TValue value) { a[index] = value; }
+
+// icc >= 16.0.0 & <17.0.2 bug
+struct simd_t { int32x4_t simd_vector; };
+
+namespace ns {
+template <typename T>
+T & value(T * me) { return *me; }
+}
+
+template <typename value_t>
+void destruct(value_t * p) { }
+
+template <typename value_t>
+struct string_t {
+    value_t * value;
+
+    template <typename T1>
+    bool static assert(const T1 & value1, const T1 & value2) { return value1 <= value2; }
+
+    string_t() : value(0) { assert(value, value); }
+    ~string_t() { destruct(&ns::value(value)); }
+};
+
+template <typename value_t>
+struct holder_t {
+    value_t * value;
+
+    holder_t() { value = new value_t; }
+    ~holder_t() { delete value; }
+};
+
+struct matrix_t {  holder_t<string_t<simd_t>> cells; };
+
+int main() {
+  int32x4_t a{0,1,2,3}, b{4,3,2,1};
+  int32x8_t x{0,1,2,3,4,5,6,7}, y{4,3,2,1,0,-1,-2,-3};
+  auto c = a + b;
+  auto z = x + y;
+
+  // gcc 4.9 bug
+  constexpr auto length = LENGTH<int32x8_t>::VALUE;
+
+  // icc 16.0.0, 16.0.1 bug
+  assign(a, 0, 4);
+
+  // icc >= 16.0.0 & <17.0.2 bug
+  holder_t<matrix_t> matrix;
+  return 0;
+}")
+
+set(SEQAN_SIMD_SEQANSIMD_AVX512_SKX_SOURCE
+"#include <x86intrin.h>
+#include <iostream>
+using int8x32_t = signed char __attribute__ ((__vector_size__(32)));
+unsigned length = sizeof(int8x32_t) / sizeof(char);
+
+int main() {
+  // clang bug 4.0.0, https://bugs.llvm.org//show_bug.cgi?id=31731
+  // -std=c++14 -mavx512bw -O3
+  int8x32_t a{}, b{};
+  for (auto i = 0u; i < length; ++i) { a[i] = i-1; b[i] = -i; }
+
+  auto c = a < b;
+  for(auto i = 0u; i < length; ++i)
+    std::cout << (int)c[i] << std::endl;
+
+  return 0;
+}")
+
+# list1 and list2
+macro(list_intersect output list1 list2)
+    set(${output})
+    foreach(item ${list1})
+        if (";${list2};" MATCHES ";${item};")
+            list(APPEND ${output} "${item}")
+        endif()
+    endforeach()
+endmacro()
+
+# list1\list2 = list1 and not list2
+macro(list_complement output list1 list2)
+    set(${output})
+    foreach(item ${list1})
+        if (NOT(";${list2};" MATCHES ";${item};"))
+            list(APPEND ${output} "${item}")
+        endif()
+    endforeach()
+endmacro()
+
+# Returns list of all simd extension prior to `simd_ext`
+macro(simd_list_version_less output simd_ext)
+  set(${output})
+
+  foreach(item ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
+      if (";${item};" MATCHES ";${simd_ext};")
+          break()
+      endif()
+      list(APPEND ${output} "${item}")
+  endforeach()
+endmacro()
+
+# Returns list of all simd extension after to `simd_ext`
+macro(simd_list_version_greater output simd_ext)
+  set(${output})
+  simd_list_version_less(${output} "${simd_ext}")
+  set(${output} ${${output}} "${simd_ext}")
+  list_complement(${output} "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}" "${${output}}")
+endmacro()
+
+# simd specialized try-compile macro
+macro(check_cxx_simd_source_runs SOURCE VAR)
+    if(NOT DEFINED "${VAR}")
+        # empty flags means that this simd extension is not supported by the compiler
+        if (CMAKE_REQUIRED_FLAGS)
+            # -O3 is needed to trigger a compiler bug on clang 4.0.0
+            if (COMPILER_GCC OR COMPILER_CLANG OR COMPILER_LINTEL)
+                set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -O3")
+            endif()
+
+            # CMAKE_REQUIRED_QUIET available since cmake 3.1.0
+            set(CMAKE_REQUIRED_QUIET ON)
+            check_cxx_source_runs("${SOURCE}" ${VAR})
+            set(CMAKE_REQUIRED_QUIET OFF)
+        endif()
+
+        message(STATUS "Performing Test ${VAR}")
+        if (NOT CMAKE_REQUIRED_FLAGS)
+            set(${VAR} 0 CACHE INTERNAL "Test ${VAR}")
+            message(STATUS "Performing Test ${VAR} - No flags to enable simd architecture")
+        elseif (${VAR})
+            message(STATUS "Performing Test ${VAR} - Success (Compiled & Host CPU support)")
+        elseif (NOT ${VAR}_COMPILED)
+            message(STATUS "Performing Test ${VAR} - Failed")
+        elseif (NOT ${VAR})
+            message(STATUS "Performing Test ${VAR} - Success (Compiled)")
+        endif()
+    endif()
+endmacro()
+
+# detect simd support and cache it
+macro(detect_simd_support)
+    # Executing simd on 32bit architectures has issues
+    if (NOT DEFINED SEQAN_SIMD_DETECTED AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+        message(STATUS "SIMD acceleration is only available on 64bit systems")
+        set(SEQAN_SIMD_DETECTED 1 CACHE INTERNAL "Detected SEQAN_SIMD_DETECTED")
+        set(SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS "" CACHE INTERNAL "Test SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS")
+        set(SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD "" CACHE INTERNAL "Test SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD")
+        set(SEQAN_SIMD_HOST_CPU_SUPPORTS "" CACHE INTERNAL "Test SEQAN_SIMD_HOST_CPU_SUPPORTS")
+    elseif (NOT DEFINED SEQAN_SIMD_DETECTED)
+        # First try to compile AND run e.g. SEQAN_SIMD_SSE4_SOURCE, otherwise try to
+        # only compile the program
+        foreach(simd_ext ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
+            string(TOUPPER ${simd_ext} SIMD_EXT)
+            set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_${SIMD_EXT}_FLAGS}")
+            check_cxx_simd_source_runs("${SEQAN_SIMD_${SIMD_EXT}_SOURCE}" ${SIMD_EXT}_SOURCE_RUNS)
+
+            if (${SIMD_EXT}_SOURCE_RUNS)
+                list(APPEND SEQAN_SIMD_HOST_CPU_SUPPORTS "${simd_ext}")
+            endif()
+
+            if (${SIMD_EXT}_SOURCE_RUNS_COMPILED)
+                list(APPEND SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS "${simd_ext}")
+            elseif (CMAKE_REQUIRED_FLAGS)
+                message(STATUS "=> Abort simd detection of newer instruction sets")
+                break()
+            endif()
+        endforeach()
+
+        # test seqan simd
+        check_cxx_source_compiles("${SEQAN_SIMD_SEQANSIMD_SOURCE}" SEQAN_SIMD_SEQANSIMD_SUPPORTED)
+
+        # try-compile known compiler crashes/errors with seqan-simd and exclude them
+        if (SEQAN_SIMD_SEQANSIMD_SUPPORTED)
+            set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_SKX_FLAGS}")
+            check_cxx_simd_source_runs("${SEQAN_SIMD_SEQANSIMD_AVX512_SKX_SOURCE}" SEQANSIMD_AVX512_SKX_SOURCE_RUNS)
+
+            if (SEQANSIMD_AVX512_SKX_SOURCE_RUNS_COMPILED)
+                set(_SEQANSIMD_SUPPORTED "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
+            else ()
+                simd_list_version_less(_SEQANSIMD_SUPPORTED "avx512_skx")
+            endif()
+        endif()
+
+        # seqan-simd also uses intrinsics, so exclude those that failed the intrinsic try-compile
+        list_intersect(SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD "${_SEQANSIMD_SUPPORTED}" "${SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS}")
+
+        # cache results
+        set(SEQAN_SIMD_DETECTED 1 CACHE INTERNAL "Detected SEQAN_SIMD_DETECTED")
+        set(SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS "${SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS}" CACHE INTERNAL "Test SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS")
+        set(SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD "${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD}" CACHE INTERNAL "Test SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD")
+        set(SEQAN_SIMD_HOST_CPU_SUPPORTS "${SEQAN_SIMD_HOST_CPU_SUPPORTS}" CACHE INTERNAL "Test SEQAN_SIMD_HOST_CPU_SUPPORTS")
+
+        if(SEQAN_SIMD_UTILITY_VERBOSE)
+            message(STATUS "SEQAN_SIMD_SEQANSIMD_SUPPORTED: ${SEQAN_SIMD_SEQANSIMD_SUPPORTED}")
+            message(STATUS "SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS: ${SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS}")
+            message(STATUS "SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD: ${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD}")
+            message(STATUS "SEQAN_SIMD_HOST_CPU_SUPPORTS: ${SEQAN_SIMD_HOST_CPU_SUPPORTS}")
+        endif()
+
+        unset(CMAKE_REQUIRED_FLAGS)
+        unset(SIMD_EXT)
+        unset(_SEQANSIMD_SUPPORTED)
+    endif()
+endmacro()
 
 macro(transfer_target_property property source_target target_target)
     get_target_property(_property_value ${source_target} ${property})
@@ -158,90 +451,64 @@ macro(clone_target source_target target_target)
     add_executable(${target_target} ${_SOURCES})
 
     # https://cmake.org/cmake/help/v3.4/manual/cmake-properties.7.html#properties-on-targets
-    transfer_target_property(SOURCE_DIR ${source_target} ${target_target})
-    transfer_target_property(COMPILE_DEFINITIONS ${source_target} ${target_target})
-    transfer_target_property(COMPILE_FEATURES ${source_target} ${target_target})
-    transfer_target_property(COMPILE_FLAGS ${source_target} ${target_target})
-    transfer_target_property(COMPILE_OPTIONS ${source_target} ${target_target})
-    transfer_target_property(LINK_LIBRARIES ${source_target} ${target_target})
-    transfer_target_property(LINK_FLAGS ${source_target} ${target_target})
-    transfer_target_property(CXX_EXTENSIONS ${source_target} ${target_target})
-    transfer_target_property(CXX_STANDARD ${source_target} ${target_target})
-    transfer_target_property(CXX_STANDARD_REQUIRED ${source_target} ${target_target})
-    transfer_target_property(FOLDER ${source_target} ${target_target})
-    transfer_target_property(INCLUDE_DIRECTORIES ${source_target} ${target_target})
+    set(properies "SOURCE_DIR;COMPILE_DEFINITIONS;COMPILE_FEATURES;COMPILE_FLAGS"
+                "COMPILE_OPTIONS;LINK_LIBRARIES;LINK_FLAGS;CXX_EXTENSIONS"
+                "CXX_STANDARD;CXX_STANDARD_REQUIRED;FOLDER;INCLUDE_DIRECTORIES")
+
+    foreach(property ${properies})
+        transfer_target_property(${property} ${source_target} ${target_target})
+    endforeach()
 endmacro(clone_target)
 
 macro(add_simd_executables target blacklist)
-    if (NOT (";${blacklist};" MATCHES ";sse4;"))
-        clone_target(${target} "${target}_sse4")
-        target_compile_options("${target}_sse4" PRIVATE "${SEQAN_SIMD_SSE4_OPTIONS}")
-    endif()
+    foreach(simd_ext ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
+        string(TOUPPER ${simd_ext} SIMD_EXT)
+        if (NOT (";${blacklist};" MATCHES ";${simd_ext};"))
+            # i.e. clone_target(${target} "${target}_avx2")
+            clone_target(${target} "${target}_${simd_ext}")
+            # i.e. target_compile_options("${target}_avx2" PRIVATE "${SEQAN_SIMD_AVX2_OPTIONS}")
+            target_compile_options("${target}_${simd_ext}" PRIVATE "${SEQAN_SIMD_${SIMD_EXT}_OPTIONS}")
 
-    if (NOT (";${blacklist};" MATCHES ";avx2;"))
-        clone_target(${target} "${target}_avx2")
-        target_compile_options("${target}_avx2" PRIVATE "${SEQAN_SIMD_AVX2_OPTIONS}")
-    endif()
-
-    if (NOT (";${blacklist};" MATCHES ";avx512_knl;"))
-        clone_target(${target} "${target}_avx512_knl")
-        target_compile_options("${target}_avx512_knl" PRIVATE "${SEQAN_SIMD_AVX512_KNL_OPTIONS}")
-
-        if (COMPILER_MSVC)
-            message(STATUS "avx512_knl not supported on msvc")
+            # empty FLAGS means no support for this simd architecture
+            if (NOT SEQAN_SIMD_${SIMD_EXT}_OPTIONS)
+                message(STATUS "${simd_ext} not supported on ${CMAKE_CXX_COMPILER_ID} (no flags)")
+            endif()
         endif()
-    endif()
-
-    if (NOT (";${blacklist};" MATCHES ";avx512_skx;"))
-        clone_target(${target} "${target}_avx512_skx")
-        target_compile_options("${target}_avx512_skx" PRIVATE "${SEQAN_SIMD_AVX512_SKX_OPTIONS}")
-
-        if (COMPILER_MSVC)
-            message(STATUS "avx512_skx not supported on msvc")
-        endif()
-    endif()
-
-    if (NOT (";${blacklist};" MATCHES ";avx512_cnl;"))
-        clone_target(${target} "${target}_avx512_cnl")
-        target_compile_options("${target}_avx512_cnl" PRIVATE "${SEQAN_SIMD_AVX512_CNL_OPTIONS}")
-
-        if (COMPILER_MSVC)
-            message(STATUS "avx512_cnl not supported on msvc")
-        endif()
-    endif()
+        unset(SIMD_EXT)
+    endforeach()
 endmacro(add_simd_executables)
 
 macro(add_simd_tests target blacklist)
     add_test(NAME "test_${target}" COMMAND $<TARGET_FILE:${target}>)
 
-    if (NOT SDE_FOUND)
-        message (STATUS "Intel Software Development Emulator not found, not building platform emulated tests.")
+    # simd extensions supported by the host CPU
+    foreach(simd_ext ${SEQAN_SIMD_HOST_CPU_SUPPORTS})
+        string(TOUPPER ${simd_ext} SIMD_EXT)
+        if (TARGET "${target}_${simd_ext}" AND NOT (";${blacklist};" MATCHES ";${simd_ext};"))
+            # expands as
+            # add_test(NAME "test_test_simd_vector_sse4" COMMAND /usr/bin/sde64 -snb -- $<TARGET_FILE:test_simd_vector_sse4>)
+            add_test(NAME "test_${target}_${simd_ext}_host" COMMAND $<TARGET_FILE:${target}_${simd_ext}>)
+        endif()
+    endforeach()
+
+    if (SDE_FOUND)
+        foreach(simd_ext ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
+            string(TOUPPER ${simd_ext} SIMD_EXT)
+            if (TARGET "${target}_${simd_ext}" AND NOT (";${blacklist};" MATCHES ";${simd_ext};"))
+                # expands as
+                # add_test(NAME "test_test_simd_vector_sse4" COMMAND /usr/bin/sde64 -snb -- $<TARGET_FILE:test_simd_vector_sse4>)
+                add_test(NAME "test_${target}_${simd_ext}_sde" COMMAND ${SDE_EXECUTABLE} ${SEQAN_SIMD_${SIMD_EXT}_SDE_OPTIONS} -- $<TARGET_FILE:${target}_${simd_ext}>)
+            endif()
+        endforeach()
     else ()
-        if (TARGET "${target}_sse4" AND NOT (";${blacklist};" MATCHES ";sse4;"))
-            add_test(NAME "test_${target}_sse4" COMMAND ${SDE_EXECUTABLE} -snb -- $<TARGET_FILE:${target}_sse4>)
-        endif()
-
-        if (TARGET "${target}_avx2" AND NOT (";${blacklist};" MATCHES ";avx2;"))
-            add_test(NAME "test_${target}_avx2" COMMAND ${SDE_EXECUTABLE} -hsw -- $<TARGET_FILE:${target}_avx2>)
-        endif()
-
-        if (TARGET "${target}_avx512_knl" AND NOT (";${blacklist};" MATCHES ";avx512_knl;"))
-            add_test(NAME "test_${target}_avx512_knl" COMMAND  ${SDE_EXECUTABLE} -knl -- $<TARGET_FILE:${target}_avx512_knl>)
-        endif()
-
-        if (TARGET "${target}_avx512_skx" AND NOT (";${blacklist};" MATCHES ";avx512_skx;"))
-            add_test(NAME "test_${target}_avx512_skx" COMMAND  ${SDE_EXECUTABLE} -skx -- $<TARGET_FILE:${target}_avx512_skx>)
-        endif()
-
-        if (TARGET "${target}_avx512_cnl" AND NOT (";${blacklist};" MATCHES ";avx512_cnl;"))
-            add_test(NAME "test_${target}_avx512_cnl" COMMAND  ${SDE_EXECUTABLE} -cnl -- $<TARGET_FILE:${target}_avx512_cnl>)
-        endif()
+        message (STATUS "Intel Software Development Emulator not found, not building platform emulated tests.")
     endif()
 endmacro(add_simd_tests)
 
 macro(add_simd_platform_tests target)
     if (UMESIMD_FOUND)
         clone_target("${target}" "${target}_umesimd")
+        target_include_directories("${target}_umesimd" PUBLIC "${UMESIMD_INCLUDE_DIR}")
         target_compile_definitions("${target}_umesimd" PUBLIC SEQAN_UMESIMD_ENABLED=1)
     endif()
 
@@ -254,183 +521,84 @@ macro(add_simd_platform_tests target)
     set(umesimd_compile_blacklist "")
     set(umesimd_test_blacklist "")
 
-    if (COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5)
-        ## seqan-simd:
-        # avx2: gcc4.9 has a problem to differentiate `__vector(32) signed char`
-        #       from `__vector(16) signed char` (some conflicts in the abi).
-        #       Theoretically, one could build avx2, but one wouldn't be allowed
-        #       to mix it with sse4 in the complete program. This can be fixed
-        #       by adding `-fabi-version=6` to the compiler flags, but since we
-        #       don't know which consequences this has, we disable it.
-        #
-        ## ume-simd:
-        # avx512_knl/avx512_skx/avx512_cnl:
-        #           gcc4.9 has no complete avx512_knl intrinsics support, which
-        #           are used in umesimd
-        #   error: ‘__mmask32’ does not name a type
-        #   error: ‘_mm512_castsi128_si512’ was not declared in this scope
-        set(umesimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
-        set(seqansimd_compile_blacklist "avx2;avx512_knl;avx512_skx;avx512_cnl")
-    endif()
-
-    if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0.1)
-            message(STATUS "Clang 4.0.0 crashes for AVX512_skx (seqan-simd only), see https://llvm.org/bugs/show_bug.cgi?id=31731")
-            set(umesimd_compile_blacklist "")
-            set(seqansimd_compile_blacklist "avx512_skx;avx512_cnl")
-        endif()
-
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.0.0)
-            message(AUTHOR_WARNING "Clang >=4.0.1 reevaluate if AVX512_skx (seqan-simd only) binaries are working.")
-            set(umesimd_compile_blacklist "")
-            set(seqansimd_compile_blacklist "")
-        endif()
-    endif()
-
-    # Build the executables, but don't execute them, because clang <= 3.9.x
-    # produces executables which contain invalid instructions for AVX512.
-    if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
-
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1)
-            message(STATUS "Clang 3.9.0 produces executables which contain invalid instructions for AVX512_skx and AVX512_knl")
-            set(umesimd_test_blacklist "avx512_knl;avx512_skx;avx512_cnl")
-            set(seqansimd_test_blacklist "${umesimd_test_blacklist}")
-        endif()
-
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.2)
-            message(STATUS "Clang 3.9.1 produces executables which contain invalid instructions for AVX512_skx (seqan-simd only), see https://llvm.org/bugs/show_bug.cgi?id=31731")
-            set(umesimd_test_blacklist "")
-            set(seqansimd_test_blacklist "avx512_skx;avx512_cnl")
-        endif()
-
-        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9.1)
+    if (COMPILER_CLANG)
+        # clang >=4.0.0
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
+            message(AUTHOR_WARNING "Clang >=4.0.0 reevaluate if AVX512_skx (seqan-simd only) binaries are working. "
+                    "At least https://llvm.org/bugs/show_bug.cgi?id=31731 seems to be fixed")
+        # clang =3.9.0
+        elseif (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1)
+            # Build the executables, but don't execute them, because clang <= 3.9.x
+            # produces executables which contain invalid instructions for AVX512.
+            simd_list_version_greater(umesimd_test_blacklist avx2)
+            simd_list_version_greater(seqansimd_test_blacklist avx2)
+            set(reason_for_disabled_test "Clang 3.9.0 produces executables that contain invalid instructions for at least AVX512_knl and AVX512_skx")
+        # clang =3.9.1
+        elseif (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.2)
+            simd_list_version_greater(seqansimd_test_blacklist avx512_knl)
+            set(reason_for_disabled_test "Clang 3.9.1 produces executables that contain invalid instructions for at least AVX512_skx (seqan-simd only), see https://llvm.org/bugs/show_bug.cgi?id=31731")
+        # clang >=3.9.2
+        elseif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9.1 AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0.0)
             message(AUTHOR_WARNING "Clang >=3.9.2 reevaluate if AVX512_skx (seqan-simd only) binaries are working.")
-            set(umesimd_test_blacklist "")
-            set(seqansimd_test_blacklist "")
+        # clang 3.7.x
+        elseif(NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.7) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.8))
+            ## seqan-simd:
+            # avx2: clang 3.7.x fails test cases:
+            #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed char __vector(32) FAILED
+            #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed short __vector(16) FAILED
+            simd_list_version_greater(seqansimd_test_blacklist sse4)
+            set(reason_for_disabled_test "Clang 3.7.x produces executables that fail the basic vector test `test_simd_vector`")
         endif()
-
-    endif()
-
-    if (COMPILER_CLANG AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9)
-        ## all-simd wrappers
-        # avx512_cnl: clang compiler <= 3.8.x can't handle avx512 compiler flags
-        #   error : unknown argument: '-mavx512ifma'
-        #   error : unknown argument: '-mavx512vbmi'
-        #
-        ## ume-simd:
-        # avx512_knl: clang compiler <= 3.8.x has no complete avx512_knl
-        #             intrinsics support, which are used in umesimd
-        #   error : use of undeclared identifier '_mm512_castsi128_si512'
-        #   error : use of undeclared identifier '_mm512_mask_mov_epi32'
-        #
-        ## seqan-simd:
-        # avx512_knl: clang compiler 3.6.x crashes on avx512_knl, thus disabling
-        #             it also for 3.7.x and 3.8.x, where avx512_knl works
-        set(umesimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
-        set(seqansimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
-
-        ## seqan-simd:
-        # avx2: clang 3.7.x fails test cases:
-        #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed char __vector(32) FAILED
-        #       SimdVectorTestCommon_ShuffleConstant1 type parameter (un-)signed short __vector(16) FAILED
-        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.8))
-            set(seqansimd_compile_blacklist "avx2;${seqansimd_compile_blacklist}")
+    elseif (COMPILER_LINTEL)
+        # icc >=17.0.0, <=17.0.4
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.0) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.5)
+            ## seqan-simd:
+            # all: icc 17.0.x fails test cases [test_align_simd_*]:
+            #       SimdAlignTestCommon_Linear_Align type parameter [...] FAILED
+            #       SimdAlignTestCommon_Linear_Score type parameter [...] FAILED
+            if (NOT ("${target}" MATCHES "test_simd_vector"))
+                set(seqansimd_test_blacklist ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
+                set(reason_for_disabled_test "Intel compiler 17.0.{0-4} produces executables that fail complex tests like `[test_align_simd_*]`")
+            endif()
+        # icc >=17.0.5
+        elseif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 17.0.4)
+            message(AUTHOR_WARNING "Intel compiler >=17.0.5 reevaluate if [test_align_simd_*] can be compiled.")
         endif()
-
-        if (STDLIB_VS)
-            ## ume-simd:
-            # avx2: Also, it can't handle avx2 on windows, because some
-            #       intrinsics are not implemented yet:
-            #   %16 = call <8 x i32> @llvm.x86.avx2.gather.d.d.256(<8 x i32> %7, i8* %9, <8 x i32> %13, <8 x i32> %15, i8 4), !dbg !7025
-            set(umesimd_compile_blacklist "avx2;${umesimd_compile_blacklist}")
-
-            ## seqan-simd: Similar, simd-seqan doesn't work, even though
-            #              it should theoretically be possible, but some
-            #              intrinsic are not yet implemented.
-            # sse4: fatal error C1001: An internal error has occurred in the
-            #       compiler.
-            #   clang!DllGetC2Telemetry()+0x1d7c28
-            #   clang!LLVM_IR_InvokeCompilerPassW()+0xd127
-            #   clang!DllGetC2Telemetry()+0xfa13e
-            #   clang!crt_at_quick_exit()+0x104
-            #   clang!BaseThreadInitThunk()+0x12
-            # avx2: 'mm256_unpackhi_epi128': Intrinsic not yet implemented:
-            #   %8 = call <4 x i64> @llvm.x86.avx2.vperm2i128(<4 x i64> %5, <4 x i64> %7, i8 49), !dbg !5915
-            #   fatal error C1001: An internal error has occurred in the compiler.
-            set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-        endif()
-    endif()
-
-    if (COMPILER_MSVC)
-        # msvc 2015/2017 only supports /arch:AVX and /arch:AVX2, thus don't
-        # compile AVX512
-        set(umesimd_compile_blacklist "avx512_knl;avx512_skx;avx512_cnl")
-
-        # Don't compile simd-seqan, because it uses a compiler extensions which
-        # is not supported by msvc
-        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-    endif()
-
-    if (COMPILER_WINTEL)
-        # Don't compile simd-seqan, because wintel compiler doesn't support
-        # vector extension even though lintel does.
-        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-    endif()
-
-    if (COMPILER_LINTEL AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.2)
-        ## seqan-simd: intel compiler crashes on <= 17.0.1 at least in the test
-        #              case test_align_simd, others may work (e.g.
-        #              test_simd_vector)
-        #   ": internal error: ** The compiler has encountered an unexpected
-        #   problem. ** Segmentation violation signal raised. ** Access
-        #   violation or stack overflow. Please contact Intel Support for
-        #   assistance.
-        if(NOT ("${target}" MATCHES "test_simd_vector"))
-            set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-        endif()
-    endif()
-
-    if(COMPILER_LINTEL AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
-        ## seqan-simd: intel compiler crashes on <= 16.0.1
-        #   ": internal error: ** The compiler has encountered an unexpected
-        #   problem. ** Segmentation violation signal raised. ** Access
-        #   violation or stack overflow. Please contact Intel Support for
-        #   assistance.
-        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
     endif()
 
     if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
-        # Disable avx2 on travis, because sometimes gcc 5.x and 6.x crashes
-        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx2")
-        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx2")
-        message(STATUS "Disabling avx2 on travis, because gcc<=6.x crashes occasionally")
+        # Disable avx2,avx512_knl,... on travis, because sometimes gcc 5.x and 6.x crashes
+        simd_list_version_greater(_travis_compile_blacklist sse4)
+        set(seqansimd_compile_blacklist ${seqansimd_compile_blacklist} ${_travis_compile_blacklist})
+        set(umesimd_compile_blacklist ${umesimd_compile_blacklist} ${_travis_compile_blacklist})
+        message(STATUS "Don't compile ${seqansimd_compile_blacklist} on travis, because gcc<=6.x crashes occasionally")
     endif()
 
-    # This checks if a simple avx2 program builds
-    set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX2_OPTIONS}")
-    check_cxx_source_compiles("${SEQAN_SIMD_AVX2_SOURCE}" AVX2_SOURCE_COMPILES)
-    unset(CMAKE_REQUIRED_FLAGS)
-    if (NOT AVX2_SOURCE_COMPILES)
-        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx2")
-        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx2")
-        message(STATUS "Your compiler/linker doesn't support avx2")
+    # detect simd support by try-compile and try-run
+    detect_simd_support()
+
+    # exclude all simd extensions where a simple try-compile failed
+    list_complement(_simd_intrinsics_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}" "${SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS}")
+    list_complement(_simd_seqansimd_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}" "${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD}")
+    set(seqansimd_compile_blacklist ${seqansimd_compile_blacklist} ${_simd_intrinsics_blacklist} ${_simd_seqansimd_blacklist})
+    set(umesimd_compile_blacklist ${umesimd_compile_blacklist} ${_simd_intrinsics_blacklist})
+
+    if (UMESIMD_FOUND AND umesimd_test_blacklist AND seqansimd_test_blacklist)
+        message(STATUS "Disable test `${target}` for seqan-simd and ume-simd and the following simd extensions ${seqansimd_test_blacklist} and ${umesimd_test_blacklist}")
+        message(STATUS "\tReason: ${reason_for_disabled_test}")
+    elseif (UMESIMD_FOUND AND umesimd_test_blacklist)
+        message(STATUS "Disable test `${target}` for ume-simd and the following simd extensions ${umesimd_test_blacklist}")
+        message(STATUS "\tReason: ${reason_for_disabled_test}")
+    elseif (seqansimd_test_blacklist)
+        message(STATUS "Disable test `${target}` for seqan-simd and the following simd extensions ${seqansimd_test_blacklist}")
+        message(STATUS "\tReason: ${reason_for_disabled_test}")
     endif()
 
-    # This check is primarily for travis, which has an old linker
-    set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_KNL_OPTIONS}")
-    check_cxx_source_compiles("${SEQAN_SIMD_AVX512_KNL_SOURCE}" KNL_SOURCE_COMPILES)
-    unset(CMAKE_REQUIRED_FLAGS)
-    if (NOT KNL_SOURCE_COMPILES)
-        set(seqansimd_compile_blacklist "${seqansimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
-        set(umesimd_compile_blacklist "${umesimd_compile_blacklist};avx512_knl;avx512_skx;avx512_cnl")
-        message(STATUS "Your compiler/linker doesn't support avx512")
-    endif()
-
-    # don't use simd on 32bit architectures at all
-    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-        set(seqansimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-        set(umesimd_compile_blacklist "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-        message(STATUS "SIMD acceleration is only available on 64bit systems")
+    if (SEQAN_SIMD_UTILITY_VERBOSE)
+        message(STATUS "seqansimd_compile_blacklist: ${seqansimd_compile_blacklist}")
+        message(STATUS "umesimd_compile_blacklist: ${umesimd_compile_blacklist}")
+        message(STATUS "seqansimd_test_blacklist: ${seqansimd_test_blacklist}")
+        message(STATUS "umesimd_test_blacklist: ${umesimd_test_blacklist}")
     endif()
 
     add_simd_executables("${target}" "${seqansimd_compile_blacklist}")

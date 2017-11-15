@@ -44,11 +44,9 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_index_build)
 {
-    CharString expectedBaiFilename = SEQAN_PATH_TO_ROOT();
-    append(expectedBaiFilename, "/tests/bam_io/small.bam.bai");
+    CharString expectedBaiFilename = getAbsolutePath("/tests/bam_io/small.bam.bai");
 
-    CharString bamFilename = SEQAN_PATH_TO_ROOT();
-    append(bamFilename, "/tests/bam_io/small.bam");
+    CharString bamFilename = getAbsolutePath("/tests/bam_io/small.bam");
 
     CharString tmpOutPath = SEQAN_TEMP_FILENAME();
     append(tmpOutPath, ".bai");
@@ -63,8 +61,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_build)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_index_open)
 {
-    CharString baiFilename = SEQAN_PATH_TO_ROOT();
-    append(baiFilename, "/tests/bam_io/small.bam.bai");
+    CharString baiFilename = getAbsolutePath("/tests/bam_io/small.bam.bai");
 
     BamIndex<Bai> baiIndex;
     SEQAN_ASSERT(open(baiIndex, toCString(baiFilename)));
@@ -80,8 +77,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_open)
     SEQAN_ASSERT_EQ(getUnalignedCount(baiIndex), 0u);
 
     // File has same contents as in the SAM test.
-    CharString bamFilename = SEQAN_PATH_TO_ROOT();
-    append(bamFilename, "/tests/bam_io/small.bam");
+    CharString bamFilename = getAbsolutePath("/tests/bam_io/small.bam");
 
     BamFileIn bamFile(toCString(bamFilename));
 
@@ -95,12 +91,13 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_open)
     SEQAN_ASSERT(found);
     SEQAN_ASSERT_NOT(jumpToRegion(bamFile, found, 1, 1, 10, baiIndex));
     SEQAN_ASSERT_NOT(found);
+    SEQAN_ASSERT(jumpToRegion(bamFile, found, 0, 20, 100, baiIndex));
+    SEQAN_ASSERT_NOT(found);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_index_save)
 {
-    CharString baiFilename = SEQAN_PATH_TO_ROOT();
-    append(baiFilename, "/tests/bam_io/small.bam.bai");
+    CharString baiFilename = getAbsolutePath("/tests/bam_io/small.bam.bai");
     
     CharString tmpOutPath = SEQAN_TEMP_FILENAME();
     append(tmpOutPath, ".bai");

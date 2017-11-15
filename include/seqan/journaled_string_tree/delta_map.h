@@ -1049,7 +1049,7 @@ template <typename TConfig, typename TSpec>
 constexpr typename Size<DeltaMap<TConfig, TSpec> >::Type
 maxSize(DeltaMap<TConfig, TSpec> const & /*deltaMap*/)
 {
-    return MaxValue<typename Size<DeltaMap<TConfig, TSpec> >::Type>::VALUE;
+    return std::numeric_limits<typename Size<DeltaMap<TConfig, TSpec> >::Type>::max();
 }
 
 }

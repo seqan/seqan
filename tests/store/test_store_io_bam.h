@@ -44,15 +44,15 @@ SEQAN_DEFINE_TEST(test_store_io_bam_read)
   /*
     // Construct name to reference FASTA files.
     char fastaBuffer[1023];
-    strcpy(fastaBuffer, SEQAN_PATH_TO_ROOT());
+    strcpy(fastaBuffer, getAbsolutePath(""));
     strcat(fastaBuffer, "/projects/tests/store/toy.fa");
     // Construct file name to SAM file.
     char samBuffer[1023];
-    strcpy(samBuffer, SEQAN_PATH_TO_ROOT());
+    strcpy(samBuffer, getAbsolutePath(""));
     strcat(samBuffer, "/projects/tests/store/toy.sam");
     // Construct file name to BAM file.
     char bamBuffer[1023];
-    strcpy(bamBuffer, SEQAN_PATH_TO_ROOT());
+    strcpy(bamBuffer, getAbsolutePath(""));
     strcat(bamBuffer, "/projects/tests/store/toy.bam");
 
     // Load FragmentStore from SAM and BAM file.
@@ -117,12 +117,12 @@ SEQAN_DEFINE_TEST(test_store_io_bam_write)
 {
     // Construct name to reference FASTA files.
     char fastaBuffer[1023];
-    strcpy(fastaBuffer, SEQAN_PATH_TO_ROOT());
+    strcpy(fastaBuffer, getAbsolutePath(""));
     strcat(fastaBuffer, "/projects/tests/store/toy.fa");
     // strcat(fastaBuffer, "/projects/tests/store/ex1.fa");
     // Construct file name to SAM file.
     char samBuffer[1023];
-    strcpy(samBuffer, SEQAN_PATH_TO_ROOT());
+    strcpy(samBuffer, getAbsolutePath(""));
     strcat(samBuffer, "/projects/tests/store/toy.sam");
     // strcat(samBuffer, "/projects/tests/store/ex1.sam");
     // Construct path to a temporary output file.

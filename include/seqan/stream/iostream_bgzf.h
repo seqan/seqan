@@ -20,6 +20,10 @@
 #ifndef INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
 #define INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_
 
+#ifndef SEQAN_BGZF_NUM_THREADS
+#define SEQAN_BGZF_NUM_THREADS 16
+#endif
+
 namespace seqan {
 
 const unsigned BGZF_MAX_BLOCK_SIZE = 64 * 1024;
@@ -146,7 +150,7 @@ public:
     std::vector<TFuture>         threads;
 
     basic_bgzf_streambuf(ostream_reference ostream_,
-                         size_t numThreads = 16,
+                         size_t numThreads = SEQAN_BGZF_NUM_THREADS,
                          size_t jobsPerThread = 8) :
         numThreads(numThreads),
         numJobs(numThreads * jobsPerThread),
@@ -494,7 +498,7 @@ public:
     TBuffer              putbackBuffer;
 
     basic_unbgzf_streambuf(istream_reference istream_,
-                           size_t numThreads = 16,
+                           size_t numThreads = SEQAN_BGZF_NUM_THREADS,
                            size_t jobsPerThread = 8) :
         serializer(istream_),
         numThreads(numThreads),

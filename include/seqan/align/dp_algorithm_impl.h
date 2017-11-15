@@ -87,7 +87,7 @@
 // are accepted. If the dp profile consists of the standard global alignment
 // algorithm (NeedlemanWunsch or Gotoh), the band is required to go through
 // the sink and the source of the dp matrix. If this is not given the
-// alignment algorithm is aborted and the score MinValue<TScoreValue>::VALUE
+// alignment algorithm is aborted and the score std::numeric_limits<TScoreValue>::min()
 // is returned.
 // There are no further restrictions.
 //
@@ -359,6 +359,7 @@ _computeTrack(TDPScout & scout,
     // Compute the inner cells of the current track.
     for (; iter != itEnd; ++iter)
     {
+        _incVerticalPos(scout);
         // Set the iterator to the next cell within the track.
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
         _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
@@ -382,8 +383,8 @@ _computeTrack(TDPScout & scout,
                          sequenceEntryForScore(scoringScheme, container(iter), position(iter)), scoringScheme,
                          TColumnDescriptor(), InnerCell(), TDPProfile());
         }
-        _incVerticalPos(scout);
     }
+    _incVerticalPos(scout);
     // Set the iterator to the last cell of the track.
     _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
     _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
@@ -458,6 +459,7 @@ _computeUnbandedAlignment(TDPScout & scout,
     TConstSeqHIterator seqHIterEnd = end(seqH, Rooted()) - 1;
     for (; seqHIter != seqHIterEnd; ++seqHIter)
     {
+        _incHorizontalPos(scout);
         // We might only select it if SIMD version is available.
         if (SEQAN_UNLIKELY(_reachedHorizontalEndPoint(scout, seqHIter)))
         {
@@ -480,13 +482,12 @@ _computeUnbandedAlignment(TDPScout & scout,
         {
             return;
         }
-        _incHorizontalPos(scout);
     }
 
     // ============================================================================
     // POSTPROCESSING
     // ============================================================================
-
+    _incHorizontalPos(scout);
     _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                   sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                   sequenceEntryForScore(scoringScheme, seqV, 0),
@@ -1542,7 +1543,7 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
     if (!_isValidDPSettings(seqH, seqV, band, dpProfile))
-        return createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE);  // NOTE(rrahn): In case of non-simd version, createVector returns just a scalar.
+        return createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::min());  // NOTE(rrahn): In case of non-simd version, createVector returns just a scalar.
 
     TDPScoreMatrix dpScoreMatrix;
     TDPTraceMatrix dpTraceMatrix;

@@ -375,7 +375,7 @@ inline void _fillStructure(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > 
         while (true)
         {
             // decide whether the character is smaller then the pivot element of the current node
-            if (ordGreater(getCharacter(it), value(textIt)))
+            if (ordGreater(getCharacter(it), *textIt))
             {
                 // TODO(esiragusa): use resize() & setValue() instead of appendValue().
                 appendValue(dict.ranks[getPosition(it)], false);
