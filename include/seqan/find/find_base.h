@@ -249,13 +249,13 @@ struct Needle<Segment<THost, TSpec> const>
  * Finder<CharString> finder(hstck);
  *
  * Pattern<CharString, Horspool> p1("y");
- * findAll(finder, p1);
+ * find(finder, p1);
  *
  * goBegin(finder);    // move Finder to the beginning of the text
  * clear(finder);      // reset Finder
  *
  * Pattern<CharString, Horspool> p2("t");
- * findAll(finder, p2);
+ * find(finder, p2);
  * @endcode
  * Demo: Demo.Index Finder StringSet
  *
