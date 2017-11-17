@@ -200,7 +200,7 @@ macro (seqan_build_system_init)
         # TODO(h-2): raise this to W4
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3")
     else()
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
         # disable some warnings on ICC
