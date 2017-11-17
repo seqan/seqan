@@ -56,7 +56,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install sam2matrix in ${PREFIX}/bin directory
 install (TARGETS sam2matrix
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/sam2matrix for SeqAn release builds.

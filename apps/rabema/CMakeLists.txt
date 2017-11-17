@@ -91,11 +91,11 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 install (TARGETS rabema_prepare_sam
                  rabema_build_gold_standard
                  rabema_evaluate
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install rabema in /bin directory
 install (TARGETS rabema_prepare_sam rabema_build_gold_standard rabema_evaluate
-        DESTINATION bin)
+        DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/pair_align for SeqAn release builds.

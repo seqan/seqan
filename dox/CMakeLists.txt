@@ -77,5 +77,5 @@ if (${SEQAN_BUILD_SYSTEM} MATCHES "SEQAN_RELEASE_LIBRARY") # includes SEQAN_RELE
         --out-dir ${CMAKE_BINARY_DIR}/dox/html)
 
     install (DIRECTORY ${CMAKE_BINARY_DIR}/dox/html
-             DESTINATION share/doc/seqan)
+             DESTINATION ${CMAKE_INSTALL_DOCDIR})
 endif ()

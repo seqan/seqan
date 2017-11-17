@@ -62,7 +62,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install param_chooser in ${PREFIX}/bin directory
 install (TARGETS param_chooser
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/param_chooser for SeqAn release builds.

@@ -68,7 +68,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install sak in ${PREFIX}/bin directory
 install (TARGETS sak
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/sak for SeqAn release builds.
@@ -77,7 +77,7 @@ install (FILES LICENSE
                ${CMAKE_CURRENT_BINARY_DIR}/README.sak.txt
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/sak.1
-         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/man)
+         DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 # ----------------------------------------------------------------------------
 # App Test

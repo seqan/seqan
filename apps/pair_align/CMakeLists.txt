@@ -60,7 +60,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install pair_align in ${PREFIX}/bin directory
 install (TARGETS pair_align
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/pair_align for SeqAn release builds.
