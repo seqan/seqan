@@ -407,7 +407,7 @@ inline void testSearchScheme(SearchScheme & ss, bool const indels)
         generateText(text, rng, textLength);
         TIndex index(text);
         TIter it(index);
-        for (unsigned needleLength = std::max(4lu, ss[0].pi.size() * errors); needleLength < std::min(17u, textLength); ++needleLength)
+        for (unsigned needleLength = std::max(5lu, ss[0].pi.size() * errors); needleLength < std::min(16u, textLength); ++needleLength)
         {
             setRandomBlockLength(ss, rng, needleLength);
 

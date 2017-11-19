@@ -228,11 +228,7 @@ inline void _schemeSearchDeletion(TDelegate & delegate,
                      uint8_t const errors,
                      Search const & s,
                      TDirection const /**/,
-                     uint8_t const blockIndex
-                     #ifdef NDEBUG
-                        , std::string alignmentStr
-                     #endif
-)
+                     uint8_t const blockIndex)
 {
     uint8_t maxErrorsLeftInBlock = s.u[blockIndex] - errors;
     uint8_t minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
@@ -243,17 +239,9 @@ inline void _schemeSearchDeletion(TDelegate & delegate,
         bool const goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
 
         if (goToRight2)
-            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, Rev(), blockIndex2, true
-                #ifdef NDEBUG
-                    , alignmentStr
-                #endif
-            );
+            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, Rev(), blockIndex2, true);
         else
-            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, Fwd(), blockIndex2, true
-                #ifdef NDEBUG
-                    , alignmentStr
-                #endif
-            );
+            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, Fwd(), blockIndex2, true);
     }
 
     if (maxErrorsLeftInBlock > 0)
@@ -261,11 +249,7 @@ inline void _schemeSearchDeletion(TDelegate & delegate,
         if (goDown(iter, TDirection()))
         {
             do {
-                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDirection(), blockIndex
-                    #ifdef NDEBUG
-                        , std::is_same<TDirection, Rev>::value ? alignmentStr + "-" : "-" + alignmentStr
-                    #endif
-                );
+                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDirection(), blockIndex);
             } while (goRight(iter, TDirection()));
         }
     }
@@ -282,11 +266,7 @@ inline void _schemeSearchChildren(TDelegate & delegate,
                     TDir const /**/,
                     uint8_t const blockIndex,
                     bool const indels,
-                    uint8_t minErrorsLeftInBlock
-                    #ifdef NDEBUG
-                        , std::string alignmentStr
-                    #endif
-)
+                    uint8_t minErrorsLeftInBlock)
 {
     bool goToRight = std::is_same<TDir, Rev>::value;
     if (goDown(iter, TDir()))
@@ -303,52 +283,28 @@ inline void _schemeSearchChildren(TDelegate & delegate,
             auto needleLeftIt2 = needleLeftIt - !goToRight;
             auto needleRightIt2 = needleRightIt + goToRight;
 
-            #ifdef NDEBUG
-                CharString c = (CharString) parentEdgeLabel(iter, TDir());
-            #endif
-
             if (needleRightIt - needleLeftIt == s.blocklength[blockIndex])
             {
                 // leave the possibility for one or multiple deletions! therefore, don't change direction, etc!
                 if (indels)
-                    _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, TDir(), blockIndex
-                        #ifdef NDEBUG
-                            , goToRight ? alignmentStr + toCString(c) : toCString(c) + alignmentStr
-                        #endif
-                    );
+                    _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, TDir(), blockIndex);
                 else
                 {
                     uint8_t blockIndex2 = std::min((size_t) blockIndex + 1, s.u.size() - 1);
                     bool goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
                     if (goToRight2)
-                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, Rev(), blockIndex2, indels
-                            #ifdef NDEBUG
-                                , goToRight ? alignmentStr + toCString(c) : toCString(c) + alignmentStr
-                            #endif
-                        );
+                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, Rev(), blockIndex2, indels);
                     else
-                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, Fwd(), blockIndex2, indels
-                            #ifdef NDEBUG
-                                , goToRight ? alignmentStr + toCString(c) : toCString(c) + alignmentStr
-                            #endif
-                        );
+                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, Fwd(), blockIndex2, indels);
                 }
             }
             else
-                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, TDir(), blockIndex, indels
-                    #ifdef NDEBUG
-                        , goToRight ? alignmentStr + toCString(c) : toCString(c) + alignmentStr
-                    #endif
-                );
+                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, TDir(), blockIndex, indels);
 
             // Deletion
             if (indels)
             {
-                _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDir(), blockIndex, indels
-                    #ifdef NDEBUG
-                        , goToRight ? alignmentStr + "-" : "-" + alignmentStr
-                    #endif
-                );
+                _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDir(), blockIndex, indels);
             }
         } while (goRight(iter, TDir()));
     }
@@ -364,11 +320,7 @@ inline void _schemeSearchExact(TDelegate & delegate,
                     Search const & s,
                     TDir const /**/,
                     uint8_t const blockIndex,
-                    bool const indels
-                    #ifdef NDEBUG
-                        , std::string alignmentStr
-                    #endif
-)
+                    bool const indels)
 {
     bool goToRight2 = s.pi[blockIndex + 1] > s.pi[blockIndex]; // TODO: segfault? value doesn't matter for last block, but we should code it better anyway
     if (std::is_same<TDir, Rev>::value)
@@ -380,17 +332,9 @@ inline void _schemeSearchExact(TDelegate & delegate,
             return;
 
         if (goToRight2)
-            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Rev(), std::min((size_t) blockIndex + 1, s.u.size() - 1), indels
-                #ifdef NDEBUG
-                    , alignmentStr + toCString((CharString) infix(needle, infixPosLeft, infixPosRight + 1))
-                #endif
-            );
+            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Rev(), std::min((size_t) blockIndex + 1, s.u.size() - 1), indels);
         else
-            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Fwd(), std::min((size_t) blockIndex + 1, s.u.size() - 1), indels
-                #ifdef NDEBUG
-                    , alignmentStr + toCString((CharString) infix(needle, infixPosLeft, infixPosRight + 1))
-                #endif
-            );
+            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Fwd(), std::min((size_t) blockIndex + 1, s.u.size() - 1), indels);
     }
     else
     {
@@ -398,31 +342,16 @@ inline void _schemeSearchExact(TDelegate & delegate,
         signed infixPosLeft = needleRightIt - s.blocklength[blockIndex] - 1;
         signed infixPosRight = needleLeftIt - 1;
 
-        #ifdef NDEBUG
-            auto alignmentStr2 = alignmentStr;
-        #endif
-
         while (infixPosRight >= infixPosLeft)
         {
             if (!goDown(iter, needle[infixPosRight], TDir()))
                 return;
-            #ifdef NDEBUG
-                alignmentStr2 = toCString((CharString) needle[infixPosRight]) + alignmentStr2;
-            #endif
             --infixPosRight;
         }
         if (goToRight2)
-            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Rev(), std::min((size_t)blockIndex + 1, s.u.size() - 1), indels
-                #ifdef NDEBUG
-                    , alignmentStr2
-                #endif
-            );
+            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Rev(), std::min((size_t)blockIndex + 1, s.u.size() - 1), indels);
         else
-            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Fwd(), std::min((size_t)blockIndex + 1, s.u.size() - 1), indels
-                #ifdef NDEBUG
-                    , alignmentStr2
-                #endif
-            );
+            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Fwd(), std::min((size_t)blockIndex + 1, s.u.size() - 1), indels);
     }
 }
 
@@ -436,11 +365,7 @@ inline void _schemeSearch(TDelegate & delegate,
                     Search const & s,
                     TDir const /**/,
                     uint8_t const blockIndex,
-                    bool const indels
-                    #ifdef NDEBUG
-                        , std::string alignmentStr
-                    #endif
-)
+                    bool const indels)
 {
     uint8_t maxErrorsLeftInBlock = s.u[blockIndex] - errors;
     uint8_t minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
@@ -448,21 +373,13 @@ inline void _schemeSearch(TDelegate & delegate,
     // Done.
     if (minErrorsLeftInBlock == 0 && needleLeftIt == 0 && needleRightIt == length(needle) + 1) // NOTE: switch to iterator syntax
     {
-        delegate(iter
-            #ifdef NDEBUG
-                , alignmentStr
-            #endif
-        );
+        delegate(iter);
     }
 
     // Exact search in current block.
     else if (maxErrorsLeftInBlock == 0 && /*!(blockIndex > 0 && */needleRightIt - needleLeftIt - 1 /*==*/ != s.blocklength[blockIndex]/*)*/) // TODO: why blockIndex > 0? vermutlich wegen needleRightIt == nedleLeftIt
     {
-        _schemeSearchExact(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, TDir(), blockIndex, indels
-            #ifdef NDEBUG
-                , alignmentStr
-            #endif
-        );
+        _schemeSearchExact(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, TDir(), blockIndex, indels);
     }
     // Approximate search in current block.
     else // if (s.blocklength[blockIndex] - (needleRightIt - needleLeftIt - (needleLeftIt != needleRightIt)) >= minErrorsLeftInBlock)
@@ -477,24 +394,12 @@ inline void _schemeSearch(TDelegate & delegate,
             if (needleRightIt - needleLeftIt == s.blocklength[blockIndex]) //
                 // TODO: check!
                 // leave the possibility for one or multiple deletions! therefore, don't change direction, etc!
-                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, TDir(), blockIndex
-                    #ifdef NDEBUG
-                        , goToRight ? alignmentStr + "+" : "+" + alignmentStr
-                    #endif
-                );
+                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, TDir(), blockIndex);
             else
-                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, TDir(), blockIndex, indels
-                    #ifdef NDEBUG
-                        , goToRight ? alignmentStr + "+" : "+" + alignmentStr
-                    #endif
-                );
+                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, TDir(), blockIndex, indels);
         }
 
-        _schemeSearchChildren(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, TDir(), blockIndex, indels, minErrorsLeftInBlock
-            #ifdef NDEBUG
-                , alignmentStr
-            #endif
-        );
+        _schemeSearchChildren(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, TDir(), blockIndex, indels, minErrorsLeftInBlock);
     }
 }
 
@@ -505,19 +410,11 @@ inline void _schemeSearch(TDelegate & delegate,
 {
     if (s.initialDirection)
     {
-        _schemeSearch(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, Rev(), 0, indels
-            #ifdef NDEBUG
-                , ""
-            #endif
-        );
+        _schemeSearch(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, Rev(), 0, indels);
     }
     else
     {
-        _schemeSearch(delegate, it, needle, s.startPos - 1, s.startPos, 0, s, Fwd(), 0, indels
-            #ifdef NDEBUG
-                , ""
-            #endif
-        );
+        _schemeSearch(delegate, it, needle, s.startPos - 1, s.startPos, 0, s, Fwd(), 0, indels);
     }
 }
 
