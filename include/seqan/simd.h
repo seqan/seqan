@@ -86,6 +86,18 @@
     #error SEQAN::SIMD (vector extension) is not supported by msvc and windows intel compiler, try compiling with -DSEQAN_UMESIMD_ENABLED
 #endif
 
+// SIMD operations have severe performance issues on <= gcc4.9
+#if defined(SEQAN_SEQANSIMD_ENABLED) && defined(COMPILER_GCC) && (__GNUC__ <= 4)
+    // TODO(marehr): If we switch to jenkins, filter out these warnings
+    #if !(defined(NDEBUG) || defined(SEQAN_ENABLE_TESTING))
+        #pragma message("SIMD acceleration was disabled for <=gcc4.9, because of known performance issues " \
+                        "https://github.com/seqan/seqan/issues/2017. Use a more recent gcc compiler.")
+    #endif
+    #undef SEQAN_SIMD_ENABLED
+    #undef SEQAN_SEQANSIMD_ENABLED
+    #undef SEQAN_UMESIMD_ENABLED
+#endif // defined(COMPILER_GCC) && __GNUC__ <= 4
+
 // Define maximal size of vector in byte.
 #if defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX512F__)
     // TODO(marehr): If we switch to jenkins, filter out these warnings
