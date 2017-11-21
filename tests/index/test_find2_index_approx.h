@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013 NVIDIA Corporation
+// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@
 #define TESTS_FIND2_INDEX_APPROX_H_
 
 #include <seqan/index.h>
+
 #include "test_index_helpers.h"
 
 using namespace seqan;

@@ -1,8 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
-// Copyright (c) 2013 NVIDIA Corporation
+// Copyright (c) 2006-2017, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,7 +206,7 @@ inline void _schemeSearchComputeFixedBlocklength(SearchScheme & ss, uint16_t con
     uint8_t blocklength = needleLength / blocks;
     uint16_t rest = needleLength - blocks * blocklength;
     std::vector<uint8_t> blocklengths;
-    for (unsigned i = 0; i < blocks; ++i)
+    for (uint8_t i = 0; i < blocks; ++i)
     {
         blocklengths.push_back(blocklength + (i < rest));
     }
@@ -220,19 +219,19 @@ template <typename TDelegate, typename TText, typename TIndex, typename TIndexSp
 inline void _schemeSearchDeletion(TDelegate & delegate,
                                   Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                   TText2 const & needle,
-                                  unsigned needleLeftIt,
-                                  unsigned needleRightIt,
+                                  uint32_t needleLeftIt,
+                                  uint32_t needleRightIt,
                                   uint8_t const errors,
                                   Search const & s,
                                   TDirection const /**/,
                                   uint8_t const blockIndex)
 {
-    uint8_t maxErrorsLeftInBlock = s.u[blockIndex] - errors;
-    uint8_t minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
+    uint8_t const maxErrorsLeftInBlock = s.u[blockIndex] - errors;
+    uint8_t const minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
 
     if (minErrorsLeftInBlock == 0)
     {
-        uint8_t const blockIndex2 = std::min((size_t) blockIndex + 1, s.u.size() - 1);
+        uint8_t const blockIndex2 = std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1);
         bool const goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
 
         if (goToRight2)
@@ -261,8 +260,8 @@ template <typename TDelegate, typename TText, typename TIndex, typename TIndexSp
 inline void _schemeSearchChildren(TDelegate & delegate,
                                   Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                   TText2 const & needle,
-                                  unsigned const needleLeftIt,
-                                  unsigned const needleRightIt,
+                                  uint32_t const needleLeftIt,
+                                  uint32_t const needleRightIt,
                                   uint8_t const errors,
                                   Search const & s,
                                   TDir const /**/,
@@ -273,7 +272,7 @@ inline void _schemeSearchChildren(TDelegate & delegate,
     bool goToRight = std::is_same<TDir, Rev>::value;
     if (goDown(iter, TDir()))
     {
-        unsigned charsLeft = s.blocklength[blockIndex] - (needleRightIt - needleLeftIt - 1/*(needleLeftIt != needleRightIt)*/);
+        uint32_t charsLeft = s.blocklength[blockIndex] - (needleRightIt - needleLeftIt - 1/*(needleLeftIt != needleRightIt)*/);
         do
         {
             bool delta = !ordEqual(parentEdgeLabel(iter, TDir()), needle[goToRight ? needleRightIt - 1 : needleLeftIt - 1]);
@@ -297,7 +296,7 @@ inline void _schemeSearchChildren(TDelegate & delegate,
                 }
                 else
                 {
-                    uint8_t blockIndex2 = std::min((size_t) blockIndex + 1, s.u.size() - 1);
+                    uint8_t blockIndex2 = std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1);
                     bool goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
                     if (goToRight2)
                     {
@@ -327,8 +326,8 @@ template <typename TDelegate, typename TText, typename TIndex, typename TIndexSp
 inline void _schemeSearchExact(TDelegate & delegate,
                                Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                TText2 const & needle,
-                               unsigned const needleLeftIt,
-                               unsigned const needleRightIt,
+                               uint32_t const needleLeftIt,
+                               uint32_t const needleRightIt,
                                uint8_t const errors,
                                Search const & s,
                                TDir const /**/,
@@ -338,8 +337,8 @@ inline void _schemeSearchExact(TDelegate & delegate,
     bool goToRight2 = s.pi[blockIndex + 1] > s.pi[blockIndex]; // TODO: segfault? value doesn't matter for last block, but we should code it better anyway
     if (std::is_same<TDir, Rev>::value)
     {
-        unsigned infixPosLeft = needleRightIt - 1;
-        unsigned infixPosRight = needleLeftIt + s.blocklength[blockIndex] - 1;
+        uint32_t infixPosLeft = needleRightIt - 1;
+        uint32_t infixPosRight = needleLeftIt + s.blocklength[blockIndex] - 1;
 
         if (!goDown(iter, infix(needle, infixPosLeft, infixPosRight + 1), TDir()))
         {
@@ -348,11 +347,11 @@ inline void _schemeSearchExact(TDelegate & delegate,
 
         if (goToRight2)
         {
-            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Rev(), std::min((size_t) blockIndex + 1, s.u.size() - 1), indels);
+            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Rev(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
         }
         else
         {
-            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Fwd(), std::min((size_t) blockIndex + 1, s.u.size() - 1), indels);
+            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Fwd(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
         }
     }
     else
@@ -371,11 +370,11 @@ inline void _schemeSearchExact(TDelegate & delegate,
         }
         if (goToRight2)
         {
-            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Rev(), std::min((size_t)blockIndex + 1, s.u.size() - 1), indels);
+            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Rev(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
         }
         else
         {
-            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Fwd(), std::min((size_t)blockIndex + 1, s.u.size() - 1), indels);
+            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Fwd(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
         }
     }
 }
@@ -384,16 +383,16 @@ template <typename TDelegate, typename TText, typename TIndex, typename TIndexSp
 inline void _schemeSearch(TDelegate & delegate,
                           Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                           TText2 const & needle,
-                          unsigned const needleLeftIt,
-                          unsigned const needleRightIt,
+                          uint32_t const needleLeftIt,
+                          uint32_t const needleRightIt,
                           uint8_t const errors,
                           Search const & s,
                           TDir const /**/,
                           uint8_t const blockIndex,
                           bool const indels)
 {
-    uint8_t maxErrorsLeftInBlock = s.u[blockIndex] - errors;
-    uint8_t minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
+    uint8_t const maxErrorsLeftInBlock = s.u[blockIndex] - errors;
+    uint8_t const minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
 
     // Done.
     if (minErrorsLeftInBlock == 0 && needleLeftIt == 0 && needleRightIt == length(needle) + 1) // NOTE: switch to iterator syntax
@@ -478,7 +477,7 @@ _find(Index<TText, TIndexSpec> & index,
       Tag<TParallelTag> /**/)
 {
     SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
-    for (unsigned seqNo = 0; seqNo < length(patterns); ++seqNo)
+    for (size_t seqNo = 0; seqNo < length(patterns); ++seqNo)
     {
         _find(index, patterns[seqNo], delegate, minErrors, maxErrors, TDistanceTag());
     }
