@@ -96,6 +96,8 @@ public:
     virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
                               std::vector<std::pair<int, int> > const & gapIntervals,
                               unsigned count) = 0;
+
+    virtual ~FragmentSamplerImpl() = default;
 };
 
 
