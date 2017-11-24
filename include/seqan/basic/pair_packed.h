@@ -86,7 +86,9 @@ struct Pair<T1, T2, Pack>
     // Constructors
     // ------------------------------------------------------------------------
 
-    Pair() = default;
+    // Pair() = default; does not work on gcc4.9, it issues warnings if T1/T2
+    // have no proper default constructor. >=gcc5.0 reports no warnings.
+    Pair() : i1(), i2() {};
     Pair(Pair const &) = default;
     Pair(Pair &&) = default;
     Pair & operator=(Pair const &) = default;
