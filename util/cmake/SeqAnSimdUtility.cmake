@@ -528,10 +528,11 @@ macro(add_simd_platform_tests target)
     set(umesimd_test_blacklist "")
 
     if (COMPILER_CLANG)
-        # clang >=4.0.0
-        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
-            message(AUTHOR_WARNING "Clang >=4.0.0 reevaluate if AVX512_skx (seqan-simd only) binaries are working. "
-                    "At least https://llvm.org/bugs/show_bug.cgi?id=31731 seems to be fixed")
+        # clang 4.x
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
+            message(AUTHOR_WARNING "Clang 4.x; reevaluate if AVX512_skx (seqan-simd only) binaries are working. "
+                    "An earlier version had an Internal Compiler Error (https://llvm.org/bugs/show_bug.cgi?id=31731), "
+                    "which was fixed, the produced binaries might work now. (clang 5.0 is known to work)")
         # clang =3.9.0
         elseif (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1)
             # Build the executables, but don't execute them, because clang <= 3.9.x
