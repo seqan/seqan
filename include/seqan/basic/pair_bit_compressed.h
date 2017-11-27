@@ -94,6 +94,7 @@ struct Pair<T1, T2, BitPacked<BITSIZE1, BITSIZE2> >
     inline Pair(Pair &&) = default;
     inline Pair & operator=(Pair const &) = default;
     inline Pair & operator=(Pair &&) = default;
+    inline ~Pair() = default;
 
     inline Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 

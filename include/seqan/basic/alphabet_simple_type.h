@@ -145,6 +145,7 @@ public:
     SimpleType() = default;
     SimpleType(SimpleType const &) = default;
     SimpleType(SimpleType &&) = default;
+    ~SimpleType() = default;
 
     // TODO(holtgrew): Do we want an explicit here?
     template <typename T>

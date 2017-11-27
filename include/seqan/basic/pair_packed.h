@@ -79,8 +79,8 @@ struct Pair<T1, T2, Pack>
     // Members
     // ------------------------------------------------------------------------
 
-    T1 i1{};
-    T2 i2{};
+    T1 i1;
+    T2 i2;
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -91,6 +91,7 @@ struct Pair<T1, T2, Pack>
     Pair() : i1(), i2() {};
     Pair(Pair const &) = default;
     Pair(Pair &&) = default;
+    ~Pair() = default;
     Pair & operator=(Pair const &) = default;
     Pair & operator=(Pair &&) = default;
 
