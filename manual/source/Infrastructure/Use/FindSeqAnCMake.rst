@@ -269,6 +269,30 @@ Required additions to C++ compiler flags are in the following variable:
 
     Please note that these variables include whatever has been added by the dependencies mentioned above so **do not add** e.g. ``${OpenMP_CXX_FLAGS}`` yourself!
 
+Intel Compiler specifics
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The Intel Compiler does not ship a c++ standard library on its own and will use
+the one pre-installed on the system (e.g., the one from g++). This can be a
+problem [especially for cluster users through the use of a module system], if
+the standard library by a default g++ installation is to old.
+
+Please check with the following command which g++ version is being used and make
+sure it matches the supported gcc versions.
+
+.. code-block:: console
+
+    # icpc -v
+    icpc version 17.0.2 (gcc version 5.4.0 compatibility)
+
+If you have multiple g++ installations, you can choose the standard library by
+``icpc -gxx-name=g++-5.4.0 -gcc-name=gcc-5.4.0 …``. Use
+``cmake -DCMAKE_CXX_FLAGS="-gxx-name=g++-5.4.0 -gcc-name=gcc-5.4.0" …``
+to propagate those options through cmake.
+
+You may have to add the path of the library to ```$LD_LIBRARY_PATH`` for the
+linker.
+
 Static builds
 ^^^^^^^^^^^^^
 
