@@ -349,12 +349,13 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
     IsNewline isNewline;
 
-    // skip commented lines
+    // skip commented lines as well as ## directives
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
     while (!atEnd(iter) && value(iter) == '#')
         skipLine(iter);
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
 
     clear(record);
-    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
 
     // read column 1: seqid
     readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
@@ -436,6 +437,14 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
             break;
         }
     }
+
+    // The last line might be a "### directive" specifically in GFF3
+    // Need to skip it to avoid another call of readRecords
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
+    while (!atEnd(iter) && value(iter) == '#')
+        skipLine(iter);
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
+
     return;
 }
 
