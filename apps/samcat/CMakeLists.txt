@@ -23,6 +23,11 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
+if (NOT ZLIB_FOUND)
+  message (STATUS "  ZLIB not found: samcat will not be built.")
+  return ()
+endif ()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
