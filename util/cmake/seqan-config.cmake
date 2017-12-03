@@ -352,7 +352,7 @@ if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
     find_package(BZip2 QUIET)
 endif ()
 
-if (NOT SEQAN_HAS_ZLIB AND BZIP2_FOUND)
+if (NOT ZLIB_FOUND AND BZIP2_FOUND)
     # NOTE(marehr): iostream_bzip2 uses the type `uInt`, which is defined by
     # `zlib`. Therefore, `bzip2` will cause a ton of errors without `zlib`.
     message(AUTHOR_WARNING "Disabling BZip2 [which was successfully found], "
