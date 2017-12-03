@@ -352,6 +352,15 @@ if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
     find_package(BZip2 QUIET)
 endif ()
 
+if (NOT SEQAN_HAS_ZLIB AND BZIP2_FOUND)
+    # NOTE(marehr): iostream_bzip2 uses the type `uInt`, which is defined by
+    # `zlib`. Therefore, `bzip2` will cause a ton of errors without `zlib`.
+    message(AUTHOR_WARNING "Disabling BZip2 [which was successfully found], "
+            "because ZLIB was not found. BZip2 is depending on ZLIB.")
+    unset(BZIP2_FOUND)
+    unset(SEQAN_HAS_BZIP2)
+endif ()
+
 if (BZIP2_FOUND)
     set (SEQAN_HAS_BZIP2    TRUE) # deprecated: use BZIP2_FOUND instead
     set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${BZIP2_LIBRARIES})
