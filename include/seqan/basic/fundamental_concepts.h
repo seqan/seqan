@@ -277,6 +277,7 @@ struct Is<Convertible<T, S const> > :
  * @endcode
  *
  * @see DefaultConstructibleConcept
+ * @see MoveConstructibleConcept
  */
 
 SEQAN_CONCEPT(CopyConstructible,(T))
@@ -297,6 +298,33 @@ private:
         ignoreUnusedVariableWarning(ptr);
     }
     T b;
+};
+
+/*!
+ * @concept MoveConstructibleConcept
+ * @brief A type with a move-constructor.
+ *
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature MoveConstructible<T>
+ *
+ * @section Valid Expressions
+ *
+ * @code{.cpp}
+ * T a(rv);  // rv is an rvalue expression of type T
+ * @endcode
+ *
+ * @see DefaultConstructibleConcept
+ * @see CopyConstructibleConcept
+ */
+
+SEQAN_CONCEPT(MoveConstructible,(T))
+{
+    SEQAN_CONCEPT_USAGE(MoveConstructible)
+    {
+        T a{T{}};               // require move constructor
+        ignoreUnusedVariableWarning(a);
+    }
 };
 
 
