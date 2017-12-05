@@ -114,7 +114,11 @@
 
 // Set default for SEQAN_ENABLE_DEBUG.
 #ifndef SEQAN_ENABLE_DEBUG
+#ifdef NDEBUG
 #define SEQAN_ENABLE_DEBUG 0
+#else
+#define SEQAN_ENABLE_DEBUG 1
+#endif
 #endif  // #ifndef SEQAN_ENABLE_DEBUG
 
 #if !SEQAN_ENABLE_DEBUG
