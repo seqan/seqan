@@ -15,7 +15,10 @@ message (STATUS "Configuring tests/simd")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
+if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    find_package (SeqAn REQUIRED)
+endif ()
+
 include (SeqAnSimdUtility)
 
 # ----------------------------------------------------------------------------
