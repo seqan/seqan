@@ -813,20 +813,17 @@ public:
 struct AiocbWrapper :
     public aiocb
 {
-    AiocbWrapper()
-    {}
+    AiocbWrapper() = default;
+    AiocbWrapper(AiocbWrapper &&) = default;
 
     AiocbWrapper(AiocbWrapper & other, Move) :
         aiocb(other)
     {}
 
-    AiocbWrapper(AiocbWrapper && other) :
-        aiocb(other)
-    {}
-
+    AiocbWrapper & operator=(AiocbWrapper &&) = default;
 private:
-    AiocbWrapper(AiocbWrapper const &)
-    {}
+    AiocbWrapper(AiocbWrapper const &) = delete;
+    AiocbWrapper & operator=(AiocbWrapper const &) = delete;
 };
 
 template <>

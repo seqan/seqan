@@ -118,7 +118,7 @@ public:
                     throw MasonIOException("Could not open methylation output file.");
             }
         }
-        catch (MasonIOException e)
+        catch (MasonIOException & e)
         {
             std::cerr << "\nERROR: " << e.what() << "\n";
             return 1;

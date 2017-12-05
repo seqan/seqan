@@ -72,6 +72,12 @@ if (ALIGN_SIMD_TEST)
 
     # Add dependencies found by find_package (SeqAn).
     target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})
+    # note(marehr): there is a bug when using <=clang3.8 with gcc4.9's stdlib,
+    # where the default -ftemplate-depth=256 of clang is insufficient.
+    # test_align_simd_avx2 needs a depth of at least 266.
+    if (COMPILER_CLANG)
+      target_compile_options(test_align_simd PRIVATE -ftemplate-depth=1024)
+    endif()
 endif()
 
 # Add CXX flags found by find_package (SeqAn).

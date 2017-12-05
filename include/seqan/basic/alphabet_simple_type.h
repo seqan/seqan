@@ -135,26 +135,20 @@ public:
     // Members;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-    TValue value;
+    TValue value{0};
 
     // ------------------------------------------------------------------------
     // Constructors;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
     // TODO(holtgrew): Do we want default initialization?
-   
-    SimpleType() : value(0)
-    {}
-
-   
-    SimpleType(SimpleType const & other)
-    {
-        assign(*this, other);
-    }
+    SimpleType() = default;
+    SimpleType(SimpleType const &) = default;
+    SimpleType(SimpleType &&) = default;
+    ~SimpleType() = default;
 
     // TODO(holtgrew): Do we want an explicit here?
     template <typename T>
-   
     SimpleType(T const & other)
     {
         assign(*this, other);
@@ -163,13 +157,8 @@ public:
     // ------------------------------------------------------------------------
     // Assignment Operator;  Have to be defined in class.
     // ------------------------------------------------------------------------
-
-   
-    SimpleType & operator=(SimpleType const & other)
-    {
-        assign(*this, other);
-        return *this;
-    }
+    SimpleType & operator=(SimpleType const &) = default;
+    SimpleType & operator=(SimpleType &&) = default;
 
     template <typename T>
     inline SimpleType &

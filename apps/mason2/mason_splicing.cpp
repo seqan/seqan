@@ -152,7 +152,7 @@ public:
             if (!open(gffFileIn, toCString(options.inputGffFile)))
                 throw MasonIOException("Could not open GFF/GTF file.");
         }
-        catch (MasonIOException e)
+        catch (MasonIOException & e)
         {
             std::cerr << "\nERROR: " << e.what() << "\n";
             return 1;
