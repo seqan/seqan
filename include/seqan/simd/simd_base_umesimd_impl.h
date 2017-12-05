@@ -390,6 +390,17 @@ max(TSimdVector const & a, TSimdVector const & b)
 }
 
 // --------------------------------------------------------------------------
+// Function min()
+// --------------------------------------------------------------------------
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+min(TSimdVector const & a, TSimdVector const & b)
+{
+    return a.min(b);
+}
+
+// --------------------------------------------------------------------------
 // Function operator|()
 // --------------------------------------------------------------------------
 

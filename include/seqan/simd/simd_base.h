@@ -226,6 +226,10 @@ max(TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
+min(TSimdVector const & a, TSimdVector const & b);
+
+template <typename TSimdVector>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
 operator|(TSimdVector const & a, TSimdVector const & b);
 
 template <typename TSimdVector>
