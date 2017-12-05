@@ -790,9 +790,15 @@ function (seqan_register_demos PREFIX)
             (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
             set (SKIP TRUE)
         # bug in visual studio
-        elseif ((ENTRY MATCHES "queue_example.cpp") AND
-                COMPILER_MSVC)
+        elseif ((ENTRY MATCHES "queue_example.cpp") AND COMPILER_MSVC)
             set (SKIP TRUE)
+        # all demos/* that require ZLIB[_FOUND]
+        elseif (NOT ZLIB_FOUND)
+            if ((ENTRY MATCHES "tabix_io/tabix_vcf.cpp") OR
+                (ENTRY MATCHES "sam_and_bam_io/example7.cpp") OR
+                (ENTRY MATCHES "unassigned_or_unused/bamutil.cpp"))
+                set (SKIP TRUE)
+            endif()
         endif ()
 
         if (SKIP)

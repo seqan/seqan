@@ -37,6 +37,7 @@
 #include <seqan/stream.h>
 
 #include "test_bam_alignment_record.h"
+#include "test_bam_file.h"
 #include "test_bam_header_record.h"
 #include "test_bam_io_context.h"
 #include "test_bam_sam_conversion.h"
@@ -48,7 +49,6 @@
 
 #if SEQAN_HAS_ZLIB
 #include "test_bam_index.h"
-#include "test_bam_file.h"
 #endif
 
 SEQAN_BEGIN_TESTSUITE(test_bam_io)

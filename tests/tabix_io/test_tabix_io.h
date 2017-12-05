@@ -43,6 +43,7 @@
 #include <seqan/tabix_io.h>
 
 
+#if SEQAN_HAS_ZLIB
 SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
 {
     // Open TABIX file
@@ -114,6 +115,13 @@ SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
 
     SEQAN_ASSERT_NOT(atEnd(vcfFile));
 }
+
+#else // SEQAN_HAS_ZLIB
+SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
+{
+    SEQAN_SKIP_TEST;
+}
+#endif // SEQAN_HAS_ZLIB
 
 
 #endif  // SEQAN_TESTS_TABIX_TEST_TABIX_IO_H_
