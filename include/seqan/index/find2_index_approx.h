@@ -39,138 +39,184 @@
 
 namespace seqan {
 
-typedef struct Search
+template <size_t N>
+struct Search
 {
-    std::vector<uint8_t> pi; // oder of the blocks. permutation of [1..n]
-    std::vector<uint8_t> l; // minimum number of errors at the end of the corresponding block
-    std::vector<uint8_t> u; // maximum number of errors at the end of the corresponding block
+    std::array<uint8_t, N> pi; // oder of the blocks. permutation of [1..n]
+    std::array<uint8_t, N> l; // minimum number of errors at the end of the corresponding block
+    std::array<uint8_t, N> u; // maximum number of errors at the end of the corresponding block
 
-    std::vector<uint8_t> blocklength; // cumulated values / prefix sums
-    uint16_t startPos;
+    std::array<uint32_t, N> blocklength { }; // cumulated values / prefix sums
+    uint32_t startPos = 0;
     // first character of the needle starts with position 1 (not with 0)
     // if initialDirection is true, startPos is one character to the left of the block that is searched first
     // otherwise, startPos is one character right from the block that is searched first
 
-    bool initialDirection; // true <=> goToRight
-} Search;
-
-typedef std::vector<Search> SearchScheme;
-
-// SearchScheme FAIL
-SearchScheme schemeFAIL
-{
+    bool initialDirection = false; // true <=> goToRight
 };
 
-// SearchScheme with 0 errors
-SearchScheme scheme_0_0
+template <size_t min, size_t max, typename TVoidType = void>
+struct SearchSchemes;
+// {
+//     static_assert(false, "The error configuration is invalid or there exists no such search scheme.");
+// };
+
+template <typename TVoidType>
+struct SearchSchemes<0, 0, TVoidType>
 {
-    { {1}, {0}, {0}, {0}, 0, false }
+    static constexpr std::array<Search<1>, 1> VALUE { {{ {{1}}, {{0}}, {{0}} }} };
 };
 
-// SearchScheme with at most 1 error
-SearchScheme scheme_0_1
+template <typename TVoidType>
+constexpr std::array<Search<1>, 1> SearchSchemes<0, 0, TVoidType>::VALUE;
+
+template <typename TVoidType>
+struct SearchSchemes<0, 1, TVoidType>
 {
-    { {1, 2}, {0, 0}, {0, 1}, {0, 0}, 0, false },
-    { {2, 1}, {0, 1}, {0, 1}, {0, 0}, 0, false }
+    static constexpr std::array<Search<2>, 2> VALUE
+    {{
+        { {{1, 2}}, {{0, 0}}, {{0, 1}} },
+        { {{2, 1}}, {{0, 1}}, {{0, 1}} }
+    }};
 };
 
-// SearchScheme with at most 2 errors
-SearchScheme scheme_0_2
+template <typename TVoidType>
+constexpr std::array<Search<2>, 2> SearchSchemes<0, 1, TVoidType>::VALUE;
+
+template <typename TVoidType>
+struct SearchSchemes<0, 2, TVoidType>
 {
-    { {2, 1, 3, 4}, {0, 0, 1, 1}, {0, 0, 2, 2}, {0, 0, 0, 0}, 0, false },
-    { {3, 2, 1, 4}, {0, 0, 0, 0}, {0, 1, 1, 2}, {0, 0, 0, 0}, 0, false },
-    { {4, 3, 2, 1}, {0, 0, 0, 2}, {0, 1, 2, 2}, {0, 0, 0, 0}, 0, false }
+    static constexpr std::array<Search<4>, 3> VALUE
+    {{
+        { {{2, 1, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}} },
+        { {{3, 2, 1, 4}}, {{0, 0, 0, 0}}, {{0, 1, 1, 2}} },
+        { {{4, 3, 2, 1}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}} }
+    }};
 };
 
-// SearchScheme with at most 3 errors
-SearchScheme scheme_0_3
+template <typename TVoidType>
+constexpr std::array<Search<4>, 3> SearchSchemes<0, 2, TVoidType>::VALUE;
+
+template <typename TVoidType>
+struct SearchSchemes<0, 3, TVoidType>
 {
-    { {1, 2, 3, 4, 5}, {0, 0, 0, 2, 2}, {0, 0, 3, 3, 3}, {0, 0, 0, 0, 0}, 0, false },
-    { {4, 3, 2, 1, 5}, {0, 0, 0, 0, 0}, {1, 1, 2, 2, 3}, {0, 0, 0, 0, 0}, 0, false },
-    { {5, 4, 3, 2, 1}, {0, 0, 0, 0, 3}, {0, 2, 2, 3, 3}, {0, 0, 0, 0, 0}, 0, false }
+    static constexpr std::array<Search<5>, 3> VALUE
+    {{
+        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 2, 2}}, {{0, 0, 3, 3, 3}} },
+        { {{4, 3, 2, 1, 5}}, {{0, 0, 0, 0, 0}}, {{1, 1, 2, 2, 3}} },
+        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}} }
+    }};
 };
 
-// SearchScheme with at most 4 errors
-SearchScheme scheme_0_4
+template <typename TVoidType>
+constexpr std::array<Search<5>, 3> SearchSchemes<0, 3, TVoidType>::VALUE;
+
+// TODO
+// NOTE constexpr removed because of blocklength (cannot be const)
+// template <typename TVoidType>
+// struct SearchSchemes<0, 4>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+
+template <typename TVoidType>
+struct SearchSchemes<1, 1, TVoidType>
 {
-    { {1, 2, 3}, {0, 0, 3}, {1, 4, 5}, {0, 0, 0}, 0, false },
-    { {2, 3, 1}, {0, 0, 0}, {2, 3, 5}, {0, 0, 0}, 0, false },
-    { {3, 2, 1}, {0, 3, 5}, {0, 5, 5}, {0, 0, 0}, 0, false }
+    static constexpr std::array<Search<2>, 2> VALUE
+    {{
+        { {{1, 2}}, {{0, 1}}, {{0, 1}} },
+        { {{2, 1}}, {{0, 1}}, {{0, 1}} }
+    }};
 };
 
-// SearchScheme with 1-1 errors
-SearchScheme scheme_1_1
-{
-    { {1, 2}, {0, 1}, {0, 1}, {0, 0}, 0, false },
-    { {2, 1}, {0, 1}, {0, 1}, {0, 0}, 0, false }
-};
+// template <typename TVoidType>
+// struct SearchSchemes<1, 2>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<1, 3>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<1, 4>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<2, 2>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<2, 3>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<2, 4>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<3, 3>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<3, 4>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
+//
+// template <typename TVoidType>
+// struct SearchSchemes<4, 4>
+// {
+//     static constexpr std::array<Search<X>, Y> VALUE
+//     {{
+//     }};
+// };
 
-SearchScheme scheme_1_2 // TODO
-{
-    { {1, 2, 3}, {0, 0, 1}, {0, 2, 2}, {0, 0, 0}, 0, false },
-    { {3, 2, 1}, {0, 0, 2}, {0, 1, 2}, {0, 0, 0}, 0, false },
-    { {2, 1, 3}, {0, 1, 1}, {0, 1, 2}, {0, 0, 0}, 0, false }
-};
-
-SearchScheme scheme_1_3 // TODO
-{
-
-};
-
-SearchScheme scheme_1_4 // TODO
-{
-
-};
-
-SearchScheme scheme_2_2 // TODO
-{
-
-};
-
-SearchScheme scheme_2_3 // TODO
-{
-
-};
-
-SearchScheme scheme_2_4 // TODO
-{
-
-};
-
-SearchScheme scheme_3_3 // TODO
-{
-
-};
-
-SearchScheme scheme_3_4 // TODO
-{
-
-};
-
-SearchScheme scheme_4_4 // TODO
-{
-
-};
-
-std::array<std::array<SearchScheme, 5>, 5> schemes {{
-  // min errors: 0
-  {{ scheme_0_0, scheme_0_1, scheme_0_2, scheme_0_3, scheme_0_4 }},
-  // min errors: 1
-  {{ schemeFAIL, scheme_1_1, scheme_1_2, scheme_1_3, scheme_1_4 }},
-  // min errors: 2
-  {{ schemeFAIL, schemeFAIL, scheme_2_2, scheme_2_3, scheme_2_4 }},
-  // min errors: 3
-  {{ schemeFAIL, schemeFAIL, schemeFAIL, scheme_3_3, scheme_3_4 }},
-  // min errors: 4
-  {{ schemeFAIL, schemeFAIL, schemeFAIL, schemeFAIL, scheme_4_4 }}
-}};
+// SearchScheme scheme_0_4
+// {
+//     { {1, 2, 3}, {0, 0, 3}, {1, 4, 5}, {0, 0, 0}, 0, false },
+//     { {2, 3, 1}, {0, 0, 0}, {2, 3, 5}, {0, 0, 0}, 0, false },
+//     { {3, 2, 1}, {0, 3, 5}, {0, 5, 5}, {0, 0, 0}, 0, false }
+// };
 
 // Given the blocklengths (absolute, not cumulative values), assign it to all
 // Searches in a SearchScheme. The order of blocklength has to be from left to
 // right (regarding blocks)
-inline void _schemeSearchSetBlockLength(SearchScheme & ss, std::vector<uint8_t> const & blocklength)
+template <size_t nbrBlocks, size_t N>
+inline void _schemeSearchSetBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::vector<uint32_t> const & blocklength)
 {
-    for (Search & s : ss)
+    for (auto & s : ss)
     {
         for (uint8_t i = 0; i < s.blocklength.size(); ++i)
         {
@@ -181,12 +227,13 @@ inline void _schemeSearchSetBlockLength(SearchScheme & ss, std::vector<uint8_t> 
 }
 
 // requires blocklength to be already set!
-inline void _schemeSearchInit(SearchScheme & ss)
+template <size_t nbrBlocks, size_t N>
+inline void _schemeSearchInit(std::array<Search<nbrBlocks>, N> & ss)
 {
     // check whether 2nd block is on the left or right and choose initialDirection accordingly
     // (more efficient since we do not have to switch directions and thus have better caching performance)
     // for that we need to slightly modify search()
-    for (Search & s : ss)
+    for (auto & s : ss)
     {
         s.initialDirection = s.pi[0] < s.pi[1]; // ascending blockorder -> goToRight
         s.startPos = !s.initialDirection; // + 1 if we go left (right border of block), + 0 if we go right (left border of block)
@@ -200,12 +247,13 @@ inline void _schemeSearchInit(SearchScheme & ss)
     }
 }
 
-inline void _schemeSearchComputeFixedBlocklength(SearchScheme & ss, uint16_t const needleLength)
+template <size_t min, size_t max>
+inline void _schemeSearchComputeFixedBlocklength(SearchSchemes<min, max> & ss, uint32_t const needleLength)
 {
     uint8_t blocks = ss[0].pi.size();
-    uint8_t blocklength = needleLength / blocks;
-    uint16_t rest = needleLength - blocks * blocklength;
-    std::vector<uint8_t> blocklengths;
+    uint32_t blocklength = needleLength / blocks;
+    uint8_t rest = needleLength - blocks * blocklength;
+    std::vector<uint32_t> blocklengths;
     for (uint8_t i = 0; i < blocks; ++i)
     {
         blocklengths.push_back(blocklength + (i < rest));
@@ -215,15 +263,15 @@ inline void _schemeSearchComputeFixedBlocklength(SearchScheme & ss, uint16_t con
     _schemeSearchInit(ss);
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, typename TDirection>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
 inline void _schemeSearchDeletion(TDelegate & delegate,
                                   Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                   TText2 const & needle,
                                   uint32_t needleLeftIt,
                                   uint32_t needleRightIt,
                                   uint8_t const errors,
-                                  Search const & s,
-                                  TDirection const /**/,
+                                  Search<nbrBlocks> const & s,
+                                  TDir const /**/,
                                   uint8_t const blockIndex)
 {
     uint8_t const maxErrorsLeftInBlock = s.u[blockIndex] - errors;
@@ -246,24 +294,24 @@ inline void _schemeSearchDeletion(TDelegate & delegate,
 
     if (maxErrorsLeftInBlock > 0)
     {
-        if (goDown(iter, TDirection()))
+        if (goDown(iter, TDir()))
         {
             do
             {
-                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDirection(), blockIndex);
-            } while (goRight(iter, TDirection()));
+                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDir(), blockIndex);
+            } while (goRight(iter, TDir()));
         }
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, typename TDir>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
 inline void _schemeSearchChildren(TDelegate & delegate,
                                   Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                   TText2 const & needle,
                                   uint32_t const needleLeftIt,
                                   uint32_t const needleRightIt,
                                   uint8_t const errors,
-                                  Search const & s,
+                                  Search<nbrBlocks> const & s,
                                   TDir const /**/,
                                   uint8_t const blockIndex,
                                   bool const indels,
@@ -322,14 +370,14 @@ inline void _schemeSearchChildren(TDelegate & delegate,
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, typename TDir>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
 inline void _schemeSearchExact(TDelegate & delegate,
                                Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                TText2 const & needle,
                                uint32_t const needleLeftIt,
                                uint32_t const needleRightIt,
                                uint8_t const errors,
-                               Search const & s,
+                               Search<nbrBlocks> const & s,
                                TDir const /**/,
                                uint8_t const blockIndex,
                                bool const indels)
@@ -356,9 +404,10 @@ inline void _schemeSearchExact(TDelegate & delegate,
     }
     else
     {
+        // TODO: transform loop s.t. it does not need to use signed integers
         // has to be signed, otherwise we run into troubles when checking for -1 >= 0u
-        signed infixPosLeft = needleRightIt - s.blocklength[blockIndex] - 1;
-        signed infixPosRight = needleLeftIt - 1;
+        int32_t infixPosLeft = needleRightIt - s.blocklength[blockIndex] - 1;
+        int32_t infixPosRight = needleLeftIt - 1;
 
         while (infixPosRight >= infixPosLeft)
         {
@@ -379,14 +428,14 @@ inline void _schemeSearchExact(TDelegate & delegate,
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, typename TDir>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
 inline void _schemeSearch(TDelegate & delegate,
                           Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                           TText2 const & needle,
                           uint32_t const needleLeftIt,
                           uint32_t const needleRightIt,
                           uint8_t const errors,
-                          Search const & s,
+                          Search<nbrBlocks> const & s,
                           TDir const /**/,
                           uint8_t const blockIndex,
                           bool const indels)
@@ -412,8 +461,8 @@ inline void _schemeSearch(TDelegate & delegate,
         if (indels) // && !(needleLeftIt == 0 && needleRightIt == length(needle) + 1) && charsLeft > 0 // no insertions at the end of the block when we didnt increment the blockid (for deletions)
         {
             bool const goToRight = std::is_same<TDir, Rev>::value;
-            auto const needleLeftIt2 = needleLeftIt - !goToRight;
-            auto const needleRightIt2 = needleRightIt + goToRight;
+            int32_t const needleLeftIt2 = needleLeftIt - !goToRight; // TODO: can we use an unsigned int?
+            uint32_t const needleRightIt2 = needleRightIt + goToRight;
 
             if (needleRightIt - needleLeftIt == s.blocklength[blockIndex])
             {
@@ -430,11 +479,11 @@ inline void _schemeSearch(TDelegate & delegate,
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks>
 inline void _schemeSearch(TDelegate & delegate,
                           Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
                           TText2 const & needle,
-                          Search const & s,
+                          Search<nbrBlocks> const & s,
                           bool const indels)
 {
     if (s.initialDirection)
@@ -451,48 +500,43 @@ inline void _schemeSearch(TDelegate & delegate,
 // Function _find()
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TIndexSpec, typename TPattern, typename TDelegate, typename TDistanceTag>
+// TODO: think about design
+template <size_t minErrors, size_t maxErrors, typename TText, typename TIndexSpec, typename TPattern, typename TDelegate, typename TDistanceTag>
 inline void
 _find(Index<TText, TIndexSpec> & index,
       TPattern const && pattern,
       TDelegate & delegate,
-      uint8_t const minErrors,
-      uint8_t const maxErrors,
       Tag<TDistanceTag> /**/)
 {
-    SearchScheme scheme = schemes[minErrors][maxErrors]; // TODO: check whether valid. forward to trivial backtracking
-    _computeFixedBlocklength(scheme, length(pattern));
+    auto scheme = SearchSchemes<minErrors, maxErrors>::VALUE;
+    _schemeSearchComputeFixedBlocklength(scheme, length(pattern));
     Iter<Index<TText, TIndexSpec>, VSTree<TopDown<> > > it(index);
     search(delegate, it, pattern, scheme, IsSameType<Tag<TDistanceTag>, EditDistance>::VALUE, false);
 }
 
-template <typename TText, typename TIndexSpec, typename TStringSetSpec, typename TPattern, typename TDelegate, typename TDistanceTag, typename TParallelTag>
+template <size_t minErrors, size_t maxErrors, typename TText, typename TIndexSpec, typename TStringSetSpec, typename TPattern, typename TDelegate, typename TDistanceTag, typename TParallelTag>
 inline void
 _find(Index<TText, TIndexSpec> & index,
       StringSet<TPattern, TStringSetSpec> const && patterns,
       TDelegate & delegate,
-      uint8_t const minErrors,
-      uint8_t const maxErrors,
       Tag<TDistanceTag> /**/,
       Tag<TParallelTag> /**/)
 {
     SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
     for (size_t seqNo = 0; seqNo < length(patterns); ++seqNo)
     {
-        _find(index, patterns[seqNo], delegate, minErrors, maxErrors, TDistanceTag());
+        _find<minErrors, maxErrors>(index, patterns[seqNo], delegate, TDistanceTag());
     }
 }
 
-template <typename TText, typename TIndexSpec, typename TStringSetSpec, typename TPattern, typename TDelegate, typename TDistanceTag>
+template <size_t minErrors, size_t maxErrors, typename TText, typename TIndexSpec, typename TStringSetSpec, typename TPattern, typename TDelegate, typename TDistanceTag>
 inline void
 _find(Index<TText, TIndexSpec> & index,
       StringSet<TPattern, TStringSetSpec> const && patterns,
       TDelegate & delegate,
-      uint8_t const minErrors,
-      uint8_t const maxErrors,
       Tag<TDistanceTag> /**/)
 {
-    _find(index, patterns, delegate, minErrors, maxErrors, TDistanceTag(), Serial());
+    _find<minErrors, maxErrors>(index, patterns, delegate, TDistanceTag(), Serial());
 }
 
 }

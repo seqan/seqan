@@ -36,6 +36,7 @@
 #define TESTS_FIND2_INDEX_APPROX_H_
 
 #include <seqan/index.h>
+#include <seqan/index/find2_index_approx.h>
 
 #include "test_index_helpers.h"
 
@@ -59,19 +60,21 @@ void generateText(String<TChar, TConfig> & text, TRand & rng, unsigned length)
     }
 }
 
-template <typename T>
-inline void printVector(std::vector<T> const & v, std::ostream & stream)
+template< typename TContainer>
+inline void printVector(const TContainer & c, std::ostream & stream)
 {
+    using T = std::decay_t<decltype(c[0])>;
     stream << "[";
-    for (unsigned i = 0; i < v.size(); ++i)
+    for (unsigned i = 0; i < c.size(); ++i)
     {
-        stream << (std::is_same<T, uint8_t>::value ? (unsigned) v[i] : v[i])
-               << ((i < v.size() - 1) ? ", " : "");
+        stream << (std::is_same<T, uint8_t>::value ? (unsigned) c[i] : c[i])
+               << ((i < c.size() - 1) ? ", " : "");
     }
     stream << "]" << std::endl;
 }
 
-inline void printSearch(Search const & s, std::ostream & stream)
+template <size_t nbrBlocks>
+inline void printSearch(Search<nbrBlocks> const & s, std::ostream & stream)
 {
     stream << "SearchScheme (Pi): ";
     printVector(s.pi, stream);
@@ -114,15 +117,18 @@ inline void _getErrorDistributions(std::vector<uint8_t> l,
 
 // Compute all possible error distributions given a search.
 // The result is ordered as the search (s.pi)
-inline void getErrorDistributions(Search const & s,
+template <size_t nbrBlocks>
+inline void getErrorDistributions(Search<nbrBlocks> const & s,
                                   std::vector<std::vector<uint8_t> > & res)
 {
-    _getErrorDistributions(s.l, s.u, res, 0u);
+    std::vector<uint8_t> l(s.l.begin(), s.l.end());
+    std::vector<uint8_t> u(s.u.begin(), s.u.end());
+    _getErrorDistributions(l, u, res, 0u);
 }
 
 // Reorder blocks s.t. they are in a sequential order (from left to right)
-template <typename T>
-inline void orderVector(Search const & s, std::vector<T> & v)
+template <size_t nbrBlocks, typename T>
+inline void orderVector(Search<nbrBlocks> const & s, std::vector<T> & v)
 {
     std::vector<T> v_tmp = v;
     for (uint8_t i = 0; i < s.pi.size(); ++i)
@@ -134,7 +140,8 @@ inline void orderVector(Search const & s, std::vector<T> & v)
 
 // Reorder blocks s.t. they are in a sequential order (from left to right)
 // Blocklength is stored as absolute values instead of cumulative values.
-inline void getOrderedSearch(Search const & s, Search & os)
+template <size_t nbrBlocks>
+inline void getOrderedSearch(Search<nbrBlocks> const & s, Search<nbrBlocks> & os)
 {
     for (uint8_t i = 0; i < s.pi.size(); ++i)
     {
@@ -198,13 +205,14 @@ inline void trivialSearch(TDelegate & delegate,
 }
 
 // Compute random blocklengths (order: left to right)
-inline void setRandomBlockLength(SearchScheme & ss, std::mt19937 & rng, uint16_t needleLength)
+template <size_t nbrBlocks, size_t N>
+inline void setRandomBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::mt19937 & rng, uint32_t needleLength)
 {
-    std::vector<uint8_t> blocklength(ss[0].pi.size());
+    std::vector<uint32_t> blocklength(ss[0].pi.size());
 
     // Set minimum length for each block considerung all searches.
     uint8_t maxErrors = 0;
-    for (Search const & s : ss)
+    for (auto const & s : ss)
     {
         maxErrors = std::max(maxErrors, s.u.back());
     }
@@ -226,11 +234,11 @@ inline void setRandomBlockLength(SearchScheme & ss, std::mt19937 & rng, uint16_t
     _schemeSearchInit(ss);
 }
 
-template <typename TText, typename TIndex, typename TIndexSpec>
+template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks>
 inline void testSearch(std::mt19937 & rng,
                        Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
-                       Search const & s,
-                       Search const & os,
+                       Search<nbrBlocks> const & s,
+                       Search<nbrBlocks> const & os,
                        unsigned const needleLength,
                        std::vector<uint8_t> const & errorDistribution,
                        bool const indels,
@@ -246,10 +254,10 @@ inline void testSearch(std::mt19937 & rng,
 
     // Modify needle s.t. it has errors matching errorDistribution.
     TText needle(origNeedle);
-    uint8_t cumulativeBlocklength = 0;
+    uint32_t cumulativeBlocklength = 0;
     for (uint8_t block = 0; block < s.pi.size(); ++block)
     {
-        uint8_t blocklength = os.blocklength[block];
+        uint32_t blocklength = os.blocklength[block];
         if (errorDistribution[block] > blocklength)
         {
             std::stringstream stream;
@@ -374,7 +382,8 @@ inline void testSearch(std::mt19937 & rng,
     }
 }
 
-inline void testSearchScheme(SearchScheme & ss, bool const indels)
+template </*size_t min, size_t max*/ size_t nbrBlocks, size_t N>
+inline void testSearchScheme(/*SearchSchemes<min, max>*/ std::array<Search<nbrBlocks>, N> & ss, bool const indels)
 {
     typedef DnaString TText;
     typedef FastFMIndexConfig<void, uint32_t, 2, 1> TMyFastConfig;
@@ -387,7 +396,7 @@ inline void testSearchScheme(SearchScheme & ss, bool const indels)
     std::mt19937 rng(seed);
 
     TText text;
-    SearchScheme os(ss.size());
+    std::array<Search<nbrBlocks>, N> os;
     std::vector<std::vector<std::vector<uint8_t> > > errorDistributions(ss.size());
 
     // Calculate all error distributions and sort each of them (from left to right).
@@ -438,16 +447,37 @@ inline void testSearchScheme(SearchScheme & ss, bool const indels)
 // Test test_find2_index_approx_hamming
 // ----------------------------------------------------------------------------
 
+// constexpr uint8_t getConstExpr(uint8_t const i)
+// {
+//     return i;
+// }
+
+// constexpr auto getSearchScheme(uint8_t const minErrors, uint8_t const maxErrors)
+// {
+//     return SearchSchemes<getConstExpr(minErrors), getConstExpr(maxErrors)>::VALUE;
+// }
+
+// struct MyTest
+// {
+//     static constexpr int VALUE = 666666666;
+//     static constexpr std::array<int, 2> VALUE2 {{0, 1}};
+// };
+
+// constexpr std::array<int, 2> MyTest::VALUE2;
+
 SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 {
-    for (unsigned errors = 0; errors < schemes.size(); ++errors)
-    {
-        unsigned minErrors = 0; // TODO
-        // for (unsigned minErrors = 0; minErrors <= errors; ++minErrors)
+    // std::cout << MyTest::VALUE << std::endl;
+    // std::cout << MyTest::VALUE2.size() << std::endl;
+    // for (unsigned maxErrors = 0; maxErrors < 3; ++maxErrors)
+    // {
+    //     constexpr unsigned minErrors = 0; // TODO
+        // for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
         // {
-            testSearchScheme(schemes[minErrors][errors], true);
+            auto scheme = SearchSchemes<0, 2>::VALUE;
+            testSearchScheme(scheme, true);
         // }
-    }
+    // }
 }
 
 // ----------------------------------------------------------------------------
@@ -456,14 +486,15 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_edit)
 {
-    for (unsigned errors = 0; errors < schemes.size(); ++errors)
-    {
-        unsigned minErrors = 0; // TODO
-        // for (unsigned minErrors = 0; minErrors <= errors; ++minErrors)
-        // {
-            testSearchScheme(schemes[minErrors][errors], true);
-        // }
-    }
+    // // TODO: for every possible template config???
+    // for (unsigned maxErrors = 0; maxErrors < 3; ++maxErrors)
+    // {
+    //     unsigned minErrors = 0; // TODO
+    //     // for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
+    //     // {
+    //         testSearchScheme(schemes[minErrors][maxErrors], true);
+    //     // }
+    // }
 }
 
 #endif  // TESTS_FIND2_INDEX_APPROX_H_
