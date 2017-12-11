@@ -68,7 +68,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install splazers in ${PREFIX}/bin directory
 install (TARGETS splazers
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/splazers for SeqAn release builds.

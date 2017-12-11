@@ -92,7 +92,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install razers3 in ${PREFIX}/bin directory
 install (TARGETS razers3
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/razers3 for SeqAn release builds.

@@ -77,7 +77,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install gustaf in ${PREFIX}/bin directory
 install (TARGETS gustaf gustaf_mate_joining
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/gustaf for SeqAn release builds.

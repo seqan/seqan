@@ -64,7 +64,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install rep_sep in ${PREFIX}/bin directory
 install (TARGETS rep_sep
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/rep_sep for SeqAn release builds.
