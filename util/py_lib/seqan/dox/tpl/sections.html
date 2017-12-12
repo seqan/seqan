@@ -830,7 +830,7 @@ Render the grouped macros details
 {% else %}
   <dt>Data Races</dt>
   <dd>
-    Thread safety unknown!
+    If not stated otherwise, concurrent invocation is not guaranteed to be thread-safe.
   </dd>
 {% endif %}
 
@@ -1003,7 +1003,7 @@ Render the interface functions details
   	</p>
   	{% endfor %}
   {% else %}
-    Thread safety unknown!
+    If not stated otherwise, concurrent invocation is not guaranteed to be thread-safe.
   {% endif %}
   </div>
 	
@@ -1376,7 +1376,7 @@ Render the dataraces details.
 	</div>
 {% else %}
 	<div class="summary compact">
- 		Thread safety unknown!
+ 		If not stated otherwise, concurrent invocation is not guaranteed to be thread-safe.
 	</div>
 {% endif %}
 {%- endmacro %}

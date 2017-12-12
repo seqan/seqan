@@ -211,7 +211,7 @@ unsigned char toUpperValue(unsigned char c)
 // Function supremumValueImpl
 // ----------------------------------------------------------------------------
 
-template <typename T> inline T const & supremumValueImpl(T *);
+template <typename T> [[deprecated("Use std::numeric_limits<T>::max() instead.")]] inline T const & supremumValueImpl(T *);
 
 // ----------------------------------------------------------------------------
 // Function maxValue
@@ -220,26 +220,26 @@ template <typename T> inline T const & supremumValueImpl(T *);
 // Forward to supremumValueImpl() only.
 
 template <typename T>
-inline T const &
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
+inline T
 maxValue()
 {
-    T * _tag = 0;
-    return supremumValueImpl(_tag);
+    return std::numeric_limits<T>::max();
 }
 
 template <typename T>
-inline T const &
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
+inline T
 maxValue(T /*tag*/)
 {
-    T * _tag = 0;
-    return supremumValueImpl(_tag);
+    return std::numeric_limits<T>::max();
 }
 
 // ----------------------------------------------------------------------------
 // Function infimumValueImpl
 // ----------------------------------------------------------------------------
 
-template <typename T> inline T const & infimumValueImpl(T *);
+template <typename T> [[deprecated("Use std::numeric_limits<T>::min() instead.")]] inline T const & infimumValueImpl(T *);
 
 // ----------------------------------------------------------------------------
 // Function minValue
@@ -248,19 +248,19 @@ template <typename T> inline T const & infimumValueImpl(T *);
 // Forward to infimumValueImpl() only.
 
 template <typename T>
-inline T const &
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
+inline T
 minValue()
 {
-    T * _tag = 0;
-    return infimumValueImpl(_tag);
+    return std::numeric_limits<T>::min();
 }
 
 template <typename T>
-inline T const &
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
+inline T
 minValue(T /*tag*/)
 {
-    T * _tag = 0;
-    return infimumValueImpl(_tag);
+    return std::numeric_limits<T>::min();
 }
 
 // ----------------------------------------------------------------------------

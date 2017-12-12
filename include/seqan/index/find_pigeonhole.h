@@ -468,7 +468,7 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
 
         pattern._currentErrorRate = _newErrorRate;
 
-        TSize minDelta = MaxValue<TSize>::VALUE;
+        TSize minDelta = std::numeric_limits<TSize>::max();
         TSize maxDelta = 3;
         TSize maxSeqLen = 0;
         for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
@@ -504,7 +504,7 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
             minDelta = pattern.params.delta;
         }
 
-        if (minDelta == MaxValue<TSize>::VALUE)
+        if (minDelta == std::numeric_limits<TSize>::max())
         {
             // disable index
             minDelta = pattern.maxSeqLen + 1;

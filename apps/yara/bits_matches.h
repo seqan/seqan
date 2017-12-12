@@ -615,7 +615,7 @@ getLibraryLength(Match<TSpec> const & a, Match<TSpec> const & b)
     }
     else
     {
-        return MaxValue<TContigSize>::VALUE;
+        return std::numeric_limits<TContigSize>::max();
     }
 }
 
@@ -633,7 +633,7 @@ getLibraryDeviation(Match<TSpec> const & a, Match<TSpec> const & b, TSize meanLe
     if (isValid(a) && isValid(b) && contigEqual(a, b))
         return _abs((TSignedContigSize)getLibraryLength(a, b) - (TSignedContigSize)meanLength);
     else
-        return MaxValue<TContigSize>::VALUE;
+        return std::numeric_limits<TContigSize>::max();
 }
 
 // ----------------------------------------------------------------------------

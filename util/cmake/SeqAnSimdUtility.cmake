@@ -88,7 +88,6 @@
 #         (e.g. sse4, avx2, avx512_knl, avx512_skx, avx512_cnl)
 #
 
-find_package (SeqAn CONFIG REQUIRED)
 find_package (SDE)
 find_package (Umesimd)
 
@@ -185,18 +184,22 @@ set(SEQAN_SIMD_AVX512_KNL_SOURCE
 "#include <cstdint>
 #include <immintrin.h>
 #include <iostream>
+#include <random>
 
 int main() {
+  std::random_device r;
+  std::default_random_engine e(r());
+  std::uniform_int_distribution<int64_t> d(1, 10);
+
   alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
   alignas(64) uint64_t t[]{0,0,0,0,0,0,0,0};
 
   // gcc 4.9 does not know _mm512_cmpgt_epu64_mask
-  volatile auto a = _mm512_setr_epi64(7,6,5,4,3,2,1,0);
+  volatile auto a = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
   volatile auto m = _mm512_cmpgt_epu64_mask(a, _mm512_set1_epi64(4)); // m = a > 4
   volatile auto z = _mm512_mask_load_epi64(a, m, s); // (a > 4) ? s : a
   _mm512_store_epi64(t, z);
 
-  // (9, 9, 9, 4, 3, 2, 1, 0)
   std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \", ...)\" << std::endl;
   return 0;
 }")
@@ -206,6 +209,7 @@ set(SEQAN_SIMD_AVX512_CNL_SOURCE "${SEQAN_SIMD_AVX512_KNL_SOURCE}")
 
 set(SEQAN_SIMD_SEQANSIMD_SOURCE
 "#include <cstdint>
+#include <iostream>
 using int32x4_t = int32_t __attribute__ ((__vector_size__(4 * sizeof(int32_t)))); // SSE4 = 128bit
 using int32x8_t = int32_t __attribute__ ((__vector_size__(8 * sizeof(int32_t)))); // AVX2 = 256bit
 
@@ -266,7 +270,12 @@ int main() {
   auto z = x + y;
 
   // gcc 4.9 bug
-  constexpr auto length = LENGTH<int32x8_t>::VALUE;
+  constexpr auto length1 = LENGTH<int32x4_t>::VALUE;
+  constexpr auto length2 = LENGTH<int32x8_t>::VALUE;
+  static_assert(length1 == 4u, \"\");
+  static_assert(length2 == 8u, \"\");
+  std::cout << \"length1: \" << length1 << std::endl;
+  std::cout << \"length2: \" << length2 << std::endl;
 
   // icc 16.0.0, 16.0.1 bug
   assign(a, 0, 4);
@@ -395,6 +404,7 @@ macro(detect_simd_support)
         endforeach()
 
         # test seqan simd
+        set(CMAKE_REQUIRED_FLAGS "")
         check_cxx_source_compiles("${SEQAN_SIMD_SEQANSIMD_SOURCE}" SEQAN_SIMD_SEQANSIMD_SUPPORTED)
 
         # try-compile known compiler crashes/errors with seqan-simd and exclude them
@@ -522,10 +532,11 @@ macro(add_simd_platform_tests target)
     set(umesimd_test_blacklist "")
 
     if (COMPILER_CLANG)
-        # clang >=4.0.0
-        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
-            message(AUTHOR_WARNING "Clang >=4.0.0 reevaluate if AVX512_skx (seqan-simd only) binaries are working. "
-                    "At least https://llvm.org/bugs/show_bug.cgi?id=31731 seems to be fixed")
+        # clang 4.x
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
+            message(AUTHOR_WARNING "Clang 4.x; reevaluate if AVX512_skx (seqan-simd only) binaries are working. "
+                    "An earlier version had an Internal Compiler Error (https://llvm.org/bugs/show_bug.cgi?id=31731), "
+                    "which was fixed, the produced binaries might work now. (clang 5.0 is known to work)")
         # clang =3.9.0
         elseif (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1)
             # Build the executables, but don't execute them, because clang <= 3.9.x
@@ -583,10 +594,10 @@ macro(add_simd_platform_tests target)
     set(seqansimd_compile_blacklist ${seqansimd_compile_blacklist} ${_simd_intrinsics_blacklist} ${_simd_seqansimd_blacklist})
     set(umesimd_compile_blacklist ${umesimd_compile_blacklist} ${_simd_intrinsics_blacklist})
 
-    if (UMESIMD_FOUND AND umesimd_test_blacklist)
+    if (UMESIMD_FOUND AND umesimd_test_blacklist AND seqansimd_test_blacklist)
         message(STATUS "Disable test `${target}` for seqan-simd and ume-simd and the following simd extensions ${seqansimd_test_blacklist} and ${umesimd_test_blacklist}")
         message(STATUS "\tReason: ${reason_for_disabled_test}")
-    elseif (UMESIMD_FOUND AND umesimd_test_blacklist AND seqansimd_test_blacklist)
+    elseif (UMESIMD_FOUND AND umesimd_test_blacklist)
         message(STATUS "Disable test `${target}` for ume-simd and the following simd extensions ${umesimd_test_blacklist}")
         message(STATUS "\tReason: ${reason_for_disabled_test}")
     elseif (seqansimd_test_blacklist)

@@ -1136,30 +1136,30 @@ public:
         unsigned svIdx = 0;
         // Current SNP record, default to sentinel.
         SnpRecord snpRecord;
-        snpRecord.rId = seqan::maxValue<int>();
+        snpRecord.rId = std::numeric_limits<int>::max();
         if (snpsIdx < length(variants.snps))
             snpRecord = variants.snps[snpsIdx++];
         // Current small indel record, default to sentinel.
         SmallIndelRecord smallIndelRecord;
-        smallIndelRecord.rId = seqan::maxValue<int>();
+        smallIndelRecord.rId = std::numeric_limits<int>::max();
         if (smallIndelIdx < length(variants.smallIndels))
             smallIndelRecord = variants.smallIndels[smallIndelIdx++];
         // Current SV record, default to sentinel.
         StructuralVariantRecord svRecord;
-        svRecord.rId = seqan::maxValue<int>();
+        svRecord.rId = std::numeric_limits<int>::max();
         if (svIdx < length(variants.svRecords))
             svRecord = variants.svRecords[svIdx++];
-        while (snpRecord.rId != seqan::maxValue<int>() ||
-               smallIndelRecord.rId != seqan::maxValue<int>() ||
-               svRecord.rId != seqan::maxValue<int>())
+        while (snpRecord.rId != std::numeric_limits<int>::max() ||
+               smallIndelRecord.rId != std::numeric_limits<int>::max() ||
+               svRecord.rId != std::numeric_limits<int>::max())
         {
-            if (snpRecord.rId != seqan::maxValue<int>() && smallIndelRecord.rId != seqan::maxValue<int>())
+            if (snpRecord.rId != std::numeric_limits<int>::max() && smallIndelRecord.rId != std::numeric_limits<int>::max())
                 SEQAN_ASSERT(snpRecord.getPos() != smallIndelRecord.getPos());  // are generated indendently
-            if (snpRecord.rId != seqan::maxValue<int>() && svRecord.rId != seqan::maxValue<int>())
+            if (snpRecord.rId != std::numeric_limits<int>::max() && svRecord.rId != std::numeric_limits<int>::max())
                 SEQAN_ASSERT_MSG(snpRecord.getPos() != svRecord.getPos(),
                                  "Should be generated non-overlapping (snp pos = %d, sv pos = %d).",
                                  snpRecord.pos, svRecord.pos);
-            if (smallIndelRecord.rId != seqan::maxValue<int>() && svRecord.rId != seqan::maxValue<int>())
+            if (smallIndelRecord.rId != std::numeric_limits<int>::max() && svRecord.rId != std::numeric_limits<int>::max())
                 SEQAN_ASSERT(smallIndelRecord.getPos() != svRecord.getPos());  // are generated indendently
             SEQAN_ASSERT_NEQ(snpRecord.pos, 0);   // Not simulated, VCF complexer.
             SEQAN_ASSERT_NEQ(svRecord.pos, 0);   // Not simulated, VCF complexer.
@@ -1206,7 +1206,7 @@ public:
                 }
 
                 if (svIdx >= length(variants.svRecords))
-                    svRecord.rId = seqan::maxValue<int>();
+                    svRecord.rId = std::numeric_limits<int>::max();
                 else
                     svRecord = variants.svRecords[svIdx++];
             }
@@ -1242,11 +1242,11 @@ public:
             inTos[ordValue(seqan::Dna5(snpRecord.to))] = true;
 
             if (snpsIdx >= length(variants.snps))
-                snpRecord.rId = seqan::maxValue<int>();
+                snpRecord.rId = std::numeric_limits<int>::max();
             else
                 snpRecord = variants.snps[snpsIdx++];
         }
-        while (snpRecord.rId != seqan::maxValue<int>() &&
+        while (snpRecord.rId != std::numeric_limits<int>::max() &&
                snpsIdx < length(variants.snps) &&
                snpRecord.getPos() == pos);
 
@@ -1313,11 +1313,11 @@ public:
             appendValue(records, smallIndelRecord);
 
             if (smallIndelIdx >= length(variants.smallIndels))
-                smallIndelRecord.rId = seqan::maxValue<int>();
+                smallIndelRecord.rId = std::numeric_limits<int>::max();
             else
                 smallIndelRecord = variants.smallIndels[smallIndelIdx++];
         }
-        while (smallIndelRecord.rId != seqan::maxValue<int>() &&
+        while (smallIndelRecord.rId != std::numeric_limits<int>::max() &&
                smallIndelIdx < length(variants.smallIndels) &&
                smallIndelRecord.getPos() == variants.smallIndels[smallIndelIdx].getPos());
         SEQAN_ASSERT_NOT(empty(records));

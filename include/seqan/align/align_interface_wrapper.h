@@ -185,7 +185,8 @@ _alignWrapperSequential(TSetH & gapSeqSetH,
 template <typename... TArgs>
 inline auto _alignWrapper(TArgs && ...args)
 {
-#ifdef SEQAN_SIMD_ENABLED
+// NOTE(marehr): ume_simd is currently not working, thus falling back to sequential case
+#if defined(SEQAN_SIMD_ENABLED) && !defined(SEQAN_UMESIMD_ENABLED)
     return _alignWrapperSimd(std::forward<TArgs>(args)...);
 #else
     return _alignWrapperSequential(std::forward<TArgs>(args)...);

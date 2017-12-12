@@ -64,7 +64,7 @@ public:
     TValue value_;
     TID id_;
 
-    ScoreAndID() : value_(MinValue<TValue>::VALUE), id_(MaxValue<TValue>::VALUE)
+    ScoreAndID() : value_(std::numeric_limits<TValue>::min()), id_(std::numeric_limits<TValue>::max())
     {}
 
     ScoreAndID(TValue score, TID id_pos)
@@ -157,8 +157,8 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
 
     resize(finder.forbidden, (len0 + 1) * (len1 + 1), false);
 
-    finder.bestEndPos = maxValue<typename TFinder::TMatrixPosition>();
-    finder.bestBeginPos = maxValue<typename TFinder::TMatrixPosition>();
+    finder.bestEndPos = std::numeric_limits<typename TFinder::TMatrixPosition>::max();
+    finder.bestBeginPos = std::numeric_limits<typename TFinder::TMatrixPosition>::max();
 }
 
 // ----------------------------------------------------------------------------
@@ -179,7 +179,7 @@ template <typename TScoreValue>
 TScoreValue getScore(LocalAlignmentFinder<TScoreValue> const & sw)
 {
     typedef LocalAlignmentFinder<TScoreValue> TFinder;
-    if(sw.bestEndPos !=  maxValue<typename TFinder::TMatrixPosition>())
+    if(sw.bestEndPos !=  std::numeric_limits<typename TFinder::TMatrixPosition>::max())
         return getValue(const_cast<typename TFinder::TMatrix &>(sw.matrix), sw.bestEndPos);
     return 0;
 }

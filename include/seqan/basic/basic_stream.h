@@ -813,8 +813,9 @@ writeValue(TTargetValue * & iter, TValue val)
 template <typename TTarget, typename TFwdIterator, typename TSize, typename TIChunk, typename TOChunk>
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
 {
+    typedef typename GetValue<TFwdIterator>::Type TValue;
     for (; n > (TSize)0; --n, ++iter)
-        writeValue(target, getValue(iter));
+        writeValue(target, static_cast<TValue>(*iter));
 }
 
 // ----------------------------------------------------------------------------
@@ -1258,7 +1259,7 @@ read(TTarget &target, TFwdIterator &iter, TSize n)
 {
     TSize i;
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
-        writeValue(target, value(iter));
+        writeValue(target, *iter);
     return i;
 }
 

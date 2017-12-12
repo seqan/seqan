@@ -83,8 +83,8 @@ namespace seqan {
 template <typename TChar, typename TValue, typename TSpec, typename TSpec2>
 void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
                   String<TChar, TSpec2> /*const*/ & seq,
-                  int lDiag = minValue<int>(),
-                  int uDiag = maxValue<int>())  // non-const because of holder issues
+                  int lDiag = std::numeric_limits<int>::min(),
+                  int uDiag = std::numeric_limits<int>::max())  // non-const because of holder issues
 {
     typedef ProfileChar<TChar, TValue, TSpec> TProfileChar;
 
@@ -97,7 +97,7 @@ void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
     seqan::Score<int, seqan::ProfileSeqScore> sScheme(profile);
 
     // Perform the global alignment.
-    if (lDiag == minValue<int>() || uDiag == maxValue<int>())
+    if (lDiag == std::numeric_limits<int>::min() || uDiag == std::numeric_limits<int>::max())
         globalAlignment(gapsH, gapsV, sScheme, Gotoh());
     else
         globalAlignment(gapsH, gapsV, sScheme, lDiag, uDiag, Gotoh());

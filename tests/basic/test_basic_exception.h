@@ -43,7 +43,7 @@ SEQAN_DEFINE_TEST(test_basic_exception_try_catch)
     {
         SEQAN_THROW(Exception());
     }
-    SEQAN_CATCH(Exception)
+    SEQAN_CATCH(Exception &)
     {
         return;
     }
@@ -57,7 +57,7 @@ SEQAN_DEFINE_TEST(test_basic_exception_bad_alloc)
     {
         SEQAN_THROW(BadAlloc());
     }
-    SEQAN_CATCH(BadAlloc)
+    SEQAN_CATCH(BadAlloc &)
     {
         return;
     }
@@ -71,7 +71,7 @@ SEQAN_DEFINE_TEST(test_basic_exception_runtime_error)
     {
         SEQAN_THROW(RuntimeError("Throwing a RuntimeError."));
     }
-    SEQAN_CATCH(RuntimeError)
+    SEQAN_CATCH(RuntimeError &)
     {
         return;
     }

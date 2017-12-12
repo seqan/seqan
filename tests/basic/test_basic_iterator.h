@@ -276,7 +276,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport_value)
         resetCDStructStatics();
 
         CDStruct * ptr = &cs1;
-        assignValue(ptr, cs2);
+        *ptr = cs2;
 
         SEQAN_ASSERT_EQ(ptr->copiedFrom, -1);
         SEQAN_ASSERT_EQ(ptr->movedFrom, -1);

@@ -86,16 +86,22 @@ struct Pair<T1, T2, Pack>
     // Constructors
     // ------------------------------------------------------------------------
 
-    Pair() : i1(T1()), i2(T2()) {}
-
-    Pair(Pair const &_p) : i1(_p.i1), i2(_p.i2) {}
+    // Pair() = default; does not work on gcc4.9, it issues warnings if T1/T2
+    // have no proper default constructor. >=gcc5.0 reports no warnings.
+    Pair() : i1(), i2() {};
+    Pair(Pair const &) = default;
+    Pair(Pair &&) = default;
+    ~Pair() = default;
+    Pair & operator=(Pair const &) = default;
+    Pair & operator=(Pair &&) = default;
 
     Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 
     template <typename T1_, typename T2_, typename TSpec__>
     // TODO(holtgrew): explicit?
-    Pair(Pair<T1_, T2_, TSpec__> const &_p)
-            : i1(getValueI1(_p)), i2(getValueI2(_p)) {}
+    Pair(Pair<T1_, T2_, TSpec__> const &_p) :
+        i1(getValueI1(_p)), i2(getValueI2(_p))
+    {}
 };
 #pragma pack(pop)
 

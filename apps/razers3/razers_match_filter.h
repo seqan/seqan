@@ -174,7 +174,7 @@ inline void
 registerRead(MatchFilter<TOptionsSpec, TReadSeqSet, TCallback> & filter, unsigned readId, int score)
 {
     // std::cerr << "registering read " << readId << std::endl;
-    if (filter.hitCount[readId - filter.readOffset] == MaxValue<unsigned>::VALUE)
+    if (filter.hitCount[readId - filter.readOffset] == std::numeric_limits<unsigned>::max())
         return;
 
     if (++filter.hitCount[readId - filter.readOffset] < filter.matchThreshold)
@@ -254,7 +254,7 @@ processRead(MatchFilter<TOptionsSpec, TReadSeqSet, TCallback> & filter, unsigned
     {
         _freeHistogram(filter, histogramId);
         filter.readIdToHistogramId.erase(readId);
-        filter.hitCount[readId - filter.readOffset] = MaxValue<unsigned>::VALUE;
+        filter.hitCount[readId - filter.readOffset] = std::numeric_limits<unsigned>::max();
         return true;
     }
     return false;

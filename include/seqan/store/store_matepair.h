@@ -115,7 +115,7 @@ struct MatePairStoreElement
 
 template <typename TSpec>
 const typename Id<MatePairStoreElement<TSpec> >::Type
-MatePairStoreElement<TSpec>::INVALID_ID = MaxValue<typename Id<MatePairStoreElement<TSpec> >::Type>::VALUE;
+MatePairStoreElement<TSpec>::INVALID_ID = std::numeric_limits<typename Id<MatePairStoreElement<TSpec> >::Type>::max();
 
 //////////////////////////////////////////////////////////////////////////////
 

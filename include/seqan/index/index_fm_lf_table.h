@@ -125,7 +125,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 //    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>          Type;
 
     typedef typename Size<LF<TText, TSpec, TConfig> >::Type TSize_;
-    typedef typename DefaultIndexStringSpec<TText>::Type    TSpec_;
+    typedef typename StringSpec<TText>::Type                TSpec_;
     typedef String<TSize_,  TSpec_>                         Type;
 };
 
@@ -537,7 +537,7 @@ _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
     typedef typename Value<TPrefixSums>::Type           TValue;
     typedef typename Size<TPrefixSums>::Type            TSize;
 
-    TValue minOcc = MaxValue<TValue>::VALUE;
+    TValue minOcc = std::numeric_limits<TValue>::max();
     TSize ordVal = 0;
 
     for (TSize i = 0; i < length(lf.sums) - 1; ++i)
@@ -577,20 +577,20 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
     TSAIter saItEnd = end(sa, Standard());
     TBwtIter bwtIt = begin(bwt, Standard());
 
-    assignValue(bwtIt, back(text));
+    *bwtIt = back(text);
     ++bwtIt;
 
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
-        TSAValue pos = getValue(saIt);
+        TSAValue pos = *saIt;
 
         if (pos != 0)
         {
-            assignValue(bwtIt, getValue(text, pos - 1));
+            *bwtIt = getValue(text, pos - 1);
         }
         else
         {
-            assignValue(bwtIt, lf.sentinelSubstitute);
+            *bwtIt = lf.sentinelSubstitute;
             lf.sentinels = bwtIt - begin(bwt, Standard());
         }
     }
@@ -625,7 +625,7 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     {
         if (length(text[seqNum - i]) > 0)
         {
-            assignValue(bwtIt, back(text[seqNum - i]));
+            *bwtIt = back(text[seqNum - i]);
             setValue(lf.sentinels, bwtIt - bwtItBeg, false);
         }
     }
@@ -634,16 +634,16 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
         TSAValue pos;    // = SA[i];
-        posLocalize(pos, getValue(saIt), stringSetLimits(text));
+        posLocalize(pos, *saIt, stringSetLimits(text));
 
         if (getSeqOffset(pos) != 0)
         {
-            assignValue(bwtIt, getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1));
+            *bwtIt = getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1);
             setValue(lf.sentinels, bwtIt - bwtItBeg, false);
         }
         else
         {
-            assignValue(bwtIt, lf.sentinelSubstitute);
+            *bwtIt = lf.sentinelSubstitute;
             setValue(lf.sentinels, bwtIt - bwtItBeg, true);
         }
     }

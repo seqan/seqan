@@ -59,7 +59,7 @@ struct LocalAlignTester_
         int const lDiag,
         int const uDiag)
     {
-        if (lDiag == seqan::MinValue<int>::VALUE && uDiag == seqan::MaxValue<int>::VALUE)
+        if (lDiag == std::numeric_limits<int>::min() && uDiag == std::numeric_limits<int>::max())
             return localAlignment(align, score);
         else
             return localAlignment(align, score, lDiag, uDiag);
@@ -78,7 +78,7 @@ struct GlobalAlignTester_
         int const lDiag,
         int const uDiag)
     {
-        if (lDiag == seqan::MinValue<int>::VALUE && uDiag == seqan::MaxValue<int>::VALUE)
+        if (lDiag == std::numeric_limits<int>::min() && uDiag == std::numeric_limits<int>::max())
             return globalAlignment(align, score, config);
         else
             return globalAlignment(align, score, config, lDiag, uDiag);
@@ -99,7 +99,7 @@ struct GlobalAlignScoreTester_
         int const lDiag,
         int const uDiag)
     {
-        if (lDiag == seqan::MinValue<int>::VALUE && uDiag == seqan::MaxValue<int>::VALUE)
+        if (lDiag == std::numeric_limits<int>::min() && uDiag == std::numeric_limits<int>::max())
             return globalAlignmentScore(strH, strV, score, config);
         else
             return globalAlignmentScore(strH, strV, score, config, lDiag, uDiag);
@@ -197,8 +197,8 @@ void testAlignSimd(TFunctor const &,
                    seqan::Score<TScoreValue, TScoreSpec> const & score,
                    TAlignConfig const & config,
                    TSimdLength const & /*tag*/,
-                   int const lDiag = seqan::MinValue<int>::VALUE,
-                   int const uDiag = seqan::MaxValue<int>::VALUE)
+                   int const lDiag = std::numeric_limits<int>::min(),
+                   int const uDiag = std::numeric_limits<int>::max())
 {
     auto sets = impl::test_align_mock::TestSequences_<TAlphabet, TSimdLength>::getSequences();
 
@@ -267,8 +267,8 @@ void testAlignSimdScore(TTester const &,
                         seqan::Score<TScoreValue, TScoreSpec> const & score,
                         TAlignConfig const & config,
                         TSimdLength const & /*tag*/,
-                        int const lDiag = seqan::MinValue<int>::VALUE,
-                        int const uDiag = seqan::MaxValue<int>::VALUE)
+                        int const lDiag = std::numeric_limits<int>::min(),
+                        int const uDiag = std::numeric_limits<int>::max())
 {
     auto sets = impl::test_align_mock::TestSequences_<TAlphabet, TSimdLength>::getSequences();
 

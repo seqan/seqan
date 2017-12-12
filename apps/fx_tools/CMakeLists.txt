@@ -55,7 +55,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install fx_tools in ${PREFIX}/bin directory
 install (TARGETS fx_bam_coverage
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/fx_tools for SeqAn release builds.

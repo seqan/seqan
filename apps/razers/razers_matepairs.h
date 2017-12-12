@@ -250,14 +250,14 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int scoreDistCutOff = MinValue<int>::VALUE;
+	int scoreDistCutOff = std::numeric_limits<int>::min();
 
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
 	TIterator dit = it;
 	TIterator ditBeg = it;
 
-    int scoreRangeBest = (options.distanceRange == 0u)? MinValue<int>::VALUE: -(int)options.distanceRange;
+    int scoreRangeBest = (options.distanceRange == 0u)? std::numeric_limits<int>::min(): -(int)options.distanceRange;
 
 	// sort 
 	::std::sort(it, itEnd, LessPairErrors<TMatch>());
@@ -468,8 +468,8 @@ void mapMatePairReads(
             }
 		}
         
-		int	bestLeftErrors = MaxValue<int>::VALUE;
-		int bestLibSizeError = MaxValue<int>::VALUE;
+		int	bestLeftErrors = std::numeric_limits<int>::max();
+		int bestLibSizeError = std::numeric_limits<int>::max();
 		TDequeueIterator bestLeft = TDequeueIterator();
 
         bool rightVerified = false;
@@ -576,7 +576,7 @@ void mapMatePairReads(
 		}
 		
         // verify right mate, if left mate matches
-		if (bestLeftErrors != MaxValue<int>::VALUE)
+		if (bestLeftErrors != std::numeric_limits<int>::max())
 		{
             // distance between left mate beginning and right mate end
             int64_t dist = (int64_t)mR.gEnd - (int64_t)(*bestLeft).i2.gBegin;

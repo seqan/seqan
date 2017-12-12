@@ -68,14 +68,14 @@ public:
     TScoreValue columnMax;
 
     DPScoutState_() :
-        terminationThreshold(MaxValue<TScoreValue>::VALUE),
-        columnMax(MinValue<TScoreValue>::VALUE)
+        terminationThreshold(std::numeric_limits<TScoreValue>::max()),
+        columnMax(std::numeric_limits<TScoreValue>::min())
     {
     }
 
     DPScoutState_(TScoreValue const & _terminationThreshold) :
         terminationThreshold(_terminationThreshold),
-        columnMax(MinValue<TScoreValue>::VALUE)
+        columnMax(std::numeric_limits<TScoreValue>::min())
     {
     }
 };
@@ -156,7 +156,7 @@ _scoutBestScore(DPScout_<TDPCell, Terminator_<XDrop_<TDPCellValue> > > & dpScout
     if (_scoreOfCell(dpScout._maxScore) - dpScout.state->columnMax >= dpScout.state->terminationThreshold)
         terminateScout(dpScout);
     else // reset columMax at end of column
-        dpScout.state->columnMax = MinValue<TScoreValue>::VALUE;
+        dpScout.state->columnMax = std::numeric_limits<TScoreValue>::min();
 }
 
 // ----------------------------------------------------------------------------

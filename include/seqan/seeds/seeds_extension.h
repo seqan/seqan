@@ -627,14 +627,14 @@ _extendSeedGappedXDropOneDirection(
         return 0;
 
     TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
-    TScoreValue const minErrScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
+    TScoreValue const minErrScore = std::numeric_limits<TScoreValue>::min() / len; // minimal allowed error penalty
     setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minErrScore));
     typename Value<TQuerySegment>::Type * tag = 0;
     (void)tag;
     _extendSeedGappedXDropOneDirectionLimitScoreMismatch(scoringScheme, minErrScore, tag);
 
     TScoreValue gapCost = scoreGap(scoringScheme);
-    TScoreValue undefined = minValue<TScoreValue>() - gapCost;
+    TScoreValue undefined = std::numeric_limits<TScoreValue>::min() - gapCost;
 
     // DP matrix is calculated by anti-diagonals
     String<TScoreValue> antiDiag1;    //smallest anti-diagonal

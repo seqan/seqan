@@ -731,7 +731,7 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
     typedef typename Size<TPairGraph>::Type TSize;
 
     // First initialization
-    TCargo const maxVal = maxValue<TCargo>();
+    TCargo const maxVal = std::numeric_limits<TCargo>::max();
     TSize nseq = numVertices(pairGraph);
     TCargo infCargo = _getInfinity<TCargo>();
     clearVertices(g);

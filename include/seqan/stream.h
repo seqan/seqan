@@ -89,6 +89,12 @@
 #include <seqan/stream/stream_compressor.h>
 #include <seqan/stream/buffered_stream.h>
 
+#if SEQAN_HAS_BZIP2 && !SEQAN_HAS_ZLIB
+#error "-DSEQAN_HAS_BZIP2 is defined, but -DSEQAN_HAS_ZLIB not. \
+Since BZip2 depends on ZLIB, this would cause hard-to-track compiler errors. \
+Either disable -DSEQAN_HAS_BZIP2 or define -DSEQAN_HAS_ZLIB"
+#endif
+
 #if SEQAN_HAS_ZLIB
 #include <zlib.h>
 #include <seqan/stream/iostream_zutil.h>

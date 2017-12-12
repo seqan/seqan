@@ -298,12 +298,9 @@ if ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CMAKE_SYSTEM_NAME} STREQUAL "k
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
 endif ()
 
+# some OSes don't link pthread fully when building statically so we explicitly include whole archive
 if (UNIX AND NOT APPLE)
-  if ((CMAKE_CXX_FLAGS MATCHES "-static") OR (SEQAN_CXX_FLAGS MATCHES "-static") OR (CMAKE_EXE_LINKER_FLAGS MATCHES "-static"))
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
-  else ()
-    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
-  endif ()
 endif ()
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
@@ -350,6 +347,15 @@ list(FIND SEQAN_FIND_DEPENDENCIES "BZip2" _SEQAN_FIND_BZIP2)
 mark_as_advanced(_SEQAN_FIND_BZIP2)
 if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
     find_package(BZip2 QUIET)
+endif ()
+
+if (NOT ZLIB_FOUND AND BZIP2_FOUND)
+    # NOTE(marehr): iostream_bzip2 uses the type `uInt`, which is defined by
+    # `zlib`. Therefore, `bzip2` will cause a ton of errors without `zlib`.
+    message(AUTHOR_WARNING "Disabling BZip2 [which was successfully found], "
+            "because ZLIB was not found. BZip2 is depending on ZLIB.")
+    unset(BZIP2_FOUND)
+    unset(SEQAN_HAS_BZIP2)
 endif ()
 
 if (BZIP2_FOUND)

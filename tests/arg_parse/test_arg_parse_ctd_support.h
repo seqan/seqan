@@ -96,8 +96,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     ofstream.close();
 
     // compare ctd to expected
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/tests/arg_parse/test_app.ctd");
+    seqan::CharString goldPath = getAbsolutePath("/tests/arg_parse/test_app.ctd");
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }

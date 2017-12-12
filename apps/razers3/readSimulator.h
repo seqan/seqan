@@ -381,7 +381,7 @@ void simulateReads(
             TMyersPattern &myersPattern = forwardPattern;
 
             // find end of best semi-global alignment
-            int maxScore = MinValue<int>::VALUE;
+            int maxScore = std::numeric_limits<int>::min();
             int minScore = -(int)countErrors;
             TMyersFinder maxPos;
             while (find(myersFinder, myersPattern, minScore))

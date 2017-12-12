@@ -11,8 +11,7 @@ using namespace seqan;
 int main()
 {
     // Build path to serialized MarkovModel.
-    CharString mmPath = SEQAN_PATH_TO_ROOT();
-    append(mmPath, "/demos/statistics/zscore_example_mm.3");
+    CharString mmPath = getAbsolutePath("/demos/statistics/zscore_example_mm.3");
 
     // Open the file.
     FILE * mmFile = fopen(toCString(mmPath), "rb");

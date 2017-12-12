@@ -130,7 +130,7 @@ struct DPCellDefaultInfinity
 };
 
 template <typename T>
-const int DPCellDefaultInfinity<T>::VALUE = MinValue<int>::VALUE;
+const int DPCellDefaultInfinity<T>::VALUE = std::numeric_limits<int>::min();
 
 // We use the min value of the score type and shift it one bits to the left.  This way we can use "infinity" without
 // checking for it during the computation.
@@ -142,7 +142,7 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
 
 template <typename TScoreValue, typename TGapCostFunction>
     const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE =
-        createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE) / createVector<TScoreValue>(2);
+        createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::min()) / createVector<TScoreValue>(2);
 
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :

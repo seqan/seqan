@@ -23,6 +23,11 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
+if (NOT ZLIB_FOUND)
+  message (STATUS "  ZLIB not found: samcat will not be built.")
+  return ()
+endif ()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
@@ -58,7 +63,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install samcat in ${PREFIX}/bin directory
 install (TARGETS samcat
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/samcat for SeqAn release builds.

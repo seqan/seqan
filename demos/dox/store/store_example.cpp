@@ -7,8 +7,8 @@ int main()
 {
     // instantiate emtpy FragmentStore and set file paths
     FragmentStore<> store;
-    std::string pathGenome = std::string(SEQAN_PATH_TO_ROOT()) + "/demos/tutorial/store/ex1.fa";
-    std::string pathSAM    = std::string(SEQAN_PATH_TO_ROOT()) + "/demos/tutorial/store/ex1.sam";
+    std::string pathGenome = getAbsolutePath("/demos/tutorial/store/ex1.fa");
+    std::string pathSAM    = getAbsolutePath("/demos/tutorial/store/ex1.sam");
 
     // load example genome and example reads and alignments
     loadContigs(store, pathGenome.c_str());

@@ -87,7 +87,7 @@
 // are accepted. If the dp profile consists of the standard global alignment
 // algorithm (NeedlemanWunsch or Gotoh), the band is required to go through
 // the sink and the source of the dp matrix. If this is not given the
-// alignment algorithm is aborted and the score MinValue<TScoreValue>::VALUE
+// alignment algorithm is aborted and the score std::numeric_limits<TScoreValue>::min()
 // is returned.
 // There are no further restrictions.
 //
@@ -1375,7 +1375,7 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
 
     // Check if current dp settings are valid. If not return infinity value for dp score value.
     if (!_isValidDPSettings(seqH, seqV, band, dpProfile))
-        return createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE);  // NOTE(rrahn): In case of non-simd version, createVector returns just a scalar.
+        return createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::min());  // NOTE(rrahn): In case of non-simd version, createVector returns just a scalar.
 
     TDPScoreMatrix dpScoreMatrix;
     TDPTraceMatrix dpTraceMatrix;

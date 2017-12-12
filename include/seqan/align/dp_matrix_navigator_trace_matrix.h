@@ -460,7 +460,7 @@ assignValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigation
     if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
-    assignValue(dpNavigator._activeColIterator, element);
+    *dpNavigator._activeColIterator = element;
 }
 
 // ----------------------------------------------------------------------------

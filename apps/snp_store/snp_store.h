@@ -297,7 +297,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 
             windowSize = 1000000;
             windowBuff = 70;
-            minCoord = maxValue<unsigned>();
+            minCoord = std::numeric_limits<unsigned>::max();
             maxCoord = 0;
             maxHitLength = 1;
 
@@ -1161,7 +1161,7 @@ int readMatchesFromGFF_Batch(
                 options.maxHitLength = endPos - beginPos;
 
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
+            if(beginPos < (TContigPos)options.minCoord || options.minCoord == std::numeric_limits<unsigned>::max()) options.minCoord = (unsigned)beginPos;
             if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
 
             // create match m
@@ -1658,7 +1658,7 @@ int readMatchesFromSamBam_Batch(
                 options.maxHitLength = endPos - beginPos;
 
             // remember min and max positions seen
-            if(beginPos < (TContigPos)options.minCoord || options.minCoord == maxValue<unsigned>()) options.minCoord = (unsigned)beginPos;
+            if(beginPos < (TContigPos)options.minCoord || options.minCoord == std::numeric_limits<unsigned>::max()) options.minCoord = (unsigned)beginPos;
             if(endPos > (TContigPos)options.maxCoord) options.maxCoord =  (unsigned)endPos;
 
             // create match m

@@ -469,7 +469,7 @@ inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize li
     TIter iter = begin(seq, Rooted());
     TSeqSize charsLeft = length(seq);
     TSeqSize charsPerLine;
-    TSeqSize lineLength_ = (lineLength == 0)? maxValue<TSeqSize>() : lineLength;
+    TSeqSize lineLength_ = (lineLength == 0)? std::numeric_limits<TSeqSize>::max() : lineLength;
 
     do
     {
@@ -631,7 +631,7 @@ strSplit(TResult & result,
     }
 
     for (TIter it = itBeg; it != itEnd; ++it)
-        if (sep(getValue(it)))
+        if (sep(*it))
         {
             if (allowEmptyStrings || itFrom != it)
             {
@@ -640,7 +640,7 @@ strSplit(TResult & result,
                 {
                     if (!allowEmptyStrings)
                     {
-                        while (it != itEnd && sep(getValue(it)))
+                        while (it != itEnd && sep(*it))
                             ++it;
                     }
                     else
@@ -664,7 +664,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TResult> >,
                                 Is<ContainerConcept<typename Value<TResult>::Type > > >, void)
 strSplit(TResult & result, TSequence const & sequence, TFunctor const & sep, bool const allowEmptyStrings)
 {
-    strSplit(result, sequence, sep, allowEmptyStrings, maxValue<typename Size<TSequence>::Type>());
+    strSplit(result, sequence, sep, allowEmptyStrings, std::numeric_limits<typename Size<TSequence>::Type>::max());
 }
 
 template <typename TResult, typename TSequence, typename TFunctor>

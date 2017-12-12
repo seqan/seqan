@@ -254,7 +254,7 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
     TPos newAlignLen = length(row0);
 
     // centerScore was set to "compute yourself" by interface function without score parameter
-    if (centerScore == minValue<TScoreValue>())
+    if (centerScore == std::numeric_limits<TScoreValue>::min())
     {
         centerScore = 0;
 
@@ -501,7 +501,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 ExtensionDirection const & direction,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, 0, 0, 0, scoreScheme,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, 0, 0, 0, scoreScheme,
                                 False(), False());
 }
 
@@ -533,7 +533,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 int const upperDiag,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
                                 0, scoreScheme, True(), False());
 }
 
@@ -566,7 +566,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, 0, 0, xDrop,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, 0, 0, xDrop,
                                 scoreScheme, False(), True());
 }
 
@@ -600,7 +600,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
                                 xDrop, scoreScheme, True(), True());
 }
 

@@ -60,7 +60,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install stellar in ${PREFIX}/bin directory
 install (TARGETS stellar
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/stellar for SeqAn release builds.

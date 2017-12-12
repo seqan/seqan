@@ -103,6 +103,24 @@ SEQAN_DEFINE_TEST(testIssue509b)
     SEQAN_ASSERT(goDown(iterator, seq));
 }
 
+SEQAN_DEFINE_TEST(goDownOnEmptyString)
+{
+    typedef Index<DnaString, FMIndex<> > TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<> > > TIter;
+
+    DnaString text("GCCTC");
+    TIndex index(text);
+    TIter it(index);
+
+    goDown(it, "C");
+    goDown(it);
+    goDown(it, "");
+    goRight(it);
+    SEQAN_ASSERT_EQ(representative(it), DnaString("GC"));
+    goRight(it);
+    SEQAN_ASSERT_EQ(representative(it), DnaString("TC"));
+}
+
 SEQAN_DEFINE_TEST(testBuild)
 {
         typedef String<char> TText;

@@ -358,7 +358,7 @@ struct MMap;
         Buffer():
             TBase(),
             dirty(false),
-            pageNo(MaxValue<unsigned>::VALUE),
+            pageNo(std::numeric_limits<unsigned>::max()),
             status(READY),
             next(NULL) {}
 
@@ -505,7 +505,7 @@ struct MMap;
 
         PageFrame():
             TBase(),
-            pageNo(MaxValue<unsigned>::VALUE),
+            pageNo(std::numeric_limits<unsigned>::max()),
             next(NULL) {}
     };
 */

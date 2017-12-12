@@ -99,7 +99,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install bs_tools in ${PREFIX}/bin directory
 install (TARGETS bisar casbar four2three
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/bs_tools for SeqAn release builds.

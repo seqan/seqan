@@ -138,7 +138,7 @@ SEQAN_DEFINE_TEST(testIndexCreation)
     TArray  child, childExt;
     TText   bwt;
 
-    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/index/m_tuberculosis_h37rv.fa";
+    std::string path = getAbsolutePath("/tests/index/m_tuberculosis_h37rv.fa");
 
     SeqFileIn inputFile(path.c_str());
     CharString id;
@@ -241,12 +241,12 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 
     resize(child, size);
     for(unsigned i=0; i<size; ++i)
-        child[i] = maxValue<unsigned>();
+        child[i] = std::numeric_limits<unsigned>::max();
     createChildtab(child, lcp);
 
     unsigned undefs=0;
     for(unsigned i=0; i<size; ++i)
-        if (child[i] == maxValue<unsigned>()) ++undefs;
+        if (child[i] == std::numeric_limits<unsigned>::max()) ++undefs;
     if (undefs) std::cout << undefs << " undefined values";
 
     resize(childExt, size);

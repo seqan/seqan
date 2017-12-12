@@ -498,8 +498,8 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
 
     resize(finder.forbidden, height * diagonalWidth, false);
 
-    finder.bestEndPos = minValue<typename TFinder::TMatrixPosition>();
-    finder.bestBeginPos = minValue<typename TFinder::TMatrixPosition>();
+    finder.bestEndPos = std::numeric_limits<typename TFinder::TMatrixPosition>::min();
+    finder.bestBeginPos = std::numeric_limits<typename TFinder::TMatrixPosition>::min();
 }
 
 // ----------------------------------------------------------------------------

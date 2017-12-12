@@ -169,12 +169,24 @@ struct DefaultIteratorSpec< ModifiedString<THost, ModPadding> >
  * @datarace Not thread-safe.
  */
 
+template <typename T>
+bool _isValid(T* value)
+{
+    return value != nullptr;
+}
+
+template <typename T>
+bool _isValid(T const &)
+{
+    return true;
+}
+
 template <typename THost, typename TSize, typename TPadding>
 inline void expand(ModifiedString<THost, ModPadding> & me,
                    TSize const newSize,
                    TPadding const & _padding)
 {
-    SEQAN_ASSERT(me._host != nullptr);
+    SEQAN_ASSERT(_isValid(me._host));
 
     cargo(me)._numPaddedChar = newSize;
     cargo(me)._paddedValue = _padding;

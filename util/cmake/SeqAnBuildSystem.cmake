@@ -44,8 +44,20 @@
 # SEQAN_RELEASE_LIBRARY
 # APP:${app_name}
 
+# require python 2.7, not python3
+set(PythonInterp_FIND_VERSION 2.7)
+set(PythonInterp_FIND_VERSION_MAJOR 2)
+set(PythonInterp_FIND_VERSION_MINOR 7)
+set(PythonInterp_FIND_VERSION_COUNT 2)
+
 include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
+
+if (DEFINED CMAKE_INSTALL_DOCDIR)
+    set(CMAKE_INSTALL_DOCDIR_IS_SET ON)
+endif ()
+
+include (GNUInstallDirs)
 
 set (COMPILER_CLANG FALSE)
 set (COMPILER_GCC FALSE)
@@ -200,7 +212,7 @@ macro (seqan_build_system_init)
         # TODO(h-2): raise this to W4
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3")
     else()
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
         # disable some warnings on ICC
@@ -383,24 +395,24 @@ macro (seqan_setup_library)
         install (FILES LICENSE
                        README.rst
                        CHANGELOG.rst
-                 DESTINATION share/doc/seqan)
+                 DESTINATION ${CMAKE_INSTALL_DOCDIR})
         # Install pkg-config file, except on Windows.
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
-            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION lib/pkgconfig)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
         # Install FindSeqAn TODO(h-2) rename seqan-config.cmake to seqan-config${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION lib/cmake/seqan/)
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/seqan/)
 
         # Install headers
         file (GLOB HEADERS
-              RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+              RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/include/
               include/seqan/[A-z]*/[A-z]/[A-z]*.h
               include/seqan/[A-z]*/[A-z]*.h
               include/seqan/[A-z]*.h)
         foreach (HEADER ${HEADERS})
             get_filename_component (_DESTINATION ${HEADER} PATH)
-            install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER} DESTINATION ${_DESTINATION})
+            install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/${HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${_DESTINATION})
         endforeach ()
     endif ()
 
@@ -457,8 +469,11 @@ macro (seqan_setup_install_vars APP_NAME)
         set (SEQAN_PREFIX_SHARE ".")
         set (SEQAN_PREFIX_SHARE_DOC ".")
     else ()
-        set (SEQAN_PREFIX_SHARE "share/${APP_NAME}")
-        set (SEQAN_PREFIX_SHARE_DOC "share/doc/${APP_NAME}")
+        if (NOT DEFINED CMAKE_INSTALL_DOCDIR_IS_SET)
+            set (CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc" CACHE STRING "Documentation root (DATAROOTDIR/doc)" FORCE)
+        endif ()
+        set (SEQAN_PREFIX_SHARE "${CMAKE_INSTALL_DATADIR}/${APP_NAME}")
+        set (SEQAN_PREFIX_SHARE_DOC "${CMAKE_INSTALL_DOCDIR}/${APP_NAME}")
     endif ()
 endmacro (seqan_setup_install_vars)
 
@@ -784,9 +799,15 @@ function (seqan_register_demos PREFIX)
             (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
             set (SKIP TRUE)
         # bug in visual studio
-        elseif ((ENTRY MATCHES "queue_example.cpp") AND
-                COMPILER_MSVC)
+        elseif ((ENTRY MATCHES "queue_example.cpp") AND COMPILER_MSVC)
             set (SKIP TRUE)
+        # all demos/* that require ZLIB[_FOUND]
+        elseif (NOT ZLIB_FOUND)
+            if ((ENTRY MATCHES "tabix_io/tabix_vcf.cpp") OR
+                (ENTRY MATCHES "sam_and_bam_io/example7.cpp") OR
+                (ENTRY MATCHES "unassigned_or_unused/bamutil.cpp"))
+                set (SKIP TRUE)
+            endif()
         endif ()
 
         if (SKIP)

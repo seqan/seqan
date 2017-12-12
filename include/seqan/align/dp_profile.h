@@ -195,34 +195,34 @@ struct TraceValueVectorBase_<TVector, std::index_sequence<I...>>
 
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::NONE =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::NONE)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::NONE)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::DIAGONAL =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::DIAGONAL)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::DIAGONAL)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::HORIZONTAL =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::HORIZONTAL)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::HORIZONTAL)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::VERTICAL =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::VERTICAL)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::VERTICAL)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::HORIZONTAL_OPEN =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::HORIZONTAL_OPEN)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::HORIZONTAL_OPEN)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::VERTICAL_OPEN =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::VERTICAL_OPEN)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::VERTICAL_OPEN)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::MAX_FROM_HORIZONTAL_MATRIX =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::MAX_FROM_HORIZONTAL_MATRIX)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::MAX_FROM_HORIZONTAL_MATRIX)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::MAX_FROM_VERTICAL_MATRIX =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::MAX_FROM_VERTICAL_MATRIX)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::MAX_FROM_VERTICAL_MATRIX)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::NO_VERTICAL_TRACEBACK =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::NO_HORIZONTAL_TRACEBACK)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::NO_HORIZONTAL_TRACEBACK)))...};
 template <typename TVector, size_t ...I>
 const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::NO_HORIZONTAL_TRACEBACK =
-    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<__uint8, False>::NO_VERTICAL_TRACEBACK)))...};
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::NO_VERTICAL_TRACEBACK)))...};
 
 // SIMD Vector version.
 // Simply delegates to the base class by passing the index_sequence with the corresponding length of the vector.
@@ -231,7 +231,7 @@ struct TraceValue_<TVector, True> : public TraceValueVectorBase_<TVector, std::m
 {};
 
 // Type alias to choose between scalar and simd version of trace value.
-template <typename TValue = __uint8>
+template <typename TValue = uint8_t>
 using TraceBitMap_ = TraceValue_<TValue, typename Is<SimdVectorConcept<TValue> >::Type>;
 
 // ----------------------------------------------------------------------------

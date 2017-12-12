@@ -83,7 +83,7 @@ void testDPCellDefaultInfinity(TGapCosts const &)
     int result1 = DPCellDefaultInfinity<TDPCell>::VALUE;
     int result2 = DPCellDefaultInfinity<TDPConstCell>::VALUE;
 
-    int test = MinValue<int>::VALUE / 2;
+    int test = std::numeric_limits<int>::min() / 2;
     SEQAN_ASSERT_EQ(result1, test);
     SEQAN_ASSERT_EQ(result2, test);
 }

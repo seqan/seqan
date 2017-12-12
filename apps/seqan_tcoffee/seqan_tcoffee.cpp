@@ -17,6 +17,8 @@ Lesser General Public License for more details.
 
 //#define SEQAN_TCOFFEE_DEBUG
 
+#include <cstdlib>
+
 #include <seqan/basic.h>
 #include <seqan/graph_msa.h>
 #include <seqan/modifier.h>
@@ -67,7 +69,16 @@ customizedMsaAlignment(MsaOptions<TAlphabet, TScore> const& msaOpt)
     Graph<Alignment<StringSet<TSequence, Dependent<> >, void, WithoutEdgeId> > gAlign;
 
     // MSA
-    globalMsaAlignment(gAlign, sequenceSet, sequenceNames, msaOpt);
+    try
+    {
+        globalMsaAlignment(gAlign, sequenceSet, sequenceNames, msaOpt);
+    }
+    catch (const std::bad_alloc & exception)
+    {
+        std::cerr << "Allocation for globalAlignment failed. Use smaller data or try a seeded alignment. \n"
+                  << exception.what() << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
 
     // Alignment output
     TOutStream outStream;

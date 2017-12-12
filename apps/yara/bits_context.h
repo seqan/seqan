@@ -83,7 +83,7 @@ template <typename TSpec, typename TConfig, typename TReadSeqs>
 inline void resize(ReadsContext<TSpec, TConfig> & ctx, TReadSeqs const & readSeqs)
 {
     resize(ctx.seedErrors, getReadSeqsCount(readSeqs), 0, Exact());
-    resize(ctx.minErrors, getReadSeqsCount(readSeqs), MaxValue<unsigned char>::VALUE, Exact());
+    resize(ctx.minErrors, getReadSeqsCount(readSeqs), std::numeric_limits<unsigned char>::max(), Exact());
     resize(ctx.mapped, getReadsCount(readSeqs), false, Exact());
     resize(ctx.paired, getReadsCount(readSeqs), false, Exact());
 }

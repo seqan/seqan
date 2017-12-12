@@ -136,7 +136,7 @@ template <typename TRecord>
 void makeSentinel(TRecord & record)
 {
     clear(record.ref);
-    record.beginPos = seqan::maxValue<int>();
+    record.beginPos = std::numeric_limits<int>::max();
 }
 
 // Configuration object for directly reading BED records with IntersectDriver.

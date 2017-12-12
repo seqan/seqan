@@ -135,8 +135,10 @@ if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     message (STATUS "Configuring demos")
     add_subdirectory (demos)
 
-    message (STATUS "Configuring manual")
-    add_subdirectory (manual)
+    if (NOT SEQAN_NO_DOX)
+        message (STATUS "Configuring manual")
+        add_subdirectory (manual)
+    endif ()
 endif ()
 
 if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR

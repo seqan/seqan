@@ -127,7 +127,7 @@ inline void
 assign(Proxy<TTargetSpec> & target,
        TSource & source)
 {
-    assignValue(iter(target), source);
+    *iter(target) = source;
 }
 
 template<typename TTargetSpec, typename TSource>
@@ -135,7 +135,7 @@ inline void
 assign(Proxy<TTargetSpec> & target,
        TSource const & source)
 {
-    assignValue(iter(target), source);
+    *iter(target) = source;
 }
 
 // ----------------------------------------------------------------------------

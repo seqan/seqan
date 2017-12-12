@@ -89,9 +89,11 @@ template <typename TDist,
 inline bool _checkScoreOverflow(TDist const distance,
                                 Score<TScoreValue, TScoreSpec> const & score)
 {
-    auto mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
-    return static_cast<decltype(BitsPerValue<TScoreValue>::VALUE)>(bitScanReverse(mxScore) + bitScanReverse(distance))
-            <= BitsPerValue<TScoreValue>::VALUE - 1;
+    using TBits = decltype(BitsPerValue<TScoreValue>::VALUE);
+    TScoreValue mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
+
+    TBits bits = bitScanReverse(mxScore) + bitScanReverse(distance);
+    return bits <= BitsPerValue<TScoreValue>::VALUE - 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -1299,7 +1301,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
 
     // Handle case of empty seed set.
     if (length(seedSet) < 1)
-        return MinValue<TScoreValue>::VALUE;
+        return std::numeric_limits<TScoreValue>::min();
 
     // Find the first anchor that is not covered by the region between the beginning of the matrix and the next anchor
     // considering the minbandwidh parameter.
