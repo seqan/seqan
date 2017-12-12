@@ -161,6 +161,11 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
 
+    for (unsigned i = 0; i < 25; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(seqan::ParseError,
+                             seqan::readRecord(record, vcfIOContext, iter, seqan::Vcf()));
+    }
 }
 
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
