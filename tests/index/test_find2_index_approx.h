@@ -234,14 +234,14 @@ inline void setRandomBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::mt1
     _schemeSearchInit(ss);
 }
 
-template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks>
+template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks, typename TDistanceTag>
 inline void testSearch(std::mt19937 & rng,
                        Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
                        Search<nbrBlocks> const & s,
                        Search<nbrBlocks> const & os,
                        unsigned const needleLength,
                        std::vector<uint8_t> const & errorDistribution,
-                       bool const indels,
+                       TDistanceTag /**/,
                        time_t const seed)
 {
     typedef typename Value<TText>::Type TChar;
@@ -309,7 +309,7 @@ inline void testSearch(std::mt19937 & rng,
     };
 
     // Find all hits using search schemes.
-    _schemeSearch(delegate, it, needle, s, indels);
+    _schemeSearch(delegate, it, needle, s, TDistanceTag());
     for (unsigned hit : hits)
     {
         if (infix(text, hit, hit + needleLength) == origNeedle)
@@ -321,7 +321,7 @@ inline void testSearch(std::mt19937 & rng,
     // Find all hits using trivial backtracking.
     clear(hits);
     uint8_t maxErrors = s.u.back();
-    trivialSearch(delegate, it, needle, begin(needle, Standard()), maxErrors, indels);
+    trivialSearch(delegate, it, needle, begin(needle, Standard()), maxErrors, std::is_same<TDistanceTag, EditDistance>::value);
     for (unsigned hit : hits)
     {
         // filter only correct error distributions
@@ -382,8 +382,8 @@ inline void testSearch(std::mt19937 & rng,
     }
 }
 
-template </*size_t min, size_t max*/ size_t nbrBlocks, size_t N>
-inline void testSearchScheme(/*SearchSchemes<min, max>*/ std::array<Search<nbrBlocks>, N> & ss, bool const indels)
+template <size_t nbrBlocks, size_t N, typename TDistanceTag>
+inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /**/)
 {
     typedef DnaString TText;
     typedef FastFMIndexConfig<void, uint32_t, 2, 1> TMyFastConfig;
@@ -432,7 +432,7 @@ inline void testSearchScheme(/*SearchSchemes<min, max>*/ std::array<Search<nbrBl
             {
                 for (auto & errorDistribution : errorDistributions[schemeId])
                 {
-                    testSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, indels, seed);
+                    testSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, TDistanceTag(), seed);
                 }
             }
         }
@@ -447,36 +447,29 @@ inline void testSearchScheme(/*SearchSchemes<min, max>*/ std::array<Search<nbrBl
 // Test test_find2_index_approx_hamming
 // ----------------------------------------------------------------------------
 
-// constexpr uint8_t getConstExpr(uint8_t const i)
-// {
-//     return i;
-// }
-
-// constexpr auto getSearchScheme(uint8_t const minErrors, uint8_t const maxErrors)
-// {
-//     return SearchSchemes<getConstExpr(minErrors), getConstExpr(maxErrors)>::VALUE;
-// }
-
-// struct MyTest
-// {
-//     static constexpr int VALUE = 666666666;
-//     static constexpr std::array<int, 2> VALUE2 {{0, 1}};
-// };
-
-// constexpr std::array<int, 2> MyTest::VALUE2;
-
 SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 {
-    // std::cout << MyTest::VALUE << std::endl;
-    // std::cout << MyTest::VALUE2.size() << std::endl;
+    for (uint8_t iterations = 0; iterations < 10; ++iterations)
+    {
+        testSearchScheme(SearchSchemes<0, 0>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<0, 1>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<0, 2>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<0, 3>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<1, 1>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<1, 2>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<1, 3>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<2, 2>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<2, 3>::VALUE, HammingDistance());
+        testSearchScheme(SearchSchemes<3, 3>::VALUE, HammingDistance());
+    }
     // for (unsigned maxErrors = 0; maxErrors < 3; ++maxErrors)
     // {
     //     constexpr unsigned minErrors = 0; // TODO
-        // for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
-        // {
-            auto scheme = SearchSchemes<0, 2>::VALUE;
-            testSearchScheme(scheme, true);
-        // }
+    //     for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
+    //     {
+    //         auto scheme = SearchSchemes<0, 2>::VALUE;
+    //         testSearchScheme(scheme, true);
+    //     }
     // }
 }
 
@@ -486,15 +479,33 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_edit)
 {
-    // // TODO: for every possible template config???
+    for (uint8_t iterations = 0; iterations < 10; ++iterations)
+    {
+        testSearchScheme(SearchSchemes<0, 0>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<0, 1>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<0, 2>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<0, 3>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<1, 1>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<1, 2>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<1, 3>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<2, 2>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<2, 3>::VALUE, EditDistance());
+        testSearchScheme(SearchSchemes<3, 3>::VALUE, EditDistance());
+    }
+    // TODO: for every possible template config???
     // for (unsigned maxErrors = 0; maxErrors < 3; ++maxErrors)
     // {
     //     unsigned minErrors = 0; // TODO
-    //     // for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
-    //     // {
+    //     for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
+    //     {
     //         testSearchScheme(schemes[minErrors][maxErrors], true);
-    //     // }
+    //     }
     // }
+}
+
+SEQAN_DEFINE_TEST(test_find2_index_approx_small_test)
+{
+    // TODO
 }
 
 #endif  // TESTS_FIND2_INDEX_APPROX_H_

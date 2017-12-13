@@ -51,14 +51,12 @@ struct Search
     // first character of the needle starts with position 1 (not with 0)
     // if initialDirection is true, startPos is one character to the left of the block that is searched first
     // otherwise, startPos is one character right from the block that is searched first
-
-    bool initialDirection = false; // true <=> goToRight
 };
 
 template <size_t min, size_t max, typename TVoidType = void>
 struct SearchSchemes;
 // {
-//     static_assert(false, "The error configuration is invalid or there exists no such search scheme.");
+//     TODO: static_assert(false, "The error configuration is invalid or there exists no such search scheme.");
 // };
 
 template <typename TVoidType>
@@ -111,8 +109,6 @@ struct SearchSchemes<0, 3, TVoidType>
 template <typename TVoidType>
 constexpr std::array<Search<5>, 3> SearchSchemes<0, 3, TVoidType>::VALUE;
 
-// TODO
-// NOTE constexpr removed because of blocklength (cannot be const)
 // template <typename TVoidType>
 // struct SearchSchemes<0, 4>
 // {
@@ -131,22 +127,37 @@ struct SearchSchemes<1, 1, TVoidType>
     }};
 };
 
-// template <typename TVoidType>
-// struct SearchSchemes<1, 2>
-// {
-//     static constexpr std::array<Search<X>, Y> VALUE
-//     {{
-//     }};
-// };
-//
-// template <typename TVoidType>
-// struct SearchSchemes<1, 3>
-// {
-//     static constexpr std::array<Search<X>, Y> VALUE
-//     {{
-//     }};
-// };
-//
+template <typename TVoidType>
+constexpr std::array<Search<2>, 2> SearchSchemes<1, 1, TVoidType>::VALUE;
+
+template <typename TVoidType>
+struct SearchSchemes<1, 2, TVoidType>
+{
+    static constexpr std::array<Search<4>, 3> VALUE
+    {{
+        { {{1, 2, 3, 4}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}} },
+        { {{2, 3, 4, 1}}, {{0, 0, 0, 1}}, {{0, 1, 1, 2}} },
+        { {{4, 3, 2, 1}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}} }
+    }};
+};
+
+template <typename TVoidType>
+constexpr std::array<Search<4>, 3> SearchSchemes<1, 2, TVoidType>::VALUE;
+
+template <typename TVoidType>
+struct SearchSchemes<1, 3, TVoidType>
+{
+    static constexpr std::array<Search<5>, 3> VALUE
+    {{
+        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 2, 2}}, {{0, 0, 3, 3, 3}} },
+        { {{4, 3, 2, 1, 5}}, {{0, 0, 0, 0, 1}}, {{1, 1, 2, 2, 3}} },
+        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}} }
+    }};
+};
+
+template <typename TVoidType>
+constexpr std::array<Search<5>, 3> SearchSchemes<1, 3, TVoidType>::VALUE;
+
 // template <typename TVoidType>
 // struct SearchSchemes<1, 4>
 // {
@@ -154,23 +165,35 @@ struct SearchSchemes<1, 1, TVoidType>
 //     {{
 //     }};
 // };
-//
-// template <typename TVoidType>
-// struct SearchSchemes<2, 2>
-// {
-//     static constexpr std::array<Search<X>, Y> VALUE
-//     {{
-//     }};
-// };
-//
-// template <typename TVoidType>
-// struct SearchSchemes<2, 3>
-// {
-//     static constexpr std::array<Search<X>, Y> VALUE
-//     {{
-//     }};
-// };
-//
+
+template <typename TVoidType>
+struct SearchSchemes<2, 2, TVoidType>
+{
+    static constexpr std::array<Search<4>, 3> VALUE
+    {{
+        { {{1, 2, 3, 4}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}} },
+        { {{2, 3, 4, 1}}, {{0, 0, 1, 2}}, {{0, 1, 1, 2}} },
+        { {{4, 3, 2, 1}}, {{0, 0, 0, 2}}, {{0, 0, 2, 2}} }
+    }};
+};
+
+template <typename TVoidType>
+constexpr std::array<Search<4>, 3> SearchSchemes<2, 2, TVoidType>::VALUE;
+
+template <typename TVoidType>
+struct SearchSchemes<2, 3, TVoidType>
+{
+    static constexpr std::array<Search<5>, 3> VALUE
+    {{
+        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 2, 2}}, {{0, 0, 3, 3, 3}} },
+        { {{4, 3, 2, 1, 5}}, {{0, 0, 0, 0, 2}}, {{1, 1, 2, 2, 3}} },
+        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}} }
+    }};
+};
+
+template <typename TVoidType>
+constexpr std::array<Search<5>, 3> SearchSchemes<2, 3, TVoidType>::VALUE;
+
 // template <typename TVoidType>
 // struct SearchSchemes<2, 4>
 // {
@@ -178,15 +201,21 @@ struct SearchSchemes<1, 1, TVoidType>
 //     {{
 //     }};
 // };
-//
-// template <typename TVoidType>
-// struct SearchSchemes<3, 3>
-// {
-//     static constexpr std::array<Search<X>, Y> VALUE
-//     {{
-//     }};
-// };
-//
+
+template <typename TVoidType>
+struct SearchSchemes<3, 3, TVoidType>
+{
+    static constexpr std::array<Search<5>, 3> VALUE
+    {{
+        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 2, 3}}, {{0, 0, 3, 3, 3}} },
+        { {{4, 3, 2, 1, 5}}, {{0, 0, 0, 0, 3}}, {{1, 1, 2, 2, 3}} },
+        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}} }
+    }};
+};
+
+template <typename TVoidType>
+constexpr std::array<Search<5>, 3> SearchSchemes<3, 3, TVoidType>::VALUE;
+
 // template <typename TVoidType>
 // struct SearchSchemes<3, 4>
 // {
@@ -216,7 +245,7 @@ struct SearchSchemes<1, 1, TVoidType>
 template <size_t nbrBlocks, size_t N>
 inline void _schemeSearchSetBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::vector<uint32_t> const & blocklength)
 {
-    for (auto & s : ss)
+    for (Search<nbrBlocks> & s : ss)
     {
         for (uint8_t i = 0; i < s.blocklength.size(); ++i)
         {
@@ -233,13 +262,12 @@ inline void _schemeSearchInit(std::array<Search<nbrBlocks>, N> & ss)
     // check whether 2nd block is on the left or right and choose initialDirection accordingly
     // (more efficient since we do not have to switch directions and thus have better caching performance)
     // for that we need to slightly modify search()
-    for (auto & s : ss)
+    for (Search<nbrBlocks> & s : ss)
     {
-        s.initialDirection = s.pi[0] < s.pi[1]; // ascending blockorder -> goToRight
-        s.startPos = !s.initialDirection; // + 1 if we go left (right border of block), + 0 if we go right (left border of block)
+        s.startPos = 0;
         for (uint8_t i = 0; i < s.pi.size(); ++i)
         {
-            if (s.pi[i] < s.pi[0] + !s.initialDirection) // x < y for goRight and x <= y (i.e. x < y + 1) for goLeft
+            if (s.pi[i] < s.pi[0])
             {
                 s.startPos += s.blocklength[i] - ((i > 0) ? s.blocklength[i-1] : 0);
             }
@@ -267,12 +295,12 @@ template <typename TDelegate, typename TText, typename TIndex, typename TIndexSp
 inline void _schemeSearchDeletion(TDelegate & delegate,
                                   Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                   TText2 const & needle,
-                                  uint32_t needleLeftIt,
-                                  uint32_t needleRightIt,
+                                  uint32_t const needleLeftIt,
+                                  uint32_t const needleRightIt,
                                   uint8_t const errors,
                                   Search<nbrBlocks> const & s,
-                                  TDir const /**/,
-                                  uint8_t const blockIndex)
+                                  uint8_t const blockIndex,
+                                  TDir /**/)
 {
     uint8_t const maxErrorsLeftInBlock = s.u[blockIndex] - errors;
     uint8_t const minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
@@ -284,11 +312,11 @@ inline void _schemeSearchDeletion(TDelegate & delegate,
 
         if (goToRight2)
         {
-            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, Rev(), blockIndex2, true);
+            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, blockIndex2, Rev(), EditDistance());
         }
         else
         {
-            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, Fwd(), blockIndex2, true);
+            _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, blockIndex2, Fwd(), EditDistance());
         }
     }
 
@@ -298,13 +326,13 @@ inline void _schemeSearchDeletion(TDelegate & delegate,
         {
             do
             {
-                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDir(), blockIndex);
+                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, blockIndex, TDir());
             } while (goRight(iter, TDir()));
         }
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir, typename TDistanceTag>
 inline void _schemeSearchChildren(TDelegate & delegate,
                                   Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                   TText2 const & needle,
@@ -312,35 +340,35 @@ inline void _schemeSearchChildren(TDelegate & delegate,
                                   uint32_t const needleRightIt,
                                   uint8_t const errors,
                                   Search<nbrBlocks> const & s,
-                                  TDir const /**/,
                                   uint8_t const blockIndex,
-                                  bool const indels,
-                                  uint8_t minErrorsLeftInBlock)
+                                  uint8_t const minErrorsLeftInBlock,
+                                  TDir /**/,
+                                  TDistanceTag /**/)
 {
     bool goToRight = std::is_same<TDir, Rev>::value;
     if (goDown(iter, TDir()))
     {
-        uint32_t charsLeft = s.blocklength[blockIndex] - (needleRightIt - needleLeftIt - 1/*(needleLeftIt != needleRightIt)*/);
+        uint32_t charsLeft = s.blocklength[blockIndex] - (needleRightIt - needleLeftIt - 1);
         do
         {
             bool delta = !ordEqual(parentEdgeLabel(iter, TDir()), needle[goToRight ? needleRightIt - 1 : needleLeftIt - 1]);
 
             // TODO: this is not optimal yet! we have more edges than in the theoretical model,
             // since we go down an edge before we check whether it can even work out!
-            if (!indels && minErrorsLeftInBlock > 0 && charsLeft - 1 < minErrorsLeftInBlock - delta)
+            if (!std::is_same<TDistanceTag, EditDistance>::value && minErrorsLeftInBlock > 0 && charsLeft - 1 < minErrorsLeftInBlock - delta)
             {
                 continue;
             }
 
-            auto needleLeftIt2 = needleLeftIt - !goToRight;
-            auto needleRightIt2 = needleRightIt + goToRight;
+            int32_t needleLeftIt2 = needleLeftIt - !goToRight; // TODO: signed necessary?
+            uint32_t needleRightIt2 = needleRightIt + goToRight;
 
             if (needleRightIt - needleLeftIt == s.blocklength[blockIndex])
             {
                 // leave the possibility for one or multiple deletions! therefore, don't change direction, etc!
-                if (indels)
+                if (std::is_same<TDistanceTag, EditDistance>::value)
                 {
-                    _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, TDir(), blockIndex);
+                    _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, blockIndex, TDir());
                 }
                 else
                 {
@@ -348,29 +376,29 @@ inline void _schemeSearchChildren(TDelegate & delegate,
                     bool goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
                     if (goToRight2)
                     {
-                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, Rev(), blockIndex2, indels);
+                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, blockIndex2, Rev(), TDistanceTag());
                     }
                     else
                     {
-                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, Fwd(), blockIndex2, indels);
+                        _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, blockIndex2, Fwd(), TDistanceTag());
                     }
                 }
             }
             else
             {
-                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, TDir(), blockIndex, indels);
+                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + delta, s, blockIndex, TDir(), TDistanceTag());
             }
 
             // Deletion
-            if (indels)
+            if (std::is_same<TDistanceTag, EditDistance>::value)
             {
-                _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, TDir(), blockIndex, indels);
+                _schemeSearch(delegate, iter, needle, needleLeftIt, needleRightIt, errors + 1, s, blockIndex, TDir(), TDistanceTag());
             }
         } while (goRight(iter, TDir()));
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir, typename TDistanceTag>
 inline void _schemeSearchExact(TDelegate & delegate,
                                Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                                TText2 const & needle,
@@ -378,9 +406,9 @@ inline void _schemeSearchExact(TDelegate & delegate,
                                uint32_t const needleRightIt,
                                uint8_t const errors,
                                Search<nbrBlocks> const & s,
-                               TDir const /**/,
                                uint8_t const blockIndex,
-                               bool const indels)
+                               TDir /**/,
+                               TDistanceTag /**/)
 {
     bool goToRight2 = s.pi[blockIndex + 1] > s.pi[blockIndex]; // TODO: segfault? value doesn't matter for last block, but we should code it better anyway
     if (std::is_same<TDir, Rev>::value)
@@ -395,11 +423,11 @@ inline void _schemeSearchExact(TDelegate & delegate,
 
         if (goToRight2)
         {
-            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Rev(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
+            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), Rev(), TDistanceTag());
         }
         else
         {
-            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, Fwd(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
+            _schemeSearch(delegate, iter, needle, needleLeftIt, infixPosRight + 2, errors, s, std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), Fwd(), TDistanceTag());
         }
     }
     else
@@ -419,16 +447,16 @@ inline void _schemeSearchExact(TDelegate & delegate,
         }
         if (goToRight2)
         {
-            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Rev(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
+            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), Rev(), TDistanceTag());
         }
         else
         {
-            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, Fwd(), std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), indels);
+            _schemeSearch(delegate, iter, needle, infixPosLeft, needleRightIt, errors, s, std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1), Fwd(), TDistanceTag());
         }
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDir, typename TDistanceTag>
 inline void _schemeSearch(TDelegate & delegate,
                           Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
                           TText2 const & needle,
@@ -436,29 +464,29 @@ inline void _schemeSearch(TDelegate & delegate,
                           uint32_t const needleRightIt,
                           uint8_t const errors,
                           Search<nbrBlocks> const & s,
-                          TDir const /**/,
                           uint8_t const blockIndex,
-                          bool const indels)
+                          TDir /**/,
+                          TDistanceTag /**/)
 {
     uint8_t const maxErrorsLeftInBlock = s.u[blockIndex] - errors;
     uint8_t const minErrorsLeftInBlock = (s.l[blockIndex] > errors) ? (s.l[blockIndex] - errors) : 0;
 
     // Done.
-    if (minErrorsLeftInBlock == 0 && needleLeftIt == 0 && needleRightIt == length(needle) + 1) // NOTE: switch to iterator syntax
+    if (minErrorsLeftInBlock == 0 && needleLeftIt == 0 && needleRightIt == length(needle) + 1)
     {
         delegate(iter);
     }
 
     // Exact search in current block.
-    else if (maxErrorsLeftInBlock == 0 && /*!(blockIndex > 0 && */needleRightIt - needleLeftIt - 1 /*==*/ != s.blocklength[blockIndex]/*)*/) // TODO: why blockIndex > 0? vermutlich wegen needleRightIt == nedleLeftIt
+    else if (maxErrorsLeftInBlock == 0 && needleRightIt - needleLeftIt - 1 != s.blocklength[blockIndex]) // TODO: why blockIndex > 0? vermutlich wegen needleRightIt == nedleLeftIt
     {
-        _schemeSearchExact(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, TDir(), blockIndex, indels);
+        _schemeSearchExact(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, blockIndex, TDir(), TDistanceTag());
     }
     // Approximate search in current block.
     else // if (s.blocklength[blockIndex] - (needleRightIt - needleLeftIt - (needleLeftIt != needleRightIt)) >= minErrorsLeftInBlock)
     {
         // Insertion
-        if (indels) // && !(needleLeftIt == 0 && needleRightIt == length(needle) + 1) && charsLeft > 0 // no insertions at the end of the block when we didnt increment the blockid (for deletions)
+        if (std::is_same<TDistanceTag, EditDistance>::value)
         {
             bool const goToRight = std::is_same<TDir, Rev>::value;
             int32_t const needleLeftIt2 = needleLeftIt - !goToRight; // TODO: can we use an unsigned int?
@@ -468,32 +496,25 @@ inline void _schemeSearch(TDelegate & delegate,
             {
                 // TODO: check!
                 // leave the possibility for one or multiple deletions! therefore, don't change direction, etc!
-                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, TDir(), blockIndex);
+                _schemeSearchDeletion(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, blockIndex, TDir());
             }
             else
             {
-                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, TDir(), blockIndex, indels);
+                _schemeSearch(delegate, iter, needle, needleLeftIt2, needleRightIt2, errors + 1, s, blockIndex, TDir(), TDistanceTag());
             }
         }
-        _schemeSearchChildren(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, TDir(), blockIndex, indels, minErrorsLeftInBlock);
+        _schemeSearchChildren(delegate, iter, needle, needleLeftIt, needleRightIt, errors, s, blockIndex, minErrorsLeftInBlock, TDir(), TDistanceTag());
     }
 }
 
-template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks>
+template <typename TDelegate, typename TText, typename TIndex, typename TIndexSpec, typename TText2, size_t nbrBlocks, typename TDistanceTag>
 inline void _schemeSearch(TDelegate & delegate,
                           Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
                           TText2 const & needle,
                           Search<nbrBlocks> const & s,
-                          bool const indels)
+                          TDistanceTag /**/)
 {
-    if (s.initialDirection)
-    {
-        _schemeSearch(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, Rev(), 0, indels);
-    }
-    else
-    {
-        _schemeSearch(delegate, it, needle, s.startPos - 1, s.startPos, 0, s, Fwd(), 0, indels);
-    }
+    _schemeSearch(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Rev(), TDistanceTag());
 }
 
 // ----------------------------------------------------------------------------
@@ -503,40 +524,40 @@ inline void _schemeSearch(TDelegate & delegate,
 // TODO: think about design
 template <size_t minErrors, size_t maxErrors, typename TText, typename TIndexSpec, typename TPattern, typename TDelegate, typename TDistanceTag>
 inline void
-_find(Index<TText, TIndexSpec> & index,
+_find(TDelegate & delegate,
+      Index<TText, TIndexSpec> & index,
       TPattern const && pattern,
-      TDelegate & delegate,
-      Tag<TDistanceTag> /**/)
+      TDistanceTag /**/)
 {
     auto scheme = SearchSchemes<minErrors, maxErrors>::VALUE;
     _schemeSearchComputeFixedBlocklength(scheme, length(pattern));
     Iter<Index<TText, TIndexSpec>, VSTree<TopDown<> > > it(index);
-    search(delegate, it, pattern, scheme, IsSameType<Tag<TDistanceTag>, EditDistance>::VALUE, false);
+    _schemeSearch(delegate, it, pattern, scheme, TDistanceTag());
 }
 
 template <size_t minErrors, size_t maxErrors, typename TText, typename TIndexSpec, typename TStringSetSpec, typename TPattern, typename TDelegate, typename TDistanceTag, typename TParallelTag>
 inline void
-_find(Index<TText, TIndexSpec> & index,
+_find(TDelegate & delegate,
+      Index<TText, TIndexSpec> & index,
       StringSet<TPattern, TStringSetSpec> const && patterns,
-      TDelegate & delegate,
-      Tag<TDistanceTag> /**/,
+      TDistanceTag /**/,
       Tag<TParallelTag> /**/)
 {
     SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
     for (size_t seqNo = 0; seqNo < length(patterns); ++seqNo)
     {
-        _find<minErrors, maxErrors>(index, patterns[seqNo], delegate, TDistanceTag());
+        _find<minErrors, maxErrors>(delegate, index, patterns[seqNo], TDistanceTag());
     }
 }
 
 template <size_t minErrors, size_t maxErrors, typename TText, typename TIndexSpec, typename TStringSetSpec, typename TPattern, typename TDelegate, typename TDistanceTag>
 inline void
-_find(Index<TText, TIndexSpec> & index,
+_find(TDelegate & delegate,
+      Index<TText, TIndexSpec> & index,
       StringSet<TPattern, TStringSetSpec> const && patterns,
-      TDelegate & delegate,
-      Tag<TDistanceTag> /**/)
+      TDistanceTag /**/)
 {
-    _find<minErrors, maxErrors>(index, patterns, delegate, TDistanceTag(), Serial());
+    _find<minErrors, maxErrors>(delegate, index, patterns, TDistanceTag(), Serial());
 }
 
 }
