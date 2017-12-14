@@ -117,7 +117,7 @@ public:
     }
 
     template <typename TOtherSpec>
-    StringSet(String<TString, TOtherSpec> const &other)
+    explicit StringSet(String<TString, TOtherSpec> const &other)
     {
         _initStringSetLimits(*this);
         assign(*this, other);
