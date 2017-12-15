@@ -88,8 +88,20 @@ struct Pair<T1, T2, Pack>
 
     // Pair() = default; does not work on gcc4.9, it issues warnings if T1/T2
     // have no proper default constructor. >=gcc5.0 reports no warnings.
+#if defined(COMPILER_GCC) && (__GNUC__ <= 4)
     Pair() : i1(), i2() {};
+#else
+    Pair() = default;
+#endif
+
+    // NOTE(marehr) intel compiler bug in 17.x and 18.x: defaulted copy-constructor
+    // in classes with `#pragma pack(push, 1)` seg-faults. This leads to a
+    // seg-fault in yara-mapper (app test case yara).
+#if defined(COMPILER_LINTEL) || defined(COMPILER_WINTEL)
+    Pair(Pair const & p) : i1(p.i1), i2(p.i2) {};
+#else
     Pair(Pair const &) = default;
+#endif
     Pair(Pair &&) = default;
     ~Pair() = default;
     Pair & operator=(Pair const &) = default;
