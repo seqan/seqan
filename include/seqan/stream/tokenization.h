@@ -397,9 +397,29 @@ inline void readOne(TTarget & target, TFwdIterator &iter)
 
 //TODO(singer) to be revised
 template <typename TValue, typename TFwdIterator>
-inline void readRawPod(TValue & value, TFwdIterator &srcIter)
+inline void readRawPodImpl(TValue & value, TFwdIterator &srcIter)
 {
     write((char*)&value, srcIter, sizeof(TValue));
+}
+
+template <typename TValue, typename TFwdIterator>
+inline std::enable_if_t<std::is_arithmetic<TValue>::value>
+readRawPod(TValue & value, TFwdIterator &srcIter)
+{
+    readRawPodImpl(value, srcIter);
+    enforceLittleEndian(value);
+}
+
+template <typename TValue, typename TFwdIterator>
+inline std::enable_if_t<!std::is_arithmetic<TValue>::value>
+readRawPod(SEQAN_UNUSED TValue & value, SEQAN_UNUSED TFwdIterator &srcIter)
+{
+#if SEQAN_BIG_ENDIAN
+    static_assert(std::is_arithmetic<TValue>::value,
+                  "You are deserialising a data structure on big endian architecture that needs a custom reader. THIS IS A BUG!");
+#else
+    readRawPodImpl(value, srcIter);
+#endif
 }
 
 // ----------------------------------------------------------------------------

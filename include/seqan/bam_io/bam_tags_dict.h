@@ -302,6 +302,7 @@ buildIndex(BamTagsDict const & bamTags)
                 uint32_t len;
             } tmp;
             arrayCopyForward(it, it + 4, tmp.raw);
+            enforceLittleEndian(tmp.len);
             it += 4 + tmp.len * getBamTypeSize(c);
         }
         else
@@ -492,6 +493,7 @@ struct ExtractTagValueHelper_
         } tmp;
 
         arrayCopyForward(rawIter, rawIter + sizeof(Type), tmp.raw);
+        enforceLittleEndian(tmp.i);
         result = static_cast<TResultType>(tmp.i);
         return true;
     }
@@ -666,6 +668,7 @@ struct ToBamTagValueHelper_
         } tmp;
 
         tmp.i = static_cast<Type>(val);
+        enforceLittleEndian(tmp.i);
         append(result, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
         return true;
     }

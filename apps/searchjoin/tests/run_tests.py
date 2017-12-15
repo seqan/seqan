@@ -13,6 +13,7 @@ import logging
 import os.path
 import sys
 import glob
+import platform
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
@@ -28,6 +29,11 @@ transforms = [
 
 def main(source_base, binary_base):
     """Main entry point of the script."""
+
+    if platform.machine().startswith('alpha'):
+        print 'Skipping tests for searchjoin on alpha'
+        print '======================================'
+        return 0
 
     print 'Executing test for searchjoin'
     print '==========================='

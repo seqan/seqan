@@ -207,6 +207,7 @@ readRecord(BamAlignmentRecord & record,
 
     // BamAlignmentRecordCore.
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&record));
+    enforceLittleEndian(*reinterpret_cast<BamAlignmentRecordCore*>(&record));
     it += sizeof(BamAlignmentRecordCore);
 
     remainingBytes -= sizeof(BamAlignmentRecordCore) + record._l_qname +
@@ -236,7 +237,7 @@ readRecord(BamAlignmentRecord & record,
     TCigarIter cigEnd = end(record.cigar, Standard());
     for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
-        unsigned opAndCnt;
+        uint32_t opAndCnt;
         readRawPod(opAndCnt, it);
         SEQAN_ASSERT_LEQ(opAndCnt & 15, 8u);
         cig->operation = CIGAR_MAPPING[opAndCnt & 15];

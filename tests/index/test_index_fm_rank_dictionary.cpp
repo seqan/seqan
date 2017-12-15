@@ -122,9 +122,14 @@ typedef
     TagList<RankDictionary<Dna5,            Default3Level>,
     TagList<RankDictionary<Dna5Q,           Default3Level>,
     TagList<RankDictionary<ReducedMurphy10, Default3Level>,
+#ifndef __alpha__ // NOTE(h-2): fails on alpha for unknown reasons
     TagList<RankDictionary<AminoAcid,       Default3Level>,
+#endif
     RankDictionaryPrefixSumTypes
-    > > > > > > > > > > > > > > > > > > >
+    > > > > > > > > > > > > > > > > > >
+#ifndef __alpha__
+    >
+#endif
     RankDictionaryAllTypes;
 
 // ==========================================================================

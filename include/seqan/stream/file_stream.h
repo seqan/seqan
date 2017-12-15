@@ -178,7 +178,7 @@ clear(FilePage<TValue, TSpec> & me)
 // Class FilePager
 // ----------------------------------------------------------------------------
 
-template <unsigned SEQAN_PAGESIZE = 4 * 1024>
+template <unsigned SEQAN_PAGESIZE = SEQAN_DEFAULT_PAGESIZE>
 struct FixedPagingScheme
 {
     enum { pageSize = SEQAN_PAGESIZE };

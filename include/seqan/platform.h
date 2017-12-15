@@ -330,7 +330,9 @@ typedef int8_t __int8;     // nolint
 
 // The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
 // whether we are on a 32 bit or on a 64 bit machine.
-#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__ia64__) || defined(__ppc64__) || defined(_WIN64)
+#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__arch64__) || \
+    defined(__ia64__) || defined(__ppc64__) || defined(__PPC64__) || defined(_WIN64) || \
+    defined(__LP64__) || defined(_LP64)
 #define SEQAN_IS_64_BIT 1
 #define SEQAN_IS_32_BIT 0
 #else
@@ -470,4 +472,78 @@ typedef int8_t __int8;     // nolint
 #undef COMPILER_VERSION
 #endif
 
+// BYTE-ORDER DETECTION (default is little-endian)
+#ifdef __GLIBC__
+    #include <endian.h>
+#endif // __GLIBC__
+
+#if defined(__FreeBSD__) || (defined(__has_include) && __has_include(<sys/endian.h>))
+    #include <sys/endian.h>
+#endif // defined(__FreeBSD__)
+
+#ifndef SEQAN_BIG_ENDIAN
+    #if (defined( _BYTE_ORDER  ) && ( _BYTE_ORDER   ==        _BIG_ENDIAN  )) || \
+        (defined(__BYTE_ORDER  ) && (__BYTE_ORDER   ==       __BIG_ENDIAN  )) || \
+        (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)) || \
+                                                     defined(__BIG_ENDIAN__)
+        #define SEQAN_BIG_ENDIAN 1
+    #else
+        #define SEQAN_BIG_ENDIAN 0
+    #endif
+#endif // SEQAN_BIG_ENDIAN
+
+namespace seqan
+{
+
+template <typename T>
+constexpr void enforceLittleEndian(T &)
+{}
+
+#if SEQAN_BIG_ENDIAN
+inline void enforceLittleEndian(int16_t & in)
+{
+    in = htole16(in);
+}
+inline void enforceLittleEndian(uint16_t & in)
+{
+    in = htole16(in);
+}
+inline void enforceLittleEndian(int32_t & in)
+{
+    in = htole32(in);
+}
+inline void enforceLittleEndian(uint32_t & in)
+{
+    in = htole32(in);
+}
+inline void enforceLittleEndian(int64_t & in)
+{
+    in = htole64(in);
+}
+inline void enforceLittleEndian(uint64_t & in)
+{
+    in = htole64(in);
+}
+inline void enforceLittleEndian(float & in)
+{
+    uint32_t tmp = htole32(*reinterpret_cast<uint32_t*>(&in));
+    char *out = reinterpret_cast<char*>(&in);
+    *out = *reinterpret_cast<char*>(&tmp);
+}
+inline void enforceLittleEndian(double & in)
+{
+    uint64_t tmp = htole64(*reinterpret_cast<uint64_t*>(&in));
+    char *out = reinterpret_cast<char*>(&in);
+    *out = *reinterpret_cast<char*>(&tmp);
+}
+#endif // SEQAN_BIG_ENDIAN
+
+} // namespace seqan
+
+// DEFAULT PAGESIZE FOR MMAP
+#ifndef SEQAN_DEFAULT_PAGESIZE
+    // 64K is supported on all platforms (whereas 4K is not)
+    #define SEQAN_DEFAULT_PAGESIZE 64 * 1024
 #endif
+
+#endif // HEADER GUARD
