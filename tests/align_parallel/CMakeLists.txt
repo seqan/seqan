@@ -22,9 +22,6 @@ if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
     set (ALIGN_PARALLEL_SIMD_TEST FALSE CACHE INTERNAL "Whether to build test_align_parallel.")
 endif ()
 
-# Search SeqAn and select dependencies.
-find_package (SeqAn REQUIRED)
-
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
