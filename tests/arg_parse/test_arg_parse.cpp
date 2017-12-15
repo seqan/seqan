@@ -144,6 +144,7 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_argument_invalid_cast);
     SEQAN_CALL_TEST(test_argument_min_max_boundaries);
     SEQAN_CALL_TEST(test_argument_valid_values);
+    SEQAN_CALL_TEST(test_argument_valid_values_directories);
 
     SEQAN_CALL_TEST(test_argument_parser);
     SEQAN_CALL_TEST(test_parse_non_const_cstring);
