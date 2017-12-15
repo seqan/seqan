@@ -184,7 +184,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[4].format, ""); // empty formats are accepted since v4.2
     SEQAN_ASSERT_EQ(length(records[4].genotypeInfos), 3u);
 
-    // the next 18 recodrs are invalid and readRecord should throw ParseError
+    // the next 18 records are invalid and readRecord should throw ParseError
     // continuing to read after EOF file should also result in ParseError
     for (unsigned i = 0; i < 25; ++i)
     {
