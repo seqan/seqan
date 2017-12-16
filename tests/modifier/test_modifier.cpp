@@ -42,7 +42,7 @@
 #include "test_modifier_string_padding.h"
 
 
-SEQAN_BEGIN_TESTSUITE(test_modifier) 
+SEQAN_BEGIN_TESTSUITE(test_modifier)
 {
     // Test the modifier shortcuts.
     SEQAN_CALL_TEST(test_modifer_shortcuts_dna_string_reverse);
@@ -130,5 +130,6 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
     SEQAN_CALL_TEST(test_modified_string_padding_end);
     SEQAN_CALL_TEST(test_modified_string_padding_difference);
     SEQAN_CALL_TEST(test_modified_string_padding_iterator);
+    SEQAN_CALL_TEST(test_modified_string_padding_defect_2190);
 }
 SEQAN_END_TESTSUITE
