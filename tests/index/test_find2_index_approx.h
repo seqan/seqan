@@ -47,7 +47,7 @@ using namespace seqan;
 // ============================================================================
 
 template <typename TChar, typename TConfig, typename TRand>
-void generateText(String<TChar, TConfig> & text, TRand & rng, unsigned length)
+void generateText(String<TChar, TConfig> & text, TRand & rng, unsigned const length)
 {
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
     unsigned minChar = MinValue<TChar>::VALUE;
@@ -65,7 +65,7 @@ inline void printVector(const TContainer & c, std::ostream & stream)
 {
     using T = std::decay_t<decltype(c[0])>;
     stream << "[";
-    for (unsigned i = 0; i < c.size(); ++i)
+    for (uint8_t i = 0; i < c.size(); ++i)
     {
         stream << (std::is_same<T, uint8_t>::value ? (unsigned) c[i] : c[i])
                << ((i < c.size() - 1) ? ", " : "");
@@ -86,9 +86,9 @@ inline void printSearch(Search<nbrBlocks> const & s, std::ostream & stream)
     printVector(s.blocklength, stream);
 }
 
-inline void _getErrorDistributions(std::vector<uint8_t> l,
+inline void _getErrorDistributions(std::vector<std::vector<uint8_t> > & res,
+                                   std::vector<uint8_t> l,
                                    std::vector<uint8_t> u,
-                                   std::vector<std::vector<uint8_t> > & res,
                                    uint8_t const e)
 {
     if (l.size() == 0)
@@ -106,7 +106,7 @@ inline void _getErrorDistributions(std::vector<uint8_t> l,
     for (uint8_t i = std::max(e, l1); i <= u1; ++i)
     {
         std::vector<std::vector<uint8_t> > _res;
-        _getErrorDistributions(l, u, _res, i);
+        _getErrorDistributions(_res, l, u, i);
         for (auto & _resElem : _res)
         {
             _resElem.insert(_resElem.begin(), i - e);
@@ -118,12 +118,12 @@ inline void _getErrorDistributions(std::vector<uint8_t> l,
 // Compute all possible error distributions given a search.
 // The result is ordered as the search (s.pi)
 template <size_t nbrBlocks>
-inline void getErrorDistributions(Search<nbrBlocks> const & s,
-                                  std::vector<std::vector<uint8_t> > & res)
+inline void getErrorDistributions(std::vector<std::vector<uint8_t> > & res,
+                                  Search<nbrBlocks> const & s)
 {
     std::vector<uint8_t> l(s.l.begin(), s.l.end());
     std::vector<uint8_t> u(s.u.begin(), s.u.end());
-    _getErrorDistributions(l, u, res, 0u);
+    _getErrorDistributions(res, l, u, 0u);
 }
 
 // Reorder blocks s.t. they are in a sequential order (from left to right)
@@ -156,7 +156,7 @@ inline void getOrderedSearch(Search<nbrBlocks> const & s, Search<nbrBlocks> & os
 // Trivial backtracking that finds *all* matches with given distance.
 template <typename TDelegate, typename TText, typename TIndex,
           typename TIndexSpec, typename TText2, typename TNeedleIter>
-inline void trivialSearch(TDelegate & delegate,
+inline void trivialSearch(TDelegate && delegate,
                           Iter<Index<TText, TIndex>, VSTree<TopDown<TIndexSpec> > > it,
                           TText2 const & needle,
                           TNeedleIter const needleIt,
@@ -216,7 +216,7 @@ inline void setRandomBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::mt1
     {
         maxErrors = std::max(maxErrors, s.u.back());
     }
-    // TODO: this enforces to be the needles much longer than necessary!
+    // NOTE(cpockrandt): this enforces to be the needles much longer than necessary!
     for (uint8_t i = 0; i < blocklength.size(); ++i)
     {
         blocklength[i] = maxErrors;
@@ -241,8 +241,8 @@ inline void testSearch(std::mt19937 & rng,
                        Search<nbrBlocks> const & os,
                        unsigned const needleLength,
                        std::vector<uint8_t> const & errorDistribution,
-                       TDistanceTag /**/,
-                       time_t const seed)
+                       time_t const seed,
+                       TDistanceTag /**/)
 {
     typedef typename Value<TText>::Type TChar;
     typedef Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > >  TIt;
@@ -403,8 +403,8 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /
     unsigned errors = 0;
     for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
     {
-        os[schemeId] = ss[schemeId]; // TODO: better init!
-        getErrorDistributions(ss[schemeId], errorDistributions[schemeId]);
+        os[schemeId] = ss[schemeId];
+        getErrorDistributions(errorDistributions[schemeId], ss[schemeId]);
         for (std::vector<uint8_t> & resElem : errorDistributions[schemeId])
         {
             orderVector(ss[schemeId], resElem);
@@ -426,13 +426,11 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /
                 getOrderedSearch(ss[schemeId], os[schemeId]);
             }
 
-            // TODO: no parallelization in tests?
-            #pragma omp parallel for
             for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
             {
                 for (auto & errorDistribution : errorDistributions[schemeId])
                 {
-                    testSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, TDistanceTag(), seed);
+                    testSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, seed, TDistanceTag());
                 }
             }
         }
@@ -449,28 +447,22 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 {
-    for (uint8_t iterations = 0; iterations < 10; ++iterations)
-    {
-        testSearchScheme(SearchSchemes<0, 0>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<0, 1>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<0, 2>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<0, 3>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<1, 1>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<1, 2>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<1, 3>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<2, 2>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<2, 3>::VALUE, HammingDistance());
-        testSearchScheme(SearchSchemes<3, 3>::VALUE, HammingDistance());
-    }
-    // for (unsigned maxErrors = 0; maxErrors < 3; ++maxErrors)
-    // {
-    //     constexpr unsigned minErrors = 0; // TODO
-    //     for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
-    //     {
-    //         auto scheme = SearchSchemes<0, 2>::VALUE;
-    //         testSearchScheme(scheme, true);
-    //     }
-    // }
+    // TODO: @h-2: any suggestion? :D
+    testSearchScheme(SearchSchemes<0, 0>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<0, 1>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<0, 2>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<0, 3>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<0, 4>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<1, 1>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<1, 2>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<1, 3>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<1, 4>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<2, 2>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<2, 3>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<2, 4>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<3, 3>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<3, 4>::VALUE, HammingDistance());
+    testSearchScheme(SearchSchemes<4, 4>::VALUE, HammingDistance());
 }
 
 // ----------------------------------------------------------------------------
@@ -479,28 +471,21 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_edit)
 {
-    for (uint8_t iterations = 0; iterations < 10; ++iterations)
-    {
-        testSearchScheme(SearchSchemes<0, 0>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<0, 1>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<0, 2>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<0, 3>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<1, 1>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<1, 2>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<1, 3>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<2, 2>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<2, 3>::VALUE, EditDistance());
-        testSearchScheme(SearchSchemes<3, 3>::VALUE, EditDistance());
-    }
-    // TODO: for every possible template config???
-    // for (unsigned maxErrors = 0; maxErrors < 3; ++maxErrors)
-    // {
-    //     unsigned minErrors = 0; // TODO
-    //     for (unsigned minErrors = 0; minErrors <= maxErrors; ++minErrors)
-    //     {
-    //         testSearchScheme(schemes[minErrors][maxErrors], true);
-    //     }
-    // }
+    testSearchScheme(SearchSchemes<0, 0>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<0, 1>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<0, 2>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<0, 3>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<0, 4>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<1, 1>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<1, 2>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<1, 3>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<1, 4>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<2, 2>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<2, 3>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<2, 4>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<3, 3>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<3, 4>::VALUE, EditDistance());
+    testSearchScheme(SearchSchemes<4, 4>::VALUE, EditDistance());
 }
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_small_test)
