@@ -166,9 +166,7 @@ inline void trivialSearch(TDelegate && delegate,
     if (errorsLeft == 0)
     {
         if (goDown(it, suffix(needle, position(needleIt, needle)), Rev()))
-        {
             delegate(it);
-        }
     }
     else
     {
@@ -178,11 +176,11 @@ inline void trivialSearch(TDelegate && delegate,
             if (!(indels && errorsLeft > 0))
                 return;
         }
+
+        // Insertion
         if (indels && !atEnd(needleIt, needle))
-        {
-            // Insertion
             trivialSearch(delegate, it, needle, needleIt + 1, errorsLeft - 1, indels);
-        }
+
         if (goDown(it, Rev()))
         {
             do
@@ -194,11 +192,10 @@ inline void trivialSearch(TDelegate && delegate,
                     trivialSearch(delegate, it, needle, needleIt + 1, errorsLeft - delta, indels);
                 }
 
+                // Deletion
                 if (indels)
-                {
-                    // Deletion
                     trivialSearch(delegate, it, needle, needleIt, errorsLeft - 1, indels);
-                }
+
             } while (goRight(it, Rev()));
         }
     }
@@ -213,14 +210,10 @@ inline void setRandomBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::mt1
     // Set minimum length for each block considerung all searches.
     uint8_t maxErrors = 0;
     for (auto const & s : ss)
-    {
         maxErrors = std::max(maxErrors, s.u.back());
-    }
     // NOTE(cpockrandt): this enforces to be the needles much longer than necessary!
     for (uint8_t i = 0; i < blocklength.size(); ++i)
-    {
         blocklength[i] = maxErrors;
-    }
     needleLength -= maxErrors * blocklength.size();
 
     // Randomly distribute the rest on all blocks
@@ -242,7 +235,7 @@ inline void testSearch(std::mt19937 & rng,
                        unsigned const needleLength,
                        std::vector<uint8_t> const & errorDistribution,
                        time_t const seed,
-                       TDistanceTag /**/)
+                       TDistanceTag const & /**/)
 {
     typedef typename Value<TText>::Type TChar;
     typedef Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > >  TIt;
@@ -279,9 +272,7 @@ inline void testSearch(std::mt19937 & rng,
         {
             clear(errorPositions);
             for (uint8_t error = 0; error < errorDistribution[block]; ++error)
-            {
                 errorPositions.push_back(rng() % blocklength);
-            }
             sort(errorPositions.begin(), errorPositions.end());
         } while (adjacent_find(errorPositions.begin(), errorPositions.end()) != errorPositions.end());
 
@@ -303,20 +294,14 @@ inline void testSearch(std::mt19937 & rng,
     auto delegate = [&hits](TIt const & it)
     {
         for (unsigned i = 0; i < length(getOccurrences(it)); ++i)
-        {
             hits.push_back(getOccurrences(it)[i]);
-        }
     };
 
     // Find all hits using search schemes.
     _schemeSearch(delegate, it, needle, s, TDistanceTag());
     for (unsigned hit : hits)
-    {
         if (infix(text, hit, hit + needleLength) == origNeedle)
-        {
             expectedHitsSS.push_back(hit);
-        }
-    }
 
     // Find all hits using trivial backtracking.
     clear(hits);
@@ -335,26 +320,16 @@ inline void testSearch(std::mt19937 & rng,
 
                 uint8_t errors = 0;
                 for (unsigned i = leftRange; i < rightRange; ++i)
-                {
                     if (hit + i >= length(text))
-                    {
                         ++errors;
-                    }
                     else
-                    {
                         errors += !ordEqual(needle[i], text[hit + i]);
-                    }
-                }
                 if (errors != errorDistribution[block])
-                {
                     distributionOkay = false;
-                }
                 leftRange += os.blocklength[block];
             }
             if (distributionOkay)
-            {
                 expectedHitsTrivial.push_back(hit);
-            }
         }
     }
 
@@ -383,7 +358,7 @@ inline void testSearch(std::mt19937 & rng,
 }
 
 template <size_t nbrBlocks, size_t N, typename TDistanceTag>
-inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /**/)
+inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag const & /**/)
 {
     typedef DnaString TText;
     typedef FastFMIndexConfig<void, uint32_t, 2, 1> TMyFastConfig;
@@ -406,9 +381,7 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /
         os[schemeId] = ss[schemeId];
         getErrorDistributions(errorDistributions[schemeId], ss[schemeId]);
         for (std::vector<uint8_t> & resElem : errorDistributions[schemeId])
-        {
             orderVector(ss[schemeId], resElem);
-        }
         errors = std::max(errors, (unsigned) ss[schemeId].u.back());
     }
 
@@ -422,17 +395,11 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag /
             setRandomBlockLength(ss, rng, needleLength);
 
             for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
-            {
                 getOrderedSearch(ss[schemeId], os[schemeId]);
-            }
 
             for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
-            {
                 for (auto & errorDistribution : errorDistributions[schemeId])
-                {
                     testSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, seed, TDistanceTag());
-                }
-            }
         }
     }
 }
@@ -490,7 +457,19 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_edit)
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_small_test)
 {
-    // TODO
+    DnaString genome("GAGAGGCCACTCGCAGGATTAAGTCAATAAGTTAATGGCGTCGGCTTCCTGGTATGTAGTACGACGCCCACAGTGACCTCATCGGTGCATTTCCTCATCGTAGGCGGAACGGTAGACACAAGGCATGATGTCAAATCGCGACTCCAATCCCAAGGTCGCAAGCCTATATAGGAACCCGCTTATGCCCTCTAATCCCGGACAGACCCCAAATATGGCATAGCTGGTTGGGGGTACCTACTAGGCACAGCCGGAAGCA");
+    Index<DnaString, BidirectionalIndex<FMIndex<> > > index(genome);
+    DnaString pattern("GGGGTTAT");
+
+    std::set<Pair<unsigned, unsigned> > hits;
+    std::set<Pair<unsigned, unsigned> > expectedHits {{15, 16}, {83, 84}, {87, 88}, {217, 218}, {222, 223}};
+    auto delegate = [&hits](auto & it) {
+        hits.insert(_iter(it, Rev()).vDesc.range);
+    };
+
+    _find<1, 3>(delegate, index, pattern, HammingDistance());
+
+    SEQAN_ASSERT(hits == expectedHits);
 }
 
 #endif  // TESTS_FIND2_INDEX_APPROX_H_
