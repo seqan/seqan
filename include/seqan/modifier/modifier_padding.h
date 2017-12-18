@@ -165,7 +165,7 @@ struct DefaultIteratorSpec< ModifiedString<THost, ModPadding> >
  * @param [in,out] str  The modified string to be padded.
  * @param [in]     size The number of padded characters.
  * @param [in]     pad  The character to pad the sequence with.
- * 
+ *
  * @datarace Not thread-safe.
  */
 
@@ -211,6 +211,51 @@ length(ModifiedString<THost, ModPadding> const & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function cargoValue()
+// ----------------------------------------------------------------------------
+
+template <typename THost>
+inline typename Reference<ModifiedString<THost, ModPadding> >::Type
+cargoValue(ModifiedString<THost, ModPadding> & me)
+{
+    return cargo(me)._paddedValue;
+}
+
+// NOTE(rrahn): The problem with the padding symbol is, that it is always stored as a member
+// of the modifier class. Hence, if the modifier is const all it's members are const.
+// Now, the cargo could be either defined mutable or, and this what we did right now, the
+// the const is cast-away. However, we use SFINAE to only apply this hack to the Host types,
+// for which this becomes relevant. That are Host types like the Segment class who copy pointer semantics, i.e.
+// the constness of the object is not propagated to the underlying source.
+
+// The default version, where Reference<THost const>::Type gives back a const reference.
+template <typename THost,
+          std::enable_if_t<std::is_same<std::remove_reference_t<
+                                            typename Reference<ModifiedString<THost, ModPadding>>::Type>,
+                                        std::add_const_t<std::remove_reference_t<
+                                            typename Reference<ModifiedString<THost, ModPadding>>::Type>>>::value,
+                           int> = 0>
+inline typename Reference<ModifiedString<THost, ModPadding> >::Type
+cargoValue(ModifiedString<THost, ModPadding> const & me)
+{
+    return cargo(me)._paddedValue;
+}
+
+// The version, where Reference<THost const>::Type gives back a non-const reference.
+template <typename THost,
+          std::enable_if_t<!std::is_same<std::remove_reference_t<
+                                            typename Reference<ModifiedString<THost, ModPadding>>::Type>,
+                                         std::add_const_t<std::remove_reference_t<
+                                            typename Reference<ModifiedString<THost, ModPadding>>::Type>>>::value,
+                           int> = 0>
+inline typename Reference<ModifiedString<THost, ModPadding> >::Type
+cargoValue(ModifiedString<THost, ModPadding> const & me)
+{
+    using TTargetType = typename Reference<ModifiedString<THost, ModPadding> >::Type;
+    return const_cast<TTargetType>(cargo(me)._paddedValue);
+}
+
+// ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
 
@@ -219,7 +264,7 @@ inline typename Reference<ModifiedString<THost, ModPadding> >::Type
 value(ModifiedString<THost, ModPadding> & me, TPosition const pos)
 {
     SEQAN_ASSERT_LT(pos, static_cast<TPosition>(length(me)));
-    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? host(me)[pos] : cargo(me)._paddedValue;
+    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? host(me)[pos] : cargoValue(me);
 }
 
 template <typename THost, typename TPosition>
@@ -227,7 +272,7 @@ inline typename Reference<ModifiedString<THost, ModPadding> const>::Type
 value(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
 {
     SEQAN_ASSERT_LT(pos, static_cast<TPosition>(length(me)));
-    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? value(host(me), pos) : cargo(me)._paddedValue;
+        return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? value(host(me), pos) : cargoValue(me);
 }
 
 // ----------------------------------------------------------------------------
