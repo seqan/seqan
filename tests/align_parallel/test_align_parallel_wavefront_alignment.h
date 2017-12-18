@@ -128,7 +128,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
     TDPSettings settings;
     settings.scoringScheme = Score<int, Simple>{2, -2, -1, -11};
 
-    std::vector<int> alignScores(length(setH), minValue<int>());
+    std::vector<int> alignScores(length(setH), std::numeric_limits<int>::min());
 
     impl::alignExecBatch(execPolicy, setH, setV, settings, [&](auto const id, auto const score)
     {
@@ -185,7 +185,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
     TDPSettings settings;
     settings.scoringScheme = Score<int, Simple>{2, -2, -1, -11};
 
-    std::vector<int> alignScores(length(setH), minValue<int>());
+    std::vector<int> alignScores(length(setH), std::numeric_limits<int>::min());
     impl::alignExecBatch(execPolicy, setH, setV, settings, [&](auto const id, auto const score)
                          {
                              alignScores[id] = score;

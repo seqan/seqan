@@ -168,7 +168,7 @@ doComputeOffset(TTasks const &tasks,
                 TScoreValueSimd const & /*simdScore*/)
 {
     String<TScoreValueScalar> offset;
-    resize(offset, length(tasks), minValue<TScoreValueScalar>(), Exact());
+    resize(offset, length(tasks), std::numeric_limits<TScoreValueScalar>::min(), Exact());
 
     size_t pos = 0;
     for(auto task : tasks)
