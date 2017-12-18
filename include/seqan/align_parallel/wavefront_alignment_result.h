@@ -59,7 +59,7 @@ struct WavefrontAlignmentResult
     // ----------------------------------------------------------------------------
     // Member Variables
 
-    TState  _maxState{minValue<typename TTraits::TScoreValue>(), typename TTraits::THostPosition{}};
+    TState  _maxState{std::numeric_limits<typename TTraits::TScoreValue>::min(), typename TTraits::THostPosition{}};
     size_t  _tileCol{0};
     size_t  _tileRow{0};
 
