@@ -569,7 +569,7 @@ void _setParser(ArgumentParser & parser)
     setDefaultValue(parser, "o", "stellar.gff");
     addOption(parser, ArgParseOption("od", "outDisabled",
                                      "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUT_FILE));
-    setValidValues(parser, "outDisabled", "fa fasta");
+    setValidValues(parser, "outDisabled", seqan::SeqFileOut::getFileExtensions());
     setDefaultValue(parser, "od", "stellar.disabled.fasta");
     addOption(parser, ArgParseOption("t", "no-rt", "Suppress printing running time."));
     hideOption(parser, "t");
