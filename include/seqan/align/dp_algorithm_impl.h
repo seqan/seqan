@@ -687,13 +687,13 @@ _computeAlignmentImpl(TDPScout & scout,
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, 0),
                           sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
-                          seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                          seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInitialColumn, PartialColumnMiddle>(), dpProfile);
         else
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, 0),
                           sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
-                          seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                          seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom>(), dpProfile);
     }
     else if (lowerDiagonal(band) >= 0)
@@ -720,7 +720,7 @@ _computeAlignmentImpl(TDPScout & scout,
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, 0),
                           sequenceEntryForScore(scoringScheme, seqV, 0),
-                          seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                          seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInitialColumn, FullColumn>(), dpProfile);
         }
         else       // The band is bounded by the top but not the bottom of the matrix.
@@ -728,7 +728,7 @@ _computeAlignmentImpl(TDPScout & scout,
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, 0),
                           sequenceEntryForScore(scoringScheme, seqV, 0),
-                          seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                          seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInitialColumn, PartialColumnTop>(), dpProfile);
         }
     }
@@ -749,7 +749,7 @@ _computeAlignmentImpl(TDPScout & scout,
         _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                       sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                       sequenceEntryForScore(scoringScheme, seqV, 0),
-                      seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                      seqVBegin, seqVEnd, scoringScheme,
                       MetaColumnDescriptor<DPInnerColumn, PartialColumnTop>(), dpProfile);
         if (_computeAlignmentHelperCheckTerminate(scout))
         {
@@ -771,7 +771,7 @@ _computeAlignmentImpl(TDPScout & scout,
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                           sequenceEntryForScore(scoringScheme, seqV, 0),
-                          seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                          seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInnerColumn, FullColumn>(), dpProfile);
 
             if (_computeAlignmentHelperCheckTerminate(scout))
@@ -789,7 +789,7 @@ _computeAlignmentImpl(TDPScout & scout,
             _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                           sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                           sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
-                          seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                          seqVBegin, seqVEnd, scoringScheme,
                           MetaColumnDescriptor<DPInnerColumn, PartialColumnMiddle>(), dpProfile);
             if (_computeAlignmentHelperCheckTerminate(scout))
             {
@@ -812,7 +812,7 @@ _computeAlignmentImpl(TDPScout & scout,
         _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                       sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                       sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
-                      seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                      seqVBegin, seqVEnd, scoringScheme,
                       MetaColumnDescriptor<DPInnerColumn, PartialColumnBottom>(), dpProfile);
         if (_computeAlignmentHelperCheckTerminate(scout))
         {
@@ -880,7 +880,7 @@ _computeAlignmentImpl(TDPScout & scout,
                     _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                                   sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                                   sequenceEntryForScore(scoringScheme, seqV, 0),
-                                  seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                                  seqVBegin, seqVEnd, scoringScheme,
                                   MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), dpProfile);
                 }
                 else  // The band is bounded by the top and the bottom of the matrix.
@@ -903,7 +903,7 @@ _computeAlignmentImpl(TDPScout & scout,
                         _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                                       sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                                       sequenceEntryForScore(scoringScheme, seqV, 0),
-                                      seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                                      seqVBegin, seqVEnd, scoringScheme,
                                       MetaColumnDescriptor<DPFinalColumn, FullColumn>(), dpProfile);
                 }
 
@@ -932,7 +932,7 @@ _computeAlignmentImpl(TDPScout & scout,
                         _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                                       sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                                       sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
-                                      seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                                      seqVBegin, seqVEnd, scoringScheme,
                                       MetaColumnDescriptor<DPFinalColumn, PartialColumnBottom>(), dpProfile);
                     }
                 }
@@ -942,7 +942,7 @@ _computeAlignmentImpl(TDPScout & scout,
                     _computeTrack(scout, dpScoreMatrixNavigator, dpTraceMatrixNavigator,
                                   sequenceEntryForScore(scoringScheme, seqH, position(seqHIter)),
                                   sequenceEntryForScore(scoringScheme, seqV, position(seqVBegin) - 1),
-                                  seqVBegin, seqVEnd, scoringScheme, cacheDiag, cacheVert,
+                                  seqVBegin, seqVEnd, scoringScheme,
                                   MetaColumnDescriptor<DPFinalColumn, PartialColumnMiddle>(), dpProfile);
                 }
             }
