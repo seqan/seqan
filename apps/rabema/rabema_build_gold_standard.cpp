@@ -1003,7 +1003,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
     setRequired(parser, "reference", true);
-    setValidValues(parser, "reference", "fa fasta");
+    setValidValues(parser, "reference", seqan::SeqFileIn::getFileExtensions());
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "BAM"));
     setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());

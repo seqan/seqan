@@ -1064,7 +1064,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     // setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
-    setValidValues(parser, "reference", "fa fasta");
+    setValidValues(parser, "reference", seqan::SeqFileIn::getFileExtensions());
     setRequired(parser, "reference", true);
     addOption(parser, seqan::ArgParseOption("g", "in-gsi",
                                             "Path to load gold standard intervals from. If compressed using gzip, "
@@ -1229,7 +1229,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     getOptionValue(options.checkSorting, parser, "dont-check-sorting");
     options.checkSorting = !options.checkSorting;
-    
+
     options.showMissedIntervals = isSet(parser, "show-missed-intervals");
     options.showSuperflousIntervals = isSet(parser, "show-invalid-hits");
     options.showAdditionalIntervals = isSet(parser, "show-additional-hits");

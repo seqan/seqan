@@ -798,7 +798,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("g", "genome", "Genome file.", seqan::ArgParseOption::INPUT_FILE,
                                             "GENOME.fa"));
     setRequired(parser, "genome");
-    setValidValues(parser, "genome", "fa fasta");
+    setValidValues(parser, "genome", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUT_FILE,
                                             "PRE.{sam,bam}"));
@@ -1028,10 +1028,10 @@ int main(int argc, char const ** argv)
                     stop = atEnd(inPostBam);
                 else
                     stop = atEnd(inPostFastq);
-                
+
                 if (stop)
                     break;
-                
+
                 // Read next record into chunk.
                 try
                 {
