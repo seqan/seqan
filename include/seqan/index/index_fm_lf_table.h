@@ -125,7 +125,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 //    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>          Type;
 
     typedef typename Size<LF<TText, TSpec, TConfig> >::Type TSize_;
-    typedef typename StringSpec<TText>::Type                TSpec_;
+    typedef typename DefaultIndexStringSpec<TText>::Type    TSpec_;
     typedef String<TSize_,  TSpec_>                         Type;
 };
 
