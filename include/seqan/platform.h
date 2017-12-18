@@ -477,9 +477,9 @@ typedef int8_t __int8;     // nolint
     #include <endian.h>
 #endif // __GLIBC__
 
-#if defined(__FreeBSD__) || (defined(__has_include) && __has_include(<sys/endian.h>))
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
     #include <sys/endian.h>
-#endif // defined(__FreeBSD__)
+#endif // defined *BSD
 
 #ifndef SEQAN_BIG_ENDIAN
     #if (defined( _BYTE_ORDER  ) && ( _BYTE_ORDER   ==        _BIG_ENDIAN  )) || \
