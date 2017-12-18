@@ -121,7 +121,7 @@ struct RankDictionary;
 // ----------------------------------------------------------------------------
 
 template <typename TValue, template <typename, typename> class TRankDictionary, typename TSpec, typename TConfig>
-struct StringSpec<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
+struct DefaultIndexStringSpec<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
 {
     typedef typename TConfig::Fibre Type;
 };

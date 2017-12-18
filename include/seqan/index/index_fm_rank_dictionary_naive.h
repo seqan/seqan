@@ -61,7 +61,7 @@ struct Fibre<RankDictionary<TValue, Naive<TSpec, TConfig> >, FibreRanks>
 {
     typedef RankDictionary<TValue, Naive<TSpec, TConfig> >          TRankDictionary_;
     typedef typename Size<TRankDictionary_>::Type                   TSize_;
-    typedef typename StringSpec<TRankDictionary_>::Type TFibreSpec_;
+    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type TFibreSpec_;
 
     typedef String<TSize_, TFibreSpec_>                             Type;
 };
