@@ -9,6 +9,7 @@ Pattern Matching
 
     OnlinePatternMatching
     IndexedPatternMatching
+    OptimalSearchSchemes
 
 Pattern matching is about searching a known string or :dox:`StringSet` (``needle``) in another string or :dox:`StringSet` (``haystack``).
 This tutorial will introduce you into the SeqAn classes :dox:`Finder` and :dox:`Pattern`.
@@ -34,3 +35,4 @@ The :dox:`Pattern` can be asked for the number of the found sequence if the ``ne
 Subsequent calls of find can be used to find more occurrences of the ``needle``, until no more occurrences can be found and find returns ``false``.
 
 In general, search algorithms can be divided into algorithms that preprocess the ``needle`` (online search) or preprocess the ``haystack`` (index search).
+The additional section on Optimal Search Schemes is also an indexed search algorithm but due to a different interface separated into its own section.

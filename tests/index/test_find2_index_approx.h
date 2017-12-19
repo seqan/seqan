@@ -35,6 +35,8 @@
 #ifndef TESTS_FIND2_INDEX_APPROX_H_
 #define TESTS_FIND2_INDEX_APPROX_H_
 
+#include <mutex>
+
 #include <seqan/index.h>
 #include <seqan/index/find2_index_approx.h>
 
@@ -74,7 +76,7 @@ inline void printVector(const TContainer & c, std::ostream & stream)
 }
 
 template <size_t nbrBlocks>
-inline void printSearch(Search<nbrBlocks> const & s, std::ostream & stream)
+inline void printSearch(OptimalSearch<nbrBlocks> const & s, std::ostream & stream)
 {
     stream << "SearchScheme (Pi): ";
     printVector(s.pi, stream);
@@ -119,7 +121,7 @@ inline void _getErrorDistributions(std::vector<std::vector<uint8_t> > & res,
 // The result is ordered as the search (s.pi)
 template <size_t nbrBlocks>
 inline void getErrorDistributions(std::vector<std::vector<uint8_t> > & res,
-                                  Search<nbrBlocks> const & s)
+                                  OptimalSearch<nbrBlocks> const & s)
 {
     std::vector<uint8_t> l(s.l.begin(), s.l.end());
     std::vector<uint8_t> u(s.u.begin(), s.u.end());
@@ -128,7 +130,7 @@ inline void getErrorDistributions(std::vector<std::vector<uint8_t> > & res,
 
 // Reorder blocks s.t. they are in a sequential order (from left to right)
 template <size_t nbrBlocks, typename T>
-inline void orderVector(Search<nbrBlocks> const & s, std::vector<T> & v)
+inline void orderVector(OptimalSearch<nbrBlocks> const & s, std::vector<T> & v)
 {
     std::vector<T> v_tmp = v;
     for (uint8_t i = 0; i < s.pi.size(); ++i)
@@ -141,7 +143,7 @@ inline void orderVector(Search<nbrBlocks> const & s, std::vector<T> & v)
 // Reorder blocks s.t. they are in a sequential order (from left to right)
 // Blocklength is stored as absolute values instead of cumulative values.
 template <size_t nbrBlocks>
-inline void getOrderedSearch(Search<nbrBlocks> const & s, Search<nbrBlocks> & os)
+inline void getOrderedSearch(OptimalSearch<nbrBlocks> const & s, OptimalSearch<nbrBlocks> & os)
 {
     for (uint8_t i = 0; i < s.pi.size(); ++i)
     {
@@ -167,43 +169,42 @@ inline void trivialSearch(TDelegate && delegate,
     {
         if (goDown(it, suffix(needle, position(needleIt, needle)), Rev()))
             delegate(it);
+        return;
     }
-    else
+
+    if (atEnd(needleIt, needle))
     {
-        if (atEnd(needleIt, needle))
-        {
-            delegate(it);
-            if (!(indels && errorsLeft > 0))
-                return;
-        }
+        delegate(it);
+        if (!(indels && errorsLeft > 0))
+            return;
+    }
 
-        // Insertion
-        if (indels && !atEnd(needleIt, needle))
-            trivialSearch(delegate, it, needle, needleIt + 1, errorsLeft - 1, indels);
+    // Insertion
+    if (indels && !atEnd(needleIt, needle))
+        trivialSearch(delegate, it, needle, needleIt + 1, errorsLeft - 1, indels);
 
-        if (goDown(it, Rev()))
+    if (goDown(it, Rev()))
+    {
+        do
         {
-            do
+            // Match / Mismatch
+            if (!atEnd(needleIt, needle))
             {
-                // Match / Mismatch
-                if (!atEnd(needleIt, needle))
-                {
-                    auto delta = !ordEqual(parentEdgeLabel(it, Rev()), value(needleIt));
-                    trivialSearch(delegate, it, needle, needleIt + 1, errorsLeft - delta, indels);
-                }
+                auto delta = !ordEqual(parentEdgeLabel(it, Rev()), value(needleIt));
+                trivialSearch(delegate, it, needle, needleIt + 1, errorsLeft - delta, indels);
+            }
 
-                // Deletion
-                if (indels)
-                    trivialSearch(delegate, it, needle, needleIt, errorsLeft - 1, indels);
+            // Deletion
+            if (indels)
+                trivialSearch(delegate, it, needle, needleIt, errorsLeft - 1, indels);
 
-            } while (goRight(it, Rev()));
-        }
+        } while (goRight(it, Rev()));
     }
 }
 
 // Compute random blocklengths (order: left to right)
 template <size_t nbrBlocks, size_t N>
-inline void setRandomBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::mt19937 & rng, uint32_t needleLength)
+inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, std::mt19937 & rng, uint32_t needleLength)
 {
     std::vector<uint32_t> blocklength(ss[0].pi.size());
 
@@ -223,19 +224,19 @@ inline void setRandomBlockLength(std::array<Search<nbrBlocks>, N> & ss, std::mt1
         --needleLength;
     }
 
-    _schemeSearchSetBlockLength(ss, blocklength);
-    _schemeSearchInit(ss);
+    _optimalSearchSchemeSetBlockLength(ss, blocklength);
+    _optimalSearchSchemeInit(ss);
 }
 
 template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks, typename TDistanceTag>
-inline void testSearch(std::mt19937 & rng,
-                       Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
-                       Search<nbrBlocks> const & s,
-                       Search<nbrBlocks> const & os,
-                       unsigned const needleLength,
-                       std::vector<uint8_t> const & errorDistribution,
-                       time_t const seed,
-                       TDistanceTag const & /**/)
+inline void testOptimalSearch(std::mt19937 & rng,
+                              Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
+                              OptimalSearch<nbrBlocks> const & s,
+                              OptimalSearch<nbrBlocks> const & os,
+                              unsigned const needleLength,
+                              std::vector<uint8_t> const & errorDistribution,
+                              time_t const seed,
+                              TDistanceTag const & /**/)
 {
     typedef typename Value<TText>::Type TChar;
     typedef Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > >  TIt;
@@ -298,7 +299,7 @@ inline void testSearch(std::mt19937 & rng,
     };
 
     // Find all hits using search schemes.
-    _schemeSearch(delegate, it, needle, s, TDistanceTag());
+    _optimalSearchScheme(delegate, it, needle, s, TDistanceTag());
     for (unsigned hit : hits)
         if (infix(text, hit, hit + needleLength) == origNeedle)
             expectedHitsSS.push_back(hit);
@@ -328,7 +329,7 @@ inline void testSearch(std::mt19937 & rng,
                     distributionOkay = false;
                 leftRange += os.blocklength[block];
             }
-            if (distributionOkay)
+            if (distributionOkay || std::is_same<TDistanceTag, EditDistance>::value)
                 expectedHitsTrivial.push_back(hit);
         }
     }
@@ -358,7 +359,7 @@ inline void testSearch(std::mt19937 & rng,
 }
 
 template <size_t nbrBlocks, size_t N, typename TDistanceTag>
-inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag const & /**/)
+inline void testOptimalSearchScheme(std::array<OptimalSearch<nbrBlocks>, N> ss, TDistanceTag const & /**/)
 {
     typedef DnaString TText;
     typedef FastFMIndexConfig<void, uint32_t, 2, 1> TMyFastConfig;
@@ -371,7 +372,7 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag c
     std::mt19937 rng(seed);
 
     TText text;
-    std::array<Search<nbrBlocks>, N> os;
+    std::array<OptimalSearch<nbrBlocks>, N> os;
     std::vector<std::vector<std::vector<uint8_t> > > errorDistributions(ss.size());
 
     // Calculate all error distributions and sort each of them (from left to right).
@@ -399,7 +400,7 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag c
 
             for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
                 for (auto & errorDistribution : errorDistributions[schemeId])
-                    testSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, seed, TDistanceTag());
+                    testOptimalSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, seed, TDistanceTag());
         }
     }
 }
@@ -414,61 +415,71 @@ inline void testSearchScheme(std::array<Search<nbrBlocks>, N> ss, TDistanceTag c
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_hamming)
 {
-    // TODO: @h-2: any suggestion? :D
-    testSearchScheme(SearchSchemes<0, 0>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<0, 1>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<0, 2>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<0, 3>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<0, 4>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<1, 1>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<1, 2>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<1, 3>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<1, 4>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<2, 2>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<2, 3>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<2, 4>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<3, 3>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<3, 4>::VALUE, HammingDistance());
-    testSearchScheme(SearchSchemes<4, 4>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 0>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 1>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 2>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 3>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 4>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 1>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 2>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 3>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 4>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<2, 2>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<2, 3>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<2, 4>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<3, 3>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<3, 4>::VALUE, HammingDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<4, 4>::VALUE, HammingDistance());
 }
 
 // ----------------------------------------------------------------------------
-// Test test_find2_index_approx_hamming
+// Test test_find2_index_approx_edit
 // ----------------------------------------------------------------------------
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_edit)
 {
-    testSearchScheme(SearchSchemes<0, 0>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<0, 1>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<0, 2>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<0, 3>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<0, 4>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<1, 1>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<1, 2>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<1, 3>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<1, 4>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<2, 2>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<2, 3>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<2, 4>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<3, 3>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<3, 4>::VALUE, EditDistance());
-    testSearchScheme(SearchSchemes<4, 4>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 0>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 1>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 2>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 3>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<0, 4>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 1>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 2>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 3>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<1, 4>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<2, 2>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<2, 3>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<2, 4>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<3, 3>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<3, 4>::VALUE, EditDistance());
+    testOptimalSearchScheme(OptimalSearchSchemes<4, 4>::VALUE, EditDistance());
 }
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_small_test)
 {
     DnaString genome("GAGAGGCCACTCGCAGGATTAAGTCAATAAGTTAATGGCGTCGGCTTCCTGGTATGTAGTACGACGCCCACAGTGACCTCATCGGTGCATTTCCTCATCGTAGGCGGAACGGTAGACACAAGGCATGATGTCAAATCGCGACTCCAATCCCAAGGTCGCAAGCCTATATAGGAACCCGCTTATGCCCTCTAATCCCGGACAGACCCCAAATATGGCATAGCTGGTTGGGGGTACCTACTAGGCACAGCCGGAAGCA");
-    Index<DnaString, BidirectionalIndex<FMIndex<> > > index(genome);
-    DnaString pattern("GGGGTTAT");
+    DnaString pattern1("GGGGTTAT");
+    DnaString pattern2("CTAGCTAA");
+    StringSet<DnaString> patterns;
+    appendValue(patterns, pattern1);
+    appendValue(patterns, pattern2);
 
-    std::set<Pair<unsigned, unsigned> > hits;
-    std::set<Pair<unsigned, unsigned> > expectedHits {{15, 16}, {83, 84}, {87, 88}, {217, 218}, {222, 223}};
-    auto delegate = [&hits](auto & it) {
+    std::set<Pair<unsigned, unsigned> > hits, expectedHits {{14, 15}, {56, 57}, {63, 64}, {83, 84}, {154, 155}};
+
+    std::mutex mtx;
+    auto delegate = [&hits, &mtx](auto & it)
+    {
+        mtx.lock();
         hits.insert(_iter(it, Rev()).vDesc.range);
+        mtx.unlock();
     };
+    Index<DnaString, BidirectionalIndex<FMIndex<> > > index(genome);
 
-    _find<1, 3>(delegate, index, pattern, HammingDistance());
+    find<1, 2>(delegate, index, patterns, EditDistance(), Serial());
+    SEQAN_ASSERT(hits == expectedHits);
 
+    hits.clear();
+    find<1, 2>(delegate, index, patterns, EditDistance(), Parallel());
     SEQAN_ASSERT(hits == expectedHits);
 }
 
