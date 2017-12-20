@@ -22,6 +22,11 @@ if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
     set (ALIGN_PARALLEL_SIMD_TEST FALSE CACHE INTERNAL "Whether to build test_align_parallel.")
 endif ()
 
+# Increase recursive template instantiation depth for clang compiler.
+if (COMPILER_CLANG)
+    set(SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ftemplate-depth=1024")
+endif ()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
