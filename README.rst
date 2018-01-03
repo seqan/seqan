@@ -24,10 +24,10 @@ Prerequisites
 Linux, Mac OSX, FreeBSD:
   * GCC ≥ 4.9 [GCC ≥ 5 recommended]
   * Clang/LLVM ≥ 3.5
-  * Intel Compiler ≥ 16.0.2
+  * Intel Compiler ≥ 17.0.0
 Windows:
   * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
-  * Intel Compiler ≥ 16.0.3 / Visual Studio ≥ 2015u2
+  * Intel Compiler ≥ 17.0.0 / Visual Studio ≥ 2015u2
   * Clang/C2 ≥ 3.8.0 / Visual Studio ≥ 2015u3 [experimental, requires CMake ≥ 3.6]
 
 Architecture support:
