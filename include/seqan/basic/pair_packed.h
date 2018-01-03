@@ -78,9 +78,8 @@ struct Pair<T1, T2, Pack>
     // ------------------------------------------------------------------------
     // Members
     // ------------------------------------------------------------------------
-
-    T1 i1;
-    T2 i2;
+    T1 i1{};
+    T2 i2{};
 
     // ------------------------------------------------------------------------
     // Constructors
@@ -88,8 +87,10 @@ struct Pair<T1, T2, Pack>
 
     // Pair() = default; does not work on gcc4.9, it issues warnings if T1/T2
     // have no proper default constructor. >=gcc5.0 reports no warnings.
+    // Caused by yara_indexer build, demo_tutorial_indices_base and
+    // demo_tutorial_index_iterators_index_bidirectional_search.
 #if defined(COMPILER_GCC) && (__GNUC__ <= 4)
-    Pair() : i1(), i2() {};
+    Pair() : i1(T1()), i2(T2()) {};
 #else
     Pair() = default;
 #endif
