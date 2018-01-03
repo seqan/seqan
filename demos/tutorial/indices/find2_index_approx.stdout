@@ -1,17 +1,23 @@
-Hits with up to 2 errors:
+Hits with up to 2 errors (HammingDistance):
 225
 41
-Hits with 2-3 errors:
-226
+55
+Hits with 1-2 errors (HammingDistance):
 225
-14
-120
-174
-236
-162
-229
-215
-183
-27
-157
-173
+55
+Hits with 1-2 errors (EditDistance, no duplicates):
+< CTAGCTAA , 27 >
+< CTAGCTAA , 61 >
+< CTAGCTAA , 157 >
+< CTAGCTAA , 162 >
+< CTAGCTAA , 173 >
+< CTAGCTAA , 183 >
+< CTAGCTAA , 215 >
+< CTAGCTAA , 229 >
+< CTAGCTAA , 236 >
+< GGGGTTAT , 14 >
+< GGGGTTAT , 54 >
+< GGGGTTAT , 120 >
+< GGGGTTAT , 174 >
+< GGGGTTAT , 225 >
+< GGGGTTAT , 226 >

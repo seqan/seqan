@@ -506,7 +506,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
     // Done.
     if (minErrorsLeftInBlock == 0 && needleLeftPos == 0 && needleRightPos == length(needle) + 1)
     {
-        delegate(iter);
+        delegate(iter, needle, errors);
     }
     // Exact search in current block.
     else if (maxErrorsLeftInBlock == 0 && needleRightPos - needleLeftPos - 1 != s.blocklength[blockIndex])

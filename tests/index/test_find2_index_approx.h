@@ -38,7 +38,6 @@
 #include <mutex>
 
 #include <seqan/index.h>
-#include <seqan/index/find2_index_approx.h>
 
 #include "test_index_helpers.h"
 
@@ -292,7 +291,12 @@ inline void testOptimalSearch(std::mt19937 & rng,
     }
 
     std::vector<unsigned> hits, expectedHitsSS, expectedHitsTrivial;
-    auto delegate = [&hits](TIt const & it)
+    auto delegate = [&hits](TIt const & it, TText const & /*needle*/, uint8_t /*errors*/)
+    {
+        for (unsigned i = 0; i < length(getOccurrences(it)); ++i)
+            hits.push_back(getOccurrences(it)[i]);
+    };
+    auto delegateTrivial = [&hits](TIt const & it)
     {
         for (unsigned i = 0; i < length(getOccurrences(it)); ++i)
             hits.push_back(getOccurrences(it)[i]);
@@ -307,7 +311,7 @@ inline void testOptimalSearch(std::mt19937 & rng,
     // Find all hits using trivial backtracking.
     clear(hits);
     uint8_t maxErrors = s.u.back();
-    trivialSearch(delegate, it, needle, begin(needle, Standard()), maxErrors, std::is_same<TDistanceTag, EditDistance>::value);
+    trivialSearch(delegateTrivial, it, needle, begin(needle, Standard()), maxErrors, std::is_same<TDistanceTag, EditDistance>::value);
     for (unsigned hit : hits)
     {
         // filter only correct error distributions
@@ -457,29 +461,30 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_edit)
 
 SEQAN_DEFINE_TEST(test_find2_index_approx_small_test)
 {
-    DnaString genome("GAGAGGCCACTCGCAGGATTAAGTCAATAAGTTAATGGCGTCGGCTTCCTGGTATGTAGTACGACGCCCACAGTGACCTCATCGGTGCATTTCCTCATCGTAGGCGGAACGGTAGACACAAGGCATGATGTCAAATCGCGACTCCAATCCCAAGGTCGCAAGCCTATATAGGAACCCGCTTATGCCCTCTAATCCCGGACAGACCCCAAATATGGCATAGCTGGTTGGGGGTACCTACTAGGCACAGCCGGAAGCA");
-    DnaString pattern1("GGGGTTAT");
-    DnaString pattern2("CTAGCTAA");
-    StringSet<DnaString> patterns;
-    appendValue(patterns, pattern1);
-    appendValue(patterns, pattern2);
+    DnaString genome(
+        "GAGAGGCCACTCGCAGGATTAAGTCAATAAGTTAATGGCGTCGGCTTCCTGGTATGTAGTACGACGCCCACAGTGACCTCATCGGTGCATTTCCTCATCGTAG"
+        "GCGGAACGGTAGACACAAGGCATGATGTCAAATCGCGACTCCAATCCCAAGGTCGCAAGCCTATATAGGAACCCGCTTATGCCCTCTAATCCCGGACAGACCC"
+        "CAAATATGGCATAGCTGGTTGGGGGTACCTACTAGGCACAGCCGGAAGCA");
+    StringSet<DnaString> needles;
+    appendValue(needles, "GGGGTTAT");
+    appendValue(needles, "CTAGCTAA");
 
-    std::set<Pair<unsigned, unsigned> > hits, expectedHits {{14, 15}, {56, 57}, {63, 64}, {83, 84}, {154, 155}};
+    std::set<unsigned> hits, expectedHits {186, 226, 227, 234};
 
     std::mutex mtx;
-    auto delegate = [&hits, &mtx](auto & it)
+    auto delegate = [&hits, &mtx](auto & iter, DnaString const & /*pattern*/, uint8_t /*errors*/)
     {
-        mtx.lock();
-        hits.insert(_iter(it, Rev()).vDesc.range);
-        mtx.unlock();
+        std::lock_guard<std::mutex> lck(mtx);
+        for (auto occ : getOccurrences(iter))
+            hits.insert(occ);
     };
     Index<DnaString, BidirectionalIndex<FMIndex<> > > index(genome);
 
-    find<1, 2>(delegate, index, patterns, EditDistance(), Serial());
+    find<1, 2>(delegate, index, needles, EditDistance(), Serial());
     SEQAN_ASSERT(hits == expectedHits);
 
     hits.clear();
-    find<1, 2>(delegate, index, patterns, EditDistance(), Parallel());
+    find<1, 2>(delegate, index, needles, EditDistance(), Parallel());
     SEQAN_ASSERT(hits == expectedHits);
 }
 
