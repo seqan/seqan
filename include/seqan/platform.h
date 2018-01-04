@@ -85,8 +85,8 @@
  */
 #if defined(__ICC)
 #define COMPILER_LINTEL
-#if __ICC < 1600
-     #warning ICC versions older than 16 are not supported.
+#if __ICC < 1700
+     #warning ICC versions older than 17.0 are not supported.
 #endif
 #endif
 
@@ -98,8 +98,8 @@
  */
 #if defined(__ICL)
 #define COMPILER_WINTEL
-#if __ICL < 1600
-     #warning Intel compiler (windows) versions older than 16 are not supported.
+#if __ICL < 1700
+     #warning Intel compiler (windows) versions older than 17.0 are not supported.
 #endif
 #endif
 
