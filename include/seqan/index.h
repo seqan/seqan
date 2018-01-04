@@ -233,6 +233,7 @@
 #include <seqan/index/find2_vstree_factory.h>
 #include <seqan/index/find2_index_multi.h>
 #include <seqan/index/find2_functors.h>
+#include <seqan/index/find2_index_approx.h>
 
 // ----------------------------------------------------------------------------
 // Lambda interface.
