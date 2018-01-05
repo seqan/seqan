@@ -85,6 +85,14 @@ include(CheckIncludeFileCXX)
 include(CheckCXXSourceCompiles)
 
 # ----------------------------------------------------------------------------
+# Set CMAKE policies.
+# ----------------------------------------------------------------------------
+
+if (POLICY CMP0054)  # Disables auto-dereferencing of variables in quoted statements
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
+# ----------------------------------------------------------------------------
 # Define Constants.
 # ----------------------------------------------------------------------------
 
