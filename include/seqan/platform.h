@@ -399,12 +399,17 @@ typedef int8_t __int8;     // nolint
 #define SEQAN_UNLIKELY(x)    (x)
 #endif
 
-// A macro to eliminate warnings on GCC and Clang
+// A macro to eliminate warnings for unused entities.
+#if __cplusplus >= 201703L
+#define SEQAN_UNUSED [[maybe_unused]]
+#else
 #if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
 #define SEQAN_UNUSED [[gnu::unused]]
 #else
 #define SEQAN_UNUSED
-#endif
+#endif // defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
+#endif // __cplusplus >= 201703L
+
 // backwards compatibility
 #define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
 
