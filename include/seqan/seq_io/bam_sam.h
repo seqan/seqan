@@ -395,7 +395,7 @@ inline void _writeRecord(TFile & file,
     rec.seq = seq;
     rec.qual = qual;
     rec.flag = BAM_FLAG_UNMAPPED;
-    
+
     write(file.iter, rec, context(file).bamIOContext, Sam());
 }
 
@@ -430,7 +430,7 @@ inline void _writeRecord(TFile & file,
     rec.seq = seq;
     rec.qual = qual;
     rec.flag = BAM_FLAG_UNMAPPED;
-    
+
     write(file.iter, rec, context(file).bamIOContext, Bam());
 }
 
@@ -499,7 +499,6 @@ writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
 {
     typedef QualityExtractor<typename Value<TSeqString>::Type> TQualityExtractor;
     ModifiedString<TSeqString const, ModView<TQualityExtractor> > quals(seq);
-    CharString qual = quals;
     writeRecord(file, meta, seq, quals, Bam());
 }
 

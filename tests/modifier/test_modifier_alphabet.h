@@ -155,7 +155,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_convert)
 
     typedef String<TDnaWithGap> TString;
 
-    TString str = "aCgT-AcGt";
+    TString str("aCgT-AcGt");
 //    std::cout << str << std::endl;
 
     SEQAN_ASSERT_EQ(str, "aCgT-AcGt");

@@ -76,7 +76,7 @@ public:
 
 public:
 
-   
+
     Segment():
         data_host(),
         data_begin_position(0)
@@ -120,7 +120,7 @@ public:
     {
     }
 
-   
+
     ~ Segment()
     {
     }
@@ -137,6 +137,11 @@ public:
         T temp_copy;
         assign(temp_copy, *this);
         return temp_copy;
+    }
+
+    operator THost_ () const
+    {
+        return THost_(*this);
     }
 
 //____________________________________________________________________________

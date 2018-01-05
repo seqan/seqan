@@ -127,6 +127,11 @@ public:
         return temp_copy;
     }
 
+    operator THost_ () const
+    {
+        return THost_(*this);
+    }
+
 //____________________________________________________________________________
 
 public:

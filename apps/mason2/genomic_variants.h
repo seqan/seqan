@@ -125,12 +125,12 @@ struct SmallIndelRecord
     int size;
 
     // The inserted sequence if any.
-    seqan::CharString seq;
+    seqan::Dna5String seq;
 
     SmallIndelRecord() : rId(-1), pos(-1), haplotype(-1), size(0)
     {}
 
-    SmallIndelRecord(int haplotype, int rId, int pos, int size, seqan::CharString const & seq) :
+    SmallIndelRecord(int haplotype, int rId, int pos, int size, seqan::Dna5String const & seq) :
             rId(rId), pos(pos), haplotype(haplotype), size(size), seq(seq)
     {}
 
@@ -208,7 +208,7 @@ struct StructuralVariantRecord
     int targetPos;
 
     // The inserted sequence if any.
-    seqan::CharString seq;
+    seqan::Dna5String seq;
 
     StructuralVariantRecord() :
             kind(INVALID), rId(-1), pos(-1), haplotype(-1), size(0), targetRId(-1), targetPos(-1)

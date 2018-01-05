@@ -1055,7 +1055,7 @@ _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> co
     if (stepSize == 1)
         for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
-            TString const &sequence = value(stringSet, seqNo);
+            TString const & sequence = stringSet[seqNo];
             if (length(sequence) < length(shape)) continue;
             TSize num_qgrams = length(sequence) - length(shape) + 1;
 
@@ -1070,7 +1070,7 @@ _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> co
     else
         for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
-            TString const &sequence = value(stringSet, seqNo);
+            TString const & sequence = stringSet[seqNo];
             if (length(sequence) < length(shape)) continue;
             TSize num_qgrams = (length(sequence) - length(shape)) / stepSize + 1;
 
@@ -1240,7 +1240,7 @@ _qgramFillSuffixArray(
     if (stepSize == 1)
         for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
-            TString const &sequence = value(stringSet, seqNo);
+            TString const & sequence = stringSet[seqNo];
             if (length(sequence) < length(shape)) continue;
             TSize num_qgrams = length(sequence) - length(shape) + 1;
 
@@ -1269,7 +1269,7 @@ _qgramFillSuffixArray(
     else
         for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
-            TString const &sequence = value(stringSet, seqNo);
+            TString const & sequence = stringSet[seqNo];
             if (length(sequence) < length(shape)) continue;
             TSize num_qgrams = length(sequence) - length(shape) + 1;
 
