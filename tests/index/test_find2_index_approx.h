@@ -36,6 +36,7 @@
 #define TESTS_FIND2_INDEX_APPROX_H_
 
 #include <mutex>
+#include <ctime>
 
 #include <seqan/index.h>
 
@@ -47,8 +48,8 @@ using namespace seqan;
 // Functions
 // ============================================================================
 
-template <typename TChar, typename TConfig, typename TRand>
-void generateText(String<TChar, TConfig> & text, TRand & rng, unsigned const length)
+template <typename TChar, typename TConfig>
+void generateText(String<TChar, TConfig> & text, unsigned const length)
 {
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
     unsigned minChar = MinValue<TChar>::VALUE;
@@ -57,7 +58,7 @@ void generateText(String<TChar, TConfig> & text, TRand & rng, unsigned const len
 
     for (unsigned i = 0; i < length; ++i)
     {
-        text[i] = rng() % alphabetSize - minChar;
+        text[i] = std::rand() % alphabetSize - minChar;
     }
 }
 
@@ -203,7 +204,7 @@ inline void trivialSearch(TDelegate && delegate,
 
 // Compute random blocklengths (order: left to right)
 template <size_t nbrBlocks, size_t N>
-inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, std::mt19937 & rng, uint32_t needleLength)
+inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, uint32_t needleLength)
 {
     std::vector<uint32_t> blocklength(ss[0].pi.size());
 
@@ -219,7 +220,7 @@ inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, s
     // Randomly distribute the rest on all blocks
     while (needleLength > 0)
     {
-        ++blocklength[rng() % blocklength.size()];
+        ++blocklength[std::rand() % blocklength.size()];
         --needleLength;
     }
 
@@ -228,8 +229,7 @@ inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, s
 }
 
 template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks, typename TDistanceTag>
-inline void testOptimalSearch(std::mt19937 & rng,
-                              Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
+inline void testOptimalSearch(Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
                               OptimalSearch<nbrBlocks> const & s,
                               OptimalSearch<nbrBlocks> const & os,
                               unsigned const needleLength,
@@ -242,7 +242,7 @@ inline void testOptimalSearch(std::mt19937 & rng,
 
     TText & text = indexText(container(it.fwdIter));
 
-    unsigned pos = rng() % (length(text) - needleLength + 1);
+    unsigned pos = std::rand() % (length(text) - needleLength + 1);
     TText origNeedle(infix(text, pos, pos + needleLength));
 
     // Modify needle s.t. it has errors matching errorDistribution.
@@ -272,7 +272,7 @@ inline void testOptimalSearch(std::mt19937 & rng,
         {
             clear(errorPositions);
             for (uint8_t error = 0; error < errorDistribution[block]; ++error)
-                errorPositions.push_back(rng() % blocklength);
+                errorPositions.push_back(std::rand() % blocklength);
             sort(errorPositions.begin(), errorPositions.end());
         } while (adjacent_find(errorPositions.begin(), errorPositions.end()) != errorPositions.end());
 
@@ -283,7 +283,7 @@ inline void testOptimalSearch(std::mt19937 & rng,
             TChar newChar;
             do
             {
-                newChar = TChar(rng() % ValueSize<TChar>::VALUE);
+                newChar = TChar(std::rand() % ValueSize<TChar>::VALUE);
             } while(needle[pos] == newChar);
             needle[pos] = newChar;
         }
@@ -370,41 +370,39 @@ inline void testOptimalSearchScheme(std::array<OptimalSearch<nbrBlocks>, N> ss, 
     typedef Index<TText, BidirectionalIndex<FMIndex<void, TMyFastConfig> > > TIndex;
     typedef Iter<TIndex, VSTree<TopDown<> > > TIter;
 
-    struct timespec ts;
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    time_t seed = ts.tv_nsec;
-    std::mt19937 rng(seed);
+    time_t seed = std::time(nullptr);
+    std::srand(seed);
 
     TText text;
     std::array<OptimalSearch<nbrBlocks>, N> os;
     std::vector<std::vector<std::vector<uint8_t> > > errorDistributions(ss.size());
 
     // Calculate all error distributions and sort each of them (from left to right).
-    unsigned errors = 0;
+    uint8_t errors = 0;
     for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
     {
         os[schemeId] = ss[schemeId];
         getErrorDistributions(errorDistributions[schemeId], ss[schemeId]);
         for (std::vector<uint8_t> & resElem : errorDistributions[schemeId])
             orderVector(ss[schemeId], resElem);
-        errors = std::max(errors, (unsigned) ss[schemeId].u.back());
+        errors = std::max(errors, ss[schemeId].u.back());
     }
 
-    for (unsigned textLength = 10; textLength < 10000; textLength *= 10)
+    for (uint32_t textLength = 10; textLength < 10000; textLength *= 10)
     {
-        generateText(text, rng, textLength);
+        generateText(text, textLength);
         TIndex index(text);
         TIter it(index);
-        for (unsigned needleLength = std::max(5lu, ss[0].pi.size() * errors); needleLength < std::min(16u, textLength); ++needleLength)
+        for (uint16_t needleLength = std::max(static_cast<size_t>(5), ss[0].pi.size() * errors); needleLength < std::min(16u, textLength); ++needleLength)
         {
-            setRandomBlockLength(ss, rng, needleLength);
+            setRandomBlockLength(ss, needleLength);
 
             for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
                 getOrderedSearch(ss[schemeId], os[schemeId]);
 
             for (uint8_t schemeId = 0; schemeId < ss.size(); ++schemeId)
                 for (auto & errorDistribution : errorDistributions[schemeId])
-                    testOptimalSearch(rng, it, ss[schemeId], os[schemeId], needleLength, errorDistribution, seed, TDistanceTag());
+                    testOptimalSearch(it, ss[schemeId], os[schemeId], needleLength, errorDistribution, seed, TDistanceTag());
         }
     }
 }
