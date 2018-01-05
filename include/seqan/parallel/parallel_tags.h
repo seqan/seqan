@@ -108,7 +108,7 @@ struct ExecutionPolicy
      * @var size_t ExecutionPolicy::numThreads
      * @brief The number of threads to use for the parallel execution. Defaults to 1.
      */
-    size_t mNumThreads = 1;
+    size_t _numThreads = 1;
 };
 
 // ----------------------------------------------------------------------------
@@ -233,7 +233,7 @@ template <typename TParallelSpec, typename TVectorizationSpec>
 inline auto
 numThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> const & p)
 {
-    return p.mNumThreads;
+    return p._numThreads;
 }
 
 /*!
@@ -250,7 +250,7 @@ inline void
 setNumThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> & p,
               size_t const nt)
 {
-    p.mNumThreads = nt;
+    p._numThreads = nt;
 }
 
 }  // namespace seqan

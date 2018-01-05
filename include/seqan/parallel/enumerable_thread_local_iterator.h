@@ -81,13 +81,13 @@ public:
     //-------------------------------------------------------------------------
     // Member Functions.
 
-    inline auto*
+    inline auto *
     operator->()
     {
         return &*(*this);
     }
 
-    inline auto*
+    inline auto *
     operator->() const
     {
         return &*(*this);
@@ -103,7 +103,7 @@ public:
 // ============================================================================
 
 template <typename TEnumerableThreadLocal>
-inline auto&
+inline auto &
 operator*(Iter<TEnumerableThreadLocal, EnumerableThreadLocalIterSpec> & me)
 {
     return me._mInnerIter->second;

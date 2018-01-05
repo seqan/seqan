@@ -75,8 +75,8 @@ public:
     using TVecValue = typename Value<TScoreVec>::Type;
     using TBaseScoreSpec = typename Spec<TScore>::Type;
     using TBaseScore = Score<typename IfC<sizeof(TVecValue) <= 2,
-                                          int,
-                                          typename IfC<sizeof(TVecValue) == 8, long long, TVecValue>::Type
+                                          int32_t,
+                                          typename IfC<sizeof(TVecValue) == 8, int64_t, TVecValue>::Type
                                          >::Type,
                              TBaseScoreSpec>;
 

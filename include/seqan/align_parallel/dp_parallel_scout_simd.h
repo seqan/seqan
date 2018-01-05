@@ -166,9 +166,9 @@ isTrackingEnabled(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignme
 // ----------------------------------------------------------------------------
 
 template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSimdSpec,
-typename TTraceMatrixNavigator,
-typename TIsLastColumn,
-typename TIsLastRow>
+          typename TTraceMatrixNavigator,
+          typename TIsLastColumn,
+          typename TIsLastRow>
 inline void
 _scoutBestScore(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > > & dpScout,
                 TDPCell const & activeCell,
@@ -191,7 +191,8 @@ inline auto
 maxHostCoordinate(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > > const & dpScout,
                   TDimension const dimension)
 {
-    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > >::TBase;
+    using TScoutBase = typename DPScout_<TDPCell,
+                                         DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSimdSpec> > >::TBase;
     return maxHostCoordinate(static_cast<TScoutBase const &>(dpScout), dimension);
 }
 

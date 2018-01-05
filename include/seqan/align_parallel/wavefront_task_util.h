@@ -171,11 +171,13 @@ doComputeOffset(TTasks const &tasks,
     resize(offset, length(tasks), std::numeric_limits<TScoreValueScalar>::min(), Exact());
 
     size_t pos = 0;
-    for(auto task : tasks)
+
+    for (auto task : tasks)
     {
             offset[pos] = front(context(*task).tileBuffer.horizontalBuffer[column(*task)]).i1._score;
         ++pos;
     }
+
     return offset;
 }
 
@@ -225,11 +227,10 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
 
     auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
 
-    //    std::for_each(begin(zipCont, Standard()), end(zipCont, Standard()),
     std::for_each(begin(zipCont), end(zipCont),
                   [&, getBuffer = std::move(getBuffer)](auto tuple)
                   {
-                      auto& buffer = *getBuffer(*std::get<0>(tuple));
+                      auto & buffer = *getBuffer(*std::get<0>(tuple));
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
 
                       // We might access values out of bounds here.
@@ -267,7 +268,7 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
     std::for_each(begin(zipCont), end(zipCont),
                   [&, getBuffer = std::move(getBuffer)](auto tuple)
                   {
-                      auto& buffer = *getBuffer(*std::get<0>(tuple));
+                      auto & buffer = *getBuffer(*std::get<0>(tuple));
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
                       using TDPCellVar = decltype(val.i1);
                       using TDPCell16 = DPCell_<TVecVal, AffineGaps>;
@@ -317,16 +318,16 @@ storeIntoBuffer(TTasks & tasks,
     auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
 
     std::for_each(begin(zipCont), end(zipCont),
-    [&, getBuffer = std::move(getBuffer)](auto tuple)
-    {
-        auto & buffer = *getBuffer(*std::get<0>(tuple));
-        if (length(buffer) > pos)
-        {
-            auto& pair = buffer[pos];
-            pair.i1._score = std::get<1>(tuple) + std::get<3>(tuple);
-            pair.i2 = std::get<2>(tuple);
-        }
-    });
+                  [&, getBuffer = std::move(getBuffer)] (auto tuple)
+                  {
+                      auto & buffer = *getBuffer(*std::get<0>(tuple));
+                      if (length(buffer) > pos)
+                      {
+                          auto & pair = buffer[pos];
+                          pair.i1._score = std::get<1>(tuple) + std::get<3>(tuple);
+                          pair.i2 = std::get<2>(tuple);
+                      }
+                  });
 }
 
 template <typename TTasks,
@@ -358,18 +359,18 @@ storeIntoBuffer(TTasks & tasks,
     auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
     std::for_each(begin(zipCont), end(zipCont),
-    [&, getBuffer = std::move(getBuffer)](auto tuple)
-    {
-        auto & buffer = *getBuffer(*std::get<0>(tuple));
-        if (length(buffer) > pos)
-        {
-            auto& pair = buffer[pos];
-            pair.i1._score = std::get<1>(tuple) + std::get<5>(tuple);
-            pair.i1._horizontalScore = std::get<2>(tuple) + std::get<5>(tuple);
-            pair.i1._verticalScore = std::get<3>(tuple) + std::get<5>(tuple);
-            pair.i2 = std::get<4>(tuple);
-        }
-    });
+                  [&, getBuffer = std::move(getBuffer)](auto tuple)
+                  {
+                      auto & buffer = *getBuffer(*std::get<0>(tuple));
+                      if (length(buffer) > pos)
+                      {
+                          auto & pair = buffer[pos];
+                          pair.i1._score = std::get<1>(tuple) + std::get<5>(tuple);
+                          pair.i1._horizontalScore = std::get<2>(tuple) + std::get<5>(tuple);
+                          pair.i1._verticalScore = std::get<3>(tuple) + std::get<5>(tuple);
+                          pair.i2 = std::get<4>(tuple);
+                      }
+                  });
 }
 
 template <typename TTasks,
@@ -389,7 +390,7 @@ gatherSimdBuffer(TTasks const & tasks,
 
     auto maxLength = length(*getBuffer(*tasks[0]));
     std::for_each(begin(tasks, Standard()) + 1, end(tasks, Standard()),
-                  [&](auto& task)
+                  [&](auto & task)
                   {
                       auto len = length(*getBuffer(*task));
                       maxLength = (len > maxLength) ? len : maxLength;
@@ -447,17 +448,19 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
     StringSet<TSeqH, Dependent<> > depSetH;
     StringSet<TSeqV, Dependent<> > depSetV;
     bool allSameLength = true;
-    auto taskPtr = tasks[0];
-    auto lenH = length(context(*taskPtr).seqHBlocks[column(*taskPtr)]);
-    auto lenV = length(context(*taskPtr).seqVBlocks[row(*taskPtr)]);
+    auto ptrTask = tasks[0];
+    auto lenH = length(context(*ptrTask).seqHBlocks[column(*ptrTask)]);
+    auto lenV = length(context(*ptrTask).seqVBlocks[row(*ptrTask)]);
 
-    for (auto taskPtr : tasks)
+    for (auto ptrTask : tasks)
     {
-        appendValue(depSetH, context(*taskPtr).seqHBlocks[column(*taskPtr)]);
-        appendValue(depSetV, context(*taskPtr).seqVBlocks[row(*taskPtr)]);
-        if (lenH != length(context(*taskPtr).seqHBlocks[column(*taskPtr)]) ||
-            lenV != length(context(*taskPtr).seqVBlocks[row(*taskPtr)]))
+        appendValue(depSetH, context(*ptrTask).seqHBlocks[column(*ptrTask)]);
+        appendValue(depSetV, context(*ptrTask).seqVBlocks[row(*ptrTask)]);
+        if (lenH != length(context(*ptrTask).seqHBlocks[column(*ptrTask)]) ||
+            lenV != length(context(*ptrTask).seqVBlocks[row(*ptrTask)]))
+        {
             allSameLength = false;
+        }
     }
 
     // Dummy trace set.
@@ -489,7 +492,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
         for (size_t pos = 0; pos < length(tasks); ++pos)
         {
             auto & task = *tasks[pos];
-            if(AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
+            if (AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
             {
                 // TODO(rrahn): Implement the interface.
                 // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
@@ -533,7 +536,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
         for (size_t pos = 0; pos < length(tasks); ++pos)
         {
             auto & task = *tasks[pos];
-            if(AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
+            if (AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
             {
                 // TODO(rrahn): Implement the interface.
                 // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
@@ -547,7 +550,7 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
         }
     }
 }
-#endif
+#endif // SEQAN_SIMD_ENABLED
 }  // namespace impl
 }  // namespace seqan
 

@@ -391,7 +391,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_align2_traceback_gaps_left_linear_gaps);
     SEQAN_CALL_TEST(test_align2_traceback_gaps_right_linear_gaps);
     SEQAN_CALL_TEST(test_align2_traceback_gaps_left_affine_gaps);
-SEQAN_CALL_TEST(test_align2_traceback_gaps_right_affine_gaps);
+    SEQAN_CALL_TEST(test_align2_traceback_gaps_right_affine_gaps);
 
     // ----------------------------------------------------------------------------
     // Test Band Locations.

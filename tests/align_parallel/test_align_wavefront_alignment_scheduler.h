@@ -84,24 +84,27 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
     TTask t = [&](uint16_t const id)
     {
         // Now how can we spawn a test to the underlying scheduler.
-        auto& _taskScheduler = taskScheduler(scheduler);
+        auto & _taskScheduler = taskScheduler(scheduler);
         using TInnerTask = SchedulerTraits<typename std::decay<decltype(_taskScheduler)>::type>::TTask;
 
         bool eventState{false};
         std::mutex mutexEvent;
         std::condition_variable event;
-        TInnerTask task = [&]()
+        TInnerTask task = [&] ()
         {
             if (calledIds[id] > 0)
             {
                 std::lock_guard<std::mutex> lck(mutexSetBool);
                 isRecycled = true;
             }
+
             ++calledIds[id];
+
             {
                 std::lock_guard<std::mutex> lck(mutexEvent);
                 eventState = true;
             }
+
             event.notify_one();
         };
         scheduleTask(_taskScheduler, task);
@@ -122,7 +125,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
         notify(scheduler);
         seqan::wait(scheduler);
     }
-    catch(...)
+    catch (...)
     {
         SEQAN_ASSERT_FAIL("Unexpected exception!");
     }
@@ -172,6 +175,7 @@ struct RaiiEvent
             std::lock_guard<std::mutex> lck(mutexEvent);
             eventState = true;
         }
+
         event.notify_one();
     }
 };
@@ -189,7 +193,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
     bool isRecycled{false};
     std::mutex mutexSetBool;
 
-    TTask t = [&](uint16_t const id)
+    TTask t = [&] (uint16_t const id)
     {
         // Now how can we spawn a test to the underlying scheduler.
         auto& _taskScheduler = taskScheduler(scheduler);
@@ -223,10 +227,11 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
         {
             scheduleTask(scheduler, t);
         }
+
         notify(scheduler);
         seqan::wait(scheduler);
     }
-    catch(std::runtime_error & e)
+    catch (std::runtime_error & e)
     {
         std::string msg = e.what();
         SEQAN_ASSERT_EQ(msg, "Invalid alignment scheduler!");
@@ -240,17 +245,17 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
             if (exceptVec[i] != nullptr)
                 std::rethrow_exception(exceptVec[i]);
         }
-        catch(std::runtime_error const & e)
+        catch (std::runtime_error const & e)
         {
             std::string msg = e.what();
             SEQAN_ASSERT_EQ(msg, "Invalid Task Scheduler");
         }
-        catch(test_align_parallel::test_error const & e)
+        catch (test_align_parallel::test_error const & e)
         {
             std::string msg = e.what();
             SEQAN_ASSERT_EQ(msg, "Test");
         }
-        catch(...)
+        catch (...)
         {
             SEQAN_ASSERT_FAIL("Caught unknown exception!");
         }

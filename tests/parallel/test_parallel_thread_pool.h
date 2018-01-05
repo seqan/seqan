@@ -91,8 +91,6 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_join)
                                  }));
 }
 
-
-
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_destruct)
 {
     using namespace seqan;

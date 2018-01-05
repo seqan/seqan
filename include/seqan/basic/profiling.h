@@ -241,7 +241,8 @@ namespace seqan
  *
  * @see cpuTime
  */
-    inline _proFloat sysTime() {
+    inline _proFloat sysTime()
+    {
         return static_cast<_proFloat>(std::chrono::system_clock::now().time_since_epoch() /
                                       std::chrono::duration<_proFloat>(1));
     }

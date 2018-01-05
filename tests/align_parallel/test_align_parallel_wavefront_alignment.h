@@ -83,13 +83,6 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
         testScore = score;
     });
 
-//    StringSet<DnaString> set;
-//    appendValue(set, seqH);
-//    appendValue(set, seqV);
-//    Align<DnaString> align(set);
-//
-//    SEQAN_ASSERT_EQ(testScore, localAlignment(align, settings.scoringScheme /*, AlignConfig<true, false, false, true>()*/));
-
     SEQAN_ASSERT_EQ(globalAlignmentScore(seqH, seqV, settings.scoringScheme, AlignConfig<false, false, false, false>()), testScore);
     unlockWriting(scheduler);
 }
@@ -135,17 +128,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
         alignScores[id] = score;
     });
 
-//    printScore = true;
-
     for (unsigned i = 0; i < length(setH); ++i)
     {
-//        StringSet<DnaString> set;
-//        appendValue(set, setH[i]);
-//        appendValue(set, setV[i]);
-//        Align<DnaString> align(set);
-//
-//        SEQAN_ASSERT_EQ(alignScores[i], localAlignment(align, settings.scoringScheme /*, AlignConfig<true, false, false, true>()*/));
-
         SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.scoringScheme, AlignConfig<false, false, false, false>()), alignScores[i]);
     }
 }
@@ -193,12 +177,6 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
 
     for (unsigned i = 0; i < length(setH); ++i)
     {
-//        StringSet<DnaString> set;
-//        appendValue(set, setH[i]);
-//        appendValue(set, setV[i]);
-//        Align<DnaString> align(set);
-//
-//        SEQAN_ASSERT_EQ(alignScores[i], localAlignment(align, settings.scoringScheme /*, AlignConfig<true, false, false, true>()*/));
         SEQAN_ASSERT_EQ(globalAlignmentScore(setH[i], setV[i], settings.scoringScheme, AlignConfig<false, false, false, false>()), alignScores[i]);
     }
 }

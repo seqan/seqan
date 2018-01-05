@@ -66,15 +66,15 @@ public:
     unsigned    _writerCount;
 
     std::mutex                      _mutexPushException;
-    std::vector<std::exception_ptr> _exceptionPtrs;
+    std::vector<std::exception_ptr> _exceptionPointers;
     std::atomic<bool>               _isValid{true};
 
-    std::function<void()> job = [this]()
+    std::function<void()> job = [this] ()
     {
         lockReading(_taskQueue);
         waitForFirstValue(_taskQueue);  // Wait for all writers to be setup.
 
-        std::function<void()> _dummy = []()
+        std::function<void()> _dummy = [] ()
         {  // TODO(rrahn): Could throw exception to signal something went terribly wrong.
             SEQAN_ASSERT_FAIL("Trying to exceute empty wavefront task in thread: ",
                               std::this_thread::get_id());
@@ -84,18 +84,17 @@ public:
         while (true)
         {
             if (!popFront(task, _taskQueue))
-            {
                 break;  // Empty queue and no writer registered.
-            }
+
             try
             {
                 task();  // Execute the task;
             }
-            catch(...)
+            catch (...)
             {  // Catch exception, and signal failure. Continue running until queue is empty.
                 {
                     std::lock_guard<std::mutex> lck(_mutexPushException);
-                    _exceptionPtrs.push_back(std::current_exception());
+                    _exceptionPointers.push_back(std::current_exception());
                 }
                 _isValid.store(false, std::memory_order_release);
             }
@@ -212,7 +211,7 @@ wait(WavefrontTaskScheduler & me)
 inline auto
 getExceptions(WavefrontTaskScheduler & me)
 {
-    return me._exceptionPtrs;
+    return me._exceptionPointers;
 }
 
 }  // namespace seqan

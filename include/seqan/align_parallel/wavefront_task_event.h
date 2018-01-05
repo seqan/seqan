@@ -98,7 +98,7 @@ wait(WavefrontTaskEvent & event)
 {
     std::unique_lock<decltype(event.mutexLastTask)> lck(event.mutexLastTask);
     if (!event.readyLastTask)
-        event.conditionLastTask.wait(lck, [&]{ return event.readyLastTask; });
+        event.conditionLastTask.wait(lck, [&] { return event.readyLastTask; });
 }
 
 }  // namespace seqan

@@ -101,7 +101,7 @@ struct ParallelAlignmentExecutor
               typename TSetH,
               typename TSetV,
               typename ...TArgs>
-    auto operator()(ExecutionPolicy<Parallel, Vectorial> const & execPolicy,
+    auto operator()(SEQAN_UNUSED ExecutionPolicy<Parallel, Vectorial> const & execPolicy,  // maybe unused due to missing OMP support in clang.
                     TKernel && kernel,
                     TSetH const & setH,
                     TSetV const & setV,

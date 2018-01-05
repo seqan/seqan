@@ -53,14 +53,12 @@ class WavefrontTaskQueue
 {
 public:
 
-    //-------------------------------------------------------------------------
-    // Member Types.
 
+    // Member Types.
     using TQueue = ConcurrentQueue<TValue*>;
     using ResultType = std::vector<TValue*>;
     using ValueType = TValue;
 
-    //-------------------------------------------------------------------------
     // Members.
     static constexpr size_t VECTOR_SIZE{VECTOR_SIZE_};
 
@@ -68,9 +66,7 @@ public:
     std::mutex  mutexPopQueue;
     bool        hasNotified{false};
 
-    //-------------------------------------------------------------------------
     // Constructors.
-
     WavefrontTaskQueue()
     {
         lockWriting(queue);

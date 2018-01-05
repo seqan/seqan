@@ -53,22 +53,22 @@ struct WavefrontAlignmentTaskConfig
     // Member Typedefs.
 
     // DPTrait type forwarding.
-    using TDPTraits         = typename TDPSettings::TTraits;
-    using TScoreValue       = typename Value<typename TDPSettings::TScoringScheme>::Type;
-    using TAlgorithmType    = typename TDPTraits::TAlgorithmType;
-    using TTracebackType    = typename TDPTraits::TTracebackType;
-    using TGapType          = typename TDPTraits::TGapType;
+    using TDPTraits       = typename TDPSettings::TTraits;
+    using TScoreValue     = typename Value<typename TDPSettings::TScoringScheme>::Type;
+    using TAlgorithmType  = typename TDPTraits::TAlgorithmType;
+    using TTracebackType  = typename TDPTraits::TTracebackType;
+    using TGapType        = typename TDPTraits::TGapType;
 
     // Wavefront Alignment Context.
-    using TDPCell           = DPCell_<TScoreValue, TGapType>;
-    using TBufferValue      = Pair<TDPCell, typename TraceBitMap_<>::Type>;
-    using TBuffer           = String<TBufferValue>;
-    using TBlockBuffer      = DPTileBuffer<TBuffer>;
+    using TDPCell         = DPCell_<TScoreValue, TGapType>;
+    using TBufferValue    = Pair<TDPCell, typename TraceBitMap_<>::Type>;
+    using TBuffer         = String<TBufferValue>;
+    using TBlockBuffer    = DPTileBuffer<TBuffer>;
 
     // DP Execution Context.
-    using TDPProfile        = DPProfile_<TAlgorithmType, TGapType, TTracebackType, Parallel>;
-    using TDPCache          = DPContext<TDPCell, typename TraceBitMap_<>::Type>;
-    using TDPScout          = DPScout_<TDPCell, Default>;
+    using TDPProfile      = DPProfile_<TAlgorithmType, TGapType, TTracebackType, Parallel>;
+    using TDPCache        = DPContext<TDPCell, typename TraceBitMap_<>::Type>;
+    using TDPScout        = DPScout_<TDPCell, Default>;
 
     // Parallel Context.
     struct IntermediateTraits_
@@ -77,17 +77,18 @@ struct WavefrontAlignmentTaskConfig
         using THostPosition = decltype(maxHostPosition(std::declval<TDPScout>()));
     };
 
-    using TDPIntermediate     = WavefrontAlignmentResult<IntermediateTraits_>;
+    using TDPIntermediate = WavefrontAlignmentResult<IntermediateTraits_>;
 
-    struct AlignThreadLocalConfig_ {
+    struct AlignThreadLocalConfig_
+    {
         using TIntermediate = TDPIntermediate;
         using TCache        = TDPCache;
 
         using TLocalHost    = std::tuple<TIntermediate, TCache>;
     };
 
-    using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<AlignThreadLocalConfig_>;
-    using TAlignEvent       = WavefrontTaskEvent;
+    using TThreadLocal = WavefrontAlignmentThreadLocalStorage<AlignThreadLocalConfig_>;
+    using TAlignEvent  = WavefrontTaskEvent;
 };
 
 #ifdef SEQAN_SIMD_ENABLED
@@ -99,24 +100,19 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
 
     using TBase_ = WavefrontAlignmentTaskConfig<TDPSettings>;
 
-    using TDPSimdCell         = DPCell_<typename TDPSettings::TScoreValueSimd, typename TBase_::TGapType>;
-    using TDPSimdTraceValue   = typename TraceBitMap_<typename TDPSettings::TScoreValueSimd>::Type;
+    using TDPSimdCell        = DPCell_<typename TDPSettings::TScoreValueSimd, typename TBase_::TGapType>;
+    using TDPSimdTraceValue  = typename TraceBitMap_<typename TDPSettings::TScoreValueSimd>::Type;
 
-    using TDPSimdScoreMatrix  = String<TDPSimdCell, Alloc<OverAligned>>;
-    using TDPSimdTraceMatrix  = String<TDPSimdTraceValue, Alloc<OverAligned>>;
-    using TDPSimdCache        = DPContext<TDPSimdCell, TDPSimdTraceValue, TDPSimdScoreMatrix, TDPSimdTraceMatrix>;
+    using TDPSimdScoreMatrix = String<TDPSimdCell, Alloc<OverAligned>>;
+    using TDPSimdTraceMatrix = String<TDPSimdTraceValue, Alloc<OverAligned>>;
+    using TDPSimdCache       = DPContext<TDPSimdCell, TDPSimdTraceValue, TDPSimdScoreMatrix, TDPSimdTraceMatrix>;
 
-    using TDPScout_           = DPScout_<TDPSimdCell, SimdAlignmentScout<> >;
-
-//    struct IntermediateTraits_ : public TBase_::IntermediateTraits_
-//    {
-//        using TScoreValue = decltype(maxScoreAt(std::declval<TDPScout_>()));
-//    };
-
-    using TDPIntermediate     = WavefrontAlignmentResult<typename TBase_::IntermediateTraits_>;
+    using TDPScout_          = DPScout_<TDPSimdCell, SimdAlignmentScout<> >;
+    using TDPIntermediate    = WavefrontAlignmentResult<typename TBase_::IntermediateTraits_>;
 
     // Parallel Context.
-    struct SimdAlignThreadLocalConfig_ {
+    struct SimdAlignThreadLocalConfig_
+    {
 
         using TIntermediate = TDPIntermediate;
         using TCache        = typename TBase_::TDPCache;
@@ -125,8 +121,8 @@ struct WavefrontAlignmentSimdTaskConfig : public WavefrontAlignmentTaskConfig<TD
         using TLocalHost    = std::tuple<TIntermediate, TCache, TSimdCache>;
     };
 
-    using TThreadLocal      = WavefrontAlignmentThreadLocalStorage<SimdAlignThreadLocalConfig_>;
-    using TAlignEvent       = WavefrontTaskEvent;
+    using TThreadLocal = WavefrontAlignmentThreadLocalStorage<SimdAlignThreadLocalConfig_>;
+    using TAlignEvent  = WavefrontTaskEvent;
 };
 #endif
 
@@ -172,21 +168,24 @@ struct WavefrontAlignmentTaskIncubator
         TDPCell dummyCellD;
         TDPCell dummyCellH;
         TDPCell dummyCellV;
-        tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
-        for (auto itH = begin(buffer.horizontalBuffer, Standard()); itH != end(buffer.horizontalBuffer, Standard()); ++itH)
+        tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV,  Nothing(), Nothing(), score,
+                               RecursionDirectionZero(), typename TWatc::TDPProfile());
+        for (auto itH = begin(buffer.horizontalBuffer, Standard());
+             itH != end(buffer.horizontalBuffer, Standard());
+             ++itH)
         {
             resize(*itH, length(front(seqHBlocks)), Exact());
             for (auto it = begin(*itH, Standard()); it != end(*itH, Standard()); ++it)
             {
-                it->i2 = _computeScore(it->i1, dummyCellD, tmp.i1, dummyCellV,
-                                       Nothing(), Nothing(),
-                                       score, typename RecursionDirection_<TDPMetaColH, FirstCell>::Type(),
+                it->i2 = _computeScore(it->i1, dummyCellD, tmp.i1, dummyCellV, Nothing(), Nothing(), score,
+                                       typename RecursionDirection_<TDPMetaColH, FirstCell>::Type(),
                                        typename TWatc::TDPProfile());
                 tmp.i1 = it->i1;
             }
         }
         tmp.i1 = decltype(tmp.i1){};
-        tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score, RecursionDirectionZero(), typename TWatc::TDPProfile());
+        tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score,
+                               RecursionDirectionZero(), typename TWatc::TDPProfile());
 
         for (auto itV = begin(buffer.verticalBuffer, Standard()); itV != end(buffer.verticalBuffer, Standard()); ++itV)
         {
@@ -197,9 +196,8 @@ struct WavefrontAlignmentTaskIncubator
             ++it;
             for (; it != end(*itV, Standard()); ++it)
             {
-                it->i2 = _computeScore(it->i1, dummyCellD, dummyCellH, dummyCellV,
-                                       Nothing(), Nothing(),
-                                       score, typename RecursionDirection_<TDPMetaColV, InnerCell>::Type(),
+                it->i2 = _computeScore(it->i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score,
+                                       typename RecursionDirection_<TDPMetaColV, InnerCell>::Type(),
                                        typename TWatc::TDPProfile());
                 _setVerticalScoreOfCell(it->i1, _verticalScoreOfCell(dummyCellV));
                 tmp.i1 = it->i1;
@@ -227,9 +225,14 @@ struct WavefrontAlignmentTaskIncubator
             for (int j = length(taskContext.seqVBlocks); --j >= 0;)
             {
                 using TSize = decltype(length(taskContext.seqHBlocks));
-                auto successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks)) ? graph[i+1][j].get() : nullptr;
-                auto successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks)) ? graph[i][j+1].get() : nullptr;
-                graph[i][j] = std::make_shared<TDagTask>(taskContext, std::array<TDagTask*, 2>{{successorRight, successorDown}},
+                TDagTask * successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks))
+                                                ?  graph[i+1][j].get()
+                                                : nullptr;
+                TDagTask * successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks))
+                                                ? graph[i][j+1].get()
+                                                : nullptr;
+                graph[i][j] = std::make_shared<TDagTask>(taskContext,
+                                                         std::array<TDagTask*, 2>{{successorRight, successorDown}},
                                                          static_cast<size_t>(i), static_cast<size_t>(j),
                                                          static_cast<size_t>(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0)),
                                                          (static_cast<TSize>(i + 1) == length(taskContext.seqHBlocks)),
