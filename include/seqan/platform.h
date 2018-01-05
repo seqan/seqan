@@ -551,4 +551,11 @@ inline void enforceLittleEndian(double & in)
     #define SEQAN_DEFAULT_PAGESIZE 64 * 1024
 #endif
 
+// IF_CONSTEXPR
+#if __cplusplus >= 201703L
+#define SEQAN_IF_CONSTEXPR if constexpr
+#else
+#define SEQAN_IF_CONSTEXPR if
+#endif
+
 #endif // HEADER GUARD
