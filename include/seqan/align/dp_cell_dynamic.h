@@ -168,7 +168,7 @@ inline void _setBit(DPCell_<TScoreValue, DynamicGaps> & cell,
                     TFlag const & /*flag*/,
                     DynamicGapExtensionVertical const & /*tag*/)
 {
-    if (IsSameType<TFlag, True>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TFlag, True>::VALUE)
         cell._flagMask |= MASK_VERTICAL_GAP;
     else
         cell._flagMask &= ~MASK_VERTICAL_GAP;
@@ -179,7 +179,7 @@ inline void _setBit(DPCell_<TScoreValue, DynamicGaps> & cell,
                     TFlag const & /*flag*/,
                     DynamicGapExtensionHorizontal const & /*tag*/)
 {
-    if (IsSameType<TFlag, True>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TFlag, True>::VALUE)
         cell._flagMask |= MASK_HORIZONTAL_GAP;
     else
         cell._flagMask &= ~MASK_HORIZONTAL_GAP;
@@ -190,7 +190,7 @@ inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,bool)
 isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
                TSpec const & /*spec*/)
 {
-    if (IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE)
         return cell._flagMask & MASK_HORIZONTAL_GAP;
     else
         return cell._flagMask & MASK_VERTICAL_GAP;

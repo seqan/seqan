@@ -1888,13 +1888,13 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
         assignSource(row(align, 1), readSeq);
 //        int ud = store.alignQualityStore[it->id].errors;
 //        int ld = -ud;
-//        if (IsSameType<TShrinkMatches, True>::VALUE)
+//        SEQAN_IF_CONSTEXPR (IsSameType<TShrinkMatches, True>::VALUE)
 //            globalAlignment(align, score, AlignConfig<true, false, false, true>(), ld, ud, Gotoh());
 //        else
 //            globalAlignment(align, score, ld, ud);
 
         int qualValue = 0;
-        if (IsSameType<TShrinkMatches, True>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TShrinkMatches, True>::VALUE)
             qualValue = globalAlignment(align, score, AlignConfig<true, false, false, true>(), Gotoh());
         else
             qualValue = globalAlignment(align, score);

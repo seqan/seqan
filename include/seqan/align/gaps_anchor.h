@@ -301,7 +301,7 @@ template <typename TSize, typename TSource, typename TGapAnchors>
 inline void
 _assignSourceLength(TSize & size, Gaps<TSource, AnchorGaps<TGapAnchors> > const & me)
 {
-    if (IsSameType<TSource, Nothing>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TSource, Nothing>::VALUE)
         size = std::numeric_limits<TSize>::max() / 2;
     else
         size = length(value(me.data_source));
