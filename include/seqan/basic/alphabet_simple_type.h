@@ -179,7 +179,7 @@ public:
     // This cannot be a template since it would conflict to the template
     // constructor.
 
-
+   
     operator int64_t() const
     {
         int64_t c;
@@ -187,7 +187,7 @@ public:
         return c;
     }
 
-
+   
     operator uint64_t() const
     {
         uint64_t c;
@@ -195,7 +195,7 @@ public:
         return c;
     }
 
-
+   
     operator int() const
     {
         int c;
@@ -203,7 +203,7 @@ public:
         return c;
     }
 
-
+   
     operator unsigned int() const
     {
         unsigned int c;
@@ -211,7 +211,7 @@ public:
         return c;
     }
 
-
+   
     operator short() const
     {
         short c;
@@ -219,7 +219,7 @@ public:
         return c;
     }
 
-
+   
     operator unsigned short() const
     {
         unsigned short c;
@@ -227,7 +227,7 @@ public:
         return c;
     }
 
-
+   
     operator char() const
     {
         char c;
@@ -235,7 +235,7 @@ public:
         return c;
     }
 
-
+   
     operator signed char() const
     {
         signed char c;
@@ -326,31 +326,6 @@ template <typename TValue, typename TSpec>
 struct IsSimple<SimpleType<TValue, TSpec> >
 {
     typedef True Type;
-
-    enum { VALUE = 1 };
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction IsAlphabet
-// ----------------------------------------------------------------------------
-
-// As IsSimple is overloaded with numeric types etc (see array_construct_destruct.h) we define a new
-// tag here for the alphabet types only.
-
-template <typename T>
-struct IsAlphabet
-{
-    typedef False Type;
-
-    enum { VALUE = 0 };
-};
-
-template <typename TValue, typename TSpec>
-struct IsAlphabet<SimpleType<TValue, TSpec> >
-{
-    typedef True Type;
-
-    enum { VALUE = 1 };
 };
 
 // ----------------------------------------------------------------------------

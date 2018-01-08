@@ -187,7 +187,7 @@ getErrorDistribution(
         if ((*it).id == TAlignedRead::INVALID_ID)
             continue;
 
-        Dna5QString const & read = store.readSeqStore[(*it).readId];
+        Dna5String const & read = store.readSeqStore[(*it).readId];
         left = (*it).beginPos;
         right = (*it).endPos;
 

@@ -80,7 +80,7 @@ public:
         SEQAN_ASSERT_LEQ(data_begin_position, data_end_position);
     }
 
-
+   
     Segment():
         data_host(),
         data_begin_position(0),
@@ -89,7 +89,7 @@ public:
         _checkMemberVariables();
     }
 
-
+   
     Segment(typename Parameter_<THost>::Type _host):
         data_host(_toPointer(_host)),
         data_begin_position(0),
@@ -98,7 +98,7 @@ public:
         _checkMemberVariables();
     }
 
-
+   
     Segment(typename Parameter_<THost>::Type _host, typename Position<THost>::Type _begin_index, typename Position<THost>::Type _end_index):
         data_host(_toPointer(_host)),
         data_begin_position(_begin_index),
@@ -115,7 +115,7 @@ public:
     }
 */
 
-
+   
     Segment(typename Parameter_<THost>::Type _host, typename Iterator<THost, Standard>::Type _begin, typename Iterator<THost, Standard>::Type _end):
         data_host(_toPointer(_host)),
         data_begin_position(position(_begin, _host)),
@@ -125,7 +125,7 @@ public:
     }
 
     template <typename THost2, typename TSpec2>
-
+   
     Segment(Segment<THost2, TSpec2> const & _other):
         data_host(_toPointer(host(_other))),
         data_begin_position(beginPosition(_other)),
@@ -134,7 +134,7 @@ public:
         _checkMemberVariables();
     }
 
-
+   
     ~ Segment()
     {
     }
@@ -151,11 +151,6 @@ public:
         T temp_copy;
         assign(temp_copy, *this);
         return temp_copy;
-    }
-
-    operator THost_ () const
-    {
-        return THost_(*this);
     }
 
 //____________________________________________________________________________

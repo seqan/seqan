@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_reverse)
     seqan::DnaString const EXPECTED_STRING = "ATCG";
 
     seqan::DnaStringReverseComplement modifiedString(str);
-    seqan::DnaString modifiedStringCopy(modifiedString);
+    seqan::DnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -56,7 +56,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_reverse)
     seqan::Dna5String const EXPECTED_STRING = "NATCG";
 
     seqan::Dna5StringReverseComplement modifiedString(str);
-    seqan::Dna5String modifiedStringCopy(modifiedString);
+    seqan::Dna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -66,7 +66,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_reverse)
     seqan::RnaString const EXPECTED_STRING = "AUCG";
 
     seqan::RnaStringReverseComplement modifiedString(str);
-    seqan::RnaString modifiedStringCopy(modifiedString);
+    seqan::RnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -76,7 +76,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_reverse)
     seqan::Rna5String const EXPECTED_STRING = "NAUCG";
 
     seqan::Rna5StringReverseComplement modifiedString(str);
-    seqan::Rna5String modifiedStringCopy(modifiedString);
+    seqan::Rna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -86,7 +86,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_complement)
     seqan::DnaString const EXPECTED_STRING = "ATCG";
 
     seqan::DnaStringReverseComplement modifiedString(str);
-    seqan::DnaString modifiedStringCopy(modifiedString);
+    seqan::DnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -96,7 +96,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_complement)
     seqan::Dna5String const EXPECTED_STRING = "NATCG";
 
     seqan::Dna5StringReverseComplement modifiedString(str);
-    seqan::Dna5String modifiedStringCopy(modifiedString);
+    seqan::Dna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -106,7 +106,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_complement)
     seqan::RnaString const EXPECTED_STRING = "AUCG";
 
     seqan::RnaStringReverseComplement modifiedString(str);
-    seqan::RnaString modifiedStringCopy(modifiedString);
+    seqan::RnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -116,7 +116,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_complement)
     seqan::Rna5String const EXPECTED_STRING = "NAUCG";
 
     seqan::Rna5StringReverseComplement modifiedString(str);
-    seqan::Rna5String modifiedStringCopy(modifiedString);
+    seqan::Rna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna_string_reverse_complement)
     seqan::DnaString const EXPECTED_STRING = "ATCG";
 
     seqan::DnaStringReverseComplement modifiedString(str);
-    seqan::DnaString modifiedStringCopy(modifiedString);
+    seqan::DnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -136,7 +136,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_dna5_string_reverse_complement)
     seqan::Dna5String const EXPECTED_STRING = "NATCG";
 
     seqan::Dna5StringReverseComplement modifiedString(str);
-    seqan::Dna5String modifiedStringCopy(modifiedString);
+    seqan::Dna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -146,7 +146,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna_string_reverse_complement)
     seqan::RnaString const EXPECTED_STRING = "AUCG";
 
     seqan::RnaStringReverseComplement modifiedString(str);
-    seqan::RnaString modifiedStringCopy(modifiedString);
+    seqan::RnaString modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 
@@ -156,7 +156,7 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_rna5_string_reverse_complement)
     seqan::Rna5String const EXPECTED_STRING = "NAUCG";
 
     seqan::Rna5StringReverseComplement modifiedString(str);
-    seqan::Rna5String modifiedStringCopy(modifiedString);
+    seqan::Rna5String modifiedStringCopy = modifiedString;
     SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedStringCopy);
 }
 

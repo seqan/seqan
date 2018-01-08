@@ -414,8 +414,7 @@ public:
         createIntervalTree(*this, intervals);
     }
 
-    template <typename TStringSpec>
-    IntervalTree(String<TInterval, TStringSpec> intervals)
+    IntervalTree(String<TInterval> intervals)
     {
             createIntervalTree(*this, intervals);
     }

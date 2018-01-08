@@ -156,34 +156,34 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre)
         setHost(modifiedStr, originalStr);
 
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
-        CharString modifiedStrCopy(modifiedStr);
+        CharString modifiedStrCopy = modifiedStr;
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
     }
     {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
-        CharString modifiedStrCopy(modifiedStr);
+        CharString modifiedStrCopy = modifiedStr;
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
     }
     {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
-        CharString modifiedStrCopy(modifiedStr);
+        CharString modifiedStrCopy = modifiedStr;
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
     }
     {
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr(originalStr, myFunctor);
 
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr);
-        CharString modifiedStrCopy(modifiedStr);
+        CharString modifiedStrCopy = modifiedStr;
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
 
         ModifiedString<CharString, ModView<TFunctor> > modifiedStr2(modifiedStr);
 
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStr2);
-        CharString modifiedStrCopy2(modifiedStr2);
+        CharString modifiedStrCopy2 = modifiedStr2;
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy2);
     }
 
@@ -223,7 +223,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_upper_case)
         SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
-    CharString modifiedStrCopy(modifiedStr);
+    CharString modifiedStrCopy = modifiedStr;
     SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
     // We do not test the whole interface as in _caesar_chiffre, so this is
@@ -249,7 +249,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_low_case)
         SEQAN_ASSERT_EQ_MSG(EXPECTED_RESULT[i], modifiedStr[i], "i = %lu", i);
 
     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
-    CharString modifiedStrCopy(modifiedStr);
+    CharString modifiedStrCopy = modifiedStr;
     SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
     // We do not test the whole interface as in _caesar_chiffre, so this is
@@ -275,7 +275,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_alphabet_conversion)
 
     // TODO(holtgrew): This does not compile.
 //     SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
-    CharString modifiedStrCopy(modifiedStr);
+    CharString modifiedStrCopy = modifiedStr;
     SEQAN_ASSERT_EQ(modifiedStrCopy, EXPECTED_RESULT);
 
     // We do not test the whole interface as in _caesar_chiffre, so this is
@@ -301,7 +301,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
 
         SEQAN_ASSERT_EQ(modifiedStr, EXPECTED_RESULT);
 
-        CharString modifiedStrCopy(modifiedStr);
+        CharString modifiedStrCopy = modifiedStr;
         SEQAN_ASSERT_EQ(EXPECTED_RESULT, modifiedStrCopy);
     }
     // test nested reverse/view modifiers and independence of order

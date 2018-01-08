@@ -102,7 +102,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_buchfink11)
 
     // N = 11
     {
-        String<ReducedAminoAcidBuchfink11> conv = static_cast<String<ReducedAminoAcidBuchfink11>>(str);
+        String<ReducedAminoAcidBuchfink11> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
             "AABBCCBBBBFFGGHHIIIIBBIIMMBBBBPPBBBBAAAACCIIWWAAYYBBFAA");
@@ -121,7 +121,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_cannata10)
 
     // N = 10
     {
-        String<ReducedAminoAcidCannata10> conv = static_cast<String<ReducedAminoAcidCannata10>>(str);
+        String<ReducedAminoAcidCannata10> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
             "AABBCCBBEEFFAAHHIIIIKKIIIIBBKKPPEEKKAAAACCIIWWAAFFEEFAA");
@@ -140,7 +140,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_li10)
 
     // N = 10
     {
-        String<ReducedAminoAcidLi10> conv = static_cast<String<ReducedAminoAcidLi10>>(str);
+        String<ReducedAminoAcidLi10> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
             "AABBCCBBBBFFGGHHIIJJKKJJJJHHKKPPBBKKAAAACCIIFFAAFFBBFAA");
@@ -159,7 +159,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_solis10)
 
     // N = 10
     {
-        String<ReducedAminoAcidSolis10> conv = static_cast<String<ReducedAminoAcidSolis10>>(str);
+        String<ReducedAminoAcidSolis10> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
             "AABBCCBBBBFFGGHHIIIIKKIIIIGGHHPPGGHHGGPPCCIIWWAAWWBBFAA");
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy5)
 
     // N = 5
     {
-        String<ReducedAminoAcidMurphy5> conv = static_cast<String<ReducedAminoAcidMurphy5>>(str);
+        String<ReducedAminoAcidMurphy5> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
             "AABBCCBBBBFFAAHHCCCCHHCCCCBBHHAABBHHAAAACCCCFFAAFFBBFAA");
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
 
     // N = 10
     {
-        String<ReducedAminoAcidMurphy10> conv = static_cast<String<ReducedAminoAcidMurphy10>>(str);
+        String<ReducedAminoAcidMurphy10> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
             "AABBCCBBBBFFGGHHIIIIKKIIIIBBAAPPBBKKSSSSAAIIFFAAFFBBFAA");
@@ -212,7 +212,7 @@ void _testReducedAminoAcidMurphy10ModIteratorsImpl(TModString & conv)
     typedef typename Iterator<TModString, Standard>::Type TIt;
     typedef typename Iterator<TModString, Rooted>::Type TItR;
 
-    CharString toCharString(conv);
+    CharString toCharString = conv;
     SEQAN_ASSERT_EQ(toCharString,
                     "ABCBBFGHIIKIIBAPBKSSAIFFBAF");
 

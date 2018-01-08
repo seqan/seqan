@@ -414,7 +414,7 @@ int main(int argc, char ** argv)
 
         if (options.reverseComplement)
         {
-            seqan::Dna5String seqCopy(seq); // conversion from CharString to Dna5String !
+            seqan::Dna5String seqCopy = seq;
             reverseComplement(seqCopy);
             reverse(quals);
             infixEnd = length(seq) - infixEnd;

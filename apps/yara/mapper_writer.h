@@ -309,7 +309,7 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     _fillReadDistance(me, primary);
 //    _fillMateInfo(me, readId);
 
-    TMatches const & matches = static_cast<TMatches>(me.matchesSet[readId]);
+    TMatches const & matches = me.matchesSet[readId];
     TSize bestCount = countMatchesInBestStratum(matches);
     TSize subCount = length(matches) - bestCount;
     _fillReadInfo(me, bestCount, subCount);
@@ -351,7 +351,7 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     _fillReadDistance(me, primary);
     _fillMateInfo(me, readId);
 
-    TMatches const & matches = static_cast<TMatches>(me.matchesSet[readId]);
+    TMatches const & matches = me.matchesSet[readId];
     TSize bestCount = countMatchesInBestStratum(matches);
     TSize subCount = length(matches) - bestCount;
     _fillReadInfo(me, bestCount, subCount);

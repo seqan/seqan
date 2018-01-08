@@ -213,18 +213,6 @@ struct SourceValue<ProfileChar<TValue, TCount, TSpec> const> :
             SourceValue<ProfileChar<TValue, TCount, TSpec> >
 {};
 
-// ----------------------------------------------------------------------------
-// Metafunction IsAlphabet
-// ----------------------------------------------------------------------------
-
-// Consider ProfileChar as alphabet character. Allows construction with string literals.
-template <typename TValue, typename TCount, typename TSpec>
-struct IsAlphabet<ProfileChar<TValue, TCount, TSpec> >
-{
-    typedef True Type;
-    enum { VALUE = 1 };
-};
-
 // ============================================================================
 // Functions
 // ============================================================================

@@ -1571,7 +1571,7 @@ int readMatchesFromSamBam_Batch(
         bool suboptimal = hasFlagSecondary(record);
 
         clipLeft = 0; clipRight = 0;
-        TRead curr_read(record.seq); // conversion of types!
+        TRead curr_read = record.seq;
         for(unsigned j = 0; j < length(record.qual); ++j)
         {
             int tempQual = _max(0,(int)ordValue(record.qual[j])-options.asciiQualOffset);
@@ -4719,7 +4719,7 @@ void dumpSNPsBatch(
             // do edit alignment
             if((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
             {
-                Dna5QString gInf = infix(genome, currentBegin, currentEnd);
+                Dna5String gInf = infix(genome, currentBegin, currentEnd);
                 if (orientation == 'R')
                     reverseComplement(gInf);
 
@@ -6168,7 +6168,7 @@ void dumpPosBatch(
             // do edit alignment
             if((int)matchQualities[(*matchIt).id].pairScore == 1 /*!empty((*matchIt).gaps)*/) // splitReads: hamming: pairScore=0
             {
-                Dna5QString gInf = infix(genome, currentBegin, currentEnd);
+                Dna5String gInf = infix(genome, currentBegin, currentEnd);
                 if (orientation == 'R')
                     reverseComplement(gInf);
 

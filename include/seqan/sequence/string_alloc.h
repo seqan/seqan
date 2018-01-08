@@ -79,7 +79,7 @@ public:
     }
 
     template <typename TSource>
-    explicit String(TSource & source)
+    String(TSource & source)
         : data_begin(0),
           data_end(0),
           data_capacity(0)
@@ -90,7 +90,7 @@ public:
     }
 
     template <typename TSource>
-    explicit String(TSource const & source)
+    String(TSource const & source)
         : data_begin(0),
           data_end(0),
           data_capacity(0)
@@ -141,7 +141,7 @@ public:
     }
 
     template <typename TSource, typename TSize>
-    explicit String(TSource & source, TSize limit)
+    String(TSource & source, TSize limit)
             : data_begin(0),
               data_end(0),
               data_capacity(0)
@@ -152,7 +152,7 @@ public:
     }
 
     template <typename TSource, typename TSize>
-    explicit String(TSource const & source, TSize limit)
+    String(TSource const & source, TSize limit)
             : data_begin(0),
               data_end(0),
               data_capacity(0)
@@ -162,30 +162,6 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
 
-    // Implicit construction of String is only allowed for char or alphabet types.
-    template <typename Dummy = void,
-              typename = std::enable_if_t<std::is_same<TValue, char>::value || IsAlphabet<TValue>::VALUE, Dummy> >
-    String(std::string const & source)
-            : data_begin(0),
-              data_end(0),
-              data_capacity(0)
-    {
-        if (source.size() > 0u)
-            assign(*this, source);
-        SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
-    }
-
-    template <typename Dummy = void,
-              typename = std::enable_if_t<std::is_same<TValue, char>::value || IsAlphabet<TValue>::VALUE, Dummy> >
-    String(char const * source)
-            : data_begin(0),
-              data_end(0),
-              data_capacity(0)
-    {
-        if (strlen(source) > 0u)
-            assign(*this, source);
-        SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
-    }
 
     template <typename TSource>
     inline
