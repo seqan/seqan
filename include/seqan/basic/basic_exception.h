@@ -369,7 +369,7 @@ inline static void globalExceptionHandler()
 }
 
 // Install global exception handler.
-static const std::terminate_handler SEQAN_UNUSED _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
+static const std::terminate_handler _globalExceptionHandler SEQAN_UNUSED = std::set_terminate(globalExceptionHandler);
 
 #endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 
