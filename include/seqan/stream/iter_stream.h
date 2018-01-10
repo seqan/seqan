@@ -175,7 +175,7 @@ public:
             if (ofs == 0)
                 return;
 
-            if (IsSameType<TDirection, Input>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)
                 baseBuf()->underflow();
             else
                 baseBuf()->overflow();
@@ -191,12 +191,12 @@ public:
                 // if seek doesn't work manually skip characters (when reading)
                 if (res == typename TTraits::pos_type(typename TTraits::off_type(-1)))
                 {
-                    if (IsSameType<TDirection, Input>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)
                     {
                         for (; ofs != 0; --ofs)
                             baseBuf()->sbumpc();
                     }
-                    if (IsSameType<TDirection, Output>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Output>::VALUE)
                     {
                         for (; ofs != 0; --ofs)
                             baseBuf()->sputc('\0');

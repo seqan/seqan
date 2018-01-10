@@ -1552,7 +1552,7 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
     setLength(dpScoreMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(band)));
     setLength(dpTraceMatrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(band)));
 
-    if (IsSameType<TBandSwitch, BandOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TBandSwitch, BandOff>::VALUE)
     {
         setLength(dpScoreMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
         setLength(dpTraceMatrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);

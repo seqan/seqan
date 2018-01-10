@@ -257,7 +257,7 @@ void _computeTraceback(TTarget & target,
     typedef typename Size<TSequenceV>::Type TSizeSeqV;
     typedef typename TraceBitMap_<>::Type TTraceValue;
 
-    if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
         return;
 
     TSizeSeqH seqHSize = length(seqH);
@@ -283,7 +283,7 @@ void _computeTraceback(TTarget & target,
                                                           band, seqHSize, seqVSize);
 
     // Record trailing gaps if any.
-    if (IsSameType<TDPMatrixLocation, BandedChainFinalDPMatrix>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TDPMatrixLocation, BandedChainFinalDPMatrix>::VALUE)
     {
         if (tracebackCoordinator._currRow != seqVSize)
             _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
@@ -332,13 +332,13 @@ void _computeTraceback(TTarget & target,
         _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqHSize, seqVSize, band, dpProfile);
     }
 
-    if (IsSameType<TDPMatrixLocation, BandedChainInitialDPMatrix>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TDPMatrixLocation, BandedChainInitialDPMatrix>::VALUE)
     {
         TPosition currCol = coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL);
         TPosition currRow = coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL);
 
         // Correct the row position.
-        if (IsSameType<TBandFlag, BandOn>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TBandFlag, BandOn>::VALUE)
             if (upperDiagonal(band) > 0)
                 if (currCol < tracebackCoordinator._breakpoint1)
                     if (currCol < tracebackCoordinator._breakpoint2)

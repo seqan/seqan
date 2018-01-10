@@ -292,7 +292,7 @@ inline void _determineTrackingOptions(unsigned & res,
         scout._dpScoutStatePtr->_horizontalNextGridOrigin)
     {
         // Matches an initialization row.
-        if (IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>::VALUE)
         {
             // Matches the cells that have to be stored for initializing the next matrix horizontally.
             if (coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL) + traceMatrixNavigator._laneLeap ==
@@ -316,9 +316,9 @@ inline void _determineTrackingOptions(unsigned & res,
                 res |= BandedChainTracking::OPTION_STORE_INIT_COLUMN;
 
         // We are in the column that has to be tracked, if we are in the last cell.
-        if (IsSameType<TCellDescriptor, LastCell>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TCellDescriptor, LastCell>::VALUE)
         {
-            if (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
             {
                 if (IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE)
                     res |= BandedChainTracking::OPTION_IS_LAST_ROW;
@@ -331,18 +331,18 @@ inline void _determineTrackingOptions(unsigned & res,
 
         // We track the maximal score if we are in the final column
         // For the full column we need to check if we are beyond the initialization row.
-        if (IsSameType<typename TColumnDescriptor::TLocation, FullColumn>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TLocation, FullColumn>::VALUE)
         {
-            if (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
             {
-                if (IsSameType<TCellDescriptor, LastCell>::VALUE)
+                SEQAN_IF_CONSTEXPR (IsSameType<TCellDescriptor, LastCell>::VALUE)
                 {
                     res |= BandedChainTracking::OPTION_IS_LAST_COLUMN | BandedChainTracking::OPTION_IS_LAST_ROW;
                 }
                 else if (coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL) >=
                          scout._dpScoutStatePtr->_verticalNextGridOrigin)
                 {
-                    if (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
                     {
                         if (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE)
                             res |= BandedChainTracking::OPTION_IS_LAST_COLUMN;
@@ -356,15 +356,15 @@ inline void _determineTrackingOptions(unsigned & res,
         }
         else  // Banded version we track all scores - initialization row ends in first cell of final column
         {
-            if (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
             {
-                if (IsSameType<TCellDescriptor, LastCell>::VALUE)
+                SEQAN_IF_CONSTEXPR (IsSameType<TCellDescriptor, LastCell>::VALUE)
                 {
                     res |= BandedChainTracking::OPTION_IS_LAST_COLUMN | BandedChainTracking::OPTION_IS_LAST_ROW;
                 }
                 else
                 {
-                    if (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
                     {
                         if (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE)
                             res |= BandedChainTracking::OPTION_IS_LAST_COLUMN;
