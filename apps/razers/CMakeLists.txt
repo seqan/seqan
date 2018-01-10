@@ -12,6 +12,11 @@ message (STATUS "Configuring apps/razers")
 
 set (SEQAN_APP_VERSION "1.5.7")
 
+if (SEQAN_TRAVIS_BUILD)
+    message (STATUS "  Skipping build and test of razers on Travis CI.")
+    return ()
+endif (SEQAN_TRAVIS_BUILD)
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------

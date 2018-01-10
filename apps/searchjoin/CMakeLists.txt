@@ -12,6 +12,11 @@ message (STATUS "Configuring apps/searchjoin")
 
 set (SEQAN_APP_VERSION "0.5.7")
 
+if (SEQAN_TRAVIS_BUILD)
+    message (STATUS "  Skipping build and test of searchjoin on Travis CI.")
+    return ()
+endif (SEQAN_TRAVIS_BUILD)
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -30,19 +35,12 @@ endif ()
 include_directories (${SEQAN_INCLUDE_DIRS})
 
 # Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
+add_definitions (${SEQAN_DEFINITIONS} -DSEARCHJOIN_HUGEDB=TRUE)
 
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
-
-# Lightweight CI builds.
-if (NOT SEQAN_TRAVIS_BUILD)
-    add_definitions (-DSEARCHJOIN_HUGEDB=TRUE)
-else (NOT SEQAN_TRAVIS_BUILD)
-    message (STATUS "  Building searchjoin without huge db support on Travis CI.")
-endif (NOT SEQAN_TRAVIS_BUILD)
 
 # Update the list of file names below if you add source files to your application.
 add_executable (s4_search search.cpp finder.h db.h verifier.h writer.h)
