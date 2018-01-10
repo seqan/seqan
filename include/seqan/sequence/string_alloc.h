@@ -78,7 +78,9 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
 
-    template <typename TSource>
+    template <typename TSource,
+              typename Dummy = void,
+              typename = std::enable_if_t<std::is_convertible<typename Value<TSource>::Type,TValue>::value, Dummy> >
     String(TSource & source)
         : data_begin(0),
           data_end(0),
@@ -89,7 +91,9 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
 
-    template <typename TSource>
+    template <typename TSource,
+              typename Dummy = void,
+              typename = std::enable_if_t<std::is_convertible<typename Value<TSource>::Type, TValue>::value, Dummy> >
     String(TSource const & source)
         : data_begin(0),
           data_end(0),
@@ -140,7 +144,10 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
 
-    template <typename TSource, typename TSize>
+    template <typename TSource,
+              typename TSize,
+              typename Dummy = void,
+              typename = std::enable_if_t<std::is_convertible<typename Value<TSource>::Type, TValue>::value, Dummy> >
     String(TSource & source, TSize limit)
             : data_begin(0),
               data_end(0),
@@ -151,7 +158,10 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
 
-    template <typename TSource, typename TSize>
+    template <typename TSource,
+              typename TSize,
+              typename Dummy = void,
+              typename = std::enable_if_t<std::is_convertible<typename Value<TSource>::Type, TValue>::value, Dummy> >
     String(TSource const & source, TSize limit)
             : data_begin(0),
               data_end(0),
@@ -163,7 +173,9 @@ public:
     }
 
 
-    template <typename TSource>
+    template <typename TSource,
+              typename Dummy = void,
+              typename = std::enable_if_t<std::is_convertible<typename Value<TSource>::Type, TValue>::value, Dummy> >
     inline
     String & operator=(TSource const & source)
     {
