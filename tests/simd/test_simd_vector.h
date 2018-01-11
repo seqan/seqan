@@ -399,6 +399,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
 {
     using namespace seqan;
     using TSimdVector = typename TestFixture::TSimdVector;
+    using TSimdMaskVector = typename SimdMaskVector<TSimdVector>::Type;
     using TValue = typename TestFixture::TValue;
     using TBoolValue = decltype(trueValue<TSimdVector>());
     constexpr auto length = TestFixture::LENGTH;
@@ -409,7 +410,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
     TSimdVector a{0u}, b{0u};
     fillVectors(a, b);
 
-    auto c = cmpGt(a, b);
+    TSimdMaskVector c = cmpGt(a, b);
 
     for (auto i = 0; i < length; ++i)
     {

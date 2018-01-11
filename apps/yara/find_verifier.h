@@ -48,15 +48,15 @@ using namespace seqan;
 template <typename THaystack, typename TNeedle, typename TSpec>
 struct Verifier
 {
-    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
-    typedef String<GapAnchor<int> >                      TGapAnchors;
-    typedef AnchorGaps<TGapAnchors>                      TAnchorGaps;
-    typedef typename Size<THaystackInfix>::Type          TSize;
-    typedef typename Position<THaystackInfix>::Type      TPosition;
-    typedef TraceSegment_<TPosition, TSize>              TTraceSegment;
-    typedef String<TTraceSegment>                        TTrace;
-    typedef DPScoutState_<Default>                       TDPState;
-    typedef DPContext<int, AffineGaps>                   TDPContext;
+    typedef typename InfixOnValue<THaystack const>::Type                        THaystackInfix;
+    typedef String<GapAnchor<int> >                                             TGapAnchors;
+    typedef AnchorGaps<TGapAnchors>                                             TAnchorGaps;
+    typedef typename Size<THaystackInfix>::Type                                 TSize;
+    typedef typename Position<THaystackInfix>::Type                             TPosition;
+    typedef TraceSegment_<TPosition, TSize>                                     TTraceSegment;
+    typedef String<TTraceSegment>                                               TTrace;
+    typedef DPScoutState_<Default>                                              TDPState;
+    typedef DPContext<DPCell_<int, AffineGaps>, typename TraceBitMap_<>::Type>  TDPContext;
 
     // Thread-private data.
     TGapAnchors     contigAnchors;

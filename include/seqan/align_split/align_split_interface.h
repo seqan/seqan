@@ -98,12 +98,12 @@ template <typename TSpec>
 struct IsSplitAlignment_<SplitAlignment_<TSpec> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsSplitAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsSplitAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsSplitAlignment_<TAlgoSpec> {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsSplitAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsSplitAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsSplitAlignment_<TAlgoSpec> {};
 
 // ----------------------------------------------------------------------------
@@ -176,10 +176,12 @@ struct LastRowEnabled_<SplitAlignment_<TSpec>, LastCell, TColumnDescriptor>
 // Metafunction DPMetaColumn_
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, MetaColumnDescriptor<TColumnType, FullColumn> >
+template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy>,
+                     MetaColumnDescriptor<TColumnType, FullColumn> >
 {
-    typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag> TDPProfile;
+    typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy> TDPProfile;
     typedef typename IsLocalAlignment_<TDPProfile>::Type TIsLocal;
 
     // If InitialColumn -> Zero, Vertical | Zero, Vertical | Zero  // Within the algorithm we need to define the first row as only one cell if it is no initial column
@@ -201,8 +203,10 @@ struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, 
 };
 
 
-template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, MetaColumnDescriptor<TColumnType, PartialColumnTop> >
+template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy>,
+                     MetaColumnDescriptor<TColumnType, PartialColumnTop> >
 {
     typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag> TDPProfile;
     typedef typename IsLocalAlignment_<TDPProfile>::Type TIsLocal;
@@ -227,10 +231,12 @@ struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, 
     typedef DPMetaCell_<TRecursionTypeLastCell_, True> TLastCell_;
 };
 
-template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, MetaColumnDescriptor<TColumnType, PartialColumnMiddle> >
+template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy>,
+                     MetaColumnDescriptor<TColumnType, PartialColumnMiddle> >
 {
-    typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag> TDPProfile;
+    typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy> TDPProfile;
     typedef typename IsLocalAlignment_<TDPProfile>::Type TIsLocal;
 
     // If InitialColumn -> Zero, Vertical | Zero, Vertical | Zero  // Within the algorithm we need to define the first row as only one cell if it is no initial column
@@ -250,10 +256,12 @@ struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, 
     typedef DPMetaCell_<TRecursionTypeLastCell_, True> TLastCell_;
 };
 
-template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
+template <typename TSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy>,
+                     MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
 {
-    typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag> TDPProfile;
+    typedef DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag, TExecPolicy> TDPProfile;
     typedef typename IsLocalAlignment_<TDPProfile>::Type TIsLocal;
 
     // If InitialColumn -> Zero, Vertical | Zero, Vertical | Zero  // Within the algorithm we need to define the first row as only one cell if it is no initial column
@@ -280,7 +288,7 @@ struct DPMetaColumn_<DPProfile_<SplitAlignment_<TSpec>, TGapCosts, TTraceFlag>, 
 template <typename TFreeEndGaps, typename TGapCosts, typename TTraceSwitch>
 struct SetupAlignmentProfile_<SplitAlignmentAlgo, TFreeEndGaps, TGapCosts, TTraceSwitch>
 {
-    typedef DPProfile_<SplitAlignment_<TFreeEndGaps>, TGapCosts, TTraceSwitch> Type;
+    typedef DPProfile_<SplitAlignment_<TFreeEndGaps>, TGapCosts, TTraceSwitch, Serial> Type;
 };
 
 // ============================================================================
@@ -330,7 +338,7 @@ void _computeSplitTrace(TTarget & target,
 {
     typedef typename SetupAlignmentProfile_<TDPType, TFreeEndGaps, LinearGaps, TTraceConfig>::Type TDPProfile;
 
-    typedef typename GetDPTraceMatrix<TDPContext const>::Type TDPTraceMatrixHost;
+    using TDPTraceMatrixHost = std::remove_reference_t<decltype(getDpTraceMatrix(dpContext))>;
     typedef typename Value<TDPTraceMatrixHost>::Type TTraceValue;
 
     typedef DPMatrix_<TTraceValue, FullDPMatrix> TDPTraceMatrix;
@@ -353,8 +361,7 @@ void _computeSplitTrace(TTarget & target,
     setHost(matrix, getDpTraceMatrix(dpContext));
     resize(matrix);
     SEQAN_ASSERT_EQ(length(getDpTraceMatrix(dpContext)), length(matrix));
-    TDPTraceMatrixNavigator navi;
-    _init(navi, matrix, config._band);
+    TDPTraceMatrixNavigator navi{matrix, config._band};
     _computeTraceback(target, navi, matPos, seqH, seqV, config._band, TDPProfile());
 }
 
@@ -387,7 +394,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
 
     // Compute trace and split score sequence for the left alignment.
     // We actually need to first compute the scores, than trace from the choosen split position.
-    DPContext<TScoreValue, TGapModel> dpContextL;
+    DPContext<DPCell_<TScoreValue, TGapModel>, typename TraceBitMap_<TScoreValue>::Type> dpContextL;
     DPScoutState_<SplitAlignmentScout> scoutStateL;
     resize(scoutStateL.splitScore, length(source(gapsContigL)) + 1, std::numeric_limits<TScoreValue>::min() / 2);
     resize(scoutStateL.splitPos, length(scoutStateL.splitScore));
@@ -400,7 +407,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     ModifiedString<TReadSeqR, ModReverse> revReadR(source(gapsReadR));
 
     // Compute trace and split score sequence for the right alignment.
-    DPContext<TScoreValue, TGapModel> dpContextR;
+    DPContext<DPCell_<TScoreValue, TGapModel>, typename TraceBitMap_<TScoreValue>::Type> dpContextR;
     DPScoutState_<SplitAlignmentScout> scoutStateR;
     resize(scoutStateR.splitScore, length(source(gapsContigR)) + 1, std::numeric_limits<TScoreValue>::min() / 2);
     resize(scoutStateR.splitPos, length(scoutStateR.splitScore));

@@ -157,13 +157,10 @@ _fillVector(TSimdVector & vector,
             SimdParams_<16, 2> const &)
 {
     // reverse argument list 0, 1 -> 1, 0
-#if defined(COMPILER_LINTEL)
     // NOTE(marehr): Intel linux fails to reverse argument list and only
     // _mm_set_epi64x has no reverse equivalent
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<1>(args), std::get<0>(args)));
-#else
+    // NOTE(rrahn): For g++-4.9 the set_epi function is a macro, which does not work with parameter pack expansion.
     vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
-#endif
 }
 
 // --------------------------------------------------------------------------
@@ -1035,7 +1032,8 @@ template <typename TSimdVector>
 SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, int)
 inline _testAllZeros(TSimdVector const & vector, TSimdVector const & mask, SimdParams_<16>)
 {
-    return _mm_testz_si128(vector, mask);
+    return _mm_testz_si128(SEQAN_VECTOR_CAST_(const __m128i &, vector),
+                           SEQAN_VECTOR_CAST_(const __m128i &, mask));
 }
 
 // --------------------------------------------------------------------------

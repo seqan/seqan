@@ -72,7 +72,13 @@ template <typename TScoreVec, typename TScore>
 class Score<TScoreVec, ScoreSimdWrapper<TScore> >
 {
 public:
+    using TVecValue = typename Value<TScoreVec>::Type;
     using TBaseScoreSpec = typename Spec<TScore>::Type;
+    using TBaseScore = Score<typename IfC<sizeof(TVecValue) <= 2,
+                                          int32_t,
+                                          typename IfC<sizeof(TVecValue) == 8, int64_t, TVecValue>::Type
+                                         >::Type,
+                             TBaseScoreSpec>;
 
     // We can be either a SimpleScore or a ScoreMatrix.
     TScoreVec data_match        = createVector<TScoreVec>(0);
@@ -80,7 +86,7 @@ public:
     TScoreVec data_gap_extend   = createVector<TScoreVec>(-1);
     TScoreVec data_gap_open     = createVector<TScoreVec>(-1);
 
-    TScore const * _baseScorePtr;   // Only needed for the ScoreMatrix data table.
+    TBaseScore _baseScore;   // Only needed for the ScoreMatrix data table.
 
     // Default Constructor.
     Score()
@@ -93,8 +99,7 @@ public:
             data_match(createVector<TScoreVec>(scoreMatch(pScore))),
             data_mismatch(createVector<TScoreVec>(scoreMismatch(pScore))),
             data_gap_extend(createVector<TScoreVec>(scoreGapExtend(pScore))),
-            data_gap_open(createVector<TScoreVec>(scoreGapOpen(pScore))),
-            _baseScorePtr(nullptr)
+            data_gap_open(createVector<TScoreVec>(scoreGapOpen(pScore)))
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -103,11 +108,12 @@ public:
     Score(Score<TScoreVal2, TScoreSpec2> const & pScore,
           SEQAN_CTOR_ENABLE_IF(And<IsScoreMatrix_<TScoreSpec2>, IsSameType<TScoreSpec2, TBaseScoreSpec> >)) :
             data_gap_extend(createVector<TScoreVec>(scoreGapExtend(pScore))),
-            data_gap_open(createVector<TScoreVec>(scoreGapOpen(pScore))),
-            _baseScorePtr(&pScore)
+            data_gap_open(createVector<TScoreVec>(scoreGapOpen(pScore)))
     {
         ignoreUnusedVariableWarning(dummy);
     }
+
+    //TODO(rrahn): implement the assignment operator.
 };
 
 // ============================================================================
@@ -117,6 +123,24 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function baseScore();
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TScore>
+inline auto &
+underlying(Score<TValue, ScoreSimdWrapper<TScore> > & me)
+{
+    return me._baseScore;
+}
+
+template <typename TValue, typename TScore>
+inline auto const &
+underlying(Score<TValue, ScoreSimdWrapper<TScore> > const & me)
+{
+    return me._baseScore;
+}
 
 // ----------------------------------------------------------------------------
 // Function score(); SimpleScore Wrapper
@@ -141,8 +165,7 @@ template <typename TValue, typename TScore, typename TVal1, typename TVal2>
 inline SEQAN_FUNC_ENABLE_IF(IsScoreMatrix_<TScore>, TValue)
 score(Score<TValue, ScoreSimdWrapper<TScore> > const & sc, TVal1 const & val1, TVal2 const & val2)
 {
-    SEQAN_ASSERT(sc._baseScorePtr != nullptr);
-    return gather(&sc._baseScorePtr->data_tab[0], val1 + val2);
+    return gather(&sc._baseScore.data_tab[0], val1 + val2);
 }
 
 }

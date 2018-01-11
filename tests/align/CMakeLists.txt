@@ -68,7 +68,8 @@ if (ALIGN_SIMD_TEST)
     # Add executable for simd tests.
     add_executable (test_align_simd
                     test_align_simd.cpp
-                    test_align_simd.h)
+                    test_align_simd.h
+                    test_mock.h)
 
     # Add dependencies found by find_package (SeqAn).
     target_link_libraries (test_align_simd ${SEQAN_LIBRARIES})

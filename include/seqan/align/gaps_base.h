@@ -143,6 +143,12 @@ typedef Tag<RightOfViewPos_> RightOfViewPos;
 template <typename TSequence, typename TSpec = ArrayGaps>
 class Gaps;
 
+template <typename TSequence, typename TSpec>
+SEQAN_CONCEPT_IMPL((Gaps<TSequence, TSpec>), (AlignedSequenceConcept));
+
+template <typename TSequence, typename TSpec>
+SEQAN_CONCEPT_IMPL((Gaps<TSequence, TSpec> const), (AlignedSequenceConcept));
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
