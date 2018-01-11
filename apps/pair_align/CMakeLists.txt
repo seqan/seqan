@@ -12,6 +12,11 @@ message (STATUS "Configuring apps/pair_align")
 
 set (SEQAN_APP_VERSION "1.3.7")
 
+if (SEQAN_TRAVIS_BUILD)
+    message (STATUS "  Skipping build and test of pair_align on Travis CI.")
+    return ()
+endif (SEQAN_TRAVIS_BUILD)
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
