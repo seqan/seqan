@@ -177,7 +177,11 @@ struct ParallelAlignmentExecutor
             auto it = begin(zipCont, Standard()) + splitter[job];
             auto itEnd = begin(zipCont, Standard()) + splitter[job + 1];
 
-            std::for_each(it, itEnd, [&](auto && seqPair)
+            // NOTE(marehr): auto && seqPair does not work, thus declaring the
+            // type explicitly, s.t. <=icpc 18.0.1 can compile the code (ticket
+            // #03204483)
+            using TSeqPair = decltype(*it);
+            std::for_each(it, itEnd, [&](TSeqPair && seqPair)
             {
                 std::get<2>(seqPair) = kernel(std::get<0>(seqPair), std::get<1>(seqPair), std::forward<TArgs>(args)...);
             });

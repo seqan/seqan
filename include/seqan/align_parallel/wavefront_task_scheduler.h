@@ -76,8 +76,7 @@ public:
 
         std::function<void()> _dummy = [] ()
         {  // TODO(rrahn): Could throw exception to signal something went terribly wrong.
-            SEQAN_ASSERT_FAIL("Trying to exceute empty wavefront task in thread: ",
-                              std::this_thread::get_id());
+            SEQAN_ASSERT_FAIL("Trying to exceute empty wavefront task in a thread");
         };
         TWrapper task{_dummy};
 

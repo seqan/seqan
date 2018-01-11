@@ -85,7 +85,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
     {
         // Now how can we spawn a test to the underlying scheduler.
         auto & _taskScheduler = taskScheduler(scheduler);
-        using TInnerTask = SchedulerTraits<typename std::decay<decltype(_taskScheduler)>::type>::TTask;
+        using TInnerTask = typename SchedulerTraits<typename std::decay<decltype(_taskScheduler)>::type>::TTask;
 
         bool eventState{false};
         std::mutex mutexEvent;
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
     {
         // Now how can we spawn a test to the underlying scheduler.
         auto& _taskScheduler = taskScheduler(scheduler);
-        using TInnerTask = SchedulerTraits<typename std::decay<decltype(_taskScheduler)>::type>::TTask;
+        using TInnerTask = typename SchedulerTraits<typename std::decay<decltype(_taskScheduler)>::type>::TTask;
 
         test_align_parallel::RaiiEvent event;
         TInnerTask task = [&]()
