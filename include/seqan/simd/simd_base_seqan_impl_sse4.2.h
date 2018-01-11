@@ -160,7 +160,7 @@ _fillVector(TSimdVector & vector,
     // NOTE(marehr): Intel linux fails to reverse argument list and only
     // _mm_set_epi64x has no reverse equivalent
     // NOTE(rrahn): For g++-4.9 the set_epi function is a macro, which does not work with parameter pack expansion.
-    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<1>(args), std::get<0>(args)));
+    vector = SEQAN_VECTOR_CAST_(TSimdVector, _mm_set_epi64x(std::get<sizeof...(INDICES) - 1 - INDICES>(args)...));
 }
 
 // --------------------------------------------------------------------------
