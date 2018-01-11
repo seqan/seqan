@@ -18,6 +18,11 @@ if [ "$(echo ${CXX} | cut -c1-5)" = "clang" ]; then
   export CXXFLAGS="${CXXFLAGS} -Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
 fi
 
+# compile with c++-17 if g++-7 is used.
+if [ "$(echo ${CXX})" = "g++-7" ]; then
+  export CXXFLAGS="${CXXFLAGS} -std=c++17"
+fi
+
 # Switch version check default to OFF to prevent checks during app tests
 CXXFLAGS="${CXXFLAGS} -DSEQAN_VERSION_CHECK_OPT_IN=YES"
 

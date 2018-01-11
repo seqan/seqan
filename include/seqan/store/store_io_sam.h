@@ -893,7 +893,7 @@ setPrimaryMatch(BamAlignmentRecord & record,
         record.mapQ = 255;
 
 //    // Fill CIGAR using aligned read.
-//    if (!IsSameType<TAlignFunctor, Nothing>::VALUE)
+//    SEQAN_IF_CONSTEXPR (!IsSameType<TAlignFunctor, Nothing>::VALUE)
 //        getCigarString(record.cigar, row(align, 0), row(align, 1));
 
     // Retrieve number of errors from quality store.

@@ -80,7 +80,7 @@ namespace seqan
         TDir const &dir = indexDir(index);
         TShape &shape = indexShape(index);
 
-        if (IsSameType<TBucketMap, Nothing>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TBucketMap, Nothing>::VALUE)
         {
             // hashUpper and patterns shorter than the shape can only be used for
             // direct addressing q-gram indices

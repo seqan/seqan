@@ -85,6 +85,14 @@ include(CheckIncludeFileCXX)
 include(CheckCXXSourceCompiles)
 
 # ----------------------------------------------------------------------------
+# Set CMAKE policies.
+# ----------------------------------------------------------------------------
+
+if (POLICY CMP0054)  # Disables auto-dereferencing of variables in quoted statements
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
+# ----------------------------------------------------------------------------
 # Define Constants.
 # ----------------------------------------------------------------------------
 
@@ -158,9 +166,9 @@ elseif (COMPILER_CLANG)
 
 elseif (COMPILER_LINTEL OR COMPILER_WINTEL)
 
-    # require at least icpc 16.0.2
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
-        message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 16.0.2! Anything below is untested.")
+    # require at least icpc 17.0.0
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.0)
+        message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 17.0.0! Anything below is untested.")
     endif ()
 
 elseif (COMPILER_MSVC)

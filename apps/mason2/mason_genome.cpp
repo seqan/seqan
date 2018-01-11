@@ -115,7 +115,7 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-file", "Output file.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "FILE"));
-    setValidValues(parser, "out-file", "fa fasta");
+    setValidValues(parser, "out-file", seqan::SeqFileOut::getFileExtensions());
     setRequired(parser, "out-file");
 
     // Add Examples Section.

@@ -502,6 +502,38 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_gaps)
 
         SEQAN_ASSERT_NOT(nextLocalAlignment(gapsH, gapsV, enumerator));
     }
+
+    // Test scoring matrix
+    {
+        std::stringstream ssH, ssV;
+
+        String<AminoAcid> strH("IGYELAPIPHTRTMDDFGNWWWKKWIHDDELNYFGTQLLIWHLQEKEGEQ");
+        String<AminoAcid> strV("KHSDQGQIALLIHNTLQDWRPKVECDSPRTMIRRDFDDPQLAPPPHTNHRGNM");
+
+        Gaps<String<AminoAcid>, ArrayGaps> gapsH(strH);
+        Gaps<String<AminoAcid>, ArrayGaps> gapsV(strV);
+
+        Blosum62 scoringScheme;
+        int cutoff =  40;
+
+        LocalAlignmentEnumerator<Blosum62, Banded> enumerator(scoringScheme, -20, 20, cutoff);
+
+        SEQAN_ASSERT(nextLocalAlignment(gapsH, gapsV, enumerator));
+        SEQAN_ASSERT_EQ(getScore(enumerator), 69);
+        ssH.clear(); ssH.str(""); ssH << gapsH;
+        SEQAN_ASSERT_EQ(ssH.str(), "GYELAP--IPHTRTMDDFGNWWWK-KWIH-DD-E--L--NYF-GTQLLIW---HLQEKEG");
+        ssV.clear(); ssV.str(""); ssV << gapsV;
+        SEQAN_ASSERT_EQ(ssV.str(), "G-QIA-LLI-H-NTLQD-----WRPK-VECDSPRTMIRRD-FDDPQ-LA-PPPHTNHR-G");
+
+        SEQAN_ASSERT(nextLocalAlignment(gapsH, gapsV, enumerator));
+        SEQAN_ASSERT_EQ(getScore(enumerator), 51);
+        ssH.clear(); ssH.str(""); ssH << gapsH;
+        SEQAN_ASSERT_EQ(ssH.str(), "IGYE-L---AP-I----PHTRTM--DDFGNWWWKKWIHDD-EL------NYF-GTQL");
+        ssV.clear(); ssV.str(""); ssV << gapsV;
+        SEQAN_ASSERT(ssV.str() == "I-HNTLQDWRPKVECDSP--RTMIRRDF----------DDPQLAPPPHTNH-RG-NM");
+
+        SEQAN_ASSERT_NOT(nextLocalAlignment(gapsH, gapsV, enumerator));
+    }
 }
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_fragment)

@@ -710,7 +710,7 @@ public:
     {
         if (isNearN(seq, pos))
             return false;  // No SNP next to an N.
-        
+
         // We simulate an alternative base for each haplotype.
 
         seqan::Dna5 from = seq[pos];
@@ -1575,7 +1575,7 @@ public:
 
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
-        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<INV>";
         vcfRecord.filter = "PASS";
@@ -1613,7 +1613,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
-        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         vcfRecord.filter = "PASS";
         std::stringstream ss;
         ss << "SVTYPE=DUP;SVLEN=" << svRecord.size << ";END=" << svRecord.pos + svRecord.size
@@ -1814,12 +1814,12 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "Path to load original methylation levels from.  "
                                             "Methylation levels are simulated if omitted.",
                                             seqan::ArgParseOption::INPUT_FILE, "FILE"));
-    setValidValues(parser, "meth-fasta-in", "fa fasta");
+    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "Path to write methylation levels to as FASTA.  "
                                             "Only written if \\fB-of\\fP/\\fB--out-fasta\\fP is given.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "FILE"));
-    setValidValues(parser, "meth-fasta-out", "fa fasta");
+    setValidValues(parser, "meth-fasta-out", seqan::SeqFileOut::getFileExtensions());
 
 
     // ----------------------------------------------------------------------

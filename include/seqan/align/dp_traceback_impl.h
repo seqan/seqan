@@ -142,13 +142,13 @@ _hasReachedEnd(TracebackCoordinator_<TPosition> const & coordinator)
 
 template <typename TPosition, typename TBandFlag, typename TSizeH, typename TSizeV>
 inline void
-_initTracebackCoordinator(TracebackCoordinator_<TPosition> & coordinator,
-                          DPBandConfig<TBandFlag> const & band,
-                          TSizeH seqHSize,
-                          TSizeV seqVSize)
+_initTracebackCoordinator(SEQAN_UNUSED TracebackCoordinator_<TPosition> & coordinator,
+                          SEQAN_UNUSED DPBandConfig<TBandFlag> const & band,
+                          SEQAN_UNUSED TSizeH seqHSize,
+                          SEQAN_UNUSED TSizeV seqVSize)
 {
     typedef typename Position<DPBandConfig<TBandFlag> >::Type TBandPosition;
-    if (IsSameType<TBandFlag, BandOn>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TBandFlag, BandOn>::VALUE)
     {
         // Adapt the current column value when the lower diagonal is positive (shift right in horizontal direction).
         if (lowerDiagonal(band) >= 0)
@@ -237,7 +237,7 @@ _doTracebackGoVertical(TTarget & target,
         fragmentLength = 0;
     }
     // We are in a vertical gap. So continue after we reach the end of the vertical gap.
-    if (IsSameType<TGapCosts, AffineGaps>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TGapCosts, AffineGaps>::VALUE)
     {
         while ((!(traceValue & TraceBitMap_<>::VERTICAL_OPEN) || (traceValue & TraceBitMap_<>::VERTICAL)) &&
                tracebackCoordinator._currRow != 1)
@@ -315,7 +315,7 @@ _doTracebackGoHorizontal(TTarget & target,
         lastTraceValue = TraceBitMap_<>::HORIZONTAL;
         fragmentLength = 0;
     }
-    if (IsSameType<TGapCosts, AffineGaps>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TGapCosts, AffineGaps>::VALUE)
     {
         while ((!(traceValue & TraceBitMap_<>::HORIZONTAL_OPEN) || (traceValue & TraceBitMap_<>::HORIZONTAL)) &&
                tracebackCoordinator._currColumn != 1)
@@ -509,7 +509,7 @@ void _computeTraceback(TTarget & target,
     typedef typename Size<TTarget>::Type TSize;
     typedef typename Position<TDPTraceMatrixNavigator>::Type TPosition;
 
-    if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
         return;
 
     // Determine whether or not we place gaps to the left.

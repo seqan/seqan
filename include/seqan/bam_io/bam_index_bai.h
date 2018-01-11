@@ -440,6 +440,7 @@ open(BamIndex<Bai> & index, char const * filename)
     fin.read(reinterpret_cast<char *>(&nRef), 4);
     if (!fin.good())
         return false;
+    enforceLittleEndian(nRef);
 
     resize(index._linearIndices, nRef);
     resize(index._binIndices, nRef);
@@ -451,6 +452,7 @@ open(BamIndex<Bai> & index, char const * filename)
         fin.read(reinterpret_cast<char *>(&nBin), 4);
         if (!fin.good())
             return false;
+        enforceLittleEndian(nBin);
         index._binIndices[i].clear();
         BaiBamIndexBinData_ data;
         for (int j = 0; j < nBin; ++j)  // For each bin.
@@ -461,11 +463,13 @@ open(BamIndex<Bai> & index, char const * filename)
             fin.read(reinterpret_cast<char *>(&bin), 4);
             if (!fin.good())
                 return false;
+            enforceLittleEndian(bin);
 
             int32_t nChunk = 0;
             fin.read(reinterpret_cast<char *>(&nChunk), 4);
             if (!fin.good())
                 return false;
+            enforceLittleEndian(nChunk);
             reserve(data.chunkBegEnds, nChunk);
             for (int k = 0; k < nChunk; ++k)  // For each chunk;
             {
@@ -475,6 +479,8 @@ open(BamIndex<Bai> & index, char const * filename)
                 fin.read(reinterpret_cast<char *>(&chunkEnd), 8);
                 if (!fin.good())
                     return false;
+                enforceLittleEndian(chunkBeg);
+                enforceLittleEndian(chunkEnd);
                 appendValue(data.chunkBegEnds, Pair<uint64_t>(chunkBeg, chunkEnd));
             }
 
@@ -487,6 +493,7 @@ open(BamIndex<Bai> & index, char const * filename)
         fin.read(reinterpret_cast<char *>(&nIntv), 4);
         if (!fin.good())
             return false;
+        enforceLittleEndian(nIntv);
         clear(index._linearIndices[i]);
         reserve(index._linearIndices[i], nIntv);
         for (int j = 0; j < nIntv; ++j)
@@ -495,6 +502,7 @@ open(BamIndex<Bai> & index, char const * filename)
             fin.read(reinterpret_cast<char *>(&ioffset), 8);
             if (!fin.good())
                 return false;
+            enforceLittleEndian(ioffset);
             appendValue(index._linearIndices[i], ioffset);
         }
     }
@@ -510,6 +518,7 @@ open(BamIndex<Bai> & index, char const * filename)
         fin.clear();
         nNoCoord = 0;
     }
+    enforceLittleEndian(nNoCoord);
     index._unalignedCount = nNoCoord;
 
     return true;
@@ -549,6 +558,7 @@ inline bool save(BamIndex<Bai> const & index, char const * baiFilename)
     // Write header.
     out.write("BAI\1", 4);
     int32_t numRefSeqs = length(index._binIndices);
+    enforceLittleEndian(numRefSeqs);
     out.write(reinterpret_cast<char *>(&numRefSeqs), 4);
 
     // Write out indices.
@@ -556,42 +566,59 @@ inline bool save(BamIndex<Bai> const & index, char const * baiFilename)
     typedef TBamIndex::TBinIndex_ const        TBinIndex;
     typedef TBinIndex::const_iterator          TBinIndexIter;
     typedef TBamIndex::TLinearIndex_           TLinearIndex;
-    for (int i = 0; i < numRefSeqs; ++i)
+    for (unsigned i = 0; i < length(index._binIndices); ++i)
     {
         TBinIndex const & binIndex = index._binIndices[i];
         TLinearIndex const & linearIndex = index._linearIndices[i];
 
         // Write out binning index.
         int32_t numBins = binIndex.size();
+        enforceLittleEndian(numBins);
         out.write(reinterpret_cast<char *>(&numBins), 4);
         for (TBinIndexIter itB = binIndex.begin(), itBEnd = binIndex.end(); itB != itBEnd; ++itB)
         {
             // Write out bin id.
-            out.write(reinterpret_cast<char const *>(&itB->first), 4);
+            uint32_t tmp = itB->first;
+            enforceLittleEndian(tmp);
+            out.write(reinterpret_cast<char const *>(&tmp), 4);
             // Write out number of chunks.
             uint32_t numChunks = length(itB->second.chunkBegEnds);
+            enforceLittleEndian(numChunks);
             out.write(reinterpret_cast<char *>(&numChunks), 4);
             // Write out all chunks.
             typedef Iterator<String<Pair<uint64_t> > const, Rooted>::Type TChunkIter;
             for (TChunkIter itC = begin(itB->second.chunkBegEnds); !atEnd(itC); goNext(itC))
             {
-                out.write(reinterpret_cast<char const *>(&itC->i1), 8);
-                out.write(reinterpret_cast<char const *>(&itC->i2), 8);
+                uint64_t tmp1 = itC->i1;
+                enforceLittleEndian(tmp1);
+                uint64_t tmp2 = itC->i2;
+                enforceLittleEndian(tmp2);
+                out.write(reinterpret_cast<char const *>(&tmp1), 8);
+                out.write(reinterpret_cast<char const *>(&tmp2), 8);
             }
         }
 
         // Write out linear index.
         int32_t numIntervals = length(linearIndex);
+        enforceLittleEndian(numIntervals);
         out.write(reinterpret_cast<char *>(&numIntervals), 4);
         typedef Iterator<String<uint64_t> const, Rooted>::Type TLinearIndexIter;
         for (TLinearIndexIter it = begin(linearIndex, Rooted()); !atEnd(it); goNext(it))
-            out.write(reinterpret_cast<char const *>(&*it), 8);
+        {
+            uint64_t tmp = *it;
+            enforceLittleEndian(tmp);
+            out.write(reinterpret_cast<char const *>(&tmp), 8);
+        }
     }
 
     // Write the number of unaligned reads if set.
     //std::cerr << "UNALIGNED\t" << index._unalignedCount << std::endl;
     if (index._unalignedCount != std::numeric_limits<uint64_t>::max())
-        out.write(reinterpret_cast<char const *>(&index._unalignedCount), 8);
+    {
+        uint64_t tmp = index._unalignedCount;
+        enforceLittleEndian(tmp);
+        out.write(reinterpret_cast<char const *>(&tmp), 8);
+    }
 
     return out.good();  // false on error, true on success.
 }

@@ -343,7 +343,7 @@ struct Fibre< Index<TText, TSpec>, FibreCounts> {
     typename Size< TText >::Type,
     typename Size< Index<TText, TSpec> >::Type
     >,
-    typename StringSpec< Index<TText, TSpec> >::Type
+    typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type
     > Type;
 };
 

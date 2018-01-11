@@ -347,7 +347,7 @@ void _computeSplitTrace(TTarget & target,
     TDPTraceMatrix matrix;
     setLength(matrix, +DPMatrixDimension_::HORIZONTAL, length(seqH) + 1 - std::max(0, lowerDiagonal(config._band)));
 
-    if (IsSameType<TBandSwitch, BandOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TBandSwitch, BandOff>::VALUE)
     {
         setLength(matrix, +DPMatrixDimension_::VERTICAL, length(seqV) + 1);
     }

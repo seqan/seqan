@@ -141,6 +141,11 @@ add_executable (test_find_backtracking
                 test_find_base.h)
 target_link_libraries (test_find_backtracking ${SEQAN_LIBRARIES})
 
+add_executable (test_find2_index_approx
+                test_find2_index_approx.cpp
+                test_find2_index_approx.h)
+target_link_libraries (test_find2_index_approx ${SEQAN_LIBRARIES})
+
 add_executable (test_index_repeats
                test_index_repeats.cpp
                test_index_repeats.h)
@@ -180,4 +185,3 @@ add_test (NAME test_test_index_view COMMAND $<TARGET_FILE:test_index_view>)
 add_test (NAME test_test_index_finder COMMAND $<TARGET_FILE:test_index_finder>)
 add_test (NAME test_test_find_backtracking COMMAND $<TARGET_FILE:test_find_backtracking>)
 add_test (NAME test_test_index_repeats COMMAND $<TARGET_FILE:test_index_repeats>)
-

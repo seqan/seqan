@@ -444,6 +444,13 @@ public:
         std::fill_n(out, _layout.leftPadding, ' ');
         stream << _toText(listItem._term);
         unsigned pos = _layout.leftPadding + length(listItem._term);
+
+        if (empty(listItem._description))
+        {
+            stream << '\n';
+            return;
+        }
+
         if (pos + _layout.centerPadding > _layout.rightColumnTab)
         {
             stream << '\n';

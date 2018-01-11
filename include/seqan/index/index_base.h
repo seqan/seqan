@@ -218,7 +218,7 @@ SEQAN_CONCEPT_REFINE(StringTrieConcept, (TIndex), (StringIndexConcept)) {};
  */
 
     template <typename TObject>
-    struct [[deprecated("Deprecated in favor of StringSpec.")]] DefaultIndexStringSpec : StringSpec<TObject> {};
+    struct DefaultIndexStringSpec : StringSpec<TObject> {};
 
 
 //////////////////////////////////////////////////////////////////////////////

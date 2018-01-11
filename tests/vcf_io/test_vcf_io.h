@@ -118,13 +118,13 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 
     seqan::String<seqan::VcfRecord> records;
     seqan::VcfRecord record;
-    for (unsigned i = 0; i < 3; ++i)
+    for (unsigned i = 0; i < 5; ++i)
     {
         readRecord(record, vcfIOContext, iter, seqan::Vcf());
         appendValue(records, record);
     }
 
-    SEQAN_ASSERT_EQ(length(records), 3u);
+    SEQAN_ASSERT_EQ(length(records), 5u);
 
     SEQAN_ASSERT_EQ(records[0].rID, 0);
     SEQAN_ASSERT_EQ(records[0].beginPos, 14369);
@@ -159,11 +159,35 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
 
+    // the next 2 recodrs are valid since vcf v4.2
+    SEQAN_ASSERT_EQ(records[3].rID, 0);
+    SEQAN_ASSERT_EQ(records[3].beginPos, 1110695);
+    SEQAN_ASSERT_EQ(records[3].id, "rs6040355");
+    SEQAN_ASSERT_EQ(records[3].ref, "A");
+    SEQAN_ASSERT_EQ(records[3].alt, "G,T");
+    SEQAN_ASSERT_EQ(records[3].qual, 67);
+    SEQAN_ASSERT_EQ(records[3].filter, "PASS");
+    SEQAN_ASSERT_EQ(records[3].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
+    SEQAN_ASSERT_EQ(records[3].format, ""); // empty formats are accepted since v4.2
+    SEQAN_ASSERT_EQ(length(records[3].genotypeInfos), 3u);
+
+    SEQAN_ASSERT_EQ(records[4].rID, 0);
+    SEQAN_ASSERT_EQ(records[4].beginPos, 1110695);
+    SEQAN_ASSERT_EQ(records[4].id, "rs6040355");
+    SEQAN_ASSERT_EQ(records[4].ref, "A");
+    SEQAN_ASSERT_EQ(records[4].alt, "G,T");
+    SEQAN_ASSERT_EQ(records[4].qual, 67);
+    SEQAN_ASSERT_EQ(records[4].filter, "PASS");
+    SEQAN_ASSERT_EQ(records[4].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
+    SEQAN_ASSERT_EQ(records[4].format, ""); // empty formats are accepted since v4.2
+    SEQAN_ASSERT_EQ(length(records[4].genotypeInfos), 3u);
+
+    // the next 18 records are invalid and readRecord should throw ParseError
+    // continuing to read after EOF file should also result in ParseError
     for (unsigned i = 0; i < 25; ++i)
     {
         SEQAN_TEST_EXCEPTION(seqan::ParseError,
                              seqan::readRecord(record, vcfIOContext, iter, seqan::Vcf()));
-        seqan::skipLine(iter);
     }
 }
 

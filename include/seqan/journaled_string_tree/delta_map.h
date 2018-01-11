@@ -844,7 +844,7 @@ erase(DeltaMap<TConfig, TSpec> & deltaMap,
     for (auto it = itRange.i1; it != itRange.i2; ++it)
     {
         // Find potential right end of this delta.
-        if (!IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
+        SEQAN_IF_CONSTEXPR (!IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
         {
             auto itR = impl::find(deltaMap,
                                   deltaPos + deletionSize(deltaMap._deltaStore, getDeltaRecord(*it).i2, TDeltaType()) - 1,

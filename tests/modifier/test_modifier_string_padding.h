@@ -181,4 +181,28 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_iterator)
     SEQAN_ASSERT_EQ(*(it - 3), seq[12]);
 }
 
+SEQAN_DEFINE_TEST(test_modified_string_padding_defect_2190)
+{
+    using namespace seqan;
+
+    DnaString seq = "ACGTGGATAGCATCG";
+    auto seqInf = infix(seq, 0, length(seq));
+
+    auto test_const = [](auto const & modifier)
+    {
+        // using TRef = typename Reference<decltype(modifier)>::Type;
+        auto x = value(modifier, 1);
+        SEQAN_ASSERT_EQ(x, 'C');
+    };
+    { // Test working case, when reference of const modifier gives back a const reference to the value
+        ModifiedString<decltype(seq), ModPadding> modString(seq);
+        test_const(modString);
+    }
+
+    {  // Test defect, when reference of const modifier gives back a non-const reference to the value
+        ModifiedString<decltype(seqInf), ModPadding> modString(seqInf);
+        test_const(modString);
+    }
+}
+
 #endif  // #ifndef TESTS_MODIFIER_MODIFIER_STRING_PADDING_H_

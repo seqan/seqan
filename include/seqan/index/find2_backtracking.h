@@ -265,7 +265,7 @@ _updateVertexScore(TVertexScore current,
     TVertexScoreConstIterator previousIt = begin(previous, Standard());
 
     // Update first cell.
-    if (IsSameType<TStage, StageUpper_>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TStage, StageUpper_>::VALUE)
     {
         // C[0,j] = C[0,j-1] + 1 [Left]
         value(currentIt) = value(previousIt) + 1;
@@ -291,7 +291,7 @@ _updateVertexScore(TVertexScore current,
     }
 
     // Update last cell.
-    if (IsSameType<TStage, StageLower_>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TStage, StageLower_>::VALUE)
     {
         TScore score = ordEqual(textChar, value(patternIt)) ? 0 : 1;
 

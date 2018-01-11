@@ -229,7 +229,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
             MetaColumnDescriptor<TColumnType, FullColumn> const &,
             FirstCell const &)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
@@ -249,7 +249,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
             MetaColumnDescriptor<TColumnType, TColumnLocation> const &,
             InnerCell const &)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     ++dpNavigator._activeColIterator;
@@ -269,7 +269,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
             MetaColumnDescriptor<TColumnType, FullColumn> const &,
             InnerCell const &)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     ++dpNavigator._activeColIterator;
@@ -287,7 +287,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
             MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom> const &,
             LastCell const &)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     ++dpNavigator._activeColIterator;
@@ -304,7 +304,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
             MetaColumnDescriptor<TColumnType, PartialColumnBottom> const &,
             LastCell const &)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     ++dpNavigator._activeColIterator;
@@ -340,7 +340,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
             MetaColumnDescriptor<TColumnType, FullColumn> const &,
             LastCell const &)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     ++dpNavigator._activeColIterator;
@@ -357,7 +357,7 @@ _traceHorizontal(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
                                   TNavigationSpec> & dpNavigator,
                  bool isBandShift)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     if (isBandShift)
@@ -378,7 +378,7 @@ _traceDiagonal(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
                                   TNavigationSpec> & dpNavigator,
                bool isBandShift)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     if (isBandShift)
@@ -399,7 +399,7 @@ _traceVertical(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
                                   TNavigationSpec> & dpNavigator,
                bool /*isBandShift*/)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     dpNavigator._activeColIterator -= _dataFactors(*dpNavigator._ptrDataContainer)[DPMatrixDimension_::VERTICAL];
@@ -417,7 +417,7 @@ _setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
                                   TNavigationSpec> & dpNavigator,
               TPosition const & hostPosition)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;
 
     SEQAN_ASSERT_LT(hostPosition, static_cast<TPosition>(length(container(dpNavigator))));
@@ -438,7 +438,7 @@ _setToPosition(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>,
               TPositionH const & horizontalPosition,
               TPositionV const & verticalPosition)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;
     SEQAN_ASSERT_LT(horizontalPosition, static_cast<TPositionH>(length(container(dpNavigator), +DPMatrixDimension_::HORIZONTAL)));
     SEQAN_ASSERT_LT(verticalPosition, static_cast<TPositionV>(length(container(dpNavigator), +DPMatrixDimension_::VERTICAL)));
@@ -457,7 +457,7 @@ inline void
 assignValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> & dpNavigator,
             TValue const & element)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return;  // Do nothing since no trace back is computed.
 
     *dpNavigator._activeColIterator = element;
@@ -490,7 +490,7 @@ template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
 inline auto
 scalarValue(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
     return _scalarValue(*dpNavigator._activeColIterator, dpNavigator._simdLane);
@@ -505,7 +505,7 @@ template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
 inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> >::Type
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> & dpNavigator)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
     return *dpNavigator._activeColIterator;
@@ -515,7 +515,7 @@ template <typename TDPMatrix, typename TTraceFlag, typename TNavigationSpec>
 inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const >::Type
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
     return *dpNavigator._activeColIterator;
@@ -527,7 +527,7 @@ inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> & dpNavigator,
       TPosition const & position)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
     return *(begin(*dpNavigator._ptrDataContainer) + position);
@@ -539,7 +539,7 @@ inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag
 value(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpec> const & dpNavigator,
       TPosition const & position)
 {
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         SEQAN_ASSERT_FAIL("Try to access uninitialized object!");
 
     return *(begin(*dpNavigator._ptrDataContainer) + position);
@@ -560,7 +560,7 @@ coordinate(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationS
         return 0;  // Returns default 0, when traceback is set off.
     SEQAN_ASSERT_EQ(_checkCorrectDimension(dimension), true);
 
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return _dataLengths(*dpNavigator._ptrDataContainer)[dimension];  // Return lengths of given dimension.
 
     return coordinate(value(dpNavigator._ptrDataContainer), position(dpNavigator), dimension); // Simply delegate to coordinate of underlying matrix.
@@ -598,7 +598,7 @@ position(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpe
 {
     // Return 0 when traceback is not enabled. This is necessary to still track the score even
     // the traceback is not enabled.
-    if (IsSameType<TTraceFlag, TracebackOff>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TTraceFlag, TracebackOff>::VALUE)
         return 0;
 
     return position(dpNavigator._activeColIterator, *dpNavigator._ptrDataContainer);

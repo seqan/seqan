@@ -130,25 +130,25 @@ namespace seqan
 template <>
 struct Fibre<TDbDnaSaSmall, FibreSA>
 {
-    typedef String<Pair<unsigned int, unsigned char, BitPacked<24, 8> >, StringSpec<TDbDnaSaSmall>::Type> Type;
+    typedef String<Pair<unsigned int, unsigned char, BitPacked<24, 8> >, DefaultIndexStringSpec<TDbDnaSaSmall>::Type> Type;
 };
 
 template <>
 struct Fibre<TDbGeoSaSmall, FibreSA>
 {
-    typedef String<Pair<unsigned int, unsigned char, BitPacked<24, 8> >, StringSpec<TDbGeoSaSmall>::Type> Type;
+    typedef String<Pair<unsigned int, unsigned char, BitPacked<24, 8> >, DefaultIndexStringSpec<TDbGeoSaSmall>::Type> Type;
 };
 
 template <>
 struct Fibre<TDbDnaSaHuge, FibreSA>
 {
-    typedef String<Pair<unsigned int, unsigned char, Pack>, StringSpec<TDbDnaSaHuge>::Type> Type;
+    typedef String<Pair<unsigned int, unsigned char, Pack>, DefaultIndexStringSpec<TDbDnaSaHuge>::Type> Type;
 };
 
 template <>
 struct Fibre<TDbGeoSaHuge, FibreSA>
 {
-    typedef String<Pair<unsigned int, unsigned char, Pack>, StringSpec<TDbDnaSaHuge>::Type> Type;
+    typedef String<Pair<unsigned int, unsigned char, Pack>, DefaultIndexStringSpec<TDbDnaSaHuge>::Type> Type;
 };
 }
 

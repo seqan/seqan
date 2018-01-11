@@ -91,7 +91,7 @@ public:
     }
 
     template <typename TOtherString, typename TOtherSpec>
-    StringSet(StringSet<TOtherString, TOtherSpec> const &other) :
+    StringSet(StringSet<TOtherString, TOtherSpec> const & other) :
         limitsValid(true)
     {
         _initStringSetLimits(*this);
@@ -99,7 +99,7 @@ public:
     }
 
     template <typename TOtherSpec>
-    StringSet(String<TString, TOtherSpec> const &other) :
+    StringSet(String<TString, TOtherSpec> const & other) :
         limitsValid(true)
     {
         _initStringSetLimits(*this);

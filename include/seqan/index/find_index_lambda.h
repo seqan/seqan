@@ -112,7 +112,7 @@ _findBacktracking(TIndexIt indexIt,
         else
         {
             // Insertion.
-            if (IsSameType<TDistance, EditDistance>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TDistance, EditDistance>::VALUE)
             {
                 _findBacktracking(indexIt, needle, needleIt + 1,
                                   static_cast<TThreshold>(errors + 1), threshold, delegate, TDistance());
@@ -128,7 +128,7 @@ _findBacktracking(TIndexIt indexIt,
                                       static_cast<TThreshold>(errors + delta), threshold, delegate, TDistance());
 
                     // Deletion.
-                    if (IsSameType<TDistance, EditDistance>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TDistance, EditDistance>::VALUE)
                     {
                         _findBacktracking(indexIt, needle, needleIt,
                                           static_cast<TThreshold>(errors + 1), threshold, delegate, TDistance());
