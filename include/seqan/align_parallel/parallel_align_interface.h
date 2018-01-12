@@ -110,7 +110,7 @@ struct ParallelAlignmentExecutor
     {
         SEQAN_ASSERT_EQ(length(setH), length(setV));
 
-        using TPos = decltype(length(setH));
+        using TPos = std::make_signed_t<decltype(length(setH))>;
         using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
         TPos chunkSize = _min(length(setH), static_cast<TPos>(256));
@@ -157,7 +157,7 @@ struct ParallelAlignmentExecutor
     {
         SEQAN_ASSERT_EQ(length(setH), length(setV));
 
-        using TPos = decltype(length(setH));
+        using TPos = std::make_signed_t<decltype(length(setH))>;
         using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
         Splitter<TPos> splitter(0, length(setH), numThreads(execPolicy));
