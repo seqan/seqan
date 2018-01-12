@@ -215,7 +215,7 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
 
     auto dispatcher = [&res](auto && ...args)
     {
-        impl::alignExecBatch(std::forward<decltype(args)>(args)...,
+        alignExecBatch(std::forward<decltype(args)>(args)...,
                              [&res](auto const id, auto const score)
                              {
                                  res[id] = score;
