@@ -287,10 +287,10 @@ void _computeTraceback(TTarget & target,
     {
         if (tracebackCoordinator._currRow != seqVSize)
             _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
-                           +TraceBitMap_<>::VERTICAL);
+                           TraceBitMap_<>::VERTICAL);
         if (tracebackCoordinator._currColumn != seqHSize)
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, seqHSize -
-                           tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
+                           tracebackCoordinator._currColumn, TraceBitMap_<>::HORIZONTAL);
 
         _computeTraceback(target, matrixNavigator, position(matrixNavigator), seqHSize, seqVSize, band, dpProfile);
         return;
@@ -298,7 +298,7 @@ void _computeTraceback(TTarget & target,
 
     TSize fragmentLength = 0;
     TTarget tmp;
-    while(!_hasReachedEnd(tracebackCoordinator) && traceValue != +TraceBitMap_<>::NONE)
+    while(!_hasReachedEnd(tracebackCoordinator) && traceValue != TraceBitMap_<>::NONE)
         _doTraceback(tmp, matrixNavigator, traceValue, lastTraceValue, fragmentLength, tracebackCoordinator, TGapCosts(), TIsGapsLeft());
 
     TSignedPosition horizontalInitPos = static_cast<TSignedPosition>(tracebackCoordinator._currColumn) -
@@ -345,9 +345,9 @@ void _computeTraceback(TTarget & target,
                         currRow -= length(container(matrixNavigator), +DPMatrixDimension_::VERTICAL) - 1 + lowerDiagonal(band) - currCol;
         // Record leading gaps if any.
         if (currRow != 0u)
-            _recordSegment(target, 0, 0, currRow, +TraceBitMap_<>::VERTICAL);
+            _recordSegment(target, 0, 0, currRow, TraceBitMap_<>::VERTICAL);
         if (currCol != 0u)
-            _recordSegment(target, 0, 0, currCol, +TraceBitMap_<>::HORIZONTAL);
+            _recordSegment(target, 0, 0, currCol, TraceBitMap_<>::HORIZONTAL);
     }
 }
 

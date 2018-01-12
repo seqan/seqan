@@ -523,10 +523,10 @@ void _computeTraceback(TTarget & target,
     {
         if (tracebackCoordinator._currRow != static_cast<TSize>(seqVSize))
             _recordSegment(target, seqHSize, tracebackCoordinator._currRow, seqVSize - tracebackCoordinator._currRow,
-                           +TraceBitMap_<>::VERTICAL);
+                           TraceBitMap_<>::VERTICAL);
         if (tracebackCoordinator._currColumn != static_cast<TSize>(seqHSize))
             _recordSegment(target, tracebackCoordinator._currColumn, tracebackCoordinator._currRow, seqHSize -
-                           tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
+                           tracebackCoordinator._currColumn, TraceBitMap_<>::HORIZONTAL);
     }
 
     TSize fragmentLength = 0;
@@ -539,9 +539,9 @@ void _computeTraceback(TTarget & target,
     {
         // Record leading gaps if any.
         if (tracebackCoordinator._currRow != 0u)
-            _recordSegment(target, 0, 0, tracebackCoordinator._currRow, +TraceBitMap_<>::VERTICAL);
+            _recordSegment(target, 0, 0, tracebackCoordinator._currRow, TraceBitMap_<>::VERTICAL);
         if (tracebackCoordinator._currColumn != 0u)
-            _recordSegment(target, 0, 0, tracebackCoordinator._currColumn, +TraceBitMap_<>::HORIZONTAL);
+            _recordSegment(target, 0, 0, tracebackCoordinator._currColumn, TraceBitMap_<>::HORIZONTAL);
     }
 }
 
@@ -562,13 +562,12 @@ _computeTraceback(TTarget & target,
                   DPBandConfig<TBandFlag> const & band,
                   DPProfile_<TAlgorithm, TGapCosts, TTracebackSpec, TExecPolicy> const & dpProfile)
 {
-
     using TSize SEQAN_TYPEDEF_FOR_DEBUG = typename Size<TTarget>::Type;
     // Set the navigator to the position where the maximum was found.
     _setToPosition(matrixNavigator, maxHostPosition);
 
-    SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL), seqHSize);
-    SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL), seqVSize);
+    SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL), static_cast<TSize>(seqHSize));
+    SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL), static_cast<TSize>(seqVSize));
     typename TraceBitMap_<>::Type traceValue = scalarValue(matrixNavigator);
     typename TraceBitMap_<>::Type lastTraceValue = _retrieveInitialTraceDirection(traceValue, dpProfile);
     _computeTraceback(target, traceValue, lastTraceValue, matrixNavigator, seqHSize, seqVSize, band, dpProfile,

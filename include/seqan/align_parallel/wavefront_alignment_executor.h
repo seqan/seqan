@@ -86,7 +86,7 @@ spawn(WavefrontAlignmentExecutor<TArgs...> & executor,
 
 // Access thread local storage.
 template <typename ...TArgs>
-inline auto&
+inline auto &
 local(WavefrontAlignmentExecutor<TArgs...> & executor)
 {
     SEQAN_ASSERT(executor.ptrThreadLocal != nullptr);

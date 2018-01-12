@@ -71,7 +71,6 @@ validateLocal(TSets const & sets,
     }
 }
 
-
 }  // namespace test_align_parallel
 
 // ----------------------------------------------------------------------------
@@ -126,8 +125,6 @@ typedef
 #endif // __APPLE__
 
 SEQAN_TYPED_TEST_CASE(ParallelAlignInterfaceTestCommon, ParallelAlignInterfaceTestCommonTypes);
-
-// TODO(rrahn): Typed test.
 
 SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Global_Score)
 {

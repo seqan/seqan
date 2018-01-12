@@ -84,19 +84,20 @@ public:
     unsigned                _numParallelAlignments;
 
     std::mutex                       _mutexPushException;
-    std::vector<std::exception_ptr>  _exceptionPtrs;
+    std::vector<std::exception_ptr>  _exceptionPointers;
 
     std::atomic<bool>               _isValid{true};
 
-    std::function<void()> job = [this]()
+    std::function<void()> job = [this] ()
     {
-        for (;;)
+        while (true)
         {
             TCallable callable;
             if (!popFront(callable, _queue))
                 break;  // End of thread => No writers and queue is empty.
 
             uint16_t id = -1;
+
             { // Receive id.
                 std::lock_guard<std::mutex> lck(_mutexRecycleId);
                 SEQAN_ASSERT_NOT(_recycableIds.empty());
@@ -108,14 +109,14 @@ public:
             {
                 callable(id);  // invokes the alignment with assigned id.
             }
-            catch(...)
+            catch (...)
             {  // Catch any exception thrown by callable. Store exception, and set *this invalid.
                // We still keep running until the queue is empty. The thread is cleaned either by,
                // explicit wait or by destruction of *this.
                 _isValid.store(false, std::memory_order_release);
                 {
                     std::lock_guard<std::mutex> lck(_mutexPushException);
-                    _exceptionPtrs.push_back(std::current_exception());
+                    _exceptionPointers.push_back(std::current_exception());
                 }
             }
 
@@ -155,7 +156,7 @@ public:
 
         setReaderWriterCount(_queue, numParallelAlignments, 1);
 
-        _exceptionPtrs.resize(numParallelAlignments, nullptr);
+        _exceptionPointers.resize(numParallelAlignments, nullptr);
 
         try
         { // Create the threads here, later we can try to make lazy thread creation.
@@ -164,7 +165,7 @@ public:
                 spawn(_pool, job);
             }
         }
-        catch(...)  // Make sure all the spawned threads are safely stopped before re-throwing the exception.
+        catch (...)  // Make sure all the spawned threads are safely stopped before re-throwing the exception.
         {
             unlockWriting(_queue);
             waitForWriters(_taskScheduler);
@@ -175,7 +176,9 @@ public:
         setWriterCount(_taskScheduler, numParallelAlignments);
         // Notify task scheduler, that everything was setup correctly.
         for (unsigned i = 0; i < numParallelAlignments; ++i)
+        {
             lockWriting(_taskScheduler);
+        }
         waitForWriters(_taskScheduler);  // Invoke task scheduler.
     }
 
@@ -184,8 +187,8 @@ public:
     {}
 
     // Copy & Move C'tor
-    WavefrontAlignmentScheduler(WavefrontAlignmentScheduler const &)              = delete;
-    WavefrontAlignmentScheduler(WavefrontAlignmentScheduler &&)                   = delete;
+    WavefrontAlignmentScheduler(WavefrontAlignmentScheduler const &) = delete;
+    WavefrontAlignmentScheduler(WavefrontAlignmentScheduler &&)      = delete;
 
     ///-------------------------------------------------------------------------
     // Destructor.
@@ -209,8 +212,8 @@ public:
     // Member Functions.
 
     // Copy & Move assignment
-    WavefrontAlignmentScheduler& operator=(WavefrontAlignmentScheduler const &)   = delete;
-    WavefrontAlignmentScheduler& operator=(WavefrontAlignmentScheduler &&)        = delete;
+    WavefrontAlignmentScheduler& operator=(WavefrontAlignmentScheduler const &) = delete;
+    WavefrontAlignmentScheduler& operator=(WavefrontAlignmentScheduler &&)      = delete;
 };
 
 // ============================================================================
@@ -322,7 +325,7 @@ wait2(WavefrontAlignmentScheduler & me, TNotifiable & notifiable)
 inline auto
 getExceptions(WavefrontAlignmentScheduler & me)
 {
-    auto vec = me._exceptionPtrs;
+    auto vec = me._exceptionPointers;
     auto innerExceptions = getExceptions(me._taskScheduler);
     std::copy(std::begin(innerExceptions), std::end(innerExceptions), std::back_inserter(vec));
     return vec;

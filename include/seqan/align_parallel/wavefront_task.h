@@ -82,15 +82,13 @@ public:
 
     using TContext  = TAlignmentContext;
 
-    TContext &              context;
-
+    TContext &                     context;
     std::array<WavefrontTask*, 2>  successor{{nullptr, nullptr}};
-    size_t                  col{0};
-    size_t                  row{0};
-    std::atomic<size_t>     refCount{0};
-
-    bool                    lastTileH{false};
-    bool                    lastTileV{false};
+    size_t                         col{0};
+    size_t                         row{0};
+    std::atomic<size_t>            refCount{0};
+    bool                           lastTileH{false};
+    bool                           lastTileV{false};
 
 
     //-------------------------------------------------------------------------
@@ -103,11 +101,11 @@ public:
                   size_t const refCount,
                   bool const lastTileH,
                   bool const lastTileV) :
-                context(context),
-                successor(std::move(successor)),
-                col(col), row(row),
-            	refCount(refCount),
-                lastTileH(lastTileH), lastTileV(lastTileV)
+        context(context),
+        successor(std::move(successor)),
+        col(col), row(row),
+        refCount(refCount),
+        lastTileH(lastTileH), lastTileV(lastTileV)
     {}
 };
 
@@ -132,7 +130,6 @@ struct TaskExecutionTraits<WavefrontAlignmentContext<TArgs...>>
     using TDPScoutState     = DPScoutState_<DPTiled<TTileBuffer>>;
 
     // Sequence types.
-
     using TSeqH = typename Value<TSeqHBlocks>::Type;
     using TSeqV = typename Value<TSeqVBlocks>::Type;
 
@@ -149,7 +146,6 @@ struct TaskExecutionTraits<WavefrontAlignmentContext<TArgs...>>
     using TScoutSpec        = typename ScoutSpecForAlignmentAlgorithm_<TAlgorithmType, TDPScoutState>::Type;
     using TDPScout          = DPScout_<TDPCell, TScoutSpec>;
 };
-
 
 template <typename TWavefrontAlignmentContextConcept>
 struct SimdTaskExecutionTraits : public TaskExecutionTraits<TWavefrontAlignmentContextConcept>
@@ -270,7 +266,7 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
 {
     using TExecTraits = TaskExecutionTraits<typename TTask::TContext>;
 
-    auto& taskContext = context(task);
+    auto & taskContext = context(task);
     // Load the cache from the local data.
     auto & dpCache = cache(dpLocal, taskContext.alignmentId);
     auto & buffer = taskContext.tileBuffer;
@@ -286,7 +282,6 @@ executeScalar(TTask & task, TDPLocalData & dpLocal)
                       taskContext.seqVBlocks[row(task)],
                       taskContext.dpSettings.scoringScheme,
                       taskContext.dpSettings);
-
     // We want to get the state here from the scout.
     if(impl::AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
     {
@@ -326,14 +321,14 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
     auto offset = impl::computeOffset(tasks, TExecTraits{});
     // Has to be adapted to take the correct buffer from the corresponding task.
     auto simdBufferH = impl::gatherSimdBuffer(tasks,
-                                              [](auto& task)
+                                              [] (auto & task)
                                               {
                                                   return &context(task).tileBuffer.horizontalBuffer[column(task)];
                                               },
                                               offset,
                                               TExecTraits{});
     auto simdBufferV = impl::gatherSimdBuffer(tasks,
-                                              [](auto& task)
+                                              [] (auto & task)
                                               {
                                                   return &context(task).tileBuffer.verticalBuffer[row(task)];
                                               },

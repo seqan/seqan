@@ -94,17 +94,17 @@ public:
     ~ThreadPool()
     {
         for_each(std::begin(_mPool), std::end(_mPool),
-        [](auto & t)
-        {
-            if (t.joinable())
-                t.join();
-        });
+                 [] (auto & t)
+                 {
+                     if (t.joinable())
+                        t.join();
+                 });
     }
 
     //-------------------------------------------------------------------------
     // Private Member Variables.
 
-    std::vector<std::thread> _mPool;
+    std::deque<std::thread> _mPool;
 };
 
 // ============================================================================

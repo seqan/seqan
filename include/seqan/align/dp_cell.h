@@ -200,6 +200,13 @@ _setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & ne
 
 template <typename TScoreValue, typename TGapCosts, typename TMask>
 inline void
+_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore)
+{
+    dpCell._score = newScore;
+}
+
+template <typename TScoreValue, typename TGapCosts, typename TMask>
+inline void
 _setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore, TMask const & mask)
 {
     dpCell._score = blend(dpCell._score, newScore, mask);

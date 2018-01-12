@@ -364,7 +364,7 @@ sequenceEntryForScore(Score<TScoreValue, BsTagList<TBsProfileScore, TModel, TCel
 // (end gaps score different)
 // Computes the score and tracks it if enabled.
 template <typename TDPScout, typename TTraceMatrixNavigator,
-          typename TCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoreValue, typename TBsProfileScore, typename TModel, typename TCellDescriptor2,
@@ -373,7 +373,10 @@ template <typename TDPScout, typename TTraceMatrixNavigator,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TCellTuple recursionCells,
+             TDPCell & c,
+             TDPCell & d,
+             TDPCell const & h,
+             TDPCell & v,
              TSequenceHValue const & seqHVal,
              TSequenceVValue const & seqVVal,
              Score<TScoreValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor2> > const & scoringScheme,
@@ -386,7 +389,7 @@ _computeCell(TDPScout & scout,
 
     Score<TScoreValue, BsTagList<TBsProfileScore, TModel, FirstCell> > scoringSchemeDummy(scoringScheme);
     assignValue(traceMatrixNavigator,
-                _computeScore(recursionCells, seqHVal, seqVVal,
+                _computeScore(c, d, h, v, seqHVal, seqVVal,
                               scoringSchemeDummy, typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
                               TDPProfile()));
 //	std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
@@ -396,7 +399,8 @@ _computeCell(TDPScout & scout,
         bool isLastRow = And<IsSameType<TCellDescriptor, LastCell>,
                              Or<IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>,
                                 IsSameType<typename TColumnDescriptor::TLocation, FullColumn> > >::VALUE;
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, isLastColumn, isLastRow);
+        _setVerticalScoreOfCell(c, _verticalScoreOfCell(v));
+        _scoutBestScore(scout, c, traceMatrixNavigator, isLastColumn, isLastRow);
     }
 }
 
@@ -404,7 +408,7 @@ _computeCell(TDPScout & scout,
 // (end gaps score different)
 // Computes the score and tracks it if enabled.
 template <typename TDPScout, typename TTraceMatrixNavigator,
-          typename TCellTuple,
+          typename TDPCell,
           typename TSequenceHValue,
           typename TSequenceVValue,
           typename TScoreValue, typename TBsProfileScore, typename TModel, typename TCellDescriptor2,
@@ -413,7 +417,10 @@ template <typename TDPScout, typename TTraceMatrixNavigator,
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             TCellTuple recursionCells,
+             TDPCell & c,
+             TDPCell & d,
+             TDPCell const & h,
+             TDPCell & v,
              TSequenceHValue const & seqHVal,
              TSequenceVValue const & seqVVal,
              Score<TScoreValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor2> > const & scoringScheme,
@@ -426,7 +433,7 @@ _computeCell(TDPScout & scout,
 
     Score<TScoreValue, BsTagList<TBsProfileScore, TModel, LastCell> > scoringSchemeDummy(scoringScheme);
     assignValue(traceMatrixNavigator,
-                _computeScore(recursionCells, seqHVal, seqVVal,
+                _computeScore(c, d, h, v, seqHVal, seqVVal,
                               scoringSchemeDummy, typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
                               TDPProfile()));
 //	std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
@@ -436,7 +443,8 @@ _computeCell(TDPScout & scout,
         bool isLastRow = And<IsSameType<TCellDescriptor, LastCell>,
                              Or<IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>,
                                 IsSameType<typename TColumnDescriptor::TLocation, FullColumn> > >::VALUE;
-        _scoutBestScore(scout, std::get<0>(recursionCells), traceMatrixNavigator, isLastColumn, isLastRow);
+        _setVerticalScoreOfCell(c, _verticalScoreOfCell(v));
+        _scoutBestScore(scout, c, traceMatrixNavigator, isLastColumn, isLastRow);
     }
 }
 

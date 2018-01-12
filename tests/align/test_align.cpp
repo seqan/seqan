@@ -189,9 +189,9 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // Test DPCell.
     // ----------------------------------------------------------------------------
 
-	SEQAN_CALL_TEST(test_dp_cell_value);
-	SEQAN_CALL_TEST(test_dp_cell_reference);
-	SEQAN_CALL_TEST(test_dp_cell_default_infinity);
+    SEQAN_CALL_TEST(test_dp_cell_value);
+    SEQAN_CALL_TEST(test_dp_cell_reference);
+    SEQAN_CALL_TEST(test_dp_cell_default_infinity);
 
     SEQAN_CALL_TEST(test_dp_cell_linear_constructor);
     SEQAN_CALL_TEST(test_dp_cell_linear_copy_constructor);
@@ -279,9 +279,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_cell);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_assign_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_value);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_diagonal);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_horizontal);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_vertical);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_container);
 
@@ -290,9 +288,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_assign_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_value);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_diagonal);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_horizontal);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_vertical);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_container);
 

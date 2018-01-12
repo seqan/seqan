@@ -80,21 +80,24 @@ struct SimpleThreadLocalManager
      * access of the given thread-id.
      */
     template <typename TResourceMap, typename TValue>
-    inline auto & 
+    inline auto &
     local(TResourceMap & map, TValue const & initValue, bool & exists)
     {
         decltype(map.find(std::this_thread::get_id())) elemIt;
+
         { // try to read
             std::shared_lock<decltype(_mutex)> read_lck(_mutex);
             elemIt = map.find(std::this_thread::get_id());
             exists = elemIt != map.end();
         }
+
         if (!exists)
         {
             {  // Create new entry.
                 std::unique_lock<decltype(_mutex)> write_lck(_mutex);
                 std::tie(elemIt, exists) = map.emplace(std::this_thread::get_id(), initValue);
             }
+
             SEQAN_ASSERT(exists);
             exists = false;  // Notify that element was added for the first time.
         }
@@ -144,19 +147,21 @@ struct CountingThreadLocalManager
         if (_count.load(std::memory_order_relaxed) == 0)
             return map.find(std::this_thread::get_id())->second;
 
-
         decltype(map.find(std::this_thread::get_id())) elemIt;
+
         { // try to read
             std::shared_lock<decltype(_mutex)> read_lck(_mutex);
             elemIt = map.find(std::this_thread::get_id());
             exists = elemIt != map.end();
         }
+
         if (!exists)
         {
             {  // Create new entry.
                 std::unique_lock<decltype(_mutex)> write_lck(_mutex);
                 std::tie(elemIt, exists) = map.emplace(std::this_thread::get_id(), initValue);
             }
+
             --_count;
             SEQAN_ASSERT(exists);
             exists = false;  // Notify that element was added for the first time.

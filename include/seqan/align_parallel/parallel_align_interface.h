@@ -101,7 +101,7 @@ struct ParallelAlignmentExecutor
               typename TSetH,
               typename TSetV,
               typename ...TArgs>
-    auto operator()(ExecutionPolicy<Parallel, Vectorial> const & execPolicy,
+    auto operator()(SEQAN_UNUSED ExecutionPolicy<Parallel, Vectorial> const & execPolicy,  // maybe unused due to missing OMP support in clang.
                     TKernel && kernel,
                     TSetH const & setH,
                     TSetV const & setV,
@@ -113,7 +113,9 @@ struct ParallelAlignmentExecutor
         using TPos = decltype(length(setH));
         using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
-        Splitter<TPos> splitter(0, length(setH), numThreads(execPolicy));
+        TPos chunkSize = _min(length(setH), static_cast<TPos>(256));
+        String<TPos> splitter;
+        computeSplitters(splitter, length(setH), static_cast<TPos>(length(setH)/chunkSize));
 
         std::vector<TResult> superSet;
         superSet.resize(length(splitter));
@@ -122,8 +124,8 @@ struct ParallelAlignmentExecutor
         ::impl::dp_parallel_progress::show_progress(length(setH));
 #endif  // DP_PARALLEL_SHOW_PROGRESS
 
-        SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
-        for (TPos job = 0; job < length(splitter); ++job)
+        SEQAN_OMP_PRAGMA(parallel for num_threads(numThreads(execPolicy)) schedule(guided))
+        for (TPos job = 0; job < length(splitter) - 1; ++job)  // TODO(rrahn): Why -1; Is there a bug in computeSplitters?
         {
             auto infSetH = infix(setH, splitter[job], splitter[job + 1]);
             auto infSetV = infix(setV, splitter[job], splitter[job + 1]);
