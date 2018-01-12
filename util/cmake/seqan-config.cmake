@@ -246,9 +246,8 @@ endif (WIN32)
 # Visual Studio Setup
 if (COMPILER_MSVC OR COMPILER_WINTEL)
   # Enable intrinics (e.g. _interlockedIncrease)
-  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_WINTEL, but
   # COMPILER_CLANG (clang/c2 3.7) can not handle the /EHsc and /Oi flag
-  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /Oi)
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /EHsc /Oi)
 endif ()
 
 # ----------------------------------------------------------------------------
