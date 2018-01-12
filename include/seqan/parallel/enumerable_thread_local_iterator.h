@@ -35,6 +35,23 @@
 #ifndef INCLDUE_SEQAN_ALIGN_PARALLEL_ENUMERABLE_THREAD_LOCAL_ITERATOR_H_
 #define INCLDUE_SEQAN_ALIGN_PARALLEL_ENUMERABLE_THREAD_LOCAL_ITERATOR_H_
 
+namespace std
+{
+
+template<typename TContainer>
+struct iterator_traits<seqan::Iter<TContainer, seqan::EnumerableThreadLocalIterSpec> > // nolint
+{
+    typedef seqan::Iter<TContainer, seqan::EnumerableThreadLocalIterSpec> TIter; // nolint
+
+    typedef forward_iterator_tag iterator_category; // nolint
+    typedef typename seqan::Value<TIter>::Type value_type; // nolint
+    typedef typename seqan::Difference<TIter>::Type difference_type; // nolint
+    typedef typename seqan::Value<TIter>::Type * pointer; // nolint
+    typedef typename seqan::Reference<TIter>::Type reference; // nolint
+};
+
+}
+
 namespace seqan
 {
 
