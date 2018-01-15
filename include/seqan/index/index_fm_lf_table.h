@@ -494,11 +494,34 @@ _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos>
-inline
-typename Size<LF<TText, TSpec, TConfig> const>::Type
+inline std::enable_if_t<!isWaveletTree<typename TConfig::Bwt>::Value, typename Size<LF<TText, TSpec, TConfig> >::Type>
 _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
 {
     return _getBwtRank(lf, pos, getValue(lf.bwt, pos));
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TPos>
+inline std::enable_if_t<isWaveletTree<typename TConfig::Bwt>::Value, typename Size<LF<TText, TSpec, TConfig> >::Type>
+_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
+{
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type    TChar;
+    typedef typename Size<LF<TText, TSpec, TConfig> >::Type     TSize;
+
+    TChar val;
+    TSize rank = 0;
+
+    if (pos > 0)
+    {
+        rank = _getRankAndValue(lf.bwt, pos - 1, val);
+
+        if (ordEqual(lf.sentinelSubstitute, val))
+            rank -= _getSentinelsRank(lf, pos - 1);
+    }
+    else
+    {
+        val = getValue(lf.bwt, pos);
+    }
+    return rank + _getPrefixSum(lf, val);
 }
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
