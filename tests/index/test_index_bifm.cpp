@@ -32,8 +32,6 @@
 // Author: Christopher Pockrandt <christopher.pockrandt@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/basic.h>
-#include <seqan/reduced_aminoacid.h>
 #include <seqan/index.h>
 #include <ctime>
 
@@ -61,22 +59,14 @@ struct FMIndexWTConfig
     static const unsigned SAMPLING =                                        10;
 };
 
-typedef String<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > > Murphy10String;
-
 typedef
     TagList<Index<String<bool>,   BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
-    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
-    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
-    TagList<Index<CharString,     BidirectionalIndex<FMIndex<void, FMIndexConfigLevelsPrefix<> > > >,
     TagList<Index<String<bool>,   BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
     TagList<Index<DnaString,      BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
-    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
-    TagList<Index<Murphy10String, BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
-    TagList<Index<Peptide,        BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >,
-    TagList<Index<CharString,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >
-    > > > > > > > > > > > >
+    TagList<Index<Dna5String,     BidirectionalIndex<FMIndex<void, FMIndexWTConfig<> > > >
+    > > > > > >
     FMIndices;
 
 // ==========================================================================
