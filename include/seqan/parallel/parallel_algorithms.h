@@ -233,12 +233,13 @@ inline void iterate(TContainer & c, TFunctor f, Tag<TIterTag> const & iterTag, P
 {
     typedef Tag<TIterTag> const                                     TIterSpec;
     typedef typename Position<TContainer>::Type                     TPos;
+    typedef typename std::make_signed<TPos>::type                   TSignedPos;
     typedef typename Iterator<TContainer, TIterSpec>::Type          TIter;
 
     Splitter<TPos> splitter(0, length(c), Parallel());
 
     SEQAN_OMP_PRAGMA(parallel for firstprivate(f))
-    for (TPos i = 0; i < length(splitter); ++i)
+    for (TSignedPos i = 0; i < static_cast<TSignedPos>(length(splitter)); ++i)
     {
        TIter it = begin(c, iterTag) + splitter[i];
        TIter itEnd = begin(c, iterTag) + splitter[i + 1];
