@@ -52,7 +52,7 @@ struct DPSettings
 {
     using TTraits        = TDPTraits;
     using TScoringScheme = TScoringScheme_;
-    using TBandConfig    = DPBandConfig<typename TDPTraits::TBandType>;
+    using TBandConfig    = typename TDPTraits::TBandType;
 
     TScoringScheme  scoringScheme;
     TBandConfig     bandScheme;

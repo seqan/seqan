@@ -152,13 +152,23 @@ struct WavefrontAlignmentTaskIncubator
     // Function createBlockBuffer()
     // ----------------------------------------------------------------------------
 
-    template <typename TSeqHBlocks, typename TSeqVBlovcks, typename TScore>
-    static auto createBlockBuffer(TSeqHBlocks const & seqHBlocks, TSeqVBlovcks const & seqVBlocks, TScore const & score)
+    template <typename TSeqHBlocks,
+              typename TSeqVBlovcks,
+              typename TScore,
+              typename TBandGenerator>
+    static auto createBlockBuffer(TSeqHBlocks const & seqHBlocks,
+                                  TSeqVBlovcks const & seqVBlocks,
+                                  TScore const & score,
+                                  TBandGenerator const & bandGenerator)
     {
         using TDPCell = typename TWatc::TDPCell;
         typename TWatc::TBlockBuffer buffer;
+
         resize(buffer.horizontalBuffer, length(seqHBlocks), Exact());
         resize(buffer.verticalBuffer, length(seqVBlocks), Exact());
+
+        uint32_t firstHor = std::min(bandGenerator.horizontalGridIndex + 1, static_cast<uint32_t>(length(seqHBlocks)));
+        uint32_t firstVer = std::min(bandGenerator.verticalGridIndex + 1, static_cast<uint32_t>(length(seqVBlocks)));
 
         typename TWatc::TBufferValue tmp;
 
@@ -171,7 +181,7 @@ struct WavefrontAlignmentTaskIncubator
         tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV,  Nothing(), Nothing(), score,
                                RecursionDirectionZero(), typename TWatc::TDPProfile());
         for (auto itH = begin(buffer.horizontalBuffer, Standard());
-             itH != end(buffer.horizontalBuffer, Standard());
+             itH != begin(buffer.horizontalBuffer, Standard()) + firstHor;
              ++itH)
         {
             resize(*itH, length(front(seqHBlocks)), Exact());
@@ -183,11 +193,14 @@ struct WavefrontAlignmentTaskIncubator
                 tmp.i1 = it->i1;
             }
         }
+
         tmp.i1 = decltype(tmp.i1){};
         tmp.i2 = _computeScore(tmp.i1, dummyCellD, dummyCellH, dummyCellV, Nothing(), Nothing(), score,
                                RecursionDirectionZero(), typename TWatc::TDPProfile());
 
-        for (auto itV = begin(buffer.verticalBuffer, Standard()); itV != end(buffer.verticalBuffer, Standard()); ++itV)
+        for (auto itV = begin(buffer.verticalBuffer, Standard());
+             itV != begin(buffer.verticalBuffer, Standard()) + firstVer;
+             ++itV)
         {
             resize(*itV, length(front(seqVBlocks)) + 1, Exact());
             auto it = begin(*itV, Standard());
@@ -211,35 +224,68 @@ struct WavefrontAlignmentTaskIncubator
     // Function createTaskGraph()
     // ----------------------------------------------------------------------------
 
-    template <typename TWavefrontTaskContext>
-    static auto createTaskGraph(TWavefrontTaskContext & taskContext)
+    // template <typename TWavefrontTaskContext>
+    // static auto createTaskGraph(TWavefrontTaskContext & taskContext)
+    template <typename TWavefrontTaskContext,
+              typename TSeqH,
+              typename TSeqV,
+              typename TBandGenerator>
+    static auto createTaskGraph(TWavefrontTaskContext & taskContext,
+                                TBandGenerator const & bandGenerator)
     {
         using TDagTask = WavefrontTask<TWavefrontTaskContext>;
+        std::vector<std::shared_ptr<TDagTask>> graph;
+        std::unordered_map<uint32_t, TDagTask*> tmpMap;
+        // How do we iterate over the blocks.
+        // resize(graph, length(taskContext.seqHBlocks));
+        auto it = end(bandGenerator.grid_blocks, Standard());
 
-        std::vector<std::vector<std::shared_ptr<TDagTask>>> graph;
+        do {
+            --it;
 
-        resize(graph, length(taskContext.seqHBlocks));
-        for (int i = length(taskContext.seqHBlocks); --i >= 0;)
-        {
-            resize(graph[i], length(taskContext.seqVBlocks));
-            for (int j = length(taskContext.seqVBlocks); --j >= 0;)
+            if (!*it)  // Bit is not set, hence the block will not be computed.
             {
-                using TSize = decltype(length(taskContext.seqHBlocks));
-                TDagTask * successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks))
-                                                ?  graph[i+1][j].get()
-                                                : nullptr;
-                TDagTask * successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks))
-                                                ? graph[i][j+1].get()
-                                                : nullptr;
-                graph[i][j] = std::make_shared<TDagTask>(taskContext,
-                                                         std::array<TDagTask*, 2>{{successorRight, successorDown}},
-                                                         static_cast<size_t>(i), static_cast<size_t>(j),
-                                                         static_cast<size_t>(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0)),
-                                                         (static_cast<TSize>(i + 1) == length(taskContext.seqHBlocks)),
-                                                         (static_cast<TSize>(j + 1) == length(taskContext.seqVBlocks)));
+                continue;
             }
-        }
-        return graph;
+
+            auto matPos = it - begin(bandGenerator.grid_blocks, Standard());
+            auto hCoord = matPos / length(taskContext.seqVBlocks);
+            auto vCoord = matPos % length(taskContext.seqVBlocks);
+            auto hMatNext = matPos + length(taskContext.seqVBlocks);
+            auto hMatPrev = matPos - length(taskContext.seqVBlocks);
+            auto vMatNext = matPos + 1;
+            auto vMatPrev = matPos - 1;
+
+            TDagTask* successorRight = nullptr;
+            TDagTask* successorDown  = nullptr;
+
+            // The right successor
+            if (hCoord + 1 < length(taskContext.seqHBlocks) && bandGenerator.grid_blocks[hMatNext])
+                successorRight = tmpMap.find(hMatNext);
+
+            // The down successor
+            if (vCoord + 1 < lenght(taskContext.seqVBlocks) && bandGenerator.grid_blocks[vMatNext])
+                successorDown = tmpMap.find(vMatNext);
+
+            graph.push_back(std::make_shared<TDagTask>(taskContext, std::array<TDagTask*, 2>{{successorRight, successorDown}},
+                                                    static_cast<size_t>(hCoord), static_cast<size_t>(vCoord),
+                                                    static_cast<size_t>(((hCoord > 0 && bandGenerator.grid_blocks[hMatPrev]) ? 1 : 0) +
+                                                                        ((vCoord > 0 && bandGenerator.grid_blocks[vMatPrev]) ? 1 : 0)),
+                                                    (static_cast<size_t>(hCoord + 1) == length(taskContext.seqHBlocks)),
+                                                    (static_cast<size_t>(vCoord + 1) == length(taskContext.seqVBlocks))));
+         //
+         // auto hIndex = it->first;
+         // while (hIndex == (it+1)->first)
+         // {
+         //     auto successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks)) ? graph[i+1][j].get() : nullptr;
+         //     auto successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks)) ? graph[i][j+1].get() : nullptr;
+         //     graph.push_back(std::make_shared<TDagTask>(taskContext, std::array<TDagTask*, 2>{{successorRight, successorDown}},
+         //                                                static_cast<size_t>(i), static_cast<size_t>(j),
+         //                                                static_cast<size_t>(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0)),
+         //                                                (static_cast<TSize>(i + 1) == length(taskContext.seqHBlocks)),
+         //                                                (static_cast<TSize>(j + 1) == length(taskContext.seqVBlocks))););
+         // }
+        } while (it != begin(bandGenerator.grid_blocks, Standard()));
     }
 };
 
@@ -322,7 +368,7 @@ public:
 
         // Setup the task context and create task graph.
         TTaskContext taskContext{instanceId, seqHBlocks, seqVBlocks, buffer, dpSettings};
-        auto taskGraph = TIncubator::createTaskGraph(taskContext);
+        auto taskGraph = TIncubator::createTaskGraph(taskContext, seqH, seqV, dpSettings.bandScheme);
 
         // Prepare event.
         WavefrontTaskEvent event;
