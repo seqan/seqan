@@ -113,7 +113,7 @@ struct ParallelAlignmentExecutor
         using TPos = std::make_signed_t<decltype(length(setH))>;
         using TResult = decltype(kernel(setH, setV, std::forward<TArgs>(args)...));
 
-        TPos chunkSize = _min(length(setH), static_cast<TPos>(256));
+        TPos chunkSize = _min(static_cast<TPos>(length(setH)), static_cast<TPos>(256));
         String<TPos> splitter;
         computeSplitters(splitter, length(setH), static_cast<TPos>(length(setH)/chunkSize));
 
@@ -125,7 +125,7 @@ struct ParallelAlignmentExecutor
 #endif  // DP_PARALLEL_SHOW_PROGRESS
 
         SEQAN_OMP_PRAGMA(parallel for num_threads(numThreads(execPolicy)) schedule(guided))
-        for (TPos job = 0; job < length(splitter) - 1; ++job)  // TODO(rrahn): Why -1; Is there a bug in computeSplitters?
+        for (TPos job = 0; job < static_cast<TPos>(length(splitter)) - 1; ++job)  // TODO(rrahn): Why -1; Is there a bug in computeSplitters?
         {
             auto infSetH = infix(setH, splitter[job], splitter[job + 1]);
             auto infSetV = infix(setV, splitter[job], splitter[job + 1]);
@@ -172,7 +172,7 @@ struct ParallelAlignmentExecutor
 #endif  // DP_PARALLEL_SHOW_PROGRESS
 
         SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
-        for (TPos job = 0; job < length(splitter); ++job)
+        for (TPos job = 0; job < static_cast<TPos>(length(splitter)); ++job)
         {
             auto it = begin(zipCont, Standard()) + splitter[job];
             auto itEnd = begin(zipCont, Standard()) + splitter[job + 1];
