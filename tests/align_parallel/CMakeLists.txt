@@ -74,12 +74,5 @@ add_test (NAME test_align_parallel_data_structures COMMAND $<TARGET_FILE:test_al
 if (ALIGN_PARALLEL_SIMD_TEST)
     include (SeqAnSimdUtility)
     add_simd_platform_tests(test_align_parallel_interface)
-if (NOT APPLE)
-    # NOTE(rrahn): There is a bug with the inter-thread synchronization of condition_variable in OSX
-    # (I filed a bug report #36404927 at Apple), which causes our unit tests to fail when running the wavefront model.
-    # So this is disabled right now on apple platforms, but should be reactivated if the bug gets fixed.
     add_simd_platform_tests(test_align_parallel_algorithm)
-else ()
-    message (STATUS "    Not building align_parallel_algorithm test due to bug in condition_variable in OSX.")
-endif ()
 endif ()

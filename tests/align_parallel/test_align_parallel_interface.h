@@ -93,21 +93,6 @@ template <typename T>
 class ParallelAlignInterfaceTestCommon : public ParallelAlignInterfaceTest<T>
 {};
 
-#if defined(__APPLE__)
-// NOTE(rrahn): There is a bug with the inter-thread synchronization of condition_variable in OSX
-// (I filed a bug report #36404927 at Apple), which causes our unit tests to fail when running the wavefront model.
-// So this is deselected right now on all apple platforms, but should be reactivated if the bug gets fixed.
-typedef
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Serial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Serial>>
-#ifdef SEQAN_SIMD_ENABLED
-        ,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Vectorial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Vectorial>>
-        > >
-#endif // SEQAN_SIMD_ENABLED
-        > > ParallelAlignInterfaceTestCommonTypes;
-#else // __APPLE__
 typedef
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Serial>>,
         seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Serial>>,
@@ -122,7 +107,6 @@ typedef
         > > > >
 #endif // SEQAN_SIMD_ENABLED
         > > > > ParallelAlignInterfaceTestCommonTypes;
-#endif // __APPLE__
 
 SEQAN_TYPED_TEST_CASE(ParallelAlignInterfaceTestCommon, ParallelAlignInterfaceTestCommonTypes);
 

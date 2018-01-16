@@ -86,11 +86,9 @@ public:
 inline void
 notify(WavefrontTaskEvent & event)
 {
-    {
-        std::lock_guard<decltype(event.mutexLastTask)> lck(event.mutexLastTask);
-        event.readyLastTask = true;
-    }
-    event.conditionLastTask.notify_one();
+    std::lock_guard<decltype(event.mutexLastTask)> lck(event.mutexLastTask);
+    event.readyLastTask = true;
+    event.conditionLastTask.notify_one();  // We require a strict synchronization between waiting and notifying thread.
 }
 
 inline void
