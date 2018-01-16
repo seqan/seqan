@@ -48,8 +48,12 @@
 #elif defined(PLATFORM_GCC) && (defined(__x86_64__) || defined(__i386__))
   /* GCC-compatible compiler, targeting x86/x86-64 */
   #include <x86intrin.h>
-#else
-  #warning "No supported platform for SIMD vectorization!"
+#elif defined(SEQAN_SIMD_ENABLED)
+  #pragma message "You are trying to build with -DSEQAN_SIMD_ENABLED, which might be " \
+  "auto-defined if AVX or SSE was enabled (e.g. -march=native, -msse4, ...), " \
+  "but we only support x86/x86-64 architectures for SIMD vectorization! " \
+  "You might want to use UME::SIMD (https://github.com/edanor/umesimd) combined " \
+  "with -DSEQAN_UMESIMD_ENABLED for a different SIMD backend."
 #endif
 
 namespace seqan {
