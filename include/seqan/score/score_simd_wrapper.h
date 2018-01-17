@@ -108,7 +108,8 @@ public:
     Score(Score<TScoreVal2, TScoreSpec2> const & pScore,
           SEQAN_CTOR_ENABLE_IF(And<IsScoreMatrix_<TScoreSpec2>, IsSameType<TScoreSpec2, TBaseScoreSpec> >)) :
             data_gap_extend(createVector<TScoreVec>(scoreGapExtend(pScore))),
-            data_gap_open(createVector<TScoreVec>(scoreGapOpen(pScore)))
+            data_gap_open(createVector<TScoreVec>(scoreGapOpen(pScore))),
+            _baseScore(pScore)
     {
         ignoreUnusedVariableWarning(dummy);
     }

@@ -123,6 +123,14 @@ public:
         : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
         loadScoreMatrix(*this, filename);
     }
+
+    Score(Score const &) = default;
+    Score(Score &&) = default;
+
+    Score & operator=(Score const &) = default;
+    Score & operator=(Score &&) = default;
+
+    ~Score() = default;
 };
 
 
