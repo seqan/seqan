@@ -160,7 +160,7 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
 
     // STEP 1: compute sums of all subintervals (in parallel)
     //
-    SEQAN_OMP_PRAGMA(parallel for)
+    SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
     for (int job = 0; job < (int)length(splitter) - 1; ++job)
         localSums[job + 1] = sum(infix(source, splitter[job], splitter[job + 1]), Serial());
 
@@ -171,7 +171,7 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
 
     // STEP 3: compute partial sums of each subinterval starting from offset (in parallel)
     //
-    SEQAN_OMP_PRAGMA(parallel for)
+    SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
     for (int job = 0; job < (int)length(splitter); ++job)
     {
         TConstIterator it = begin(source, Standard()) + splitter[job];
