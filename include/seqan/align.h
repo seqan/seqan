@@ -77,6 +77,8 @@
 
 #include <seqan/align/fragment.h>
 
+#include <seqan/align/aligned_sequence_concept.h>
+
 #include <seqan/align/gaps_base.h>
 #include <seqan/align/gaps_iterator_base.h>
 

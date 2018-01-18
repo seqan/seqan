@@ -127,69 +127,45 @@ _precomputeScoreMatrixOffset(TSeqValue const & seqVal,
 // Function _prepareAndRunSimdAlignment()
 // ----------------------------------------------------------------------------
 
-template <typename TResult,
-          typename TTraces,
+template <typename TStringSimdH,
+          typename TStringSimdV,
           typename TSequencesH,
-          typename TSequencesV,
-          typename TScore,
-          typename TAlgo, typename TBand, typename TFreeEndGaps, typename TTraceback,
-          typename TGapModel>
+          typename TSequencesV>
 inline void
-_prepareAndRunSimdAlignment(TResult & results,
-                            TTraces & traces,
-                            TSequencesH const & seqH,
-                            TSequencesV const & seqV,
-                            TScore const & scoringScheme,
-                            AlignConfig2<TAlgo, TBand, TFreeEndGaps, TTraceback> const & alignConfig,
-                            TGapModel const & /*gapModel*/,
-                            SimdAlignEqualLength const & /*tag*/)
+_prepareSimdAlignment(TStringSimdH & stringSimdH,
+                      TStringSimdV & stringSimdV,
+                      TSequencesH const & seqH,
+                      TSequencesV const & seqV,
+                      DPScoutState_<SimdAlignEqualLength> const & /*unused*/)
 {
-    String<TResult, Alloc<OverAligned> > stringSimdH;
-    String<TResult, Alloc<OverAligned> > stringSimdV;
-
     resize(stringSimdH, length(seqH[0]));
     resize(stringSimdV, length(seqV[0]));
     _createSimdRepImpl(stringSimdH, seqH);
     _createSimdRepImpl(stringSimdV, seqV);
-
-    DPScoutState_<SimdAlignEqualLength> state;
-    results = _setUpAndRunAlignment(traces, state, stringSimdH, stringSimdV, scoringScheme, alignConfig, TGapModel());
 }
 
-template <typename TResult,
-          typename TTraces,
+template <typename TStringSimdH,
+          typename TStringSimdV,
           typename TSequencesH,
           typename TSequencesV,
-          typename TScore,
-          typename TAlgo, typename TBand, typename TFreeEndGaps, typename TTraceback,
-          typename TGapModel,
           typename TTraits>
 inline void
-_prepareAndRunSimdAlignment(TResult & results,
-                            TTraces & traces,
-                            TSequencesH const & seqH,
-                            TSequencesV const & seqV,
-                            TScore const & scoringScheme,
-                            AlignConfig2<TAlgo, TBand, TFreeEndGaps, TTraceback> const & alignConfig,
-                            TGapModel const & /*gapModel*/,
-                            SimdAlignVariableLength<TTraits> const /*tag*/)
+_prepareSimdAlignment(TStringSimdH & stringSimdH,
+                      TStringSimdV & stringSimdV,
+                      TSequencesH const & seqH,
+                      TSequencesV const & seqV,
+                      String<size_t> & lengthsH,
+                      String<size_t> & lengthsV,
+                      DPScoutState_<SimdAlignVariableLength<TTraits> > & state)
 {
     SEQAN_ASSERT_EQ(length(seqH), length(seqV));
-    SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<TResult>::VALUE), length(seqH));
+    SEQAN_ASSERT_EQ(static_cast<decltype(length(seqH))>(LENGTH<typename Value<TStringSimdH>::Type>::VALUE), length(seqH));
 
-    using TSimdValueType = typename Value<TResult>::Type;
+    using TSimdVector = typename TTraits::TSimdVector;
+    using TSimdValueType = typename Value<TSimdVector>::Type;
 
     using TPadStringH = ModifiedString<typename Value<TSequencesH const>::Type, ModPadding>;
     using TPadStringV = ModifiedString<typename Value<TSequencesV const>::Type, ModPadding>;
-
-    String<TResult, Alloc<OverAligned> > stringSimdH;
-    String<TResult, Alloc<OverAligned> > stringSimdV;
-
-    using TDPProfile = typename SetupAlignmentProfile_<TAlgo, TFreeEndGaps, TGapModel, TTraceback>::Type;
-    DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult, TSequencesH, TSequencesV, TDPProfile> > > state;
-
-    String<size_t> lengthsH;
-    String<size_t> lengthsV;
 
     resize(lengthsH, length(seqH), Exact{});
     resize(lengthsV, length(seqV), Exact{});
@@ -242,8 +218,6 @@ _prepareAndRunSimdAlignment(TResult & results,
     resize(stringSimdV, maxV);
     _createSimdRepImpl(stringSimdH, paddedH);
     _createSimdRepImpl(stringSimdV, paddedV);
-
-    results = _setUpAndRunAlignment(traces, state, stringSimdH, stringSimdV, scoringScheme, alignConfig, TGapModel());
 }
 
 template <typename TResult,
@@ -269,33 +243,56 @@ _prepareAndRunSimdAlignment(TResult & results,
                                      [seqLengthH, seqLengthV](auto param)
                                      {
                                          return (length(std::get<0>(param)) == seqLengthH) &&
-                                         (length(std::get<1>(param)) == seqLengthV);
+                                                (length(std::get<1>(param)) == seqLengthV);
                                      });
+
+    String<TResult, Alloc<OverAligned> > stringSimdH;
+    String<TResult, Alloc<OverAligned> > stringSimdV;
     if(allSameLength)
-        _prepareAndRunSimdAlignment(results, traces, seqH, seqV, scoringScheme, alignConfig, TGapModel(),
-                                    SimdAlignEqualLength());
+    {
+        DPScoutState_<SimdAlignEqualLength> state;
+        _prepareSimdAlignment(stringSimdH, stringSimdV, seqH, seqV, state);
+        results = _setUpAndRunAlignment(traces, state, stringSimdH, stringSimdV, scoringScheme, alignConfig, TGapModel());
+    }
     else
-        _prepareAndRunSimdAlignment(results, traces, seqH, seqV, scoringScheme, alignConfig, TGapModel(),
-                                    SimdAlignVariableLength<Nothing>());
+    {
+        using TDPProfile = typename SetupAlignmentProfile_<TAlgo, TFreeEndGaps, TGapModel, TTraceback>::Type;
+
+        DPScoutState_<SimdAlignVariableLength<SimdAlignVariableLengthTraits<TResult,
+                                                                            TSequencesH,
+                                                                            TSequencesV,
+                                                                            TDPProfile>>> state;
+        String<size_t> lengthsH;
+        String<size_t> lengthsV;
+        _prepareSimdAlignment(stringSimdH, stringSimdV, seqH, seqV, lengthsH, lengthsV, state);
+
+        results = _setUpAndRunAlignment(traces, state, stringSimdH, stringSimdV, scoringScheme, alignConfig, TGapModel());
+    }
 }
 
 // ----------------------------------------------------------------------------
 // Function _alignWrapperSimd(); Score; StringSet vs. StringSet
 // ----------------------------------------------------------------------------
 
-template <typename TString1, typename TSpec1,
-          typename TString2, typename TSpec2,
+template <typename TSetH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSetH>>,
+                                   Is<ContainerConcept<typename Value<TSetH>::Type>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<ContainerConcept<typename Value<TSetV>::Type>>>
+                               >::VALUE,
+                          int> = 0>
 inline auto
-_alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
-                  StringSet<TString2, TSpec2> const & stringsV,
+_alignWrapperSimd(TSetH const & stringsH,
+                  TSetV const & stringsV,
                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
                   TAlignConfig const & config,
                   TGapModel const & /*gaps*/)
 {
-    typedef typename SimdVector<int16_t>::Type TSimdAlign;
+    typedef typename SimdVector<TScoreValue>::Type TSimdAlign;
 
     unsigned const numAlignments = length(stringsV);
     unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
@@ -314,8 +311,8 @@ _alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
         TSimdAlign resultsBatch;
         if (SEQAN_UNLIKELY(numAlignments < pos + sizeBatch))
         {
-            StringSet<TString1, Dependent<> > depSetH;
-            StringSet<TString2, Dependent<> > depSetV;
+            StringSet<std::remove_const_t<typename Value<TSetH>::Type>, Dependent<> > depSetH;
+            StringSet<std::remove_const_t<typename Value<TSetV>::Type>, Dependent<> > depSetV;
             for (unsigned i = pos; i < fullSize; ++i)
             {
                 if (i >= numAlignments)
@@ -353,19 +350,25 @@ _alignWrapperSimd(StringSet<TString1, TSpec1> const & stringsH,
 // Function _alignWrapperSimd(); Score; String vs. StringSet
 // ----------------------------------------------------------------------------
 
-template <typename TString1,
-          typename TString2, typename TSpec,
+template <typename TSeqH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSeqH>>,
+                                   Not<Is<ContainerConcept<typename Value<TSeqH>::Type>>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<ContainerConcept<typename Value<TSetV>::Type>>>
+                              >::VALUE,
+                           int> = 0>
 inline auto
-_alignWrapperSimd(TString1 const & stringH,
-                  StringSet<TString2, TSpec> const & stringsV,
+_alignWrapperSimd(TSeqH const & stringH,
+                  TSetV const & stringsV,
                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
                   TAlignConfig const & config,
                   TGapModel const & /*gaps*/)
 {
-    typedef typename SimdVector<int16_t>::Type TSimdAlign;
+    typedef typename SimdVector<TScoreValue>::Type TSimdAlign;
 
     unsigned const numAlignments = length(stringsV);
     unsigned const sizeBatch = LENGTH<TSimdAlign>::VALUE;
@@ -375,7 +378,7 @@ _alignWrapperSimd(TString1 const & stringH,
     resize(results, numAlignments);
 
     // Prepare strings.
-    StringSet<TString1, Dependent<> > setH;
+    StringSet<TSeqH, Dependent<> > setH;
     for (auto i = 0u; i < sizeBatch; ++i)
         appendValue(setH, stringH);
 
@@ -389,7 +392,7 @@ _alignWrapperSimd(TString1 const & stringH,
         TSimdAlign resultsBatch;
         if (SEQAN_UNLIKELY(numAlignments < pos + sizeBatch))
         {
-            StringSet<TString2, Dependent<> > depSetV;
+            StringSet<std::remove_const_t<typename Value<TSetV>::Type>, Dependent<> > depSetV;
             for (unsigned i = pos; i < fullSize; ++i)
             {
                 if (i >= numAlignments)
@@ -417,25 +420,31 @@ _alignWrapperSimd(TString1 const & stringH,
 // Function _alignWrapperSimd(); Gaps
 // ----------------------------------------------------------------------------
 
-template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
-          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+template <typename TSetH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSetH>>,
+                                   Is<AlignedSequenceConcept<typename Value<TSetH>::Type>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<AlignedSequenceConcept<typename Value<TSetV>::Type>>>
+                              >::VALUE,
+                          int> = 0>
 inline auto
-_alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
-                  StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+_alignWrapperSimd(TSetH & gapSeqSetH,
+                  TSetV & gapSeqSetV,
                   Score<TScoreValue, TScoreSpec> const & scoringScheme,
                   TAlignConfig const & config,
                   TGapModel const & /*gaps*/)
 {
-    typedef Gaps<TSequenceH, TGapsSpecH>                                TGapSequenceH;
-    typedef Gaps<TSequenceV, TGapsSpecV>                                TGapSequenceV;
+    typedef typename Value<TSetH>::Type                                 TGapSequenceH;
+    typedef typename Value<TSetV>::Type                                 TGapSequenceV;
     typedef typename Size<TGapSequenceH>::Type                          TSize;
     typedef typename Position<TGapSequenceH>::Type                      TPosition;
     typedef TraceSegment_<TPosition, TSize>                             TTraceSegment;
 
-    typedef typename SimdVector<int16_t>::Type                          TSimdAlign;
+    typedef typename SimdVector<TScoreValue>::Type                      TSimdAlign;
 
 #if SEQAN_ALIGN_SIMD_PROFILE
     timer = sysTime();
@@ -452,8 +461,8 @@ _alignWrapperSimd(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSet
     Score<TSimdAlign, ScoreSimdWrapper<Score<TScoreValue, TScoreSpec> > > simdScoringScheme(scoringScheme);
 
     // Prepare string sets with sequences.
-    StringSet<typename Source<TGapSequenceH>::Type, Dependent<> > depSetH;
-    StringSet<typename Source<TGapSequenceV>::Type, Dependent<> > depSetV;
+    StringSet<std::remove_const_t<typename Source<TGapSequenceH>::Type>, Dependent<> > depSetH;
+    StringSet<std::remove_const_t<typename Source<TGapSequenceV>::Type>, Dependent<> > depSetV;
     reserve(depSetH, fullSize);
     reserve(depSetV, fullSize);
     for (unsigned i = 0; i < fullSize; ++i)
