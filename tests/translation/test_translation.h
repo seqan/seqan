@@ -598,6 +598,42 @@ test_translation_stringset_multiframe_impl0()
 
         test_translation_stringset_multiframe_impl(comp, source, TParallelism());
     }
+
+    // handle empty input sequences correctly, see #2228
+    {
+        // one empty input results in 6 empty output frames for consistency
+        insertValue(comp,  0, "");
+        insertValue(comp,  1, "");
+        insertValue(comp,  2, "");
+        insertValue(comp,  3, "");
+        insertValue(comp,  4, "");
+        insertValue(comp,  5, "");
+
+        // too short for anything also results in six empty
+        insertValue(comp,  6, "");
+        insertValue(comp,  7, "");
+        insertValue(comp,  8, "");
+        insertValue(comp,  9, "");
+        insertValue(comp, 10, "");
+        insertValue(comp, 11, "");
+
+        // too short for shift results in some empty frames
+        insertValue(comp, 12, "T");
+        insertValue(comp, 13, "");
+        insertValue(comp, 14, "");
+        insertValue(comp, 15, "R");
+        insertValue(comp, 16, "");
+        insertValue(comp, 17, "");
+
+        StringSet<Dna5String, TSetSpec> source;
+        appendValue(source, ""); // empty
+        appendValue(source, "a"); // empty
+        appendValue(source, "acg"); // some empty frames
+        appendValue(source, "acgtnncgtaaaccgttaaaccgnntaagtnnaccccggtaccgataan");
+        appendValue(source, "ggttacgtatnntaccggttagtacttggggcgagtaganngtt");
+
+        test_translation_stringset_multiframe_impl(comp, source, TParallelism());
+    }
 }
 
 SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_serial)
