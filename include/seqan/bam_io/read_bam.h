@@ -267,7 +267,7 @@ readRecord(BamAlignmentRecord & record,
     TQualIter qitEnd = end(record.qual, Standard());
     for (TQualIter qit = begin(record.qual, Standard()); qit != qitEnd;)
         *qit++ = '!' + *it++;
-    if (!empty(record.qual) && record.qual[0] == '\xff')
+    if (!empty(record.qual) && (record.qual[0] - '!') == '\xff')
         clear(record.qual);
 
     // tags
