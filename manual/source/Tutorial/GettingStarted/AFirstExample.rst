@@ -377,6 +377,7 @@ In addition, because they are so frequently used there are shortcuts as well.
 For example :dox:`Blosum62` is really a **shortcut** for ``Score<int, ScoreMatrix<AminoAcid, Blosum62_> >``, which is obviously very helpful.
 Other shortcuts are ``DnaString`` for ``String<Dna>`` (:ref:`sequence tutorial <tutorial-datastructures-sequences>`), ``CharString`` for ``String<char>``, ...
 
+.. _template-subclassing:
 .. tip::
 
    Template Subclassing
