@@ -162,24 +162,29 @@ public:
  * @fn BamFileIn#jumpToRegion
  * @brief Seek in BamFileIn using an index.
  *
- * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
- * jumps to the first alignment in this region, if any.
+ * You provide a region <tt>[regionStart, regionEnd]</tt> on the reference <tt>refID</tt>
+ * that you want to jump to and the function jumps to the first alignment (bam record)
+ * whose start position lies inside this region, if any.
+ * Note: The current inmplementation only consideres the read start positions.
+ *       Therefore, we do guarantee that reads overlapping the region are included.
+ *       To account for this limitation you may want to choose the start of your
+ *       your region with an appropiate offset (e.g. start - length_of_read).
  *
- * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, pos, posEnd, index);
+ * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, regionStart, regionEnd, index);
  *
  * @param[in,out] bamFileIn     The @link BamFileIn @endlink to jump with.
- * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
- *                              alignments.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[regionStart, regionEnd]</tt> has any
+ *                              at least one overlapping alignment (bam record).
  * @param[in]     refID         The reference id to jump to (<tt>int32_t</tt>).
- * @param[in]     pos           The begin of the region to jump to (<tt>int32_t</tt>).
- * @param[in]     posEnd        The end of the region to jump to (<tt>int32_t</tt>).
+ * @param[in]     regionStart   The begin of the region to jump to (<tt>int32_t</tt>).
+ * @param[in]     regionEnd     The end of the region to jump to (<tt>int32_t</tt>).
  * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
  *
  * @return bool true if seeking was successful, false if not.
  *
  * @section Remarks
  *
- * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ * This function fails if <tt>refID</tt>/<tt>regionStart</tt> are invalid.
  */
 
 static inline void
@@ -202,8 +207,8 @@ inline bool
 jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
              bool & hasAlignments,
              int32_t refId,
-             int32_t pos,
-             int32_t posEnd,
+             int32_t regionStart,
+             int32_t regionEnd,
              BamIndex<Bai> const & index)
 {
     if (!isEqual(format(bamFile), Bam()))
@@ -220,12 +225,12 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
     // ------------------------------------------------------------------------
     uint64_t offset = std::numeric_limits<uint64_t>::max();
 
-    // Retrieve the candidate bin identifiers for [pos, posEnd).
+    // Retrieve the candidate bin identifiers for [regionStart, regionEnd).
     String<uint16_t> candidateBins;
-    _baiReg2bins(candidateBins, pos, posEnd);
+    _baiReg2bins(candidateBins, regionStart, regionEnd);
 
     // Retrieve the smallest required offset from the linear index.
-    unsigned windowIdx = pos >> 14;  // Linear index consists of 16kb windows.
+    unsigned windowIdx = regionStart >> 14;  // Linear index consists of 16kb windows.
     uint64_t linearMinOffset = 0;
     if (windowIdx >= length(index._linearIndices[refId]))
     {
@@ -298,24 +303,43 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
         readRecord(record, bamFile);
 
         // std::cerr << "record.beginPos == " << record.beginPos << "\n";
-         int32_t endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (!hasAlignments && record.beginPos <= posEnd && pos <= endPos)
+
+        if (record.beginPos <= regionStart)
         {
-            // Found a valid alignment.
-            hasAlignments = true;
             offset = *candIt;
         }
 
-        if (record.beginPos >= posEnd)
+        if (record.beginPos >= regionEnd)
             break;  // Cannot find overlapping any more.
     }
 
-    if (offset != std::numeric_limits<uint64_t>::max())
-        setPosition(bamFile, offset);
+    if (offset == std::numeric_limits<uint64_t>::max())
+        return true; // Finding no overlapping alignment is not an error, hasAlignments is false.
 
-    // Finding no overlapping alignment is not an error, hasAlignments is false.
+    // Now only the right most offset was found but it is not ensured that the
+    // alignment at the start of the offset lies inside the region.
+    // Therefore we must advance further or until the region ends.
+    setPosition(bamFile, offset);
+
+    while (!atEnd(bamFile))
+    {
+        auto seek_pos = position(bamFile); // store current pos to reset bamFile if necessary
+
+        readRecord(record, bamFile);
+
+        if (record.beginPos >= regionEnd)
+            break;
+
+        if (record.beginPos >= regionStart)
+        {
+            hasAlignments = true;
+            setPosition(bamFile, seek_pos);
+            break;
+        }
+    }
+
     return true;
 }
 
