@@ -195,9 +195,9 @@ clearVector(TSimdVector & vector);
  *     c[i] = a;
  * ```
  */
-template <typename TSimdVector, typename TValue>
+template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-createVector(TValue const x);
+createVector(typename Value<TSimdVector>::Type const x);
 
 /**
  * ```

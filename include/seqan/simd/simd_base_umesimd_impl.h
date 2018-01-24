@@ -352,21 +352,9 @@ clearVector(TSimdVector & vector)
 // Function createVector()
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector, typename TValue>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<SimdMaskVectorConcept<TSimdVector>>,
-                                Not<Is<SimdVectorConcept<TSimdVector>>>>, TSimdVector)
-createVector(TValue const x)
-{
-    return TSimdVector(static_cast<bool>(x));
-}
-
-// --------------------------------------------------------------------------
-// Function createVector()
-// --------------------------------------------------------------------------
-
-template <typename TSimdVector, typename TValue>
+template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-createVector(TValue const x)
+createVector(typename Value<TSimdVector>::Type const x)
 {
     return TSimdVector(x);
 }
