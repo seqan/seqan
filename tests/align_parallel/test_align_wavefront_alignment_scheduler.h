@@ -103,9 +103,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
             {
                 std::lock_guard<std::mutex> lck(mutexEvent);
                 eventState = true;
+                event.notify_one();
             }
-
-            event.notify_one();
         };
         scheduleTask(_taskScheduler, task);
         // need to wait for the internal task_scheduler.
@@ -174,9 +173,8 @@ struct RaiiEvent
         {
             std::lock_guard<std::mutex> lck(mutexEvent);
             eventState = true;
+            event.notify_one();
         }
-
-        event.notify_one();
     }
 };
 }

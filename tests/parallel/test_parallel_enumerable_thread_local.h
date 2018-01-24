@@ -38,7 +38,7 @@
 
 namespace test_align_parallel
 {
-struct alignas(128) TestValue
+struct TestValue
 {
     std::string mMsg{"default constructed"};
 
