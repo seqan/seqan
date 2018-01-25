@@ -285,22 +285,38 @@ int main() {
   return 0;
 }")
 
-set(SEQAN_SIMD_SEQANSIMD_AVX512_SKX_SOURCE
+set(SEQAN_SIMD_SEQANSIMD_AVX512_KNL_SOURCE
 "#include <x86intrin.h>
 #include <iostream>
-using int8x32_t = signed char __attribute__ ((__vector_size__(32)));
-unsigned length = sizeof(int8x32_t) / sizeof(char);
+
 
 int main() {
   // clang bug 4.0.0, https://bugs.llvm.org//show_bug.cgi?id=31731
   // -std=c++14 -mavx512bw -O3
-  int8x32_t a{}, b{};
-  for (auto i = 0u; i < length; ++i) { a[i] = i-1; b[i] = -i; }
 
-  auto c = a < b;
-  for(auto i = 0u; i < length; ++i)
-    std::cout << (int)c[i] << std::endl;
+  {
+    using int8x32_t = signed char __attribute__ ((__vector_size__(32)));
+    unsigned length = sizeof(int8x32_t) / sizeof(char);
+    int8x32_t a{}, b{};
+    for (auto i = 0u; i < length; ++i) { a[i] = i-1; b[i] = -i; }
 
+    auto c = a < b;
+    for(auto i = 0u; i < length; ++i)
+      std::cout << (int)c[i] << std::endl;
+  }
+
+  // gcc 5.0 bug
+  // -std=c++14 -mavx512f -O3
+  {
+    using int8x64_t = signed char __attribute__ ((__vector_size__(64)));
+    unsigned length = sizeof(int8x64_t) / sizeof(char);
+    int8x64_t a{}, b{};
+    for (auto i = 0u; i < length; ++i) { a[i] = i-1; b[i] = -i; }
+
+    auto c = a == b;
+    for(auto i = 0u; i < length; ++i)
+      std::cout << (int)c[i] << std::endl;
+  }
   return 0;
 }")
 
@@ -409,13 +425,13 @@ macro(detect_simd_support)
 
         # try-compile known compiler crashes/errors with seqan-simd and exclude them
         if (SEQAN_SIMD_SEQANSIMD_SUPPORTED)
-            set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_SKX_FLAGS}")
-            check_cxx_simd_source_runs("${SEQAN_SIMD_SEQANSIMD_AVX512_SKX_SOURCE}" SEQANSIMD_AVX512_SKX_SOURCE_RUNS)
+            set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_KNL_FLAGS}")
+            check_cxx_simd_source_runs("${SEQAN_SIMD_SEQANSIMD_AVX512_KNL_SOURCE}" SEQANSIMD_AVX512_KNL_SOURCE_RUNS)
 
-            if (SEQANSIMD_AVX512_SKX_SOURCE_RUNS_COMPILED)
+            if (SEQANSIMD_AVX512_KNL_SOURCE_RUNS_COMPILED)
                 set(_SEQANSIMD_SUPPORTED "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
             else ()
-                simd_list_version_less(_SEQANSIMD_SUPPORTED "avx512_skx")
+                simd_list_version_less(_SEQANSIMD_SUPPORTED "avx512_knl")
             endif()
         endif()
 

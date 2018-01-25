@@ -89,9 +89,9 @@ clearVector(TSimdVector & vector)
 // Function createVector()
 // --------------------------------------------------------------------------
 
-template <typename TSimdVector, typename TValue>
+template <typename TSimdVector>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TSimdVector> >, TSimdVector)
-createVector(TValue const x)
+createVector(typename Value<TSimdVector>::Type const x)
 {
     typedef typename Value<TSimdVector>::Type TIVal;
     return _createVector<TSimdVector>(x, SimdParams_<sizeof(TSimdVector), sizeof(TSimdVector) / sizeof(TIVal)>());
