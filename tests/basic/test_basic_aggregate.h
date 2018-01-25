@@ -479,7 +479,10 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_constructors)
 
     // Default constructor.
     {
-        TPair p;
+        TPair p{};
+
+        SEQAN_ASSERT_EQ(p.i1, 0);
+        SEQAN_ASSERT_EQ(p.i2, 0u);
     }
 
     // Normal Constructor Pair(i1, i2).
