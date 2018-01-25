@@ -695,8 +695,36 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
  * @return TReturn Returns a <tt>bool</tt> which is <tt>true</tt> on successes and <tt>false</tt> otherwise.
  */
 // This function creates all table of the lf table given a text and a suffix array.
+
 template <typename TText, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
-inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
+inline std::enable_if_t<!isWaveletTree<typename TConfig::Bwt>::Value, void>
+createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
+{
+    typedef LF<TText, TSpec, TConfig>                          TLF;
+    typedef typename Value<TLF>::Type                          TValue;
+    typedef typename Size<TLF>::Type                           TSize;
+
+    // Clear assuming undefined state.
+    clear(lf);
+
+    // Compute prefix sum.
+    prefixSums<TValue>(lf.sums, text);
+
+    // Choose the sentinel substitute.
+    _setSentinelSubstitute(lf);
+
+    // Create and index BWT bwt for rank queries.
+    createRankDictionary(lf, text, sa);
+
+    // Add sentinels to prefix sum.
+    TSize sentinelsCount = countSequences(text);
+    for (TSize i = 0; i < length(lf.sums); ++i)
+        lf.sums[i] += sentinelsCount;
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
+inline std::enable_if_t<isWaveletTree<typename TConfig::Bwt>::Value, void>
+createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
 {
     typedef LF<TText, TSpec, TConfig>                          TLF;
     typedef typename Fibre<TLF, FibreTempBwt>::Type            TBwt;
