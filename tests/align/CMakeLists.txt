@@ -69,22 +69,26 @@ if (ALIGN_SIMD_TEST)
     # Add executable for simd tests.
     add_executable (test_align_simd_global_equal_length
                     test_align_simd_global_equal_length.cpp
-                    test_align_simd.h
+                    test_align_simd_base.h
+                    test_align_simd_global.h
                     test_mock.h)
 
     add_executable (test_align_simd_global_variable_length
                     test_align_simd_global_variable_length.cpp
-                    test_align_simd.h
+                    test_align_simd_base.h
+                    test_align_simd_global.h
                     test_mock.h)
 
     add_executable (test_align_simd_local_equal_length
                     test_align_simd_local_equal_length.cpp
-                    test_align_simd.h
+                    test_align_simd_base.h
+                    test_align_simd_local.h
                     test_mock.h)
 
     add_executable (test_align_simd_local_variable_length
                     test_align_simd_local_variable_length.cpp
-                    test_align_simd.h
+                    test_align_simd_base.h
+                    test_align_simd_local.h
                     test_mock.h)
 
     # Add dependencies found by find_package (SeqAn).
