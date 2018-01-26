@@ -339,6 +339,7 @@ public:
         std::mutex              cs;
         std::condition_variable readyEvent;
         bool                    ready;
+        bool                    bgzfEofMarker;
 
         DecompressionJob() :
             inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
@@ -347,7 +348,8 @@ public:
             size(0),
             cs(),
             readyEvent(),
-            ready(true)
+            ready(true),
+            bgzfEofMarker(false)
         {}
 
         // TODO(rrahn): Do we need a copy constructor for the decompression job.
@@ -358,7 +360,8 @@ public:
             size(other.size),
             cs(),
             readyEvent(),
-            ready(other.ready)
+            ready(other.ready),
+            bgzfEofMarker(other.bgzfEofMarker)
         {}
     };
 
@@ -403,6 +406,7 @@ public:
                 {
                     std::lock_guard<std::mutex> scopedLock(streamBuf->serializer.lock);
 
+                    job.bgzfEofMarker = false;
                     if (streamBuf->serializer.error != NULL)
                         return;
 
@@ -443,6 +447,14 @@ public:
                         streamBuf->serializer.istream.read(
                             (char*)&job.inputBuffer[0] + BGZF_BLOCK_HEADER_LENGTH,
                             tailLen);
+
+                        // Check if end-of-file marker is set
+                        if (memcmp(reinterpret_cast<uint8_t const *>(&job.inputBuffer[0]),
+                                   reinterpret_cast<uint8_t const *>(&BGZF_END_OF_FILE_MARKER[0]),
+                                   28) == 0)
+                        {
+                            job.bgzfEofMarker = true;
+                        }
 
                         if (!streamBuf->serializer.istream.good())
                         {
@@ -589,10 +601,15 @@ public:
                   &job.buffer[0] + MAX_PUTBACK,                 // read position
                   &job.buffer[0] + (MAX_PUTBACK + size));       // end of buffer
 
-            if (job.size == -1)
+            // The end of the bgzf file is reached, either if there was an error, or if the
+            // end-of-file marker was reached, while the uncompressed block had zero size.
+            if (job.size == -1 || (job.size == 0 && job.bgzfEofMarker))
                 return EOF;
             else if (job.size > 0)
                 return Tr::to_int_type(*this->gptr());      // return next character
+
+            throw IOError("BGZF: Invalid end condition in decompression. "
+                          "Most likely due to an empty bgzf block without end-of-file marker.");
         }
     }
 
