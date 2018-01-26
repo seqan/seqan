@@ -178,9 +178,14 @@ void testAlignSimd(TFunctor const &,
     SEQAN_ASSERT_EQ(length(scores), length(alignments));
 
     // Check correctness of alignments using sequential alignment.
-    auto zipRes = makeZipView(scores, alignments);
-    for (auto res : zipRes)
+    // NOTE(rrahn): There seems to be a bug with the intel compiler and the zipView.
+    // The following works without running into the problem, but we need to investigate the issue at some point.
+    auto itBeg = makeZipIterator(begin(scores, seqan::Standard()), begin(alignments, seqan::Standard()));
+    auto itEnd = makeZipIterator(end(scores, seqan::Standard()), end(alignments, seqan::Standard()));
+
+    for (auto it = itBeg; it != itEnd; ++it)
     {
+        auto res = *it;
         typename std::decay<decltype(std::get<1>(res))>::type goldAlign;
         resize(rows(goldAlign), 2);
         assignSource(row(goldAlign, 0), source(row(std::get<1>(res), 0)));

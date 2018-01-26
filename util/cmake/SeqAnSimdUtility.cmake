@@ -576,21 +576,6 @@ macro(add_simd_platform_tests target)
             simd_list_version_greater(seqansimd_test_blacklist sse4)
             set(reason_for_disabled_test "Clang 3.7.x produces executables that fail the basic vector test `test_simd_vector`")
         endif()
-    elseif (COMPILER_LINTEL)
-        # icc >=17.0.0, <=17.0.4
-        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.0) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.5)
-            ## seqan-simd:
-            # all: icc 17.0.x fails test cases [test_align_simd_*]:
-            #       SimdAlignTestCommon_Linear_Align type parameter [...] FAILED
-            #       SimdAlignTestCommon_Linear_Score type parameter [...] FAILED
-            if (NOT ("${target}" MATCHES "test_simd_vector"))
-                set(seqansimd_test_blacklist ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
-                set(reason_for_disabled_test "Intel compiler 17.0.{0-4} produces executables that fail complex tests like `[test_align_simd_*]`")
-            endif()
-        # icc >=17.0.5
-        elseif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 17.0.4)
-            message(AUTHOR_WARNING "Intel compiler >=17.0.5 reevaluate if [test_align_simd_*] can be compiled.")
-        endif()
     endif()
 
     if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
