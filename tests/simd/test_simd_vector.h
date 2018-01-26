@@ -76,7 +76,9 @@ inline void test_matrix_transpose()
 //    std::cout << std::endl;
 //    for(int i=0;i<DIM;++i)
 //        print(std::cout, tmp[i]) << std::endl;
-
+#if defined(__x86_64__) || defined(__amd64__)
+    _mm_empty();  // Fixes icpc warning #13203: No EMMS instruction before call to function
+#endif // defined(__x86_64__) || defined(__amd64__)
     for (int i = 0; i < ROWS; ++i)
         for (int j = 0; j < COLS; ++j)
             SEQAN_ASSERT_EQ(tmp[i][j], random[j * ROWS + i]);
