@@ -581,12 +581,12 @@ macro(add_simd_platform_tests target)
         endif()
     endif()
 
-    if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
+    if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0.0)
         # Disable avx2,avx512_knl,... on travis, because sometimes gcc 5.x and 6.x crashes
         simd_list_version_greater(_travis_compile_blacklist sse4)
         set(seqansimd_compile_blacklist ${seqansimd_compile_blacklist} ${_travis_compile_blacklist})
         set(umesimd_compile_blacklist ${umesimd_compile_blacklist} ${_travis_compile_blacklist})
-        message(STATUS "Don't compile ${seqansimd_compile_blacklist} on travis, because gcc<=6.x crashes occasionally")
+        message(STATUS "Don't compile ${seqansimd_compile_blacklist} on travis, because gcc<=8.x crashes occasionally")
     endif()
 
     # detect simd support by try-compile and try-run
