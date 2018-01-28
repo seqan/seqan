@@ -161,8 +161,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
     }
 
     ExecutionPolicy<WavefrontAlignment<>, Vectorial> execPolicy;
-    setNumThreads(execPolicy, 4);
-    setParallelAlignments(execPolicy, 8);
+    setNumThreads(execPolicy, 2);
+    setParallelAlignments(execPolicy, 4);
     setBlockSize(execPolicy, 56);
 
     using TDPSettings = DPSettings<Score<int, Simple>, test_align_parallel::DPTestConfig>;
