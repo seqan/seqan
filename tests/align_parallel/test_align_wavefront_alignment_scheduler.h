@@ -200,7 +200,6 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
         test_align_parallel::RaiiEvent event;
         TInnerTask task = [&]()
         {
-            if (calledIds[id] > 0)
             {
                 std::lock_guard<std::mutex> lck(mutexSetBool);
                 isRecycled = true;
