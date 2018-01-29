@@ -61,6 +61,16 @@ struct Pager;
 // Classes
 // ============================================================================
 
+// Special end-of-file marker defined by the BGZF compression format.
+// See: https://samtools.github.io/hts-specs/SAMv1.pdf
+static constexpr std::array<uint8_t, 28> BGZF_END_OF_FILE_MARKER {{0x1f, 0x8b, 0x08, 0x04,
+                                                                  0x00, 0x00, 0x00, 0x00,
+                                                                  0x00, 0xff, 0x06, 0x00,
+                                                                  0x42, 0x43, 0x02, 0x00,
+                                                                  0x1b, 0x00, 0x03, 0x00,
+                                                                  0x00, 0x00, 0x00, 0x00,
+                                                                  0x00, 0x00, 0x00, 0x00}};
+
 template <typename TAlgTag>
 struct Compress;
 
