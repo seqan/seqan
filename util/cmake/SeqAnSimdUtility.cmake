@@ -549,10 +549,13 @@ macro(add_simd_platform_tests target)
 
     if (COMPILER_CLANG)
         # clang 4.x
-        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
+        if (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0.2) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0) AND (";${SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD};" MATCHES ";avx512_skx;"))
             message(AUTHOR_WARNING "Clang 4.x; reevaluate if AVX512_skx (seqan-simd only) binaries are working. "
                     "An earlier version had an Internal Compiler Error (https://llvm.org/bugs/show_bug.cgi?id=31731), "
                     "which was fixed, the produced binaries might work now. (clang 5.0 is known to work)")
+        elseif ((CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.9) AND (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0.2))
+            simd_list_version_greater(seqansimd_compile_blacklist avx512_knl)
+            set(reason_for_disabled_test "Clang 4.0.x produces executables that fail the basic vector test `test_simd_vector`")
         # clang =3.9.0
         elseif (NOT (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9) AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.9.1)
             # Build the executables, but don't execute them, because clang <= 3.9.x
@@ -578,12 +581,12 @@ macro(add_simd_platform_tests target)
         endif()
     endif()
 
-    if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.0.0)
+    if(COMPILER_GCC AND DEFINED ENV{TRAVIS} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0.0)
         # Disable avx2,avx512_knl,... on travis, because sometimes gcc 5.x and 6.x crashes
         simd_list_version_greater(_travis_compile_blacklist sse4)
         set(seqansimd_compile_blacklist ${seqansimd_compile_blacklist} ${_travis_compile_blacklist})
         set(umesimd_compile_blacklist ${umesimd_compile_blacklist} ${_travis_compile_blacklist})
-        message(STATUS "Don't compile ${seqansimd_compile_blacklist} on travis, because gcc<=6.x crashes occasionally")
+        message(STATUS "Don't compile ${seqansimd_compile_blacklist} on travis, because gcc<=8.x crashes occasionally")
     endif()
 
     # detect simd support by try-compile and try-run
