@@ -51,7 +51,7 @@ Platform Support
       - ``powerpc, ppc64, ppc64el``
       - ``s390x, alpha, m68k, sh4``
    - Officially **not** supported: ``sparc64``
-   - Thanks to the Debian Med team for their patches!
+   - Thanks to the `Debian Med team <https://www.debian.org/devel/debian-med/>`_ for their patches!
 - Upstream packages:
    - SeqAn2 packages are finally coming to Fedora, thanks to @sagitter
    - Package updates in Debian, Ubuntu, MacPorts, Homebrew and FreeBSD expected shortly.
