@@ -347,7 +347,8 @@ extend(Extender<THaystack, TNeedle, TSpec> & extender,
         assignSource(row(align, 1), needleLeftRev);
 #endif // YARA_PRINT_ALIGN
 
-        if (!_extendLeft(extender, haystackLeft, needleLeft, matchBegin, matchErrors, maxErrors)) return;
+        if (!_extendLeft(extender, haystackLeft, needleLeft, matchBegin, matchErrors, maxErrors)) 
+            return;
 
 #ifdef YARA_PRINT_ALIGN
         globalAlignment(row(align, 0), row(align, 1), Score<short, EditDistance>(),
