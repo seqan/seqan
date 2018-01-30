@@ -388,7 +388,6 @@ template <typename TFormat, typename TSpec>
 struct IsOutputFile<FormattedFile<TFormat, Output, TSpec> > : True
 {};
 
-
 // ----------------------------------------------------------------------------
 // Metafunction DirectionIterator
 // ----------------------------------------------------------------------------
