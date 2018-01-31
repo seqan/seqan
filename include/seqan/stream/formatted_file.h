@@ -365,6 +365,30 @@ struct FormattedFile
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction IsInputFile
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsInputFile : False
+{};
+
+template <typename TFormat, typename TSpec>
+struct IsInputFile<FormattedFile<TFormat, Input, TSpec> > : True
+{};
+
+// ----------------------------------------------------------------------------
+// Metafunction IsOutputFile
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsOutputFile : False
+{};
+
+template <typename TFormat, typename TSpec>
+struct IsOutputFile<FormattedFile<TFormat, Output, TSpec> > : True
+{};
+
+// ----------------------------------------------------------------------------
 // Metafunction DirectionIterator
 // ----------------------------------------------------------------------------
 
