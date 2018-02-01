@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2014, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

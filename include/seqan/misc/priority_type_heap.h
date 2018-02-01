@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,7 @@ _copyHeapElement (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const &
 
 template <typename TValue, typename TLess>
 inline void
-adjustTop (PriorityType<TValue, TLess, PriorityHeap> & me)    // so könnte man es dann auch nennen
+adjustTop (PriorityType<TValue, TLess, PriorityHeap> & me)    // so kï¿½nnte man es dann auch nennen
 {
     if (!empty(me.heap))
         _adjustHeapTowardLeaves (me, me.heap[0], 0, 2);
@@ -301,7 +301,7 @@ _adjustHeapTowardLeaves(
     PriorityType<TValue, TLess, PriorityHeap> & me,
     TValue element,
     TSize h,
-    TSize i ) //für mich: h=0, i=1
+    TSize i ) //fï¿½r mich: h=0, i=1
 {
     // root index is zero
     const TSize heapsize = length(me.heap);
