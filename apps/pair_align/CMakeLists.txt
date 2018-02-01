@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_pair_align CXX)
 message (STATUS "Configuring apps/pair_align")
 
-set (SEQAN_APP_VERSION "1.3.7")
+set (SEQAN_APP_VERSION "1.3.8")
 
 if (SEQAN_TRAVIS_BUILD)
     message (STATUS "  Skipping build and test of pair_align on Travis CI.")
