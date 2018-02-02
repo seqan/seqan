@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1032,10 +1032,10 @@ _createIntervalTree(TGraph & g, TPropertyMap & pm,
     // one list of interval pointers for the intervals to the right of center
     TIntervalPointers S_right;
 
-    TValue min1 = maxValue<TValue>();
-    TValue min2 = maxValue<TValue>();
-    TValue max1 = minValue<TValue>();
-    TValue max2 = minValue<TValue>();
+    TValue min1 = std::numeric_limits<TValue>::max();
+    TValue min2 = std::numeric_limits<TValue>::max();
+    TValue max1 = std::numeric_limits<TValue>::min();
+    TValue max2 = std::numeric_limits<TValue>::min();
 
     value(pm, knot).center = center;
 
@@ -1212,8 +1212,8 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
     TIntervalIterator it = begin(intervals);
     TIntervalIterator it_end = end(intervals);
 
-    TValue min = maxValue<TValue>();
-    TValue max = minValue<TValue>();
+    TValue min = std::numeric_limits<TValue>::max();
+    TValue max = std::numeric_limits<TValue>::min();
 
     // get min and max
     while (it != it_end)

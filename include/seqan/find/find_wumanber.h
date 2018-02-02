@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -360,11 +360,11 @@ void _reinitPattern(Pattern<TNeedle, WuManber> & me)
     typedef typename Size<TKeyword>::Type TSize;
 
     //determine lmin
-    me.lmin = maxValue<TSize>();
+    me.lmin = std::numeric_limits<TSize>::max();
     for (TNeedleIterator it = begin(needle(me)); it != end(needle(me)); ++it)
         if (!empty(*it) && length(*it) < me.lmin)  // skipping empty needles
             me.lmin = length(*it);
-    if (me.lmin == maxValue<TSize>())
+    if (me.lmin == std::numeric_limits<TSize>::max())
         return;  // only empty needles
 
     //compute q:

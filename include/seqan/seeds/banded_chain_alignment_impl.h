@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -89,9 +89,11 @@ template <typename TDist,
 inline bool _checkScoreOverflow(TDist const distance,
                                 Score<TScoreValue, TScoreSpec> const & score)
 {
-    auto mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
-    return static_cast<decltype(BitsPerValue<TScoreValue>::VALUE)>(bitScanReverse(mxScore) + bitScanReverse(distance))
-            <= BitsPerValue<TScoreValue>::VALUE - 1;
+    using TBits = decltype(BitsPerValue<TScoreValue>::VALUE);
+    TScoreValue mxScore = _max(scoreMatch(score), std::abs(scoreMismatch(score)));
+
+    TBits bits = bitScanReverse(mxScore) + bitScanReverse(distance);
+    return bits <= BitsPerValue<TScoreValue>::VALUE - 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -278,19 +280,19 @@ _horizontalCellInitialization(DPScout_<TDPCell, BandedChainAlignmentScout> const
 
 // Determines the various tracking options for the current dp matrix.
 template <typename TScout, typename TNavigator, typename TColumnDescriptor, typename TCellDescriptor, typename TFreeEndGaps,
-          typename TMatrixSpec, typename TGapCosts, typename TTracebackSpec>
+          typename TMatrixSpec, typename TGapCosts, typename TTracebackSpec, typename TExecPolicy>
 inline void _determineTrackingOptions(unsigned & res,
                                       TScout const & scout,
                                       TNavigator const & traceMatrixNavigator,
                                       TColumnDescriptor const & /*columnDescriptor*/,
                                       TCellDescriptor const & /*cellDescriptor*/,
-                                      DPProfile_<BandedChainAlignment_<TFreeEndGaps, TMatrixSpec>, TGapCosts, TTracebackSpec> const &)
+                                      DPProfile_<BandedChainAlignment_<TFreeEndGaps, TMatrixSpec>, TGapCosts, TTracebackSpec, TExecPolicy> const &)
 {
     if (coordinate(traceMatrixNavigator, +DPMatrixDimension_::HORIZONTAL) >=
         scout._dpScoutStatePtr->_horizontalNextGridOrigin)
     {
         // Matches an initialization row.
-        if (IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TLocation, PartialColumnBottom>::VALUE)
         {
             // Matches the cells that have to be stored for initializing the next matrix horizontally.
             if (coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL) + traceMatrixNavigator._laneLeap ==
@@ -314,9 +316,9 @@ inline void _determineTrackingOptions(unsigned & res,
                 res |= BandedChainTracking::OPTION_STORE_INIT_COLUMN;
 
         // We are in the column that has to be tracked, if we are in the last cell.
-        if (IsSameType<TCellDescriptor, LastCell>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TCellDescriptor, LastCell>::VALUE)
         {
-            if (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
             {
                 if (IsFreeEndGap_<TFreeEndGaps, DPLastRow>::VALUE)
                     res |= BandedChainTracking::OPTION_IS_LAST_ROW;
@@ -329,18 +331,18 @@ inline void _determineTrackingOptions(unsigned & res,
 
         // We track the maximal score if we are in the final column
         // For the full column we need to check if we are beyond the initialization row.
-        if (IsSameType<typename TColumnDescriptor::TLocation, FullColumn>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TLocation, FullColumn>::VALUE)
         {
-            if (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
             {
-                if (IsSameType<TCellDescriptor, LastCell>::VALUE)
+                SEQAN_IF_CONSTEXPR (IsSameType<TCellDescriptor, LastCell>::VALUE)
                 {
                     res |= BandedChainTracking::OPTION_IS_LAST_COLUMN | BandedChainTracking::OPTION_IS_LAST_ROW;
                 }
                 else if (coordinate(traceMatrixNavigator, +DPMatrixDimension_::VERTICAL) >=
                          scout._dpScoutStatePtr->_verticalNextGridOrigin)
                 {
-                    if (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
                     {
                         if (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE)
                             res |= BandedChainTracking::OPTION_IS_LAST_COLUMN;
@@ -354,15 +356,15 @@ inline void _determineTrackingOptions(unsigned & res,
         }
         else  // Banded version we track all scores - initialization row ends in first cell of final column
         {
-            if (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE)
             {
-                if (IsSameType<TCellDescriptor, LastCell>::VALUE)
+                SEQAN_IF_CONSTEXPR (IsSameType<TCellDescriptor, LastCell>::VALUE)
                 {
                     res |= BandedChainTracking::OPTION_IS_LAST_COLUMN | BandedChainTracking::OPTION_IS_LAST_ROW;
                 }
                 else
                 {
-                    if (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TMatrixSpec, BandedChainFinalDPMatrix>::VALUE)
                     {
                         if (IsFreeEndGap_<TFreeEndGaps, DPLastColumn>::VALUE)
                             res |= BandedChainTracking::OPTION_IS_LAST_COLUMN;
@@ -405,64 +407,91 @@ _applyBandedChainTracking(TDPScout & scout,
 // ----------------------------------------------------------------------------
 
 // Overload of _computeCell function to add functionality specific to the bande chain alignment.
-template <typename TDPScout, typename TTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TColumnDescriptor,
-          typename TCellDescriptor, typename TFreeEndGaps, typename TDPMatrixLocation, typename TTracebackConfig>
+template <typename TDPScout,
+          typename TTraceMatrixNavigator,
+          typename TDPCell,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TColumnDescriptor,
+          typename TCellDescriptor,
+          typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig, typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-             DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-             DPCell_<TScoreValue, TGapCosts> const & previousVertical,
+             TDPCell & current,
+             TDPCell & diagonal,
+             TDPCell const & horizontal,
+             TDPCell & vertical,
              TSeqHValue const & seqHVal,
              TSeqVValue const & seqVVal,
              TScoringScheme const & scoringScheme,
              TColumnDescriptor const &,
              TCellDescriptor const &,
-             DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
+             DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>,
+                       TGapCosts,
+                       TracebackOn<TTracebackConfig>,
+                       TExecPolicy> TDPProfile;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
     assignValue(
         traceMatrixNavigator,
-        _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal, seqVVal,
+        _computeScore(current, diagonal, horizontal, vertical, seqHVal, seqVVal,
                       scoringScheme, typename RecursionDirection_<TMetaColumnProfile, TCellDescriptor>::Type(),
                       TDPProfile()));
+
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
-        _applyBandedChainTracking(scout, traceMatrixNavigator, activeCell, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
+    {
+        _setVerticalScoreOfCell(current, _verticalScoreOfCell(vertical));
+        _applyBandedChainTracking(scout, traceMatrixNavigator, current, TColumnDescriptor(), TCellDescriptor(),
+                                  TDPProfile());
+    }
 }
 
 // ----------------------------------------------------------------------------
 // Function _computeCell()              [BandedChainAlignment, DPInitialColumn]
 // ----------------------------------------------------------------------------
 
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TColumnType, typename TCellDescriptor,
-          typename TSpec, typename TDPMatrixLocation, typename TTracebackConfig>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TColumnType,
+          typename TCellDescriptor,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig, typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TDPCell & current,
+             TDPCell & diagonal,
+             TDPCell const & horizontal,
+             TDPCell & vertical,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const & /*scoringScheme*/,
              MetaColumnDescriptor<DPInitialColumn, TColumnType> const & /*metaColumnDescriptor*/,
              TCellDescriptor const & /*cellDescriptor*/,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const & /*dpProfile*/)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const & /*dpProfile*/)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>,
+                       TGapCosts,
+                       TracebackOn<TTracebackConfig>,
+                       TExecPolicy> TDPProfile;
     typedef MetaColumnDescriptor<DPInitialColumn, TColumnType> TColumnDescriptor;
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
-    activeCell = _verticalCellInitialization(scout, traceMatrixNavigator);
-    assignValue(traceMatrixNavigator, +TraceBitMap_<>::NONE);
+    _scoreOfCell(diagonal) = _scoreOfCell(horizontal);
+    current = _verticalCellInitialization(scout, traceMatrixNavigator);
+    assignValue(traceMatrixNavigator, TraceBitMap_<>::NONE);
+    _scoreOfCell(vertical) = _scoreOfCell(current);
+    _setVerticalScoreOfCell(vertical, _verticalScoreOfCell(current));
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
-        _applyBandedChainTracking(scout, traceMatrixNavigator, activeCell, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
+        _applyBandedChainTracking(scout, traceMatrixNavigator, current, TColumnDescriptor(), TCellDescriptor(),
+                                  TDPProfile());
 }
 
 // ----------------------------------------------------------------------------
@@ -482,7 +511,7 @@ _computeHorizontalInitCell(TDPScout & scout,
     typedef DPMetaColumn_<TDPProfile, TColumnDescriptor> TMetaColumnProfile;
 
     activeCell = _horizontalCellInitialization(scout, traceMatrixNavigator);
-    assignValue(traceMatrixNavigator, +TraceBitMap_<>::NONE);
+    assignValue(traceMatrixNavigator, TraceBitMap_<>::NONE);
     if (TrackingEnabled_<TMetaColumnProfile, TCellDescriptor>::VALUE)
         _applyBandedChainTracking(scout, traceMatrixNavigator, activeCell, TColumnDescriptor(), TCellDescriptor(), TDPProfile());
 }
@@ -492,49 +521,68 @@ _computeHorizontalInitCell(TDPScout & scout,
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig>
+template <typename TDPScout, typename TDPTraceMatrixNavigator,
+          typename TDPCell,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig, typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TDPCell & current,
+             TDPCell & diagonal,
+             TDPCell const & horizontal,
+             TDPCell & vertical,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
              MetaColumnDescriptor<DPInnerColumn, PartialColumnTop> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>,
+                       TGapCosts,
+                       TracebackOn<TTracebackConfig>,
+                       TExecPolicy> TDPProfile;
+    _scoreOfCell(diagonal) = _scoreOfCell(horizontal);
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, current,
                                MetaColumnDescriptor<DPInnerColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
+    _scoreOfCell(vertical) = _scoreOfCell(current);
+    _setVerticalScoreOfCell(vertical, _verticalScoreOfCell(current));
 }
 
 // For DPFinalColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig, typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TDPCell & current,
+             TDPCell & diagonal,
+             TDPCell const & horizontal,
+             TDPCell & vertical,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
              MetaColumnDescriptor<DPFinalColumn, PartialColumnTop> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>,
+                       TGapCosts,
+                       TracebackOn<TTracebackConfig>,
+                       TExecPolicy> TDPProfile;
+    _scoreOfCell(diagonal) = _scoreOfCell(horizontal);
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, current,
                                MetaColumnDescriptor<DPFinalColumn, PartialColumnTop>(), FirstCell(), TDPProfile());
+    _scoreOfCell(vertical) = _scoreOfCell(current);
+    _setVerticalScoreOfCell(vertical, _verticalScoreOfCell(current));
 }
 
 // ----------------------------------------------------------------------------
@@ -542,49 +590,68 @@ _computeCell(TDPScout & scout,
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig, typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TDPCell & current,
+             TDPCell & diagonal,
+             TDPCell const & horizontal,
+             TDPCell & vertical,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
              MetaColumnDescriptor<DPInnerColumn, FullColumn> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>,
+                       TGapCosts,
+                       TracebackOn<TTracebackConfig>,
+                       TExecPolicy> TDPProfile;
+    _scoreOfCell(diagonal) = _scoreOfCell(horizontal);
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, current,
                                MetaColumnDescriptor<DPInnerColumn, FullColumn>(), FirstCell(), TDPProfile());
+    _scoreOfCell(vertical) = _scoreOfCell(current);
+    _setVerticalScoreOfCell(vertical, _verticalScoreOfCell(current));
 }
 
 // For DPFinalColumn.
-template <typename TDPScout, typename TDPTraceMatrixNavigator, typename TScoreValue, typename TGapCosts,
-          typename TSeqHValue, typename TSeqVValue, typename TScoringScheme, typename TSpec, typename TDPMatrixLocation,
-          typename TTracebackConfig>
+template <typename TDPScout,
+          typename TDPTraceMatrixNavigator,
+          typename TDPCell,
+          typename TSeqHValue,
+          typename TSeqVValue,
+          typename TScoringScheme,
+          typename TSpec, typename TDPMatrixLocation, typename TGapCosts, typename TTracebackConfig, typename TExecPolicy>
 inline void
 _computeCell(TDPScout & scout,
              TDPTraceMatrixNavigator & traceMatrixNavigator,
-             DPCell_<TScoreValue, TGapCosts> & activeCell,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
-             DPCell_<TScoreValue, TGapCosts> const &,
+             TDPCell & current,
+             TDPCell & diagonal,
+             TDPCell const & horizontal,
+             TDPCell & vertical,
              TSeqHValue const &,
              TSeqVValue const &,
              TScoringScheme const &,
              MetaColumnDescriptor<DPFinalColumn, FullColumn> const &,
              FirstCell const &,
-             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > const &)
+             DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig>, TExecPolicy> const &)
 {
-    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>, TGapCosts, TracebackOn<TTracebackConfig> > TDPProfile;
-    _computeHorizontalInitCell(scout, traceMatrixNavigator, activeCell,
+    typedef DPProfile_<BandedChainAlignment_<TSpec, TDPMatrixLocation>,
+                      TGapCosts,
+                      TracebackOn<TTracebackConfig>,
+                      TExecPolicy> TDPProfile;
+    _scoreOfCell(diagonal) = _scoreOfCell(horizontal);
+    _computeHorizontalInitCell(scout, traceMatrixNavigator, current,
                                MetaColumnDescriptor<DPFinalColumn, FullColumn>(), FirstCell(), TDPProfile());
+    vertical = current;
 }
 
 // ----------------------------------------------------------------------------
@@ -678,20 +745,22 @@ void _printTraceSegments(T const & globalTraceSet)
 
 // Handles the initialization of cells for the very first dp matrix.
 template <typename TScoutState, typename TSizeH, typename TSizeV, typename TScoreScheme, typename TFreeEndGaps,
-          typename TDPMatrixLocation, typename TGapCosts, typename TTraceback>
+          typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TExecPolicy>
 inline void
 _initiaizeBeginningOfBandedChain(TScoutState & scoutState,
                                  TSizeH sizeH,
                                  TSizeV sizeV,
                                  TScoreScheme const & scoreScheme,
-                                 DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback> const &)
+                                 DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy> const &)
 {
     typedef typename TScoutState::TInitCell TInitCell;
     typedef typename Value<TInitCell, 3>::Type TDPCell;
-    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback> TDPProfile;
+    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy> TDPProfile;
 
     TDPCell dpInitCellHorizontal;
-    _computeScore(dpInitCellHorizontal, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), Nothing(),
+    TDPCell dummy;
+    _computeScore(dpInitCellHorizontal, dummy, dummy, dummy,
+                  Nothing(), Nothing(), Nothing(),
                   RecursionDirectionZero(), TDPProfile());
     scoutState._nextInitializationCells.insert(TInitCell(0,0, dpInitCellHorizontal));
 
@@ -699,26 +768,31 @@ _initiaizeBeginningOfBandedChain(TScoutState & scoutState,
     {
         TDPCell prevCell = dpInitCellHorizontal;
         if (IsFreeEndGap_<TFreeEndGaps, DPFirstRow>::VALUE)
-            _computeScore(dpInitCellHorizontal, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), scoreScheme,
+            _computeScore(dpInitCellHorizontal, dummy, dummy, dummy,
+                  Nothing(), Nothing(), scoreScheme,
                   RecursionDirectionZero(), TDPProfile());
         else
-            _computeScore(dpInitCellHorizontal, TDPCell(), prevCell, TDPCell(), Nothing(), Nothing(), scoreScheme,
+            _computeScore(dpInitCellHorizontal, dummy, prevCell, dummy,
+                  Nothing(), Nothing(), scoreScheme,
                   RecursionDirectionHorizontal(), TDPProfile());
         scoutState._nextInitializationCells.insert(TInitCell(activeColumn, 0, dpInitCellHorizontal));
     }
 
     TDPCell dpInitCellVertical;
-    _computeScore(dpInitCellVertical, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), Nothing(),
+    _computeScore(dpInitCellVertical, dummy, dummy, dummy,
+                  Nothing(), Nothing(), Nothing(),
                   RecursionDirectionZero(), TDPProfile());
     for(TSizeV activeRow = 1; activeRow < sizeV; ++activeRow)
     {
-        TDPCell prevCell = dpInitCellVertical;
+//        TDPCell prevCell = dpInitCellVertical;
         if (IsFreeEndGap_<TFreeEndGaps, DPFirstColumn>::VALUE)
-            _computeScore(dpInitCellVertical, TDPCell(), TDPCell(), TDPCell(), Nothing(), Nothing(), scoreScheme,
-                  RecursionDirectionZero(), TDPProfile());
+            _computeScore(dpInitCellVertical, dummy, dummy, dummy,
+                          Nothing(), Nothing(), scoreScheme,
+                          RecursionDirectionZero(), TDPProfile());
         else
-            _computeScore(dpInitCellVertical, TDPCell(), TDPCell(), prevCell, Nothing(), Nothing(), scoreScheme,
-                  RecursionDirectionVertical(), TDPProfile());
+            _computeScore(dummy, dummy, dummy, dpInitCellVertical,
+                          Nothing(), Nothing(), scoreScheme,
+                          RecursionDirectionVertical(), TDPProfile());
         scoutState._nextInitializationCells.insert(TInitCell(0, activeRow, dpInitCellVertical));
     }
 
@@ -732,7 +806,7 @@ _initiaizeBeginningOfBandedChain(TScoutState & scoutState,
 // first gap-area followed by the first anchor.
 template <typename TTraceSet, typename TScoutState, typename TSeed, typename TSeqH, typename TSeqV,
           typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps,
-          typename TTracebackConfig>
+          typename TTracebackConfig, typename TExecPolicy>
 inline typename Value<TScoreScheme>::Type
 _initializeBandedChain(TTraceSet & globalTraceSet,
                        TScoutState & scoutState,
@@ -742,7 +816,7 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
                        TSeqV const & seqV,
                        TScoreScheme const & scoreSchemeAnchor,
                        TScoreScheme const & scoreSchemeGap,
-                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackConfig> > const & dpProfile)
+                       DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy> const & dpProfile)
 {
     typedef typename Infix<TSeqH const>::Type TInfixH;
     typedef typename Infix<TSeqV const>::Type TInfixV;
@@ -798,7 +872,7 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
         // Call the basic alignment function.
         score = _computeAlignment(globalTraceSet, scoutState, infixH, infixV, scoreSchemeGap, DPBandConfig<BandOff>(),
                                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainInitialDPMatrix>, TGaps,
-                                             TracebackOn<TTracebackConfig> >());
+                                             TracebackOn<TTracebackConfig>, TExecPolicy>());
     }
     else
     {
@@ -854,17 +928,17 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
             resize(localTraceSet, 1);
             DPScoutState_<Default> noScout;
             score = _computeAlignment(localTraceSet[0], noScout, infixH, infixV, scoreSchemeGap, band,
-                      DPProfile_<GlobalAlignment_<TFreeEndGaps>, TGaps, TracebackOn<TTracebackConfig> >());
+                      DPProfile_<GlobalAlignment_<TFreeEndGaps>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy>());
         }
         else
             score = _computeAlignment(localTraceSet, scoutState, infixH, infixV, scoreSchemeGap, band,
-                      DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainInitialDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
+                      DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainInitialDPMatrix>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy>());
     }
     else
     {
         if (gridEnd.i1 == length(seqH) && gridEnd.i2 == length(seqV))  // The anchor crosses the end of the matrix.
             score = _computeAlignment(localTraceSet, scoutState, infixH, infixV, scoreSchemeGap, band,
-                              DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
+                              DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy>());
         else
             score = _computeAlignment(localTraceSet, scoutState, infixH, infixV, scoreSchemeGap, band, dpProfile);
     }
@@ -892,7 +966,8 @@ _initializeBandedChain(TTraceSet & globalTraceSet,
 // ----------------------------------------------------------------------------
 
 template <typename TTraceSet, typename TDPScoutState, typename TSeed, typename TSeqH, typename TSeqV,
-          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackSpec>
+          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackSpec,
+          typename TExecPolicy>
 inline typename Value<TScoreScheme>::Type
 _computeGapArea(TTraceSet & globalTraceSet,
                 TDPScoutState & scoutState,
@@ -901,7 +976,7 @@ _computeGapArea(TTraceSet & globalTraceSet,
                 TSeqH const & seqH,
                 TSeqV const & seqV,
                 TScoreScheme const & scoreScheme,
-                DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackSpec> > const & dpProfile)
+                DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackSpec>, TExecPolicy> const & dpProfile)
 {
     typedef typename Infix<TSeqH const>::Type TInfixH;
     typedef typename Infix<TSeqV const>::Type TInfixV;
@@ -953,7 +1028,8 @@ _computeGapArea(TTraceSet & globalTraceSet,
 // ----------------------------------------------------------------------------
 
 template <typename TTraceSet, typename TDPScoutState, typename TSeed, typename TSeqH, typename TSeqV,
-          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackSpec>
+          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackSpec,
+          typename TExecPolicy>
 inline typename Value<TScoreScheme>::Type
 _computeAnchorArea(TTraceSet & globalTraceSet,
                    TDPScoutState & scoutState,
@@ -962,7 +1038,7 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
                    TSeqH const & seqH,
                    TSeqV const & seqV,
                    TScoreScheme const & scoreScheme,
-                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackSpec> > const & dpProfile)
+                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackSpec>, TExecPolicy> const & dpProfile)
 {
     typedef typename Infix<TSeqH const>::Type TInfixH;
     typedef typename Infix<TSeqV const>::Type TInfixV;
@@ -1025,7 +1101,8 @@ _computeAnchorArea(TTraceSet & globalTraceSet,
 // ----------------------------------------------------------------------------
 
 template <typename TTraceSet, typename TDPScoutState, typename TSeed, typename TSeqH, typename TSeqV,
-          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackConfig>
+          typename TScoreScheme, typename TFreeEndGaps, typename TDPMatrixLocation, typename TGaps, typename TTracebackConfig,
+          typename TExecPolicy>
 inline typename Value<TScoreScheme>::Type
 _finishBandedChain(TTraceSet & globalTraceSet,
                    TDPScoutState & dpScoutState,
@@ -1035,7 +1112,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
                    TSeqV const & seqV,
                    TScoreScheme const & scoreSchemeAnchor,
                    TScoreScheme const & scoreSchemeGap,
-                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackConfig> > const & dpProfile)
+                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy> const & dpProfile)
 {
     //typedef typename Position<TSeqH const>::Type TPosH;
     //typedef typename Position<TSeqV const>::Type TPosV;
@@ -1106,7 +1183,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
             // Compute the last anchor which crosses the end of the global grid.
         clear(localTraceSet);
         TScoreValue score = _computeAlignment(localTraceSet, dpScoutState, infixH, infixV, scoreSchemeAnchor, band,
-                                  DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
+                                  DPProfile_<BandedChainAlignment_<TFreeEndGaps, BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy>());
 
         _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
         if (!empty(localTraceSet))
@@ -1157,7 +1234,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
     clear(localTraceSet);
     score = _computeAlignment(localTraceSet, dpScoutState, suffix(seqH, gridBegin.i1), suffix(seqV,gridBegin.i2),
                               scoreSchemeGap, DPBandConfig<BandOff>(), DPProfile_<BandedChainAlignment_<TFreeEndGaps,
-                              BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig> >());
+                              BandedChainFinalDPMatrix>, TGaps, TracebackOn<TTracebackConfig>, TExecPolicy>());
 
     _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
     if (!empty(localTraceSet))
@@ -1170,7 +1247,8 @@ _finishBandedChain(TTraceSet & globalTraceSet,
 // ----------------------------------------------------------------------------
 
 template <typename TGapScheme, typename TTraceTarget, typename TScoutState, typename TSequenceH, typename TSequenceV,
-          typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag>
+          typename TScoreScheme, typename TBandSwitch, typename TAlignmentAlgorithm, typename TTraceFlag,
+          typename TExecPolicy>
 inline typename Value<TScoreScheme>::Type
 _computeAlignment(TTraceTarget & traceSegments,
                   TScoutState & scoutState,
@@ -1178,10 +1256,10 @@ _computeAlignment(TTraceTarget & traceSegments,
                   TSequenceV const & seqV,
                   TScoreScheme const & scoreScheme,
                   DPBandConfig<TBandSwitch> const & band,
-                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag> const & dpProfile)
+                  DPProfile_<TAlignmentAlgorithm, TGapScheme, TTraceFlag, TExecPolicy> const & dpProfile)
 {
     typedef typename Value<TScoreScheme>::Type TScoreValue;
-    typedef DPContext<TScoreValue, TGapScheme> TDPContext;
+    typedef DPContext<DPCell_<TScoreValue, TGapScheme>, typename TraceBitMap_<TScoreValue>::Type> TDPContext;
     TDPContext dpContext;
     return _computeAlignment(dpContext, traceSegments, scoutState, seqH, seqV, scoreScheme, band, dpProfile);
 }
@@ -1195,7 +1273,7 @@ _computeAlignment(TTraceTarget & traceSegments,
 // the gap between them using a standard dp algorithm.
 template <typename TTraceSet, typename TSeedSet, typename TSequenceH, typename TSequenceV, typename TScoreValue,
           typename TScoreSpecAnchor, typename TScoreSpecGap, typename TFreeEndGaps, typename TDPMatrixLocation,
-          typename TGapSpec, typename TTracebackConfig>
+          typename TGapSpec, typename TTracebackConfig, typename TExecPolicy>
 inline TScoreValue
 _computeAlignment(TTraceSet & globalTraceSet,
                   TSeedSet const & seedSet,
@@ -1205,10 +1283,8 @@ _computeAlignment(TTraceSet & globalTraceSet,
                   Score<TScoreValue, TScoreSpecGap> const & scoreSchemeGap,
                   unsigned bandExtension,
                   DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec,
-                             TracebackOn<TTracebackConfig> > const & profile)
+                             TracebackOn<TTracebackConfig>, TExecPolicy> const & profile)
 {
-    //typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapSpec, TracebackOn<TTracebackConfig> > TAlignmentProfile;
-
     typedef typename Position<TSequenceH>::Type TPosH;
     typedef typename Position<TSequenceV>::Type TPosV;
     typedef typename Iterator<TSeedSet const, Standard>::Type TSeedSetIterator;
@@ -1225,7 +1301,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
 
     // Handle case of empty seed set.
     if (length(seedSet) < 1)
-        return MinValue<TScoreValue>::VALUE;
+        return std::numeric_limits<TScoreValue>::min();
 
     // Find the first anchor that is not covered by the region between the beginning of the matrix and the next anchor
     // considering the minbandwidh parameter.
@@ -1259,7 +1335,7 @@ _computeAlignment(TTraceSet & globalTraceSet,
             TTraceSet localTraceSet;
             score = _computeAlignment(localTraceSet, scoutState, suffix(seqH, gridBeginH), suffix(seqV, gridBeginV),
                               scoreSchemeGap, DPBandConfig<BandOff>(), DPProfile_<BandedChainAlignment_<TFreeEndGaps,
-                              BandedChainFinalDPMatrix>, TGapSpec, TracebackOn<TTracebackConfig> >());
+                              BandedChainFinalDPMatrix>, TGapSpec, TracebackOn<TTracebackConfig>, TExecPolicy>());
             _adaptLocalTracesToGlobalGrid(localTraceSet, Pair<TPosH, TPosV>(gridBeginH, gridBeginV));
             _glueTracebacks(globalTraceSet, localTraceSet);
         }

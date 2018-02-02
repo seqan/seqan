@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -89,7 +89,7 @@ typedef Tag<Bed12_> Bed12;
  * @var CharString BedRecord::ref;
  * @brief Name of the interval's reference name.
  *
- * @var int32_t BedRecord::beginPosition;
+ * @var int32_t BedRecord::beginPos;
  * @brief Begin position on the reference.
  *
  * @var int32_t BedRecord::rID;
@@ -99,7 +99,7 @@ typedef Tag<Bed12_> Bed12;
  * @brief Constant for invalid references.
  * @signature static const int32_t BedRecord::INVALID_REFID = -1;
  *
- * @var int32_t BedRecord::endPosition;
+ * @var int32_t BedRecord::endPos;
  * @brief End position on the reference.
  *
  * @var int32_t BedRecord::INVALID_POS;

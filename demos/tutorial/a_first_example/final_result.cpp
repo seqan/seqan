@@ -1,4 +1,3 @@
-//![result]
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -98,36 +97,33 @@ void print(TText const & score, GreaterZero const & /*tag*/)
 
 int main()
 {
-    String<char> text = "This is an awesome tutorial to get to now SeqAn!";
+    String<char> text = "This is an awesome tutorial to get to know SeqAn!";
     String<char> pattern = "tutorial";
     String<int> score = computeScore(text, pattern);
 
     print(text);
-    // > This is an awesome tutorial to get to now SeqAn!
+
     print(pattern);
-    // > tutorial
+
     print(score);
-    // > 1 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 8 0 1 0 0 0 0 2 0 1 0 0 1 0 3 0 1 1 0 0 0 0
+
     print(score, MaxOnly());
-    // > 19
+
     print(score, GreaterZero());
-    // > (2; 1) (5; 1) (12; 1) (17; 1) (19; 8) (21; 1) (26; 2) (28; 1) (31; 1) (33; 3) (35; 1) (36; 1)
 
     // And now for a protein pattern
     String<AminoAcid> protein = "tutorial";
     String<int> proteinScore = computeScore(text, protein);
 
     print(text);
-    // > This is an awesome tutorial to get to now SeqAn!
+
     print(protein);
-    // > TXTXRIAL
+
     print(proteinScore);
-    // > 6 -9 -3 -6 -6 0 -9 -8 -7 -3 -9 -5 -8 -4 -5 -6 -6 1 -6 25 -7 2 -6 -6 -9 -6 -5 -7 1 -7 -5 -4 -6 2 -6 -3 -8 -9 -10 -4 -6 0 0 0 0 0 0 0
+
     print(proteinScore, MaxOnly());
-    // > 19
+
     print(proteinScore, GreaterZero());
-    // > (17; 1) (19; 25) (21; 2) (28; 1) (33; 2)
 
     return 0;
 }
-//![result]

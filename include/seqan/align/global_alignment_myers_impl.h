@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
     unsigned int scoreMask = 1 << ((len_y % BLOCK_SIZE) - 1);    // the mask with a bit set at the position of the last active cell
 
     String<unsigned> VP;
-    resize(VP, blockCount, maxValue<unsigned>());
+    resize(VP, blockCount, std::numeric_limits<unsigned>::max());
     String<unsigned> VN;
     resize(VN, blockCount, 0);
     String<unsigned> bitMask;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -335,12 +335,12 @@ void MaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
 
     addOption(parser, seqan::ArgParseOption("ir", "input-reference", "Path to FASTA file to read the reference from.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
-    setValidValues(parser, "input-reference", "fa fasta");
+    setValidValues(parser, "input-reference", seqan::SeqFileIn::getFileExtensions());
     setRequired(parser, "input-reference");
 
     addOption(parser, seqan::ArgParseOption("iv", "input-vcf", "Path to the VCF file with variants to apply.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.vcf"));
-    setValidValues(parser, "input-vcf", "vcf");
+    setValidValues(parser, "input-vcf", seqan::VcfFileIn::getFileExtensions());
 }
 
 // ----------------------------------------------------------------------------
@@ -700,12 +700,12 @@ void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("", "illumina-left-template-fastq",
                                             "FASTQ file to use for a template for left-end reads.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.fq"));
-    setValidValues(parser, "illumina-left-template-fastq", "fq fastq fq.gz fastq.gz");
+    setValidValues(parser, "illumina-left-template-fastq", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "illumina-right-template-fastq",
                                             "FASTQ file to use for a template for right-end reads.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.fq"));
-    setValidValues(parser, "illumina-right-template-fastq", "fq fastq fq.gz fastq.gz");
+    setValidValues(parser, "illumina-right-template-fastq", seqan::SeqFileIn::getFileExtensions());
 }
 
 // ----------------------------------------------------------------------------
@@ -1113,20 +1113,20 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN"));
-    setValidValues(parser, "meth-fasta-in", "fa fasta");
+    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta fq fastq fq.gz fastq.gz");
+    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUT_FILE, "OUT2"));
-    setValidValues(parser, "out-right", "fa fasta fq fastq fq.gz fastq.gz");
+    setValidValues(parser, "out-right", seqan::SeqFileOut::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("oa", "out-alignment", "SAM/BAM file with alignments.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
-    setValidValues(parser, "out-alignment", "sam bam");
+    setValidValues(parser, "out-alignment", seqan::BamFileOut::getFileExtensions());
 
     // Add options of the component options.
     matOptions.addOptions(parser);
@@ -1315,7 +1315,7 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of materialized contigs.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta");
+    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "TSV"));
@@ -1328,11 +1328,11 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN"));
-    setValidValues(parser, "meth-fasta-in", "fa fasta");
+    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "FASTA file with methylation levels of the output file.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
-    setValidValues(parser, "meth-fasta-out", "fa fasta");
+    setValidValues(parser, "meth-fasta-out", seqan::SeqFileOut::getFileExtensions());
 
     // Add options of the component options.
     matOptions.addOptions(parser);
@@ -1429,7 +1429,7 @@ void MasonSplicingOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of materialized contigs.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta");
+    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep",
                                             "String separating contig name from haplotype number.",
@@ -1439,7 +1439,7 @@ void MasonSplicingOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("ig", "in-gff", "Path to input GFF or GTF file, must be "
                                             "sorted by reference name.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.gff"));
-    setValidValues(parser, "in-gff", "gff gtf");
+    setValidValues(parser, "in-gff", seqan::GffFileIn::getFileExtensions());
     setRequired(parser, "in-gff");
 
     addOption(parser, seqan::ArgParseOption("", "gff-type", "Splicing will filter to the records that have this type.",
@@ -1533,18 +1533,18 @@ void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) 
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan::ArgParseOption("i", "in", "Path to input file.",
-                                            seqan::ArgParseOption::INPUT_FILE, "OUT"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "in");
-    setValidValues(parser, "in", "fa fasta");
+    setValidValues(parser, "in", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta fq fastq fq.gz fastq.gz");
+    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
                                             "paired-end simulation.", seqan::ArgParseOption::OUTPUT_FILE, "OUT2"));
-    setValidValues(parser, "out-right", "fa fasta fq fastq fq.gz fastq.gz");
+    setValidValues(parser, "out-right", seqan::SeqFileOut::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
                                             "is given."));
@@ -1651,12 +1651,12 @@ void MasonMethylationOptions::addOptions(seqan::ArgumentParser & parser) const
     addOption(parser, seqan::ArgParseOption("i", "in", "Input FASTA file with genome.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
     setRequired(parser, "in");
-    setValidValues(parser, "in", "fa fasta");
+    setValidValues(parser, "in", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Input FASTA file with genome.",
                                             seqan::ArgParseOption::INPUT_FILE, "OUT.fa"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", "fa fasta");
+    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
 
     // Add options of the component options.
     methOptions.addOptions(parser);

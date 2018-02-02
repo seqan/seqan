@@ -3,6 +3,59 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.4.0
+~~~~~~~~~~~~~
+
+Library Features
+^^^^^^^^^^^^^^^^
+
+- Align
+   - Generic parallelisation and vectorisation.
+   - Support for SSE4, AVX2 and AVX512.
+   - Speed-Ups of > 1000x compared to serial execution of long DNA alignments.
+- Indexing
+   - Parallel ``find()`` interface
+   - Support for optimal search schemes (https://arxiv.org/abs/1711.02035)
+- ReducedAminoAcid
+   - several new Reduced Amino Acid alphabets are now available.
+- VCF I/O
+   - Now supports version 4.2 of the specification, i.e. columns with only eight fields.
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- BAM I/O
+   - Fix of jumpToRegion() functionality to start at the desired region instead of the index block.
+   - Works correctly on big endian platforms now.
+- Translation
+   - Handle empty/too-short input correctly.
+- Code Cleanup
+   - various parts of the codebase have undergone cleanup and may now report deprecated functionality as being deprecated via compiler-functionality.
+
+Platform Support
+^^^^^^^^^^^^^^^^
+
+- Compiler support:
+   - Satisfies stricter warning levels of GCC-8, Clang-5 also with ``-std=c++17``.
+   - Supports VS2017.
+   - Intel Compiler suite 2016 **was dropped**.
+   - Intel Compiler suites 2017 and 2018 are newly supported.
+   - GCC-4.9 on MacOS **was dropped** (newer GCC available everywhere via MacPorts or Homebrew).
+   - Clang-3.5 on FreeBSD **was dropped** (newer Clang available in base system and Ports).
+- CPU architectures support:
+   - Substantial fixes for big endian platforms
+   - Now officially supported and passing integration tests:
+      - ``i386, amd64/intel64, x32, ia64``
+      - ``armel, armhf, arm64``
+      - ``mips, mipsel, mips64el``
+      - ``powerpc, ppc64, ppc64el``
+      - ``s390x, alpha, m68k, sh4``
+   - Officially **not** supported: ``sparc64``
+   - Thanks to the `Debian Med team <https://www.debian.org/devel/debian-med/>`_ for their patches!
+- Upstream packages:
+   - SeqAn2 packages are finally coming to Fedora, thanks to @sagitter
+   - Package updates in Debian, Ubuntu, MacPorts, Homebrew and FreeBSD expected shortly.
+
 Release 2.3.2
 ~~~~~~~~~~~~~
 
@@ -16,8 +69,8 @@ Selected Bug Fixes
    - reintroduce ``FindSeqAn.cmake`` for projects that rely on cmake's module mode
    - fix the pkgconfig file
 - Platform related
-   - improved compliance with warning levels of soon-to-be-released gcc7 and clang4 
-   - because of unresolved bugs we now recommend gcc5 as minimum gcc version when using static linking 
+   - improved compliance with warning levels of soon-to-be-released gcc7 and clang4
+   - because of unresolved bugs we now recommend gcc5 as minimum gcc version when using static linking
 
 Release 2.3.1
 ~~~~~~~~~~~~~

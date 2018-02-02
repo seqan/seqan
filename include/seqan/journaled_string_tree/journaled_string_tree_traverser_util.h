@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -375,11 +375,11 @@ mapBranchPointToVirtual(TIterator & resultIt,
     if (it->segmentSource == SOURCE_PATCH)  // The iterator has to be at the beginning.
     {
         TVarIterator itVar = begin(variantStore, Standard());  // TODO(rrahn): Optimize!
-        SEQAN_ASSERT_LEQ(getDeltaPosition(*itVar), static_cast<TDeltaMapPos const>(hostPos));
+        SEQAN_ASSERT_LEQ(getDeltaPosition(*itVar), static_cast<TDeltaMapPos>(hostPos));
 
         TDeltaMapPos virtualOffset = 0;
         // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-        while(getDeltaPosition(*itVar) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(itVar, variantStore))
+        while(getDeltaPosition(*itVar) != static_cast<TDeltaMapPos>(hostPos) && !atEnd(itVar, variantStore))
         {
             if (getDeltaCoverage(*itVar)[proxyId] != true)  // irrelevant variant.
             {
@@ -403,7 +403,7 @@ mapBranchPointToVirtual(TIterator & resultIt,
 
     // We assume that the operation begins here!
     resultIt._journalEntriesIterator = it;
-    if (it->physicalOriginPosition + it->length > static_cast<TDeltaMapPos const>(hostPos))
+    if (it->physicalOriginPosition + it->length > static_cast<TDeltaMapPos>(hostPos))
     {
         _updateSegmentIterators(resultIt);
         if (it->physicalOriginPosition < hostPos)
@@ -412,7 +412,7 @@ mapBranchPointToVirtual(TIterator & resultIt,
     }
 
     _updateSegmentIteratorsLeft(resultIt);  // Set the iterator to the end of the current original node.
-    if (_physicalPosition(resultIt) + 1 == static_cast<TDeltaMapPos const>(hostPos))
+    if (_physicalPosition(resultIt) + 1 == static_cast<TDeltaMapPos>(hostPos))
     {
         ++resultIt;
         return;
@@ -426,10 +426,10 @@ mapBranchPointToVirtual(TIterator & resultIt,
     f.iter = std::upper_bound(begin(variantStore, Standard()), end(variantStore, Standard()), child,
                               DeltaMapEntryPosLessThanComparator_());
 
-    SEQAN_ASSERT_LEQ(getDeltaPosition(*f.iter), static_cast<TDeltaMapPos const>(hostPos));
+    SEQAN_ASSERT_LEQ(getDeltaPosition(*f.iter), static_cast<TDeltaMapPos>(hostPos));
 
     // Now we move to the right until we find the node that we are looking for and reconstruct the offset of the virtual positions.
-    while (getDeltaPosition(*f.iter) != static_cast<TDeltaMapPos const>(hostPos) && !atEnd(f.iter))
+    while (getDeltaPosition(*f.iter) != static_cast<TDeltaMapPos>(hostPos) && !atEnd(f.iter))
     {
         if (getDeltaCoverage(*f.iter)[proxyId] != true || isRightEnd(*f.iter))  // irrelevant variant.
         {
@@ -928,7 +928,7 @@ init(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me,
     TNode* basePtr = &impl::activeNode(me);
 
     SEQAN_ASSERT_GEQ(me._contextSize, 1u);
-    if (IsSameType<Tag<TProxySelector>, SelectFirstProxy>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<Tag<TProxySelector>, SelectFirstProxy>::VALUE)
         impl::moveWindow(me, basePtr, 0, observer, Tag<TProxySelector>());   // We move the traverser to the first position.
     else
         impl::moveWindow(me, basePtr, me._contextSize - 1, observer, Tag<TProxySelector>());

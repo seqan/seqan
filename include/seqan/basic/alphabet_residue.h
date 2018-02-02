@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -765,6 +765,17 @@ struct CompareTypeImpl<Rna, char>
 inline void assign(Rna & target, char c_source)
 {
     target.value = TranslateTableCharToDna_<>::VALUE[(unsigned char)c_source];
+}
+
+template <>
+struct CompareTypeImpl<Rna5, Iupac>
+{
+    typedef Rna5 Type;
+};
+
+inline void assign(Rna5 & target, Iupac const & source)
+{
+    target.value = TranslateTableIupacToDna5_<>::VALUE[source.value];
 }
 
 template <>

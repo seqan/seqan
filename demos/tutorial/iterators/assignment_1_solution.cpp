@@ -13,8 +13,8 @@ int main()
 
     for (; it != itEnd; goNext(it))
     {
-        if (getValue(it) == 'N')
-            value(it) = 'A';
+        if (*it == 'N')
+            *it = 'A';
     }
     std::cout << "Modified genome: " << genome << std::endl;
     return 0;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ namespace seqan
         stack_updown.push(TPair(0, 0));
         stack_nextl.push(TPair(0, 0));
 
-        dest.undefinedValue = TPair(MaxValue<TSize>::VALUE, 0);        // undefined value for unused entries
+        dest.undefinedValue = TPair(std::numeric_limits<TSize>::max(), 0);        // undefined value for unused entries
         resize(dest, length(lcpIn));
         beginRead(lcpIn);
         beginWrite(dest);

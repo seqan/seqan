@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -184,7 +184,7 @@ inline OverlapInfo_ OverlapInfoComputation_<TFragmentStore>::computeOverlapInfo(
 
     AlignConfig<true, true, true, true> alignConfig;
 
-    if (lDiag != seqan::minValue<int>() && uDiag != seqan::minValue<int>())
+    if (lDiag != std::numeric_limits<int>::min() && uDiag != std::numeric_limits<int>::min())
     {
         if (options.verbosity >= 2)
             std::cerr << "global alignment with bands " << lDiag << ", " << uDiag << "\n";
@@ -244,7 +244,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildGlobalAlignmentOverlap
         for (unsigned j = i + 1; j < length(store.readStore); ++j)
         {
             OverlapInfo_ info = computeOverlapInfo(i, j,
-                                                   seqan::minValue<int>(), seqan::minValue<int>());
+                                                   std::numeric_limits<int>::min(), std::numeric_limits<int>::min());
             int ovlLen = length(store.readSeqStore[info.seq0]) - info.pos1;
             // if (ovlLen < options.overlapMinLength || 100.0 * info.numErrors / ovlLen > options.overlapMaxErrorRate)
             // {

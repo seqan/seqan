@@ -108,6 +108,10 @@ Assignment 1
 
         .. includefrags:: demos/tutorial/a_first_example/solution_1.cpp
 
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/a_first_example/solution_1.cpp.stdout
+
 SeqAn and Templates
 -------------------
 
@@ -223,6 +227,11 @@ Assignment 2
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/a_first_example/solution_2.cpp
+           :fragment: all
+
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/a_first_example/solution_2.cpp.stdout
 
 The Role of References in SeqAn
 -------------------------------
@@ -273,11 +282,15 @@ Assignment 3
         .. includefrags:: demos/tutorial/a_first_example/solution_3.cpp
            :fragment: head_local
 
-
    Solution
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/a_first_example/solution_3.cpp
+           :fragment: all
+
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/a_first_example/solution_3.cpp.stdout
 
 Generic and Reusable Code
 -------------------------
@@ -336,6 +349,12 @@ Assignment 4
 
         .. includefrags:: demos/tutorial/a_first_example/solution_4.cpp
 
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/a_first_example/solution_4.cpp.stdout
+
+.. _oop-to-seqan:
+
 From Object-Oriented Programming to SeqAn
 -----------------------------------------
 
@@ -358,6 +377,7 @@ In addition, because they are so frequently used there are shortcuts as well.
 For example :dox:`Blosum62` is really a **shortcut** for ``Score<int, ScoreMatrix<AminoAcid, Blosum62_> >``, which is obviously very helpful.
 Other shortcuts are ``DnaString`` for ``String<Dna>`` (:ref:`sequence tutorial <tutorial-datastructures-sequences>`), ``CharString`` for ``String<char>``, ...
 
+.. _template-subclassing:
 .. tip::
 
    Template Subclassing
@@ -387,6 +407,10 @@ Assignment 5
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/a_first_example/solution_5.cpp
+
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/a_first_example/solution_5.cpp.stdout
 
 Tags in SeqAn
 -------------
@@ -453,6 +477,10 @@ Assignment 6
 
         .. includefrags:: demos/tutorial/a_first_example/solution_6.cpp
 
+        Your output should look like this:
+
+        .. includefrags:: demos/tutorial/a_first_example/solution_6.cpp.stdout
+
 Obviously this is only a toy example in which we could have named the two ``print()`` functions differently.
 However, often this is not the case when the programs become more complex.
 Because SeqAn is very generic we do not know the datatypes of template functions in advance.
@@ -470,5 +498,7 @@ There are several tutorials which will teach you how to use the different SeqAn 
 Below you find the complete code for our example with the corresponding output.
 
 .. includefrags:: demos/tutorial/a_first_example/final_result.cpp
-   :fragment: result
 
+Your output should look like this:
+
+.. includefrags:: demos/tutorial/a_first_example/final_result.cpp.stdout

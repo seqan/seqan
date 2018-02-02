@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -85,8 +85,8 @@
  */
 #if defined(__ICC)
 #define COMPILER_LINTEL
-#if __ICC < 1600
-     #warning ICC versions older than 16 are not supported.
+#if __ICC < 1700
+     #warning ICC versions older than 17.0 are not supported.
 #endif
 #endif
 
@@ -98,8 +98,8 @@
  */
 #if defined(__ICL)
 #define COMPILER_WINTEL
-#if __ICL < 1600
-     #warning Intel compiler (windows) versions older than 16 are not supported.
+#if __ICL < 1700
+     #warning Intel compiler (windows) versions older than 17.0 are not supported.
 #endif
 #endif
 
@@ -276,15 +276,23 @@
  * @signature typdef (...) __uint8;
  */
 
+[[deprecated("Use uint64_t instead.")]]
 typedef uint64_t __uint64; // nolint
+[[deprecated("Use uint32_t instead.")]]
 typedef uint32_t __uint32; // nolint
+[[deprecated("Use uint16_t instead.")]]
 typedef uint16_t __uint16; // nolint
+[[deprecated("Use uint8_t instead.")]]
 typedef uint8_t __uint8;   // nolint
 
 #if !(defined(COMPILER_LINTEL) || defined(STDLIB_VS))
+[[deprecated("Use int64_t instead.")]]
 typedef int64_t __int64;   // nolint
+[[deprecated("Use int32_t instead.")]]
 typedef int32_t __int32;   // nolint
+[[deprecated("Use int16_t instead.")]]
 typedef int16_t __int16;   // nolint
+[[deprecated("Use int8_t instead.")]]
 typedef int8_t __int8;     // nolint
 #endif
 
@@ -322,7 +330,9 @@ typedef int8_t __int8;     // nolint
 
 // The symbols SEQAN_IS_64_BIT and SEQAN_IS_32_BIT can be used to check
 // whether we are on a 32 bit or on a 64 bit machine.
-#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__ia64__) || defined(__ppc64__) || defined(_WIN64)
+#if defined(__amd64__) || defined(__x86_64__) || defined(__aarch64__) || defined(__arch64__) || \
+    defined(__ia64__) || defined(__ppc64__) || defined(__PPC64__) || defined(_WIN64) || \
+    defined(__LP64__) || defined(_LP64)
 #define SEQAN_IS_64_BIT 1
 #define SEQAN_IS_32_BIT 0
 #else
@@ -389,12 +399,17 @@ typedef int8_t __int8;     // nolint
 #define SEQAN_UNLIKELY(x)    (x)
 #endif
 
-// A macro to eliminate warnings on GCC and Clang
+// A macro to eliminate warnings for unused entities.
+#if __cplusplus >= 201703L
+#define SEQAN_UNUSED [[maybe_unused]]
+#else
 #if defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
-#define SEQAN_UNUSED __attribute__((unused))
+#define SEQAN_UNUSED [[gnu::unused]]
 #else
 #define SEQAN_UNUSED
-#endif
+#endif // defined(COMPILER_GCC) || defined(COMPILER_CLANG) || defined(COMPILER_LINTEL)
+#endif // __cplusplus >= 201703L
+
 // backwards compatibility
 #define SEQAN_UNUSED_TYPEDEF SEQAN_UNUSED
 
@@ -462,4 +477,85 @@ typedef int8_t __int8;     // nolint
 #undef COMPILER_VERSION
 #endif
 
+// BYTE-ORDER DETECTION (default is little-endian)
+#ifdef __GLIBC__
+    #include <endian.h>
+#endif // __GLIBC__
+
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+    #include <sys/endian.h>
+#endif // defined *BSD
+
+#ifndef SEQAN_BIG_ENDIAN
+    #if (defined( _BYTE_ORDER  ) && ( _BYTE_ORDER   ==        _BIG_ENDIAN  )) || \
+        (defined(__BYTE_ORDER  ) && (__BYTE_ORDER   ==       __BIG_ENDIAN  )) || \
+        (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)) || \
+                                                     defined(__BIG_ENDIAN__)
+        #define SEQAN_BIG_ENDIAN 1
+    #else
+        #define SEQAN_BIG_ENDIAN 0
+    #endif
+#endif // SEQAN_BIG_ENDIAN
+
+namespace seqan
+{
+
+template <typename T>
+constexpr void enforceLittleEndian(T &)
+{}
+
+#if SEQAN_BIG_ENDIAN
+inline void enforceLittleEndian(int16_t & in)
+{
+    in = htole16(in);
+}
+inline void enforceLittleEndian(uint16_t & in)
+{
+    in = htole16(in);
+}
+inline void enforceLittleEndian(int32_t & in)
+{
+    in = htole32(in);
+}
+inline void enforceLittleEndian(uint32_t & in)
+{
+    in = htole32(in);
+}
+inline void enforceLittleEndian(int64_t & in)
+{
+    in = htole64(in);
+}
+inline void enforceLittleEndian(uint64_t & in)
+{
+    in = htole64(in);
+}
+inline void enforceLittleEndian(float & in)
+{
+    uint32_t tmp = htole32(*reinterpret_cast<uint32_t*>(&in));
+    char *out = reinterpret_cast<char*>(&in);
+    *out = *reinterpret_cast<char*>(&tmp);
+}
+inline void enforceLittleEndian(double & in)
+{
+    uint64_t tmp = htole64(*reinterpret_cast<uint64_t*>(&in));
+    char *out = reinterpret_cast<char*>(&in);
+    *out = *reinterpret_cast<char*>(&tmp);
+}
+#endif // SEQAN_BIG_ENDIAN
+
+} // namespace seqan
+
+// DEFAULT PAGESIZE FOR MMAP
+#ifndef SEQAN_DEFAULT_PAGESIZE
+    // 64K is supported on all platforms (whereas 4K is not)
+    #define SEQAN_DEFAULT_PAGESIZE 64 * 1024
 #endif
+
+// IF_CONSTEXPR
+#if __cplusplus >= 201703L
+#define SEQAN_IF_CONSTEXPR if constexpr
+#else
+#define SEQAN_IF_CONSTEXPR if
+#endif
+
+#endif // HEADER GUARD

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ void testBandedChainAlignmentEmptyChain(TGapCosts const &)
         scoreScheme = Score<int,Simple>(5, -3, -1, -5);
 
     int score = bandedChainAlignment(align, seedSet, scoreScheme, alignConfig, 5);
-    SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
     SEQAN_ASSERT_EQ(row(align,0), seqH);
     SEQAN_ASSERT_EQ(row(align,1), seqV);
 }

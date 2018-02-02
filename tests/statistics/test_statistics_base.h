@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -159,8 +159,7 @@ SEQAN_DEFINE_TEST(test_statistics_statistics)
     MarkovModel<TAlphabet> mmNew(1);
 
 
-    std::string buffer = SEQAN_PATH_TO_ROOT();
-    buffer +="/tests/statistics/zscore_human_mm.3";
+    std::string buffer = getAbsolutePath("/tests/statistics/zscore_human_mm.3");
     FILE *fd = fopen(buffer.c_str(), "r");
     read(fd, mm);
     fclose(fd);

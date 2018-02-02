@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -96,6 +96,8 @@ public:
     virtual void generateMany(std::vector<Fragment> & frags, int rId, unsigned contigLength,
                               std::vector<std::pair<int, int> > const & gapIntervals,
                               unsigned count) = 0;
+
+    virtual ~FragmentSamplerImpl() = default;
 };
 
 

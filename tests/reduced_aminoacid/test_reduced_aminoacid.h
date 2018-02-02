@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -91,6 +91,101 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
     }
 }
 #endif
+
+SEQAN_DEFINE_TEST(test_reduced_aminoacid_buchfink11)
+{
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Buchfink11> >
+            ReducedAminoAcidBuchfink11;
+
+    CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
+
+    // N = 11
+    {
+        String<ReducedAminoAcidBuchfink11> conv = str;
+        SEQAN_ASSERT_EQ(
+            CharString(conv),
+            "AABBCCBBBBFFGGHHIIIIBBIIMMBBBBPPBBBBAAAACCIIWWAAYYBBFAA");
+        conv = aas;
+        SEQAN_ASSERT_EQ(CharString(conv), "ABCBBFGHIIBIMBBPBBAACIWYBAF");
+    }
+}
+
+SEQAN_DEFINE_TEST(test_reduced_aminoacid_cannata10)
+{
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Cannata10> >
+            ReducedAminoAcidCannata10;
+
+    CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
+
+    // N = 10
+    {
+        String<ReducedAminoAcidCannata10> conv = str;
+        SEQAN_ASSERT_EQ(
+            CharString(conv),
+            "AABBCCBBEEFFAAHHIIIIKKIIIIBBKKPPEEKKAAAACCIIWWAAFFEEFAA");
+        conv = aas;
+        SEQAN_ASSERT_EQ(CharString(conv), "ABCBEFAHIIKIIBKPEKAACIWFEAF");
+    }
+}
+
+SEQAN_DEFINE_TEST(test_reduced_aminoacid_li10)
+{
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Li10> >
+            ReducedAminoAcidLi10;
+
+    CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
+
+    // N = 10
+    {
+        String<ReducedAminoAcidLi10> conv = str;
+        SEQAN_ASSERT_EQ(
+            CharString(conv),
+            "AABBCCBBBBFFGGHHIIJJKKJJJJHHKKPPBBKKAAAACCIIFFAAFFBBFAA");
+        conv = aas;
+        SEQAN_ASSERT_EQ(CharString(conv), "ABCBBFGHIJKJJHKPBKAACIFFBAF");
+    }
+}
+
+SEQAN_DEFINE_TEST(test_reduced_aminoacid_solis10)
+{
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Solis10> >
+            ReducedAminoAcidSolis10;
+
+    CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
+
+    // N = 10
+    {
+        String<ReducedAminoAcidSolis10> conv = str;
+        SEQAN_ASSERT_EQ(
+            CharString(conv),
+            "AABBCCBBBBFFGGHHIIIIKKIIIIGGHHPPGGHHGGPPCCIIWWAAWWBBFAA");
+        conv = aas;
+        SEQAN_ASSERT_EQ(CharString(conv), "ABCBBFGHIIKIIGHPGHGPCIWWBAF");
+    }
+}
+
+SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy5)
+{
+    typedef SimpleType<unsigned char, ReducedAminoAcid_<Murphy5> >
+            ReducedAminoAcidMurphy5;
+
+    CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNOPQRSTUVWYZX*";
+
+    // N = 5
+    {
+        String<ReducedAminoAcidMurphy5> conv = str;
+        SEQAN_ASSERT_EQ(
+            CharString(conv),
+            "AABBCCBBBBFFAAHHCCCCHHCCCCBBHHAABBHHAAAACCCCFFAAFFBBFAA");
+        conv = aas;
+        SEQAN_ASSERT_EQ(CharString(conv), "ABCBBFAHCCHCCBHABHAACCFFBAF");
+    }
+}
 
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
 {

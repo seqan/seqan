@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 
 /* The MIT License
 
-   Copyright (c) 2008-2009 Genome Research Ltd.
+   Copyright (c) 2008-2018 Genome Research Ltd.
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -146,7 +146,7 @@ public:
     String<TBinIndex_> _binIndices;
     String<TLinearIndex_> _linearIndices;
 
-    BamIndex() : _unalignedCount(maxValue<uint64_t>())
+    BamIndex() : _unalignedCount(std::numeric_limits<uint64_t>::max())
     {}
 };
 
@@ -162,24 +162,29 @@ public:
  * @fn BamFileIn#jumpToRegion
  * @brief Seek in BamFileIn using an index.
  *
- * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
- * jumps to the first alignment in this region, if any.
+ * You provide a region <tt>[regionStart, regionEnd]</tt> on the reference <tt>refID</tt>
+ * that you want to jump to and the function jumps to the first alignment (bam record)
+ * whose start position lies inside this region, if any.
+ * Note: The current inmplementation only consideres the read start positions.
+ *       Therefore, we do guarantee that reads overlapping the region are included.
+ *       To account for this limitation you may want to choose the start of your
+ *       your region with an appropiate offset (e.g. start - length_of_read).
  *
- * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, pos, posEnd, index);
+ * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, regionStart, regionEnd, index);
  *
  * @param[in,out] bamFileIn     The @link BamFileIn @endlink to jump with.
- * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
- *                              alignments.
+ * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[regionStart, regionEnd]</tt> has any
+ *                              at least one overlapping alignment (bam record).
  * @param[in]     refID         The reference id to jump to (<tt>int32_t</tt>).
- * @param[in]     pos           The begin of the region to jump to (<tt>int32_t</tt>).
- * @param[in]     posEnd        The end of the region to jump to (<tt>int32_t</tt>).
+ * @param[in]     regionStart   The begin of the region to jump to (<tt>int32_t</tt>).
+ * @param[in]     regionEnd     The end of the region to jump to (<tt>int32_t</tt>).
  * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
  *
  * @return bool true if seeking was successful, false if not.
  *
  * @section Remarks
  *
- * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ * This function fails if <tt>refID</tt>/<tt>regionStart</tt> are invalid.
  */
 
 static inline void
@@ -202,8 +207,8 @@ inline bool
 jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
              bool & hasAlignments,
              int32_t refId,
-             int32_t pos,
-             int32_t posEnd,
+             int32_t regionStart,
+             int32_t regionEnd,
              BamIndex<Bai> const & index)
 {
     if (!isEqual(format(bamFile), Bam()))
@@ -218,14 +223,14 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
     // ------------------------------------------------------------------------
     // Compute offset in BGZF file.
     // ------------------------------------------------------------------------
-    uint64_t offset = MaxValue<uint64_t>::VALUE;
+    uint64_t offset = std::numeric_limits<uint64_t>::max();
 
-    // Retrieve the candidate bin identifiers for [pos, posEnd).
+    // Retrieve the candidate bin identifiers for [regionStart, regionEnd).
     String<uint16_t> candidateBins;
-    _baiReg2bins(candidateBins, pos, posEnd);
+    _baiReg2bins(candidateBins, regionStart, regionEnd);
 
     // Retrieve the smallest required offset from the linear index.
-    unsigned windowIdx = pos >> 14;  // Linear index consists of 16kb windows.
+    unsigned windowIdx = regionStart >> 14;  // Linear index consists of 16kb windows.
     uint64_t linearMinOffset = 0;
     if (windowIdx >= length(index._linearIndices[refId]))
     {
@@ -298,24 +303,43 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
         readRecord(record, bamFile);
 
         // std::cerr << "record.beginPos == " << record.beginPos << "\n";
-        // int32_t endPos = record.beginPos + getAlignmentLengthInRef(record);
         if (record.rID != refId)
             continue;  // Wrong contig.
-        if (!hasAlignments || record.beginPos <= pos)
+
+        if (record.beginPos <= regionStart)
         {
-            // Found a valid alignment.
-            hasAlignments = true;
             offset = *candIt;
         }
 
-        if (record.beginPos >= posEnd)
+        if (record.beginPos >= regionEnd)
             break;  // Cannot find overlapping any more.
     }
 
-    if (offset != MaxValue<uint64_t>::VALUE)
-        setPosition(bamFile, offset);
+    if (offset == std::numeric_limits<uint64_t>::max())
+        return true; // Finding no overlapping alignment is not an error, hasAlignments is false.
 
-    // Finding no overlapping alignment is not an error, hasAlignments is false.
+    // Now only the right most offset was found but it is not ensured that the
+    // alignment at the start of the offset lies inside the region.
+    // Therefore we must advance further or until the region ends.
+    setPosition(bamFile, offset);
+
+    while (!atEnd(bamFile))
+    {
+        auto seek_pos = position(bamFile); // store current pos to reset bamFile if necessary
+
+        readRecord(record, bamFile);
+
+        if (record.beginPos >= regionEnd)
+            break;
+
+        if (record.beginPos >= regionStart)
+        {
+            hasAlignments = true;
+            setPosition(bamFile, seek_pos);
+            break;
+        }
+    }
+
     return true;
 }
 
@@ -345,19 +369,19 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
     hasAlignments = false;
 
     // Search linear indices for the largest entry of all references.
-    uint64_t aliOffset = MaxValue<uint64_t>::VALUE;
+    uint64_t aliOffset = std::numeric_limits<uint64_t>::max();
     for (int i = length(index._linearIndices) - 1; i >= 0; --i)
         if (!empty(index._linearIndices[i]))
         {
             aliOffset = back(index._linearIndices[i]);
             break;
         }
-    if (aliOffset == MaxValue<uint64_t>::VALUE)
+    if (aliOffset == std::numeric_limits<uint64_t>::max())
         return false;  // No offset found.
 
     // Get index of the first orphan alignment by seeking from linear index bucket.
     BamAlignmentRecord record;
-    uint64_t offset = MaxValue<uint64_t>::VALUE;
+    uint64_t offset = std::numeric_limits<uint64_t>::max();
     uint64_t result = 0;
     if (!setPosition(bamFile, aliOffset))
         return false;  // Error while seeking.
@@ -375,7 +399,7 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
     }
 
     // Jump back to the first alignment.
-    if (offset != MaxValue<uint64_t>::VALUE)
+    if (offset != std::numeric_limits<uint64_t>::max())
     {
         if (!setPosition(bamFile, offset))
             return false;  // Error while seeking.
@@ -440,6 +464,7 @@ open(BamIndex<Bai> & index, char const * filename)
     fin.read(reinterpret_cast<char *>(&nRef), 4);
     if (!fin.good())
         return false;
+    enforceLittleEndian(nRef);
 
     resize(index._linearIndices, nRef);
     resize(index._binIndices, nRef);
@@ -451,6 +476,7 @@ open(BamIndex<Bai> & index, char const * filename)
         fin.read(reinterpret_cast<char *>(&nBin), 4);
         if (!fin.good())
             return false;
+        enforceLittleEndian(nBin);
         index._binIndices[i].clear();
         BaiBamIndexBinData_ data;
         for (int j = 0; j < nBin; ++j)  // For each bin.
@@ -461,11 +487,13 @@ open(BamIndex<Bai> & index, char const * filename)
             fin.read(reinterpret_cast<char *>(&bin), 4);
             if (!fin.good())
                 return false;
+            enforceLittleEndian(bin);
 
             int32_t nChunk = 0;
             fin.read(reinterpret_cast<char *>(&nChunk), 4);
             if (!fin.good())
                 return false;
+            enforceLittleEndian(nChunk);
             reserve(data.chunkBegEnds, nChunk);
             for (int k = 0; k < nChunk; ++k)  // For each chunk;
             {
@@ -475,6 +503,8 @@ open(BamIndex<Bai> & index, char const * filename)
                 fin.read(reinterpret_cast<char *>(&chunkEnd), 8);
                 if (!fin.good())
                     return false;
+                enforceLittleEndian(chunkBeg);
+                enforceLittleEndian(chunkEnd);
                 appendValue(data.chunkBegEnds, Pair<uint64_t>(chunkBeg, chunkEnd));
             }
 
@@ -487,6 +517,7 @@ open(BamIndex<Bai> & index, char const * filename)
         fin.read(reinterpret_cast<char *>(&nIntv), 4);
         if (!fin.good())
             return false;
+        enforceLittleEndian(nIntv);
         clear(index._linearIndices[i]);
         reserve(index._linearIndices[i], nIntv);
         for (int j = 0; j < nIntv; ++j)
@@ -495,6 +526,7 @@ open(BamIndex<Bai> & index, char const * filename)
             fin.read(reinterpret_cast<char *>(&ioffset), 8);
             if (!fin.good())
                 return false;
+            enforceLittleEndian(ioffset);
             appendValue(index._linearIndices[i], ioffset);
         }
     }
@@ -510,6 +542,7 @@ open(BamIndex<Bai> & index, char const * filename)
         fin.clear();
         nNoCoord = 0;
     }
+    enforceLittleEndian(nNoCoord);
     index._unalignedCount = nNoCoord;
 
     return true;
@@ -549,6 +582,7 @@ inline bool save(BamIndex<Bai> const & index, char const * baiFilename)
     // Write header.
     out.write("BAI\1", 4);
     int32_t numRefSeqs = length(index._binIndices);
+    enforceLittleEndian(numRefSeqs);
     out.write(reinterpret_cast<char *>(&numRefSeqs), 4);
 
     // Write out indices.
@@ -556,42 +590,59 @@ inline bool save(BamIndex<Bai> const & index, char const * baiFilename)
     typedef TBamIndex::TBinIndex_ const        TBinIndex;
     typedef TBinIndex::const_iterator          TBinIndexIter;
     typedef TBamIndex::TLinearIndex_           TLinearIndex;
-    for (int i = 0; i < numRefSeqs; ++i)
+    for (unsigned i = 0; i < length(index._binIndices); ++i)
     {
         TBinIndex const & binIndex = index._binIndices[i];
         TLinearIndex const & linearIndex = index._linearIndices[i];
 
         // Write out binning index.
         int32_t numBins = binIndex.size();
+        enforceLittleEndian(numBins);
         out.write(reinterpret_cast<char *>(&numBins), 4);
         for (TBinIndexIter itB = binIndex.begin(), itBEnd = binIndex.end(); itB != itBEnd; ++itB)
         {
             // Write out bin id.
-            out.write(reinterpret_cast<char const *>(&itB->first), 4);
+            uint32_t tmp = itB->first;
+            enforceLittleEndian(tmp);
+            out.write(reinterpret_cast<char const *>(&tmp), 4);
             // Write out number of chunks.
             uint32_t numChunks = length(itB->second.chunkBegEnds);
+            enforceLittleEndian(numChunks);
             out.write(reinterpret_cast<char *>(&numChunks), 4);
             // Write out all chunks.
             typedef Iterator<String<Pair<uint64_t> > const, Rooted>::Type TChunkIter;
             for (TChunkIter itC = begin(itB->second.chunkBegEnds); !atEnd(itC); goNext(itC))
             {
-                out.write(reinterpret_cast<char const *>(&itC->i1), 8);
-                out.write(reinterpret_cast<char const *>(&itC->i2), 8);
+                uint64_t tmp1 = itC->i1;
+                enforceLittleEndian(tmp1);
+                uint64_t tmp2 = itC->i2;
+                enforceLittleEndian(tmp2);
+                out.write(reinterpret_cast<char const *>(&tmp1), 8);
+                out.write(reinterpret_cast<char const *>(&tmp2), 8);
             }
         }
 
         // Write out linear index.
         int32_t numIntervals = length(linearIndex);
+        enforceLittleEndian(numIntervals);
         out.write(reinterpret_cast<char *>(&numIntervals), 4);
         typedef Iterator<String<uint64_t> const, Rooted>::Type TLinearIndexIter;
         for (TLinearIndexIter it = begin(linearIndex, Rooted()); !atEnd(it); goNext(it))
-            out.write(reinterpret_cast<char const *>(&*it), 8);
+        {
+            uint64_t tmp = *it;
+            enforceLittleEndian(tmp);
+            out.write(reinterpret_cast<char const *>(&tmp), 8);
+        }
     }
 
     // Write the number of unaligned reads if set.
     //std::cerr << "UNALIGNED\t" << index._unalignedCount << std::endl;
-    if (index._unalignedCount != maxValue<uint64_t>())
-        out.write(reinterpret_cast<char const *>(&index._unalignedCount), 8);
+    if (index._unalignedCount != std::numeric_limits<uint64_t>::max())
+    {
+        uint64_t tmp = index._unalignedCount;
+        enforceLittleEndian(tmp);
+        out.write(reinterpret_cast<char const *>(&tmp), 8);
+    }
 
     return out.good();  // false on error, true on success.
 }
@@ -656,13 +707,13 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
 
     // Scan over BAM file and create index.
     BamAlignmentRecord record;
-    uint32_t currBin    = maxValue<uint32_t>();
-    uint32_t prevBin    = maxValue<uint32_t>();
+    uint32_t currBin    = std::numeric_limits<uint32_t>::max();
+    uint32_t prevBin    = std::numeric_limits<uint32_t>::max();
     int32_t currRefId   = BamAlignmentRecord::INVALID_REFID;
     int32_t prevRefId   = BamAlignmentRecord::INVALID_REFID;
     uint64_t currOffset = position(bamFile);
     uint64_t prevOffset = currOffset;
-    int32_t prevPos     = minValue<int32_t>();
+    int32_t prevPos     = std::numeric_limits<int32_t>::min();
 
     while (!atEnd(bamFile))
     {
@@ -710,7 +761,7 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
 
             // Update reference book keeping.
             prevRefId = record.rID;
-            prevBin = minValue<int32_t>();
+            prevBin = std::numeric_limits<int32_t>::min();
         }
 
         // If the alignment's reference id is valid and its bin is not a leaf.
@@ -736,7 +787,7 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
         if (record.bin != prevBin)
         {
             // If not first bin of reference, save previous bin data.
-            if (currBin != maxValue<uint32_t>())
+            if (currBin != std::numeric_limits<uint32_t>::max())
                 _baiAddAlignmentChunkToBin(index, currBin, currOffset, prevOffset);
 
             // Update markers.

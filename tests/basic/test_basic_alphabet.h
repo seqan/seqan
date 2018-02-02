@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -456,20 +456,11 @@ void TestExtremeValuesSigned()
 
     long double maxVal = -minVal - 1;
 
-/*
-    std::cout << std::endl << "Max/Min of " << typeid(T).name() << std::endl;
-    std::cout << maxVal << " == " << MaxValue<T>::VALUE << "(" << (double)MaxValue<T>::VALUE << ")  " << maxValue<T>() << std::endl;
-    std::cout << minVal << " == " << MinValue<T>::VALUE << "(" << (double)MinValue<T>::VALUE << ")  " << minValue<T>() << std::endl;
-*/
-
     bool isSigned = IsSameType< typename MakeSigned_<T>::Type, T >::VALUE;
     SEQAN_ASSERT(isSigned);
 
-    SEQAN_ASSERT_EQ(maxValue<T>(), MaxValue<T>::VALUE);
-    SEQAN_ASSERT_EQ(minValue<T>(), MinValue<T>::VALUE);
-
-    long double maxDelta = maxVal - MaxValue<T>::VALUE;
-    long double minDelta = minVal - (long double)MinValue<T>::VALUE;
+    long double maxDelta = maxVal - std::numeric_limits<T>::max();
+    long double minDelta = minVal - (long double)std::numeric_limits<T>::min();
     SEQAN_ASSERT(maxDelta <= maxVal/1000);
     SEQAN_ASSERT(-maxVal/1000 <= maxDelta);
     SEQAN_ASSERT(minDelta <= maxVal/1000);
@@ -484,22 +475,13 @@ void TestExtremeValuesUnsigned()
         maxVal = 2*maxVal;
     maxVal = maxVal - 1;
 
-/*
-    std::cout << std::endl << "Max/Min of " << typeid(T).name() << std::endl;
-    std::cout << maxVal << " == " << MaxValue<T>::VALUE << "(" << (double)MaxValue<T>::VALUE << ")  " << maxValue<T>() << std::endl;
-    std::cout << 0 << " == " << MinValue<T>::VALUE << "(" << (double)MinValue<T>::VALUE << ")  " << minValue<T>() << std::endl;
-*/
-
     bool isUnsigned = IsSameType< typename MakeUnsigned_<T>::Type, T >::VALUE;
     SEQAN_ASSERT(isUnsigned);
 
-    SEQAN_ASSERT_EQ(maxValue<T>(), MaxValue<T>::VALUE);
-    SEQAN_ASSERT_EQ(minValue<T>(), MinValue<T>::VALUE);
-
-    long double maxDelta = maxVal - MaxValue<T>::VALUE;
+    long double maxDelta = maxVal - std::numeric_limits<T>::max();
     SEQAN_ASSERT_LEQ(maxDelta, maxVal/1000);
     SEQAN_ASSERT_LEQ(-maxVal/1000, maxDelta);
-    SEQAN_ASSERT_EQ((T)0, MinValue<T>::VALUE);
+    SEQAN_ASSERT_EQ((T)0, std::numeric_limits<T>::min());
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_extreme_values)
@@ -545,30 +527,6 @@ SEQAN_DEFINE_TEST(test_basic_array_functions)
     TestArrayFunctions<float>(3.1, 1.2);
     TestArrayFunctions<double>(3.1, 1.2);
     TestArrayFunctions<long double>(3.1, 1.2);
-}
-
-SEQAN_DEFINE_TEST(test_basic_suprema_infima)
-{
-  using namespace seqan;
-
-    // These tests are only here to instantiate the MaxValue and
-    // MinValue Metafunctions for double and float.
-    {
-        double x = MaxValue<double>::VALUE;
-        SEQAN_ASSERT_GT(x, 0);
-    }
-    {
-        double x = MinValue<double>::VALUE;
-        SEQAN_ASSERT_LT(x, 0);
-    }
-    {
-        float x = MaxValue<float>::VALUE;
-        SEQAN_ASSERT_GT(x, 0);
-    }
-    {
-        float x = MinValue<float>::VALUE;
-        SEQAN_ASSERT_LT(x, 0);
-    }
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_value_size)

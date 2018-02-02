@@ -177,7 +177,7 @@ int main(int argc, char const ** argv)
     std::cerr << "Writing " << contigs.size() << " contigs...\n";
 
     int beginLine = (options.beginLine == -1) ? 0 : options.beginLine;
-    int endLine = (options.endLine == -1) ? MaxValue<int>::VALUE : options.endLine;
+    int endLine = (options.endLine == -1) ? std::numeric_limits<int>::max() : options.endLine;
 
     for (unsigned i = 0; i < contigs.size(); ++i)
         if (contigs[i] < length(store.contigStore))
@@ -185,18 +185,18 @@ int main(int argc, char const ** argv)
             std::cerr << "Writing contig " << store.contigNameStore[contigs[i]] << " ... ";
 
             int64_t l = (options.beginPos == -1) ? 0 : options.beginPos;
-            int64_t r = (options.endPos == -1) ? MaxValue<TContigPos>::VALUE : options.endPos;
+            int64_t r = (options.endPos == -1) ? std::numeric_limits<TContigPos>::max() : options.endPos;
 
             if (!options.gapSpace)
             {
                 typedef Gaps<Nothing, AnchorGaps<TContig::TGapAnchors> >   TContigGaps;
                 TContigGaps contigGaps(store.contigStore[i].gaps);
                 l = positionSeqToGap(contigGaps, l);
-                if (r != MaxValue<TContigPos>::VALUE)
+                if (r != std::numeric_limits<TContigPos>::max())
                     r = positionSeqToGap(contigGaps, r);
             }
 
-            if (r == MaxValue<TContigPos>::VALUE)
+            if (r == std::numeric_limits<TContigPos>::max())
             {
                 r = 0;
                 for (unsigned j = 0; j < length(layout.contigRows[i]); ++j)

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -178,15 +178,15 @@ bool SamJoiner::_loadNext(seqan::BamAlignmentRecord & record, unsigned idx)
 
 int SamJoiner::get(seqan::BamAlignmentRecord & record)
 {
-    unsigned idx = seqan::maxValue<unsigned>();
+    unsigned idx = std::numeric_limits<unsigned>::max();
     for (unsigned i = 0; i < length(records); ++i)
     {
         if (!active[i])
             continue;
-        if (idx == seqan::maxValue<unsigned>() || ltBamAlignmentRecord(records[i], records[idx]))
+        if (idx == std::numeric_limits<unsigned>::max() || ltBamAlignmentRecord(records[i], records[idx]))
             idx = i;
     }
-    if (idx == seqan::maxValue<unsigned>())
+    if (idx == std::numeric_limits<unsigned>::max())
         return 1;
 
     // We use double-buffering and the input parameters as buffers.

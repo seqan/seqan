@@ -7,7 +7,7 @@ using namespace seqan;
 int main()
 {
     // Open input stream, BamStream can read SAM and BAM files.
-    std::string pathSam = std::string(SEQAN_PATH_TO_ROOT()) + "/demos/bam_io/example.sam";
+    std::string pathSam = getAbsolutePath("/demos/bam_io/example.sam");
 
     BamFileIn bamFileIn;
     if (!open(bamFileIn, toCString(pathSam)))

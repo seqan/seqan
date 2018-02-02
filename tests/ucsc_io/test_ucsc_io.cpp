@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,8 +48,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_genes)
 {
     // The file contains 13 annotations in total which will be checked line
     // after line.
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/ucsc_io/example_knownGene.txt");
+    CharString ucscPath = getAbsolutePath("/tests/ucsc_io/example_knownGene.txt");
 
     String<char, MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(ucscPath)));
@@ -104,8 +103,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_isoforms)
 {
     // The file contains 13 annotations in total which will be checked line
     // after line.
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/ucsc_io/example_knownIsoforms.txt");
+    CharString ucscPath = getAbsolutePath("/tests/ucsc_io/example_knownIsoforms.txt");
 
     String<char, MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(ucscPath)));
@@ -136,8 +134,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_isoforms)
 
 SEQAN_DEFINE_TEST(test_ucsc_io_write_record_ucsc_known_genes)
 {
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/store/example_knownGene.txt");
+    CharString ucscPath = getAbsolutePath("/tests/store/example_knownGene.txt");
 
     String<char, MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(ucscPath)));
@@ -157,8 +154,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_write_record_ucsc_known_genes)
 
 SEQAN_DEFINE_TEST(test_ucsc_io_write_record_ucsc_known_isoforms)
 {
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/store/example_knownIsoforms.txt");
+    CharString ucscPath = getAbsolutePath("/tests/store/example_knownIsoforms.txt");
 
     String<char, MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(ucscPath)));
@@ -180,8 +176,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_genes)
 {
     // The file contains 13 annotations in total which will be checked line
     // after line.
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/ucsc_io/example_with_errors_knownGene.txt");
+    CharString ucscPath = getAbsolutePath("/tests/ucsc_io/example_with_errors_knownGene.txt");
 
     UcscFileIn ucscFileIn(toCString(ucscPath));
     UcscRecord record;
@@ -231,8 +226,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_isoforms)
 {
     // The file contains 13 annotations in total which will be checked line
     // after line.
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/ucsc_io/example_knownIsoforms.txt");
+    CharString ucscPath = getAbsolutePath("/tests/ucsc_io/example_knownIsoforms.txt");
 
     
     UcscFileIn ucscFileIn(toCString(ucscPath));
@@ -259,8 +253,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_isoforms)
 
 SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_out_write_record_ucsc_known_genes)
 {
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/store/example_knownGene.txt");
+    CharString ucscPath = getAbsolutePath("/tests/store/example_knownGene.txt");
 
     String<char, MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(ucscPath)));
@@ -281,8 +274,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_out_write_record_ucsc_known_genes)
 
 SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_out_write_record_ucsc_known_isoforms)
 {
-    CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/store/example_knownIsoforms.txt");
+    CharString ucscPath = getAbsolutePath("/tests/store/example_knownIsoforms.txt");
 
     String<char, MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(ucscPath)));

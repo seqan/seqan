@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -416,7 +416,7 @@ _readAlignments(
 
     // sync sizes of alignQualityStore and alignedReadTagStore with alignedReadStore
     TAlignQuality q;
-    q.score = maxValue(q.score);
+    q.score = std::numeric_limits<decltype(q.score)>::max();
     resize(fragStore.alignQualityStore, length(fragStore.alignedReadStore), q);
     resize(fragStore.alignedReadTagStore, length(fragStore.alignedReadStore));
 
@@ -893,19 +893,19 @@ setPrimaryMatch(BamAlignmentRecord & record,
         record.mapQ = 255;
 
 //    // Fill CIGAR using aligned read.
-//    if (!IsSameType<TAlignFunctor, Nothing>::VALUE)
+//    SEQAN_IF_CONSTEXPR (!IsSameType<TAlignFunctor, Nothing>::VALUE)
 //        getCigarString(record.cigar, row(align, 0), row(align, 1));
 
     // Retrieve number of errors from quality store.
     int errors = -1;
-    if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
+    if (alignQuality.errors != std::numeric_limits<unsigned char>::max())
         errors = alignQuality.errors;
 
     // Use record.qual as a temporary for the md string.
     alignAndGetCigarString(record.cigar, record.qual, store.contigStore[alignedRead.contigId],
             store.readSeqStore[alignedRead.readId], alignedRead, errors, functor);
 
-    if (alignQuality.errors != MaxValue<unsigned char>::VALUE)
+    if (alignQuality.errors != std::numeric_limits<unsigned char>::max())
     {
 //        if (errors > (int)alignQuality.errors)
 //            std::cerr << "WARNING: More errors in the alignment (" << errors << ") than given in NM tag / alignQuality ("

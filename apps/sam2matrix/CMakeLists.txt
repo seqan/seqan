@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sam2matrix CXX)
 message (STATUS "Configuring apps/sam2matrix")
 
-set (SEQAN_APP_VERSION "0.3.7")
+set (SEQAN_APP_VERSION "0.3.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -56,7 +56,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install sam2matrix in ${PREFIX}/bin directory
 install (TARGETS sam2matrix
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/sam2matrix for SeqAn release builds.

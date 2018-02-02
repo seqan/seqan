@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -272,7 +272,7 @@ findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
 
 template <typename TId>
 SEQAN_FUNC_ENABLE_IF(
-    IsInteger<TId>,
+    Is<IntegerConcept<TId> >,
     bool)
 inline getTagValue(CharString & value, TId idx, BamHeaderRecord const & record)
 {
@@ -310,7 +310,7 @@ inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord con
 
 template <typename TId>
 SEQAN_FUNC_ENABLE_IF(
-    IsInteger<TId>,
+    Is<IntegerConcept<TId> >,
     void)
 inline setTagValue(TId idx, CharString const & value, BamHeaderRecord & record)
 {

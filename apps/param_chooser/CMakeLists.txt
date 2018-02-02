@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_param_chooser CXX)
 message (STATUS "Configuring apps/param_chooser")
 
-set (SEQAN_APP_VERSION "0.0.8")
+set (SEQAN_APP_VERSION "0.0.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -62,7 +62,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install param_chooser in ${PREFIX}/bin directory
 install (TARGETS param_chooser
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/param_chooser for SeqAn release builds.

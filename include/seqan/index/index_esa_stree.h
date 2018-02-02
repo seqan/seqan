@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -1533,7 +1533,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
         typename Iterator<Index<TText, TIndexSpec>, TSpec>::Type it(index);
 
-        if (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
+        SEQAN_IF_CONSTEXPR (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
             while (goDown(it)) ;
         }
 
@@ -1582,7 +1582,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
         goRoot(it);
 
-        if (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
+        SEQAN_IF_CONSTEXPR (IsSameType<typename TTraits::DfsOrder, Postorder_>::VALUE) {
             while (goDown(it)) ;
             return;
         }

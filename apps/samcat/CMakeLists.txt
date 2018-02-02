@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_samcat CXX)
 message (STATUS "Configuring apps/samcat")
 
-set (SEQAN_APP_VERSION "0.3.7")
+set (SEQAN_APP_VERSION "0.3.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -21,6 +21,11 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)
     find_package (ZLIB)
     find_package (SeqAn CONFIG REQUIRED)
+endif ()
+
+if (NOT ZLIB_FOUND)
+  message (STATUS "  ZLIB not found: samcat will not be built.")
+  return ()
 endif ()
 
 # ----------------------------------------------------------------------------
@@ -58,7 +63,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install samcat in ${PREFIX}/bin directory
 install (TARGETS samcat
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/samcat for SeqAn release builds.

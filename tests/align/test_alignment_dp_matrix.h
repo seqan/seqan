@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         test_alignment_dp_matrix.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -294,7 +294,7 @@ void testAlignmentDPMatrixGetValueMF(TSpec const &)
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
 
-    bool result = IsSameType<typename GetValue<TDPMatrix>::Type, int &>::VALUE;
+    bool result = IsSameType<typename GetValue<TDPMatrix>::Type, int const &>::VALUE;
     bool result2 = IsSameType<typename GetValue<TDPMatrixConst>::Type, int const &>::VALUE;
 
     SEQAN_ASSERT_EQ(result, true);

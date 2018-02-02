@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -178,7 +178,7 @@ clear(FilePage<TValue, TSpec> & me)
 // Class FilePager
 // ----------------------------------------------------------------------------
 
-template <unsigned SEQAN_PAGESIZE = 4 * 1024>
+template <unsigned SEQAN_PAGESIZE = SEQAN_DEFAULT_PAGESIZE>
 struct FixedPagingScheme
 {
     enum { pageSize = SEQAN_PAGESIZE };
@@ -365,7 +365,7 @@ _readFilePage(FilePageTable<TValue, TDirection, TSpec> &, FileMapping<TFileSpec>
     // how to handle pages crossing/beyond the end of file
     if (endOfs > length(file))
     {
-        if (!IsSameType<TDirection, Input>::VALUE)
+        SEQAN_IF_CONSTEXPR (!IsSameType<TDirection, Input>::VALUE)
         {
             // increase file size to next page boundary and map the whole page
             resize(file, endOfs);
@@ -423,7 +423,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, File<TFileSpec>
     typedef typename Size<File<TFileSpec> >::Type TSize;
 
     // only write in write-mode
-    if (IsSameType<TDirection, Input>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)
     {
         page.state = UNUSED;
         return true;    // true = writing completed
@@ -433,7 +433,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, File<TFileSpec>
     page.state = WRITING;
     bool success = asyncWriteAt(file, begin(page.raw, Standard()), length(page.raw), page.filePos, page.request);
 
-    if (!IsSameType<TDirection, Input>::VALUE)
+    SEQAN_IF_CONSTEXPR (!IsSameType<TDirection, Input>::VALUE)
         pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
 
     // if an error occurred, throw an I/O exception
@@ -452,7 +452,7 @@ _writeFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, FileMapping<TFi
     page.state = UNUSED;
     unmapFileSegment(file, begin(page.raw, Standard()), capacity(page.raw));
 
-    if (!IsSameType<TDirection, Input>::VALUE)
+    SEQAN_IF_CONSTEXPR (!IsSameType<TDirection, Input>::VALUE)
         pager.fileSize = std::max(pager.fileSize, (TSize)page.filePos + (TSize)length(page.raw));
 
     clear(page.raw);

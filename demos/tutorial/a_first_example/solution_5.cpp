@@ -1,5 +1,3 @@
-// Provide a generic print function which is used when the input type is not String<int>.
-
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -55,15 +53,15 @@ void print(String<int> const & text)
 
 int main()
 {
-    String<char> text = "This is an awesome tutorial to get to now SeqAn!";
+    String<char> text = "This is an awesome tutorial to get to know SeqAn!";
     String<char> pattern = "tutorial";
     String<int> score = computeScore(text, pattern);
 
     print(text);
-    // > This is an awesome tutorial to get to now SeqAn!
+
     print(pattern);
-    // > tutorial
+
     print(score);
-    // > 1 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 8 0 1 0 0 0 0 2 0 1 0 0 1 0 3 0 1 1 0 0 0 0
+
     return 0;
 }

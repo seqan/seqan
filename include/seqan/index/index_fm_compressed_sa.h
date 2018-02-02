@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -305,7 +305,7 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
 
     for (TSASize pos = offset; saIt != saItEnd; ++saIt, ++pos)
     {
-        if (getSeqOffset(getValue(saIt)) % TConfig::SAMPLING == 0)
+        if (getSeqOffset(*saIt) % TConfig::SAMPLING == 0)
             setValue(indicators, pos, true);
         else
             setValue(indicators, pos, false);
@@ -319,7 +319,7 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
     {
         if (getValue(indicators, pos))
         {
-            assignValue(values, counter, getValue(saIt));
+            assignValue(values, counter, *saIt);
             ++counter;
         }
     }

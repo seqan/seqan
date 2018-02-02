@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -936,15 +936,15 @@ assign(Holder<TValue const, Tristate> & target_,
        Holder<TValue const, Tristate> const & source_)
 {
     switch(source_.data_state) {
-        case Holder<TValue, Tristate>::EMPTY:
+        case Holder<TValue const, Tristate>::EMPTY:
             clear(target_);
             break;
 
-        case Holder<TValue, Tristate>::OWNER:
+        case Holder<TValue const, Tristate>::OWNER:
             create(target_, value(source_));
             break;
 
-        default:  // case Holder<TValue, Tristate>::DEPENDENT
+        default:  // case Holder<TValue const, Tristate>::DEPENDENT
             setValue(target_, value(source_));
             break;
     }

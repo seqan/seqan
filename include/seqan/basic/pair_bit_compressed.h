@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -86,16 +86,23 @@ struct Pair<T1, T2, BitPacked<BITSIZE1, BITSIZE2> >
     // Constructors
     // ------------------------------------------------------------------------
 
-    inline Pair() : i1(T1()), i2(T2()) {}
-
-    inline Pair(Pair const & _p) : i1(_p.i1), i2(_p.i2) {}
+    // bitfield member cannot have an in-class initializer, thus
+    // `inline Pair() = default;` is not possible
+    // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65132
+    inline Pair() : i1(T1{}), i2(T2{}) {};
+    inline Pair(Pair const &) = default;
+    inline Pair(Pair &&) = default;
+    inline Pair & operator=(Pair const &) = default;
+    inline Pair & operator=(Pair &&) = default;
+    inline ~Pair() = default;
 
     inline Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 
     template <typename T1_, typename T2_, typename TSpec__>
     // TODO(holtgrew): explicit?
-    inline Pair(Pair<T1_, T2_, TSpec__> const &_p)
-            : i1(getValueI1(_p)), i2(getValueI2(_p)) {}
+    inline Pair(Pair<T1_, T2_, TSpec__> const &_p) :
+        i1(getValueI1(_p)), i2(getValueI2(_p))
+    {}
 };
 #pragma pack(pop)
 

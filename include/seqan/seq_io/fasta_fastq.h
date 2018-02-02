@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -235,7 +235,7 @@ struct QualityExtractor : public std::unary_function<TValue, char>
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsInputFile<TFwdIterator> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
 {
     typedef typename Value<TSeqString>::Type                        TAlphabet;
@@ -252,7 +252,7 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Raw)
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsInputFile<TFwdIterator> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Raw const & raw)
 {
     clear(qual);
@@ -264,7 +264,7 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator 
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator>
-inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsInputFile<TFwdIterator> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 {
     typedef typename Value<TSeqString>::Type                        TAlphabet;
@@ -286,7 +286,7 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fasta)
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsInputFile<TFwdIterator> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fasta)
 {
     clear(qual);
@@ -298,7 +298,7 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator 
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TFwdIterator >
-inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsInputFile<TFwdIterator> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
 {
     typedef typename Value<TSeqString>::Type                                TAlphabet;
@@ -349,7 +349,7 @@ readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, Fastq)
 // ----------------------------------------------------------------------------
 
 template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
-inline SEQAN_FUNC_ENABLE_IF(Not<IsSameType<TFwdIterator, FormattedFile<Fastq, Input> > >, void)
+inline SEQAN_FUNC_ENABLE_IF(Not<IsInputFile<TFwdIterator> >, void)
 readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, Fastq)
 {
     typedef typename Value<TSeqString>::Type                                TSeqAlphabet;

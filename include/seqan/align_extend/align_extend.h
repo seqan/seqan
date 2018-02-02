@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -254,7 +254,7 @@ _extendAlignmentImpl(Gaps<TSource0, TGapsSpec0> & row0,
     TPos newAlignLen = length(row0);
 
     // centerScore was set to "compute yourself" by interface function without score parameter
-    if (centerScore == minValue<TScoreValue>())
+    if (centerScore == std::numeric_limits<TScoreValue>::min())
     {
         centerScore = 0;
 
@@ -416,7 +416,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
 {
     if (scoreGapOpen(scoreScheme) == scoreGapExtend(scoreScheme))
     {
-        typedef DPContext<TScoreValue, LinearGaps> TDPContext;
+        typedef DPContext<DPCell_<TScoreValue, LinearGaps>, typename TraceBitMap_<TScoreValue>::Type> TDPContext;
         typedef AliExtContext_<Gaps<TStringInfix, TAlignSpec>,
                                Gaps<TStringInfix, TAlignSpec>,
                                TDPContext> TAliExtContext_;
@@ -426,7 +426,7 @@ _extendAlignmentImpl(Align<TStringInfix, TAlignSpec> & align,
     }
     else
     {
-        typedef DPContext<TScoreValue, AffineGaps> TDPContext;
+        typedef DPContext<DPCell_<TScoreValue, AffineGaps>, typename TraceBitMap_<TScoreValue>::Type> TDPContext;
         typedef AliExtContext_<Gaps<TStringInfix, TAlignSpec>,
                                Gaps<TStringInfix, TAlignSpec>,
                                TDPContext> TAliExtContext_;
@@ -501,7 +501,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 ExtensionDirection const & direction,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, 0, 0, 0, scoreScheme,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, 0, 0, 0, scoreScheme,
                                 False(), False());
 }
 
@@ -533,7 +533,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 int const upperDiag,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
                                 0, scoreScheme, True(), False());
 }
 
@@ -566,7 +566,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, 0, 0, xDrop,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, 0, 0, xDrop,
                                 scoreScheme, False(), True());
 }
 
@@ -600,7 +600,7 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
                 TScoreValue const & xDrop,
                 Score<TScoreValue, TScoreSpec> const & scoreScheme)
 {
-    return _extendAlignmentImpl(align, minValue<TScoreValue>(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
+    return _extendAlignmentImpl(align, std::numeric_limits<TScoreValue>::min(), hSeq, vSeq, positions, direction, lowerDiag, upperDiag,
                                 xDrop, scoreScheme, True(), True());
 }
 

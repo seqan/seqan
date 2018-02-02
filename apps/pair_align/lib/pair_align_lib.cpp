@@ -1,7 +1,7 @@
 // ==========================================================================
 //                            pair_align_lib.cpp
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,4 +37,4 @@
 #include "pair_align_lib.h"
 
 // Definition of static variable has to be moved to cpp file.
-int const Options::INVALID_DIAGONAL = seqan::MaxValue<int>::VALUE;
+int const Options::INVALID_DIAGONAL = std::numeric_limits<int>::max();

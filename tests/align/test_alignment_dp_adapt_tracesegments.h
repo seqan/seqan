@@ -1,7 +1,7 @@
 // ==========================================================================
 //                  test_alignment_dp_adapt_tracesegments.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ testAlign2TracebackTraceSegmentsConstructor()
         SEQAN_ASSERT_EQ(traceSegment._horizontalBeginPos, (TPosition) 0);
         SEQAN_ASSERT_EQ(traceSegment._verticalBeginPos, (TPosition) 0);
         SEQAN_ASSERT_EQ(traceSegment._length, (TSize) 0);
-        SEQAN_ASSERT_EQ(traceSegment._traceValue, +TraceBitMap_<>::NONE);
+        SEQAN_ASSERT_EQ(traceSegment._traceValue, TraceBitMap_<>::NONE);
     }
 
     { // test copy ctor
@@ -58,30 +58,30 @@ testAlign2TracebackTraceSegmentsConstructor()
         traceSegment._horizontalBeginPos = 10;
         traceSegment._verticalBeginPos = 3;
         traceSegment._length = 5;
-        traceSegment._traceValue = +TraceBitMap_<>::DIAGONAL;
+        traceSegment._traceValue = TraceBitMap_<>::DIAGONAL;
 
         TTraceSegment traceSegment2(traceSegment);
 
         SEQAN_ASSERT_EQ(traceSegment2._horizontalBeginPos, (TPosition) 10);
         SEQAN_ASSERT_EQ(traceSegment2._verticalBeginPos, (TPosition) 3);
         SEQAN_ASSERT_EQ(traceSegment2._length, (TSize) 5);
-        SEQAN_ASSERT_EQ(traceSegment2._traceValue, +TraceBitMap_<>::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceSegment2._traceValue, TraceBitMap_<>::DIAGONAL);
 
         TTraceSegment traceSegment3 = traceSegment;
 
         SEQAN_ASSERT_EQ(traceSegment3._horizontalBeginPos, (TPosition) 10);
         SEQAN_ASSERT_EQ(traceSegment3._verticalBeginPos, (TPosition) 3);
         SEQAN_ASSERT_EQ(traceSegment3._length, (TSize) 5);
-        SEQAN_ASSERT_EQ(traceSegment3._traceValue, +TraceBitMap_<>::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceSegment3._traceValue, TraceBitMap_<>::DIAGONAL);
     }
 
     { // test additional ctor
-        TTraceSegment traceSegment(12, 13, 8, +TraceBitMap_<>::VERTICAL);
+        TTraceSegment traceSegment(12, 13, 8, TraceBitMap_<>::VERTICAL);
 
         SEQAN_ASSERT_EQ(traceSegment._horizontalBeginPos, (TPosition) 12);
         SEQAN_ASSERT_EQ(traceSegment._verticalBeginPos, (TPosition) 13);
         SEQAN_ASSERT_EQ(traceSegment._length, (TSize) 8);
-        SEQAN_ASSERT_EQ(traceSegment._traceValue, +TraceBitMap_<>::VERTICAL);
+        SEQAN_ASSERT_EQ(traceSegment._traceValue, TraceBitMap_<>::VERTICAL);
     }
 }
 
@@ -98,21 +98,21 @@ testAlign2TracebackTraceSegmentsAssignment()
         traceSegment._horizontalBeginPos = 10;
         traceSegment._verticalBeginPos = 3;
         traceSegment._length = 5;
-        traceSegment._traceValue = +TraceBitMap_<>::DIAGONAL;
+        traceSegment._traceValue = TraceBitMap_<>::DIAGONAL;
 
         TTraceSegment traceSegment2;
 
         SEQAN_ASSERT_EQ(traceSegment2._horizontalBeginPos, (TPosition) 0);
         SEQAN_ASSERT_EQ(traceSegment2._verticalBeginPos, (TPosition) 0);
         SEQAN_ASSERT_EQ(traceSegment2._length, (TSize) 0);
-        SEQAN_ASSERT_EQ(traceSegment2._traceValue, +TraceBitMap_<>::NONE);
+        SEQAN_ASSERT_EQ(traceSegment2._traceValue, TraceBitMap_<>::NONE);
 
         traceSegment2 = traceSegment;
 
         SEQAN_ASSERT_EQ(traceSegment2._horizontalBeginPos, (TPosition) 10);
         SEQAN_ASSERT_EQ(traceSegment2._verticalBeginPos, (TPosition) 3);
         SEQAN_ASSERT_EQ(traceSegment2._length, (TSize) 5);
-        SEQAN_ASSERT_EQ(traceSegment2._traceValue, +TraceBitMap_<>::DIAGONAL);
+        SEQAN_ASSERT_EQ(traceSegment2._traceValue, TraceBitMap_<>::DIAGONAL);
     }
 }
 
@@ -127,12 +127,12 @@ testAlign2TracebackTraceSegmentsCompare()
     traceSegment._horizontalBeginPos = 10;
     traceSegment._verticalBeginPos = 3;
     traceSegment._length = 5;
-    traceSegment._traceValue = +TraceBitMap_<>::DIAGONAL;
+    traceSegment._traceValue = TraceBitMap_<>::DIAGONAL;
 
     TTraceSegment traceSegment2(traceSegment);
 
     SEQAN_ASSERT(traceSegment2 == traceSegment);
-    traceSegment._traceValue = +TraceBitMap_<>::HORIZONTAL;
+    traceSegment._traceValue = TraceBitMap_<>::HORIZONTAL;
     SEQAN_ASSERT(traceSegment2 !=  traceSegment);
 }
 
@@ -171,26 +171,26 @@ void testAlign2TracebackRecordTrace(TTarget & target)
     _recordSegment(target, 0, 0, 3, tv1);
     _recordSegment(target, 0, 3, 5, tv2);
     _recordSegment(target, 5, 8, 3, tv3);
-    _recordSegment(target, 8, 8, 0, +TraceBitMap_<>::DIAGONAL);
+    _recordSegment(target, 8, 8, 0, TraceBitMap_<>::DIAGONAL);
 
 
 
     SEQAN_ASSERT_EQ(target[0]._horizontalBeginPos, 0);
     SEQAN_ASSERT_EQ(target[0]._verticalBeginPos, 0);
     SEQAN_ASSERT_EQ(target[0]._length, 3);
-    SEQAN_ASSERT_EQ(target[0]._traceValue, +TraceBitMap_<>::DIAGONAL);
+    SEQAN_ASSERT_EQ(target[0]._traceValue, TraceBitMap_<>::DIAGONAL);
     SEQAN_ASSERT_EQ(target[1]._horizontalBeginPos, 0);
     SEQAN_ASSERT_EQ(target[1]._verticalBeginPos, 3);
     SEQAN_ASSERT_EQ(target[1]._length, 5);
-    SEQAN_ASSERT_EQ(target[1]._traceValue, +TraceBitMap_<>::VERTICAL);
+    SEQAN_ASSERT_EQ(target[1]._traceValue, TraceBitMap_<>::VERTICAL);
     SEQAN_ASSERT_EQ(target[2]._horizontalBeginPos, 5);
     SEQAN_ASSERT_EQ(target[2]._verticalBeginPos, 8);
     SEQAN_ASSERT_EQ(target[2]._length, 3);
-    SEQAN_ASSERT_EQ(target[2]._traceValue, +TraceBitMap_<>::HORIZONTAL);
+    SEQAN_ASSERT_EQ(target[2]._traceValue, TraceBitMap_<>::HORIZONTAL);
 
     SEQAN_ASSERT_EQ(length(target), 3u);
 
-//    _recordSegment(target, 8, 8, 10, +TraceBitMap_<>::NONE); // note this should fail when uncommented
+//    _recordSegment(target, 8, 8, 10, TraceBitMap_<>::NONE); // note this should fail when uncommented
 }
 
 void testAlign2TraceAdaptorAdaptFile()
@@ -200,12 +200,12 @@ void testAlign2TraceAdaptorAdaptFile()
     typedef TraceSegment_<size_t, size_t> TTraceSegment;
     String<TTraceSegment> traceSegments;
 
-    appendValue(traceSegments, TTraceSegment(12, 8, 4, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(8, 4, 4, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(8, 3, 1, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(4, 3, 4, +TraceBitMap_<>::HORIZONTAL));
-    appendValue(traceSegments, TTraceSegment(1, 0, 3, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(0, 0, 1, +TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(12, 8, 4, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(8, 4, 4, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(8, 3, 1, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(4, 3, 4, TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(1, 0, 3, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(0, 0, 1, TraceBitMap_<>::HORIZONTAL));
 
     String<char> seq0 = "AAAACCCCGGGG";
     String<char> seq1 = "AAAACCCCGGGG";
@@ -272,12 +272,12 @@ void testAlign2TraceAdaptorAdaptAlign()
     typedef TraceSegment_<size_t, size_t> TTraceSegment;
     String<TTraceSegment> traceSegments;
 
-    appendValue(traceSegments, TTraceSegment(12, 8, 4, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(8, 4, 4, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(8, 3, 1, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(4, 3, 4, +TraceBitMap_<>::HORIZONTAL));
-    appendValue(traceSegments, TTraceSegment(1, 0, 3, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(0, 0, 1, +TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(12, 8, 4, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(8, 4, 4, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(8, 3, 1, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(4, 3, 4, TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(1, 0, 3, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(0, 0, 1, TraceBitMap_<>::HORIZONTAL));
 
     String<char> seq0 = "AAAACCCCGGGG";
     String<char> seq1 = "AAAACCCCGGGG";
@@ -316,12 +316,12 @@ void testAlign2TraceAdaptorAdaptFragments()
 
     String<TTraceSegment> traceSegments;
 
-    appendValue(traceSegments, TTraceSegment(12, 8, 4, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(8, 4, 4, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(8, 3, 1, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(4, 3, 4, +TraceBitMap_<>::HORIZONTAL));
-    appendValue(traceSegments, TTraceSegment(1, 0, 3, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(0, 0, 1, +TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(12, 8, 4, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(8, 4, 4, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(8, 3, 1, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(4, 3, 4, TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(1, 0, 3, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(0, 0, 1, TraceBitMap_<>::HORIZONTAL));
 
     _adaptTraceSegmentsTo(fragmentString, 0, 1, traceSegments);
 
@@ -344,12 +344,12 @@ void testAlign2TraceAdaptorAdaptAlignmentGraph()
 
     String<TTraceSegment> traceSegments;
 
-    appendValue(traceSegments, TTraceSegment(12, 8, 4, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(8, 4, 4, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(8, 3, 1, +TraceBitMap_<>::VERTICAL));
-    appendValue(traceSegments, TTraceSegment(4, 3, 4, +TraceBitMap_<>::HORIZONTAL));
-    appendValue(traceSegments, TTraceSegment(1, 0, 3, +TraceBitMap_<>::DIAGONAL));
-    appendValue(traceSegments, TTraceSegment(0, 0, 1, +TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(12, 8, 4, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(8, 4, 4, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(8, 3, 1, TraceBitMap_<>::VERTICAL));
+    appendValue(traceSegments, TTraceSegment(4, 3, 4, TraceBitMap_<>::HORIZONTAL));
+    appendValue(traceSegments, TTraceSegment(1, 0, 3, TraceBitMap_<>::DIAGONAL));
+    appendValue(traceSegments, TTraceSegment(0, 0, 1, TraceBitMap_<>::HORIZONTAL));
 
     _adaptTraceSegmentsTo(alignGraph, 0, 1, traceSegments);
 

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sgip CXX)
 message (STATUS "Configuring apps/sgip")
 
-set (SEQAN_APP_VERSION "1.4.7")
+set (SEQAN_APP_VERSION "1.4.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -56,7 +56,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install sgip in ${PREFIX}/bin directory
 install (TARGETS sgip
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/sgip for SeqAn release builds.

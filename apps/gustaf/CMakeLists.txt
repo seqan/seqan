@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_gustaf CXX)
 message (STATUS "Configuring apps/gustaf")
 
-set (SEQAN_APP_VERSION "1.0.9")
+set (SEQAN_APP_VERSION "1.0.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -77,7 +77,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install gustaf in ${PREFIX}/bin directory
 install (TARGETS gustaf gustaf_mate_joining
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/gustaf for SeqAn release builds.

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -316,8 +316,8 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     return computeAlignmentStats(stats, row(align, 0), row(align, 1), scoringScheme);
 }
 
-// NOTE(h-2): this interface is deprecated. Don't use it.
 template <typename TGaps, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+[[deprecated("Use computeAlignmentStats(stats, align, scoringScheme) instead.")]]
 TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
                                 Score<TScoreVal, TScoreSpec> const & scoringScheme)
 {

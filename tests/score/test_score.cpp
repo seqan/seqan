@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -125,8 +125,7 @@ SEQAN_DEFINE_TEST(test_score_matrix) {
 
     // Define path to BLOSUM62 matrix that we want to load.
     // TODO(holtgrew): It should be easier to construct these paths.
-    String<char> pathToTestSrc = SEQAN_PATH_TO_ROOT();
-    append(pathToTestSrc, "/tests/score/");
+    String<char> pathToTestSrc = getAbsolutePath("/tests/score/");
     String<char> pathToBlosum62(pathToTestSrc);
     append(pathToBlosum62, "BLOSUM62");
 
@@ -251,8 +250,7 @@ SEQAN_DEFINE_TEST(test_score_matrix) {
 SEQAN_DEFINE_TEST(test_score_matrix_file) {
     // TODO(holtgrew): It should be easier to construct these paths.
     // The path to the directory with the test's sources and fixtures.
-    String<char> pathToTestSrc = SEQAN_PATH_TO_ROOT();
-    append(pathToTestSrc, "/tests/score/");
+    String<char> pathToTestSrc = getAbsolutePath("/tests/score/");
 
     // Load fixture BLOSUM62 matrix.
     // TODO(holtgrew): Should be done in a function.
@@ -479,8 +477,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
     typedef Score<TValue, ScoreMatrix<AminoAcid, ScoreMatrixFile> > TScore;
 
     // TODO(holtgrew): It should be easier to construct these paths.
-    String<char> pathToTestSrc = SEQAN_PATH_TO_ROOT();
-    append(pathToTestSrc, "/tests/score/");
+    String<char> pathToTestSrc = getAbsolutePath("/tests/score/");
 
     // Test with BLOSUM30.
     {

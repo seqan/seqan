@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -33,8 +33,6 @@
 // ==========================================================================
 // Defines the recursion formula for the dp-alignment algorithms.
 // ==========================================================================
-
-// TODO(holtgrew): Documentation in this header necessary or internal only?
 
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
@@ -102,116 +100,191 @@ typedef Tag<RecursionDirectionZero_> RecursionDirectionZero;
 // Metafunctions
 // ============================================================================
 
+// Helper typedef to get the correct score value type from the score-matrix navigator.
+template <typename TCellTuple>
+using ExtractedScoreValueType_ = std::decay_t<decltype(_scoreOfCell(std::get<0>(std::declval<TCellTuple>())))>;
+
 // ============================================================================
 // Functions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Function _computeScore
-// ----------------------------------------------------------------------------
-
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue,
-          typename TScoringScheme, typename TRecursionDirection, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >, typename TraceBitMap_<TScoreValue>::Type)
-_computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
-              DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-              DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-              DPCell_<TScoreValue, TGapCosts> const & previousVertical,
-              TSequenceHValue const & seqHVal,
-              TSequenceVValue const & seqVVal,
-              TScoringScheme const & scoringScheme,
-              TRecursionDirection const & recDir,
-              TDPProfile const & dpProfile)
+template <typename TTarget,
+          typename TSourceLeft,
+          typename TSourceRight,
+          typename TTraceLeft,
+          typename TTraceRight>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TTarget>>>, typename TraceBitMap_<TTarget>::Type)
+_maxScore(TTarget & target,
+          TSourceLeft const & srcLeft,
+          TSourceRight const & srcRight,
+          TTraceRight const /**/,
+          TTraceLeft const  /**/,
+          TracebackOff const & /*tag*/)
 {
-    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
-
-    TTraceValue traceDir = _doComputeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal,
-                                           seqVVal, scoringScheme, recDir, dpProfile);
-    if (IsLocalAlignment_<TDPProfile>::VALUE)
-        if (activeCell._score <= 0)
-        {
-            _setScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            _setHorizontalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            _setVerticalScoreOfCell(activeCell, static_cast<TScoreValue>(0));
-            return TraceBitMap_<TScoreValue>::NONE;
-        }
-
-    return traceDir;
+    using std::max;
+    target = max(static_cast<TTarget>(srcLeft), static_cast<TTarget>(srcRight));
+    return TraceBitMap_<TTarget>::NONE;
 }
 
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue,
-          typename TScoringScheme, typename TRecursionDirection, typename TDPProfile>
-inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >, typename TraceBitMap_<TScoreValue>::Type)
-_computeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
-              DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-              DPCell_<TScoreValue, TGapCosts> const & previousHorizontal,
-              DPCell_<TScoreValue, TGapCosts> const & previousVertical,
+template <typename TTarget,
+          typename TSourceLeft,
+          typename TSourceRight,
+          typename TTraceLeft,
+          typename TTraceRight>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TTarget>>, typename TraceBitMap_<TTarget>::Type)
+_maxScore(TTarget & target,
+          TSourceLeft const & srcLeft,
+          TSourceRight const & srcRight,
+          TTraceRight const /**/,
+          TTraceLeft const  /**/,
+          TracebackOff const & /*tag*/)
+{
+    target = max(srcLeft, srcRight);
+    return TraceBitMap_<TTarget>::NONE;
+}
+
+template <typename TTarget,
+          typename TSourceLeft,
+          typename TSourceRight,
+          typename TTraceLeft,
+          typename TTraceRight,
+          typename TGapsPlacement>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TTarget>>>, typename TraceBitMap_<TTarget>::Type)
+_maxScore(TTarget & target,
+          TSourceLeft const & srcLeft,
+          TSourceRight const & srcRight,
+          TTraceLeft const  traceLeft,
+          TTraceRight const traceRight,
+          TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const & /*tag*/)
+{
+    return (srcLeft < srcRight)
+        ? (target = srcRight, traceRight)
+        : (target = srcLeft, traceLeft);
+}
+
+template <typename TTarget,
+          typename TSourceLeft,
+          typename TSourceRight,
+          typename TTraceLeft,
+          typename TTraceRight,
+          typename TGapsPlacement>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TTarget>>, typename TraceBitMap_<TTarget>::Type)
+_maxScore(TTarget & target,
+          TSourceLeft const & srcLeft,
+          TSourceRight const & srcRight,
+          TTraceLeft const  traceLeft,
+          TTraceRight const traceRight,
+          TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > const & /*tag*/)
+{
+    auto cmp = cmpGt(srcRight, srcLeft);
+    target = blend(srcLeft, srcRight, cmp);
+    return blend(traceLeft, traceRight, cmp);
+}
+
+template <typename TTarget,
+          typename TSourceLeft,
+          typename TSourceRight,
+          typename TTraceLeft,
+          typename TTraceRight,
+          typename TGapsPlacement>
+inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TTarget>>>, typename TraceBitMap_<TTarget>::Type)
+_maxScore(TTarget & target,
+          TSourceLeft const & srcLeft,
+          TSourceRight const & srcRight,
+          TTraceLeft const  traceLeft,
+          TTraceRight const traceRight,
+          TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> > const & /*tag*/)
+{
+    return (srcLeft == srcRight)
+        ? (target = srcLeft, traceLeft | traceRight)
+        : (srcLeft < srcRight)
+            ? (target = srcRight, traceRight)
+            : (target = srcLeft, traceLeft);
+}
+
+template <typename TTarget,
+          typename TSourceLeft,
+          typename TSourceRight,
+          typename TTraceLeft,
+          typename TTraceRight,
+          typename TGapsPlacement>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TTarget>>, typename TraceBitMap_<TTarget>::Type)
+_maxScore(TTarget & target,
+          TSourceLeft const & srcLeft,
+          TSourceRight const & srcRight,
+          TTraceLeft const  traceLeft,
+          TTraceRight const traceRight,
+          TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement> > const & /*tag*/)
+{
+    auto cmpG = cmpGt(srcRight, srcLeft);
+    auto cmpE = cmpEq(srcRight, srcLeft);
+    target = blend(srcLeft, srcRight, cmpG);
+    auto result = blend(traceLeft, traceRight, cmpG);
+    return blend(result, traceLeft | traceRight, cmpE);
+}
+
+// ----------------------------------------------------------------------------
+// Function _computeScore                          [RecursionDirectionDiagonal]
+// ----------------------------------------------------------------------------
+// Independent of gap cost model.
+template <typename TScoreValue, typename TGapCosts,
+          typename TSequenceHValue,
+          typename TSequenceVValue,
+          typename TScoringScheme,
+          typename TAlgorithm, typename TTracebackConfig, typename TExecPolicy>
+inline auto
+_computeScore(DPCell_<TScoreValue, TGapCosts> & current,
+              DPCell_<TScoreValue, TGapCosts> & diagonal,
+              DPCell_<TScoreValue, TGapCosts> const & /*horizontal*/,
+              DPCell_<TScoreValue, TGapCosts> const & /*vertical*/,
               TSequenceHValue const & seqHVal,
               TSequenceVValue const & seqVVal,
               TScoringScheme const & scoringScheme,
-              TRecursionDirection const & recDir,
-              TDPProfile const & dpProfile)
+              RecursionDirectionDiagonal const &,
+              DPProfile_<TAlgorithm, TGapCosts, TTracebackConfig, TExecPolicy> const &)
 {
-    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue;
+    _scoreOfCell(current) = _scoreOfCell(diagonal) + score(scoringScheme, seqHVal, seqVVal);
+    setGapExtension(current, False(), False(), createVector<TScoreValue>(-1));
 
-    TTraceValue traceDir = _doComputeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal,
-                                           seqVVal, scoringScheme, recDir, dpProfile);
-    if (IsLocalAlignment_<TDPProfile>::VALUE)
+    if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
-        TScoreValue cmp = cmpGt(createVector<TScoreValue>(1), activeCell._score);
-        _setScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
-        _setHorizontalScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
-        _setVerticalScoreOfCell(activeCell, TraceBitMap_<TScoreValue>::NONE, cmp);
-        return blend(traceDir, TraceBitMap_<TScoreValue>::NONE, cmp);
+        return _maxScore(_scoreOfCell(current),
+                         TraceBitMap_<TScoreValue>::NONE,
+                         _scoreOfCell(current),
+                         TraceBitMap_<TScoreValue>::NONE,
+                         TraceBitMap_<TScoreValue>::DIAGONAL,
+                         TTracebackConfig{});
     }
-
-    return traceDir;
+    else
+    {
+        return TraceBitMap_<TScoreValue>::DIAGONAL;
+    }
 }
 
 // ----------------------------------------------------------------------------
-// Function _doComputeScore                        [RecursionDirectionDiagonal]
+// Function _computeScore                              [RecursionDirectionZero]
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TDPProfile>
-inline typename TraceBitMap_<TScoreValue>::Type
-_doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
-                DPCell_<TScoreValue, TGapCosts> const & previousDiagonal,
-                DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,
-                DPCell_<TScoreValue, TGapCosts> const & /*previousVertical*/,
-                TSequenceHValue const & seqHVal,
-                TSequenceVValue const & seqVVal,
-                TScoringScheme const & scoringScheme,
-                RecursionDirectionDiagonal const &,
-                TDPProfile const &)
+// Independent of gap cost model.
+template <typename TScoreValue, typename TGapCosts,
+          typename TSequenceHValue,
+          typename TSequenceVValue,
+          typename TScoringScheme,
+          typename TAlgoTag, typename TTraceFlag, typename TExecPolicy>
+inline auto
+_computeScore(DPCell_<TScoreValue, TGapCosts> & current,
+              DPCell_<TScoreValue, TGapCosts> & diagonal,
+              DPCell_<TScoreValue, TGapCosts> const & /*horizontal*/,
+              DPCell_<TScoreValue, TGapCosts> & vertical,
+              TSequenceHValue const & /*seqHVal*/,
+              TSequenceVValue const & /*seqVVal*/,
+              TScoringScheme const & /*scoringScheme*/,
+              RecursionDirectionZero const &,
+              DPProfile_<TAlgoTag, TGapCosts, TTraceFlag, TExecPolicy> const &)
 {
-    activeCell._score = _scoreOfCell(previousDiagonal) + score(scoringScheme, seqHVal, seqVVal);
-    setGapExtension(activeCell, False(), False(), createVector<TScoreValue>(-1));
-
-    if (!IsTracebackEnabled_<TDPProfile>::VALUE)
-        return TraceBitMap_<TScoreValue>::NONE;
-
-    return TraceBitMap_<TScoreValue>::DIAGONAL;
-}
-
-// ----------------------------------------------------------------------------
-// Function _doComputeScore                            [RecursionDirectionZero]
-// ----------------------------------------------------------------------------
-
-template <typename TScoreValue, typename TGapCosts, typename TSequenceHValue, typename TSequenceVValue, typename TScoringScheme,
-          typename TAlgoTag, typename TTraceFlag>
-inline typename TraceBitMap_<TScoreValue>::Type
-_doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
-                DPCell_<TScoreValue, TGapCosts> const & /*previousDiagonal*/,
-                DPCell_<TScoreValue, TGapCosts> const & /*previousHorizontal*/,
-                DPCell_<TScoreValue, TGapCosts> const & /*previousVertical*/,
-                TSequenceHValue const & /*seqHVal*/,
-                TSequenceVValue const & /*seqVVal*/,
-                TScoringScheme const & /*scoringScheme*/,
-                RecursionDirectionZero const &,
-                DPProfile_<TAlgoTag, TGapCosts, TTraceFlag> const &)
-{
-    _scoreOfCell(activeCell) = createVector<TScoreValue>(0);
+    _scoreOfCell(current) = TraceBitMap_<TScoreValue>::NONE;
+    _scoreOfCell(diagonal) = _scoreOfCell(current);
+    _scoreOfCell(vertical) = _scoreOfCell(current);
     return TraceBitMap_<TScoreValue>::NONE;
 }
 

@@ -38,6 +38,13 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename TText, typename TSpec, typename TConfig>
+struct LF;
+
+// ============================================================================
 // Tags
 // ============================================================================
 
@@ -255,10 +262,89 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
     TTextIterator textBegin = begin(text, Standard());
     TTextIterator textEnd = end(text, Standard());
     for (TTextIterator textIt = textBegin; textIt != textEnd; ++textIt)
-        setValue(dict, textIt - textBegin, value(textIt));
+        setValue(dict, textIt - textBegin, *textIt);
 
     // Update all ranks.
     updateRanks(dict);
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
+inline void
+createRankDictionary(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
+{
+    typedef typename GetValue<TSA>::Type                    TSAValue;
+    typedef typename Size<TSA>::Type                        TSize;
+
+    // Resize the RankDictionary.
+    resize(lf.bwt, lengthSum(text) + 1, Exact());
+
+    // Assign the text value by value.
+    setValue(lf.bwt, 0, back(text));
+
+    for (TSize i = 0; i < length(sa); ++i)
+    {
+        TSAValue pos = sa[i];
+
+        if (pos != 0)
+        {
+            setValue(lf.bwt, i + 1, getValue(text, pos - 1));
+        }
+        else
+        {
+            setValue(lf.bwt, i + 1, lf.sentinelSubstitute);
+            lf.sentinels = i + 1;
+        }
+    }
+
+   // Update all ranks.
+   updateRanks(lf.bwt);
+}
+
+template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
+inline void
+createRankDictionary(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
+{
+    typedef typename Value<TSA>::Type                       TSAValue;
+    typedef typename Size<TSA>::Type                        TSize;
+
+    // Resize the RankDictionary.
+    TSize seqNum = countSequences(text);
+    TSize totalLen = lengthSum(text);
+    resize(lf.sentinels, seqNum + totalLen, Exact());
+    resize(lf.bwt, seqNum + totalLen, Exact());
+
+    // Fill the sentinel positions (they are all at the beginning of the bwt).
+    for (TSize i = 0; i < seqNum; ++i)
+    {
+        if (length(text[seqNum - (i + 1)]) > 0)
+        {
+            setValue(lf.bwt, i, back(text[seqNum - (i + 1)]));
+            setValue(lf.sentinels, i, false);
+        }
+    }
+
+    // Compute the rest of the bwt.
+    for (TSize i = 0; i < length(sa); ++i)
+    {
+        TSAValue pos;    // = SA[i];
+        posLocalize(pos, sa[i], stringSetLimits(text));
+
+        if (getSeqOffset(pos) != 0)
+        {
+            setValue(lf.bwt, i + seqNum, getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1));
+            setValue(lf.sentinels, i + seqNum, false);
+        }
+        else
+        {
+            setValue(lf.bwt, i + seqNum, lf.sentinelSubstitute);
+            setValue(lf.sentinels, i + seqNum, true);
+        }
+    }
+
+   // Update all ranks.
+   updateRanks(lf.bwt);
+   // Update the auxiliary RankDictionary of sentinel positions.
+   updateRanks(lf.sentinels);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -164,11 +164,11 @@ struct AnnotationStoreElement
 
 template <typename TPos, typename TSpec>
 const typename Id<AnnotationStoreElement<TPos, TSpec> >::Type
-AnnotationStoreElement<TPos, TSpec>::INVALID_ID = MaxValue<typename Id<AnnotationStoreElement<TPos, TSpec> >::Type>::VALUE;
+AnnotationStoreElement<TPos, TSpec>::INVALID_ID = std::numeric_limits<typename Id<AnnotationStoreElement<TPos, TSpec> >::Type>::max();
 
 template <typename TPos, typename TSpec>
 const TPos
-AnnotationStoreElement<TPos, TSpec>::INVALID_POS = MaxValue<TPos>::VALUE;
+AnnotationStoreElement<TPos, TSpec>::INVALID_POS = std::numeric_limits<TPos>::max();
 
 //////////////////////////////////////////////////////////////////////////////
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 {
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/vcf_io/example.vcf");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(vcfPath)));
@@ -106,8 +105,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/vcf_io/example_records_with_errors.vcf");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example_records_with_errors.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     open(mmapString, toCString(vcfPath));
@@ -120,13 +118,13 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 
     seqan::String<seqan::VcfRecord> records;
     seqan::VcfRecord record;
-    for (unsigned i = 0; i < 3; ++i)
+    for (unsigned i = 0; i < 5; ++i)
     {
         readRecord(record, vcfIOContext, iter, seqan::Vcf());
         appendValue(records, record);
     }
 
-    SEQAN_ASSERT_EQ(length(records), 3u);
+    SEQAN_ASSERT_EQ(length(records), 5u);
 
     SEQAN_ASSERT_EQ(records[0].rID, 0);
     SEQAN_ASSERT_EQ(records[0].beginPos, 14369);
@@ -161,18 +159,41 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
 
+    // the next 2 recodrs are valid since vcf v4.2
+    SEQAN_ASSERT_EQ(records[3].rID, 0);
+    SEQAN_ASSERT_EQ(records[3].beginPos, 1110695);
+    SEQAN_ASSERT_EQ(records[3].id, "rs6040355");
+    SEQAN_ASSERT_EQ(records[3].ref, "A");
+    SEQAN_ASSERT_EQ(records[3].alt, "G,T");
+    SEQAN_ASSERT_EQ(records[3].qual, 67);
+    SEQAN_ASSERT_EQ(records[3].filter, "PASS");
+    SEQAN_ASSERT_EQ(records[3].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
+    SEQAN_ASSERT_EQ(records[3].format, ""); // empty formats are accepted since v4.2
+    SEQAN_ASSERT_EQ(length(records[3].genotypeInfos), 3u);
+
+    SEQAN_ASSERT_EQ(records[4].rID, 0);
+    SEQAN_ASSERT_EQ(records[4].beginPos, 1110695);
+    SEQAN_ASSERT_EQ(records[4].id, "rs6040355");
+    SEQAN_ASSERT_EQ(records[4].ref, "A");
+    SEQAN_ASSERT_EQ(records[4].alt, "G,T");
+    SEQAN_ASSERT_EQ(records[4].qual, 67);
+    SEQAN_ASSERT_EQ(records[4].filter, "PASS");
+    SEQAN_ASSERT_EQ(records[4].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
+    SEQAN_ASSERT_EQ(records[4].format, ""); // empty formats are accepted since v4.2
+    SEQAN_ASSERT_EQ(length(records[4].genotypeInfos), 3u);
+
+    // the next 18 records are invalid and readRecord should throw ParseError
+    // continuing to read after EOF file should also result in ParseError
     for (unsigned i = 0; i < 25; ++i)
     {
         SEQAN_TEST_EXCEPTION(seqan::ParseError,
                              seqan::readRecord(record, vcfIOContext, iter, seqan::Vcf()));
-        seqan::skipLine(iter);
     }
 }
 
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 {
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/vcf_io/example.vcf");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
 
     seqan::VcfFileIn vcfStream(toCString(vcfPath));
     seqan::VcfHeader header;
@@ -322,14 +343,14 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
     writeHeader(iter, vcfHeader, vcfIOContext, seqan::Vcf());
     file.close();
 
-    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/vcf_header.vcf";
+    std::string goldPath = seqan::getAbsolutePath("/tests/vcf_io/vcf_header.vcf");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
 {
-    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/example_records.vcf";
+    std::string goldPath = seqan::getAbsolutePath("/tests/vcf_io/example_records.vcf");
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
 
     std::ifstream file(goldPath.c_str());
@@ -462,8 +483,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 
     close(vcfStream);
 
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/tests/vcf_io/example.vcf");
+    seqan::CharString goldPath(seqan::getAbsolutePath("/tests/vcf_io/example.vcf"));
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 

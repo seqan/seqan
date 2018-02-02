@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -149,7 +149,7 @@ lexicalCast(TInteger & target, TSource const & source)
             return false;
 
         // overflow detection
-        if (SEQAN_UNLIKELY(val > MaxValue<TInteger>::VALUE / 10))
+        if (SEQAN_UNLIKELY(val > std::numeric_limits<TInteger>::max() / 10))
             return false;
         val *= 10;
 
@@ -189,7 +189,7 @@ lexicalCast(TInteger & target, TSource const & source)
                 return false;
 
             // overflow detection
-            if (SEQAN_UNLIKELY(val > MaxValue<TInteger>::VALUE / 10))
+            if (SEQAN_UNLIKELY(val > std::numeric_limits<TInteger>::max() / 10))
                 return false;
             val *= 10;
 
@@ -213,12 +213,12 @@ lexicalCast(TInteger & target, TSource const & source)
                 return false;
 
             // overflow detection
-            if (SEQAN_UNLIKELY(val < MinValue<TInteger>::VALUE / 10))
+            if (SEQAN_UNLIKELY(val < std::numeric_limits<TInteger>::min() / 10))
                 return false;
             val *= 10;
 
             // overflow detection
-            if (SEQAN_UNLIKELY(MinValue<TInteger>::VALUE - val > -(TInteger)digit))
+            if (SEQAN_UNLIKELY(std::numeric_limits<TInteger>::min() - val > -(TInteger)digit))
                 return false;
             val -= digit;
         }

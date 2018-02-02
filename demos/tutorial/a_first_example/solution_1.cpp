@@ -1,5 +1,3 @@
-// Copy the code into a demo program and have a look at the result.
-
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -33,8 +31,6 @@ int main()
     for (unsigned i = 0; i < length(score); ++i)
         std::cout << score[i] << " ";
     std::cout << std::endl;
-
-    // > 1 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 8 0 1 0 0 0 0 2 0 1 0 0 1 0 3 0 1 0 1 0 0 0 0
 
     return 0;
 }

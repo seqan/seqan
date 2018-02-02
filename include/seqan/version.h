@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,9 @@
 
 #define SEQAN_VERSION_MAJOR 2
 
-#define SEQAN_VERSION_MINOR 3
+#define SEQAN_VERSION_MINOR 4
 
-#define SEQAN_VERSION_PATCH 2
+#define SEQAN_VERSION_PATCH 0
 
 #define SEQAN_VERSION_PRE_RELEASE 0
 

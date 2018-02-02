@@ -70,12 +70,12 @@ struct MatchRecord
     static const unsigned INVALID_ID;
 
     MatchRecord() :
-        contigId(MaxValue<unsigned>::VALUE), readId(MaxValue<unsigned>::VALUE),
+        contigId(std::numeric_limits<unsigned>::max()), readId(std::numeric_limits<unsigned>::max()),
         beginPos(0), endPos(0),
 #ifdef RAZERS_DEFER_COMPACTION
         isRegistered(false),
 #endif  // #ifndef RAZERS_DEFER_COMPACTION
-        orientation('-'), score(0), pairMatchId(MaxValue<unsigned>::VALUE),
+        orientation('-'), score(0), pairMatchId(std::numeric_limits<unsigned>::max()),
         libDiff(0), pairScore(0)
     {}
 };
@@ -89,7 +89,7 @@ operator<<(TStream & stream, MatchRecord<TPos> & record)
 }
 
 template <typename TGPos_>
-const unsigned MatchRecord<TGPos_>::INVALID_ID = MaxValue<unsigned>::VALUE;
+const unsigned MatchRecord<TGPos_>::INVALID_ID = std::numeric_limits<unsigned>::max();
 
 #ifdef RAZERS_PROFILE
 enum
@@ -551,7 +551,7 @@ struct MatchVerifier
     double compactionTime;
 
     MatchVerifier() :
-        genomeLength(0), rightClip(0), sinkPos(MaxValue<TContigPos>::VALUE), onReverseComplement(false), oneMatchPerBucket(false), compactionTime(0) {}
+        genomeLength(0), rightClip(0), sinkPos(std::numeric_limits<TContigPos>::max()), onReverseComplement(false), oneMatchPerBucket(false), compactionTime(0) {}
 
     MatchVerifier(TMatches_ & _matches, TOptions & _options, TFilterPattern & _filterPattern, TCounts & _cnts) :
         matches(&_matches),
@@ -561,7 +561,7 @@ struct MatchVerifier
     {
         genomeLength = 0;
         rightClip = 0;
-        sinkPos = MaxValue<TContigPos>::VALUE >> 1;
+        sinkPos = std::numeric_limits<TContigPos>::max() >> 1;
         onReverseComplement = false;
         oneMatchPerBucket = false;
         compactionTime = 0;
@@ -1478,7 +1478,7 @@ void countMatches(TFragmentStore & store, TCounts & cnt, TRazerSMode const &)
     unsigned readId = TAlignedRead::INVALID_ID;
     short errors = -1;
     int64_t count = 0;
-    int64_t maxVal = MaxValue<TValue>::VALUE;
+    int64_t maxVal = std::numeric_limits<TValue>::max();
 
 #ifdef RAZERS_PROFILE
     timelineBeginTask(TASK_SORT);
@@ -1534,7 +1534,7 @@ setMaxErrors(Pattern<TIndex, Swift<TSwiftSpec> > & filterPattern, TReadNo readNo
     {
 //		std::cout<<" read:"<<readNo<<" newThresh:"<<minT;
         if (maxErrors < 0)
-            minT = MaxValue<int>::VALUE;
+            minT = std::numeric_limits<int>::max();
         setMinThreshold(filterPattern, readNo, (unsigned)minT);
     }
 }
@@ -1568,8 +1568,8 @@ void compactMatches(
     unsigned readNo = -1;
     unsigned hitCount = 0;
     unsigned hitCountCutOff = options.maxHits;
-    int scoreCutOff = MinValue<int>::VALUE;
-    int scoreRangeBest = (IsSameType<TAlignMode, RazerSGlobal>::VALUE && !IsSameType<TScoreMode, RazerSScore>::VALUE) ? -(int)options.scoreDistanceRange : MaxValue<int>::VALUE;
+    int scoreCutOff = std::numeric_limits<int>::min();
+    int scoreRangeBest = (IsSameType<TAlignMode, RazerSGlobal>::VALUE && !IsSameType<TScoreMode, RazerSScore>::VALUE) ? -(int)options.scoreDistanceRange : std::numeric_limits<int>::max();
     ignoreUnusedVariableWarning(scoreRangeBest);
     ignoreUnusedVariableWarning(compactMode);
 
@@ -1863,7 +1863,7 @@ matchVerify(
     TGenomeIterator git     = begin(inf, Standard());
     TGenomeIterator gitEnd  = end(inf, Standard()) - (ndlLength - 1);
 
-    unsigned errorThresh = (verifier.oneMatchPerBucket) ? MaxValue<unsigned>::VALUE : maxErrors;
+    unsigned errorThresh = (verifier.oneMatchPerBucket) ? std::numeric_limits<unsigned>::max() : maxErrors;
     unsigned minErrors = maxErrors + 2;
     int bestHitLength = 0;
 
@@ -2007,7 +2007,7 @@ matchVerify(
     TGenomeIterator gitEnd  = end(inf, Standard()) - (ndlLength - 1);
 
     int maxScore = minScore - 1;
-    int scoreThresh = (verifier.oneMatchPerBucket) ? MaxValue<int>::VALUE : minScore;
+    int scoreThresh = (verifier.oneMatchPerBucket) ? std::numeric_limits<int>::max() : minScore;
     int score, errors;
 
     for (; git < gitEnd; ++git)
@@ -2137,14 +2137,14 @@ matchVerify(
     typedef Pattern<TReadRev, MyersUkkonenGlobal>           TMyersPatternRev;
 
     unsigned ndlLength = length(read);
-    int maxScore = MinValue<int>::VALUE;
+    int maxScore = std::numeric_limits<int>::min();
     int minScore = verifier.options->errorCutOff[readId];
     if (minScore == 0)
         return false;
 
     minScore = -minScore + 1;
 
-    TDistance minSinkDistance = MaxValue<TDistance>::VALUE;
+    TDistance minSinkDistance = std::numeric_limits<TDistance>::max();
     TPosition maxPos = 0;
     TPosition lastPos = length(inf);
 #ifdef RAZERS_ISLAND_CRITERION
@@ -2282,7 +2282,7 @@ matchVerify(
 
                 verifier.push();
                 maxScore = minScore - 1;
-                minSinkDistance = MaxValue<TDistance>::VALUE;
+                minSinkDistance = std::numeric_limits<TDistance>::max();
             }
         }
 #endif  // #ifdef RAZERS_ISLAND_CRITERION
@@ -2466,7 +2466,7 @@ void computeQGramLengths(TDelta & minDelta, TOptions const & options)
 
     unsigned seqCount = 0;
     String<unsigned> maxDelta;
-    resize(minDelta, options.maxOverlap + 1, MaxValue<unsigned>::VALUE);
+    resize(minDelta, options.maxOverlap + 1, std::numeric_limits<unsigned>::max());
     resize(maxDelta, options.maxOverlap + 1, 3);
 
     // compute delta (==stepSize) for different overlaps

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_mason2 CXX)
 message (STATUS "Configuring apps/mason2")
 
-set (SEQAN_APP_VERSION "2.0.8")
+set (SEQAN_APP_VERSION "2.0.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -143,7 +143,7 @@ install (TARGETS mason_frag_sequencing
                  mason_simulator
                  mason_splicing
                  mason_variator
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/mason2 for SeqAn release builds.

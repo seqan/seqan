@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,6 +207,7 @@ readRecord(BamAlignmentRecord & record,
 
     // BamAlignmentRecordCore.
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char*>(&record));
+    enforceLittleEndian(*reinterpret_cast<BamAlignmentRecordCore*>(&record));
     it += sizeof(BamAlignmentRecordCore);
 
     remainingBytes -= sizeof(BamAlignmentRecordCore) + record._l_qname +
@@ -236,7 +237,7 @@ readRecord(BamAlignmentRecord & record,
     TCigarIter cigEnd = end(record.cigar, Standard());
     for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
-        unsigned opAndCnt;
+        uint32_t opAndCnt;
         readRawPod(opAndCnt, it);
         SEQAN_ASSERT_LEQ(opAndCnt & 15, 8u);
         cig->operation = CIGAR_MAPPING[opAndCnt & 15];
@@ -251,9 +252,9 @@ readRecord(BamAlignmentRecord & record,
     {
         unsigned char ui = getValue(it);
         ++it;
-        assignValue(sit, Iupac(ui >> 4));
+        *sit = Iupac(ui >> 4);
         ++sit;
-        assignValue(sit, Iupac(ui & 0x0f));
+        *sit = Iupac(ui & 0x0f);
         ++sit;
     }
     if (record._l_qseq & 1)
@@ -266,7 +267,7 @@ readRecord(BamAlignmentRecord & record,
     TQualIter qitEnd = end(record.qual, Standard());
     for (TQualIter qit = begin(record.qual, Standard()); qit != qitEnd;)
         *qit++ = '!' + *it++;
-    if (!empty(record.qual) && record.qual[0] == '\xff')
+    if (!empty(record.qual) && static_cast<char>(record.qual[0] - '!') == '\xff')
         clear(record.qual);
 
     // tags

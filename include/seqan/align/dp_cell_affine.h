@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ public:
     TScoreValue _score              = DPCellDefaultInfinity<DPCell_>::VALUE;
     TScoreValue _horizontalScore    = DPCellDefaultInfinity<DPCell_>::VALUE;
     TScoreValue _verticalScore      = DPCellDefaultInfinity<DPCell_>::VALUE;
-    
+
     DPCell_() = default;
     // Copy c'tor.
     DPCell_(DPCell_<TScoreValue, AffineGaps> const & other) :
@@ -70,7 +70,7 @@ public:
         _horizontalScore(other._horizontalScore),
         _verticalScore(other._verticalScore)
     {}
-    
+
     // Move c-tor
     DPCell_(DPCell_ && other) : DPCell_()
     {
@@ -103,6 +103,19 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+// Needed for banded chain alignment for the set.
+template <typename TStream, typename TScore>
+inline TStream& operator<<(TStream & stream,
+                           DPCell_<TScore, AffineGaps> const & dpCell)
+{
+    stream << "<S = " << dpCell._score << " H = " << dpCell._horizontalScore << " V = " << dpCell._verticalScore << ">";
+    return stream;
+}
 
 // ----------------------------------------------------------------------------
 // Function operator<()
@@ -150,6 +163,13 @@ _setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue c
 
 template <typename TScoreValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore)
+{
+    dpCell._verticalScore = newVerticalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
 _setVerticalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newVerticalScore, TScoreValue const & mask)
 {
     dpCell._verticalScore = blend(dpCell._verticalScore, newVerticalScore, mask);
@@ -188,14 +208,21 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue
 
 template <typename TScoreValue>
 inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore)
+{
+    dpCell._horizontalScore = newHorizontalScore;
+}
+
+template <typename TScoreValue>
+inline SEQAN_FUNC_ENABLE_IF(Is<SimdVectorConcept<TScoreValue> >,void)
 _setHorizontalScoreOfCell(DPCell_<TScoreValue, AffineGaps> & dpCell, TScoreValue const & newHorizontalScore, TScoreValue const & mask)
 {
     dpCell._horizontalScore = blend(dpCell._horizontalScore, newHorizontalScore, mask);
 }
 
 template <typename TScoreValue>
-inline void 
-swap(DPCell_<TScoreValue, AffineGaps> & lhs, 
+inline void
+swap(DPCell_<TScoreValue, AffineGaps> & lhs,
      DPCell_<TScoreValue, AffineGaps> & rhs)
 {
     std::swap(lhs._score, rhs._score);

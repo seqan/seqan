@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -93,8 +93,8 @@ public:
 
     TString                 data;
     mutable ReadWriteLock   lock;           char pad1[SEQAN_CACHE_LINE_SIZE - sizeof(ReadWriteLock)];
-    size_t                  readerCount;
-    size_t                  writerCount;
+    std::atomic<size_t>     readerCount;
+    std::atomic<size_t>     writerCount;
 
     TAtomicSize headPos;                    char pad4[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
     TAtomicSize headReadPos;                char pad5[SEQAN_CACHE_LINE_SIZE - sizeof(TAtomicSize)];
@@ -145,6 +145,10 @@ public:
 
     ~ConcurrentQueue()
     {
+        // wait for all pending readers to finish
+        while (readerCount.load(std::memory_order_acquire) != 0)
+        {}
+
         SEQAN_ASSERT_EQ(tailPos, tailWritePos);
         SEQAN_ASSERT_EQ(headPos, headReadPos);
         SEQAN_ASSERT(empty(lock));
@@ -153,10 +157,6 @@ public:
         TSize mask = roundSize - 1;
         headPos &= mask;
         tailPos &= mask;
-
-        // wait for all pending readers to finish
-        while (readerCount != 0)
-        {}
 
         typename Iterator<TString, Standard>::Type arrayBegin = begin(data, Standard());
 
@@ -235,7 +235,7 @@ template <typename TValue, typename TSpec>
 inline void
 lockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicInc(me.readerCount);
+    ++me.readerCount;
 }
 
 /*!
@@ -253,7 +253,7 @@ template <typename TValue, typename TSpec>
 inline void
 unlockReading(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicDec(me.readerCount);
+    --me.readerCount;
 }
 
 // ----------------------------------------------------------------------------
@@ -274,7 +274,7 @@ template <typename TValue, typename TSpec>
 inline void
 lockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicInc(me.writerCount);
+    ++me.writerCount;
 }
 
 /*!
@@ -291,7 +291,7 @@ template <typename TValue, typename TSpec>
 inline void
 unlockWriting(ConcurrentQueue<TValue, TSpec> & me)
 {
-    atomicDec(me.writerCount);
+    --me.writerCount;
 }
 
 // ----------------------------------------------------------------------------
@@ -512,7 +512,7 @@ inline void
 waitForWriters(ConcurrentQueue<TValue, TSpec> & me, unsigned writerCount)
 {
     SpinDelay spinDelay;
-    while (me.writerCount < writerCount)
+    while (me.writerCount.load(std::memory_order_relaxed) < writerCount)
     {
         waitFor(spinDelay);
     }
@@ -569,7 +569,7 @@ popFront(TValue & result, ConcurrentQueue<TValue, TSpec> & me, Tag<TParallel> pa
 {
     SpinDelay spinDelay;
 
-    while (me.writerCount != 0)
+    while (me.writerCount.load(std::memory_order_relaxed) != 0)
     {
         if (tryPopFront(result, me, parallelTag))
             return true;

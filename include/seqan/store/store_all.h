@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -520,15 +520,15 @@ public:
         annotationKeyStoreCache(annotationKeyStore)
     {
         // ATTENTION: The order of these keywords must correspond to the order of the enums above.
-        appendName(annotationTypeStore, "<root>", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "<deleted>", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "gene", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "mRNA", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "CDS", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "exon", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "five_prime_UTR", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "intron", annotationTypeStoreCache);
-        appendName(annotationTypeStore, "three_prime_UTR", annotationTypeStoreCache);
+        appendName(annotationTypeStoreCache, "<root>");
+        appendName(annotationTypeStoreCache, "<deleted>");
+        appendName(annotationTypeStoreCache, "gene");
+        appendName(annotationTypeStoreCache, "mRNA");
+        appendName(annotationTypeStoreCache, "CDS");
+        appendName(annotationTypeStoreCache, "exon");
+        appendName(annotationTypeStoreCache, "five_prime_UTR");
+        appendName(annotationTypeStoreCache, "intron");
+        appendName(annotationTypeStoreCache, "three_prime_UTR");
         _storeClearAnnotations(*this);
     }
 
@@ -717,7 +717,7 @@ _storeAppendRead (
     typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
 
     // search for readId by name (could be me or my mate)
-    bool found = getIdByName(fragStore.readNameStore, qname, readId, fragStore.readNameStoreCache);
+    bool found = getIdByName(readId, fragStore.readNameStoreCache, qname);
 
     // if naming scheme is xx/1, xx/2 or xx/L, xx/R try to look up my mate
     if (!found && (flag & 1) == 1 && length(qname) >= 2 && qname[length(qname) - 2] == '/')
@@ -735,7 +735,7 @@ _storeAppendRead (
             mate = qname;
             back(mate) = (tag == 'L')? 'R': 'L';
         }
-        found = getIdByName(fragStore.readNameStore, mate, readId, fragStore.readNameStoreCache);
+        found = getIdByName(readId, fragStore.readNameStoreCache, mate);
     }
 
     if (found)
@@ -758,7 +758,7 @@ _storeAppendRead (
                     // set sequence and mate pair ID in new read store element
                     readId = appendRead(fragStore, readSeq, matePairId);
                     // add the identifier to the read name store
-                    appendName(fragStore.readNameStore, qname, fragStore.readNameStoreCache);
+                    appendName(fragStore.readNameStoreCache, qname);
                     // set the ID in the mate pair store
                     fragStore.matePairStore[matePairId].readId[inPair] = readId;
                     return true;
@@ -790,7 +790,7 @@ _storeAppendRead (
     else
         appendRead(fragStore, readSeq);
 
-    appendName(fragStore.readNameStore, qname, fragStore.readNameStoreCache);
+    appendName(fragStore.readNameStoreCache, qname);
     return true;
 }
 
@@ -810,13 +810,13 @@ _storeAppendContig (
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
     typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
 
-    if (!getIdByName(fragStore.contigNameStore, rName, contigId, fragStore.contigNameStoreCache))
+    if (!getIdByName(contigId, fragStore.contigNameStoreCache, rName))
     {
         // if the contig is not in the store yet
         // set the ID on the last entry after appending
         contigId = length(fragStore.contigStore);
         // append contig store
-        appendName(fragStore.contigNameStore, rName, fragStore.contigNameStoreCache);
+        appendName(fragStore.contigNameStoreCache, rName);
         appendValue(fragStore.contigStore, TContigElement());
 //        std::cout << "added contig:" << rName << std::endl;
     }
@@ -837,12 +837,12 @@ _storeAppendAnnotationName (
     TTypeId typeId)
 {
     SEQAN_ASSERT_EQ(length(fragStore.annotationStore), length(fragStore.annotationNameStore));
-    if (!empty(annotationName) && getIdByName(fragStore.annotationNameStore, annotationName, annotationId, fragStore.annotationNameStoreCache))
+    if (!empty(annotationName) && getIdByName(annotationId, fragStore.annotationNameStoreCache, annotationName))
     {
         do
         {
             // allow different annotations to have the same name (but different typeId)
-            if (typeId == maxValue<TTypeId>() || fragStore.annotationStore[annotationId].typeId == typeId)
+            if (typeId == std::numeric_limits<TTypeId>::max() || fragStore.annotationStore[annotationId].typeId == typeId)
                 return;
             ++annotationId;
         } while (annotationId < length(fragStore.annotationNameStore) && fragStore.annotationNameStore[annotationId] == annotationName);
@@ -851,7 +851,7 @@ _storeAppendAnnotationName (
     // set the ID on the last entry after appending
     annotationId = length(fragStore.annotationNameStore);
     // append to annotationName store
-    appendName(fragStore.annotationNameStore, annotationName, fragStore.annotationNameStoreCache);
+    appendName(fragStore.annotationNameStoreCache, annotationName);
     // we also need to append an annotation to store the typeId in case of duplicate annotation names
     resize(fragStore.annotationStore, length(fragStore.annotationStore) + 1);
     back(fragStore.annotationStore).typeId = typeId;
@@ -864,7 +864,7 @@ _storeAppendAnnotationName (
     TId & annotationId,
     TName & annotationName)
 {
-    _storeAppendAnnotationName(fragStore, annotationId, annotationName, maxValue<TId>());
+    _storeAppendAnnotationName(fragStore, annotationId, annotationName, std::numeric_limits<TId>::max());
 }
 
 template <typename TSpec, typename TConfig, typename TId, typename TName>
@@ -874,14 +874,14 @@ _storeAppendType (
     TId & typeId,
     TName & annotationType)
 {
-    if (!getIdByName(fragStore.annotationTypeStore, annotationType, typeId, fragStore.annotationTypeStoreCache))
+    if (!getIdByName(typeId, fragStore.annotationTypeStoreCache, annotationType))
     {
         // if the annotation type name is not in the store yet
         // set the ID on the last entry after appending
         typeId = length(fragStore.annotationTypeStore);
         // append to annotationType store
         if (!empty(annotationType))
-            appendName(fragStore.annotationTypeStore, annotationType, fragStore.annotationTypeStoreCache);
+            appendName(fragStore.annotationTypeStoreCache, annotationType);
 //        std::cout << "added type:" << annotationType << std::endl;
     }
 }
@@ -893,14 +893,14 @@ _storeAppendKey (
     TId & keyId,
     TName & annotationKey)
 {
-    if (!getIdByName(fragStore.annotationKeyStore, annotationKey, keyId, fragStore.annotationKeyStoreCache))
+    if (!getIdByName(keyId, fragStore.annotationKeyStoreCache, annotationKey))
     {
         // if the key name is not in the store yet
         // set the ID on the last entry after appending
         keyId = length(fragStore.annotationKeyStore);
         // append to annotationKey store
         if (!empty(annotationKey))
-            appendName(fragStore.annotationKeyStore, annotationKey, fragStore.annotationKeyStoreCache);
+            appendName(fragStore.annotationKeyStoreCache, annotationKey);
 //        std::cout << "added key:" << annotationKey << std::endl;
     }
 }
@@ -937,7 +937,7 @@ annotationGetValueByKey (
     typedef typename Size<TValues>::Type    TKeyId;
 
     TKeyId keyId = 0;
-    if (!getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
+    if (!getIdByName(keyId, fragStore.annotationKeyStoreCache, key))
         return false;
 
     if (keyId >= length(annotation.values))
@@ -963,7 +963,7 @@ annotationGetValueIdByKey (
     static const typename Value<typename TAnnotation::TValues const>::Type emptyString;
 
     TKeyId keyId = 0;
-    if (getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
+    if (getIdByName(keyId, fragStore.annotationKeyStoreCache, key))
         if (keyId < length(annotation.values) && !empty(annotation.values[keyId]))
             return keyId;
     return TAnnotation::INVALID_ID;
@@ -1888,13 +1888,13 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
         assignSource(row(align, 1), readSeq);
 //        int ud = store.alignQualityStore[it->id].errors;
 //        int ld = -ud;
-//        if (IsSameType<TShrinkMatches, True>::VALUE)
+//        SEQAN_IF_CONSTEXPR (IsSameType<TShrinkMatches, True>::VALUE)
 //            globalAlignment(align, score, AlignConfig<true, false, false, true>(), ld, ud, Gotoh());
 //        else
 //            globalAlignment(align, score, ld, ud);
 
         int qualValue = 0;
-        if (IsSameType<TShrinkMatches, True>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TShrinkMatches, True>::VALUE)
             qualValue = globalAlignment(align, score, AlignConfig<true, false, false, true>(), Gotoh());
         else
             qualValue = globalAlignment(align, score);

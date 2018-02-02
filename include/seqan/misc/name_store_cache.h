@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -71,15 +71,15 @@ struct NameStoreLess_
     template <typename TId>
     inline bool operator() (TId a, TId b) const
     {
-        if (a != maxValue(a))
+        if (a != std::numeric_limits<TId>::max())
         {
-            if (b != maxValue(b))
+            if (b != std::numeric_limits<TId>::max())
                 return (*nameStore)[a] < (*nameStore)[b];
             else
                 return (*nameStore)[a] < *name;
         } else
         {
-            if (b != maxValue(b))
+            if (b != std::numeric_limits<TId>::max())
                 return *name < (*nameStore)[b];
             else
                 return false;
@@ -293,22 +293,19 @@ void appendName(NameStoreCache<TCNameStore, TCName> & cache, TName const & name)
     cache.nameSet.insert(length(host(cache)) - 1);
 }
 
-// TODO(holtgrew): Add deprecation annotation for compiler warnings.
-
-// deprecated.
 // In the future we want to use only one argument either nameStore or nameStoreCache (has a reference to the nameStore)
 template <typename TNameStore, typename TName, typename TContext>
+[[deprecated("Use appendName(cache, name) instead.")]]
 void appendName(TNameStore &nameStore, TName const & name, TContext &)
 {
     appendName(nameStore, name);
 }
 
-// deprecated.
 template <typename TNameStore, typename TName, typename TCNameStore, typename TCName>
-void appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
+[[deprecated("Use appendName(cache, name) instead. (nameStoreCache has a reference to the nameStore)")]]
+void appendName(TNameStore & /*nameStore*/, TName const & name, NameStoreCache<TCNameStore, TCName> &context)
 {
-    appendValue(nameStore, name, Generous());
-    context.nameSet.insert(length(nameStore) - 1);
+    appendName(context, name);
 }
 
 // ----------------------------------------------------------------------------
@@ -338,7 +335,7 @@ bool getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
     for (TNameStoreIter iter = begin(nameStore, Standard()); iter != end(nameStore, Standard()); ++iter)
     {
         // if the element was found
-        if (name == getValue(iter))
+        if (name == *iter)
         {
             // set the ID
             pos = iter - begin(nameStore, Standard());
@@ -368,7 +365,7 @@ getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TNa
     {
 
         context.name = name;
-        it = set.find(maxValue<TId>());
+        it = set.find(std::numeric_limits<TId>::max());
     }
 
     if (it != set.end())
@@ -379,16 +376,16 @@ getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TNa
     return false;
 }
 
-// deprecated.
 template <typename TNameStore, typename TName, typename TPos, typename TContext>
+[[deprecated("Use getIdByName(idx, cache, name) instead.")]]
 inline bool
 getIdByName(TNameStore const & nameStore, TName const & name, TPos & pos, TContext const & /*not a cache*/)
 {
     return getIdByName(pos, nameStore, name);
 }
 
-// deprecated.
 template<typename TNameStore, typename TName, typename TPos, typename TCNameStore, typename TCName>
+[[deprecated("Use getIdByName(idx, cache, name) instead.")]]
 inline bool
 getIdByName(TNameStore const & /*nameStore*/, TName const & name, TPos & pos, NameStoreCache<TCNameStore, TCName> const & context)
 {

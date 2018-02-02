@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -88,6 +88,12 @@
 #include <seqan/stream/file_stream.h>
 #include <seqan/stream/stream_compressor.h>
 #include <seqan/stream/buffered_stream.h>
+
+#if SEQAN_HAS_BZIP2 && !SEQAN_HAS_ZLIB
+#error "-DSEQAN_HAS_BZIP2 is defined, but -DSEQAN_HAS_ZLIB not. \
+Since BZip2 depends on ZLIB, this would cause hard-to-track compiler errors. \
+Either disable -DSEQAN_HAS_BZIP2 or define -DSEQAN_HAS_ZLIB"
+#endif
 
 #if SEQAN_HAS_ZLIB
 #include <zlib.h>

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -197,7 +197,7 @@ SEQAN_TYPED_TEST(LexicalCastTest, FloatingPointSource)
 
     assign(this->source, "-123.45");
     bool success = lexicalCast(this->target, this->source);
-    SEQAN_ASSERT(success ^ IsIntegral<typename TestFixture::TTarget>::VALUE);
+    SEQAN_ASSERT(success ^ Is<IntegerConcept<typename TestFixture::TTarget> >::Type::VALUE);
     if (success) SEQAN_ASSERT_LT(this->target + reciprocal, epsilon);
 }
 
@@ -232,7 +232,7 @@ SEQAN_TYPED_TEST(LexicalCastTest, Exception)
     {
         this->target = lexicalCast<typename TestFixture::TTarget>(this->source);
     }
-    catch (BadLexicalCast)
+    catch (BadLexicalCast &)
     {
         return;
     }

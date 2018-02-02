@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -110,7 +110,7 @@ typedef
 typedef TagSelector<SeqInFormats>   SeqInFormat;
 typedef TagSelector<SeqOutFormats>  SeqOutFormat;
 
-// deprecated
+[[deprecated]]
 typedef SeqInFormat AutoSeqFormat;
 
 // ============================================================================
@@ -359,7 +359,7 @@ inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, file, MaxValue<uint64_t>::VALUE);
+    readRecords(meta, seq, file, std::numeric_limits<uint64_t>::max());
 }
 
 // ----------------------------------------------------------------------------
@@ -406,7 +406,7 @@ inline void readRecords(TIdStringSet & meta,
                         TQualStringSet & qual,
                         FormattedFile<Fastq, Input, TSpec> & file)
 {
-    readRecords(meta, seq, qual, file, MaxValue<uint64_t>::VALUE);
+    readRecords(meta, seq, qual, file, std::numeric_limits<uint64_t>::max());
 }
 
 // ----------------------------------------------------------------------------

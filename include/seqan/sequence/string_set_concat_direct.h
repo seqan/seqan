@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -103,21 +103,21 @@ public:
     {}
 
     template <typename TOtherString, typename TOtherSpec>
-    StringSet(StringSet<TOtherString, TOtherSpec> &other)
+    StringSet(StringSet<TOtherString, TOtherSpec> & other)
     {
         _initStringSetLimits(*this);
         assign(*this, other);
     }
 
     template <typename TOtherString, typename TOtherSpec>
-    StringSet(StringSet<TOtherString, TOtherSpec> const &other)
+    StringSet(StringSet<TOtherString, TOtherSpec> const & other)
     {
         _initStringSetLimits(*this);
         assign(*this, other);
     }
 
     template <typename TOtherSpec>
-    StringSet(String<TString, TOtherSpec> const &other)
+    StringSet(String<TString, TOtherSpec> const & other)
     {
         _initStringSetLimits(*this);
         assign(*this, other);

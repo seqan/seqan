@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -385,8 +385,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 
 SEQAN_DEFINE_TEST(test_bed_bed_file_read)
 {
-    seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
-    append(inPath, "/tests/bed_io/example.bed");
+    seqan::CharString inPath = getAbsolutePath("/tests/bed_io/example.bed");
 
     seqan::BedFileIn bedStream(toCString(inPath));
 
@@ -410,7 +409,7 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_read)
 
 SEQAN_DEFINE_TEST(test_bed_bed_file_write)
 {
-    seqan::CharString tmpPath = SEQAN_PATH_TO_ROOT();
+    seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
     append(tmpPath, ".bed");
 
     seqan::BedFileOut bedStream(toCString(tmpPath));
@@ -431,8 +430,7 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_write)
 
     close(bedStream);
 
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/tests/bed_io/example.bed");
+    seqan::CharString goldPath(getAbsolutePath("/tests/bed_io/example.bed"));
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 

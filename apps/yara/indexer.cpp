@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2014, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -298,7 +298,7 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 template <typename TContigsSize, typename TContigsLen, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.contigsSum <= MaxValue<uint32_t>::VALUE)
+    if (me.options.contigsSum <= std::numeric_limits<uint32_t>::max())
     {
         saveIndex<TContigsSize, TContigsLen, uint32_t>(me);
     }
@@ -311,7 +311,7 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 template <typename TContigsSize, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.contigsMaxLength <= MaxValue<uint32_t>::VALUE)
+    if (me.options.contigsMaxLength <= std::numeric_limits<uint32_t>::max())
     {
         saveIndex<TContigsSize, uint32_t>(me);
     }
@@ -328,11 +328,11 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.contigsSize <= MaxValue<uint8_t>::VALUE)
+    if (me.options.contigsSize <= std::numeric_limits<uint8_t>::max())
     {
         saveIndex<uint8_t>(me);
     }
-    else if (me.options.contigsSize <= MaxValue<uint16_t>::VALUE)
+    else if (me.options.contigsSize <= std::numeric_limits<uint16_t>::max())
     {
         saveIndex<uint16_t>(me);
     }

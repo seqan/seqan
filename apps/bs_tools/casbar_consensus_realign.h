@@ -628,7 +628,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 	// Copy all reads belonging to this contig and reverse complement them if necessary.
 	TAlignedReadStore contigReads;  // TODO(holtgrew): Rather contigAlignedReads?
 	TReadPos maxPos = 0;
-	TReadPos minPos = MaxValue<TReadPos>::VALUE;
+	TReadPos minPos = std::numeric_limits<TReadPos>::max();
 	for (; alignIt != alignItEnd; ++alignIt) {
 		if (alignIt->beginPos > alignIt->endPos) {
 			reverseComplement(fragStore.readSeqStore[alignIt->readId]);

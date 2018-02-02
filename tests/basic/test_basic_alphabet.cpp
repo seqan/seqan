@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -55,9 +55,9 @@ SEQAN_BEGIN_TESTSUITE(test_basic_alphabet)
     // Test Math Functions
     // -----------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_basic_alphabet_math_metafunctions);
-    SEQAN_CALL_TEST(test_basic_alphabet_math_min_value);
-    SEQAN_CALL_TEST(test_basic_alphabet_math_max_value);
+    // SEQAN_CALL_TEST(test_basic_alphabet_math_metafunctions); //deprecated
+    // SEQAN_CALL_TEST(test_basic_alphabet_math_min_value);     //deprecated
+    // SEQAN_CALL_TEST(test_basic_alphabet_math_max_value);     //deprecated
 
     // -----------------------------------------------------------------------
     // Test Adaptions of Builtin Types

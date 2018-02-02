@@ -310,11 +310,11 @@ inline int compare_(std::vector<TValue> const & obj1, std::vector<TValue> const 
     tiEnd = obj2.end();
     while (it < itEnd && ti < tiEnd)
     {
-        if (getValue(it) < getValue(ti))
+        if (*it < *ti)
         {
             return -1;
         }
-        else if (getValue(it) > getValue(ti))
+        else if (*it > *ti)
         {
             return 1;
         }

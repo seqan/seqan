@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -114,7 +114,11 @@
 
 // Set default for SEQAN_ENABLE_DEBUG.
 #ifndef SEQAN_ENABLE_DEBUG
+#ifdef NDEBUG
 #define SEQAN_ENABLE_DEBUG 0
+#else
+#define SEQAN_ENABLE_DEBUG 1
+#endif
 #endif  // #ifndef SEQAN_ENABLE_DEBUG
 
 #if !SEQAN_ENABLE_DEBUG
@@ -1731,10 +1735,10 @@ inline void fail()
 
 // This macro returns from the current function and logs a "skipped"
 // event for the current test.
-#define SEQAN_SKIP_TEST                         \
-    do {                                        \
-        ::seqan::ClassTest::skipCurrentTest();  \
-        return;                                 \
+#define SEQAN_SKIP_TEST                                       \
+    do {                                                      \
+        ::seqan::ClassTest::skipCurrentTest();                \
+        throw ::seqan::ClassTest::AssertionFailedException(); \
     } while (false)
 #endif  // #if SEQAN_ENABLE_TESTING
 
@@ -2316,7 +2320,6 @@ inline void fail()
 #define SEQAN_PATH_TO_ROOT()                      \
     ::seqan::ClassTest::StaticData::pathToRoot()
 
-
 // Returns the POSIX int file handle to an open file.
 // TODO(holtgrewe): Uncomment if openTempFile has been implemented.
 // #define SEQAN_OPEN_TEMP_FILE() (::seqan::ClassTest::openTempFile())
@@ -2384,7 +2387,7 @@ inline void fail()
 
 inline std::string getAbsolutePath(const char * path)
 {
-    return std::string(SEQAN_PATH_TO_ROOT()) + "/" + path;
+    return std::string(::seqan::ClassTest::StaticData::pathToRoot()) + "/" + path;
 }
 
 }  // namespace seqan

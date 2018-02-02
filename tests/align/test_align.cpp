@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -189,9 +189,9 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // Test DPCell.
     // ----------------------------------------------------------------------------
 
-	SEQAN_CALL_TEST(test_dp_cell_value);
-	SEQAN_CALL_TEST(test_dp_cell_reference);
-	SEQAN_CALL_TEST(test_dp_cell_default_infinity);
+    SEQAN_CALL_TEST(test_dp_cell_value);
+    SEQAN_CALL_TEST(test_dp_cell_reference);
+    SEQAN_CALL_TEST(test_dp_cell_default_infinity);
 
     SEQAN_CALL_TEST(test_dp_cell_linear_constructor);
     SEQAN_CALL_TEST(test_dp_cell_linear_copy_constructor);
@@ -274,31 +274,24 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // Test DPMatrix Navigator.
     // ----------------------------------------------------------------------------
 
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_constructor);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_banded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_cell);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_assign_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_value);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_diagonal);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_horizontal);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_vertical);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_container);
 
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_constructor);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_banded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_assign_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_value);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_diagonal);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_horizontal);
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_vertical);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_container);
 
-    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_constructor);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_unbanded);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_banded);
@@ -308,6 +301,7 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordinate);
     SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_container);
+    SEQAN_CALL_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_to_global_position);
 
     // ----------------------------------------------------------------------------
     // Test Recursion Formula.

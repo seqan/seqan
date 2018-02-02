@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -397,9 +397,29 @@ inline void readOne(TTarget & target, TFwdIterator &iter)
 
 //TODO(singer) to be revised
 template <typename TValue, typename TFwdIterator>
-inline void readRawPod(TValue & value, TFwdIterator &srcIter)
+inline void readRawPodImpl(TValue & value, TFwdIterator &srcIter)
 {
     write((char*)&value, srcIter, sizeof(TValue));
+}
+
+template <typename TValue, typename TFwdIterator>
+inline std::enable_if_t<std::is_arithmetic<TValue>::value>
+readRawPod(TValue & value, TFwdIterator &srcIter)
+{
+    readRawPodImpl(value, srcIter);
+    enforceLittleEndian(value);
+}
+
+template <typename TValue, typename TFwdIterator>
+inline std::enable_if_t<!std::is_arithmetic<TValue>::value>
+readRawPod(SEQAN_UNUSED TValue & value, SEQAN_UNUSED TFwdIterator &srcIter)
+{
+#if SEQAN_BIG_ENDIAN
+    static_assert(std::is_arithmetic<TValue>::value,
+                  "You are deserialising a data structure on big endian architecture that needs a custom reader. THIS IS A BUG!");
+#else
+    readRawPodImpl(value, srcIter);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -469,7 +489,7 @@ inline void writeWrappedString(TTarget & target, TSequence const & seq, TSize li
     TIter iter = begin(seq, Rooted());
     TSeqSize charsLeft = length(seq);
     TSeqSize charsPerLine;
-    TSeqSize lineLength_ = (lineLength == 0)? maxValue<TSeqSize>() : lineLength;
+    TSeqSize lineLength_ = (lineLength == 0)? std::numeric_limits<TSeqSize>::max() : lineLength;
 
     do
     {
@@ -631,7 +651,7 @@ strSplit(TResult & result,
     }
 
     for (TIter it = itBeg; it != itEnd; ++it)
-        if (sep(getValue(it)))
+        if (sep(*it))
         {
             if (allowEmptyStrings || itFrom != it)
             {
@@ -640,7 +660,7 @@ strSplit(TResult & result,
                 {
                     if (!allowEmptyStrings)
                     {
-                        while (it != itEnd && sep(getValue(it)))
+                        while (it != itEnd && sep(*it))
                             ++it;
                     }
                     else
@@ -664,7 +684,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TResult> >,
                                 Is<ContainerConcept<typename Value<TResult>::Type > > >, void)
 strSplit(TResult & result, TSequence const & sequence, TFunctor const & sep, bool const allowEmptyStrings)
 {
-    strSplit(result, sequence, sep, allowEmptyStrings, maxValue<typename Size<TSequence>::Type>());
+    strSplit(result, sequence, sep, allowEmptyStrings, std::numeric_limits<typename Size<TSequence>::Type>::max());
 }
 
 template <typename TResult, typename TSequence, typename TFunctor>

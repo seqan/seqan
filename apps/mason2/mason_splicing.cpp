@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -67,11 +67,11 @@ public:
 
     static const int INVALID_IDX;
 
-    MyGffRecord() : seqan::GffRecord(), rID(seqan::maxValue<int>())
+    MyGffRecord() : seqan::GffRecord(), rID(std::numeric_limits<int>::max())
     {}
 };
 
-const int MyGffRecord::INVALID_IDX = seqan::maxValue<int>();
+const int MyGffRecord::INVALID_IDX = std::numeric_limits<int>::max();
 
 // --------------------------------------------------------------------------
 // Class SplicingInstruction
@@ -152,7 +152,7 @@ public:
             if (!open(gffFileIn, toCString(options.inputGffFile)))
                 throw MasonIOException("Could not open GFF/GTF file.");
         }
-        catch (MasonIOException e)
+        catch (MasonIOException & e)
         {
             std::cerr << "\nERROR: " << e.what() << "\n";
             return 1;
@@ -166,7 +166,7 @@ public:
         // Read first GFF record.
         MyGffRecord record;
         _readFirstRecord(record);
-        if (record.rID == seqan::maxValue<int>())
+        if (record.rID == std::numeric_limits<int>::max())
             return 0;  // at end, could not read any, done
 
         // Transcript names.
@@ -185,7 +185,7 @@ public:
 
         // Read GFF/GTF file contig by contig (must be sorted by reference name).  For each contig, we all recors,
         // create simulation instructions and then build the transcripts for each haplotype.
-        while (record.rID != seqan::maxValue<int>())  // sentinel, at end
+        while (record.rID != std::numeric_limits<int>::max())  // sentinel, at end
         {
             seqan::CharString refName = record.ref;
             std::cerr << "Splicing for " << refName << " ...";
@@ -206,7 +206,7 @@ public:
 
                 if (atEnd(gffFileIn))
                 {
-                    record.rID = seqan::maxValue<int>();
+                    record.rID = std::numeric_limits<int>::max();
                     break;
                 }
 
@@ -362,10 +362,10 @@ public:
         {
             if (empty(ss[i]))
                 continue;
-            if (!getIdByName(contigNames, ss[i], idx, cache))
+            if (!getIdByName(idx, cache, ss[i]))
             {
                 appendValue(tIDs, length(contigNames));
-                appendName(contigNames, ss[i], cache);
+                appendName(cache, ss[i]);
             }
             else
             {
@@ -396,7 +396,7 @@ public:
             }
         }
         if (!found)
-            record.rID = seqan::maxValue<int>();
+            record.rID = std::numeric_limits<int>::max();
     }
 };
 

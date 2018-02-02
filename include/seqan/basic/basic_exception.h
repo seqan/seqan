@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -369,7 +369,7 @@ inline static void globalExceptionHandler()
 }
 
 // Install global exception handler.
-static const std::terminate_handler SEQAN_UNUSED _globalExceptionHandler = std::set_terminate(globalExceptionHandler);
+static const std::terminate_handler _globalExceptionHandler SEQAN_UNUSED = std::set_terminate(globalExceptionHandler);
 
 #endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 

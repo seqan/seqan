@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -78,24 +78,43 @@ struct Pair<T1, T2, Pack>
     // ------------------------------------------------------------------------
     // Members
     // ------------------------------------------------------------------------
-
-    T1 i1;
-    T2 i2;
+    T1 i1{};
+    T2 i2{};
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
 
-    Pair() : i1(T1()), i2(T2()) {}
+    // Pair() = default; does not work on gcc4.9, it issues warnings if T1/T2
+    // have no proper default constructor. >=gcc5.0 reports no warnings.
+    // Caused by yara_indexer build, demo_tutorial_indices_base and
+    // demo_tutorial_index_iterators_index_bidirectional_search.
+#if defined(COMPILER_GCC) && (__GNUC__ <= 4)
+    Pair() : i1(T1()), i2(T2()) {};
+#else
+    Pair() = default;
+#endif
 
-    Pair(Pair const &_p) : i1(_p.i1), i2(_p.i2) {}
+    // NOTE(marehr) intel compiler bug in 17.x and 18.x: defaulted copy-constructor
+    // in classes with `#pragma pack(push, 1)` seg-faults. This leads to a
+    // seg-fault in yara-mapper (app test case yara).
+#if defined(COMPILER_LINTEL) || defined(COMPILER_WINTEL)
+    Pair(Pair const & p) : i1(p.i1), i2(p.i2) {};
+#else
+    Pair(Pair const &) = default;
+#endif
+    Pair(Pair &&) = default;
+    ~Pair() = default;
+    Pair & operator=(Pair const &) = default;
+    Pair & operator=(Pair &&) = default;
 
     Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 
     template <typename T1_, typename T2_, typename TSpec__>
     // TODO(holtgrew): explicit?
-    Pair(Pair<T1_, T2_, TSpec__> const &_p)
-            : i1(getValueI1(_p)), i2(getValueI2(_p)) {}
+    Pair(Pair<T1_, T2_, TSpec__> const &_p) :
+        i1(getValueI1(_p)), i2(getValueI2(_p))
+    {}
 };
 #pragma pack(pop)
 

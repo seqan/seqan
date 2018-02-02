@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -2030,6 +2030,30 @@ operator<<(TStream & target,
            String<TValue, TSpec> const & source)
 {
     typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
+}
+
+// A specialization needed to avoid an ambiguous call combined with googletest.
+//
+// We use `std::basic_ostream<char>` instead of `std::ostream`, because we would
+// need to redefine a lot of CONCEPTS within seqan. Unfortunately,
+// `std::basic_ostream<char>` does not work, because `directionIterator` might not
+// be included yet (defined in <iter_stream.h>). Thus using `TChar` with the
+// restriction that it can only be `char`.
+//
+// We do not use the more generic `std::basic_ostream<TChar, Traits>` type,
+// because this would clash with other overloads of `<<` where `TSpec` within
+// String<TValue, ...> is more specific. E.g. in the case of `TSpec =
+// Journaled<...>`.
+//
+// https://github.com/seqan/seqan/issues/2182
+template <typename TChar, typename TValue>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<TChar, char>, std::basic_ostream<TChar> &)
+operator<<(std::basic_ostream<TChar> & target,
+           String<TValue> const & source)
+{
+    auto it = directionIterator(target, Output());
     write(it, source);
     return target;
 }

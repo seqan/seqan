@@ -49,16 +49,14 @@ http://www.seqan.de). To compile DFI on your system do the following:
   5)  cd dfi
   6)  ./dfi --help
 
-Alternatively you can check out the latest SVN version of DFI and SeqAn
+Alternatively you can check out the latest Git version of DFI and SeqAn
 with:
 
-  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
-  2)  cd seqan
-  3)  make forwards
-  4)  cd projects/library/apps
-  5)  make dfi
-  6)  cd dfi
-  7)  ./dfi --help
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  4)  make dfi
+  5)  ./bin/dfi --help
 
 On success, an executable file dfi was build and a brief usage description
 was dumped.

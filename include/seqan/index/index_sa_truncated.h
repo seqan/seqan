@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -68,22 +68,22 @@ public:
 
     Iter() :
         TBase(),
-        depth(MaxValue<TDepth>::VALUE)
+        depth(std::numeric_limits<TDepth>::max())
     {}
 
     Iter(TIndex &_index) :
         TBase(_index),
-        depth(MaxValue<TDepth>::VALUE)
+        depth(std::numeric_limits<TDepth>::max())
     {}
 
     Iter(TIndex &_index, MinimalCtor) :
         TBase(_index, MinimalCtor()),
-        depth(MaxValue<TDepth>::VALUE)
+        depth(std::numeric_limits<TDepth>::max())
     {}
 
     Iter(TIndex &_index, TVertexDesc const &_vDesc) :
         TBase(_index, _vDesc),
-        depth(MaxValue<TDepth>::VALUE)
+        depth(std::numeric_limits<TDepth>::max())
     {}
 
     Iter(Iter const &_origin):

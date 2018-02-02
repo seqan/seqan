@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              test_consensus.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -250,8 +250,7 @@ SEQAN_DEFINE_TEST(test_consensus_host_weightedconsensus_score)
 SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/tests/consensus/toy.sam");
+    seqan::CharString inPathSam = seqan::getAbsolutePath("/tests/consensus/toy.sam");
     // Get path to temporary file.
     seqan::CharString outPathCgb = SEQAN_TEMP_FILENAME();
 
@@ -266,16 +265,14 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
     fCgbOut.close();
 
     // Compare result.
-    seqan::CharString goldPathCgb = SEQAN_PATH_TO_ROOT();
-    append(goldPathCgb, "/tests/consensus/sam_to_cgb_result.cgb");
+    seqan::CharString goldPathCgb = seqan::getAbsolutePath("/tests/consensus/sam_to_cgb_result.cgb");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathCgb), toCString(goldPathCgb)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/tests/consensus/toy.sam");
+    seqan::CharString inPathSam = seqan::getAbsolutePath("/tests/consensus/toy.sam");
     // Get path to temporary file.
     seqan::CharString outPathFrg = SEQAN_TEMP_FILENAME();
 
@@ -290,18 +287,15 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
     fFrgOut.close();
 
     // Compare result.
-    seqan::CharString goldPathFrg = SEQAN_PATH_TO_ROOT();
-    append(goldPathFrg, "/tests/consensus/sam_to_frg_result.frg");
+    seqan::CharString goldPathFrg = seqan::getAbsolutePath("/tests/consensus/sam_to_frg_result.frg");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFrg), toCString(goldPathFrg)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/tests/consensus/toy.sam");
-    seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
-    append(inPathFasta, "/tests/consensus/toy.fa");
+    seqan::CharString inPathSam = seqan::getAbsolutePath("/tests/consensus/toy.sam");
+    seqan::CharString inPathFasta = seqan::getAbsolutePath( "/tests/consensus/toy.fa");
     // Get path to temporary file.
     seqan::CharString outPathFasta = SEQAN_TEMP_FILENAME();
 
@@ -317,16 +311,14 @@ SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
     fFastaOut.close();
 
     // Compare result.
-    seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
-    append(goldPathFasta, "/tests/consensus/sam_to_fasta_read_result.fa");
+    seqan::CharString goldPathFasta = seqan::getAbsolutePath("/tests/consensus/sam_to_fasta_read_result.fa");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
 {
     // Get path to input files.
-    seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
-    append(inPathFasta, "/tests/consensus/simulated_reads.fasta");
+    seqan::CharString inPathFasta = seqan::getAbsolutePath("/tests/consensus/simulated_reads.fasta");
     std::string filePath(toCString(inPathFasta));
     // Get path to temporary file.
     std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
@@ -343,8 +335,7 @@ SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
     close(fSamOut);
 
     // Compare result.
-    seqan::CharString goldPathSam = SEQAN_PATH_TO_ROOT();
-    append(goldPathSam, "/tests/consensus/reads_to_sam_read_result.sam");
+    seqan::CharString goldPathSam = seqan::getAbsolutePath("/tests/consensus/reads_to_sam_read_result.sam");
     SEQAN_ASSERT(seqan::_compareTextFiles(outPathSam.c_str(), toCString(goldPathSam)));
 }
 

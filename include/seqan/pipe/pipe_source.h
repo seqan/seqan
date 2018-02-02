@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ namespace seqan
             in(_cont), cur(), val() {}
 
         inline typename Value<TInput>::Type const & operator*()
-        { return val = getValue(cur); }
+        { return val = *cur; }
 
         inline Pipe& operator++()
         {

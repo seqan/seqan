@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -86,10 +86,10 @@ struct IsFreeEndGap_<AlignExtend_<TSpec>, DPLastColumn> : True
 // Class DPMetaColumn_                                             [FullColumn]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TGapCosts, typename TTraceback,
+template <typename TSpec, typename TGapCosts, typename TTraceback, typename TExecPolicy,
           typename TColumnType>
 struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
-                                TTraceback>,
+                                TTraceback, TExecPolicy>,
                      MetaColumnDescriptor<TColumnType, FullColumn> >
 {
 
@@ -116,10 +116,10 @@ struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
 // Class DPMetaColumn_                                       [PartialColumnTop]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TGapCosts, typename TTraceback,
+template <typename TSpec, typename TGapCosts, typename TTraceback, typename TExecPolicy,
           typename TColumnType>
 struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
-                                TTraceback>,
+                                TTraceback, TExecPolicy>,
                      MetaColumnDescriptor<TColumnType, PartialColumnTop> >
 {
 
@@ -145,10 +145,10 @@ struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
 // Class DPMetaColumn_                                    [PartialColumnMiddle]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TGapCosts, typename TTraceback,
+template <typename TSpec, typename TGapCosts, typename TTraceback, typename TExecPolicy,
           typename TColumnType>
 struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
-                                TTraceback>,
+                                TTraceback, TExecPolicy>,
                      MetaColumnDescriptor<TColumnType, PartialColumnMiddle> >
 {
     typedef typename If<IsSameType<TColumnType,
@@ -173,10 +173,10 @@ struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
 // Class DPMetaColumn_                                    [PartialColumnBottom]
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TGapCosts, typename TTraceback,
+template <typename TSpec, typename TGapCosts, typename TTraceback, typename TExecPolicy,
           typename TColumnType>
 struct DPMetaColumn_<DPProfile_<AlignExtend_<TSpec>, TGapCosts,
-                                TTraceback>,
+                                TTraceback, TExecPolicy>,
                      MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
 {
     typedef typename If<IsSameType<TColumnType,
