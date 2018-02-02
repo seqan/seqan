@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_seqan_tcoffee CXX)
 message (STATUS "Configuring apps/seqan_tcoffee")
 
-set (SEQAN_APP_VERSION "1.13.7")
+set (SEQAN_APP_VERSION "1.13.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -56,7 +56,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install seqan_tcoffee in ${PREFIX}/bin directory
 install (TARGETS seqan_tcoffee
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/seqan_tcoffee for SeqAn release builds.

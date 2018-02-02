@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -169,12 +169,12 @@ template <typename TValue, typename TSpec>
 inline void
 unlockReading(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    std::unique_lock<std::mutex> lock(me.cs);
-    if (--me.readerCount == 0u)
     {
-        lock.unlock();
-        me.less.notify_all();
+        std::lock_guard<std::mutex> lock(me.cs);
+        if (--me.readerCount != 0u)
+            return;
     }
+    me.less.notify_all();  // publish the condition that reader count is 0.
 }
 
 template <typename TValue, typename TSpec>
@@ -186,12 +186,12 @@ template <typename TValue, typename TSpec>
 inline void
 unlockWriting(ConcurrentQueue<TValue, Suspendable<TSpec> > & me)
 {
-    std::unique_lock<std::mutex> lk(me.cs);
-    if (--me.writerCount == 0u)
     {
-        lk.unlock();
-        me.more.notify_all();
+        std::lock_guard<std::mutex> lk(me.cs);
+        if (--me.writerCount != 0u)
+            return;
     }
+    me.more.notify_all();  // publish the condition, that writer count is 0.
 }
 
 template <typename TValue, typename TSize, typename TSpec>

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,8 +85,9 @@ struct BandedChainAlignment_{};
 // Class DPMetaColumn                                              [FullColumn]
 // ----------------------------------------------------------------------------
 
-template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
+template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy>,
                     MetaColumnDescriptor<TColumnType, FullColumn> >
 {
     // If InitialColumn -> replaced, replaced, replaced
@@ -106,8 +107,9 @@ struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLoc
 // Class DPMetaColumn                                        [PartialColumnTop]
 // ----------------------------------------------------------------------------
 
-template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
+template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy>,
                     MetaColumnDescriptor<TColumnType, PartialColumnTop> >
 {
     // If InitialColumn -> replaced, replaced, replaced
@@ -127,8 +129,9 @@ struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLoc
 // Class DPMetaColumn                                      [PartialColumnMiddle]
 // ----------------------------------------------------------------------------
 
-template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
+template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy>,
                     MetaColumnDescriptor<TColumnType, PartialColumnMiddle> >
 {
     // If InitialColumn -> replaced, replaced, replaced
@@ -148,9 +151,10 @@ struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLoc
 // Class DPMetaColumn                                      [PartialColumnBottom]
 // ----------------------------------------------------------------------------
 
-template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
-struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
-                    MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
+template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TExecPolicy,
+          typename TColumnType>
+struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback, TExecPolicy>,
+                     MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
 {
     // If InitialColumn -> replaced, replaced, replaced
     // If InnerColumn -> UpperDiagonal, All, All
@@ -200,7 +204,7 @@ template <typename TAlignConfig, typename TGapCosts, typename TGapsPlacement>
 struct SetupBandedChainAlignmentProfile_
 {
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps_;
-    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps_, BandedChainInnerDPMatrix>, TGapCosts, TracebackOn<TracebackConfig_<CompleteTrace,TGapsPlacement> > > Type;
+    typedef DPProfile_<BandedChainAlignment_<TFreeEndGaps_, BandedChainInnerDPMatrix>, TGapCosts, TracebackOn<TracebackConfig_<CompleteTrace,TGapsPlacement> >, Serial> Type;
 };
 
 

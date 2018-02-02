@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -302,15 +302,15 @@ bool FastxJoiner<TTag>::_loadNext(TSeq & id, TSeq & seq, TSeq & qual, unsigned i
 template <typename TTag>
 int FastxJoiner<TTag>::get(seqan::CharString & id, seqan::CharString & seq, seqan::CharString & qual)
 {
-    unsigned idx = seqan::maxValue<unsigned>();
+    unsigned idx = std::numeric_limits<unsigned>::max();
     for (unsigned i = 0; i < length(ids); ++i)
     {
         if (!active[i])
             continue;
-        if (idx == seqan::maxValue<unsigned>() || strnum_cmp(toCString(ids[i]), toCString(ids[idx])) < 0)
+        if (idx == std::numeric_limits<unsigned>::max() || strnum_cmp(toCString(ids[i]), toCString(ids[idx])) < 0)
             idx = i;
     }
-    if (idx == seqan::maxValue<unsigned>())
+    if (idx == std::numeric_limits<unsigned>::max())
         return 1;
 
     // We use double-buffering and the input parameters as buffers.
@@ -331,7 +331,7 @@ int FastxJoiner<TTag>::get(seqan::CharString & id, seqan::CharString & seq, seqa
 
 /* The MIT License
 
-   Copyright (c) 2008-2010 Genome Research Ltd (GRL).
+   Copyright (c) 2008-2018 Genome Research Ltd (GRL).
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the

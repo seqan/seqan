@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,11 +38,13 @@
 #include <seqan/sequence.h>
 
 #include "test_basic_fundamental_concepts.h"
+#include "test_basic_concepts.h"
 
 SEQAN_BEGIN_TESTSUITE(test_basic_concept)
 {
     SEQAN_CALL_TEST(test_basic_concepts_concept_impl);
     SEQAN_CALL_TEST(test_basic_concepts_concept_refine);
+
+    SEQAN_CALL_TEST(test_basic_concepts_move_construtible_concept);
 }
 SEQAN_END_TESTSUITE
-

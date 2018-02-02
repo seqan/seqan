@@ -1098,7 +1098,7 @@ postProcessMain(TOptions &options, TModel const &)
         if (hasFlagUnmapped(record)) continue;     // Read is unmapped
         // Get readId (could be curr. read or mate) -> Only Id, seq. we will get the original from readSeqStore
         // If read name not found, skip entry
-        if (!getIdByName(store.readNameStore, record.qName, readId, readNameCache)) continue;
+        if (!getIdByName(readId, readNameCache, record.qName)) continue;
 
         if (hasFlagMultiple(record))   //)    // If paired: Get readId for current mate
         {

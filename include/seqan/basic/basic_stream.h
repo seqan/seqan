@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -813,8 +813,9 @@ writeValue(TTargetValue * & iter, TValue val)
 template <typename TTarget, typename TFwdIterator, typename TSize, typename TIChunk, typename TOChunk>
 inline void _write(TTarget &target, TFwdIterator &iter, TSize n, TIChunk, TOChunk)
 {
+    typedef typename GetValue<TFwdIterator>::Type TValue;
     for (; n > (TSize)0; --n, ++iter)
-        writeValue(target, getValue(iter));
+        writeValue(target, static_cast<TValue>(*iter));
 }
 
 // ----------------------------------------------------------------------------
@@ -1190,16 +1191,36 @@ formattedNumber(const char *format, TValue const & val)
 
 template <typename TTarget, typename TValue>
 inline void
-appendRawPod(TTarget & target, TValue const & val)
+appendRawPodImpl(TTarget & target, TValue const & val)
 {
     write(target, (unsigned char*)&val, sizeof(TValue));
 }
 
 template <typename TTargetValue, typename TValue>
 inline void
-appendRawPod(TTargetValue * &ptr, TValue const & val)
+appendRawPodImpl(TTargetValue * &ptr, TValue const & val)
 {
     *reinterpret_cast<TValue* &>(ptr)++ = val;
+}
+
+template <typename TTarget, typename TValue>
+inline std::enable_if_t<std::is_arithmetic<TValue>::value>
+appendRawPod(TTarget & target, TValue val)
+{
+    enforceLittleEndian(val);
+    appendRawPodImpl(target, val);
+}
+
+template <typename TTarget, typename TValue>
+inline std::enable_if_t<!std::is_arithmetic<TValue>::value>
+appendRawPod(SEQAN_UNUSED TTarget & target, SEQAN_UNUSED TValue const & val)
+{
+#if SEQAN_BIG_ENDIAN
+    static_assert(std::is_arithmetic<TValue>::value /*false*/,
+                  "You are serialising a data structure on big endian architecture that needs a custom writer. THIS IS A BUG!");
+#else
+    appendRawPodImpl(target, val);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -1258,7 +1279,7 @@ read(TTarget &target, TFwdIterator &iter, TSize n)
 {
     TSize i;
     for (i = 0; !atEnd(iter) && i < n; ++i, ++iter)
-        writeValue(target, value(iter));
+        writeValue(target, *iter);
     return i;
 }
 

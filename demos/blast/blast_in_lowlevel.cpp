@@ -7,7 +7,7 @@ using namespace seqan;
 
 int main()
 {
-    std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + "/tests/blast/plus_comments_defaults.m9";
+    std::string inPath = getAbsolutePath("/tests/blast/plus_comments_defaults.m9");
 
     std::ifstream fin(toCString(inPath), std::ios_base::in | std::ios_base::binary);
     auto fit = directionIterator(fin, Input());

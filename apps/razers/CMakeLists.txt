@@ -10,7 +10,12 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_razers CXX)
 message (STATUS "Configuring apps/razers")
 
-set (SEQAN_APP_VERSION "1.5.7")
+set (SEQAN_APP_VERSION "1.5.8")
+
+if (SEQAN_TRAVIS_BUILD)
+    message (STATUS "  Skipping build and test of razers on Travis CI.")
+    return ()
+endif (SEQAN_TRAVIS_BUILD)
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -66,7 +71,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install razers in ${PREFIX}/bin directory
 install (TARGETS razers
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/razers for SeqAn release builds.

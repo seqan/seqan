@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -355,13 +355,13 @@ localAlignment(StringSet<Align<TSequence, TAlignSpec> > & alignSet,
     StringSet<TGapSequence, Dependent<> > gapSetV;
     reserve(gapSetH, length(alignSet));
     reserve(gapSetV, length(alignSet));
-    
+
     for (auto & align : alignSet)
     {
         appendValue(gapSetH, row(align, 0));
         appendValue(gapSetV, row(align, 1));
     }
-    
+
     return localAlignment(gapSetH, gapSetV, scoringScheme, algoTag);
 }
 
@@ -374,6 +374,111 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
         return localAlignment(align, scoringScheme, AffineGaps());
    else
         return localAlignment(align, scoringScheme, LinearGaps());
+}
+
+// ----------------------------------------------------------------------------
+// Function localAlignmentScore()                         [unbanded, TSequence]
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn localAlignmentScore
+ * @headerfile <seqan/align.h>
+ * @brief Computes the best global pairwise alignment score.
+ *
+ * @signature TScoreVal localAlignmentScore([exec,] subject, query, scoringScheme[, lowerDiag, upperDiag]);
+ *
+ * @param[in] exec          @link ExecutionPolicy Policy@endlink to select execution mode of alignment algorithm.
+ * @param[in] subject       Subject sequence(s) (horizontal in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
+ * @param[in] query         Query sequence(s) (vertical in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
+ * @param[in] scoringScheme The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
+ *                          that the scoring scheme is compatible with <tt>algorithmTag</tt>.  Type: @link Score @endlink.
+ * @param[in] lowerDiag     Optional lower diagonal.  Types: <tt>int</tt>
+ * @param[in] upperDiag     Optional upper diagonal.  Types: <tt>int</tt>
+ *
+ * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
+ *                     the type of <tt>scoringScheme</tt>). If subject and query are sets the function returns a
+ *                     set of scores representing the score for each pairwise alignment (<tt>subject[i]</tt> with <tt>query[i]</tt>).
+ *
+ * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
+ * step. Local alignment score can be either used with two sequences or two sets of sequences of equal size.
+ *
+ * @section Parallel execution
+ *
+ * Some of the local alingment score functions are parallelized and vectorized.
+ * The parallelization mode can be selected via the @link ExecutionPolicy @endlink as first argument.
+ * Following execution modes are possible: <i>sequential</i>, <i>parallel</i>, <i>wave-front</i>, <i>vectorized</i>,
+ * <i>parallel+vectorized</i> and <i>wave-front+vectorized</i>.
+ *
+ * The wave-front execution can be selected via the @link WavefrontExecutionPolicy @endlink, which can also be combined
+ * with a vectorized execution. In addition the wave-front execution parallelizes a single pairwise alignment, while the
+ * standard @link ParallelismTags#Parallel @endlink specialization does only parallelizes the sequence set via chunking.
+ * Note, the banded version is at the moment only supported for the following execution modes: <i>sequential</i>,
+ * <i>parallel</i>, <i>vectorized</i> and <i>parallel+vectorized</i>. At the moment the vectorized version only works
+ * reliable if all subject sequences and respectively all query sequences have the same length.
+ *
+ * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * @see localAlignment
+ *
+ * @datarace thread-safe. No shared state is modified during the execution and concurrent invocations of this function
+ * on the same data does not cause any race conditions.
+ */
+
+template <typename TSequenceH,
+          typename TSequenceV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+SEQAN_FUNC_DISABLE_IF(And<And<Is<ContainerConcept<TSequenceH>>, Is<ContainerConcept<typename Value<TSequenceH>::Type>>>,
+                          And<Is<ContainerConcept<TSequenceV>>, Is<ContainerConcept<typename Value<TSequenceV>::Type>>>
+                         >, TScoreValue)
+localAlignmentScore(TSequenceH const & seqH,
+                    TSequenceV const & seqV,
+                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                    TAlgoTag const & /*algoTag*/)
+{
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<>, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    DPScoutState_<Default> dpScoutState;
+    String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
+    return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, TAlignConfig2{}, TGapModel{});
+}
+
+// ----------------------------------------------------------------------------
+// Function localAlignmentScore()                   [unbanded, Simd, TSequence]
+// ----------------------------------------------------------------------------
+
+template <typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+inline
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >, String<TScoreValue>)
+localAlignmentScore(TSeqH const & stringsH,
+                    TSeqV const & stringsV,
+                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                    TAlgoTag const & /*algoTag*/)
+{
+    SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
+    typedef AlignConfig2<DPLocal, DPBandConfig<BandOff>, FreeEndGaps_<>, TracebackOff> TAlignConfig2;
+    typedef typename SubstituteAlgoTag_<TAlgoTag>::Type TGapModel;
+
+    return _alignWrapper(stringsH, stringsV, scoringScheme, TAlignConfig2(), TGapModel());
+}
+
+// Interface without algorithm tag.
+template <typename TSequenceH,
+          typename TSequenceV,
+          typename TScoreValue, typename TScoreSpec>
+auto localAlignmentScore(TSequenceH const & seqH,
+                         TSequenceV const & seqV,
+                         Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+        return localAlignmentScore(seqH, seqV, scoringScheme, NeedlemanWunsch());
+    else
+        return localAlignmentScore(seqH, seqV, scoringScheme, Gotoh());
 }
 
 }  // namespace seqan

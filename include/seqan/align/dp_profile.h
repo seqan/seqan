@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ typedef Tag<AlignmentSplitBreakpoint_> SplitBreakpointAlignment;
 //
 // Note, all global alignments have to be specialized versions of GlobalAlignment_<>
 template <typename TSpec = FreeEndGaps_<> >
-struct GlobalAlignment_;
+struct GlobalAlignment_{};
 
 typedef GlobalAlignment_<> DPGlobal;
 
@@ -103,61 +103,82 @@ typedef Tag<AlignmentSuboptimal_> SuboptimalAlignment;
 // Note, all local alignments have to be specialized versions of LocalAlignment_<>
 
 template <typename TSpec = Default>
-struct LocalAlignment_;
+struct LocalAlignment_{};
 
 typedef LocalAlignment_<> DPLocal;
 typedef LocalAlignment_<SuboptimalAlignment> DPLocalEnumerate;
 
-// Use macro expansion to define all possible SIMD initialization types.
+// ----------------------------------------------------------------------------
+// Class TraceBitMap_
+// ----------------------------------------------------------------------------
 
-template <typename TVector, __uint8 FILL_VALUE, unsigned SIZE>
-struct InitSimdTrace_;
-
-#define SEQAN_SIMD_INIT_FILL_VALUE_2_ FILL_VALUE, FILL_VALUE
-#define SEQAN_SIMD_INIT_FILL_VALUE_4_ SEQAN_SIMD_INIT_FILL_VALUE_2_, SEQAN_SIMD_INIT_FILL_VALUE_2_
-#define SEQAN_SIMD_INIT_FILL_VALUE_8_ SEQAN_SIMD_INIT_FILL_VALUE_4_, SEQAN_SIMD_INIT_FILL_VALUE_4_
-#define SEQAN_SIMD_INIT_FILL_VALUE_16_ SEQAN_SIMD_INIT_FILL_VALUE_8_, SEQAN_SIMD_INIT_FILL_VALUE_8_
-#define SEQAN_SIMD_INIT_FILL_VALUE_32_ SEQAN_SIMD_INIT_FILL_VALUE_16_, SEQAN_SIMD_INIT_FILL_VALUE_16_
-
-#define SEQAN_SIMD_TRACE_SETUP_2_(SIZE, ...)                                                        \
-template <typename TVector, __uint8 FILL_VALUE>                                                     \
-struct InitSimdTrace_<TVector, FILL_VALUE, SIZE>                                                    \
-{                                                                                                   \
-    static const TVector VALUE;                                                                     \
-};                                                                                                  \
-                                                                                                    \
-template <typename TVector, __uint8 FILL_VALUE>                                                     \
-const TVector InitSimdTrace_<TVector, FILL_VALUE, SIZE>::VALUE = TVector{__VA_ARGS__};
-
-#define SEQAN_SIMD_TRACE_SETUP_1_(SIZE, MACRO) SEQAN_SIMD_TRACE_SETUP_2_(SIZE, MACRO)
-#define SEQAN_SIMD_TRACE_SETUP_(SIZE) SEQAN_SIMD_TRACE_SETUP_1_(SIZE, SEQAN_SIMD_INIT_FILL_VALUE_ ## SIZE ## _)
-
-SEQAN_SIMD_TRACE_SETUP_(2)
-SEQAN_SIMD_TRACE_SETUP_(4)
-SEQAN_SIMD_TRACE_SETUP_(8)
-SEQAN_SIMD_TRACE_SETUP_(16)
-SEQAN_SIMD_TRACE_SETUP_(32)
-
-// Scalar version.
+// Defines static const/constexpr tables for the traceback directions.
+// We use TraceValue_ as a helper to distinguish between vector and
+// scalar version.
+// For the vector version we use some compile time hackery to initialize the
+// const vector values with the corresponding values generically for
+// seqan simd vector types and UME::SIMD vector types.
 template <typename TValue, typename TIsSimdVector>
 struct TraceValue_
 {
     typedef uint8_t Type;
-    static const Type NONE = 0u;                         //0000000
-    static const Type DIAGONAL = 1u;                     //0000001
-    static const Type HORIZONTAL = 2u;                   //0000010
-    static const Type VERTICAL = 4u;                     //0000100
-    static const Type HORIZONTAL_OPEN = 8u;              //0001000
-    static const Type VERTICAL_OPEN = 16u;               //0010000
-    static const Type MAX_FROM_HORIZONTAL_MATRIX = 32u;  //0100000
-    static const Type MAX_FROM_VERTICAL_MATRIX = 64u;    //1000000
-    static const Type NO_VERTICAL_TRACEBACK = ~(VERTICAL | VERTICAL_OPEN);
-    static const Type NO_HORIZONTAL_TRACEBACK = ~(HORIZONTAL | HORIZONTAL_OPEN);
+    static constexpr Type NONE = 0u;                         //0000000
+    static constexpr Type DIAGONAL = 1u;                     //0000001
+    static constexpr Type HORIZONTAL = 2u;                   //0000010
+    static constexpr Type VERTICAL = 4u;                     //0000100
+    static constexpr Type HORIZONTAL_OPEN = 8u;              //0001000
+    static constexpr Type VERTICAL_OPEN = 16u;               //0010000
+    static constexpr Type MAX_FROM_HORIZONTAL_MATRIX = 32u;  //0100000
+    static constexpr Type MAX_FROM_VERTICAL_MATRIX = 64u;    //1000000
+    static constexpr Type NO_VERTICAL_TRACEBACK = ~(VERTICAL | VERTICAL_OPEN);
+    static constexpr Type NO_HORIZONTAL_TRACEBACK = ~(HORIZONTAL | HORIZONTAL_OPEN);
 };
 
-// SIMD Vector version.
-template <typename TVector>
-struct TraceValue_<TVector, True>
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::NONE;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::DIAGONAL;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::HORIZONTAL;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::VERTICAL;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::HORIZONTAL_OPEN;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::VERTICAL_OPEN;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::MAX_FROM_HORIZONTAL_MATRIX;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::MAX_FROM_VERTICAL_MATRIX;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::NO_VERTICAL_TRACEBACK;
+template <typename TValue, typename TIsSimdVector>
+constexpr typename TraceValue_<TValue, TIsSimdVector>::Type TraceValue_<TValue, TIsSimdVector>::NO_HORIZONTAL_TRACEBACK;
+
+// Recursion anchor to return the generated tuple with all fill values.
+template <typename ...TValues>
+constexpr auto _fillTraceValueVector(std::index_sequence<0> const &, std::tuple<TValues...> const & t)
+{
+    return t;
+}
+
+// Helper function to fill the vector with the correct number of values.
+// We use the std::tuple (which supports constexpr functions) to make it evaluate at compile time.
+template <size_t ...I, typename ...TValues>
+constexpr auto _fillTraceValueVector(std::index_sequence<I...> const &, std::tuple<TValues...> const & t)
+{
+    // Expand the tuple by one and return the next tuple while reducing the number of elements to add.
+    return _fillTraceValueVector(std::make_index_sequence<sizeof...(I) - 1>{},
+                                 std::tuple_cat(std::make_tuple(std::get<0>(t)), t));
+}
+
+// Helper class to used to expand the elements from the returned tuple with the fill values.
+// NOTE(rrahn): Might be easier to solve with fold expressions in SeqAn3.
+template <typename TVector, typename TIndexSequence>
+struct TraceValueVectorBase_;
+
+template <typename TVector, size_t ...I>
+struct TraceValueVectorBase_<TVector, std::index_sequence<I...>>
 {
     typedef TVector Type;
     static const Type NONE;
@@ -172,26 +193,46 @@ struct TraceValue_<TVector, True>
     static const Type NO_VERTICAL_TRACEBACK;
 };
 
-// Macro expansion to define out-of-class initialization of static members.
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::NONE =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::NONE)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::DIAGONAL =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::DIAGONAL)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::HORIZONTAL =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::HORIZONTAL)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::VERTICAL =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::VERTICAL)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::HORIZONTAL_OPEN =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::HORIZONTAL_OPEN)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::VERTICAL_OPEN =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::VERTICAL_OPEN)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::MAX_FROM_HORIZONTAL_MATRIX =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::MAX_FROM_HORIZONTAL_MATRIX)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::MAX_FROM_VERTICAL_MATRIX =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::MAX_FROM_VERTICAL_MATRIX)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::NO_VERTICAL_TRACEBACK =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::NO_HORIZONTAL_TRACEBACK)))...};
+template <typename TVector, size_t ...I>
+const typename TraceValueVectorBase_<TVector, std::index_sequence<I...>>::Type TraceValueVectorBase_<TVector, std::index_sequence<I...>>::NO_HORIZONTAL_TRACEBACK =
+    {std::get<I>(_fillTraceValueVector(std::make_index_sequence<LENGTH<TVector>::VALUE>{}, std::make_tuple(TraceValue_<uint8_t, False>::NO_VERTICAL_TRACEBACK)))...};
 
-#define SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(TRACE_VALUE)                             \
-    template <typename TVector>                                                      \
-    const TVector TraceValue_<TVector, True>::TRACE_VALUE = InitSimdTrace_<TVector, TraceValue_<__uint8, False>::TRACE_VALUE, LENGTH<TVector>::VALUE>::VALUE;
-
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NONE)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(DIAGONAL)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(HORIZONTAL)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(VERTICAL)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(HORIZONTAL_OPEN)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(VERTICAL_OPEN)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(MAX_FROM_HORIZONTAL_MATRIX)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(MAX_FROM_VERTICAL_MATRIX)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_HORIZONTAL_TRACEBACK)
-SEQAN_SIMD_TRACE_OUT_OF_CLASS_INIT_(NO_VERTICAL_TRACEBACK)
+// SIMD Vector version.
+// Simply delegates to the base class by passing the index_sequence with the corresponding length of the vector.
+template <typename TVector>
+struct TraceValue_<TVector, True> : public TraceValueVectorBase_<TVector, std::make_index_sequence<LENGTH<TVector>::VALUE>>
+{};
 
 // Type alias to choose between scalar and simd version of trace value.
-template <typename TValue = __uint8>
-using TraceBitMap_ = TraceValue_<TValue, typename Is<SimdVectorConcept<TValue> >::Type >;
+template <typename TValue = uint8_t>
+using TraceBitMap_ = TraceValue_<TValue, typename Is<SimdVectorConcept<TValue> >::Type>;
 
 // ----------------------------------------------------------------------------
 // Tag GapsLeft
@@ -298,9 +339,8 @@ typedef Tag<DynamicGaps_> DynamicGaps;
 // TAlignment: The type to select the pairwise alignment algorithm.
 // TGapCosts:  The gap cost function (LinearGaps or AffineGaps).
 // TTraceback: The traceback switch (TracebackOn or TracebackOff).
-template <typename TAlignment, typename TGapCosts, typename TTraceback>
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy = Serial>
 struct DPProfile_ {};
-
 
 // ----------------------------------------------------------------------------
 // Tag DPFirstRow
@@ -351,6 +391,63 @@ public:
 // Metafunctions
 // ============================================================================
 
+enum class DPProfileTypeId : uint8_t
+{
+    ALGORITHM = 0,
+    GAP_MODEL = 1,
+    TRACE_CONFIG = 2,
+    EXEC_POLICY = 3
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction DPContextSpec
+// ----------------------------------------------------------------------------
+
+template <typename TDPProfile, DPProfileTypeId ID>
+struct DPProfileType;
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::ALGORITHM>
+{
+    using Type = TAlignment;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::GAP_MODEL>
+{
+    using Type = TGapCosts;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::TRACE_CONFIG>
+{
+    using Type = TTraceback;
+};
+
+template <typename TAlignment, typename TGapCosts, typename TTraceback, typename TExecPolicy>
+struct DPProfileType<DPProfile_<TAlignment, TGapCosts, TTraceback, TExecPolicy>, DPProfileTypeId::EXEC_POLICY>
+{
+    using Type = TExecPolicy;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction GapTraits
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct GapTraits;
+
+template <typename T>
+struct GapTraits<T const> :
+    GapTraits<T>
+{};
+
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct GapTraits<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >
+{
+    typedef TGapCosts Type;
+};
+
 // ----------------------------------------------------------------------------
 // Metafunction IsGlobalAlignment
 // ----------------------------------------------------------------------------
@@ -368,12 +465,12 @@ template <typename TSpec>
 struct IsGlobalAlignment_<GlobalAlignment_<TSpec> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsGlobalAlignment_<TAlgoSpec>{};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsGlobalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsGlobalAlignment_<TAlgoSpec>{};
 
 // ----------------------------------------------------------------------------
@@ -422,12 +519,12 @@ template <typename TSpec>
 struct IsLocalAlignment_<LocalAlignment_<TSpec> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsLocalAlignment_<TAlgoSpec>{};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsLocalAlignment_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsLocalAlignment_<TAlgoSpec>{};
 
 // ----------------------------------------------------------------------------
@@ -447,12 +544,12 @@ template <typename TTracebackConfig>
 struct IsTracebackEnabled_<TracebackOn<TTracebackConfig> const>:
     True {};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> >:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> >:
     IsTracebackEnabled_<TTraceFlag>{};
 
-template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag>
-struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag> const>:
+template <typename TAlgoSpec, typename TGapCosts, typename TTraceFlag, typename TExecPolicy>
+struct IsTracebackEnabled_<DPProfile_<TAlgoSpec, TGapCosts, TTraceFlag, TExecPolicy> const>:
     IsTracebackEnabled_<TTraceFlag>{};
 
 // ----------------------------------------------------------------------------
@@ -466,8 +563,8 @@ template <typename TTraceSpec>
 struct IsGapsLeft_<TracebackOn<TracebackConfig_<TTraceSpec, GapsLeft > > >
         : True{};
 
-template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig>
-struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig> >
+template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig, typename TExecPolicy>
+struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> >
         : IsGapsLeft_<TTraceConfig>{};
 
 // ----------------------------------------------------------------------------
@@ -475,15 +572,16 @@ struct IsGapsLeft_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig> >
 // ----------------------------------------------------------------------------
 
 template <typename TTraceConfig>
-struct IsSingleTrace_ : False{};
+struct IsSingleTrace_ : False
+{};
 
 template <typename TGapsPlacement>
-struct IsSingleTrace_<TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > >
-: True{};
+struct IsSingleTrace_<TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement> > > : True
+{};
 
-template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig>
-struct IsSingleTrace_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig> >
-: IsSingleTrace_<TTraceConfig>{};
+template <typename TAlgorithm, typename TGapSpec, typename TTraceConfig, typename TExecPolicy>
+struct IsSingleTrace_<DPProfile_<TAlgorithm, TGapSpec, TTraceConfig, TExecPolicy> > : IsSingleTrace_<TTraceConfig>
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction IsFreeEndGap_
@@ -494,12 +592,12 @@ template <typename TAlignmentSpec, typename TDPSide>
 struct IsFreeEndGap_ :
     False {};
 
-template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TDPSide>
-struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec> const, TDPSide>:
+template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TExecPolicy, typename TDPSide>
+struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec, TExecPolicy> const, TDPSide>:
     IsFreeEndGap_<TAlignmentSpec, TDPSide>{};
 
-template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TDPSide>
-struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec>, TDPSide>:
+template <typename TAlignmentSpec, typename TGapSpec, typename TTracebackSpec, typename TExecPolicy, typename TDPSide>
+struct IsFreeEndGap_<DPProfile_<TAlignmentSpec, TGapSpec, TTracebackSpec, TExecPolicy>, TDPSide>:
     IsFreeEndGap_<TAlignmentSpec, TDPSide>{};
 
 template <typename TLocalSpec, typename TDPSide>
@@ -566,6 +664,27 @@ struct IsFreeEndGap_<FreeEndGaps_<TFirstRow, TFirstColumn, TLastRow, True> const
 // Functions
 // ============================================================================
 
+namespace impl
+{
+    template <typename TStream>
+    inline TStream &
+    printTraceValue(TStream & stream, char traceValue)
+    {
+        if (traceValue & (TraceBitMap_<char>::MAX_FROM_VERTICAL_MATRIX | TraceBitMap_<char>::VERTICAL))
+        {
+            stream << "|";
+        }
+        if (traceValue & (TraceBitMap_<char>::MAX_FROM_HORIZONTAL_MATRIX | TraceBitMap_<char>::HORIZONTAL))
+        {
+            stream << "-";
+        }
+        if (traceValue & TraceBitMap_<char>::DIAGONAL)
+        {
+            stream << "\\";
+        }
+        return stream;
+    }
+}  // namespace impl
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_

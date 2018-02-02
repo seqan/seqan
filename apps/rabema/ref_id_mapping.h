@@ -79,17 +79,17 @@ inline unsigned length(RefIdMapping const & mapping)
 
 template <typename TTargetNameStore, typename TTargetNameStoreCache, typename TSourceNameStore>
 void rebuildMapping(RefIdMapping & mapping,
-                    TTargetNameStore const & targetNameStore,
+                    TTargetNameStore const & /*targetNameStore*/,
                     TTargetNameStoreCache const & targetNameStoreCache,
                     TSourceNameStore const & sourceNameStore)
 {
     clear(mapping.map);
-    resize(mapping.map, length(sourceNameStore), maxValue<unsigned>());
+    resize(mapping.map, length(sourceNameStore), std::numeric_limits<unsigned>::max());
 
     for (unsigned i = 0; i < length(sourceNameStore); ++i)
     {
         unsigned idx = 0;
-        if (getIdByName(targetNameStore, sourceNameStore[i], idx, targetNameStoreCache))
+        if (getIdByName(idx, targetNameStoreCache, sourceNameStore[i]))
             mapping.map[i] = idx;
     }
 }

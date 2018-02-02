@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_snp_store CXX)
 message (STATUS "Configuring apps/snp_store")
 
-set (SEQAN_APP_VERSION "1.3.7")
+set (SEQAN_APP_VERSION "1.3.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -71,7 +71,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install snp_store in ${PREFIX}/bin directory
 install (TARGETS snp_store
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/snp_store for SeqAn release builds.

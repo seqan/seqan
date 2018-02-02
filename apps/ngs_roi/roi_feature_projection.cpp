@@ -1,7 +1,7 @@
 // ==========================================================================
 //                   NGS: Regions of Interest Analysis
 // ==========================================================================
-// Copyright (c) 2012-2013, Bernd Jagla, Institut Pasteur
+// Copyright (c) 2012-2018, Bernd Jagla, Institut Pasteur
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -136,7 +136,7 @@ template <typename TRecord>
 void makeSentinel(TRecord & record)
 {
     clear(record.ref);
-    record.beginPos = seqan::maxValue<int>();
+    record.beginPos = std::numeric_limits<int>::max();
 }
 
 // Configuration object for directly reading BED records with IntersectDriver.

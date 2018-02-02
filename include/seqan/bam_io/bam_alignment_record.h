@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -117,12 +117,12 @@ struct BamTypeChar
     {
         VALUE =
             (IsSameType<TValue, char>::VALUE)?              'A':
-            (IsSameType<TValue, signed char>::VALUE)?       'c':
-            (IsSameType<TValue, unsigned char>::VALUE)?     'C':
-            (IsSameType<TValue, short>::VALUE)?             's':
-            (IsSameType<TValue, unsigned short>::VALUE)?    'S':
-            (IsSameType<TValue, int>::VALUE)?               'i':
-            (IsSameType<TValue, unsigned int>::VALUE)?      'I':
+            (IsSameType<TValue, int8_t>::VALUE)?            'c':
+            (IsSameType<TValue, uint8_t>::VALUE)?           'C':
+            (IsSameType<TValue, int16_t>::VALUE)?           's':
+            (IsSameType<TValue, uint16_t>::VALUE)?          'S':
+            (IsSameType<TValue, int32_t>::VALUE)?           'i':
+            (IsSameType<TValue, uint32_t>::VALUE)?          'I':
             (IsSameType<TValue, float>::VALUE)?             'f':
 //          (IsSameType<TValue, double>::VALUE)?            'd':
             (IsSequence<TValue>::VALUE)?                    'Z':
@@ -131,14 +131,14 @@ struct BamTypeChar
 };
 
 // List of primitive BAM types (ordered by expected usage frequency)
-typedef TagList<int,
-        TagList<unsigned int,
+typedef TagList<int32_t,
+        TagList<uint32_t,
         TagList<float,
-        TagList<short,
-        TagList<unsigned short,
+        TagList<int16_t,
+        TagList<uint16_t,
         TagList<char,
-        TagList<unsigned char,
-        TagList<signed char
+        TagList<uint8_t,
+        TagList<int8_t
 //      TagList<double
         > > > > > > > > BamTagTypes;
 
@@ -254,7 +254,7 @@ public:
     static int32_t const INVALID_LEN = 0;
     static uint32_t const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
-    BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
+    BamAlignmentRecord() : _qID(std::numeric_limits<unsigned>::max()) { clear(*this); }
 };
 
 // ============================================================================
@@ -281,7 +281,7 @@ clear(BamAlignmentRecord & record)
 {
     clear(record.qName);
     record.flag = 0;
-    record._qID = MaxValue<uint32_t>::VALUE;
+    record._qID = std::numeric_limits<uint32_t>::max();
     record.rID = BamAlignmentRecord::INVALID_REFID;
     record.beginPos = BamAlignmentRecord::INVALID_POS;
     record.mapQ = 255;
@@ -606,6 +606,37 @@ getAlignmentLengthInRef(BamAlignmentRecord const & record)
     _getLengthInRef(l, record.cigar);
     return l;
 }
+
+// ----------------------------------------------------------------------------
+// Function appendRawPod()
+// ----------------------------------------------------------------------------
+
+#if SEQAN_BIG_ENDIAN
+inline void
+enforceLittleEndian(BamAlignmentRecordCore & r)
+{
+    enforceLittleEndian(r.rID);
+    enforceLittleEndian(r.beginPos);
+    // _l_qname unchanged because 8bit
+    // mapQ unchanged because 8bit
+    r.bin       = htole16(r.bin);
+    r._n_cigar  = htole16(r._n_cigar);
+    r.flag      = htole16(r.flag);
+    enforceLittleEndian(r._l_qseq);
+    enforceLittleEndian(r.rNextId);
+    enforceLittleEndian(r.pNext);
+    enforceLittleEndian(r.tLen);
+}
+
+// This function is guarded so that we save the copy on little endian systems
+template <typename TTarget>
+inline void
+appendRawPod(TTarget & target, BamAlignmentRecordCore r)
+{
+    enforceLittleEndian(r);
+    appendRawPodImpl(target, r);
+}
+#endif
 
 }  // namespace seqan
 

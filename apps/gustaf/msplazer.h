@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                   Gustaf
 // ==========================================================================
-// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
+// Copyright (c) 2011-2018, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -193,15 +193,15 @@ struct Breakpoint
         midPosStrand(false),
         startSeqPos(0),
         endSeqPos(0),
-        dupTargetPos(maxValue<unsigned>()),
-        dupMiddlePos(maxValue<unsigned>()),
+        dupTargetPos(std::numeric_limits<unsigned>::max()),
+        dupMiddlePos(std::numeric_limits<unsigned>::max()),
         readStartPos(0),
         readEndPos(0),
-        cipos(maxValue<unsigned>()),
-        ciend(maxValue<unsigned>()),
-        cimiddle(maxValue<unsigned>()),
+        cipos(std::numeric_limits<unsigned>::max()),
+        ciend(std::numeric_limits<unsigned>::max()),
+        cimiddle(std::numeric_limits<unsigned>::max()),
         support(1),
-        similar(maxValue<unsigned>()),
+        similar(std::numeric_limits<unsigned>::max()),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
@@ -227,15 +227,15 @@ struct Breakpoint
         midPosStrand(false),
         startSeqPos(sPos),
         endSeqPos(ePos),
-        dupTargetPos(maxValue<unsigned>()),
-        dupMiddlePos(maxValue<unsigned>()),
+        dupTargetPos(std::numeric_limits<unsigned>::max()),
+        dupMiddlePos(std::numeric_limits<unsigned>::max()),
         readStartPos(rsPos),
         readEndPos(rePos),
-        cipos(maxValue<unsigned>()),
-        ciend(maxValue<unsigned>()),
-        cimiddle(maxValue<unsigned>()),
+        cipos(std::numeric_limits<unsigned>::max()),
+        ciend(std::numeric_limits<unsigned>::max()),
+        cimiddle(std::numeric_limits<unsigned>::max()),
         support(1),
-        similar(maxValue<unsigned>()),
+        similar(std::numeric_limits<unsigned>::max()),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
@@ -262,15 +262,15 @@ struct Breakpoint
         midPosStrand(false),
         startSeqPos(sPos),
         endSeqPos(ePos),
-        dupTargetPos(maxValue<unsigned>()),
-        dupMiddlePos(maxValue<unsigned>()),
+        dupTargetPos(std::numeric_limits<unsigned>::max()),
+        dupMiddlePos(std::numeric_limits<unsigned>::max()),
         readStartPos(rsPos),
         readEndPos(rePos),
-        cipos(maxValue<unsigned>()),
-        ciend(maxValue<unsigned>()),
-        cimiddle(maxValue<unsigned>()),
+        cipos(std::numeric_limits<unsigned>::max()),
+        ciend(std::numeric_limits<unsigned>::max()),
+        cimiddle(std::numeric_limits<unsigned>::max()),
         support(1),
-        similar(maxValue<unsigned>()),
+        similar(std::numeric_limits<unsigned>::max()),
         svtype(INVALID),
         insertionSeq("NNNN"),
         revStrandDel(false),
@@ -589,7 +589,7 @@ inline bool _breakendSupport(Breakpoint<TId, TPos> & be, Breakpoint<TId, TPos> &
         return false;
     // If bp is duplication or translocation, also check targetpos
     if ((bp.svtype == TBreakpoint::DISPDUPLICATION || bp.svtype == TBreakpoint::TRANSLOCATION || bp.svtype == TBreakpoint::INTERTRANSLOCATION)
-            && bp.dupMiddlePos != maxValue<unsigned>())
+            && bp.dupMiddlePos != std::numeric_limits<unsigned>::max())
         return (_posInSameRange(be.startSeqPos, bp.startSeqPos, range) ||
                 _posInSameRange(be.startSeqPos, bp.endSeqPos, range)   ||
                 _posInSameRange(be.startSeqPos, bp.dupMiddlePos, range) );
@@ -616,7 +616,7 @@ inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPo
                 && _posInSameRange(length(bp1.insertionSeq), length(bp2.insertionSeq), range));
     if (bp1.svtype == TBreakpoint::DISPDUPLICATION || bp1.svtype == TBreakpoint::TRANSLOCATION)
     {
-        if (bp1.dupMiddlePos != maxValue<unsigned>() && bp2.dupMiddlePos != maxValue<unsigned>())
+        if (bp1.dupMiddlePos != std::numeric_limits<unsigned>::max() && bp2.dupMiddlePos != std::numeric_limits<unsigned>::max())
             return (_posInSameRange(bp1.dupMiddlePos, bp2.dupMiddlePos, range)
                     && _posInSameRange(bp1.startSeqPos, bp2.startSeqPos, range)
                     && _posInSameRange(bp1.endSeqPos, bp2.endSeqPos, range));
@@ -679,7 +679,7 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
     out << value.startSeqId << " ( " << value.startSeqStrand << " ) " << " --> " << value.endSeqId << " ( " <<
     value.endSeqStrand << " ) " << std::endl;
     out << " ( " << value.startSeqPos + 1 << " ) --> ( " << value.endSeqPos + 1 << " ) " << std::endl;
-    if (value.dupMiddlePos != maxValue<unsigned>())
+    if (value.dupMiddlePos != std::numeric_limits<unsigned>::max())
         out << "dup middle pos " << value.dupMiddlePos + 1 << std::endl;
     out << " ( " << value.readStartPos + 1 << " ) --> ( " << value.readEndPos + 1 << " ) " << std::endl;
     switch (value.svtype)

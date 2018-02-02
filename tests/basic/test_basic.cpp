@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -338,7 +338,6 @@ SEQAN_BEGIN_TESTSUITE(test_basic)
     // SEQAN_CALL_TEST(test_basic_conversions);
     SEQAN_CALL_TEST(test_basic_alphabet_extreme_values);
     // SEQAN_CALL_TEST(test_basic_simple_types);
-    SEQAN_CALL_TEST(test_basic_suprema_infima);
 
     SEQAN_CALL_TEST(test_basic_concepts_integer_concept);
 }

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -557,15 +557,16 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TC
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
     // peek the first character to initialize the underlying streambuf (for in_avail)
-    if (IsSameType<TDirection, Input>::VALUE)  // Only getc if input stream.
+    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)  // Only getc if input stream.
         fileStream.rdbuf()->sgetc();
 
-    if (IsSameType<TDirection, Input>::VALUE &&
-        !IsSameType<TStream, TBufferedStream>::VALUE &&
-        fileStream.rdbuf()->in_avail() < 2)
+    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE && !IsSameType<TStream, TBufferedStream>::VALUE)
     {
-        stream.bufferedStream.setStream(fileStream);
-        return open(stream, stream.bufferedStream, compressionType);
+        if (fileStream.rdbuf()->in_avail() < 2)
+        {
+            stream.bufferedStream.setStream(fileStream);
+            return open(stream, stream.bufferedStream, compressionType);
+        }
     }
 
     VirtualStreamFactoryContext_<TVirtualStream> ctx(fileStream);

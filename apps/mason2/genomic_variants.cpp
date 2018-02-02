@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ std::ostream & operator<<(std::ostream & out, SmallIndelRecord const & record)
 int StructuralVariantRecord::endPosition() const
 {
     if (pos == -1)
-        return seqan::MaxValue<int>::VALUE;
+        return std::numeric_limits<int>::max();
 
     switch (kind)
     {
@@ -211,12 +211,12 @@ int VariantMaterializer::_materializeSmallVariants(
     unsigned smallIndelIdx = 0;
     // Current SNP record, default to sentinel.
     SnpRecord snpRecord;
-    snpRecord.rId = seqan::maxValue<int>();
+    snpRecord.rId = std::numeric_limits<int>::max();
     if (snpsIdx < length(variants.snps))
         snpRecord = variants.snps[snpsIdx++];
     // Current small indel record, default to sentinel.
     SmallIndelRecord smallIndelRecord;
-    smallIndelRecord.rId = seqan::maxValue<int>();
+    smallIndelRecord.rId = std::numeric_limits<int>::max();
     if (smallIndelIdx < length(variants.smallIndels))
         smallIndelRecord = variants.smallIndels[smallIndelIdx++];
     // Track last position from contig appended to seq so far.
@@ -227,7 +227,7 @@ int VariantMaterializer::_materializeSmallVariants(
     // TODO(holtgrew): Extract contig building into their own functions.
     if (verbosity >= 2)
         std::cerr << "building output\n";
-    while (snpRecord.rId != seqan::maxValue<int>() || smallIndelRecord.rId != seqan::maxValue<int>())
+    while (snpRecord.rId != std::numeric_limits<int>::max() || smallIndelRecord.rId != std::numeric_limits<int>::max())
     {
         // TODO(holtgrew): Extract SNP and small indel handling into their own functions.
         if (snpRecord.getPos() < smallIndelRecord.getPos())  // process SNP records
@@ -259,7 +259,7 @@ int VariantMaterializer::_materializeSmallVariants(
             }
 
             if (snpsIdx >= length(variants.snps))
-                snpRecord.rId = seqan::maxValue<int>();
+                snpRecord.rId = std::numeric_limits<int>::max();
             else
                 snpRecord = variants.snps[snpsIdx++];
         }
@@ -337,7 +337,7 @@ int VariantMaterializer::_materializeSmallVariants(
             }
 
             if (smallIndelIdx >= length(variants.smallIndels))
-                smallIndelRecord.rId = seqan::maxValue<int>();
+                smallIndelRecord.rId = std::numeric_limits<int>::max();
             else
                 smallIndelRecord = variants.smallIndels[smallIndelIdx++];
         }
@@ -704,7 +704,7 @@ int VariantMaterializer::_materializeLargeVariants(
 
 bool PositionMap::overlapsWithBreakpoint(int svBeginPos, int svEndPos) const
 {
-    std::set<std::pair<int, int> >::const_iterator it = svBreakpoints.upper_bound(std::make_pair(svBeginPos, seqan::maxValue<int>()));
+    std::set<std::pair<int, int> >::const_iterator it = svBreakpoints.upper_bound(std::make_pair(svBeginPos, std::numeric_limits<int>::max()));
     return (it != svBreakpoints.end() && it->first < svEndPos);
 }
 
@@ -856,14 +856,14 @@ void PositionMap::reinit(TJournalEntries const & journal)
     SEQAN_ASSERT_NEQ(it->segmentSource, seqan::SOURCE_NULL);
     SEQAN_ASSERT_EQ(it->virtualPosition, 0u);
 
-    unsigned lastRefPos = seqan::MaxValue<unsigned>::VALUE;  // Previous position from reference.
+    unsigned lastRefPos = std::numeric_limits<unsigned>::max();  // Previous position from reference.
     for (; it != end(journal, seqan::Standard()); ++it)
     {
         // std::cerr << *it << "\n";
         SEQAN_ASSERT_NEQ(it->segmentSource, seqan::SOURCE_NULL);
         if (it->segmentSource == seqan::SOURCE_ORIGINAL)
         {
-            if (lastRefPos == seqan::maxValue<unsigned>())
+            if (lastRefPos == std::numeric_limits<unsigned>::max())
             {
                 if (it->physicalPosition != 0)
                 {

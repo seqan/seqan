@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -101,6 +101,24 @@ SEQAN_DEFINE_TEST(testIssue509b)
     SEQAN_ASSERT(isRoot(iterator));
     SEQAN_ASSERT_NOT(isLeaf(iterator));
     SEQAN_ASSERT(goDown(iterator, seq));
+}
+
+SEQAN_DEFINE_TEST(goDownOnEmptyString)
+{
+    typedef Index<DnaString, FMIndex<> > TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<> > > TIter;
+
+    DnaString text("GCCTC");
+    TIndex index(text);
+    TIter it(index);
+
+    goDown(it, "C");
+    goDown(it);
+    goDown(it, "");
+    goRight(it);
+    SEQAN_ASSERT_EQ(representative(it), DnaString("GC"));
+    goRight(it);
+    SEQAN_ASSERT_EQ(representative(it), DnaString("TC"));
 }
 
 SEQAN_DEFINE_TEST(testBuild)

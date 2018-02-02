@@ -1,7 +1,7 @@
 // ==========================================================================
 //                     test_alignment_algorithms_local.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -604,6 +604,53 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_gaps)
         SEQAN_ASSERT_EQ(ssH.str(), "GGAATTTGAAG");
         ssV.clear(); ssV.str(""); ssV << gapsV;
         SEQAN_ASSERT_EQ(ssV.str(), "GGAATTTGAAG");
+
+        SEQAN_ASSERT_NOT(nextLocalAlignment(gapsH, gapsV, enumerator));
+    }
+
+    // Test scoring matrix
+    {
+
+        std::stringstream ssH, ssV;
+
+        String<AminoAcid> strH("IGYELAPIPHTRTMDDFGNWWWKKWIHDDELNYFGTQLLIWHLQEKEGEQ");
+        String<AminoAcid> strV("KHSDQGQIALLIHNTLQDWRPKVECDSPRTMIRRDFDDPQLAPPPHTNHRGNM");
+
+        Gaps<String<AminoAcid>, ArrayGaps> gapsH(strH);
+        Gaps<String<AminoAcid>, ArrayGaps> gapsV(strV);
+
+        Blosum62 scoringScheme;
+        int cutoff =  40;
+
+        LocalAlignmentEnumerator<Blosum62, Unbanded> enumerator(scoringScheme, cutoff);
+
+        SEQAN_ASSERT(nextLocalAlignment(gapsH, gapsV, enumerator));
+        SEQAN_ASSERT_EQ(getScore(enumerator), 69);
+        ssH.clear(); ssH.str(""); ssH << gapsH;
+        SEQAN_ASSERT_EQ(ssH.str(), "GYELAP--IPHTRTMDDFGNWWWK-KWIH-DD-E-L---NYFGT-QLLIW---HLQEKEG");
+        ssV.clear(); ssV.str(""); ssV << gapsV;
+        SEQAN_ASSERT_EQ(ssV.str(), "G-QIA-LLI-HN-TLQD---W--RPK-VECDSPRTMIRRD-FDDPQLA--PPPHTNHR-G");
+
+        SEQAN_ASSERT(nextLocalAlignment(gapsH, gapsV, enumerator));
+        SEQAN_ASSERT_EQ(getScore(enumerator), 57);
+        ssH.clear(); ssH.str(""); ssH << gapsH;
+        SEQAN_ASSERT_EQ(ssH.str(), "KWIHDDELNYFGTQ--LLIWH--LQE---K-E");
+        ssV.clear(); ssV.str(""); ssV << gapsV;
+        SEQAN_ASSERT(ssV.str() == "K--HSDQ----G-QIALLI-HNTLQDWRPKVE");
+
+        SEQAN_ASSERT(nextLocalAlignment(gapsH, gapsV, enumerator));
+        SEQAN_ASSERT_EQ(getScore(enumerator), 51);
+        ssH.clear(); ssH.str(""); ssH << gapsH;
+        SEQAN_ASSERT_EQ(ssH.str(), "IGYE-LA---P-I----PHTRTMD---DFGNWWWKKWIHDD-EL------NYF-GTQL");
+        ssV.clear(); ssV.str(""); ssV << gapsV;
+        SEQAN_ASSERT_EQ(ssV.str(), "I-HNTLQDWRPKVECDSP--RTM-IRRDF----------DDPQLAPPPHTNH-RGN-M");
+
+        SEQAN_ASSERT(nextLocalAlignment(gapsH, gapsV, enumerator));
+        SEQAN_ASSERT_EQ(getScore(enumerator), 46);
+        ssH.clear(); ssH.str(""); ssH << gapsH;
+        SEQAN_ASSERT_EQ(ssH.str(), "I--GYE---LAPIP-HT--RTMDDFGN");
+        ssV.clear(); ssV.str(""); ssV << gapsV;
+        SEQAN_ASSERT_EQ(ssV.str(), "IRRDFDDPQLAP-PPHTNHR-----GN");
 
         SEQAN_ASSERT_NOT(nextLocalAlignment(gapsH, gapsV, enumerator));
     }

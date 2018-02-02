@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1354,7 +1354,7 @@ return;
 //
 //    // Parse the file and convert the internal ids
 //    TPos maxPos = 0;
-//    TPos minPos = MaxValue<TPos>::VALUE;
+//    TPos minPos = std::numeric_limits<TPos>::max();
 //    TId count = 0;
 //    if (atEnd(reader))
 //        return false;

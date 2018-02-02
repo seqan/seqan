@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -434,6 +434,28 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 inline bool isOutputFileArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::OUTPUT_FILE ||
+           me._argumentType == ArgParseArgument::OUTPUT_DIRECTORY;
+}
+
+// ----------------------------------------------------------------------------
+// Function isDirectoryArgument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isDirectoryArgument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is a directorz argument.
+ *
+ * @signature bool isDirectoryArgument(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is a directory argument, <tt>false</tt> otherwise.
+ */
+
+inline bool isDirectoryArgument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::INPUT_DIRECTORY ||
            me._argumentType == ArgParseArgument::OUTPUT_DIRECTORY;
 }
 
@@ -923,7 +945,15 @@ inline void _checkValue(ArgParseArgument const & me)
 {
     unsigned i = 0;
     for (std::vector<std::string>::const_iterator it = me.value.begin(); it != me.value.end(); ++it, ++i)
-        _checkValue(me, *it, i);
+    {
+        auto val = *it;
+
+        if (isDirectoryArgument(me)) // strip trailing slash for directories
+            if (val[length(val) - 1] == '/')
+                val.resize(length(val) - 1);
+
+        _checkValue(me, val, i);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1137,6 +1167,10 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
     std::string value = getArgumentValue(me, pos);
     if (value.empty())
         return "";
+
+    if (isDirectoryArgument(me)) // strip trailing slash for directories
+        if (value[length(value) - 1] == '/')
+            value.resize(length(value) - 1);
 
     // If there is a list of valid values then we look for each of these in the path.
     if (!me.validValues.empty())

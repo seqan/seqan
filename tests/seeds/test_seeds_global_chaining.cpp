@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -115,6 +115,32 @@ SEQAN_DEFINE_TEST(test_seeds_global_chaining_sparse_length)
 
         SEQAN_ASSERT_EQ(1u, length(result));
         SEQAN_ASSERT_EQ(TSeed(0, 93, 281, 342), result[0]);
+    }
+
+    { // Issue #2082
+       TSeedSet seedSet;
+
+       addSeed(seedSet, TSeed(0, 0, 3), Single());
+       addSeed(seedSet, TSeed(2, 3, 2), Single());
+
+       TSeedChain result;
+       chainSeedsGlobally(result, seedSet, SparseChaining());
+
+       SEQAN_ASSERT_EQ(1u, length(result));
+       SEQAN_ASSERT_EQ(TSeed(0, 0, 3), result[0]);
+   }
+
+   { // Issue #2082
+        TSeedSet seedSet;
+
+        addSeed(seedSet, TSeed(0, 0, 100), Single());
+        addSeed(seedSet, TSeed(95, 95, 10), Single());
+
+        TSeedChain result;
+        chainSeedsGlobally(result, seedSet, SparseChaining());
+
+        SEQAN_ASSERT_EQ(1u, length(result));
+        SEQAN_ASSERT_EQ(TSeed(0, 0, 100), result[0]);
     }
 }
 

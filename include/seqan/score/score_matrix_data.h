@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -119,14 +119,14 @@ typedef Blosum30_ ScoreSpecBlosum30;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> > Blosum30;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum30> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecBlosum30> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // The matrix data, ordered by letter.
         // Matrix made by matblas from blosum30.iij
         // * column uses minimum score
@@ -134,7 +134,7 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum30> {
         // Blocks Database = /data/blocks_5.0/blocks.dat
         // Cluster Percentage: >= 30
         // Entropy =   0.1424, Expected =  -0.1074
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              4,  0, -3,  0,  0, -2,  0, -2,  0, -1,  0, -1,  1,  0,  0, -1,  1, -1,  1,  1,  0,  1, -5, -4,  0,  0, -7,
              0,  5, -2,  5,  0, -3,  0, -2, -2, -2,  0, -1, -2,  4, -1, -2, -1, -2,  0,  0, -1, -2, -5, -3,  0, -1, -7,
             -3, -2, 17, -3,  1, -3, -4, -5, -2, -1, -3,  0, -2, -1, -2, -3, -2, -2, -2, -2, -2, -2, -2, -6,  0, -2, -7,
@@ -214,21 +214,21 @@ typedef Blosum45_ ScoreSpecBlosum45;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> > Blosum45;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum45> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecBlosum45> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // Matrix made by matblas from blosum45.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/3 Bit Units
         // Blocks Database = /data/blocks_5.0/blocks.dat
         // Cluster Percentage: >= 45
         // Entropy =   0.3795, Expected =  -0.2789
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              5, -1, -1, -2, -1, -2,  0, -2, -1, -1, -1, -1, -1, -1,  0, -1, -1, -2,  1,  0,  0,  0, -2, -2, -1,  0, -5,
             -1,  4, -2,  5,  1, -3, -1,  0, -3, -3,  0, -3, -2,  4, -1, -2,  0, -1,  0,  0, -1, -3, -4, -2,  2, -1, -5,
             -1, -2, 12, -3, -3, -2, -3, -3, -3, -3, -3, -2, -2, -2, -2, -4, -3, -3, -1, -1, -2, -1, -5, -3, -3, -2, -5,
@@ -307,21 +307,21 @@ typedef Blosum62_ ScoreSpecBlosum62;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum62> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecBlosum62> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // Matrix made by matblas from blosum62.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/2 Bit Units
         // Blocks Database = /data/blocks_5.0/blocks.dat
         // Cluster Percentage: >= 62
         // Entropy =   0.6979, Expected =  -0.5209
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              4, -2,  0, -2, -1, -2,  0, -2, -1, -1, -1, -1, -1, -2,  0, -1, -1, -1,  1,  0,  0,  0, -3, -2, -1,  0, -4,
             -2,  4, -3,  4,  1, -3, -1,  0, -3, -4,  0, -4, -3,  3, -1, -2,  0, -1,  0, -1, -1, -3, -4, -3,  1, -1, -4,
              0, -3,  9, -3, -4, -2, -3, -3, -1, -1, -3, -1, -1, -3, -2, -3, -3, -3, -1, -1, -2, -1, -2, -2, -3, -2, -4,
@@ -400,21 +400,21 @@ typedef Blosum80_ ScoreSpecBlosum80;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> > Blosum80;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum80> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecBlosum80> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // Matrix made by matblas from blosum80_3.iij
         // * column uses minimum score
         // BLOSUM Clustered Scoring Matrix in 1/3 Bit Units
         // Blocks Database = /data/blocks_5.0/blocks.dat
         // Cluster Percentage: >= 80
         // Entropy =   0.9868, Expected =  -0.7442
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              7,  -3,  -1,  -3,  -2,  -4,   0,  -3,  -3,  -3,  -1,  -3,  -2,  -3,  -1,  -1,  -2,  -3,   2,   0,  -1,  -1,  -5,  -4,  -2,  -1,  -8,
             -3,   6,  -6,   6,   1,  -6,  -2,  -1,  -6,  -7,  -1,  -7,  -5,   5,  -3,  -4,  -1,  -2,   0,  -1,  -3,  -6,  -8,  -5,   0,  -3,  -8,
             -1,  -6,  13,  -7,  -7,  -4,  -6,  -7,  -2,  -3,  -6,  -3,  -3,  -5,  -4,  -6,  -5,  -6,  -2,  -2,  -4,  -2,  -5,  -5,  -7,  -4,  -8,
@@ -493,14 +493,14 @@ typedef Pam40_ ScoreSpecPam40;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> > Pam40;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecPam40> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         //
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
@@ -510,7 +510,7 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
         //
         // Lowest score = -15, Highest score = 13
         //
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              6,  -3,  -6,  -3,  -2,  -7,  -1,  -6,  -4,  -5,  -6,  -5,  -4,  -3,  -3,  -1,  -3,  -6,   0,   0,  -3,  -2, -12,  -7,  -2,  -3, -15,
             -3,   6, -11,   6,   2,  -9,  -2,  -1,  -5,  -7,  -2,  -8,  -8,   6,  -4,  -6,  -2,  -6,  -1,  -2,  -4,  -7,  -9,  -6,   1,  -4, -15,
             -6, -11,   9, -12, -12, -11,  -8,  -7,  -5,  -9, -12, -13, -12,  -9,  -8,  -7, -12,  -7,  -2,  -7,  -8,  -5, -14,  -3, -12,  -8, -15,
@@ -589,14 +589,14 @@ typedef Pam120_ ScoreSpecPam120;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> > Pam120;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecPam120> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
         // PAM 120 substitution matrix, scale = ln(2)/2 = 0.346574
@@ -605,7 +605,7 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
         //
         // Lowest score = -8, Highest score = 12
         //
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              3,  0, -3,  0,  0, -4,  1, -3, -1, -2, -2, -3, -2, -1, -1,  1, -1, -3,  1,  1, -1,  0, -7, -4, -1, -1, -8,
              0,  4, -6,  4,  3, -5,  0,  1, -3, -4,  0, -4, -4,  3, -1, -2,  0, -2,  0,  0, -1, -3, -6, -3,  2, -1, -8,
             -3, -6,  9, -7, -7, -6, -4, -4, -3, -5, -7, -7, -6, -5, -4, -4, -7, -4,  0, -3, -4, -3, -8, -1, -7, -4, -8,
@@ -684,14 +684,14 @@ typedef Pam200_ ScoreSpecPam200;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> > Pam200;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecPam200> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
         // PAM 200 substitution matrix, scale = ln(2)/3 = 0.231049
@@ -700,7 +700,7 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
         //
         // Lowest score = -9, Highest score = 18
         //
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              3,  0, -3,  0,  0, -4,  1, -2, -1, -2, -2, -2, -2,  0,  0,  1, -1, -2,  1,  1,  0,  0, -7, -4,  0,  0, -9,
              0,  3, -5,  4,  3, -6,  0,  1, -3, -4,  0, -4, -3,  3, -1, -1,  1, -1,  1,  0, -1, -3, -6, -4,  2, -1, -9,
             -3, -5, 12, -6, -7, -6, -4, -4, -3, -5, -7, -7, -6, -5, -4, -4, -7, -4,  0, -3, -4, -2, -9,  0, -7, -4, -9,
@@ -779,14 +779,14 @@ typedef Pam250_ ScoreSpecPam250;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> > Pam250;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecPam250> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
         //
         // PAM 250 substitution matrix, scale = ln(2)/3 = 0.231049
@@ -795,7 +795,7 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
         //
         // Lowest score = -8, Highest score = 17
         //
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              2,  0, -2,  0,  0, -3,  1, -1, -1, -2, -1, -2, -1,  0,  0,  1,  0, -2,  1,  1,  0,  0, -6, -3,  0,  0, -8,
              0,  3, -4,  3,  3, -4,  0,  1, -2, -3,  1, -3, -2,  2, -1, -1,  1, -1,  0,  0, -1, -2, -5, -3,  2, -1, -8,
             -2, -4, 12, -5, -5, -4, -3, -3, -2, -4, -5, -6, -5, -4, -3, -3, -5, -4,  0, -2, -3, -2, -8,  0, -5, -3, -8,
@@ -874,14 +874,14 @@ typedef Vtml200_ ScoreSpecVtml200;
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> > Vtml200;
 
 
-template <>
-struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
+template <typename TValue>
+struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecVtml200> {
     enum {
         VALUE_SIZE = ValueSize<AminoAcid>::VALUE,
         TAB_SIZE = VALUE_SIZE * VALUE_SIZE
     };
 
-    static inline int const * getData() {
+    static inline TValue const * getData() {
         // VTML200
         //
         // This matrix was produced by scripts written by
@@ -907,7 +907,7 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
         //
         // The latest version of this perl script can be downloaded at
         // http://www.molgen.mpg.de/~muelle_t
-        static int const _data[TAB_SIZE] = {
+        static TValue const _data[TAB_SIZE] = {
              4, -1,  1, -1, -1, -3,  0, -2, -1, -2, -1, -2, -1, -1, -1,  0, -1, -2,  1,  1, -1,  0, -4, -3, -1, -1, -6,
             -1,  4, -3,  5,  2, -5,  0,  1, -4, -5,  0, -5, -3,  4, -1, -1,  1, -1,  1,  0, -1, -3, -5, -3,  1, -1, -6,
              1, -3, 12, -4, -4, -3, -2, -2,  0, -2, -4, -3, -1, -2, -1, -3, -3, -3,  1,  0, -1,  1, -6,  0, -4, -1, -6,

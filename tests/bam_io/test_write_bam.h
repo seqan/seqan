@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -75,8 +75,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
 
     // Compare results.
     CharString bamFilename;
-    append(bamFilename, SEQAN_PATH_TO_ROOT());
-    append(bamFilename, "/tests/bam_io/header_uncompressed.bam");
+    append(bamFilename, getAbsolutePath("/tests/bam_io/header_uncompressed.bam"));
 
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));
@@ -136,8 +135,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
     write(text, record, bamIOContext, Bam());
 
     CharString bamFilename;
-    append(bamFilename, SEQAN_PATH_TO_ROOT());
-    append(bamFilename, "/tests/bam_io/alignment_uncompressed.bam");
+    append(bamFilename, getAbsolutePath("/tests/bam_io/alignment_uncompressed.bam"));
 
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              test_consensus.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,8 +48,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     //
     // There are many superfluous gaps in the SAM file that we will get rid of below.
     seqan::FragmentStore<> store;
-    seqan::CharString samPath = SEQAN_PATH_TO_ROOT();
-    append(samPath, "/tests/consensus/small_example.sam");
+    seqan::CharString samPath = seqan::getAbsolutePath("/tests/consensus/small_example.sam");
     seqan::BamFileIn fSamIn(toCString(samPath));
     readRecords(store, fSamIn);
 
@@ -61,7 +60,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     seqan::Score<int, seqan::WeightedConsensusScore<
                           seqan::Score<int, seqan::FractionalScore>,
                           seqan::Score<int, seqan::ConsensusScore> > > combinedScore;
-    reAlign(store, combinedScore, 0, 1, 30, false);
+    reAlignment(store, 0, 1, 30, false);
 
     layoutAlignment(layout, store);
     std::stringstream ss;

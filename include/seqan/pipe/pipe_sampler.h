@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -618,7 +618,7 @@ namespace seqan
         TLimitsString const &limits = me.limits;
         int64_t seqCountPlusOne = length(me.limits);
 
-        SEQAN_OMP_PRAGMA(parallel for reduction(+:sum))
+        SEQAN_OMP_PRAGMA(parallel for reduction(+:sum) if (seqCountPlusOne > 99))
         for (int64_t i = 1; i < seqCountPlusOne; ++i)
         {
             TSize prev = limits[i - 1];

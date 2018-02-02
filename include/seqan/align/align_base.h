@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -476,7 +476,7 @@ detach(Align<TSource, TSpec> & me)
 
 template <typename TFile, typename TSource, typename TSpec>
 inline void
-write(TFile & target,
+_write(TFile & target,
       Align<TSource, TSpec> const & source)
 {
     typedef Align<TSource, TSpec> const TAlign;
@@ -557,6 +557,15 @@ write(TFile & target,
     writeValue(target, '\n');
 }
 
+template <typename TFile, typename TSource, typename TSpec>
+[[deprecated("Old-style I/O. Use stream operator << instead.")]]
+inline void
+write(TFile & target,
+      Align<TSource, TSpec> const & source)
+{
+    _write(target, source);
+}
+
 // ----------------------------------------------------------------------------
 // Function clearClipping()
 // ----------------------------------------------------------------------------
@@ -607,7 +616,7 @@ operator<<(TStream & target,
            Align<TSource, TSpec> const & source)
 {
     typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
-    write(it, source);
+    _write(it, source);
     return target;
 }
 

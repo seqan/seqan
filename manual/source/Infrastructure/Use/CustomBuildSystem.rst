@@ -35,6 +35,31 @@ For XCode on macOS OpenMP is not yet available.
 
 With Visual Studio OpenMP is switched on by default.
 
+Compiler specifics
+------------------
+
+Intel Compiler
+^^^^^^^^^^^^^^
+
+The Intel Compiler does not ship a c++ standard library on its own and will use
+the one pre-installed on the system (e.g., the one from g++). This can be a
+problem [especially for cluster users through the use of a module system], if
+the standard library by a default g++ installation is to old.
+
+Please check with the following command which g++ version is being used and make
+sure it matches the supported gcc versions.
+
+.. code-block:: console
+
+    # icpc -v
+    icpc version 17.0.2 (gcc version 5.4.0 compatibility)
+
+If you have multiple g++ installations, you can choose the standard library by
+``icpc -gxx-name=g++-5.4.0 -gcc-name=gcc-5.4.0 …``.
+
+You may have to add the path of the library to ```$LD_LIBRARY_PATH`` for the
+linker.
+
 Operating System specifics
 --------------------------
 
@@ -210,6 +235,21 @@ meaning
 
 usage
  add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHECK`` 
+
+SEQAN_BGZF_NUM_THREADS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+possible value
+ positive integer
+
+default
+ 16
+
+meaning
+ Number of threads to use for BGZF I/O.
+
+usage
+ add compiler flag: ``-DSEQAN_BGZF_NUM_THREADS=value`` 
 
 Settings Projects Using Seqan
 -----------------------------

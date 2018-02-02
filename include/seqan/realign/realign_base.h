@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -111,8 +111,8 @@ struct ContigAlignmentsInfo_
     // Reset everything.
     void reset()
     {
-        minPos = maxValue<TReadPos>();
-        maxPos = minValue<TReadPos>();
+        minPos = std::numeric_limits<TReadPos>::max();
+        maxPos = std::numeric_limits<TReadPos>::min();
         alignedItBegin = TAlignedReadIter();
         alignedItEnd = TAlignedReadIter();
     }
@@ -673,9 +673,9 @@ void AnsonMyersRealigner_<TFragmentStore>::run(unsigned contigID, unsigned windo
     _checkReadAlignments();
 
     // Perform realignment round until the score does not decrease any more.
-    int score = maxValue<int>();
-    int oldScore = maxValue<int>();
-    for (unsigned roundNo = 0; score == maxValue<int>() || score < oldScore; ++roundNo)
+    int score = std::numeric_limits<int>::max();
+    int oldScore = std::numeric_limits<int>::max();
+    for (unsigned roundNo = 0; score == std::numeric_limits<int>::max() || score < oldScore; ++roundNo)
     {
         if (options.debug)
             std::cerr << "Realignment round " << roundNo << "\n";

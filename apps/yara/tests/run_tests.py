@@ -33,6 +33,12 @@ sam_transforms = [
 def main(source_base, binary_base):
     """Main entry point of the script."""
 
+    # gold standard binary files created on little endian
+    if sys.byteorder != 'little':
+        print 'Skipping tests for Yara on big endian'
+        print '====================================='
+        return 0
+
     print 'Executing test for Yara'
     print '=============================='
     print

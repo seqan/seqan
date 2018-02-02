@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -483,7 +483,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
     typedef typename Iterator<TBegEndPos const, Standard>::Type TBegEndIter;
     TBegEndIter begEndIt = begin(begEndPos, Standard());
     TBegEndIter begEndItEnd = end(begEndPos, Standard());
-    TSize minVal = maxValue<TSize>();
+    TSize minVal = std::numeric_limits<TSize>::max();
     TSize maxVal = 0;
     for(;begEndIt != begEndItEnd; ++begEndIt) {
         TSize pos1 = begEndIt->i1;

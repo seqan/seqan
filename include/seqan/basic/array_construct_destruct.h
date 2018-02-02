@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -460,9 +460,7 @@ _arrayConstructCopyDefault(TSource1 source_begin,
 {
     while (source_begin != source_end)
     {
-        // NOTE(holtgrew): getValue() is used here since value() could return
-        // a proxy!
-        valueConstruct(target_begin, getValue(source_begin));
+        valueConstruct(target_begin, *source_begin);
         ++source_begin;
         ++target_begin;
     }

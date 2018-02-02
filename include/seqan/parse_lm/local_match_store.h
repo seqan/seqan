@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -103,13 +103,13 @@ public:
     TPosition queryEndPos;
 
     LocalMatch() :
-            id(MaxValue<TId>::VALUE),
-            subjectId(MaxValue<TId>::VALUE),
-            subjectBeginPos(MaxValue<TPosition>::VALUE),
-            subjectEndPos(MaxValue<TPosition>::VALUE),
-            queryId(MaxValue<TId>::VALUE),
-            queryBeginPos(MaxValue<TPosition>::VALUE),
-            queryEndPos(MaxValue<TPosition>::VALUE)
+            id(std::numeric_limits<TId>::max()),
+            subjectId(std::numeric_limits<TId>::max()),
+            subjectBeginPos(std::numeric_limits<TPosition>::max()),
+            subjectEndPos(std::numeric_limits<TPosition>::max()),
+            queryId(std::numeric_limits<TId>::max()),
+            queryBeginPos(std::numeric_limits<TPosition>::max()),
+            queryEndPos(std::numeric_limits<TPosition>::max())
     {}
 
     LocalMatch(TId id_,
@@ -358,16 +358,16 @@ appendLocalMatch(TLocalMatchStore & store,
 
     // Get id for subject and query sequences;  Insert sequences into name stores/caches if not already there.
     TId subjectId = 0;
-    if (!getIdByName(store.sequenceNameStore, subjectName, subjectId, store._sequenceNameStoreCache))
+    if (!getIdByName(subjectId, store.sequenceNameStore, subjectName))
     {
         subjectId = length(store.sequenceNameStore);
-        appendName(store.sequenceNameStore, subjectName, store._sequenceNameStoreCache);
+        appendName(store._sequenceNameStoreCache, subjectName);
     }
     TId queryId = 0;
-    if (!getIdByName(store.sequenceNameStore, queryName, queryId, store._sequenceNameStoreCache))
+    if (!getIdByName(queryId, store.sequenceNameStore, queryName))
     {
         queryId = length(store.sequenceNameStore);
-        appendName(store.sequenceNameStore, queryName, store._sequenceNameStoreCache);
+        appendName(store._sequenceNameStoreCache, queryName);
     }
 
     appendLocalMatch(store, subjectId, subjectBeginPos, subjectEndPos, queryId, queryBeginPos, queryEndPos);

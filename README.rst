@@ -21,19 +21,18 @@ The licenses for the applications themselves can be found in the LICENSE files.
 Prerequisites
 -------------------
 
-Linux, Mac OSX, FreeBSD:
-  * GCC ≥ 4.9 [GCC ≥ 5 recommended]
-  * Clang/LLVM ≥ 3.5
-  * Intel Compiler ≥ 16.0.2
+Linux, MacOS, FreeBSD:
+  * GCC ≥ 5 [limited GCC-4.9 support on Linux]
+  * Clang/LLVM ≥ 3.6 [limited Clang-3.5 support on Linux]
+  * Intel Compiler ≥ 17.0.0 on Linux
 Windows:
   * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
-  * Intel Compiler ≥ 16.0.3 / Visual Studio ≥ 2015u2
+  * Intel Compiler ≥ 17.0.0 / Visual Studio ≥ 2015u2
   * Clang/C2 ≥ 3.8.0 / Visual Studio ≥ 2015u3 [experimental, requires CMake ≥ 3.6]
 
 Architecture support:
-  * 32bit and 64bit Intel/AMD officially supported
-  * 64bit is highly recommended and some parts of SeqAn are optimized for ``POPCNT``, ``SSE4`` and/or ``AVX2`` instruction sets available on newer CPUs
-  * many other architectures, including ARM, PowerPC and Sparc64 work, but receive less testing and optimizations
+  * Intel/AMD platforms, including optimisations for modern instruction sets (``POPCNT``, ``SSE4``, ``AVX2``, ``AVX512``)
+  * All Debian release architectures supported, including most ARM and all PowerPC platforms.
 
 To build tests, demos, and official SeqAn applications you also need:
   * CMake ≥ 3.0 [CMake ≥ 3.4 recommended]

@@ -74,14 +74,14 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
 			
 			itAnnoIds = begin(getValue(itCountStore).annoIds);
 			itAnnoIdsEnd = end(getValue(itCountStore).annoIds);
-			while (itAnnoIds != itAnnoIdsEnd && front(getValue(itAnnoIds)) == INVALID_ID)
+			while (itAnnoIds != itAnnoIdsEnd && front(*itAnnoIds) == INVALID_ID)
 			{
 				goNext(itAnnoIds);
 			}
 	
 			if (itAnnoIds != itAnnoIdsEnd) // not only INVALID_IDS
 			{
-				firstId = front(getValue(itAnnoIds));
+				firstId = front(*itAnnoIds);
 				
 				// orientation:
 				if (getValue(fragStore.annotationStore, firstId).beginPos <= getValue(fragStore.annotationStore, firstId).endPos)

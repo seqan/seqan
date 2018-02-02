@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -274,6 +274,7 @@ indexSolveDependencies(Index<TText, PizzaChili<TSpec> >& me, PizzaChiliCompresse
 
 namespace impl {
     template <typename TText, typename TSpec>
+    [[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
     inline bool
     createPizzaChiliIndex(
         Index<TText, PizzaChili<TSpec> >& me,
@@ -301,6 +302,7 @@ namespace impl {
 } // namespace impl
 
 template <typename TText, typename TSpec>
+[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool
 indexCreate(Index<TText, PizzaChili<TSpec> >& me, PizzaChiliCompressed const) {
     typedef
@@ -351,6 +353,7 @@ setIndexText(Index<TText, PizzaChili<TSpec> >& me, TOtherText& text) {
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TText, typename TSpec>
+[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool open(
     Index<TText, PizzaChili<TSpec> >& me,
     char const* filename
@@ -368,6 +371,7 @@ inline bool open(
 }
 
 template <typename TText, typename TSpec>
+[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool save(
     Index<TText, PizzaChili<TSpec> >& me,
     char const* filename

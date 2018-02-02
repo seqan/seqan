@@ -12,6 +12,7 @@ Usage:  run_tests.py SOURCE_ROOT_PATH BINARY_ROOT_PATH
 import logging
 import os.path
 import sys
+import platform
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
@@ -22,6 +23,12 @@ import seqan.app_tests as app_tests
 
 def main(source_base, binary_base):
     """Main entry point of the script."""
+
+    # gold standard binary files created on little endian
+    if platform.machine().startswith('mips64'):
+        print 'Skipping tests for Razers on mips64el'
+        print '====================================='
+        return 0
 
     print 'Executing test for razers'
     print '========================='

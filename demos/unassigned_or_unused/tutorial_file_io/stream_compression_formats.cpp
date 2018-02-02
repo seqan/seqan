@@ -1,5 +1,9 @@
 //![header]
 #include <fstream>
+#include <vector>
+#include <iterator>
+#include <algorithm>
+
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
@@ -13,8 +17,12 @@ int main(int argc, char const ** argv)
 
     if (argc != 2)
     {
-        CharString exts = concat(TVStream::getFileExtensions(), "|", true);
-        std::cerr << "USAGE: " << argv[0] << " input[" << exts << "]" << std::endl;
+        std::vector<std::string> file_ext_list = TVStream::getFileExtensions();
+        std::ostream_iterator<std::string> out_it (std::cerr,"|");
+
+        std::cerr << "USAGE: " << argv[0] << " input[";
+        std::copy(file_ext_list.begin(), file_ext_list.end() - 1, out_it);
+        std::cerr << "]" << std::endl;
         return 1;
     }
 

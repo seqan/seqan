@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -832,11 +832,13 @@ namespace seqan
         //////////////////////////////////////////////////////////////////////////////
         // auto-disposal interface (deprecated)
 
+        [[deprecated]]
         inline void addListener() {
             if (!listeners) return;
             ++listeners;
         }
 
+        [[deprecated]]
         inline void delListener() {
             if (!listeners) return;
             if (--listeners == 0) {
@@ -918,7 +920,7 @@ namespace seqan
             if (reader) reader->end();
             delete reader;
             reader = NULL;
-            delListener();
+            // delListener(); (deprecated)
             return true;
         }
 
@@ -969,7 +971,7 @@ namespace seqan
             writeBackBuffers = _conf.writeBackBuffers;
             writeBackBuckets = _conf.writeBackBuffers;
             _partiallyFilled = true;
-            listeners = 0;
+            listeners = 0; // (deprecated)
             reader = NULL;
             writer = NULL;
             _ownFile = true;
@@ -1064,8 +1066,8 @@ namespace seqan
         return me.clear();
     }
 
-    // deprecated
     template < typename TValue, typename TSpec >
+    [[deprecated]]
     inline typename Size< Pool<TValue, TSpec> >::Type
     size(Pool<TValue, TSpec> const &me)
     {

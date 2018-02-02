@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -102,13 +102,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<Dna>::VALUE, Dna('T'));
-    SEQAN_ASSERT_EQ(maxValue<Dna>(), Dna('T'));
-    SEQAN_ASSERT_EQ(maxValue(Dna()), Dna('T'));
-
-    SEQAN_ASSERT_EQ(MinValue<Dna>::VALUE, Dna('A'));
-    SEQAN_ASSERT_EQ(minValue<Dna>(), Dna('A'));
-    SEQAN_ASSERT_EQ(minValue(Dna()), Dna('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Dna>::max(), Dna('T'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Dna>::min(), Dna('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -133,13 +128,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<Dna5>::VALUE, Dna5('N'));
-    SEQAN_ASSERT_EQ(maxValue<Dna5>(), Dna5('N'));
-    SEQAN_ASSERT_EQ(maxValue(Dna5()), Dna5('N'));
-
-    SEQAN_ASSERT_EQ(MinValue<Dna5>::VALUE, Dna5('A'));
-    SEQAN_ASSERT_EQ(minValue<Dna5>(), Dna5('A'));
-    SEQAN_ASSERT_EQ(minValue(Dna5()), Dna5('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Dna5>::max(), Dna5('N'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Dna5>::min(), Dna5('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -169,13 +159,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna_q)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<DnaQ>::VALUE, DnaQ('T'));
-    SEQAN_ASSERT_EQ(maxValue<DnaQ>(), DnaQ('T'));
-    SEQAN_ASSERT_EQ(maxValue(DnaQ()), DnaQ('T'));
-
-    SEQAN_ASSERT_EQ(MinValue<DnaQ>::VALUE, DnaQ('A'));
-    SEQAN_ASSERT_EQ(minValue<DnaQ>(), DnaQ('A'));
-    SEQAN_ASSERT_EQ(minValue(DnaQ()), DnaQ('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<DnaQ>::max(), DnaQ('T'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<DnaQ>::min(), DnaQ('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -205,13 +190,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<Dna5Q>::VALUE, Dna5Q('N'));
-    SEQAN_ASSERT_EQ(maxValue<Dna5Q>(), Dna5Q('N'));
-    SEQAN_ASSERT_EQ(maxValue(Dna5Q()), Dna5Q('N'));
-
-    SEQAN_ASSERT_EQ(MinValue<Dna5Q>::VALUE, Dna5Q('A'));
-    SEQAN_ASSERT_EQ(minValue<Dna5Q>(), Dna5Q('A'));
-    SEQAN_ASSERT_EQ(minValue(Dna5Q()), Dna5Q('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Dna5Q>::max(), Dna5Q('N'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Dna5Q>::min(), Dna5Q('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -246,13 +226,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<Rna>::VALUE, Rna('U'));
-    SEQAN_ASSERT_EQ(maxValue<Rna>(), Rna('U'));
-    SEQAN_ASSERT_EQ(maxValue(Rna()), Rna('U'));
-
-    SEQAN_ASSERT_EQ(MinValue<Rna>::VALUE, Rna('A'));
-    SEQAN_ASSERT_EQ(minValue<Rna>(), Rna('A'));
-    SEQAN_ASSERT_EQ(minValue(Rna()), Rna('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Rna>::max(), Rna('U'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Rna>::min(), Rna('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -277,13 +252,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<Rna5>::VALUE, Rna5('N'));
-    SEQAN_ASSERT_EQ(maxValue<Rna5>(), Rna5('N'));
-    SEQAN_ASSERT_EQ(maxValue(Rna5()), Rna5('N'));
-
-    SEQAN_ASSERT_EQ(MinValue<Rna5>::VALUE, Rna5('A'));
-    SEQAN_ASSERT_EQ(minValue<Rna5>(), Rna5('A'));
-    SEQAN_ASSERT_EQ(minValue(Rna5()), Rna5('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Rna5>::max(), Rna5('N'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Rna5>::min(), Rna5('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -313,13 +283,8 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
 
-    SEQAN_ASSERT_EQ(MaxValue<Iupac>::VALUE, Iupac('N'));
-    SEQAN_ASSERT_EQ(maxValue<Iupac>(), Iupac('N'));
-    SEQAN_ASSERT_EQ(maxValue(Iupac()), Iupac('N'));
-
-    SEQAN_ASSERT_EQ(MinValue<Iupac>::VALUE, Iupac('U'));
-    SEQAN_ASSERT_EQ(minValue<Iupac>(), Iupac('U'));
-    SEQAN_ASSERT_EQ(minValue(Iupac()), Iupac('U'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Iupac>::max(), Iupac('N'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<Iupac>::min(), Iupac('U'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 
@@ -355,14 +320,9 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     SEQAN_ASSERT_EQ(+(BitsPerValue<AminoAcid>::VALUE), 5);
 
     // Ordered Alphabet Concept Metafunctions / Type Queries
-    SEQAN_ASSERT_EQ(MaxValue<AminoAcid>::VALUE, 26u);
-    SEQAN_ASSERT_EQ(MaxValue<AminoAcid>::VALUE, AminoAcid('*'));
-    SEQAN_ASSERT_EQ(maxValue<AminoAcid>(), AminoAcid('*'));
-    SEQAN_ASSERT_EQ(maxValue(AminoAcid()), AminoAcid('*'));
-
-    SEQAN_ASSERT_EQ(MinValue<AminoAcid>::VALUE, AminoAcid('A'));
-    SEQAN_ASSERT_EQ(minValue<AminoAcid>(), AminoAcid('A'));
-    SEQAN_ASSERT_EQ(minValue(AminoAcid()), AminoAcid('A'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<AminoAcid>::max(), 26u);
+    SEQAN_ASSERT_EQ(std::numeric_limits<AminoAcid>::max(), AminoAcid('*'));
+    SEQAN_ASSERT_EQ(std::numeric_limits<AminoAcid>::min(), AminoAcid('A'));
 
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
 

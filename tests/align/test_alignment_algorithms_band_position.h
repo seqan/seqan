@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 test_alignment_algorithms_band_position.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
                                                            -static_cast<int>(length(strV)) - 1), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        int testScore = +MinValue<int>::VALUE;
+        int testScore = +std::numeric_limits<int>::min();
         SEQAN_ASSERT_EQ(score, testScore);
 
         std::stringstream ssH;
@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
                                                            -static_cast<int>(length(strV)) - 1), TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        int testScore = +MinValue<int>::VALUE;
+        int testScore = +std::numeric_limits<int>::min();
         SEQAN_ASSERT_EQ(score, testScore);
 
         std::stringstream ssH;
@@ -109,7 +109,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -132,7 +132,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
                                                            -static_cast<int>(length(strV))), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        int testScore = +MinValue<int>::VALUE;
+        int testScore = +std::numeric_limits<int>::min();
         SEQAN_ASSERT_EQ(score, testScore);
 
         std::stringstream ssH;
@@ -172,7 +172,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -194,7 +194,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
                                       DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, -3), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        int testScore = +MinValue<int>::VALUE;
+        int testScore = +std::numeric_limits<int>::min();
         SEQAN_ASSERT_EQ(score, testScore);
 
         std::stringstream ssH;
@@ -234,7 +234,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -256,7 +256,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
                                       DPBandConfig<BandOn>(-static_cast<int>(length(strV)) - 1, 0), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        int testScore = +MinValue<int>::VALUE;
+        int testScore = +std::numeric_limits<int>::min();
         SEQAN_ASSERT_EQ(score, testScore);
 
         std::stringstream ssH;
@@ -295,7 +295,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -359,7 +359,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -422,7 +422,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -485,7 +485,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -547,7 +547,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -570,7 +570,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
                                       DPBandConfig<BandOn>(-static_cast<int>(length(strV)), -3), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -609,7 +609,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
     //012345678901
@@ -631,7 +631,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
                                       DPBandConfig<BandOn>(-static_cast<int>(length(strV)), 0), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -670,7 +670,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -733,7 +733,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -795,7 +795,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
     //012345678901
@@ -857,7 +857,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -920,7 +920,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -943,7 +943,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
                                       DPBandConfig<BandOn>(-3, 0), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -982,7 +982,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1043,7 +1043,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1104,7 +1104,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1165,7 +1165,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1226,7 +1226,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1287,7 +1287,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1348,7 +1348,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1409,7 +1409,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1470,7 +1470,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1492,7 +1492,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
                                       DPBandConfig<BandOn>(length(strH) - length(strV), 6), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1533,7 +1533,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1555,7 +1555,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
                                       DPBandConfig<BandOn>(length(strH) - length(strV), length(strH)), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1595,7 +1595,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1618,7 +1618,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
                                       DPBandConfig<BandOn>(length(strH) - length(strV), length(strH) + 1), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1658,7 +1658,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1680,7 +1680,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
                                       DPBandConfig<BandOn>(6, length(strH)), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1719,7 +1719,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1742,7 +1742,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
                                       DPBandConfig<BandOn>(6, length(strH) + 1), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1781,7 +1781,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1803,7 +1803,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
                                       DPBandConfig<BandOn>(length(strH), length(strH) + 1), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1842,7 +1842,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1864,7 +1864,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
                                       DPBandConfig<BandOn>(length(strH) + 1, length(strH) + 1), TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1884,7 +1884,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
                                       DPBandConfig<BandOn>(length(strH) + 1, length(strH) + 1), TDPProfileOverlap());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;
@@ -1903,7 +1903,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
-    typedef DPContext<int, LinearGaps> TDPContext;
+    typedef DPContext<DPCell_<int, LinearGaps>, typename TraceBitMap_<>::Type> TDPContext;
     TDPContext dpContext;
     DPScoutState_<Default> scoutState;
 
@@ -1925,7 +1925,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
                                       TDPProfile());
         _adaptTraceSegmentsTo(row(align, 0), row(align, 1), traces);
 
-        SEQAN_ASSERT_EQ(score, MinValue<int>::VALUE);
+        SEQAN_ASSERT_EQ(score, std::numeric_limits<int>::min());
 
         std::stringstream ssH;
         std::stringstream ssV;

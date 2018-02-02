@@ -16,25 +16,23 @@ Table of Contents
 
 SeqAn::T-Coffee is distributed with SeqAn, http://www.seqan.de. 
 You can build it using the latest snapshot or directly from
-the SVN repository.
+the Github repository.
 
 Snapshot:
 
-  1)  Download the latest snapshot of SeqAn
+  1)  Download the latest snapshot of SeqAn::T-Coffee (http://packages.seqan.de/seqan_tcoffee/)
   2)  Unzip it to a directory of your choice (e.g. snapshot)
-  3)  cd snapshot/apps
-  4)  make seqan_tcoffee
-  5)  cd seqan_tcoffee
-  6)  ./seqan_tcoffee --help
+  3)  cd snapshot/bin
+  4)  ./seqan_tcoffee --help
 
-SVN:
+Git:
 
-  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
-  2)  cd seqan
-  3)  make forwards
-  4)  cd projects/library/apps
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan_build
+  3)  cd seqan_build
+  4)  cmake ../seqan
   5)  make seqan_tcoffee
-  6)  cd seqan_tcoffee
+  6)  cd bin
   7)  ./seqan_tcoffee --help
 
 ---------------------------------------------------------------------------

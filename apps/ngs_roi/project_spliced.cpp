@@ -1,7 +1,7 @@
 // ==========================================================================
 //                   NGS: Regions of Interest Analysis
 // ==========================================================================
-// Copyright (c) 2012-2013, Bernd Jagla, Institut Pasteur
+// Copyright (c) 2012-2018, Bernd Jagla, Institut Pasteur
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ void ProjectSplicedRoi::beginContig()
     clear(ranges);
 
     // Set current group to invalid.
-    currentGroup = seqan::maxValue<unsigned>();
+    currentGroup = std::numeric_limits<unsigned>::max();
 }
 
 // ---------------------------------------------------------------------------
@@ -122,7 +122,7 @@ void ProjectSplicedRoi::_updateRanges(seqan::GffRecord const & record,
         std::cerr << "Updating " << name << "\t" << record.beginPos << "\t" << record.endPos << "\n";
 
     unsigned idx = 0;
-    if (getIdByName(groupNames, name, idx, groupNamesCache))
+    if (getIdByName(idx, groupNamesCache, name))
     {
         ranges[idx].i1 = std::min(ranges[idx].i1, (int)record.beginPos);
         ranges[idx].i2 = std::max(ranges[idx].i2, (int)record.endPos);
@@ -130,7 +130,7 @@ void ProjectSplicedRoi::_updateRanges(seqan::GffRecord const & record,
     else
     {
         idx = length(groupNames);
-        appendName(groupNames, name, groupNamesCache);
+        appendName(groupNamesCache, name);
         appendValue(ranges, TIntPair(record.beginPos, record.endPos));
     }
 }

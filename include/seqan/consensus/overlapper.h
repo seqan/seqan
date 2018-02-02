@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -253,7 +253,7 @@ Overlap_ Overlapper_<TFragments, TSequence>::overlapFromAlignment(
     unsigned len1 = length(strings[1]);
 
     typedef int TPos;
-    std::pair<TPos, TPos> range0(seqan::maxValue<TPos>(), seqan::minValue<TPos>());
+    std::pair<TPos, TPos> range0(std::numeric_limits<TPos>::max(), std::numeric_limits<TPos>::min());
     std::pair<TPos, TPos> range1 = range0;
     int errors = 0;
     typedef typename Iterator<TFragments, Standard>::Type TFragmentsIter;

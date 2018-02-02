@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -221,7 +221,7 @@ _findShiftOrLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
     TWord compare = ~((TWord)1 << ((me.needleLength - 1) % BitsPerValue<TWord>::VALUE));
     while (!atEnd(finder))
     {
-        TWord pos = ordValue(convert<TValue>(getValue(finder)));
+        TWord pos = ordValue(convert<TValue>(*finder));
         TWord carry = 0;
         for(TWord block = 0; block < me.blockCount; ++block)
         {

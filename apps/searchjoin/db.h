@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -159,7 +159,7 @@ struct Fibre<TDbGeoSaHuge, FibreSA>
 //template <typename TText>
 //struct ShapeLength
 //{
-//    static const unsigned VALUE = MaxValue<typename Size<TText>::Type>::VALUE;
+//    static const unsigned VALUE = std::numeric_limits<typename Size<TText>::Type>::max();
 //};
 //
 //template <>
@@ -511,8 +511,8 @@ bool load(Db<TText, TSpec> & db, TFileName const & fileName)
     TDbParser parser(db);
 
     // Initialize min/max text length.
-    db.minLength = MaxValue<TTextSize>::VALUE;
-    db.maxLength = MinValue<TTextSize>::VALUE;
+    db.minLength = std::numeric_limits<TTextSize>::max();
+    db.maxLength = std::numeric_limits<TTextSize>::min();
 
     // Read the file.
     while (!atEnd(inputIt))
@@ -573,10 +573,10 @@ void split(Db<TText, Query> & dbShort, Db<TText, Query> & dbLong, Db<TText, Quer
     TDbSize dbSize = length(db.text);
 
     // Initialize min/max text length.
-    dbShort.minLength = MaxValue<TTextSize>::VALUE;
-    dbShort.maxLength = MinValue<TTextSize>::VALUE;
-    dbLong.minLength = MaxValue<TTextSize>::VALUE;
-    dbLong.maxLength = MinValue<TTextSize>::VALUE;
+    dbShort.minLength = std::numeric_limits<TTextSize>::max();
+    dbShort.maxLength = std::numeric_limits<TTextSize>::min();
+    dbLong.minLength = std::numeric_limits<TTextSize>::max();
+    dbLong.maxLength = std::numeric_limits<TTextSize>::min();
 
     for (TDbSize dbId = 0; dbId < dbSize; ++dbId)
     {
@@ -834,7 +834,7 @@ void build(DbIndex<Index<TText, TIndexSpec>, TDbIndexSpec> & dbIndex,
 //        }
 //    }
 //
-//    QGramLess_<TIndexSAPos, TText const> less(db.text, MaxValue<TTextSize>::VALUE);
+//    QGramLess_<TIndexSAPos, TText const> less(db.text, std::numeric_limits<TTextSize>::max());
 //    sort(sa, less, Parallel());
 }
 
@@ -923,7 +923,7 @@ void _buildSA(TIndexSAFibre & sa,
         TTextSize textLength = length(text);
 
         TErrors errors = getErrors(db, dbId);
-        
+
         TTextSize seedCount = _max(textLength / seedLength, 1u);
         TSeedErrors seedErrors_ = errors / seedCount;
         TTextSize seedCountHigh = (errors % seedCount) + 1;

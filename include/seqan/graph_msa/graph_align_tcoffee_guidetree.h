@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -731,7 +731,7 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
     typedef typename Size<TPairGraph>::Type TSize;
 
     // First initialization
-    TCargo const maxVal = maxValue<TCargo>();
+    TCargo const maxVal = std::numeric_limits<TCargo>::max();
     TSize nseq = numVertices(pairGraph);
     TCargo infCargo = _getInfinity<TCargo>();
     clearVertices(g);

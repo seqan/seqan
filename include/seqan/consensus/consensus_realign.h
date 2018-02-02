@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -590,7 +590,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
     // Copy all reads belonging to this contig and reverse complement them if necessary.
     TAlignedReadStore contigReads;  // TODO(holtgrew): Rather contigAlignedReads?
     TReadPos maxPos = 0;
-    TReadPos minPos = MaxValue<TReadPos>::VALUE;
+    TReadPos minPos = std::numeric_limits<TReadPos>::max();
     for (; alignIt != alignItEnd; ++alignIt) {
         if (alignIt->beginPos > alignIt->endPos) {
             reverseComplement(fragStore.readSeqStore[alignIt->readId]);

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_rabema CXX)
 message (STATUS "Configuring apps/rabema")
 
-set (SEQAN_APP_VERSION "1.2.9")
+set (SEQAN_APP_VERSION "1.2.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -91,11 +91,11 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 install (TARGETS rabema_prepare_sam
                  rabema_build_gold_standard
                  rabema_evaluate
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install rabema in /bin directory
 install (TARGETS rabema_prepare_sam rabema_build_gold_standard rabema_evaluate
-        DESTINATION bin)
+        DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/pair_align for SeqAn release builds.

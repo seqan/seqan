@@ -44,11 +44,11 @@ int main()
 
     Dna5String genome = "ATGGTTTCAACGTAATGCTGAACATGTCGCGT";
     Dna5String read = "TGGTNTCA";
-    Dna5String genomeFragment;
     unsigned beginPosition = 1;
 //![assignment5_code_to_change]
     // We have to create a copy of the corresponding fragment of the genome, where the read aligns to
     // Change this piece of code using an infix of the genome
+    Dna5String genomeFragment;
     for (unsigned i = 0; i < length(read); ++i)
     {
         appendValue(genomeFragment, genome[beginPosition + i]);

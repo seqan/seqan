@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -643,7 +643,7 @@ String<TValue> _ludcmp(Matrix<TValue,2> &result)
     double const TINY = 1.0e-20;
     int n = length(result,0);
     int i, imax, j, k,d;
-    imax = MinValue<int>::VALUE;
+    imax = std::numeric_limits<int>::min();
     double big,dum,sum,temp;
     String<TValue> vv;
     resize(vv, n, 1.0);

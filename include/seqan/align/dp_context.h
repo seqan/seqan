@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -57,12 +57,11 @@ struct GetDPTraceMatrix
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TScoreValue, typename TGapCosts>
+template <typename TScoreValue, typename TTraceValue,
+          typename TScoreMatrixHost = String<TScoreValue>,
+          typename TTraceMatrixHost = String<TTraceValue> >
 struct DPContext
 {
-    typedef typename GetDPScoreMatrix<DPContext>::Type TScoreMatrixHost;
-    typedef typename GetDPTraceMatrix<DPContext>::Type TTraceMatrixHost;
-
     TScoreMatrixHost _scoreMatrix;
     TTraceMatrixHost _traceMatrix;
 
@@ -74,50 +73,6 @@ struct DPContext
 // Metafunctions
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Metafunction GetDPScoreMatrix
-// ----------------------------------------------------------------------------
-
-template <typename TScoreValue, typename TGapCosts>
-struct GetDPScoreMatrix<DPContext<TScoreValue, TGapCosts> >
-{
-    typedef DPCell_<TScoreValue, TGapCosts> TDPScoreValue_;
-    typedef DPMatrix_<TDPScoreValue_, FullDPMatrix> TDPScoreMatrix_;
-
-    typedef typename Host<TDPScoreMatrix_>::Type Type;
-};
-
-template <typename TScoreValue, typename TGapCosts>
-struct GetDPScoreMatrix<DPContext<TScoreValue, TGapCosts> const >
-{
-    typedef DPCell_<TScoreValue, TGapCosts> TDPScoreValue_;
-    typedef DPMatrix_<TDPScoreValue_, FullDPMatrix> TDPScoreMatrix_;
-
-    typedef typename Host<TDPScoreMatrix_>::Type const Type;
-};
-
-// ----------------------------------------------------------------------------
-// Metafunction GetDPTraceMatrix
-// ----------------------------------------------------------------------------
-
-template <typename TScoreValue, typename TGapCosts>
-struct GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> >
-{
-    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue_;
-    typedef DPMatrix_<TTraceValue_, FullDPMatrix> TDPScoreMatrix_;
-
-    typedef typename Host<TDPScoreMatrix_>::Type Type;
-};
-
-template <typename TScoreValue, typename TGapCosts>
-struct GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> const >
-{
-    typedef typename TraceBitMap_<TScoreValue>::Type TTraceValue_;
-    typedef DPMatrix_<TTraceValue_, FullDPMatrix> TDPScoreMatrix_;
-
-    typedef typename Host<TDPScoreMatrix_>::Type const Type;
-};
-
 // ============================================================================
 // Functions
 // ============================================================================
@@ -126,16 +81,16 @@ struct GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> const >
 // Function dpScoreMatrix()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts>
-inline typename GetDPScoreMatrix<DPContext<TScoreValue, TGapCosts> >::Type &
-getDpScoreMatrix(DPContext<TScoreValue, TGapCosts> & dpContext)
+template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
+inline TScoreMatHost &
+getDpScoreMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> & dpContext)
 {
     return dpContext._scoreMatrix;
 }
 
-template <typename TScoreValue, typename TGapCosts>
-inline typename GetDPScoreMatrix<DPContext<TScoreValue, TGapCosts> const >::Type &
-getDpScoreMatrix(DPContext<TScoreValue, TGapCosts> const & dpContext)
+template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
+inline TScoreMatHost const &
+getDpScoreMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> const & dpContext)
 {
     return dpContext._scoreMatrix;
 }
@@ -144,16 +99,16 @@ getDpScoreMatrix(DPContext<TScoreValue, TGapCosts> const & dpContext)
 // Function dpTraceMatrix()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts>
-inline typename GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> >::Type &
-getDpTraceMatrix(DPContext<TScoreValue, TGapCosts> & dpContext)
+template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
+inline TTraceMatHost &
+getDpTraceMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> & dpContext)
 {
     return dpContext._traceMatrix;
 }
 
-template <typename TScoreValue, typename TGapCosts>
-inline typename GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> const >::Type &
-getDpTraceMatrix(DPContext<TScoreValue, TGapCosts> const & dpContext)
+template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
+inline TTraceMatHost const &
+getDpTraceMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> const & dpContext)
 {
     return dpContext._traceMatrix;
 }
@@ -162,10 +117,10 @@ getDpTraceMatrix(DPContext<TScoreValue, TGapCosts> const & dpContext)
 // Function setDpScoreMatrix()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts>
+template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
 inline void
-setDpTraceMatrix(DPContext<TScoreValue, TGapCosts> & dpContext,
-                typename GetDPScoreMatrix<DPContext<TScoreValue, TGapCosts> >::Type const & scoreMatrix)
+setDpTraceMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> & dpContext,
+                 TScoreMatHost const & scoreMatrix)
 {
     dpContext._scoreMatrix = scoreMatrix;
 }
@@ -174,10 +129,10 @@ setDpTraceMatrix(DPContext<TScoreValue, TGapCosts> & dpContext,
 // Function setDpTraceMatrix()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TGapCosts>
+template <typename TScoreValue, typename TGapCosts, typename TScoreMatHost, typename TTraceMatHost>
 inline void
-setDpTraceMatrix(DPContext<TScoreValue, TGapCosts> & dpContext,
-                typename GetDPTraceMatrix<DPContext<TScoreValue, TGapCosts> >::Type const & traceMatrix)
+setDpTraceMatrix(DPContext<TScoreValue, TGapCosts, TScoreMatHost, TTraceMatHost> & dpContext,
+                 TTraceMatHost const & traceMatrix)
 {
     dpContext._tarceMatrix = traceMatrix;
 }

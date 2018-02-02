@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1117,9 +1117,11 @@ computeEValue(uint64_t rawScore,
 /*!
  * @fn BlastMatch#computeEValue
  * @brief Compute the E-Value for a @link BlastMatch @endlink.
- * @signature double computeEValue(blastMatch, context);
+ * @signature double computeEValue(blastMatch, qLength, context);
+ * [[deprecated]] double computeEValue(blastMatch, context);
  *
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
+ * @param[in]       qLength     The length of the query sequence (pass @link BlastRecord::qLength @endlink).
  * @param[in,out]   context     A @link BlastIOContext @endlink with parameters and buffers.
  *
  * @return double blastMatch.@link BlastMatch::eValue @endlink after computation
@@ -1132,7 +1134,7 @@ computeEValue(uint64_t rawScore,
  * <li> blastMatch.@link BlastMatch::alignStats @endlink.@link AlignmentStats::alignmentScore @endlink (if you have valid
  * alignRow-members (@link BlastMatch::alignRow0 @endlink, @link BlastMatch::alignRow1 @endlink), you can call
  * @link BlastMatch#computeAlignmentStats @endlink to compute the stats member). </li>
- * <li> blastMatch.@link BlastMatch::qLength @endlink </li>
+ * <li> blastMatch.@link BlastMatch::qLength @endlink (only in the deprecated interface)</li>
  * <li> context.@link BlastIOContext::dbTotalLength @endlink </li>
  *
  * Note, that in contrast to the general interface (@link BlastScoringScheme#computeEValue @endlink), this interface
@@ -1145,10 +1147,13 @@ template <typename TBlastMatch,
           BlastTabularSpec h>
 inline double
 computeEValue(TBlastMatch & match,
+              uint64_t ql,
               BlastIOContext<TScore, p, h> & context)
 {
+    SEQAN_ASSERT_GT(ql, 0ull);
+
     // convert to 64bit and divide for translated sequences
-    uint64_t ql = match.qLength / (qIsTranslated(context.blastProgram) ? 3 : 1);
+    ql = ql / (qIsTranslated(context.blastProgram) ? 3 : 1);
     // length adjustment not yet computed
     if (context._cachedLengthAdjustments.find(ql) == context._cachedLengthAdjustments.end())
         context._cachedLengthAdjustments[ql] = _lengthAdjustment(context.dbTotalLength, ql, context.scoringScheme);
@@ -1160,6 +1165,18 @@ computeEValue(TBlastMatch & match,
                                   context.dbTotalLength - adj,
                                   context.scoringScheme);
     return match.eValue;
+}
+
+template <typename TBlastMatch,
+          typename TScore,
+          BlastProgram p,
+          BlastTabularSpec h>
+[[deprecated("Use the interface with an explicit query length parameter instead (use the record's member).")]]
+inline double
+computeEValue(TBlastMatch & match,
+              BlastIOContext<TScore, p, h> & context)
+{
+    return computeEValue(match, match.qLength, context);
 }
 
 }

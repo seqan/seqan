@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,34 +45,32 @@ namespace seqan
 struct NDimensional;
 
 
-template <typename TValue, unsigned DIMENSION = 0/*typename TSpec = NDimensional*/>
+template <typename TValue, unsigned DIMENSION = 0/*typename TSpec = NDimensional*/, typename THost = String<TValue> >
 class Matrix;
 
 //////////////////////////////////////////////////////////////////////////////
 template <typename T> struct SizeArr_;
 
-template <typename TValue, unsigned DIMENSION>
-struct SizeArr_<Matrix<TValue, DIMENSION> >
+template <typename TValue, unsigned DIMENSION, typename THost>
+struct SizeArr_<Matrix<TValue, DIMENSION, THost> >
 {
-    typedef Matrix<TValue, DIMENSION> TMatrix_;
+    typedef Matrix<TValue, DIMENSION, THost> TMatrix_;
     typedef typename Size<TMatrix_>::Type TSize_;
     typedef String<TSize_> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
-struct Host<Matrix<TValue, DIMENSION> >
+template <typename TValue, unsigned DIMENSION, typename THost>
+struct Host<Matrix<TValue, DIMENSION, THost> >
 {
-    typedef typename StringSpecForValue_<TValue>::Type TSpec_;
-    typedef String<TValue, TSpec_> Type;
+    typedef THost Type;
 };
 
-template <typename TValue, unsigned DIMENSION>
-struct Host<Matrix<TValue, DIMENSION> const>
+template <typename TValue, unsigned DIMENSION, typename THost>
+struct Host<Matrix<TValue, DIMENSION, THost> const>
 {
-    typedef typename StringSpecForValue_<TValue>::Type TSpec_;
-    typedef String<TValue, TSpec_> Type;
+    typedef THost const Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -94,15 +92,14 @@ struct Host<Matrix<TValue, DIMENSION> const>
  */
 
 
-template <typename TValue>
-class Matrix<TValue, 0>
+template <typename TValue, typename THost>
+class Matrix<TValue, 0, THost>
 {
 //____________________________________________________________________________
 
 public:
     typedef typename Size<Matrix>::Type TSize;
     typedef String<TSize> TSizeArr;
-    typedef typename Host<Matrix>::Type THost;
 
     TSizeArr data_lengths;        //Length of every dimension
     TSizeArr data_factors;        //used for positions of dimensions in host ("size of jumps" to get to next entry of specified dimension)
@@ -158,15 +155,14 @@ public:
 };
 
 
-template <typename TValue>
-class Matrix<TValue, 2>
+template <typename TValue, typename THost>
+class Matrix<TValue, 2, THost>
 {
 //____________________________________________________________________________
 
 public:
     typedef typename Size<Matrix>::Type TSize;
     typedef String<TSize> TSizeArr;
-    typedef typename Host<Matrix>::Type THost;
 
     TSizeArr data_lengths;
     TSizeArr data_factors;
@@ -219,15 +215,14 @@ public:
 //____________________________________________________________________________
 };
 
-template <typename TValue>
-class Matrix<TValue, 3>
+template <typename TValue, typename THost>
+class Matrix<TValue, 3, THost>
 {
 //____________________________________________________________________________
 
 public:
     typedef typename Size<Matrix>::Type TSize;
-    typedef String<TSize> TSizeArr; 
-    typedef typename Host<Matrix>::Type THost;
+    typedef String<TSize> TSizeArr;
 
     TSizeArr data_lengths;
     TSizeArr data_factors;
@@ -280,30 +275,30 @@ public:
 //____________________________________________________________________________
 };
 
-template <typename TValue, unsigned DIMENSION>
-inline typename SizeArr_<Matrix<TValue, DIMENSION> >::Type &
-_dataLengths(Matrix<TValue, DIMENSION> & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename SizeArr_<Matrix<TValue, DIMENSION, THost> >::Type &
+_dataLengths(Matrix<TValue, DIMENSION, THost> & me)
 {
     return me.data_lengths;
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline typename SizeArr_<Matrix<TValue, DIMENSION> >::Type const &
-_dataLengths(Matrix<TValue, DIMENSION> const & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename SizeArr_<Matrix<TValue, DIMENSION, THost> >::Type const &
+_dataLengths(Matrix<TValue, DIMENSION, THost> const & me)
 {
     return me.data_lengths;
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline typename SizeArr_<Matrix<TValue, DIMENSION> >::Type &
-_dataFactors(Matrix<TValue, DIMENSION> & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename SizeArr_<Matrix<TValue, DIMENSION, THost> >::Type &
+_dataFactors(Matrix<TValue, DIMENSION, THost> & me)
 {
     return me.data_factors;
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline typename SizeArr_<Matrix<TValue, DIMENSION> >::Type const &
-_dataFactors(Matrix<TValue, DIMENSION> const & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename SizeArr_<Matrix<TValue, DIMENSION, THost> >::Type const &
+_dataFactors(Matrix<TValue, DIMENSION, THost> const & me)
 {
     return me.data_factors;
 }
@@ -311,25 +306,25 @@ _dataFactors(Matrix<TValue, DIMENSION> const & me)
 //____________________________________________________________________________
 
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline bool
-dependent(Matrix<TValue, DIMENSION> & me)
+dependent(Matrix<TValue, DIMENSION, THost> & me)
 {
     return dependent(me.data_host);
 }
 
 //____________________________________________________________________________
 
-template <typename TValue, unsigned DIMENSION>
-inline Holder<typename Host<Matrix<TValue, DIMENSION> >::Type> &
-_dataHost(Matrix<TValue, DIMENSION> & matrix)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline Holder<typename Host<Matrix<TValue, DIMENSION, THost> >::Type> &
+_dataHost(Matrix<TValue, DIMENSION, THost> & matrix)
 {
     return matrix.data_host;
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline Holder<typename Host<Matrix<TValue, DIMENSION> >::Type> const &
-_dataHost(Matrix<TValue, DIMENSION> const & matrix)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline Holder<typename Host<Matrix<TValue, DIMENSION, THost> >::Type> const &
+_dataHost(Matrix<TValue, DIMENSION, THost> const & matrix)
 {
     return matrix.data_host;
 }
@@ -338,7 +333,7 @@ _dataHost(Matrix<TValue, DIMENSION> const & matrix)
 
 template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-assignHost(Matrix<TValue, DIMENSION> & me, THost const & value_)
+assignHost(Matrix<TValue, DIMENSION, THost> & me, THost const & value_)
 {
     assignValue(me.data_host, value_);
 }
@@ -347,48 +342,48 @@ assignHost(Matrix<TValue, DIMENSION> & me, THost const & value_)
 
 template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-moveHost(Matrix<TValue, DIMENSION> & me, THost const & value_)
+moveHost(Matrix<TValue, DIMENSION, THost> & me, THost const & value_)
 {
     moveValue(me.data_host, value_);
 }
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
-struct Value< Matrix<TValue, DIMENSION> >
+template <typename TValue, unsigned DIMENSION, typename THost>
+struct Value< Matrix<TValue, DIMENSION, THost> >
 {
     typedef TValue Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TIteratorSpec>
-struct Iterator< Matrix<TValue, DIMENSION>, TIteratorSpec >
+template <typename TValue, unsigned DIMENSION, typename THost, typename TIteratorSpec>
+struct Iterator< Matrix<TValue, DIMENSION, THost>, TIteratorSpec >
 {
-    typedef Iter<Matrix<TValue, DIMENSION>, PositionIterator> Type;
+    typedef Iter<Matrix<TValue, DIMENSION, THost>, PositionIterator> Type;
 };
 
-template <typename TValue, unsigned DIMENSION, typename TIteratorSpec>
-struct Iterator< Matrix<TValue, DIMENSION> const, TIteratorSpec >
+template <typename TValue, unsigned DIMENSION, typename THost, typename TIteratorSpec>
+struct Iterator< Matrix<TValue, DIMENSION, THost> const, TIteratorSpec >
 {
-    typedef Iter<Matrix<TValue, DIMENSION> const, PositionIterator> Type;
+    typedef Iter<Matrix<TValue, DIMENSION, THost> const, PositionIterator> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
-inline typename Size<Matrix<TValue, DIMENSION> const>::Type
-dimension(Matrix<TValue, DIMENSION> const & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename Size<Matrix<TValue, DIMENSION, THost> const>::Type
+dimension(Matrix<TValue, DIMENSION, THost> const & me)
 {
     return length(_dataLengths(me));
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-setDimension(Matrix<TValue, DIMENSION> & me,
+setDimension(Matrix<TValue, DIMENSION, THost> & me,
              unsigned int dim_)
 {
 
@@ -403,39 +398,39 @@ setDimension(Matrix<TValue, DIMENSION> & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
-inline typename Size<Matrix<TValue, DIMENSION> >::Type
-length(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename Size<Matrix<TValue, DIMENSION, THost> >::Type
+length(Matrix<TValue, DIMENSION, THost> const & me,
        unsigned int dim_)
 {
     return me.data_lengths[dim_];
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline typename Size<Matrix <TValue, DIMENSION> >::Type
-length(Matrix<TValue, DIMENSION> const & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename Size<Matrix <TValue, DIMENSION, THost> >::Type
+length(Matrix<TValue, DIMENSION, THost> const & me)
 {
     return length(host(me));
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline bool empty(Matrix<TValue, DIMENSION> const & me)
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline bool empty(Matrix<TValue, DIMENSION, THost> const & me)
 {
     return empty(host(me));
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TLength>
+template <typename TValue, unsigned DIMENSION, typename THost, typename TLength>
 inline void
-setLength(Matrix<TValue, DIMENSION> & me,
+setLength(Matrix<TValue, DIMENSION, THost> & me,
           unsigned int dim_,
           TLength length_)
 {
     SEQAN_ASSERT_GT(length_, static_cast<TLength>(0));
     SEQAN_ASSERT_LT(dim_, dimension(me));
 
-    typedef typename SizeArr_<Matrix<TValue, DIMENSION> >::TSize_ TSize_;
+    typedef typename SizeArr_<Matrix<TValue, DIMENSION, THost> >::TSize_ TSize_;
 
     _dataLengths(me)[dim_] = static_cast<TSize_>(length_);
 }
@@ -453,11 +448,11 @@ setLength(Matrix<TValue, DIMENSION> & me,
  */
 
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-resize(Matrix<TValue, DIMENSION> & me)
+resize(Matrix<TValue, DIMENSION, THost> & me)
 {
-    typedef Matrix<TValue, DIMENSION> TMatrix;
+    typedef Matrix<TValue, DIMENSION, THost> TMatrix;
     typedef typename Size<TMatrix>::Type TSize;
 
     unsigned int dimension_ = dimension(me);
@@ -479,11 +474,11 @@ resize(Matrix<TValue, DIMENSION> & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TFillValue>
+template <typename TValue, unsigned DIMENSION, typename THost, typename TFillValue>
 inline void
-resize(Matrix<TValue, DIMENSION> & me, TFillValue myValue)    //resize the matrix and fill with value
+resize(Matrix<TValue, DIMENSION, THost> & me, TFillValue myValue)    //resize the matrix and fill with value
 {
-    typedef Matrix<TValue, DIMENSION> TMatrix;
+    typedef Matrix<TValue, DIMENSION, THost> TMatrix;
     typedef typename Size<TMatrix>::Type TSize;
 
     unsigned int dimension_ = dimension(me);
@@ -504,36 +499,36 @@ resize(Matrix<TValue, DIMENSION> & me, TFillValue myValue)    //resize the matri
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Position<Matrix <TValue, DIMENSION> >::Type
-nextPosition(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Position<Matrix <TValue, DIMENSION, THost> >::Type
+nextPosition(Matrix<TValue, DIMENSION, THost> & me,
              TPosition position_,
              unsigned int dimension_)
 {
     return position_ + _dataFactors(me)[dimension_];
 }
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Position<Matrix <TValue, DIMENSION> >::Type
-nextPosition(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Position<Matrix <TValue, DIMENSION, THost> >::Type
+nextPosition(Matrix<TValue, DIMENSION, THost> const & me,
              TPosition position_,
              unsigned int dimension_)
 {
     return position_ + _dataFactors(me)[dimension_];
 }
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Position<Matrix <TValue, DIMENSION> >::Type
-previousPosition(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Position<Matrix <TValue, DIMENSION, THost> >::Type
+previousPosition(Matrix<TValue, DIMENSION, THost> & me,
                  TPosition position_,
                  unsigned int dimension_)
 {
     return position_ - _dataFactors(me)[dimension_];
 }
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Position<Matrix <TValue, DIMENSION> >::Type
-previousPosition(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Position<Matrix <TValue, DIMENSION, THost> >::Type
+previousPosition(Matrix<TValue, DIMENSION, THost> const & me,
                  TPosition position_,
                  unsigned int dimension_)
 {
@@ -542,9 +537,9 @@ previousPosition(Matrix<TValue, DIMENSION> const & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Size< Matrix <TValue, DIMENSION> >::Type
-coordinate(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Size< Matrix <TValue, DIMENSION, THost> >::Type
+coordinate(Matrix<TValue, DIMENSION, THost> const & me,
            TPosition position_,
            unsigned int dimension_)
 {
@@ -562,51 +557,51 @@ coordinate(Matrix<TValue, DIMENSION> const & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TTag>
-inline typename Iterator<Matrix <TValue, DIMENSION>, Tag<TTag> const>::Type
-begin(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TTag>
+inline typename Iterator<Matrix <TValue, DIMENSION, THost>, Tag<TTag> const>::Type
+begin(Matrix<TValue, DIMENSION, THost> & me,
       Tag<TTag> const)
 {
-    return typename Iterator<Matrix <TValue, DIMENSION>, Tag<TTag> const >::Type(me, 0);
+    return typename Iterator<Matrix <TValue, DIMENSION, THost>, Tag<TTag> const >::Type(me, 0);
 }
-template <typename TValue, unsigned DIMENSION, typename TTag>
-inline typename Iterator<Matrix <TValue, DIMENSION> const, Tag<TTag> const>::Type
-begin(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TTag>
+inline typename Iterator<Matrix <TValue, DIMENSION, THost> const, Tag<TTag> const>::Type
+begin(Matrix<TValue, DIMENSION, THost> const & me,
       Tag<TTag> const)
 {
-    return typename Iterator<Matrix <TValue, DIMENSION> const, Tag<TTag> const >::Type(me, 0);
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template <typename TValue, unsigned DIMENSION, typename TTag>
-inline typename Iterator<Matrix <TValue, DIMENSION>, Tag<TTag> const >::Type
-end(Matrix<TValue, DIMENSION> & me,
-      Tag<TTag> const)
-{
-    return typename Iterator<Matrix <TValue, DIMENSION>, Tag<TTag> const >::Type(me, length(host(me)));
-}
-template <typename TValue, unsigned DIMENSION, typename TTag>
-inline typename Iterator<Matrix <TValue, DIMENSION> const, Tag<TTag> const >::Type
-end(Matrix<TValue, DIMENSION> const & me,
-      Tag<TTag> const)
-{
-    return typename Iterator<Matrix <TValue, DIMENSION>, Tag<TTag> const >::Type(me, length(host(me)));
+    return typename Iterator<Matrix <TValue, DIMENSION, THost> const, Tag<TTag> const >::Type(me, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Reference<Matrix<TValue, DIMENSION> >::Type
-value(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TTag>
+inline typename Iterator<Matrix <TValue, DIMENSION, THost>, Tag<TTag> const >::Type
+end(Matrix<TValue, DIMENSION, THost> & me,
+      Tag<TTag> const)
+{
+    return typename Iterator<Matrix <TValue, DIMENSION, THost>, Tag<TTag> const >::Type(me, length(host(me)));
+}
+template <typename TValue, unsigned DIMENSION, typename THost, typename TTag>
+inline typename Iterator<Matrix <TValue, DIMENSION, THost> const, Tag<TTag> const >::Type
+end(Matrix<TValue, DIMENSION, THost> const & me,
+      Tag<TTag> const)
+{
+    return typename Iterator<Matrix <TValue, DIMENSION, THost>, Tag<TTag> const >::Type(me, length(host(me)));
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Reference<Matrix<TValue, DIMENSION, THost> >::Type
+value(Matrix<TValue, DIMENSION, THost> & me,
       TPosition position_)
 {
     return value(host(me), position_);
 }
 
-template <typename TValue, unsigned DIMENSION, typename TPosition>
-inline typename Reference<Matrix<TValue, DIMENSION> const>::Type
-value(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition>
+inline typename Reference<Matrix<TValue, DIMENSION, THost> const>::Type
+value(Matrix<TValue, DIMENSION, THost> const & me,
       TPosition position_)
 {
     return value(host(me), position_);
@@ -615,18 +610,18 @@ value(Matrix<TValue, DIMENSION> const & me,
 //____________________________________________________________________________
 
 //two dimensional value access
-template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2>
-inline typename Reference<Matrix<TValue, DIMENSION> >::Type
-value(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TOrdinate1, typename TOrdinate2>
+inline typename Reference<Matrix<TValue, DIMENSION, THost> >::Type
+value(Matrix<TValue, DIMENSION, THost> & me,
       TOrdinate1 i1,
       TOrdinate2 i2)
 {
     return value(host(me), i1 + i2 * _dataFactors(me)[1]);
 }
 
-template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2>
-inline typename Reference<Matrix<TValue, DIMENSION> const>::Type
-value(Matrix<TValue, DIMENSION> const & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TOrdinate1, typename TOrdinate2>
+inline typename Reference<Matrix<TValue, DIMENSION, THost> const>::Type
+value(Matrix<TValue, DIMENSION, THost> const & me,
       TOrdinate1 i1,
       TOrdinate2 i2)
 {
@@ -637,9 +632,9 @@ value(Matrix<TValue, DIMENSION> const & me,
 
 //3 dimensional value access
 
-template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2, typename TOrdinate3>
-inline typename Reference<Matrix<TValue, DIMENSION> >::Type
-value(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TOrdinate1, typename TOrdinate2, typename TOrdinate3>
+inline typename Reference<Matrix<TValue, DIMENSION, THost> >::Type
+value(Matrix<TValue, DIMENSION, THost> & me,
       TOrdinate1 i1,
       TOrdinate2 i2,
       TOrdinate3 i3)
@@ -651,9 +646,9 @@ value(Matrix<TValue, DIMENSION> & me,
 
 //4 dimensional value access
 
-template <typename TValue, unsigned DIMENSION, typename TOrdinate1, typename TOrdinate2, typename TOrdinate3, typename TOrdinate4>
-inline typename Reference<Matrix<TValue, DIMENSION> >::Type
-value(Matrix<TValue, DIMENSION> & me,
+template <typename TValue, unsigned DIMENSION, typename THost, typename TOrdinate1, typename TOrdinate2, typename TOrdinate3, typename TOrdinate4>
+inline typename Reference<Matrix<TValue, DIMENSION, THost> >::Type
+value(Matrix<TValue, DIMENSION, THost> & me,
       TOrdinate1 i1,
       TOrdinate2 i2,
       TOrdinate3 i3,
@@ -667,32 +662,32 @@ value(Matrix<TValue, DIMENSION> & me,
 // Iterator: goNext
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goNext(Iter<Matrix<TValue, DIMENSION>, PositionIterator> & me,
+goNext(Iter<Matrix<TValue, DIMENSION, THost>, PositionIterator> & me,
        unsigned int dimension_)
 {
     setPosition(me, nextPosition(container(me), position(me), dimension_));
 }
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goNext(Iter<Matrix<TValue, DIMENSION> const, PositionIterator> & me,
+goNext(Iter<Matrix<TValue, DIMENSION, THost> const, PositionIterator> & me,
        unsigned int dimension_)
 {
     setPosition(me, nextPosition(container(me), position(me), dimension_));
 }
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goNext(Iter<Matrix<TValue, DIMENSION>, PositionIterator> & me)
+goNext(Iter<Matrix<TValue, DIMENSION, THost>, PositionIterator> & me)
 {
     goNext(me, 0);
 }
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goNext(Iter<Matrix<TValue, DIMENSION> const, PositionIterator> & me)
+goNext(Iter<Matrix<TValue, DIMENSION, THost> const, PositionIterator> & me)
 {
     goNext(me, 0);
 }
@@ -701,32 +696,32 @@ goNext(Iter<Matrix<TValue, DIMENSION> const, PositionIterator> & me)
 // Iterator: goPrevious
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goPrevious(Iter< Matrix<TValue, DIMENSION>, PositionIterator > & me,
+goPrevious(Iter< Matrix<TValue, DIMENSION, THost>, PositionIterator > & me,
            unsigned int dimension_)
 {
     setPosition(me, previousPosition(container(me), position(me), dimension_));
 }
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goPrevious(Iter< Matrix<TValue, DIMENSION> const, PositionIterator > & me,
+goPrevious(Iter< Matrix<TValue, DIMENSION, THost> const, PositionIterator > & me,
            unsigned int dimension_)
 {
     setPosition(me, previousPosition(container(me), position(me), dimension_));
 }
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goPrevious(Iter< Matrix<TValue, DIMENSION>, PositionIterator > & me)
+goPrevious(Iter< Matrix<TValue, DIMENSION, THost>, PositionIterator > & me)
 {
     goPrevious(me, 0);
 }
 
-template <typename TValue, unsigned DIMENSION>
+template <typename TValue, unsigned DIMENSION, typename THost>
 inline void
-goPrevious(Iter< Matrix<TValue, DIMENSION> const, PositionIterator > & me)
+goPrevious(Iter< Matrix<TValue, DIMENSION, THost> const, PositionIterator > & me)
 {
     goPrevious(me, 0);
 }
@@ -735,33 +730,33 @@ goPrevious(Iter< Matrix<TValue, DIMENSION> const, PositionIterator > & me)
 // goTo
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TValue, unsigned DIMENSION, typename TPosition0, typename TPosition1>
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition0, typename TPosition1>
 inline void
-goTo(Iter<Matrix<TValue, DIMENSION>, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1)
+goTo(Iter<Matrix<TValue, DIMENSION, THost>, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1)
 {
     setPosition(me, pos0 + pos1 * _dataFactors(container(me))[1]);
 }
 
 
-template <typename TValue, unsigned DIMENSION, typename TPosition0, typename TPosition1>
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition0, typename TPosition1>
 inline void
-goTo(Iter<Matrix<TValue, DIMENSION> const, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1)
+goTo(Iter<Matrix<TValue, DIMENSION, THost> const, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1)
 {
     setPosition(me, pos0 + pos1 * _dataFactors(container(me))[1]);
 }
 
 
-template <typename TValue, unsigned DIMENSION, typename TPosition0, typename TPosition1, typename TPosition2>
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition0, typename TPosition1, typename TPosition2>
 inline void
-goTo(Iter<Matrix<TValue, DIMENSION>, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1, TPosition2 pos2)
+goTo(Iter<Matrix<TValue, DIMENSION, THost>, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1, TPosition2 pos2)
 {
     setPosition(me, pos0 + pos1 * _dataFactors(container(me))[1] + pos2 * _dataFactors(container(me))[2]);
 }
 
 
-template <typename TValue, unsigned DIMENSION, typename TPosition0, typename TPosition1, typename TPosition2>
+template <typename TValue, unsigned DIMENSION, typename THost, typename TPosition0, typename TPosition1, typename TPosition2>
 inline void
-goTo(Iter<Matrix<TValue, DIMENSION> const, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1, TPosition2 pos2)
+goTo(Iter<Matrix<TValue, DIMENSION, THost> const, PositionIterator> & me, TPosition0 pos0, TPosition1 pos1, TPosition2 pos2)
 {
     setPosition(me, pos0 + pos1 * _dataFactors(container(me))[1] + pos2 * _dataFactors(container(me))[2]);
 }
@@ -769,17 +764,17 @@ goTo(Iter<Matrix<TValue, DIMENSION> const, PositionIterator> & me, TPosition0 po
 //////////////////////////////////////////////////////////////////////////////
 // Iterator: coordinate
 
-template <typename TValue, unsigned DIMENSION>
-inline typename Size< Matrix<TValue, DIMENSION> >::Type
-coordinate(Iter<Matrix<TValue, DIMENSION>, PositionIterator > & me,
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename Size< Matrix<TValue, DIMENSION, THost> >::Type
+coordinate(Iter<Matrix<TValue, DIMENSION, THost>, PositionIterator > & me,
            unsigned int dimension_)
 {
     return coordinate(container(me), position(me), dimension_);
 }
 
-template <typename TValue, unsigned DIMENSION>
-inline typename Size< Matrix<TValue, DIMENSION> >::Type
-coordinate(Iter<Matrix<TValue, DIMENSION> const, PositionIterator > & me,
+template <typename TValue, unsigned DIMENSION, typename THost>
+inline typename Size< Matrix<TValue, DIMENSION, THost> >::Type
+coordinate(Iter<Matrix<TValue, DIMENSION, THost> const, PositionIterator > & me,
            unsigned int dimension_)
 {
     return coordinate(container(me), position(me), dimension_);
@@ -797,9 +792,9 @@ coordinate(Iter<Matrix<TValue, DIMENSION> const, PositionIterator > & me,
  * @return TMatrix The resulting matrix of same type as <tt>lhs</tt> and <tt>rhs</tt>.
  */
 
-template <typename TValue,unsigned DIMENSION>
+template <typename TValue,unsigned DIMENSION, typename THost1, typename THost2>
 Matrix<TValue,DIMENSION>
-operator + (Matrix<TValue,DIMENSION> const & matrix1,Matrix<TValue,DIMENSION> const & matrix2)
+operator + (Matrix<TValue,DIMENSION, THost1> const & matrix1, Matrix<TValue,DIMENSION, THost2> const & matrix2)
 {
     //the two matrices must have same dimension
     SEQAN_ASSERT(_dataLengths(matrix1) == _dataLengths(matrix2));
@@ -819,9 +814,9 @@ operator + (Matrix<TValue,DIMENSION> const & matrix1,Matrix<TValue,DIMENSION> co
     return result;
 }
 
-template <typename TValue,unsigned DIMENSION>
+template <typename TValue,unsigned DIMENSION, typename THost1, typename THost2>
 Matrix<TValue,DIMENSION>
-operator - (Matrix<TValue,DIMENSION> const & matrix1,Matrix<TValue,DIMENSION> const & matrix2)
+operator - (Matrix<TValue,DIMENSION, THost1> const & matrix1,Matrix<TValue,DIMENSION, THost2> const & matrix2)
 {
     //the two matrices must have same dimension
     SEQAN_ASSERT(_dataLengths(matrix1) == _dataLengths(matrix2));
@@ -841,9 +836,9 @@ operator - (Matrix<TValue,DIMENSION> const & matrix1,Matrix<TValue,DIMENSION> co
     return result;
 }
 
-template <typename TValue>
+template <typename TValue, typename THost1, typename THost2>
 Matrix<TValue, 2>
-operator * (Matrix<TValue, 2> const & matrix1, Matrix<TValue, 2> const & matrix2)
+operator * (Matrix<TValue, 2, THost1> const & matrix1, Matrix<TValue, 2, THost2> const & matrix2)
 {
     SEQAN_ASSERT_EQ(length(matrix1,1), length(matrix2,0));
 
@@ -871,9 +866,9 @@ operator * (Matrix<TValue, 2> const & matrix1, Matrix<TValue, 2> const & matrix2
 }
 
 
-template <typename TValue>
+template <typename TValue, typename THost>
 Matrix<TValue, 2>
-operator * (TValue const & scalar, Matrix<TValue, 2> const & matrix)
+operator * (TValue const & scalar, Matrix<TValue, 2, THost> const & matrix)
 {
     Matrix<TValue, 2> result;
     result= matrix;
@@ -886,9 +881,9 @@ operator * (TValue const & scalar, Matrix<TValue, 2> const & matrix)
     return result;
 }
 
-template <typename TValue>
+template <typename TValue, typename THost>
 Matrix<TValue, 2>
-operator * (Matrix<TValue, 2> const & matrix, TValue const & scalar)
+operator * (Matrix<TValue, 2, THost> const & matrix, TValue const & scalar)
 {
     Matrix<TValue, 2> result;
     result= matrix;
@@ -902,9 +897,9 @@ operator * (Matrix<TValue, 2> const & matrix, TValue const & scalar)
 }
 
 
-template <typename TValue, unsigned DIMENSION1, unsigned DIMENSION2>
+template <typename TValue, unsigned DIMENSION1, typename THost1, unsigned DIMENSION2, typename THost2>
 bool
-operator == (Matrix<TValue, DIMENSION1> const & matrix1, Matrix<TValue, DIMENSION2> const & matrix2)
+operator == (Matrix<TValue, DIMENSION1, THost1> const & matrix1, Matrix<TValue, DIMENSION2, THost2> const & matrix2)
 {
     bool result;
     result= (matrix1.data_lengths==matrix2.data_lengths)&&(matrix1.data_factors==matrix2.data_factors)&&(value(matrix1.data_host)==value(matrix2.data_host))&&(DIMENSION1==DIMENSION2);
@@ -1027,9 +1022,9 @@ matricialProduct(Matrix<TValue, 2> &matrix1,
  * @return TMatrix The resulting tranposed matrix.
  */
 
-template <typename TValue>
+template <typename TValue, typename THost>
 Matrix<TValue,2>
-transpose(Matrix<TValue,2> const & matrix)
+transpose(Matrix<TValue,2, THost> const & matrix)
 {
 
     unsigned int nrow=length(matrix,0);
@@ -1057,8 +1052,8 @@ transpose(Matrix<TValue,2> const & matrix)
 }
 
 
-template < typename TValue >
-std::ostream& operator<<(std::ostream &out, const Matrix<TValue,2> &matrix)
+template < typename TValue , typename THost>
+std::ostream& operator<<(std::ostream &out, const Matrix<TValue,2, THost> &matrix)
 {
     for(unsigned int i1 = 0;i1< matrix.data_lengths[0];++i1)
     {

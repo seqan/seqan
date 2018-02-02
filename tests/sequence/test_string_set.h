@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1353,50 +1353,19 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Front)
 //    testConstructDeconstruct(strSet);
 }
 
-// Test of getValue().
-template <typename TStringSet>
-void testStringSetGetValue(TStringSet & /*Tag*/)
-{
-    using namespace seqan;
-
-    typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
-    typedef typename TestStringSetValue_<TStringSet>::Type TString;
-
-     // In contrast to value(), getValue() does not return a reference but a copy.
-     // We test this using the variable value_.
-    TString str("CG");
-    TString str2("ACGT");
-    TString str3("CGACGT");
-
-    TNonConstStringSet nonConstStringSet;
-    appendValue(nonConstStringSet, str);
-    appendValue(nonConstStringSet, str2);
-    appendValue(nonConstStringSet, str3);
-    TStringSet stringSet(nonConstStringSet);
-    SEQAN_ASSERT(TString(getValue(stringSet, 1)) == TString(str2));
-}
-
-// TODO(singer): No appendValue for string sets of packed strings
-template <typename TValue, typename TStringSetSpec>
-void testStringSetGetValue(StringSet<String<TValue, Packed<> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetGetValue(StringSet<String<TValue, Packed<> >, TStringSetSpec> const & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetGetValue(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
-template <typename TValue, typename TStringSetSpec>
-void testStringSetGetValue(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-
 SEQAN_TYPED_TEST(StringSetTestCommon, GetValue)
 {
-    CountingChar::clear();
+    SEQAN_SKIP_TEST; // getValue() is deprecated.
 
-    typename TestFixture::TStringSet strSet;
-    testStringSetGetValue(strSet);
-
-    typename TestFixture::TStringSet const constStrSet;
-    testStringSetGetValue(constStrSet);
-
-//    testConstructDeconstruct(strSet);
+//    CountingChar::clear();
+//
+//    typename TestFixture::TStringSet strSet;
+//    testStringSetGetValue(strSet);
+//
+//    typename TestFixture::TStringSet const constStrSet;
+//    testStringSetGetValue(constStrSet);
+//
+////    testConstructDeconstruct(strSet);
 }
 
 // TODO (singer): not defined for const string sets.
@@ -1544,10 +1513,10 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
-        SEQAN_ASSERT(TString(getValue(iterator)) == "AAAA");
-        SEQAN_ASSERT(getValue(iterator) == getValue(stringSet, 0));
-        SEQAN_ASSERT(getValue(standardIterator) == getValue(stringSet, 0));
-        SEQAN_ASSERT(getValue(rootedIterator) == getValue(stringSet, 0));
+        SEQAN_ASSERT(TString(*iterator) == "AAAA");
+        SEQAN_ASSERT(*iterator == getValue(stringSet, 0));
+        SEQAN_ASSERT(*standardIterator == getValue(stringSet, 0));
+        SEQAN_ASSERT(*rootedIterator == getValue(stringSet, 0));
     }
 
     // Test on a non empty stringSet.
@@ -1565,10 +1534,10 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TIterator iterator = iter(stringSet, 3);
         TStandardIterator standardIterator = iter(stringSet, 3);
         TRootedIterator rootedIterator = iter(stringSet, 3);
-        SEQAN_ASSERT(TString(getValue(iterator)) == "TTTT");
-        SEQAN_ASSERT(getValue(iterator) == getValue(stringSet, 3));
-        SEQAN_ASSERT(getValue(standardIterator) == getValue(stringSet, 3));
-        SEQAN_ASSERT(getValue(rootedIterator) == getValue(stringSet, 3));
+        SEQAN_ASSERT(TString(*iterator) == "TTTT");
+        SEQAN_ASSERT(*iterator == getValue(stringSet, 3));
+        SEQAN_ASSERT(*standardIterator == getValue(stringSet, 3));
+        SEQAN_ASSERT(*rootedIterator == getValue(stringSet, 3));
     }
 }
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -155,7 +155,7 @@ struct ContigStoreElement
 
 template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_>
 const typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type
-ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type>::VALUE;
+ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = std::numeric_limits<typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type>::max();
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -192,13 +192,11 @@ struct ContigFile
     static const TId INVALID_ID;
 
     CharString        fileName;
-    AutoSeqFormat    format;
     TId                firstContigId;    // first sequence of the file corresponds to this contigId
 
     inline bool operator==(ContigFile const & other) const
     {
         return fileName == other.fileName &&
-                format == other.format &&
                 firstContigId == other.firstContigId;
     }
 };
@@ -207,7 +205,7 @@ struct ContigFile
 
 template <typename TSpec_>
 const typename Id<ContigFile<TSpec_> >::Type
-ContigFile<TSpec_>::INVALID_ID = MaxValue<typename Id<ContigFile<TSpec_> >::Type>::VALUE;
+ContigFile<TSpec_>::INVALID_ID = std::numeric_limits<typename Id<ContigFile<TSpec_> >::Type>::max();
 
 //////////////////////////////////////////////////////////////////////////////
 

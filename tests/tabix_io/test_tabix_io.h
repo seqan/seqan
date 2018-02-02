@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,11 +43,11 @@
 #include <seqan/tabix_io.h>
 
 
+#if SEQAN_HAS_ZLIB
 SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
 {
     // Open TABIX file
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/tests/tabix_io/test.vcf.gz");
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/tabix_io/test.vcf.gz");
     seqan::VcfFileIn vcfFile(toCString(vcfPath));
 
     // Read header (to get the contig names)
@@ -115,6 +115,13 @@ SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
 
     SEQAN_ASSERT_NOT(atEnd(vcfFile));
 }
+
+#else // SEQAN_HAS_ZLIB
+SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
+{
+    SEQAN_SKIP_TEST;
+}
+#endif // SEQAN_HAS_ZLIB
 
 
 #endif  // SEQAN_TESTS_TABIX_TEST_TABIX_IO_H_

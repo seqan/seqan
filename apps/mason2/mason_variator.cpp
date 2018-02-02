@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -710,7 +710,7 @@ public:
     {
         if (isNearN(seq, pos))
             return false;  // No SNP next to an N.
-        
+
         // We simulate an alternative base for each haplotype.
 
         seqan::Dna5 from = seq[pos];
@@ -1136,30 +1136,30 @@ public:
         unsigned svIdx = 0;
         // Current SNP record, default to sentinel.
         SnpRecord snpRecord;
-        snpRecord.rId = seqan::maxValue<int>();
+        snpRecord.rId = std::numeric_limits<int>::max();
         if (snpsIdx < length(variants.snps))
             snpRecord = variants.snps[snpsIdx++];
         // Current small indel record, default to sentinel.
         SmallIndelRecord smallIndelRecord;
-        smallIndelRecord.rId = seqan::maxValue<int>();
+        smallIndelRecord.rId = std::numeric_limits<int>::max();
         if (smallIndelIdx < length(variants.smallIndels))
             smallIndelRecord = variants.smallIndels[smallIndelIdx++];
         // Current SV record, default to sentinel.
         StructuralVariantRecord svRecord;
-        svRecord.rId = seqan::maxValue<int>();
+        svRecord.rId = std::numeric_limits<int>::max();
         if (svIdx < length(variants.svRecords))
             svRecord = variants.svRecords[svIdx++];
-        while (snpRecord.rId != seqan::maxValue<int>() ||
-               smallIndelRecord.rId != seqan::maxValue<int>() ||
-               svRecord.rId != seqan::maxValue<int>())
+        while (snpRecord.rId != std::numeric_limits<int>::max() ||
+               smallIndelRecord.rId != std::numeric_limits<int>::max() ||
+               svRecord.rId != std::numeric_limits<int>::max())
         {
-            if (snpRecord.rId != seqan::maxValue<int>() && smallIndelRecord.rId != seqan::maxValue<int>())
+            if (snpRecord.rId != std::numeric_limits<int>::max() && smallIndelRecord.rId != std::numeric_limits<int>::max())
                 SEQAN_ASSERT(snpRecord.getPos() != smallIndelRecord.getPos());  // are generated indendently
-            if (snpRecord.rId != seqan::maxValue<int>() && svRecord.rId != seqan::maxValue<int>())
+            if (snpRecord.rId != std::numeric_limits<int>::max() && svRecord.rId != std::numeric_limits<int>::max())
                 SEQAN_ASSERT_MSG(snpRecord.getPos() != svRecord.getPos(),
                                  "Should be generated non-overlapping (snp pos = %d, sv pos = %d).",
                                  snpRecord.pos, svRecord.pos);
-            if (smallIndelRecord.rId != seqan::maxValue<int>() && svRecord.rId != seqan::maxValue<int>())
+            if (smallIndelRecord.rId != std::numeric_limits<int>::max() && svRecord.rId != std::numeric_limits<int>::max())
                 SEQAN_ASSERT(smallIndelRecord.getPos() != svRecord.getPos());  // are generated indendently
             SEQAN_ASSERT_NEQ(snpRecord.pos, 0);   // Not simulated, VCF complexer.
             SEQAN_ASSERT_NEQ(svRecord.pos, 0);   // Not simulated, VCF complexer.
@@ -1206,7 +1206,7 @@ public:
                 }
 
                 if (svIdx >= length(variants.svRecords))
-                    svRecord.rId = seqan::maxValue<int>();
+                    svRecord.rId = std::numeric_limits<int>::max();
                 else
                     svRecord = variants.svRecords[svIdx++];
             }
@@ -1242,11 +1242,11 @@ public:
             inTos[ordValue(seqan::Dna5(snpRecord.to))] = true;
 
             if (snpsIdx >= length(variants.snps))
-                snpRecord.rId = seqan::maxValue<int>();
+                snpRecord.rId = std::numeric_limits<int>::max();
             else
                 snpRecord = variants.snps[snpsIdx++];
         }
-        while (snpRecord.rId != seqan::maxValue<int>() &&
+        while (snpRecord.rId != std::numeric_limits<int>::max() &&
                snpsIdx < length(variants.snps) &&
                snpRecord.getPos() == pos);
 
@@ -1313,11 +1313,11 @@ public:
             appendValue(records, smallIndelRecord);
 
             if (smallIndelIdx >= length(variants.smallIndels))
-                smallIndelRecord.rId = seqan::maxValue<int>();
+                smallIndelRecord.rId = std::numeric_limits<int>::max();
             else
                 smallIndelRecord = variants.smallIndels[smallIndelIdx++];
         }
-        while (smallIndelRecord.rId != seqan::maxValue<int>() &&
+        while (smallIndelRecord.rId != std::numeric_limits<int>::max() &&
                smallIndelIdx < length(variants.smallIndels) &&
                smallIndelRecord.getPos() == variants.smallIndels[smallIndelIdx].getPos());
         SEQAN_ASSERT_NOT(empty(records));
@@ -1575,7 +1575,7 @@ public:
 
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
-        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<INV>";
         vcfRecord.filter = "PASS";
@@ -1613,7 +1613,7 @@ public:
         seqan::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
-        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx)); 
+        vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         vcfRecord.filter = "PASS";
         std::stringstream ss;
         ss << "SVTYPE=DUP;SVLEN=" << svRecord.size << ";END=" << svRecord.pos + svRecord.size
@@ -1814,12 +1814,12 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "Path to load original methylation levels from.  "
                                             "Methylation levels are simulated if omitted.",
                                             seqan::ArgParseOption::INPUT_FILE, "FILE"));
-    setValidValues(parser, "meth-fasta-in", "fa fasta");
+    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "Path to write methylation levels to as FASTA.  "
                                             "Only written if \\fB-of\\fP/\\fB--out-fasta\\fP is given.",
                                             seqan::ArgParseOption::OUTPUT_FILE, "FILE"));
-    setValidValues(parser, "meth-fasta-out", "fa fasta");
+    setValidValues(parser, "meth-fasta-out", seqan::SeqFileOut::getFileExtensions());
 
 
     // ----------------------------------------------------------------------

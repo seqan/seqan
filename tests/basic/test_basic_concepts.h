@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,6 +85,45 @@ SEQAN_DEFINE_TEST(test_basic_concepts_integer_concept)
 
     // BOOST_CONCEPT_ASSERT((boost::Integer<char>));
     // BOOST_CONCEPT_ASSERT((boost::Integer<double>));
+}
+
+SEQAN_DEFINE_TEST(test_basic_concepts_move_construtible_concept)
+{
+    using namespace seqan;
+
+    struct TestMoveable
+    {
+        TestMoveable() = default;
+
+        TestMoveable(TestMoveable && other)
+        {
+            ignoreUnusedVariableWarning(other);
+        }
+    };
+
+    struct TestNotMoveable
+    {
+        TestNotMoveable() = default;
+
+        TestNotMoveable(TestNotMoveable const & other)
+        {
+            ignoreUnusedVariableWarning(other);
+        }
+    };
+
+    struct TestNotCopyableAndMoveable
+    {
+        TestNotCopyableAndMoveable() = default;
+
+        TestNotCopyableAndMoveable(TestNotCopyableAndMoveable const &) = delete;
+        TestNotCopyableAndMoveable(TestNotCopyableAndMoveable &&) = delete;
+    };
+
+    SEQAN_CONCEPT_ASSERT((MoveConstructible<char>));
+    SEQAN_CONCEPT_ASSERT((MoveConstructible<TestMoveable>));
+    SEQAN_CONCEPT_ASSERT((MoveConstructible<TestNotMoveable>));
+    //NOTE: Fails compiling because of deleted copy and move c'tor, which is the expected behavior.
+    //SEQAN_CONCEPT_ASSERT((MoveConstructible<TestNotCopyableAndMoveable>));
 }
 
 #endif  // #ifndef TESTS_BASIC_TEST_BASIC_CONCEPTS_H_

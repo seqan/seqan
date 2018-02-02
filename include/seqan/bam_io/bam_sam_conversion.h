@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -128,7 +128,7 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
                     ++nEntries;
 
             // Write out array length.
-            appendRawPod(target, (uint32_t)nEntries);
+            appendRawPod(target, nEntries);
 
             // Write out array values.
             size_t startPos = 1;
@@ -233,7 +233,9 @@ struct AssignTagsBamToSamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-        appendNumber(target, reinterpret_cast<Type const &>(*it));
+        Type tmp = *reinterpret_cast<Type const *>(&*it);
+        enforceLittleEndian(tmp);
+        appendNumber(target, tmp);
         it += sizeof(Type);
         return true;
     }
@@ -299,14 +301,15 @@ void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
             // Read array length.
             union {
                 char raw[4];
-                unsigned len;
+                uint32_t len;
             } tmp;
-            for (unsigned i = 0; i < 4; ++i)
+            for (uint32_t i = 0; i < 4; ++i)
             {
                 SEQAN_ASSERT_NOT(atEnd(it));
                 tmp.raw[i] = *it++;
             }
-            for (unsigned i = 0; i < tmp.len; ++i)
+            enforceLittleEndian(tmp.len);
+            for (uint32_t i = 0; i < tmp.len; ++i)
             {
                 writeValue(target, ',');
                 if (!tagApply(func, BamTagTypes()))

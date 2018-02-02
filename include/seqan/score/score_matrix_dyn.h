@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -137,7 +137,26 @@ class Score<TValue, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > :
     public Score<TValue, ScoreMatrix<AminoAcid, Default> >
 {
 public:
+
+    using TBaseScore = Score<TValue, ScoreMatrix<AminoAcid, Default>>;
+
     AminoAcidScoreMatrixID _ident = static_cast<AminoAcidScoreMatrixID>(0u);
+
+    explicit Score(TValue _gap_extend = -1) :
+        TBaseScore(_gap_extend)
+    {}
+
+    Score(TValue _gap_extend, TValue _gap_open) :
+        TBaseScore(_gap_extend, _gap_open)
+    {}
+
+    Score(Score const &) = default;
+    Score(Score &&) = default;
+
+    Score & operator=(Score const &) = default;
+    Score & operator=(Score &&) = default;
+
+    ~Score() = default;
 };
 
 using SelectableAminoAcidMatrix =  Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable> >;

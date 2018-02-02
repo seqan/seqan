@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ namespace seqan
         TDir const &dir = indexDir(index);
         TShape &shape = indexShape(index);
 
-        if (IsSameType<TBucketMap, Nothing>::VALUE)
+        SEQAN_IF_CONSTEXPR (IsSameType<TBucketMap, Nothing>::VALUE)
         {
             // hashUpper and patterns shorter than the shape can only be used for
             // direct addressing q-gram indices

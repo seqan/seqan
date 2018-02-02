@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1400,39 +1400,20 @@ std::cout << __LINE__ << std::endl;
 std::cout << __LINE__ << std::endl;
 }
 
-// Test of getValue().
-template <typename TString>
-void testSequenceGetValue(TString & /*Tag*/)
-{
-    typedef typename Value<TString>::Type TValue;
-
-     // In contrast to value(), getValue() does not return a reference but a copy.
-     // We test this using the variable value_.
-    TString string;
-    assign(string, "ACGT");
-    TValue dummy_ = 'T';
-    TValue & value_ = dummy_;
-    SEQAN_ASSERT_EQ(value_, TValue('T'));
-
-    value_ = getValue(string, 0);
-    SEQAN_ASSERT_EQ(value_, TValue('A'));
-
-    value_ = 'T';
-    SEQAN_ASSERT_EQ(getValue(string, 0), TValue('A'));
-}
-
 SEQAN_TYPED_TEST(StringTestCommon, GetValue)
 {
-    CountingChar::clear();
+    SEQAN_SKIP_TEST; // getValue() is deprecated.
 
-    typename TestFixture::TString str;
-    testSequenceGetValue(str);
-
-    //TODO
-//     typename TestFixture::TString const constStr;
-//     testSequenceGetValue(constStr);
-
-    testConstructDeconstruct(str);
+//    CountingChar::clear();
+//
+//    typename TestFixture::TString str;
+//    testSequenceGetValue(str);
+//
+//    //TODO
+////     typename TestFixture::TString const constStr;
+////     testSequenceGetValue(constStr);
+//
+//    testConstructDeconstruct(str);
 }
 
 // Test of insert().
@@ -1536,9 +1517,9 @@ void testSequenceIter(TString & /*Tag*/)
         TIterator iterator = iter(string, 0);
         TStandardIterator standardIterator = iter(string, 0);
         TRootedIterator rootedIterator = iter(string, 0);
-        SEQAN_ASSERT_EQ(getValue(iterator), getValue(string, 0));
-        SEQAN_ASSERT_EQ(getValue(standardIterator), getValue(string, 0));
-        SEQAN_ASSERT_EQ(getValue(rootedIterator), getValue(string, 0));
+        SEQAN_ASSERT_EQ(*iterator, getValue(string, 0));
+        SEQAN_ASSERT_EQ(*standardIterator, getValue(string, 0));
+        SEQAN_ASSERT_EQ(*rootedIterator, getValue(string, 0));
     }
 
     // Test on a non empty string.
@@ -1548,9 +1529,9 @@ void testSequenceIter(TString & /*Tag*/)
         TIterator iterator = iter(string, 3);
         TStandardIterator standardIterator = iter(string, 3);
         TRootedIterator rootedIterator = iter(string, 3);
-        SEQAN_ASSERT_EQ(getValue(iterator), getValue(string, 3));
-        SEQAN_ASSERT_EQ(getValue(standardIterator), getValue(string, 3));
-        SEQAN_ASSERT_EQ(getValue(rootedIterator), getValue(string, 3));
+        SEQAN_ASSERT_EQ(*iterator, getValue(string, 3));
+        SEQAN_ASSERT_EQ(*standardIterator, getValue(string, 3));
+        SEQAN_ASSERT_EQ(*rootedIterator, getValue(string, 3));
     }
 }
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -494,11 +494,34 @@ _getCumulativeBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos, TValue val
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos>
-inline
-typename Size<LF<TText, TSpec, TConfig> const>::Type
+inline std::enable_if_t<!isWaveletTree<typename TConfig::Bwt>::Value, typename Size<LF<TText, TSpec, TConfig> >::Type>
 _getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
 {
     return _getBwtRank(lf, pos, getValue(lf.bwt, pos));
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TPos>
+inline std::enable_if_t<isWaveletTree<typename TConfig::Bwt>::Value, typename Size<LF<TText, TSpec, TConfig> >::Type>
+_getBwtRank(LF<TText, TSpec, TConfig> const & lf, TPos pos)
+{
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type    TChar;
+    typedef typename Size<LF<TText, TSpec, TConfig> >::Type     TSize;
+
+    TChar val;
+    TSize rank = 0;
+
+    if (pos > 0)
+    {
+        rank = _getRankAndValue(lf.bwt, pos - 1, val);
+
+        if (ordEqual(lf.sentinelSubstitute, val))
+            rank -= _getSentinelsRank(lf, pos - 1);
+    }
+    else
+    {
+        val = getValue(lf.bwt, pos);
+    }
+    return rank + _getPrefixSum(lf, val);
 }
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TValue>
@@ -537,7 +560,7 @@ _setSentinelSubstitute(LF<TText, TSpec, TConfig> & lf)
     typedef typename Value<TPrefixSums>::Type           TValue;
     typedef typename Size<TPrefixSums>::Type            TSize;
 
-    TValue minOcc = MaxValue<TValue>::VALUE;
+    TValue minOcc = std::numeric_limits<TValue>::max();
     TSize ordVal = 0;
 
     for (TSize i = 0; i < length(lf.sums) - 1; ++i)
@@ -577,20 +600,20 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
     TSAIter saItEnd = end(sa, Standard());
     TBwtIter bwtIt = begin(bwt, Standard());
 
-    assignValue(bwtIt, back(text));
+    *bwtIt = back(text);
     ++bwtIt;
 
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
-        TSAValue pos = getValue(saIt);
+        TSAValue pos = *saIt;
 
         if (pos != 0)
         {
-            assignValue(bwtIt, getValue(text, pos - 1));
+            *bwtIt = getValue(text, pos - 1);
         }
         else
         {
-            assignValue(bwtIt, lf.sentinelSubstitute);
+            *bwtIt = lf.sentinelSubstitute;
             lf.sentinels = bwtIt - begin(bwt, Standard());
         }
     }
@@ -625,7 +648,7 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     {
         if (length(text[seqNum - i]) > 0)
         {
-            assignValue(bwtIt, back(text[seqNum - i]));
+            *bwtIt = back(text[seqNum - i]);
             setValue(lf.sentinels, bwtIt - bwtItBeg, false);
         }
     }
@@ -634,16 +657,16 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
     for (; saIt != saItEnd; ++saIt, ++bwtIt)
     {
         TSAValue pos;    // = SA[i];
-        posLocalize(pos, getValue(saIt), stringSetLimits(text));
+        posLocalize(pos, *saIt, stringSetLimits(text));
 
         if (getSeqOffset(pos) != 0)
         {
-            assignValue(bwtIt, getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1));
+            *bwtIt = getValue(getValue(text, getSeqNo(pos)), getSeqOffset(pos) - 1);
             setValue(lf.sentinels, bwtIt - bwtItBeg, false);
         }
         else
         {
-            assignValue(bwtIt, lf.sentinelSubstitute);
+            *bwtIt = lf.sentinelSubstitute;
             setValue(lf.sentinels, bwtIt - bwtItBeg, true);
         }
     }
@@ -672,8 +695,36 @@ _createBwt(LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> & lf, TBwt & bwt, TOt
  * @return TReturn Returns a <tt>bool</tt> which is <tt>true</tt> on successes and <tt>false</tt> otherwise.
  */
 // This function creates all table of the lf table given a text and a suffix array.
+
 template <typename TText, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
-inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
+inline std::enable_if_t<!isWaveletTree<typename TConfig::Bwt>::Value, void>
+createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
+{
+    typedef LF<TText, TSpec, TConfig>                          TLF;
+    typedef typename Value<TLF>::Type                          TValue;
+    typedef typename Size<TLF>::Type                           TSize;
+
+    // Clear assuming undefined state.
+    clear(lf);
+
+    // Compute prefix sum.
+    prefixSums<TValue>(lf.sums, text);
+
+    // Choose the sentinel substitute.
+    _setSentinelSubstitute(lf);
+
+    // Create and index BWT bwt for rank queries.
+    createRankDictionary(lf, text, sa);
+
+    // Add sentinels to prefix sum.
+    TSize sentinelsCount = countSequences(text);
+    for (TSize i = 0; i < length(lf.sums); ++i)
+        lf.sums[i] += sentinelsCount;
+}
+
+template <typename TText, typename TSpec, typename TConfig, typename TOtherText, typename TSA>
+inline std::enable_if_t<isWaveletTree<typename TConfig::Bwt>::Value, void>
+createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TSA const & sa)
 {
     typedef LF<TText, TSpec, TConfig>                          TLF;
     typedef typename Fibre<TLF, FibreTempBwt>::Type            TBwt;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -180,7 +180,7 @@ getValue(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
     typedef typename Value<Iter<TGaps, GapsIterator<ArrayGaps> > >::Type TValue;
     if (isGap(me)) return gapValue<TValue>();
     else if (isUnknown(me)) return unknownValue<TValue>();
-    else return getValue(source(me));
+    else return *source(me);
 }
 
 template <typename TGaps, typename TGapAnchors>
@@ -190,7 +190,7 @@ getValue(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
     typedef typename Value<Iter<TGaps, GapsIterator<ArrayGaps> > const>::Type TValue;
     if (isGap(me)) return gapValue<TValue>();
     else if (isUnknown(me)) return unknownValue<TValue>();
-    else return getValue(source(me));
+    else return *source(me);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -171,13 +171,15 @@ unknownValueImpl(char const *)
 // ----------------------------------------------------------------------------
 
 template <typename T>
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline T const &
 supremumValueImpl(T *)
 {
-    static T const x = MaxValue<T>::VALUE;
+    static T const x = std::numeric_limits<T>::max();
     return x;
 }
 
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline long double const &
 supremumValueImpl(long double *)
 {
@@ -185,12 +187,15 @@ supremumValueImpl(long double *)
     return _value;
 }
 
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline double const &
 supremumValueImpl(double *)
 {
     static double const _value = std::numeric_limits<double>::infinity( );
     return _value;
 }
+
+[[deprecated("Use std::numeric_limits<T>::max() instead.")]]
 inline float const &
 supremumValueImpl(float *)
 {
@@ -203,13 +208,15 @@ supremumValueImpl(float *)
 // ----------------------------------------------------------------------------
 
 template <typename T>
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline T const &
 infimumValueImpl(T *)
 {
-    static T const x = MinValue<T>::VALUE;
+    static T const x = std::numeric_limits<T>::min();
     return x;
 }
 
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline float const &
 infimumValueImpl(float *)
 {
@@ -217,6 +224,7 @@ infimumValueImpl(float *)
     return _value;
 }
 
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline double const &
 infimumValueImpl(double *)
 {
@@ -224,6 +232,7 @@ infimumValueImpl(double *)
     return _value;
 }
 
+[[deprecated("Use std::numeric_limits<T>::min() instead.")]]
 inline long double const &
 infimumValueImpl(long double *)
 {

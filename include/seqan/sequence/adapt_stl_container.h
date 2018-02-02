@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -539,7 +539,8 @@ capacity(std::array<TChar, N> const & me)
 // VC2015 implements some C++17 functions which would collide for
 // applications that do using namespace std
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4280.pdf
-#ifndef _MSC_VER
+// Disable those functions for C++17 and upwards (pre-C++17 defines __cplusplus as <=201402L).
+#if !(defined(STDLIB_VS) || __cplusplus > 201402L)
 template <typename TContainer>
 inline SEQAN_FUNC_ENABLE_IF(Is<StlContainerConcept<TContainer> >, bool)
 empty(TContainer const & me)

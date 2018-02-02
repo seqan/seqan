@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -597,6 +597,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     // deprecated
     template < typename TSpec, typename AsyncRequest >
+    [[deprecated]]
     inline void release(File<TSpec> &, AsyncRequest &)
     {
 //IOREV _noop_ see general discussion about AsynRequest

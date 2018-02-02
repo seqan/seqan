@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_alf CXX)
 message (STATUS "Configuring apps/alf")
 
-set (SEQAN_APP_VERSION "1.1.9")
+set (SEQAN_APP_VERSION "1.1.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -56,7 +56,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install alf in ${PREFIX}/bin directory
 install (TARGETS alf
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/alf for SeqAn release builds.

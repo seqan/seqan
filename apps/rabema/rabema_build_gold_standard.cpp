@@ -275,8 +275,8 @@ int intervalizeAndDumpErrorCurves(TStream & stream,
         // The position of the previous match, so we can consider only the ones with the smallest error.
         //
         // The following two vars should be != first pos and contigId.
-        size_t previousPos = maxValue<size_t>();
-        size_t previousContigId = maxValue<size_t>();
+        size_t previousPos = std::numeric_limits<size_t>::max();
+        size_t previousContigId = std::numeric_limits<size_t>::max();
         typedef Iterator<TWeightedMatches>::Type TWeightedMatchesIter;
         for (TWeightedMatchesIter it = begin(sortedMatches);
              it != end(sortedMatches); ++it)
@@ -396,7 +396,7 @@ void buildErrorCurvePoints(String<WeightedMatch> & errorCurve,
 
     // In oracle Sam mode, the maximum error is the error at the position given in the Sam alignment.
     bool oracleMode = false;
-    if (maxError == maxValue<int>())  // We are in oracle mode.
+    if (maxError == std::numeric_limits<int>::max())  // We are in oracle mode.
     {
         oracleMode = true;
         Finder<TContigSeq> finder(contig);
@@ -827,10 +827,10 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             append(record.qName, "/1");
         // Translate read to read id.
         unsigned readId = 0;
-        if (!getIdByName(readNameStore, record.qName, readId, readNameStoreCache))
+        if (!getIdByName(readId, readNameStoreCache, record.qName))
         {
             readId = length(readNameStore);
-            appendName(readNameStore, record.qName, readNameStoreCache);
+            appendName(readNameStoreCache, record.qName);
             appendValue(readLengthStore, length(record.seq));
             if (options.oracleMode)
                 appendValue(readAlignmentDistances, -1);
@@ -888,7 +888,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
 
         // In oracle mode, set max error to -1, buildErrorCurvePoints() will use the error at the alignment position
         // from the SAM/BAM file.  In normal mode, convert from error rate from options to error count.
-        int maxError = maxValue<int>();
+        int maxError = std::numeric_limits<int>::max();
         if (!options.oracleMode)
             maxError = static_cast<int>(floor(0.01 * options.maxError * length(record.seq)));
 
@@ -1003,7 +1003,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
     setRequired(parser, "reference", true);
-    setValidValues(parser, "reference", "fa fasta");
+    setValidValues(parser, "reference", seqan::SeqFileIn::getFileExtensions());
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "BAM"));
     setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());

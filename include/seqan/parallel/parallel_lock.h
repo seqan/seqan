@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -215,6 +215,8 @@ yieldProcessor()
 {
 #if defined(STDLIB_VS)  // Visual Studio - all platforms.
     YieldProcessor();
+#elif defined(__armel__) || defined(__ARMEL__) // arm, but broken
+    asm volatile ("nop" ::: "memory");  // default operation - does nothing => Might lead to passive spinning.
 #elif defined(__arm__) || defined(__aarch64__)  // ARM.
     __asm__ __volatile__ ("yield" ::: "memory");
 #elif defined(__sparc) // SPARC

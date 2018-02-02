@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -262,9 +262,9 @@ SEQAN_DEFINE_TEST(test_delta_map_find)
     DeltaMap<TestDeltaMapConfig> deltaMap;
     createMock(deltaMap);
 
-    SEQAN_ASSERT_EQ(value(find(deltaMap,  2, DeltaTypeSnp())), deltaMap._entries[3]);
-    SEQAN_ASSERT_EQ(value(find(deltaMap,  1, DeltaTypeSV())), deltaMap._entries[2]);
-    SEQAN_ASSERT_EQ(value(find(deltaMap,  20, DeltaTypeDel())), deltaMap._entries[8]);
+    SEQAN_ASSERT_EQ(*find(deltaMap,  2, DeltaTypeSnp()), deltaMap._entries[3]);
+    SEQAN_ASSERT_EQ(*find(deltaMap,  1, DeltaTypeSV()), deltaMap._entries[2]);
+    SEQAN_ASSERT_EQ(*find(deltaMap,  20, DeltaTypeDel()), deltaMap._entries[8]);
     SEQAN_ASSERT(find(deltaMap,  1, DeltaTypeIns()) == end(deltaMap, Standard()));
     SEQAN_ASSERT(find(deltaMap,  6, DeltaTypeSnp()) == end(deltaMap, Standard()));
 }
@@ -355,19 +355,19 @@ _testDeltaMapIterator(TMap & deltaMap)
 
     unsigned counter = 0;
     for (; it != end(deltaMap, Standard()); ++it, ++counter)
-        SEQAN_ASSERT_EQ(value(it), deltaMap._entries[counter]);
+        SEQAN_ASSERT_EQ(*(it), deltaMap._entries[counter]);
     SEQAN_ASSERT_EQ(counter, size(deltaMap));
 
     for (; it != begin(deltaMap, Standard()); --it, --counter)
-        SEQAN_ASSERT_EQ(value(it - 1), deltaMap._entries[counter - 1]);
+        SEQAN_ASSERT_EQ(*(it - 1), deltaMap._entries[counter - 1]);
     SEQAN_ASSERT_EQ(counter, 0u);
 
     for (; !(it == end(deltaMap, Standard())); it++, ++counter)
-        SEQAN_ASSERT_EQ(value(it), deltaMap._entries[counter]);
+        SEQAN_ASSERT_EQ(*(it), deltaMap._entries[counter]);
     SEQAN_ASSERT_EQ(counter, size(deltaMap));
 
     for (; !(it == begin(deltaMap, Standard())); it--, --counter)
-        SEQAN_ASSERT_EQ(value(it - 1), deltaMap._entries[counter - 1]);
+        SEQAN_ASSERT_EQ(*(it - 1), deltaMap._entries[counter - 1]);
     SEQAN_ASSERT_EQ(counter, 0u);
 
 }

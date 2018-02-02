@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -594,7 +594,7 @@ resize(String<TValue, Packed<THostspec> > & me,
     // create WORD
     THostValue tmp;
     tmp.i = 0;
-    __uint64 ord = ordValue(TValue(newValue));
+    uint64_t ord = ordValue(TValue(newValue));
     for (unsigned j = 0; j < TTraits::VALUES_PER_HOST_VALUE; ++j)
         tmp.i |= ord << (j * TTraits::BITS_PER_VALUE);
 
@@ -611,7 +611,7 @@ resize(String<TValue, Packed<THostspec> > & me,
         TStringSize alreadySet = old_length % TTraits::VALUES_PER_HOST_VALUE;
 
         // clear non-set positions (which may be uninitialized ( != 0 )
-        tmp.i = (~static_cast<__uint64>(0) << (64 - alreadySet * TTraits::BITS_PER_VALUE)) >> TTraits::WASTED_BITS;
+        tmp.i = (~static_cast<uint64_t>(0) << (64 - alreadySet * TTraits::BITS_PER_VALUE)) >> TTraits::WASTED_BITS;
         host(me)[old_host_length-1].i &= tmp.i;
 
         for (TStringSize i = alreadySet; i < TTraits::VALUES_PER_HOST_VALUE; ++i)
@@ -1063,7 +1063,7 @@ arrayCopyBackward(Iter<TPackedString, Packed<TSpec> > source_begin,
             {
                 --hostIterator(source_end);
                 --hostIterator(target_begin);
-                assignValue(hostIterator(target_begin), getValue(hostIterator(source_end)));
+                *hostIterator(target_begin) = getValue(hostIterator(source_end));
             }
         }
 
@@ -1246,7 +1246,7 @@ struct ClearSpaceStringPacked_
         typename Size<T>::Type start,
         typename Size<T>::Type end)
     {
-        return _clearSpace_(seq, size, start, end, maxValue<typename Size<T>::Type >());
+        return _clearSpace_(seq, size, start, end, std::numeric_limits<typename Size<T>::Type >::max());
     }
 
     template <typename T>
@@ -1753,7 +1753,7 @@ bitScanReverse(String<bool, Packed<THostSpec> > const & obj)
     typedef typename THostValue::TBitVector TBitVector;
 
     if (empty(host(obj)))
-        return MaxValue<TPosition>::VALUE;
+        return std::numeric_limits<TPosition>::max();
 
     TConstPackedHostIterator it = end(host(obj), Standard()) - 1;
     TConstPackedHostIterator itBegin = begin(host(obj), Standard());
@@ -1792,7 +1792,7 @@ bitScanForward(String<bool, Packed<THostSpec> > const & obj)
     typedef typename THostValue::TBitVector TBitVector;
 
     if (empty(host(obj)))
-        return MaxValue<TPosition>::VALUE;
+        return std::numeric_limits<TPosition>::max();
 
     TConstPackedHostIterator itBegin = begin(host(obj), Standard()) + 1;
     TConstPackedHostIterator it = itBegin;

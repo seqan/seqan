@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -160,7 +160,7 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
 
     // STEP 1: compute sums of all subintervals (in parallel)
     //
-    SEQAN_OMP_PRAGMA(parallel for)
+    SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
     for (int job = 0; job < (int)length(splitter) - 1; ++job)
         localSums[job + 1] = sum(infix(source, splitter[job], splitter[job + 1]), Serial());
 
@@ -171,7 +171,7 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
 
     // STEP 3: compute partial sums of each subinterval starting from offset (in parallel)
     //
-    SEQAN_OMP_PRAGMA(parallel for)
+    SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)))
     for (int job = 0; job < (int)length(splitter); ++job)
     {
         TConstIterator it = begin(source, Standard()) + splitter[job];
@@ -233,12 +233,13 @@ inline void iterate(TContainer & c, TFunctor f, Tag<TIterTag> const & iterTag, P
 {
     typedef Tag<TIterTag> const                                     TIterSpec;
     typedef typename Position<TContainer>::Type                     TPos;
+    typedef typename std::make_signed<TPos>::type                   TSignedPos;
     typedef typename Iterator<TContainer, TIterSpec>::Type          TIter;
 
     Splitter<TPos> splitter(0, length(c), Parallel());
 
     SEQAN_OMP_PRAGMA(parallel for firstprivate(f))
-    for (TPos i = 0; i < length(splitter); ++i)
+    for (TSignedPos i = 0; i < static_cast<TSignedPos>(length(splitter)); ++i)
     {
        TIter it = begin(c, iterTag) + splitter[i];
        TIter itEnd = begin(c, iterTag) + splitter[i + 1];

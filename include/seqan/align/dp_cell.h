@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,12 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+struct DynamicGapExtensionHorizontal_;
+typedef Tag<DynamicGapExtensionHorizontal_> DynamicGapExtensionHorizontal;
+
+struct DynamicGapExtensionVertical_;
+typedef Tag<DynamicGapExtensionVertical_> DynamicGapExtensionVertical;
+
 // ----------------------------------------------------------------------------
 // Class DPCell_
 // ----------------------------------------------------------------------------
@@ -64,6 +70,21 @@ class DPCell_;
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction Spec
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapCostFunction>
+struct Spec<DPCell_<TScoreValue, TGapCostFunction> >
+{
+    typedef TGapCostFunction Type;
+};
+
+template <typename TScoreValue, typename TGapCostFunction>
+struct Spec<DPCell_<TScoreValue, TGapCostFunction> const> :
+    Spec<DPCell_<TScoreValue, TGapCostFunction> >
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -109,7 +130,7 @@ struct DPCellDefaultInfinity
 };
 
 template <typename T>
-const int DPCellDefaultInfinity<T>::VALUE = MinValue<int>::VALUE;
+const int DPCellDefaultInfinity<T>::VALUE = std::numeric_limits<int>::min();
 
 // We use the min value of the score type and shift it one bits to the left.  This way we can use "infinity" without
 // checking for it during the computation.
@@ -121,7 +142,7 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
 
 template <typename TScoreValue, typename TGapCostFunction>
     const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE =
-        createVector<TScoreValue>(MinValue<typename Value<TScoreValue>::Type>::VALUE) / createVector<TScoreValue>(2);
+        createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::min()) / createVector<TScoreValue>(2);
 
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :
@@ -177,9 +198,16 @@ _setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & ne
     dpCell._score = newScore;
 }
 
-template <typename TScoreValue, typename TGapCosts>
+template <typename TScoreValue, typename TGapCosts, typename TMask>
 inline void
-_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore, TScoreValue const & mask)
+_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore)
+{
+    dpCell._score = newScore;
+}
+
+template <typename TScoreValue, typename TGapCosts, typename TMask>
+inline void
+_setScoreOfCell(DPCell_<TScoreValue, TGapCosts> & dpCell, TScoreValue const & newScore, TMask const & mask)
 {
     dpCell._score = blend(dpCell._score, newScore, mask);
 }
@@ -215,9 +243,9 @@ _setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue
     // no-op
 }
 
-template <typename TScoreValue, typename TGapSpec>
+template <typename TScoreValue, typename TGapSpec, typename TMask>
 inline void
-_setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/, TScoreValue const & /*mask*/)
+_setVerticalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newVerticalScore*/, TMask const & /*mask*/)
 {
     // no-op
 }
@@ -253,9 +281,9 @@ _setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreVal
     // no-op
 }
 
-template <typename TScoreValue, typename TGapSpec>
+template <typename TScoreValue, typename TGapSpec, typename TMask>
 inline void
-_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newHorizontalScore*/, TScoreValue const & /*mask*/)
+_setHorizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TScoreValue const & /*newHorizontalScore*/, TMask const & /*mask*/)
 {
     // no-op
 }
@@ -271,11 +299,77 @@ setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2)
     // no-op
 }
 
-template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2>
+template <typename TScoreValue, typename TGapSpec, typename TF1, typename TF2, typename TMask>
 inline void
-setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2, TScoreValue)
+setGapExtension(DPCell_<TScoreValue, TGapSpec> & /*dpCell*/, TF1 , TF2, TMask)
 {
     // no-op
+}
+
+template <typename TTarget, typename TScoreValue, typename TGapSpec>
+inline void
+write(TTarget & target, DPCell_<TScoreValue, TGapSpec> const & cell)
+{
+    write(target, _scoreOfCell(cell));
+}
+
+// ----------------------------------------------------------------------------
+// Function isGapExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapSpec,
+          typename TSpec>
+inline bool
+isGapExtension(DPCell_<TScoreValue, TGapSpec> const & /*cell*/,
+               TSpec const & /*spec*/)
+{
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator==()
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapCosts>
+inline bool operator==(DPCell_<TScoreValue, TGapCosts> const & lhs,
+                       DPCell_<TScoreValue, TGapCosts> const & rhs)
+{
+    return _scoreOfCell(lhs) == _scoreOfCell(rhs) &&
+           _horizontalScoreOfCell(lhs) == _horizontalScoreOfCell(rhs) &&
+           _verticalScoreOfCell(lhs) == _verticalScoreOfCell(rhs);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator!=()
+// ----------------------------------------------------------------------------
+
+template <typename TScoreValue, typename TGapCosts>
+inline bool operator!=(DPCell_<TScoreValue, TGapCosts> const & lhs,
+                       DPCell_<TScoreValue, TGapCosts> const & rhs)
+{
+    return !(lhs == rhs);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+template <typename TStream,
+          typename TScoreValue, typename TGapCosts>
+inline TStream& operator<<(TStream & stream,
+                           DPCell_<TScoreValue, TGapCosts> const & cell)
+{
+    stream << "M: " << _scoreOfCell(cell);
+    if (std::is_same<TGapCosts, AffineGaps>::value)
+    {
+        stream << " <H: " << _horizontalScoreOfCell(cell) << " V: " << _verticalScoreOfCell(cell) << ">";
+    }
+    else if (std::is_same<TGapCosts, DynamicGaps>::value)
+    {
+        stream << " <H: " << isGapExtension(cell, DynamicGapExtensionHorizontal{}) <<
+                  " V: " << isGapExtension(cell, DynamicGapExtensionVertical{}) << ">";
+    }
+    return stream;
 }
 
 }  // namespace seqan

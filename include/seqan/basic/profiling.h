@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 // TODO(holtgrew): This could use some cleanup.
 
 #include <ctime>
+#include <chrono>
 
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
@@ -240,42 +241,11 @@ namespace seqan
  *
  * @see cpuTime
  */
-
-    #ifdef STDLIB_VS
-//        inline _proFloat sysTime() { return GetTickCount() * 1e-3; }
-        inline _proFloat sysTime() { return ( (_proFloat) clock() ) / CLOCKS_PER_SEC; }
-    #else
-
-        #include <unistd.h>
-        #if _POSIX_TIMERS > 0
-            #ifndef SEQAN_USE_CLOCKGETTIME
-            #define SEQAN_USE_CLOCKGETTIME
-            #endif
-        #endif
-
-        #ifndef SEQAN_USE_CLOCKGETTIME
-        /* some systems e.g. darwin have no clock_gettime */
-
-            #include <sys/time.h>
-
-            inline _proFloat sysTime() {
-                struct timeval tp;
-                gettimeofday(&tp, NULL);
-                return tp.tv_sec + tp.tv_usec * 1e-6;
-            }
-
-        #else
-
-            inline _proFloat sysTime() {
-                struct timespec tp;
-                clock_gettime(CLOCK_MONOTONIC, &tp);
-                return tp.tv_sec + tp.tv_nsec * 1e-9;
-            }
-
-        #endif
-
-    #endif
-
+    inline _proFloat sysTime()
+    {
+        return static_cast<_proFloat>(std::chrono::system_clock::now().time_since_epoch() /
+                                      std::chrono::duration<_proFloat>(1));
+    }
 
     struct ProfileFile_ {
 //IOREV not generic, uses FILE* instead of File() and custom IO

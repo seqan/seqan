@@ -260,9 +260,9 @@ void performIntervalLowering(String<GsiRecord> & gsiRecords, int maxError)
 
     // Add sentinel interval.
     GsiRecord sentinel(back(gsiRecords));
-    sentinel.firstPos = MaxValue<size_t>::VALUE;
-    sentinel.lastPos = MaxValue<size_t>::VALUE;
-    // sentinel.id = MaxValue<size_t>::VALUE;
+    sentinel.firstPos = std::numeric_limits<size_t>::max();
+    sentinel.lastPos = std::numeric_limits<size_t>::max();
+    // sentinel.id = std::numeric_limits<size_t>::max();
     appendValue(gsiRecords, sentinel);
 
     String<TInterval> openIntervals;
@@ -402,7 +402,7 @@ int benchmarkReadResult(RabemaStats & result,
     // In case of oracle mode, we ignore the distance of the intervals in the GSI file here but use it later on.
     //
     // Start with picking the smallest distance if *-best mode.
-    int smallestDistance = options.oracleMode ? maxValue<int>() : options.maxError;
+    int smallestDistance = options.oracleMode ? std::numeric_limits<int>::max() : options.maxError;
     // Note that smallestDistance (as bestDistance defined below) is expressed as percent of read length ceiled
     // and cat to an int value.
     if (options.oracleMode || options.benchmarkCategory == CATEGORY_ANY_BEST ||
@@ -410,7 +410,7 @@ int benchmarkReadResult(RabemaStats & result,
         for (unsigned i = 0; i < length(gsiRecords); ++i)
             smallestDistance = std::min(smallestDistance, gsiRecords[i].distance);
     int largestDistance = options.maxError;
-    if (options.oracleMode && smallestDistance != maxValue<int>())
+    if (options.oracleMode && smallestDistance != std::numeric_limits<int>::max())
         for (unsigned i = 0; i < length(gsiRecords); ++i)
             largestDistance = std::max(largestDistance, gsiRecords[i].distance);
     String<GsiRecord> pickedGsiRecords;
@@ -592,7 +592,7 @@ int benchmarkReadResult(RabemaStats & result,
             endPos--;
         }
 
-        int bestDistance = minValue<int>();  // Marker for "not set yet".
+        int bestDistance = std::numeric_limits<int>::min();  // Marker for "not set yet".
         // Note that bestDistance expresses the distance in percent error, relative to the read length, ceiled up
         // and converted to an int value.
         if (!options.oracleMode)
@@ -652,7 +652,7 @@ int benchmarkReadResult(RabemaStats & result,
             for (unsigned i = 0; i < length(queryResult); ++i)
                 intervalHit[queryResult[i]] = true;
         }
-        else if (bestDistance != minValue<int>())
+        else if (bestDistance != std::numeric_limits<int>::min())
         {
             // && bestDistance <= options.maxError)
 
@@ -664,7 +664,7 @@ int benchmarkReadResult(RabemaStats & result,
             // Note that all distances including allowedDistance are percent of read length, ceiled up.
             int allowedDistance = options.maxError;
             if ((options.benchmarkCategory == CATEGORY_ALL_BEST || options.benchmarkCategory == CATEGORY_ANY_BEST) &&
-                (smallestDistance != maxValue<int>()))
+                (smallestDistance != std::numeric_limits<int>::max()))
                 allowedDistance = smallestDistance;
             if (bestDistance > allowedDistance)
             {
@@ -708,7 +708,7 @@ int benchmarkReadResult(RabemaStats & result,
         resize(foundIntervalsForErrorRate, largestDistance + 1, 0);
     if (options.oracleMode || options.benchmarkCategory == CATEGORY_ANY_BEST)
     {
-        int bestDistance = maxValue<int>();
+        int bestDistance = std::numeric_limits<int>::max();
         int bestIdx = 0;
         for (unsigned i = 0; i < length(intervalDistances); ++i)
             if (intervalHit[i])
@@ -719,7 +719,7 @@ int benchmarkReadResult(RabemaStats & result,
                     bestIdx = i;
                 bestDistance = std::min(bestDistance, intervalDistances[i]);
             }
-        if (bestDistance != maxValue<int>())
+        if (bestDistance != std::numeric_limits<int>::max())
         {
             if (options.showHitIntervals)
                 std::cerr << "HIT_BEST\t" << filteredGsiRecords[bestIdx] << "\t" << filteredGsiRecords[bestIdx].originalDistance << "\n";
@@ -765,7 +765,7 @@ int benchmarkReadResult(RabemaStats & result,
         result.intervalsToFind += 1;
         result.intervalsFound += found;
         result.normalizedIntervals += found;
-        int d = (smallestDistance == maxValue<int>()) ? 0 : smallestDistance;
+        int d = (smallestDistance == std::numeric_limits<int>::max()) ? 0 : smallestDistance;
         result.intervalsToFindForErrorRate[d] += 1;
         result.intervalsFoundForErrorRate[d] += found;
         result.normalizedIntervalsToFindForErrorRate[d] += 1;
@@ -773,7 +773,7 @@ int benchmarkReadResult(RabemaStats & result,
     }
     else if (options.benchmarkCategory == CATEGORY_ANY_BEST)
     {
-        int d = (smallestDistance == maxValue<int>()) ? 0 : smallestDistance;
+        int d = (smallestDistance == std::numeric_limits<int>::max()) ? 0 : smallestDistance;
         bool toFind = (numIntervalsForErrorRate[d] > 0u);
         bool found = (foundIntervalsForErrorRate[d] > 0u);
         SEQAN_ASSERT_LEQ(found, toFind);
@@ -1064,7 +1064,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     // setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
-    setValidValues(parser, "reference", "fa fasta");
+    setValidValues(parser, "reference", seqan::SeqFileIn::getFileExtensions());
     setRequired(parser, "reference", true);
     addOption(parser, seqan::ArgParseOption("g", "in-gsi",
                                             "Path to load gold standard intervals from. If compressed using gzip, "
@@ -1229,7 +1229,7 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     getOptionValue(options.checkSorting, parser, "dont-check-sorting");
     options.checkSorting = !options.checkSorting;
-    
+
     options.showMissedIntervals = isSet(parser, "show-missed-intervals");
     options.showSuperflousIntervals = isSet(parser, "show-invalid-hits");
     options.showAdditionalIntervals = isSet(parser, "show-additional-hits");

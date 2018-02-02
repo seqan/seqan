@@ -798,7 +798,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("g", "genome", "Genome file.", seqan::ArgParseOption::INPUT_FILE,
                                             "GENOME.fa"));
     setRequired(parser, "genome");
-    setValidValues(parser, "genome", "fa fasta");
+    setValidValues(parser, "genome", seqan::SeqFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUT_FILE,
                                             "PRE.{sam,bam}"));
@@ -956,7 +956,7 @@ int main(int argc, char const ** argv)
     }
 
     String<unsigned> idMap;
-    resize(idMap, length(contigNames(context(inPre))), maxValue<unsigned>());
+    resize(idMap, length(contigNames(context(inPre))), std::numeric_limits<unsigned>::max());
     for (unsigned i = 0; i < length(ids); ++i)
     {
         trimSeqHeaderToId(ids[i]);
@@ -989,9 +989,6 @@ int main(int argc, char const ** argv)
     // from OpenMP block.
     bool stop = false;
     bool error = false;
-
-    // Format recognition tag used for sequence file I/O.
-    seqan::AutoSeqFormat seqFormatTag;
 
     uint64_t chunksLeftToRead = options.maxChunks;
     --chunksLeftToRead;
@@ -1031,10 +1028,10 @@ int main(int argc, char const ** argv)
                     stop = atEnd(inPostBam);
                 else
                     stop = atEnd(inPostFastq);
-                
+
                 if (stop)
                     break;
-                
+
                 // Read next record into chunk.
                 try
                 {

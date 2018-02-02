@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -200,14 +200,14 @@ inline typename DeltaValue<typename Container<Iter<TDeltaMap, DeltaMapIteratorSp
 deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> & iter, TTag const & tag)
 {
     SEQAN_ASSERT(isDeltaType(deltaType(iter), TTag()));
-    return deltaValue(container(iter)._deltaStore, getDeltaRecord(value(iter)).i2, tag);
+    return deltaValue(container(iter)._deltaStore, getDeltaRecord(*iter).i2, tag);
 }
 
 template <typename TDeltaMap, typename TTag>
 inline typename DeltaValue<typename Container<Iter<TDeltaMap, DeltaMapIteratorSpec> const>::Type, TTag>::Type &
 deltaValue(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter, TTag const & tag)
 {
-    return deltaValue(container(iter)._deltaStore, getDeltaRecord(value(iter)).i2, tag);
+    return deltaValue(container(iter)._deltaStore, getDeltaRecord(*iter).i2, tag);
 }
 
 namespace impl

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_micro_razers CXX)
 message (STATUS "Configuring apps/micro_razers")
 
-set (SEQAN_APP_VERSION "1.0.10")
+set (SEQAN_APP_VERSION "1.0.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -62,7 +62,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install micro_razers in ${PREFIX}/bin directory
 install (TARGETS micro_razers
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/micro_razers for SeqAn release builds.

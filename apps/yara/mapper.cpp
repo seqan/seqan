@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2014, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -342,7 +342,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsSum <= MaxValue<uint32_t>::VALUE)
+    if (options.contigsSum <= std::numeric_limits<uint32_t>::max())
     {
         spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, strategy);
     }
@@ -355,7 +355,7 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsMaxLength <= MaxValue<uint32_t>::VALUE)
+    if (options.contigsMaxLength <= std::numeric_limits<uint32_t>::max())
     {
         configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, strategy);
     }
@@ -372,11 +372,11 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.contigsSize <= MaxValue<uint8_t>::VALUE)
+    if (options.contigsSize <= std::numeric_limits<uint8_t>::max())
     {
         configureMapper<uint8_t>(options, threading, sequencing, strategy);
     }
-    else if (options.contigsSize <= MaxValue<uint16_t>::VALUE)
+    else if (options.contigsSize <= std::numeric_limits<uint16_t>::max())
     {
         configureMapper<uint16_t>(options, threading, sequencing, strategy);
     }

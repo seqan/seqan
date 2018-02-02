@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -277,6 +277,7 @@ struct Is<Convertible<T, S const> > :
  * @endcode
  *
  * @see DefaultConstructibleConcept
+ * @see MoveConstructibleConcept
  */
 
 SEQAN_CONCEPT(CopyConstructible,(T))
@@ -297,6 +298,33 @@ private:
         ignoreUnusedVariableWarning(ptr);
     }
     T b;
+};
+
+/*!
+ * @concept MoveConstructibleConcept
+ * @brief A type with a move-constructor.
+ *
+ * @headerfile <seqan/basic.h>
+ *
+ * @signature MoveConstructible<T>
+ *
+ * @section Valid Expressions
+ *
+ * @code{.cpp}
+ * T a(rv);  // rv is an rvalue expression of type T
+ * @endcode
+ *
+ * @see DefaultConstructibleConcept
+ * @see CopyConstructibleConcept
+ */
+
+SEQAN_CONCEPT(MoveConstructible,(T))
+{
+    SEQAN_CONCEPT_USAGE(MoveConstructible)
+    {
+        T a{T{}};               // require move constructor
+        ignoreUnusedVariableWarning(a);
+    }
 };
 
 
@@ -680,10 +708,10 @@ struct IsSignedInteger : Is< SignedIntegerConcept<T> > {};
 template <typename T>
 struct IsUnsignedInteger : Is< UnsignedIntegerConcept<T> > {};
 template <typename T>
-struct IsInteger : Is< IntegerConcept<T> > {};
+struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsInteger : Is< IntegerConcept<T> > {};
 
 template <typename T>
-struct IsIntegral : IsInteger<T> {};
+struct [[deprecated("Please use Is<IntegerConcept<T> >::Type.")]] IsIntegral : Is< IntegerConcept<T> > {};
 
 // ============================================================================
 // Concepts for integers

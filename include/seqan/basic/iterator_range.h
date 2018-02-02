@@ -80,19 +80,19 @@ public:
     // Range Constructors
     // ------------------------------------------------------------------------
 
-   
+
     Range():
         begin(),
         end()
     {}
 
-   
+
     Range(Range const & range) :
         begin(range.begin),
         end(range.end)
     {}
 
-   
+
     Range(TIterator const & begin, TIterator const & end):
         begin(begin),
         end(end)
@@ -102,10 +102,18 @@ public:
     // Operator =
     // ------------------------------------------------------------------------
 
-    template <typename TOtherContainer>
-   
     Range &
-    operator= (TOtherContainer &other)
+    operator=(Range const & other)
+    {
+        begin = other.begin;
+        end = other.end;
+        return *this;
+    }
+
+    template <typename TOtherContainer>
+
+    Range &
+    operator= (TOtherContainer & other)
     {
         assign(*this, other);
         return *this;
@@ -116,7 +124,7 @@ public:
     // ------------------------------------------------------------------------
 
     template <typename TPos>
-   
+
     typename Reference<Range>::Type
     operator[] (TPos pos)
     {
@@ -124,7 +132,7 @@ public:
     }
 
     template <typename TPos>
-   
+
     typename GetValue<Range>::Type
     operator[] (TPos pos) const
     {
@@ -316,6 +324,14 @@ resize(
 template <typename TIterator, typename TContainer>
 inline void
 assign(Range<TIterator> &range, TContainer &cont)
+{
+    range.begin = begin(cont, Standard());
+    range.end = end(cont, Standard());
+}
+
+template <typename TIterator, typename TContainer>
+inline void
+assign(Range<TIterator> &range, TContainer const &cont)
 {
     range.begin = begin(cont, Standard());
     range.end = end(cont, Standard());
