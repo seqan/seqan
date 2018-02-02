@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fx_tools CXX)
 message (STATUS "Configuring apps/fx_tools")
 
-set (SEQAN_APP_VERSION "0.2.10")
+set (SEQAN_APP_VERSION "0.2.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -91,4 +91,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:fx_tools")
 
   seqan_configure_cpack_app (fx_tools "fx_tools")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:fx_tools")
-

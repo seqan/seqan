@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_dfi CXX)
 message (STATUS "Configuring apps/dfi")
 
-set (SEQAN_APP_VERSION "2.1.10")
+set (SEQAN_APP_VERSION "2.1.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -92,4 +92,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:dfi")
 
   seqan_configure_cpack_app (dfi "DFI")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:dfi")
-
