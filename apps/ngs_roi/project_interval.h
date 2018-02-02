@@ -1,7 +1,7 @@
 // ==========================================================================
 //                   NGS: Regions of Interest Analysis
 // ==========================================================================
-// Copyright (c) 2012-2013, Bernd Jagla, Institut Pasteur
+// Copyright (c) 2012-2018, Bernd Jagla, Institut Pasteur
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

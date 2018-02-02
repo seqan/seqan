@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -551,12 +551,18 @@ macro(INTEL_FILES_FOR_VERSION version)
   endforeach()
 endmacro()
 
+# TODO: Remove once we have cmake > 3.10.x installed on windows clients, as it should be found automatically.
 macro (seqan_install_required_system_libraries)
   set (CMAKE_INSTALL_OPENMP_LIBRARIES ${OPENMP_FOUND})
 
   # include intel dll's
   if(COMPILER_WINTEL)
-    INTEL_FILES_FOR_VERSION(2016)
+    foreach (wintel_version 2018 2017 2016)
+        INTEL_FILES_FOR_VERSION(wintel_version)
+        if (INTEL${wintel_version}_REDIST_DIR)
+            break()
+        endif ()
+    endforeach ()
   endif()
 
   # The following include automates the MS Redistributable installer.
