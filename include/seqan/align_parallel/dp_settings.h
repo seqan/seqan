@@ -54,9 +54,10 @@ struct DPSettings
     using TScoringScheme = TScoringScheme_;
     using TBandConfig    = typename TDPTraits::TBandType;
 
-    TScoringScheme  scoringScheme;
-    TBandConfig     bandScheme;
+    TScoringScheme  scoringScheme{};
+    TBandConfig     bandScheme{};
 
+    // TODO(rrahn): should make this an aggregate type.
     DPSettings() = default;
 
     explicit DPSettings(TScoringScheme score) : scoringScheme(std::move(score))
@@ -71,13 +72,13 @@ struct SimdDPSettings : public TDPSettings
     //-------------------------------------------------------------------------
     // Member Types.
 
-    using TTraits = typename TDPSettings::TTraits;
-    using TScoringScheme = typename TDPSettings::TScoringScheme;
-    using TScoreValue = typename Value<TScoringScheme>::Type;
-    using TScoreValueSimd = typename SimdVector<
-                                        std::conditional_t<std::is_same<TOffsetSpec, BlockOffsetOptimization>::value,
-                                                           int16_t,
-                                                           TScoreValue>>::Type;
+    using TTraits         = typename TDPSettings::TTraits;
+    using TScoringScheme  = typename TDPSettings::TScoringScheme;
+    using TScoreValue     = typename Value<TScoringScheme>::Type;
+    using TScoreValueSimd = typename SimdVector<std::conditional_t<
+                                                        std::is_same<TOffsetSpec, BlockOffsetOptimization>::value,
+                                                        int16_t,
+                                                        TScoreValue>>::Type;
     using TSimdScoringScheme = Score<TScoreValueSimd, ScoreSimdWrapper<TScoringScheme>>;
 
     //-------------------------------------------------------------------------

@@ -54,6 +54,10 @@ add_executable (test_align_parallel_interface
                 test_align_parallel_interface.h
                 ../align/test_mock.h)
 
+add_executable (test_align_parallel_banded
+                test_align_parallel_algorithm_banded.cpp
+                test_align_parallel_algorithm_banded.h)
+
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align_parallel_data_structures ${SEQAN_LIBRARIES})
 
@@ -62,6 +66,9 @@ target_link_libraries (test_align_parallel_algorithm ${SEQAN_LIBRARIES})
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_align_parallel_interface ${SEQAN_LIBRARIES})
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (test_align_parallel_banded ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -75,4 +82,5 @@ if (ALIGN_PARALLEL_SIMD_TEST)
     include (SeqAnSimdUtility)
     add_simd_platform_tests(test_align_parallel_interface)
     add_simd_platform_tests(test_align_parallel_algorithm)
+    add_simd_platform_tests(test_align_parallel_banded)
 endif ()
