@@ -179,11 +179,8 @@ public:
 // Recurse down const/non-const.
 
 template <typename TType, typename TTestType>
-struct IsConstructible:
-    If<IsLightWeight<TType>,
-       IsSameType<TType const, TTestType const>,
-       Or<IsSameType<TType, TTestType>,
-          IsSameType<TType, TTestType const> > > {};
+struct IsConstructible : public IsConstructibleFrom<TType, TTestType>
+{};
 
 template <typename TType, typename TTestType>
 struct IsAnInnerHost: False {};

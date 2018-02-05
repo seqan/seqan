@@ -531,6 +531,30 @@ struct WEIGHT<T const>:
 {
 };
 
+/*!
+ * @mfn IsConstructibleFrom
+ * @brief Checks if type a can be constructed from type b.
+ *
+ * @signature IsConstructibleFrom<TTo, TFrom>::VALUE;
+ *
+ * @tparam TTo     The target type.
+ * @tparam TFrom   The source type.
+ *
+ * @return VALUE <b>true</b> if <tt>TTo</tt> is constructible from <tt>TFrom</tt>.
+ */
+
+template <typename TToType, typename TFromType>
+struct IsConstructibleFrom : public
+            std::conditional_t<IsLightWeight<TToType>::VALUE,
+                               typename IsSameType<TToType const, TFromType const>::Type,
+                               Or<typename IsSameType<TToType, TFromType>::Type,
+                                  typename IsSameType<TToType, TFromType const>::Type> >
+                    // typename IsSameType<TToType const, TFromType const>::Type,
+                    // Or<typename IsSameType<TToType, TFromType>::Type,
+                    //    typename IsSameType<TToType, TFromType const>::Type>
+                //    >::Type
+{};
+
 //////////////////////////////////////////////////////////////////////////////
 
 //Iterator: see basic_iterator.h
