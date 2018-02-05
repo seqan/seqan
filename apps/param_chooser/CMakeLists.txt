@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_param_chooser CXX)
 message (STATUS "Configuring apps/param_chooser")
 
-set (SEQAN_APP_VERSION "0.0.9")
+set (SEQAN_APP_VERSION "0.0.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -93,4 +93,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:param_chooser")
 
   seqan_configure_cpack_app (param_chooser "param_chooser")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:param_chooser")
-

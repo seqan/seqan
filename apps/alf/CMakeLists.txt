@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_alf CXX)
 message (STATUS "Configuring apps/alf")
 
-set (SEQAN_APP_VERSION "1.1.10")
+set (SEQAN_APP_VERSION "1.1.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -75,7 +75,7 @@ install (FILES example/small.fasta
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
-	
+
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} alf CACHE INTERNAL "")
 
@@ -91,4 +91,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:alf")
 
   seqan_configure_cpack_app (alf "alf")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:alf")
-

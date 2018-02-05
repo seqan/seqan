@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sam2matrix CXX)
 message (STATUS "Configuring apps/sam2matrix")
 
-set (SEQAN_APP_VERSION "0.3.8")
+set (SEQAN_APP_VERSION "0.3.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -92,5 +92,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:sam2matrix")
 
   seqan_configure_cpack_app (sam2matrix "sam2matrix")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:sam2matrix")
-
-

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_ngs_roi CXX)
 message (STATUS "Configuring apps/ngs_roi")
 
-set (SEQAN_APP_VERSION "0.2.12")
+set (SEQAN_APP_VERSION "0.2.13")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -125,4 +125,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:ngs_roi")
 
   seqan_configure_cpack_app (ngs_roi "ngs_roi")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:ngs_roi")
-

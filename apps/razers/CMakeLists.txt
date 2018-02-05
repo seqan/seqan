@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_razers CXX)
 message (STATUS "Configuring apps/razers")
 
-set (SEQAN_APP_VERSION "1.5.8")
+set (SEQAN_APP_VERSION "1.5.9")
 
 if (SEQAN_TRAVIS_BUILD)
     message (STATUS "  Skipping build and test of razers on Travis CI.")
@@ -108,4 +108,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:razers")
 
   seqan_configure_cpack_app (razers "RazerS")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:razers")
-

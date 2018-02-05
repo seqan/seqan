@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_seqan_tcoffee CXX)
 message (STATUS "Configuring apps/seqan_tcoffee")
 
-set (SEQAN_APP_VERSION "1.13.8")
+set (SEQAN_APP_VERSION "1.13.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -75,7 +75,7 @@ seqan_add_app_test (seqan_tcoffee)
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
-	
+
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} seqan_tcoffee CACHE INTERNAL "")
 
@@ -91,4 +91,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:seqan_tcoffee")
 
   seqan_configure_cpack_app (seqan_tcoffee "seqan_tcoffee")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:seqan_tcoffee")
-

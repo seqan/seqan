@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sak CXX)
 message (STATUS "Configuring apps/sak")
 
-set (SEQAN_APP_VERSION "0.4.8")
+set (SEQAN_APP_VERSION "0.4.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -88,7 +88,7 @@ seqan_add_app_test (sak)
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
-	
+
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} sak CACHE INTERNAL "")
 
@@ -104,4 +104,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:sak")
 
   seqan_configure_cpack_app (sak "sak")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:sak")
-
