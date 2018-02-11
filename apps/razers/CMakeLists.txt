@@ -75,8 +75,7 @@ install (TARGETS razers
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/razers for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/genome.fa
                example/reads.fa

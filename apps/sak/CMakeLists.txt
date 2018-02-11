@@ -72,8 +72,7 @@ install (TARGETS sak
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/sak for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
                ${CMAKE_CURRENT_BINARY_DIR}/README.sak.txt
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/sak.1

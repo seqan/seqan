@@ -60,8 +60,7 @@ install (TARGETS sgip
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/sgip for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/Iso_Data/iso_m2D_m196.A01
                example/r01/iso_r01_m200.A00

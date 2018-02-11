@@ -60,8 +60,7 @@ install (TARGETS seqan_tcoffee
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/seqan_tcoffee for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/seq.fa
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)

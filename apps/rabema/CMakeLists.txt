@@ -99,8 +99,7 @@ install (TARGETS rabema_prepare_sam rabema_build_gold_standard rabema_evaluate
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/pair_align for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 
 # ----------------------------------------------------------------------------

@@ -147,8 +147,7 @@ install (TARGETS mason_frag_sequencing
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/mason2 for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
                README.mason_frag_sequencing
                README.mason_genome
                README.mason_materializer

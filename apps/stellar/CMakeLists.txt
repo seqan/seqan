@@ -64,8 +64,7 @@ install (TARGETS stellar
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/stellar for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/NC_001474.fasta
                example/NC_001477.fasta

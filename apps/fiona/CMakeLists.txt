@@ -87,8 +87,7 @@ install (TARGETS fiona compute_gain DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/fiona for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/reads.fa
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)

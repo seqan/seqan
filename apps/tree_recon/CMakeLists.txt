@@ -60,8 +60,7 @@ install (TARGETS tree_recon
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/tree_recon for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/example.dist
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)

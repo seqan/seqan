@@ -67,8 +67,7 @@ install (TARGETS samcat
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/samcat for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 #install (FILES example/fasta1.fa
 #               example/fasta2.fa

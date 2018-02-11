@@ -81,8 +81,7 @@ install (TARGETS gustaf gustaf_mate_joining
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/gustaf for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 install (FILES example/adeno.fa
                example/adeno_modified.fa

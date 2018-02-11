@@ -68,8 +68,7 @@ install (TARGETS s4_search s4_join
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/searchjoin for SeqAn release builds.
-install (FILES LICENSE
-               README
+install (FILES README
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 
 # ----------------------------------------------------------------------------
