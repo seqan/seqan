@@ -307,7 +307,8 @@ endif ()
 
 # some OSes don't link pthread fully when building statically so we explicitly include whole archive
 if (UNIX AND NOT APPLE)
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
+    find_package (Threads)
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 endif ()
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
