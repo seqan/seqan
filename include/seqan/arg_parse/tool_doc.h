@@ -1531,6 +1531,20 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     }
 }
 
+// --------------------------------------------------------------------------
+// Function ManToolDocPrinter_::print()
+// --------------------------------------------------------------------------
+
+//brief: "." or "'" indicate man page macros that need to be escaped with "\\&"
+template <typename TString>
+void print_first_in_line(std::ostream & stream, TString const & str)
+{
+    if (length(str) > 0 &&
+        (str[0] == '.' || str[0] == '\''))
+        stream << "\\&";
+    stream << str;
+}
+
 inline
 void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 {
@@ -1580,7 +1594,8 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
                 stream << ".sp\n";
             else if (!isFirstInSection && !line->isParagraph())
                 stream << ".br\n";
-            stream << line->_text << "\n";
+            print_first_in_line(stream, line->_text);
+            stream << "\n";
             isFirstInSection = false;
         }
         break;
@@ -1588,9 +1603,11 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         case ToolDocEntry_::LIST_ITEM:
         {
             ToolDocListItem_ const * item = static_cast<ToolDocListItem_ const *>(entry);
-            stream << ".TP\n"
-                   << item->_term << "\n"
-                   << item->_description << "\n";
+            stream << ".TP\n";
+            print_first_in_line(stream, item->_term);
+            stream << "\n";
+            print_first_in_line(stream, item->_description);
+            stream << "\n";
             isFirstInSection = false;
         }
         break;
