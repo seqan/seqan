@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="TestApp" version="0.1.0" docurl="http://www.seqan.de" category="SeqAn/Testing" >
+<tool name="TestApp" version="0.1.0" docurl="http://www.seqan.de" category="SeqAn/Testing" ctdVersion="1.7">
 	<executableName>test_app</executableName>
 	<description>This is a test-app.</description>
 	<manual>This is the first line of our test description.
