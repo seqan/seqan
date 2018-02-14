@@ -358,6 +358,27 @@ macro (seqan_build_system_init)
         find_package(BZip2)
         find_package(Boost)
         find_package(SeqAn CONFIG REQUIRED)
+        find_package(LibXml2)
+    endif ()
+
+    option(CTD_TEST_ENABLED "Checks if correct ctd export of a tool can be tested automatically." OFF)
+
+    if (LIBXML2_FOUND)
+        find_program (XMLLINT_EXECUTABLE xmllint DOC "The xmllint tool available in the xmllib package.")
+        if (XMLLINT_EXECUTABLE-NOTFOUND)
+            message (STATUS "Could not find xmllint. Not configuring ctd tests.")
+        else ()
+            set(CTD_SCHEMA_ROOT "${PROJECT_BINARY_DIR}/vendor/ctd_schema")
+            execute_process(COMMAND git clone https://github.com/WorkflowConversion/CTDSchema.git ${CTD_SCHEMA_ROOT}
+                            OUTPUT_QUIET
+                            ERROR_QUIET)
+
+            if (NOT EXISTS "${CTD_SCHEMA_ROOT}/CTD.xsd")
+                message (STATUS "Could not find CTD.xsd in <${CTD_SCHEMA_ROOT}>. Not confoguing ctd tests.")
+            else ()
+                set (CTD_TEST_ENABLED ON)
+            endif ()
+        endif ()
     endif ()
 
 endmacro (seqan_build_system_init)
@@ -386,6 +407,36 @@ macro (seqan_add_app_test APP_NAME)
                         ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
     endif (PYTHONINTERP_FOUND)
 endmacro (seqan_add_app_test APP_NAME)
+
+# ---------------------------------------------------------------------------
+# Macro seqan_add_ctd_test (APP_NAME SUFFIX)
+#
+# Add ctd test for tools that export a ctd desrciption.
+# ---------------------------------------------------------------------------
+
+# App tests are run using xmllint.
+# However, we only test this in developer mode, such that searching for the xmllint tool is
+# done globally in the build system setup routine.
+# The variable CTD_TEST_ENABLED indicates if the update was successful.
+
+macro (seqan_add_ctd_test APP_NAME)
+    # Check if we are good to go for testing the file.
+    if (NOT CTD_TEST_ENABLED)
+        message (STATUS "CTD testing was not configured.")
+        return ()
+    endif ()
+
+    # Add a custom command to create the ctd once the binary has been built.
+    add_custom_command(TARGET ${APP_NAME}
+                       POST_BUILD
+                       COMMAND ${CMAKE_BINARY_DIR}/bin/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
+
+    # Add the ctd test.
+    add_test (NAME ctd_test_${APP_NAME}
+              COMMAND ${XMLLINT_EXECUTABLE}
+              -schema ${CTD_SCHEMA_ROOT}/CTD.xsd
+              ${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd)
+endmacro (seqan_add_ctd_test APP_NAME)
 
 # ---------------------------------------------------------------------------
 # Macro seqan_setup_library ()
