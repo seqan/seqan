@@ -88,6 +88,11 @@ set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES}
         four2three
         CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (bisar)
+seqan_add_ctd_test (casbar)
+seqan_add_ctd_test (four2three)
+
 # ----------------------------------------------------------------------------
 # Installation
 # ----------------------------------------------------------------------------

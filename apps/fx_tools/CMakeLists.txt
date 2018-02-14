@@ -79,6 +79,10 @@ install (FILES LICENSE
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fx_fastq_stats fx_bam_coverage CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (fx_fastq_stats)
+seqan_add_ctd_test (fx_bam_coverage)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------

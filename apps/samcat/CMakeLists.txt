@@ -87,6 +87,9 @@ seqan_add_app_test (samcat)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} samcat CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (samcat)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------

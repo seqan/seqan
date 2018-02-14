@@ -119,6 +119,9 @@ seqan_add_app_test (razers3 _sequential)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} razers3 CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (razers3)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------

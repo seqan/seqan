@@ -80,6 +80,9 @@ seqan_add_app_test (sam2matrix)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} sam2matrix CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (sam2matrix)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------

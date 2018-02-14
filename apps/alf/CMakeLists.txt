@@ -79,6 +79,9 @@ install (FILES example/small.fasta
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} alf CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (alf)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------

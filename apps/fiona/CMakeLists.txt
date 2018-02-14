@@ -106,6 +106,11 @@ seqan_add_app_test (fiona)
 # Include executable fiona in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fiona fiona_illumina compute_gain CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (fiona)
+seqan_add_ctd_test (fiona_illumina)
+seqan_add_ctd_test (compute_gain)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
