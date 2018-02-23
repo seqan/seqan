@@ -185,6 +185,8 @@ SEQAN_BEGIN_TESTSUITE(test_bam_io)
 //  TODO(dadi): uncomment when BamIndex.build index is fixed
 //    SEQAN_CALL_TEST(test_bam_io_bam_index_build);
     SEQAN_CALL_TEST(test_bam_io_bam_index_open);
+    SEQAN_CALL_TEST(test_bam_io_bam_index_jump_to_region);
+    SEQAN_CALL_TEST(test_bam_io_bam_index_view_records);
 #endif
 }
 SEQAN_END_TESTSUITE
