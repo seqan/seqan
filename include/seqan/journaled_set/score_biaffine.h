@@ -120,11 +120,10 @@ score(Score<TScoreValue, BiAffine> const & me,
 // Function scoreGapExtendHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TSeqEntry1, typename TSeqEntry2>
+template <typename TScoreValue, typename ...TSeqEntry>
 inline TScoreValue
 scoreGapExtendHorizontal(Score<TScoreValue, BiAffine> const & me,
-                         TSeqEntry1 const & /*seqEntry1*/,
-                         TSeqEntry2 const & /*seqEntry2*/)
+                         TSeqEntry const & ... /*seqEntry1, seqEntry2*/)
 {
     return me._gapExtendHorizontal;
 }
@@ -133,11 +132,10 @@ scoreGapExtendHorizontal(Score<TScoreValue, BiAffine> const & me,
 // Function scoreGapOpenHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TSeqEntry1, typename TSeqEntry2>
+template <typename TScoreValue, typename ...TSeqEntry>
 inline TScoreValue
 scoreGapOpenHorizontal(Score<TScoreValue, BiAffine> const & me,
-                       TSeqEntry1 const & /*seqEntry1*/,
-                       TSeqEntry2 const & /*seqEntry2*/)
+                       TSeqEntry const & ... /*seqEntry1, seqEntry2*/)
 {
     return me._gapOpenHorizontal;
 }
@@ -146,11 +144,10 @@ scoreGapOpenHorizontal(Score<TScoreValue, BiAffine> const & me,
 // Function scoreGapExtendVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TSeqEntry1, typename TSeqEntry2>
+template <typename TScoreValue, typename ...TSeqEntry>
 inline TScoreValue
 scoreGapExtendVertical(Score<TScoreValue, BiAffine> const & me,
-                       TSeqEntry1 const & /*seqEntry1*/,
-                       TSeqEntry2 const & /*seqEntry2*/)
+                       TSeqEntry const & ... /*seqEntry1, seqEntry2*/)
 {
     return me._gapExtendVertical;
 }
@@ -159,11 +156,10 @@ scoreGapExtendVertical(Score<TScoreValue, BiAffine> const & me,
 // Function scoreGapOpenVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TSeqEntry1, typename TSeqEntry2>
+template <typename TScoreValue, typename ...TSeqEntry>
 inline TScoreValue
 scoreGapOpenVertical(Score<TScoreValue, BiAffine> const & me,
-                     TSeqEntry1 const & /*seqEntry1*/,
-                     TSeqEntry2 const & /*seqEntry2*/)
+                     TSeqEntry const & ... /*seqEntry1, seqEntry2*/)
 {
     return me._gapOpenVertical;
 }

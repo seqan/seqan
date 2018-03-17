@@ -239,12 +239,12 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
             if (!isGapOpen0)
             {
                 stats.numGapOpens += 1;
-                stats.alignmentScore += scoreGapOpen(scoringScheme);
+                stats.alignmentScore += scoreGapOpenVertical(scoringScheme);
             }
             else
             {
                 stats.numGapExtensions += 1;
-                stats.alignmentScore += scoreGapExtend(scoringScheme);
+                stats.alignmentScore += scoreGapExtendVertical(scoringScheme);
             }
             stats.numDeletions += 1;
             isGapOpen0 = true;
@@ -259,12 +259,12 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
             if (!isGapOpen1)
             {
                 stats.numGapOpens += 1;
-                stats.alignmentScore += scoreGapOpen(scoringScheme);
+                stats.alignmentScore += scoreGapOpenHorizontal(scoringScheme);
             }
             else
             {
                 stats.numGapExtensions += 1;
-                stats.alignmentScore += scoreGapExtend(scoringScheme);
+                stats.alignmentScore += scoreGapExtendHorizontal(scoringScheme);
             }
             stats.numInsertions += 1;
             isGapOpen1 = true;

@@ -171,12 +171,11 @@ sequenceEntryForScore(TScore const & /*scoringScheme*/, TSequence const & seq, T
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
+template <typename TValue, typename TSpec, typename ...TSeqValue>
 inline TValue
 scoreGapOpenHorizontal(
     Score<TValue, TSpec> const & me,
-    TSeqHValue const & /*seqHVal*/,
-    TSeqVValue const & /*seqHVal*/)
+    TSeqValue const & ... /*seqHVal, seqHVal*/)
 {
     return scoreGapOpen(me);
 }
@@ -198,12 +197,11 @@ scoreGapOpenHorizontal(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
+template <typename TValue, typename TSpec, typename ...TSeqValue>
 inline TValue
 scoreGapOpenVertical(
     Score<TValue, TSpec> const & me,
-    TSeqHValue const & /*seqHVal*/,
-    TSeqVValue const & /*seqHVal*/)
+    TSeqValue const & ... /*seqHVal, seqHVal*/)
 {
     return scoreGapOpen(me);
 }
@@ -225,12 +223,11 @@ scoreGapOpenVertical(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
+template <typename TValue, typename TSpec, typename ...TSeqValue>
 inline TValue
 scoreGapExtendHorizontal(
     Score<TValue, TSpec> const & me,
-    TSeqHValue const & /*seqHVal*/,
-    TSeqVValue const & /*seqHVal*/)
+    TSeqValue const & ... /*seqHVal, seqHVal*/)
 {
     return scoreGapExtend(me);
 }
@@ -252,12 +249,11 @@ scoreGapExtendHorizontal(
  * Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
  */
 
-template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
+template <typename TValue, typename TSpec, typename ...TSeqValue>
 inline TValue
 scoreGapExtendVertical(
     Score<TValue, TSpec> const & me,
-    TSeqHValue const & /*seqHVal*/,
-    TSeqVValue const & /*seqHVal*/)
+    TSeqValue const & ... /*seqHVal, seqHVal*/)
 {
     return scoreGapExtend(me);
 }
