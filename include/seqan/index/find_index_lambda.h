@@ -122,17 +122,17 @@ _findBacktracking(TIndexIt indexIt,
             {
                 do
                 {
+                    // Mismatch.
+                    TThreshold delta = !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
+                    _findBacktracking(indexIt, needle, needleIt + 1,
+                                      static_cast<TThreshold>(errors + delta), threshold, delegate, TDistance());
+
                     // Deletion.
                     SEQAN_IF_CONSTEXPR (IsSameType<TDistance, EditDistance>::VALUE)
                     {
                         _findBacktracking(indexIt, needle, needleIt,
                                           static_cast<TThreshold>(errors + 1), threshold, delegate, TDistance());
                     }
-
-                    // Mismatch.
-                    TThreshold delta = !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
-                    _findBacktracking(indexIt, needle, needleIt + 1,
-                                      static_cast<TThreshold>(errors + delta), threshold, delegate, TDistance());
                 }
                 while (goRight(indexIt));
             }
