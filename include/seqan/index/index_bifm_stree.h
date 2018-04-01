@@ -48,8 +48,6 @@ inline void _update(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TInde
 {
     typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
 
-    _historyPush(_iter(it, TOppositeDirection()));
-
     auto & dirIter = _iter(it, TDirection());
     auto & oppDirIter = _iter(it, TOppositeDirection());
 
@@ -82,6 +80,7 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
     typedef typename Size<TIndex>::Type                         TSize2;
     typedef Pair<TSize2>                                        TRange;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
 
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
@@ -90,6 +89,7 @@ _goDownString(Iter<Index<TText, BidirectionalIndex<FMIndex<TOccSpec, TIndexSpec>
         return true;
 
     _historyPush(_iter(it, TDirection()));
+    _historyPush(_iter(it, TOppositeDirection()));
 
     for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
     {

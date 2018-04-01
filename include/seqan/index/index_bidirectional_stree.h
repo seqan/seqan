@@ -218,6 +218,7 @@ inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<To
 {
     if (goDown(_iter(it, Fwd())))
     {
+        _historyPush(_iter(it, Rev()));
         _update(it, Fwd());
         return true;
     }
@@ -229,6 +230,7 @@ inline bool goDown(Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<To
 {
     if (goDown(_iter(it, Rev())))
     {
+        _historyPush(_iter(it, Fwd()));
         _update(it, Rev());
         return true;
     }
@@ -251,8 +253,11 @@ _goDownObject(
     False,
     TDirection)
 {
+    typedef typename IfC<IsSameType<TDirection, Tag<BidirectionalFwd_> >::VALUE, Rev, Fwd>::Type TOppositeDirection;
+
     if (_goDownChar(_iter(it, TDirection()), obj))
     {
+        _historyPush(_iter(it, TOppositeDirection()));
         _update(it, TDirection());
         return true;
     }
