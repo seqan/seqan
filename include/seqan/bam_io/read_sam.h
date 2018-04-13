@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -353,7 +353,7 @@ readRecord(BamAlignmentRecord & record,
     // TLEN
     if (value(iter) == '*')
     {
-        record.tLen = MaxValue<int32_t>::VALUE;
+        record.tLen = std::numeric_limits<int32_t>::max();
         skipOne(iter);
     }
     else

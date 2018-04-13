@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,14 +49,14 @@ namespace seqan {
 // Class DPMatrix                                              [SparseDPMatrix]
 // ----------------------------------------------------------------------------
 
-template <typename TValue>
-class DPMatrix_<TValue, SparseDPMatrix>
+template <typename TValue, typename THost>
+class DPMatrix_<TValue, SparseDPMatrix, THost>
 {
 public:
 
-    typedef typename Member<DPMatrix_, DPMatrixMember>::Type THost;
+    typedef typename Member<DPMatrix_, DPMatrixMember>::Type TMatrix;
 
-    Holder<THost>   data_host;  // The host containing the actual matrix.
+    Holder<TMatrix>   data_host;  // The host containing the actual matrix.
 
     DPMatrix_() :
         data_host()
@@ -77,11 +77,11 @@ public:
 // Function resize()
 // ----------------------------------------------------------------------------
 
-template <typename TValue>
+template <typename TValue, typename THost>
 inline void
-resize(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix)
+resize(DPMatrix_<TValue, SparseDPMatrix, THost> & dpMatrix)
 {
-    typedef DPMatrix_<TValue, SparseDPMatrix> TDPMatrix;
+    typedef DPMatrix_<TValue, SparseDPMatrix, THost> TDPMatrix;
     typedef typename Size<TDPMatrix>::Type TSize;
 
     TSize _dimVertical = length(dpMatrix, DPMatrixDimension_::VERTICAL);
@@ -90,12 +90,12 @@ resize(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix)
         resize(host(dpMatrix), _dimVertical, Exact());
 }
 
-template <typename TValue>
+template <typename TValue, typename THost>
 inline void
-resize(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix,
+resize(DPMatrix_<TValue, SparseDPMatrix, THost> & dpMatrix,
        TValue const & fillValue)
 {
-    typedef DPMatrix_<TValue, SparseDPMatrix> TDPMatrix;
+    typedef DPMatrix_<TValue, SparseDPMatrix, THost> TDPMatrix;
     typedef typename Size<TDPMatrix>::Type TSize;
 
     TSize _dimVertical = length(dpMatrix, DPMatrixDimension_::VERTICAL);
@@ -108,18 +108,18 @@ resize(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix,
 // Function value()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TPositionV, typename TPositionH>
-inline typename Reference<DPMatrix_<TValue, SparseDPMatrix> >::Type
-value(DPMatrix_<TValue, SparseDPMatrix> & dpMatrix,
+template <typename TValue, typename THost, typename TPositionV, typename TPositionH>
+inline typename Reference<DPMatrix_<TValue, SparseDPMatrix, THost> >::Type
+value(DPMatrix_<TValue, SparseDPMatrix, THost> & dpMatrix,
       TPositionV const & posV,
       TPositionH const &)
 {
     return value(dpMatrix, posV);
 }
 
-template <typename TValue, typename TPositionV, typename TPositionH>
-inline typename Reference<DPMatrix_<TValue, SparseDPMatrix> const>::Type
-value(DPMatrix_<TValue, SparseDPMatrix> const & dpMatrix,
+template <typename TValue, typename THost, typename TPositionV, typename TPositionH>
+inline typename Reference<DPMatrix_<TValue, SparseDPMatrix, THost> const>::Type
+value(DPMatrix_<TValue, SparseDPMatrix, THost> const & dpMatrix,
       TPositionV const & posV,
       TPositionH const &)
 {
@@ -131,9 +131,9 @@ value(DPMatrix_<TValue, SparseDPMatrix> const & dpMatrix,
 // ----------------------------------------------------------------------------
 
 
-template <typename TValue, typename TPosition>
-inline typename Position<DPMatrix_<TValue, SparseDPMatrix> >::Type
-coordinate(DPMatrix_<TValue, SparseDPMatrix> const & /*dpMatrix*/,
+template <typename TValue, typename THost, typename TPosition>
+inline typename Position<DPMatrix_<TValue, SparseDPMatrix, THost> >::Type
+coordinate(DPMatrix_<TValue, SparseDPMatrix, THost> const & /*dpMatrix*/,
            TPosition hostPos,
            typename DPMatrixDimension_::TValue dimension)
 {

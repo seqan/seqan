@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,6 +60,16 @@ struct Pager;
 // ============================================================================
 // Classes
 // ============================================================================
+
+// Special end-of-file marker defined by the BGZF compression format.
+// See: https://samtools.github.io/hts-specs/SAMv1.pdf
+static constexpr std::array<uint8_t, 28> BGZF_END_OF_FILE_MARKER {{0x1f, 0x8b, 0x08, 0x04,
+                                                                  0x00, 0x00, 0x00, 0x00,
+                                                                  0x00, 0xff, 0x06, 0x00,
+                                                                  0x42, 0x43, 0x02, 0x00,
+                                                                  0x1b, 0x00, 0x03, 0x00,
+                                                                  0x00, 0x00, 0x00, 0x00,
+                                                                  0x00, 0x00, 0x00, 0x00}};
 
 template <typename TAlgTag>
 struct Compress;
@@ -276,16 +286,20 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
 // Helper Function _bgzfUnpackXX()
 // ----------------------------------------------------------------------------
 
-inline unsigned short
+inline uint16_t
 _bgzfUnpack16(char const * buffer)
 {
-    return *reinterpret_cast<unsigned short const *>(buffer);
+    uint16_t tmp = *reinterpret_cast<uint16_t const *>(buffer);
+    enforceLittleEndian(tmp);
+    return tmp;
 }
 
-inline unsigned
+inline uint32_t
 _bgzfUnpack32(char const * buffer)
 {
-    return *reinterpret_cast<unsigned const *>(buffer);
+    uint32_t tmp = *reinterpret_cast<uint32_t const *>(buffer);
+    enforceLittleEndian(tmp);
+    return tmp;
 }
 
 // ----------------------------------------------------------------------------
@@ -293,15 +307,17 @@ _bgzfUnpack32(char const * buffer)
 // ----------------------------------------------------------------------------
 
 inline void
-_bgzfPack16(char * buffer, unsigned short value)
+_bgzfPack16(char * buffer, uint16_t value)
 {
-    *reinterpret_cast<unsigned short *>(buffer) = value;
+    enforceLittleEndian(value);
+    *reinterpret_cast<uint16_t *>(buffer) = value;
 }
 
 inline void
-_bgzfPack32(char * buffer, unsigned value)
+_bgzfPack32(char * buffer, uint32_t value)
 {
-    *reinterpret_cast<unsigned *>(buffer) = value;
+    enforceLittleEndian(value);
+    *reinterpret_cast<uint32_t *>(buffer) = value;
 }
 
 

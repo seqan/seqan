@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -115,6 +115,7 @@ inline int32_t readBamRecord(TIdString & meta,
     // BamAlignmentRecordCore.
     BamAlignmentRecordCore recordCore;
     arrayCopyForward(it, it + sizeof(BamAlignmentRecordCore), reinterpret_cast<char *>(&recordCore));
+    enforceLittleEndian(recordCore);
     it += sizeof(BamAlignmentRecordCore);
 
     clear(meta);
@@ -143,9 +144,9 @@ inline int32_t readBamRecord(TIdString & meta,
     {
         unsigned char ui = getValue(it);
         ++it;
-        assignValue(sit, Iupac(ui >> 4));
+        *sit =  Iupac(ui >> 4);
         ++sit;
-        assignValue(sit, Iupac(ui & 0x0f));
+        *sit =  Iupac(ui & 0x0f);
         ++sit;
     }
     if (recordCore._l_qseq & 1)

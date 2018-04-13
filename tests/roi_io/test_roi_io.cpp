@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -90,8 +90,7 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
 
 SEQAN_DEFINE_TEST(test_roi_roi_file_read)
 {
-    seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
-    append(inPath, "/tests/roi_io/example.roi");
+    seqan::CharString inPath = seqan::getAbsolutePath("/tests/roi_io/example.roi");
 
     seqan::RoiFileIn roiFileIn(toCString(inPath));
 
@@ -129,7 +128,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_read)
 
 SEQAN_DEFINE_TEST(test_roi_roi_file_write)
 {
-    seqan::CharString tmpPath = SEQAN_PATH_TO_ROOT();
+    seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
     append(tmpPath, ".roi");
 
     seqan::RoiFileOut roiFileOut(toCString(tmpPath));
@@ -162,8 +161,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
 
     close(roiFileOut);
 
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/tests/roi_io/example.roi");
+    seqan::CharString goldPath(seqan::getAbsolutePath("/tests/roi_io/example.roi"));
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 

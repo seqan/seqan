@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
+// Copyright (c) 2011-2018, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -227,7 +227,7 @@ inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsi
     record.ref = sId;
     record.source = "GUSTAF";
     record.type = "duplication";
-    TPos begin, end, target = maxValue<unsigned>();
+    TPos begin, end, target = std::numeric_limits<unsigned>::max();
     // Using set function for VCF duplication to set positions
     _setVcfRecordDuplicationPos(bp, begin, end, target);
     if (begin > end)
@@ -244,7 +244,7 @@ inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsi
     record.strand = '+';
     appendValue(record.tagNames, "ID");
     appendValue(record.tagValues, toString(id));
-    if (target != maxValue<unsigned>())
+    if (target != std::numeric_limits<unsigned>::max())
     {
         appendValue(record.tagNames, "size");
         appendValue(record.tagValues, toString((end - begin)));
@@ -409,7 +409,7 @@ inline void _fillVcfRecordInsertion(VcfRecord & record, TBreakpoint & bp, TSeque
     ss << "SVTYPE=INS";
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Insertion end position smaller than begin position!");
     ss << ";SVLEN=" << length(bp.insertionSeq);
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -444,7 +444,7 @@ inline void _fillVcfRecordDeletion(VcfRecord & record, TBreakpoint & bp, TSequen
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Deletion end position smaller than begin position!");
     ss << ";SVLEN=-" << bp.endSeqPos-bp.startSeqPos;
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -481,7 +481,7 @@ inline void _fillVcfRecordInversion(VcfRecord & record, TBreakpoint & bp, TSeque
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Inversion end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos;
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -511,7 +511,7 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
     ss << ";END=" << bp.endSeqPos + 1 - 1; // 1-base adjustment, -1 bc endPos is behind last variant position
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Tandem duplication end position smaller than begin position!");
     ss << ";SVLEN=" << bp.endSeqPos-bp.startSeqPos - 1; // -1 bc positions are flanking the variant region
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -536,7 +536,7 @@ inline void _fillVcfRecordTandem(VcfRecord & record, TBreakpoint & bp, TSequence
 template <typename TBreakpoint, typename TPos>
 inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & end, TPos & target)
 {
-    if (bp.dupMiddlePos != maxValue<unsigned>())
+    if (bp.dupMiddlePos != std::numeric_limits<unsigned>::max())
     {
 	// Downstream duplication dup(middlePos, endPos, startPos)
         if (bp.dupTargetPos == bp.startSeqPos)
@@ -560,7 +560,7 @@ template <typename TBreakpoint, typename TSequence>
 inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSequence & ref, unsigned id)
 {
     typedef typename TBreakpoint::TPos TPos;
-    TPos begin, end, target = maxValue<unsigned>();
+    TPos begin, end, target = std::numeric_limits<unsigned>::max();
     std::stringstream ss;
     if (!_setVcfRecordDuplicationPos(bp, begin, end, target))
         ss << "IMPRECISE;";
@@ -573,12 +573,12 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
     ss << "SVTYPE=DUP";
     ss << ";END=" << end - 1 + 1; // -1 to set end as last position of variant, +1 for 1-base adjustment
     SEQAN_ASSERT_GEQ_MSG(bp.endSeqPos, bp.startSeqPos, "Duplication end position smaller than begin position!");
-    if (target != maxValue<unsigned>())
+    if (target != std::numeric_limits<unsigned>::max())
     {
         ss << ";SVLEN=" << end-begin;
         ss << ";TARGETPOS=" << target - 1 + 1; // -1 to set target as position before insertion, +1 for 1-base adjustment
     }
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -607,7 +607,7 @@ inline void _fillVcfRecordBreakend(VcfRecord & record, TBreakpoint & bp, TSequen
     // ss << "IMPRECISE;";
     ss << "SVTYPE=BND";
     // ss << ";CIPOS=-5,5";
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         //ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -691,7 +691,7 @@ inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSeque
     std::stringstream ss;
     ss << "SVTYPE=BND";
     ss << ";EVENT=Trans" << bp_id;
-    //if (bp.similar != maxValue<unsigned>())
+    //if (bp.similar != std::numeric_limits<unsigned>::max())
         ss << ";BM=" << bp.similar;
     ss << ";DP=" << bp.support;
     record.info = ss.str();
@@ -718,7 +718,7 @@ inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSeque
     }
 
     // Compute ALT columns
-    if (bp.dupMiddlePos != maxValue<unsigned>())
+    if (bp.dupMiddlePos != std::numeric_limits<unsigned>::max())
     {
         _getShortId(sId, bp.midPosId);
         std::stringstream alt1;
@@ -790,7 +790,7 @@ inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSeque
     clear(record.alt);
 
     // 3rd and 4th entry only exist if the middle (bp.dupMiddlePos) of translocation is known
-    if (bp.dupMiddlePos != maxValue<unsigned>())
+    if (bp.dupMiddlePos != std::numeric_limits<unsigned>::max())
     {
         // 3rd entry
         // 3rd: pos. before second split (dupMiddlePos - 1) ALT: endSeqPos
@@ -922,7 +922,7 @@ inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSeque
     record.beginPos = bp.endSeqPos;
 
     // Compute ALT columns
-    if (bp.dupMiddlePos != maxValue<unsigned>())
+    if (bp.dupMiddlePos != std::numeric_limits<unsigned>::max())
     {
         std::stringstream alt1;
         if (bp.endSeqStrand != bp.midPosStrand)
@@ -1017,8 +1017,7 @@ void _fillVcfHeader(seqan::VcfHeader & vcfHeader,
         append(contigStr, ">");
         appendValue(vcfHeader, seqan::VcfHeaderRecord("contig", contigStr));
 
-        appendName(contigNames(context(vcfFileOut)), databaseIDs[i],
-                   contigNamesCache(context(vcfFileOut)));
+        appendName(contigNamesCache(context(vcfFileOut)), databaseIDs[i]);
     }
 }
 
@@ -1032,7 +1031,7 @@ int32_t _getrID(StringSet<TId> & databaseIDs, TId dbID)
         if (sID == dbID)
             return static_cast<int32_t>(i);
     }
-    return maxValue<int>();
+    return std::numeric_limits<int>::max();
 }
 
 // Breakpoint writing call
@@ -1070,7 +1069,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     }
 
     VcfRecord vcf_record;
-    int32_t id = maxValue<int>();
+    int32_t id = std::numeric_limits<int>::max();
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint & bp = globalBreakpoints[i];
@@ -1097,7 +1096,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             } else
             {
                 // extra write function because we have to write 6 records here instead of 1
-                int32_t id2 = maxValue<int>();
+                int32_t id2 = std::numeric_limits<int>::max();
                 id2 = _getrID(databaseIDs, bp.endSeqId);
                 if (_writeVcfTranslocation(vcfOut, bp, databases[id], databases[id2], id, id2, i))
                         std::cerr << "Error while writing breakpoint translocation vcf record!" << std::endl;

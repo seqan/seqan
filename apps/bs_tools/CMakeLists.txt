@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_bs_tools CXX)
 message (STATUS "Configuring apps/bs_tools")
 
-set (SEQAN_APP_VERSION "0.1.9")
+set (SEQAN_APP_VERSION "0.1.10")
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND ("$ENV{MODEL}" STREQUAL "Nightly"))
     message (STATUS "bs_tools skipped on FreeBSD because math.h rounding errors.")
@@ -99,7 +99,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install bs_tools in ${PREFIX}/bin directory
 install (TARGETS bisar casbar four2three
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/bs_tools for SeqAn release builds.

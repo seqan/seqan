@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -399,13 +399,17 @@ template <typename TSequenceH,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
           typename TAlgoTag>
-TScoreValue globalAlignmentScore(TSequenceH const & seqH,
-                                 TSequenceV const & seqV,
-                                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
-                                 int lowerDiag,
-                                 int upperDiag,
-                                 TAlgoTag const & /*algoTag*/)
+SEQAN_FUNC_DISABLE_IF(And<And<Is<ContainerConcept<TSequenceH>>, Is<ContainerConcept<typename Value<TSequenceH>::Type>>>,
+                          And<Is<ContainerConcept<TSequenceV>>, Is<ContainerConcept<typename Value<TSequenceH>::Type>>>
+                         >,
+                      TScoreValue)
+globalAlignmentScore(TSequenceH const & seqH,
+                     TSequenceV const & seqV,
+                     Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                     AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                     int lowerDiag,
+                     int upperDiag,
+                     TAlgoTag const & /*algoTag*/)
 {
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
@@ -423,12 +427,12 @@ template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlgoTag>
-TScoreValue globalAlignmentScore(TSequenceH const & seqH,
-                                 TSequenceV const & seqV,
-                                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 int lowerDiag,
-                                 int upperDiag,
-                                 TAlgoTag const & algoTag)
+auto globalAlignmentScore(TSequenceH const & seqH,
+                          TSequenceV const & seqV,
+                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                          int lowerDiag,
+                          int upperDiag,
+                          TAlgoTag const & algoTag)
 {
     AlignConfig<> alignConfig;
     return globalAlignmentScore(seqH, seqV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
@@ -439,12 +443,12 @@ template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
-TScoreValue globalAlignmentScore(TSequenceH const & seqH,
-                                 TSequenceV const & seqV,
-                                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                                 int lowerDiag,
-                                 int upperDiag)
+auto globalAlignmentScore(TSequenceH const & seqH,
+                          TSequenceV const & seqV,
+                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                          AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                          int lowerDiag,
+                          int upperDiag)
 {
     if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
         return globalAlignmentScore(seqH, seqV, scoringScheme, alignConfig, lowerDiag, upperDiag, NeedlemanWunsch());
@@ -456,11 +460,11 @@ TScoreValue globalAlignmentScore(TSequenceH const & seqH,
 template <typename TSequenceH,
           typename TSequenceV,
           typename TScoreValue, typename TScoreSpec>
-TScoreValue globalAlignmentScore(TSequenceH const & seqH,
-                                 TSequenceV const & seqV,
-                                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 int lowerDiag,
-                                 int upperDiag)
+auto globalAlignmentScore(TSequenceH const & seqH,
+                          TSequenceV const & seqV,
+                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                          int lowerDiag,
+                          int upperDiag)
 {
     AlignConfig<> alignConfig;
     return globalAlignmentScore(seqH, seqV, scoringScheme, alignConfig, lowerDiag, upperDiag);
@@ -551,17 +555,22 @@ TScoreValue globalAlignmentScore(StringSet<TString, TSpec> const & strings,
 // Function globalAlignmentScore()         [banded, SIMD version, 2x StringSet]
 // ----------------------------------------------------------------------------
 
-template <typename TString, typename TSpec,
+template <typename TSeqH,
+          typename TSeqV,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
           typename TAlgoTag>
-String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
-                                         StringSet<TString, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
-                                         int lowerDiag,
-                                         int upperDiag,
-                                         TAlgoTag const & /*algoTag*/)
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignmentScore(TSeqH const & stringsH,
+                     TSeqV const & stringsV,
+                     Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                     AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
+                     int lowerDiag,
+                     int upperDiag,
+                     TAlgoTag const & /*algoTag*/)
 {
     typedef AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> TAlignConfig;
     typedef typename SubstituteAlignConfig_<TAlignConfig>::Type TFreeEndGaps;
@@ -570,51 +579,6 @@ String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & strin
 
     SEQAN_ASSERT_EQ(length(stringsH), length(stringsV));
     return _alignWrapper(stringsH, stringsV, scoringScheme, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
-}
-
-// Interface without AlignConfig<>.
-template <typename TString, typename TSpec,
-          typename TScoreValue, typename TScoreSpec,
-          typename TAlgoTag>
-String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
-                                         StringSet<TString, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         int lowerDiag,
-                                         int upperDiag,
-                                         TAlgoTag const & algoTag)
-{
-    AlignConfig<> alignConfig;
-    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
-}
-
-// Interface without algorithm tag.
-template <typename TString, typename TSpec,
-          typename TScoreValue, typename TScoreSpec,
-          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
-String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
-                                         StringSet<TString, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
-                                         int lowerDiag,
-                                         int upperDiag)
-{
-    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
-        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, NeedlemanWunsch());
-    else
-        return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag, Gotoh());
-}
-
-// Interface without AlignConfig<> and algorithm tag.
-template <typename TString, typename TSpec,
-          typename TScoreValue, typename TScoreSpec>
-String<TScoreValue> globalAlignmentScore(StringSet<TString, TSpec> const & stringsH,
-                                         StringSet<TString, TSpec> const & stringsV,
-                                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                         int lowerDiag,
-                                         int upperDiag)
-{
-    AlignConfig<> alignConfig;
-    return globalAlignmentScore(stringsH, stringsV, scoringScheme, alignConfig, lowerDiag, upperDiag);
 }
 
 // ----------------------------------------------------------------------------

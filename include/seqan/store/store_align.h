@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -196,7 +196,7 @@ TStream & operator<<(TStream & stream, AlignedReadStoreElement<TPos, TGapAnchor,
 
 template <typename TPos, typename TGapAnchor, typename TSpec>
 const typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type
-AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type>::VALUE;
+AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = std::numeric_limits<typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type>::max();
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -240,7 +240,7 @@ struct AlignQualityStoreElement
     AlignQualityStoreElement():
         pairScore(0),
         score(0),
-        errors(MaxValue<unsigned char>::VALUE) {}
+        errors(std::numeric_limits<unsigned char>::max()) {}
 
     AlignQualityStoreElement(TScore _pairScore, TScore _score, unsigned char _errors):
         pairScore(_pairScore),

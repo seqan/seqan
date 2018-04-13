@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -378,14 +378,14 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    return value(hostIterator(me));
+    return *hostIterator(me);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
 inline typename Reference<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 value(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    return value(hostIterator(me));
+    return *hostIterator(me);
 }
 
 // ----------------------------------------------------------------------------
@@ -396,14 +396,14 @@ template <typename TContainer, typename TIterator, typename TSpec>
 inline typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > >::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
 {
-    return getValue(hostIterator(me));
+    return *hostIterator(me);
 }
 
 template <typename TContainer, typename TIterator, typename TSpec>
 inline typename GetValue<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 getValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 {
-    return getValue(hostIterator(me));
+    return *hostIterator(me);
 }
 
 // ----------------------------------------------------------------------------
@@ -415,7 +415,7 @@ inline void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
             TValue const & _value)
 {
-    assignValue(hostIterator(me), _value);
+    *hostIterator(me) = _value;
 }
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TValue>
@@ -423,7 +423,7 @@ inline void
 assignValue(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
             TValue const & _value)
 {
-    assignValue(hostIterator(me), _value);
+    *hostIterator(me) = _value;
 }
 
 // ----------------------------------------------------------------------------

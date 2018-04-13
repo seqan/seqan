@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -61,34 +61,37 @@ struct MyNumber_
     {}
 };
 
-inline MyNumber_ const &
-infimumValueImpl(MyNumber_ * /*tag*/)
+namespace seqan
 {
-    static const MyNumber_ result(-1);
-    return result;
-}
+template <>
+struct MinValue<MyNumber_>
+{
+    static const MyNumber_ VALUE;
+};
 
-inline MyNumber_ const &
-supremumValueImpl(MyNumber_ * /*tag*/)
+const MyNumber_ MinValue<MyNumber_>::VALUE = MyNumber_(-1);
+
+template <>
+struct MaxValue<MyNumber_>
 {
-    static const MyNumber_ result(1);
-    return result;
+    static const MyNumber_ VALUE;
+};
+
+const MyNumber_ MaxValue<MyNumber_>::VALUE = MyNumber_(1);
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_min_value)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT_EQ(minValue<MyNumber_>().value, -1);
-    SEQAN_ASSERT_EQ(minValue(MyNumber_()).value,  -1);
+    SEQAN_ASSERT_EQ(MinValue<MyNumber_>::VALUE.value, -1);
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_max_value)
 {
     using namespace seqan;
 
-    SEQAN_ASSERT_EQ(maxValue<MyNumber_>().value, 1);
-    SEQAN_ASSERT_EQ(maxValue(MyNumber_()).value,  1);
+    SEQAN_ASSERT_EQ(MaxValue<MyNumber_>::VALUE.value, 1);
 }
 
 #endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_

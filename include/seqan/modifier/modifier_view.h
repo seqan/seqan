@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -321,14 +321,14 @@ template <typename THost, typename TFunctor>
 inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > >::Type
 getValue(ModifiedIterator<THost, ModView<TFunctor> > & me)
 {
-    return cargo(me).func(getValue(host(me)));
+    return cargo(me).func(*host(me));
 }
 
 template <typename THost, typename TFunctor>
 inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > const>::Type
 getValue(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 {
-    return cargo(me).func(getValue(host(me)));
+    return cargo(me).func(*host(me));
 }
 
 // --------------------------------------------------------------------------

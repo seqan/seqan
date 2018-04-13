@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ struct StreamIterator {};
 /*!
  * @class StreamBuffer
  * @headerfile <seqan/stream.h>
- * @brief Buffer to use in stream.
+ * @brief Reinterprets the std::basic_streambuf to grant access to protected member functions.
  *
  * @signature template <typename TValue[, typenam TTraits]>
  *            class StreamBuffer : public std::basic_streambuf<TValue, TTraits>;
@@ -69,65 +69,92 @@ struct StreamIterator {};
  * @tparam TValue  The value type of the stream buffer.
  * @tparam TTraits The traits to use, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
  */
-
 // TODO(holtgrew): Add documentation for member functions.
 
-// Unfortunately some of the most useful members of basic_streambuf are
-// protected, so we define a subclass to cast and access them
-template <typename TValue, typename TTraits_ = std::char_traits<TValue> >
-class StreamBuffer : public std::basic_streambuf<TValue, TTraits_>
+ // Unfortunately some of the most useful members of basic_streambuf are
+ // protected, so we define a subclass to cast and access them
+template <typename TValue, typename TTraits_ = std::char_traits<TValue>>
+struct StreamBuffer : public std::basic_streambuf<TValue, TTraits_>
+{
+    using TTraits      = TTraits_;
+    using TBasicStream = std::basic_streambuf<TValue, TTraits_>;
+
+    using TBasicStream::eback;
+    using TBasicStream::gptr;
+    using TBasicStream::egptr;
+    using TBasicStream::gbump;
+    using TBasicStream::underflow;
+
+    using TBasicStream::pbase;
+    using TBasicStream::pptr;
+    using TBasicStream::epptr;
+    using TBasicStream::pbump;
+    using TBasicStream::overflow;
+};
+
+// NOTE(rrahn): This is a wrapper for the StreamBuffer class.
+// Since we usually work with std::basic_iostreams and their derivatives, we cannot simply cast a pointer to
+// std::basic_filebuf to StreamBuffer to expose it's protected member functions.
+// To do so, we only use the StreamBuffer to inherit from basic_streambuf (the base class of all buffer implementations.)
+// and only expose the protected member functions as public functions. We then store the original basic_streambuf
+// in this wrapper class and whenever access to the protected members is required we use a reinterpret_cast to convert
+// basic_streambuf* into the public StreamBuffer*. The reinterpret_cast has zero overhead.
+// This fixes an undetected error reported w/ the sanitizer option of gcc (https://github.com/seqan/seqan/issues/2104).
+template <typename TValue, typename TTraits_ = std::char_traits<TValue>>
+class StreamBufferWrapper
 {
 public:
-    typedef TTraits_ TTraits;
-    typedef std::basic_streambuf<TValue, TTraits_> TBase;
 
-    using TBase::eback;
-    using TBase::gptr;
-    using TBase::egptr;
+    typedef std::basic_streambuf<TValue, TTraits_> TBasicStreamBuffer;
+    typedef StreamBuffer<TValue, TTraits_>         TPubStreamBuffer_;
+    typedef typename TPubStreamBuffer_::TTraits    TTraits;
 
-    using TBase::pbase;
-    using TBase::pptr;
-    using TBase::epptr;
+    TBasicStreamBuffer * streamBuf{nullptr};
+
+    StreamBufferWrapper() = default;
+
+    explicit StreamBufferWrapper(TBasicStreamBuffer * _basicStreamBuf) : streamBuf(_basicStreamBuf)
+    {}
 
     size_t chunkSize(Input)
     {
-        return egptr() - gptr();
+        return baseBuf()->egptr() - baseBuf()->gptr();
     }
 
     size_t chunkSize(Output)
     {
-        return epptr() - pptr();
+        return baseBuf()->epptr() - baseBuf()->pptr();
     }
 
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Input)
     {
-        this->gbump(ofs);
+        baseBuf()->gbump(ofs);
     }
 
     template <typename TOffset>
     void advanceChunk(TOffset ofs, Output)
     {
-        this->pbump(ofs);
+        baseBuf()->pbump(ofs);
     }
 
     void reserveChunk(Input)
     {
-        if (gptr() == egptr())
-            this->underflow();
+        if (baseBuf()->gptr() == baseBuf()->egptr())
+            baseBuf()->underflow();
     }
 
     void reserveChunk(Output)
     {
-        if (pptr() == epptr())
-            this->overflow(EOF);
+        if (baseBuf()->pptr() == baseBuf()->epptr())
+            baseBuf()->overflow(EOF);
     }
 
     template <typename TOffset>
     typename std::streampos
     seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
     {
-        return TBase::seekoff(ofs, way, which);
+        return streamBuf->pubseekoff(ofs, way, which);
     }
 
     template <typename TOffset, typename TDirection>
@@ -148,10 +175,10 @@ public:
             if (ofs == 0)
                 return;
 
-            if (IsSameType<TDirection, Input>::VALUE)
-                this->underflow();
+            SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)
+                baseBuf()->underflow();
             else
-                this->overflow();
+                baseBuf()->overflow();
             left = chunkSize(dir);
 
             if (SEQAN_UNLIKELY(left == 0))
@@ -164,20 +191,25 @@ public:
                 // if seek doesn't work manually skip characters (when reading)
                 if (res == typename TTraits::pos_type(typename TTraits::off_type(-1)))
                 {
-                    if (IsSameType<TDirection, Input>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)
                     {
                         for (; ofs != 0; --ofs)
-                            this->sbumpc();
+                            baseBuf()->sbumpc();
                     }
-                    if (IsSameType<TDirection, Output>::VALUE)
+                    SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Output>::VALUE)
                     {
                         for (; ofs != 0; --ofs)
-                            this->sputc('\0');
+                            baseBuf()->sputc('\0');
                     }
                 }
                 return;
             }
         }
+    }
+
+    TPubStreamBuffer_* baseBuf() const
+    {
+        return reinterpret_cast<TPubStreamBuffer_ *>(streamBuf);
     }
 };
 
@@ -216,12 +248,13 @@ template <typename TStream>
 class Iter<TStream, StreamIterator<Input> >
 {
 public:
-    typedef typename Value<TStream>::Type   TValue;
-    typedef std::basic_istream<TValue>      TIStream;
-    typedef std::basic_streambuf<TValue>    TBasicBuffer;
-    typedef StreamBuffer<TValue>            TStreamBuffer;
+    typedef typename Value<TStream>::Type                    TValue;
+    typedef std::basic_istream<TValue>                       TIStream;
+    typedef std::basic_streambuf<TValue>                     TBasicBuffer;
+    typedef StreamBufferWrapper<TValue>                      TStreamBufferWrapper;
+    typedef typename TStreamBufferWrapper::TPubStreamBuffer_ TStreamBuffer;
 
-    TStreamBuffer *streamBuf;
+    TStreamBufferWrapper streamBufWrapper{nullptr};
 
     /*!
      * @fn InputStreamIterator::Iter
@@ -236,17 +269,15 @@ public:
      *
      * Allows default construction, construction from stream, as well as from a @link StreamBuffer @endlink.
      */
-    Iter() : streamBuf()
-    {}
+    Iter() = default;
 
-    Iter(TIStream & stream) :
-        streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
+    Iter(TIStream & stream) : streamBufWrapper(stream.rdbuf())
     {
+        // printf("streamBuf: %p\n", streamBuf);
         stream.exceptions(std::ios_base::badbit);
     }
 
-    Iter(TStreamBuffer * buf) :
-        streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
+    Iter(TBasicBuffer * buf) : streamBufWrapper(buf)
     {}
 };
 
@@ -268,12 +299,13 @@ template <typename TStream>
 class Iter<TStream, StreamIterator<Output> >
 {
 public:
-    typedef typename Value<TStream>::Type   TValue;
-    typedef std::basic_ostream<TValue>      TOStream;
-    typedef std::basic_streambuf<TValue>    TBasicBuffer;
-    typedef StreamBuffer<TValue>            TStreamBuffer;
+    typedef typename Value<TStream>::Type                    TValue;
+    typedef std::basic_ostream<TValue>                       TOStream;
+    typedef std::basic_streambuf<TValue>                     TBasicBuffer;
+    typedef StreamBufferWrapper<TValue>                      TStreamBufferWrapper;
+    typedef typename TStreamBufferWrapper::TPubStreamBuffer_ TStreamBuffer;
 
-    TStreamBuffer *streamBuf;
+    TStreamBufferWrapper streamBufWrapper{nullptr};
 
     /*!
      * @fn Iter::Iter
@@ -288,17 +320,14 @@ public:
      *
      * Allows default construction, construction from stream, as well as from a @link StreamBuffer @endlink.
      */
-    Iter() : streamBuf()
-    {}
+    Iter() = default;
 
-    Iter(TOStream & stream):
-        streamBuf(static_cast<StreamBuffer<TValue> *>(stream.rdbuf()))
+    Iter(TOStream & stream) : streamBufWrapper(stream.rdbuf())
     {
         stream.exceptions(std::ios_base::badbit);
     }
 
-    Iter(TBasicBuffer *buf):
-        streamBuf(static_cast<StreamBuffer<TValue> *>(buf))
+    Iter(TBasicBuffer * buf) : streamBufWrapper(buf)
     {}
 
     template <typename TValue2>
@@ -505,13 +534,13 @@ directionIterator(TContainer &cont, TDirection const &)
 template <typename TStream, typename TDirection, typename TSize>
 inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize, Input dir)
 {
-    iter.streamBuf->reserveChunk(dir);
+    iter.streamBufWrapper.reserveChunk(dir);
 }
 
 template <typename TStream, typename TDirection, typename TSize>
 inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize, Output dir)
 {
-    iter.streamBuf->reserveChunk(dir);
+    iter.streamBufWrapper.reserveChunk(dir);
 }
 
 // ----------------------------------------------------------------------------
@@ -523,7 +552,7 @@ inline void reserveChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize
 template <typename TStream, typename TDirection, typename TSize>
 inline void advanceChunk(Iter<TStream, StreamIterator<TDirection> > &iter, TSize size)
 {
-    iter.streamBuf->advanceChunk(size, TDirection());
+    iter.streamBufWrapper.advanceChunk(size, TDirection());
 }
 
 // ----------------------------------------------------------------------------
@@ -550,8 +579,8 @@ template <typename TChunk, typename TStream, typename TDirection>
 inline void
 getChunk(TChunk &result, Iter<TStream, StreamIterator<Tag<TDirection> > > &iter, Tag<TDirection>)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    getChunk(result, *iter.streamBuf, Tag<TDirection>());
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    getChunk(result, *iter.streamBufWrapper.baseBuf(), Tag<TDirection>());
 }
 
 // ----------------------------------------------------------------------------
@@ -562,15 +591,15 @@ template <typename TStream>
 inline typename Reference<Iter<TStream, StreamIterator<Input> > >::Type
 value(Iter<TStream, StreamIterator<Input> > &iter)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    return iter.streamBuf->sgetc();
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    return iter.streamBufWrapper.baseBuf()->sgetc();
 }
 template <typename TStream>
 inline typename Reference<Iter<TStream, StreamIterator<Input> > const>::Type
 value(Iter<TStream, StreamIterator<Input> > const &iter)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    return iter.streamBuf->sgetc();
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    return iter.streamBufWrapper.baseBuf()->sgetc();
 }
 
 // ----------------------------------------------------------------------------
@@ -600,12 +629,13 @@ setValue(Iter<TStream, StreamIterator<Output> > & iter, TValue const &val)
 {
     return setValue(const_cast<Iter<TStream, StreamIterator<Output> > const &>(iter), val);
 }
+
 template <typename TStream, typename TValue>
 inline void
 setValue(Iter<TStream, StreamIterator<Output> > const & iter, TValue const &val)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->sputc((typename Value<Iter<TStream, StreamIterator<Output> > >::Type)val);
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    iter.streamBufWrapper.baseBuf()->sputc((typename Value<Iter<TStream, StreamIterator<Output> > >::Type)val);
 }
 
 // ----------------------------------------------------------------------------
@@ -628,8 +658,8 @@ template <typename TStream>
 inline void
 goNext(Iter<TStream, StreamIterator<Input> > & iter)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->sbumpc();
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    iter.streamBufWrapper.baseBuf()->sbumpc();
 }
 
 template <typename TStream>
@@ -646,8 +676,8 @@ template <typename TContainer, typename TSpec>
 inline void
 operator++(Iter<TContainer, StreamIterator<Input> > & iter, int)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->sbumpc();
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    iter.streamBufWrapper.baseBuf()->sbumpc();
 }
 
 // ----------------------------------------------------------------------------
@@ -658,8 +688,8 @@ template <typename TStream, typename TOffset, typename TDirection>
 inline void
 goFurther(Iter<TStream, StreamIterator<TDirection> > &iter, TOffset ofs)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->goFurther(ofs, TDirection());
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    iter.streamBufWrapper.goFurther(ofs, TDirection());
 }
 
 // ----------------------------------------------------------------------------
@@ -670,8 +700,8 @@ template <typename TStream, typename TDirection>
 inline typename Position<Iter<TStream, StreamIterator<TDirection> > const>::Type
 position(Iter<TStream, StreamIterator<TDirection> > const & iter)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    return iter.streamBuf->pubseekoff(0, std::ios_base::cur,
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    return iter.streamBufWrapper.baseBuf()->pubseekoff(0, std::ios_base::cur,
                                       (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 }
 
@@ -683,8 +713,8 @@ template <typename TStream, typename TDirection, typename TPosition>
 inline void
 setPosition(Iter<TStream, StreamIterator<TDirection> > const & iter, TPosition pos)
 {
-    SEQAN_ASSERT(iter.streamBuf != NULL);
-    iter.streamBuf->pubseekpos(pos, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+    SEQAN_ASSERT(iter.streamBufWrapper.baseBuf() != nullptr);
+    iter.streamBufWrapper.baseBuf()->pubseekpos(pos, (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 }
 
 // ----------------------------------------------------------------------------
@@ -698,13 +728,13 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
     typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
     typedef StreamBuffer<TValue> TStreamBuffer;
 
-    if (SEQAN_UNLIKELY(iter.streamBuf == NULL))
+    if (SEQAN_UNLIKELY(iter.streamBufWrapper.baseBuf() == nullptr))
     {
         return true;
     }
     else
     {
-        TStreamBuffer *buf = static_cast<TStreamBuffer*>(iter.streamBuf);
+        TStreamBuffer * const buf = iter.streamBufWrapper.baseBuf();
         if (SEQAN_LIKELY(buf->gptr() < buf->egptr()))
             return false;
         else
@@ -719,13 +749,13 @@ atEnd(Iter<TStream, StreamIterator<Output> > const & iter)
     typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
     typedef StreamBuffer<TValue> TStreamBuffer;
 
-    if (SEQAN_UNLIKELY(iter.streamBuf == NULL))
+    if (SEQAN_UNLIKELY(iter.streamBufWrapper.baseBuf() == nullptr))
     {
         return true;
     }
     else
     {
-        TStreamBuffer *buf = static_cast<TStreamBuffer*>(iter.streamBuf);
+        TStreamBuffer * const buf = iter.streamBufWrapper.baseBuf();
         if (SEQAN_LIKELY(buf->pptr() < buf->epptr()))
             return false;
         else

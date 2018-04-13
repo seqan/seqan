@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -516,6 +516,18 @@ atEnd(TraverserImpl<TJst, JstTraversalSpec<TSpec> > & me)
 {
     SEQAN_ASSERT(me._stackPtr != nullptr);
     return length(*me._stackPtr) == 1 && back(*me._stackPtr).curEdgeIt == sourceEnd(impl::buffer(me));
+}
+
+// ----------------------------------------------------------------------------
+// Function isBase();
+// ----------------------------------------------------------------------------
+
+template <typename TJst, typename TSpec>
+inline bool
+isBase(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
+{
+    SEQAN_ASSERT(me._stackPtr != nullptr);
+    return length(*me._stackPtr) == 1;
 }
 
 }  // namespace seqan

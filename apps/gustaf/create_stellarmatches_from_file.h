@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
+// Copyright (c) 2011-2018, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -92,8 +92,8 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 		TInfix queryInf;
 
 		// Take match query ID and find the right index in queries
-		unsigned iDB = maxValue<unsigned>();     // position of database sequence in databases
-		unsigned iQuery = maxValue<unsigned>();  // position of query/read sequence in queries
+		unsigned iDB = std::numeric_limits<unsigned>::max();     // position of database sequence in databases
+		unsigned iQuery = std::numeric_limits<unsigned>::max();  // position of query/read sequence in queries
 
 		// Takes the short chromosome Id (from the Stellar match file) and looks up the corresponding long chromosome
 		// Id entry from the reference input file
@@ -118,7 +118,7 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 		}
 		// Sanity check for read and query Id:
 		// skips entry if no corresponding entry in the input file could not be found, else creates StellarMatch object
-		if (iDB == maxValue<unsigned>() || iQuery == maxValue<unsigned>())
+		if (iDB == std::numeric_limits<unsigned>::max() || iQuery == std::numeric_limits<unsigned>::max())
 		{
 		    std::cerr << "Read or database does not exist for match: " << it - begin(lmStore.matchStore, Standard())
 			      << " subjectId: " << lmStore.sequenceNameStore[(*it).subjectId]

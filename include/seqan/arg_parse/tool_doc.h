@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -444,6 +444,13 @@ public:
         std::fill_n(out, _layout.leftPadding, ' ');
         stream << _toText(listItem._term);
         unsigned pos = _layout.leftPadding + length(listItem._term);
+
+        if (empty(listItem._description))
+        {
+            stream << '\n';
+            return;
+        }
+
         if (pos + _layout.centerPadding > _layout.rightColumnTab)
         {
             stream << '\n';

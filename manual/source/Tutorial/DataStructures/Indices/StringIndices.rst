@@ -47,6 +47,22 @@ We will now show how we can create the different indices in SeqAn before we show
 All the mentioned indices belong to the generic :dox:`Index` class.
 A SeqAn index needs two pieces of information: the type of the :dox:`String` or :dox:`StringSet` to be indexed and the index specialization, such as :dox:`IndexEsa` or :dox:`FMIndex`.
 
+.. important::
+
+    Indices based on suffix arrays (also including the FM index) are built using secondary memory.
+    When building large indices, it is therefore possible to run out of disk space (in which case an exception will be
+    thrown).
+    To circumvent this, the directory used for temporary storage can be changed by specifying the TMPDIR environment variable (on UNIX)
+    respectively TEMP environment variable (on Windows):
+
+    .. code-block:: console
+
+       # export TMPDIR=/somewhere/else/with/more/space
+
+    .. code-block:: console
+
+       # SET TEMP=C:\somewhere\else\with\more\space
+
 The following code snippet creates an enhanced suffix array index of a string of type :dox:`Dna5`.
 
 .. includefrags:: demos/tutorial/indices/base.cpp

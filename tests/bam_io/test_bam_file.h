@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,8 +49,7 @@
 
 void testBamIOBamFileReadHeader(char const * pathFragment)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, pathFragment);
+    seqan::CharString filePath = seqan::getAbsolutePath(pathFragment);
 
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
@@ -85,8 +84,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_header)
 // Issue 489 reports a problems with reading/writing comment lines in SAM header.
 SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
 {
-    seqan::CharString inFilePath = SEQAN_PATH_TO_ROOT();
-    append(inFilePath, "/tests/bam_io/sam_with_comments.sam");
+    seqan::CharString inFilePath = seqan::getAbsolutePath("/tests/bam_io/sam_with_comments.sam");
 
     seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
     append(tmpPath, ".sam");
@@ -119,8 +117,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
 
 void testBamIOBamFileReadRecords(char const * pathFragment)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, pathFragment);
+    seqan::CharString filePath = seqan::getAbsolutePath(pathFragment);
 
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
@@ -210,8 +207,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_records)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/bam_io/ex1.bam");
+    seqan::CharString filePath = seqan::getAbsolutePath("/tests/bam_io/ex1.bam");
 
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
@@ -243,8 +239,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 
 void testBamIOBamFileWriteHeader(char const * pathFragmentExpected)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, pathFragmentExpected);
+    seqan::CharString filePath = seqan::getAbsolutePath(pathFragmentExpected);
 
     seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
     if (seqan::endsWith(pathFragmentExpected, ".bam"))
@@ -298,8 +293,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_header)
 
 void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, pathFragmentExpected);
+    seqan::CharString filePath = seqan::getAbsolutePath(pathFragmentExpected);
 
     seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
     if (seqan::endsWith(pathFragmentExpected, ".bam"))
@@ -413,8 +407,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_records)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/bam_io/small.sam");
+    seqan::CharString filePath = seqan::getAbsolutePath("/tests/bam_io/small.sam");
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
@@ -442,8 +435,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/bam_io/small.bam");
+    seqan::CharString filePath = seqan::getAbsolutePath("/tests/bam_io/small.bam");
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
@@ -473,7 +465,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
 {
     typedef seqan::Position<seqan::BamFileIn>::Type TPosition;
 
-    std::string filePath = (std::string)SEQAN_PATH_TO_ROOT() + "/apps/ngs_roi/example/example.bam";
+    std::string filePath = seqan::getAbsolutePath("/apps/ngs_roi/example/example.bam");
 
     seqan::BamFileIn bamFile(filePath.c_str());
 

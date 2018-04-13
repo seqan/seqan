@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -221,6 +221,34 @@ SEQAN_DEFINE_TEST(test_argument_valid_values)
     SEQAN_TEST_EXCEPTION_WITH_MESSAGE(ParseError,
                          _checkValue(filearg),
                          "the given path 'not-a-validfile.qxt' does not have one of the valid file extensions [*.txt, *.fasta]; the file extension was overridden to be '.fa'");
+}
+
+SEQAN_DEFINE_TEST(test_argument_valid_values_directories)
+{
+    ArgParseArgument dirarg(ArgParseArgument::INPUT_DIRECTORY);
+    setValidValues(dirarg, ".dir1 .dir2");
+
+    _assignArgumentValue(dirarg, "directory.dir1");
+    SEQAN_ASSERT_EQ(value(dirarg.value, 0), "directory.dir1");
+
+    // Test getFileExtension() function.
+    SEQAN_ASSERT_EQ(getFileExtension(dirarg), ".dir1");
+
+    // different case should also work
+    _assignArgumentValue(dirarg, "directory.DIR1");
+    SEQAN_ASSERT_EQ(value(dirarg.value, 0), "directory.DIR1");
+
+    // also accept a trailing '/'
+    _assignArgumentValue(dirarg, "directory.dir2/");
+    SEQAN_ASSERT_EQ(value(dirarg.value, 0), "directory.dir2/");
+
+    // Test getFileExtension() function.
+    SEQAN_ASSERT_EQ(getFileExtension(dirarg), ".dir2");
+
+    // different case should also work
+    _assignArgumentValue(dirarg, "directory.DIR2/");
+    SEQAN_ASSERT_EQ(value(dirarg.value, 0), "directory.DIR2/");
+
 }
 
 #endif // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_

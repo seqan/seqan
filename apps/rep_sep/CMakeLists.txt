@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_rep_sep CXX)
 message (STATUS "Configuring apps/rep_sep")
 
-set (SEQAN_APP_VERSION "0.1.10")
+set (SEQAN_APP_VERSION "0.1.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -64,7 +64,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install rep_sep in ${PREFIX}/bin directory
 install (TARGETS rep_sep
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/rep_sep for SeqAn release builds.

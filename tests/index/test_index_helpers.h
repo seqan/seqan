@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ void generateText(TText & text, unsigned textLength = 100000)
 {
     typedef typename Value<TText>::Type TChar;
 
-    int minChar = MinValue<TChar>::VALUE;
+    int minChar = std::numeric_limits<TChar>::min();
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
     std::mt19937 rng(time(nullptr));
@@ -96,7 +96,7 @@ void generateText(std::mt19937 & rng, TText & text, unsigned textLength = 100000
 {
     typedef typename Value<TText>::Type TChar;
 
-    int minChar = MinValue<TChar>::VALUE;
+    int minChar = std::numeric_limits<TChar>::min();
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
     resize(text, textLength);
@@ -114,7 +114,7 @@ void generateText(StringSet<TText, TConfig> & text, unsigned numSeq = 1000, unsi
 {
     typedef typename Value<TText>::Type TChar;
 
-    int minChar = MinValue<TChar>::VALUE;
+    int minChar = std::numeric_limits<TChar>::min();
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
     std::mt19937 rng(SEED);
@@ -138,7 +138,7 @@ void generatePattern(StringSet<TText> & pattern, TText const & text, unsigned pa
 {
     typedef typename Value<TText>::Type TChar;
 
-    int minChar = MinValue<TChar>::VALUE;
+    int minChar = std::numeric_limits<TChar>::min();
     unsigned alphabetSize = ValueSize<TChar>::VALUE;
 
     std::mt19937 rng(SEED);

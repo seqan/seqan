@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -257,7 +257,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     String<unsigned> forwardBitMask;
     String<unsigned> reverseBitMask;
 
-    resize(VP, blockCount, maxValue<unsigned>());
+    resize(VP, blockCount, std::numeric_limits<unsigned>::max());
     resize(VN, blockCount, 0);
 
     // first bitMask will be constructed from the shorter sequence
@@ -512,7 +512,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             fSilencer <<= fOffSet;
 
             /* reset v-bitvectors */
-            std::fill(begin(VP, Standard()) + fStartBlock, begin(VP, Standard()) + fEndBlock + 1, maxValue<unsigned>());
+            std::fill(begin(VP, Standard()) + fStartBlock, begin(VP, Standard()) + fEndBlock + 1, std::numeric_limits<unsigned>::max());
             std::fill(begin(VN, Standard()) + fStartBlock, begin(VN, Standard()) + fEndBlock + 1, 0);
 
             /* determine start-position and start-score */
@@ -622,7 +622,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             rSilencer <<= rOffSet;
 
             /* reset v-bitvectors */
-            std::fill(begin(VP, Standard()) + rStartBlock, begin(VP, Standard()) + rEndBlock + 1, maxValue<unsigned>());
+            std::fill(begin(VP, Standard()) + rStartBlock, begin(VP, Standard()) + rEndBlock + 1, std::numeric_limits<unsigned>::max());
             std::fill(begin(VN, Standard()) + rStartBlock, begin(VN, Standard()) + rEndBlock + 1, 0);
 
             /* determine start-position and start-score */

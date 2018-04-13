@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -498,8 +498,8 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
 
     resize(finder.forbidden, height * diagonalWidth, false);
 
-    finder.bestEndPos = minValue<typename TFinder::TMatrixPosition>();
-    finder.bestBeginPos = minValue<typename TFinder::TMatrixPosition>();
+    finder.bestEndPos = std::numeric_limits<typename TFinder::TMatrixPosition>::min();
+    finder.bestBeginPos = std::numeric_limits<typename TFinder::TMatrixPosition>::min();
 }
 
 // ----------------------------------------------------------------------------

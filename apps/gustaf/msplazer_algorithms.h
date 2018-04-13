@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011-2013, Kathrin Trappe, FU Berlin
+// Copyright (c) 2011-2018, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -424,7 +424,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                     // Note: old match scores are already distances, new score is a negative score bc. we use scoring sceme (0, -1, -1, -1)
                     auto tmp = _splitAlignmentImpl(row(match1, 0), row(match1, 1), row(match2, 0), row(match2, 1),
                                                    scoreType, AlignConfig<false, false, true, true>());
-                    SEQAN_ASSERT_NEQ(std::get<0>(tmp) + std::get<1>(tmp), maxValue<int>());
+                    SEQAN_ASSERT_NEQ(std::get<0>(tmp) + std::get<1>(tmp), std::numeric_limits<int>::max());
                     score = std::get<0>(tmp) + std::get<1>(tmp) + (static_cast<int>(matchDistanceScores[m1]) + static_cast<int>(matchDistanceScores[m2]));
                     splitPos = endPosition(row(match1, 0)) + stMatch1.begin2;
 
@@ -1305,7 +1305,7 @@ inline void _inferComplexBP(String<TBreakpoint> & globalBreakpoints, TBreakpoint
     // Append breakpoint if new
     if (keepBP)
     {
-        if (bp.similar == maxValue<unsigned>())
+        if (bp.similar == std::numeric_limits<unsigned>::max())
         {
             bp.similar = similarBPId;
             ++similarBPId;
@@ -1339,7 +1339,7 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         else if (_similarBreakpoints(bp, tempBP, bpPosRange))
         {
             appendSupportId(tempBP, bp.supportIds);
-	    if (bp.dupMiddlePos != maxValue<unsigned>() && tempBP.dupMiddlePos != maxValue<unsigned>()
+	    if (bp.dupMiddlePos != std::numeric_limits<unsigned>::max() && tempBP.dupMiddlePos != std::numeric_limits<unsigned>::max()
 		&& bp.dupMiddlePos < tempBP.dupMiddlePos)
             {
                 tempBP.dupMiddlePos = bp.dupMiddlePos; 
@@ -1358,7 +1358,7 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
     // Append breakpoint if new
     if (newBP)
     {
-        if (bp.similar == maxValue<unsigned>())
+        if (bp.similar == std::numeric_limits<unsigned>::max())
         {
             bp.similar = similarBPId;
             ++similarBPId;
@@ -1504,7 +1504,7 @@ bool _findBestChain(TMSplazerChain & queryChain, String<TMatch> & stellarMatches
         // Getting vertex descriptor of anchestor
         spVertex2 = getProperty(queryChain.predMap, spVertex1);
         // if vertex descriptor has max value then there is no (shortest) path from start to end.
-        if (spVertex2 == maxValue<TVertexDescriptor>())
+        if (spVertex2 == std::numeric_limits<TVertexDescriptor>::max())
         {
             // queryChain.isPartial = true;
             ++bcc;

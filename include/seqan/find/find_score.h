@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -311,7 +311,7 @@ inline void _patternInit (Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPat
         x += score_gap;
     }
 
-    if (IsSameType<TSpec, FindPrefix>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
     {//compute data_maxscore
         me.data_maxscore = 0;
         TNeedleIterator it = begin(needle(me), Standard());
@@ -375,12 +375,15 @@ _findScoreSimpleProportional(TFinder & finder, Pattern<TNeedle, DPSearch<TScore,
     TSize haystack_length = length(container(hostIterator(finder)));
 
     //limit search width for prefix search
-    if (IsSameType<TSpec, FindPrefix>::VALUE && (score_gap < 0))
+    SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
     {
-        TSize maxlen = prefix_begin_position + length(needle(me)) + ((scoreLimit(me) - me.data_maxscore) / score_gap) + 1;
-        if (haystack_length > maxlen)
+        if (score_gap < 0)
         {
-            haystack_length = maxlen;
+            TSize maxlen = prefix_begin_position + length(needle(me)) + ((scoreLimit(me) - me.data_maxscore) / score_gap) + 1;
+            if (haystack_length > maxlen)
+            {
+                haystack_length = maxlen;
+            }
         }
     }
 
@@ -424,7 +427,7 @@ _findScoreSimpleProportional(TFinder & finder, Pattern<TNeedle, DPSearch<TScore,
         if (*tab >= scoreLimit(me) )
         {//found a hit
             _setFinderEnd(finder);
-            if (IsSameType<TSpec, FindPrefix>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
             {
                 _setFinderLength(finder, endPosition(finder));
             }

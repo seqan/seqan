@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_splazers CXX)
 message (STATUS "Configuring apps/splazers")
 
-set (SEQAN_APP_VERSION "1.3.7")
+set (SEQAN_APP_VERSION "1.3.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -68,7 +68,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install splazers in ${PREFIX}/bin directory
 install (TARGETS splazers
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/splazers for SeqAn release builds.

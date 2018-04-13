@@ -542,7 +542,7 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int scoreDistCutOff = MinValue<int>::VALUE;
+	int scoreDistCutOff = std::numeric_limits<int>::min();
 
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
@@ -744,8 +744,8 @@ void mapMatePairReads(
 				break;
 		}
 
-		int	bestLeftErrors = MaxValue<int>::VALUE;
-		int bestLibSizeError = MaxValue<int>::VALUE;
+		int	bestLeftErrors = std::numeric_limits<int>::max();
+		int bestLibSizeError = std::numeric_limits<int>::max();
 		TDequeueIterator bestLeft = TDequeueIterator();
 
 		TDequeueIterator it;
@@ -817,7 +817,7 @@ void mapMatePairReads(
 			value(fifo, lastPositive - firstNo).i1 = (int64_t)-1;
 		
 		// verify right mate, if left mate matches
-		if (bestLeftErrors != MaxValue<int>::VALUE)
+		if (bestLeftErrors != std::numeric_limits<int>::max())
 		{
 			if (matchVerify(
 					mR, infix(swiftFinderR),

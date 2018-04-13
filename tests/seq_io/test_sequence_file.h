@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_type_gz_fasta)
 {
 #if SEQAN_HAS_ZLIB
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/test_dna.fa.gz");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa.gz");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -62,8 +61,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_type_bz2_fasta)
 {
 #if SEQAN_HAS_BZIP2
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/test_dna.fa.bz2");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa.bz2");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -80,8 +78,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_type_bz2_fasta)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/test_dna.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -93,8 +90,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/test_dna.fq");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fq");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -111,8 +107,7 @@ template <typename TId, typename TSeq>
 void testSeqIOSequenceFileReadRecordTextFasta()
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/test_dna.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -147,8 +142,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_all_text_fasta)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/tests/seq_io/test_dna.fa");
+    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -196,8 +190,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fasta)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/test_dna.fa");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fa");
     SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
@@ -224,8 +217,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fasta)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/test_dna.fa");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fa");
     SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
@@ -234,8 +226,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_no_qual)
     // Build path to file.
     seqan::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fq");
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/test_dna.fq");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
 
     // Create SequenceStream object.
     SeqFileIn seqIn(toCString(pathToExpected));
@@ -281,8 +272,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/test_dna.fq");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
     SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
@@ -309,8 +299,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/test_dna.fq");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
     SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
@@ -341,8 +330,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = SEQAN_PATH_TO_ROOT();
-    append(pathToExpected, "/tests/seq_io/test_dna.fq");
+    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
     SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 

@@ -9,6 +9,11 @@
 # ===========================================================================
 
 # Look for Python and stop if it could not be found.
+# require python 2.7, not python3
+set(PythonInterp_FIND_VERSION 2.7)
+set(PythonInterp_FIND_VERSION_MAJOR 2)
+set(PythonInterp_FIND_VERSION_MINOR 7)
+set(PythonInterp_FIND_VERSION_COUNT 2)
 find_package (PythonInterp)
 
 if (NOT PYTHONINTERP_FOUND)

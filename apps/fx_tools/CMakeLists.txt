@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fx_tools CXX)
 message (STATUS "Configuring apps/fx_tools")
 
-set (SEQAN_APP_VERSION "0.2.9")
+set (SEQAN_APP_VERSION "0.2.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -55,7 +55,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install fx_tools in ${PREFIX}/bin directory
 install (TARGETS fx_bam_coverage
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/fx_tools for SeqAn release builds.

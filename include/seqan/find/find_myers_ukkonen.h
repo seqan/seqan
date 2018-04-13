@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -833,9 +833,9 @@ _myersAdjustBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderC
             state.bitMasks[ordValue(value)] |= (TWord)1 << (BitsPerValue<TWord>::VALUE - 1);
     }
 
-    if (IsSameType<TFinderCSP, NMatchesAll_>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TFinderCSP, NMatchesAll_>::VALUE)
         state.bitMasks[ordValue(unknownValue<TValue>())] |= (TWord)1 << (BitsPerValue<TWord>::VALUE - 1);
-    if (IsSameType<TFinderCSP, NMatchesNone_>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TFinderCSP, NMatchesNone_>::VALUE)
         state.bitMasks[ordValue(unknownValue<TValue>())] &= ~((TWord)1 << (BitsPerValue<TWord>::VALUE - 1));
 }
 
@@ -904,7 +904,7 @@ _myersGetBitmask(PatternState_<TNeedle, Myers<AlignTextBanded<TSpec, TFinderCSP,
     else
         res = 0;
 
-    if (IsSameType<TPatternCSP, NMatchesAll_>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TPatternCSP, NMatchesAll_>::VALUE)
     {
         ord = ordValue(unknownValue<TValue>());
         x = shift - state.shift[ord];
@@ -960,7 +960,7 @@ _patternInitSmallStateBanded(
     //  VP = 100...      VP = 111...
     //
 
-    TWord VP = (MyersUkkonenHP0_<TSpec>::VALUE == 1)? (TWord)1 << ((int)BitsPerValue<TWord>::VALUE-1): maxValue<TWord>(); // HP[0]==1 <-> global, HP[0]==0 <-> local
+    TWord VP = (MyersUkkonenHP0_<TSpec>::VALUE == 1)? (TWord)1 << ((int)BitsPerValue<TWord>::VALUE-1): std::numeric_limits<TWord>::max(); // HP[0]==1 <-> global, HP[0]==0 <-> local
     TWord VN = 0;
 
     // Errors are counted along the lowest diagonal and the
@@ -1047,7 +1047,7 @@ _patternInitSmallStateBanded(
 
         // adjust bitmasks (errors = number of needle chars to preprocess)
         for (; shift < errors; ++ndlIter, ++shift)
-            _myersAdjustBitmask(state, getValue(ndlIter), shift, typename MyersSmallAlphabet_<TValue>::Type());
+            _myersAdjustBitmask(state, *ndlIter, shift, typename MyersSmallAlphabet_<TValue>::Type());
 
         // initialise left column with
         //
@@ -1073,7 +1073,7 @@ _patternInitSmallStateBanded(
         //////////////////////////////////////////////////////////////////
 
         // adjust bitmask
-        _myersAdjustBitmask(state, getValue(ndlIter), shift, typename MyersSmallAlphabet_<TValue>::Type());
+        _myersAdjustBitmask(state, *ndlIter, shift, typename MyersSmallAlphabet_<TValue>::Type());
 
         /////////////////////////
         // DIAGONAL MYERS CORE
@@ -1301,7 +1301,7 @@ inline bool _findMyersLargePatterns (TFinder & finder,
         if ((largeState.scoreMask == largePattern.finalScoreMask) && (largeState.lastBlock == largePattern.blockCount - 1))
         {
             _setFinderEnd(finder);
-            if (IsSameType<TSpec, FindPrefix>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
             {
                 _setFinderLength(finder, endPosition(finder));
             }
@@ -1363,14 +1363,14 @@ _findMyersSmallPatterns(
         if (state.errors <= state.maxErrors)
         {
             _setFinderEnd(finder);
-            if (IsSameType<TSpec, FindPrefix>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
             {
                 _setFinderLength(finder, endPosition(finder));
             }
             return true;
         }
         //
-        // if (IsSameType<TSpec, FindPrefix>::VALUE)
+        // SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
         // {//limit haystack length during prefix search
         //
         // }
@@ -1481,7 +1481,7 @@ _findMyersSmallPatternsBanded(
                 state.VN0 = VN;
                 state.errors = errors;
                 _setFinderEnd(finder);
-                if (IsSameType<TSpec, FindPrefix>::VALUE)
+                SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
                 {
                     _setFinderLength(finder, endPosition(finder));
                 }
@@ -1542,7 +1542,7 @@ inline bool find (TFinder & finder,
         {
             goPrevious(finder);
             _setFinderEnd(finder);
-            if (IsSameType<TSpec, FindPrefix>::VALUE)
+            SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
             {
                 _setFinderLength(finder, endPosition(finder));
             }
@@ -1581,7 +1581,7 @@ inline bool find (TFinder & finder,
     typedef typename Haystack<TFinder>::Type THaystack;
     typedef typename Size<THaystack>::Type TSize;
 
-    TSize prefix_begin_position; //for prefix search: the position where the prefix begins
+    SEQAN_UNUSED TSize prefix_begin_position; //for prefix search: the position where the prefix begins
 
     if (empty(finder))
     {
@@ -1602,7 +1602,7 @@ inline bool find (TFinder & finder,
 
     TSize haystack_length = length(container(finder));
     // limit search width for prefix search
-    if (IsSameType<TSpec, FindPrefix>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TSpec, FindPrefix>::VALUE)
     {
         TSize maxlen = prefix_begin_position + pattern.needleSize - scoreLimit(state) + 1;
         if (haystack_length > maxlen)

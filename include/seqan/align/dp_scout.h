@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -93,10 +93,11 @@ template <typename TDPCell, typename TSpec>
 class DPScout_
 {
 public:
+    using TBase = DPScout_;
     using TScoreValue = typename Value<TDPCell>::Type;
 
     TDPCell _maxScore         = TDPCell();
-    uint32_t _maxHostPosition = DPCellDefaultInfinity<TScoreValue>::VALUE; // The corresponding host position within the underlying dp-matrix.
+    size_t _maxHostPosition   = 0; // The corresponding host position within the underlying dp-matrix.
 
     DPScout_() = default;
 
@@ -109,7 +110,7 @@ class DPScout_<TDPCell, Terminator_<TSpec> >
     : public DPScout_<TDPCell, Default>
 {
 public:
-    typedef DPScout_<TDPCell, Default>  TParent;
+    using TBase = DPScout_<TDPCell, Default>;
 
     DPScoutState_<Terminator_<TSpec> > * state = nullptr;
     bool terminationCriteriumMet               = false;
@@ -117,7 +118,7 @@ public:
     DPScout_() = default;
 
     DPScout_(DPScoutState_<Terminator_<TSpec> > & pState) :
-        DPScout_<TDPCell, Default>(),
+        TBase(),
         state(&pState)
     {}
 };
@@ -217,7 +218,7 @@ maxScore(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 
 // Returns the host position that holds the current maximum score.
 template <typename TDPCell, typename TScoutSpec>
-inline unsigned int
+inline auto
 maxHostPosition(DPScout_<TDPCell, TScoutSpec> const & dpScout)
 {
     return dpScout._maxHostPosition;
@@ -333,6 +334,21 @@ inline void
 _incVerticalPos(DPScout_<TDPCell, TSpec> const & /*scout*/)
 {
     // no-op.
+}
+
+// ----------------------------------------------------------------------------
+//  Function swapStateIf()
+// ----------------------------------------------------------------------------
+
+template <typename TSingleMaxState, typename TPredicate>
+inline bool swapStateIf(TSingleMaxState && lhs, TSingleMaxState && rhs, TPredicate && p)
+{
+    using std::swap;
+
+    if (!p(lhs.mMaxScore, rhs.mMaxScore))
+        return false;
+    swap(lhs, rhs);
+    return true;
 }
 
 }  // namespace seqan

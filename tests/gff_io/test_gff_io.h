@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,7 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
 {
-    CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/tests/gff_io/example.gff");
+    CharString gffPath = getAbsolutePath("/tests/gff_io/example.gff");
 
     String<char, MMap<> > inString;
     open(inString, toCString(gffPath));
@@ -102,8 +101,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
 {
-    CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/tests/gff_io/example.gff");
+    CharString gffPath = getAbsolutePath("/tests/gff_io/example.gff");
 
     String<char, MMap<> > inString;
     open(inString, toCString(gffPath));
@@ -125,8 +123,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
         ++count;
     }
 
-    String<char> goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/tests/gff_io/example_context.gff");
+    String<char> goldPath = getAbsolutePath("/tests/gff_io/example_context.gff");
     String<char, MMap<> > goldString;
     open(goldString, toCString(goldPath));
 
@@ -135,10 +132,8 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_comment_processing_context_gff)
 {
-    CharString gffPath = SEQAN_PATH_TO_ROOT();
-
     // slightly modified version of "example.gff". 3 lines of comments are included.
-    append(gffPath, "/tests/gff_io/example_with_comments.gff");
+    CharString gffPath = getAbsolutePath("/tests/gff_io/example_with_comments.gff");
 
     String<char, MMap<> > inString;
     open(inString, toCString(gffPath));
@@ -196,8 +191,7 @@ SEQAN_DEFINE_TEST(test_store_io_comment_processing_context_gff)
 // Complex GTF format, from pseudogenes.org
 SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
 {
-    CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/tests/gff_io/example_pseudogenes.gtf");
+    CharString gtfPath = getAbsolutePath("/tests/gff_io/example_pseudogenes.gtf");
 
     String<char, MMap<> > inString;
     open(inString, toCString(gtfPath));
@@ -263,8 +257,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
 {
-    CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/tests/gff_io/example.gtf");
+    CharString gtfPath = getAbsolutePath("/tests/gff_io/example.gtf");
 
     String<char, MMap<> > inString;
     open(inString, toCString(gtfPath));
@@ -320,8 +313,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
 
 SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
 {
-    CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/tests/gff_io/example.gtf");
+    CharString gtfPath = getAbsolutePath("/tests/gff_io/example.gtf");
 
     String<char, MMap<> > inString;
     open(inString, toCString(gtfPath));
@@ -347,8 +339,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
         appendValue(temp, 'A');
     }
 
-    String<char> goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/tests/gff_io/example_context.gtf");
+    String<char> goldPath = getAbsolutePath("/tests/gff_io/example_context.gtf");
     String<char, MMap<> > goldString;
     open(goldString, toCString(goldPath));
 
@@ -357,8 +348,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
 {
-    CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/tests/gff_io/example.gff");
+    CharString gffPath = getAbsolutePath("/tests/gff_io/example.gff");
 
     GffFileIn gffStream(toCString(gffPath));
 
@@ -411,8 +401,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
 {
-    CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/tests/gff_io/example.gtf");
+    CharString gffPath = getAbsolutePath("/tests/gff_io/example.gtf");
 
     GffFileIn gffStream(toCString(gffPath));
 
@@ -463,8 +452,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gff)
 {
-    CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/tests/gff_io/example.gff");
+    CharString gtfPath = getAbsolutePath("/tests/gff_io/example.gff");
 
     GffFileIn inStream(toCString(gtfPath));
 
@@ -487,8 +475,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
 {
-    CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/tests/gff_io/example.gtf");
+    CharString gtfPath = getAbsolutePath("/tests/gff_io/example.gtf");
 
     GffFileIn inStream(toCString(gtfPath));
 

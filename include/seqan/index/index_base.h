@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -201,6 +201,7 @@ SEQAN_CONCEPT_REFINE(StringTrieConcept, (TIndex), (StringIndexConcept)) {};
  * @headerfile <seqan/index.h>
  * @brief Default @link String @endlink specialization type of the @link Fibre
  *        @endlink of an @link Index @endlink.
+ * @deprecated Deprecated in favor of StringSpec.
  *
  * @signature DefaultIndexStringSpec<TIndex>::Type;
  *
@@ -1317,13 +1318,13 @@ template <
 
     template <typename TValue>
     inline void _setSizeInval(TValue &v) {
-        v = MaxValue<TValue>::VALUE;
+        v = std::numeric_limits<TValue>::max();
     }
 
     template <typename TValue>
     inline bool _isSizeInval(TValue const &v) {
 //IOREV _notio_
-        return v == MaxValue<TValue>::VALUE;
+        return v == std::numeric_limits<TValue>::max();
     }
 
 //////////////////////////////////////////////////////////////////////////////

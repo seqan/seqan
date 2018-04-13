@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -627,14 +627,14 @@ _extendSeedGappedXDropOneDirection(
         return 0;
 
     TScoreValue len = 2 * _max(cols, rows); // number of antidiagonals
-    TScoreValue const minErrScore = minValue<TScoreValue>() / len; // minimal allowed error penalty
+    TScoreValue const minErrScore = std::numeric_limits<TScoreValue>::min() / len; // minimal allowed error penalty
     setScoreGap(scoringScheme, _max(scoreGap(scoringScheme), minErrScore));
     typename Value<TQuerySegment>::Type * tag = 0;
     (void)tag;
     _extendSeedGappedXDropOneDirectionLimitScoreMismatch(scoringScheme, minErrScore, tag);
 
     TScoreValue gapCost = scoreGap(scoringScheme);
-    TScoreValue undefined = minValue<TScoreValue>() - gapCost;
+    TScoreValue undefined = std::numeric_limits<TScoreValue>::min() - gapCost;
 
     // DP matrix is calculated by anti-diagonals
     String<TScoreValue> antiDiag1;    //smallest anti-diagonal

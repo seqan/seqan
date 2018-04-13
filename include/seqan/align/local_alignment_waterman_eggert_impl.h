@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ public:
     TValue value_;
     TID id_;
 
-    ScoreAndID() : value_(MinValue<TValue>::VALUE), id_(MaxValue<TValue>::VALUE)
+    ScoreAndID() : value_(std::numeric_limits<TValue>::min()), id_(std::numeric_limits<TValue>::max())
     {}
 
     ScoreAndID(TValue score, TID id_pos)
@@ -157,8 +157,8 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
 
     resize(finder.forbidden, (len0 + 1) * (len1 + 1), false);
 
-    finder.bestEndPos = maxValue<typename TFinder::TMatrixPosition>();
-    finder.bestBeginPos = maxValue<typename TFinder::TMatrixPosition>();
+    finder.bestEndPos = std::numeric_limits<typename TFinder::TMatrixPosition>::max();
+    finder.bestBeginPos = std::numeric_limits<typename TFinder::TMatrixPosition>::max();
 }
 
 // ----------------------------------------------------------------------------
@@ -179,7 +179,7 @@ template <typename TScoreValue>
 TScoreValue getScore(LocalAlignmentFinder<TScoreValue> const & sw)
 {
     typedef LocalAlignmentFinder<TScoreValue> TFinder;
-    if(sw.bestEndPos !=  maxValue<typename TFinder::TMatrixPosition>())
+    if(sw.bestEndPos !=  std::numeric_limits<typename TFinder::TMatrixPosition>::max())
         return getValue(const_cast<typename TFinder::TMatrix &>(sw.matrix), sw.bestEndPos);
     return 0;
 }
@@ -188,12 +188,12 @@ TScoreValue getScore(LocalAlignmentFinder<TScoreValue> const & sw)
 // Function _smithWatermanGetMatrix()
 // ----------------------------------------------------------------------------
 
-template <typename TScoreValue, typename TStringH, typename TStringV>
+template <typename TScoreValue, typename TScoreSpec, typename TStringH, typename TStringV>
 TScoreValue
 _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
                         TStringH const & strH,
                         TStringV const & strV,
-                        Score<TScoreValue, Simple> const & score_,
+                        Score<TScoreValue, TScoreSpec> const & score_,
                         TScoreValue cutoff)
 {
     // typedefs
@@ -220,8 +220,6 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
     TStringIteratorH x = x_end;
     TStringIteratorV y;
 
-    TScoreValue score_match = scoreMatch(score_);
-    TScoreValue score_mismatch = scoreMismatch(score_);
     TScoreValue score_gap = scoreGapExtend(score_);
 
     TScoreValue h = 0;
@@ -263,14 +261,15 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
             goPrevious(finger1, 0);
             goPrevious(finger2, 0);
 
+            TScoreValue currScore = score(score_, *x, cy);
             if (*x == cy)
             {
-                v = h + score_match;
+                v = h + currScore;
                 h = *finger2;
             }
             else
             {
-                TScoreValue s1 = h + score_mismatch;
+                TScoreValue s1 = h + currScore;
                 h = *finger2;
                 TScoreValue s2 = score_gap + ((h > v) ? h : v);
                 v = (s1 > s2) ? s1 : s2;
@@ -303,12 +302,15 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
 // ----------------------------------------------------------------------------
 
 // declumping
-template <typename TScoreValue, typename TSequenceH, typename TGapsSpecH, typename TSequenceV, typename TGapsSpecV>
+template <typename TScoreValue,
+          typename TSequenceH, typename TGapsSpecH,
+          typename TSequenceV, typename TGapsSpecV,
+          typename TScoreSpec>
 void
 _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
                       Gaps<TSequenceH, TGapsSpecH> & gapsH,
                       Gaps<TSequenceV, TGapsSpecV> & gapsV,
-                      Score<TScoreValue, Simple> const & score_)
+                      Score<TScoreValue, TScoreSpec> const & score_)
 {
 //-------------------------------------------------------------------------
 //typedefs
@@ -364,8 +366,6 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
     TSequenceHIter x_stop = x_end;
 
 
-    TScoreValue score_match = scoreMatch(score_);
-    TScoreValue score_mismatch = scoreMismatch(score_);
     TScoreValue score_gap = scoreGapExtend(score_);
     TScoreValue h,v;
 
@@ -456,9 +456,10 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
         {
             goPrevious(finger0, 0);
             goPrevious(finger1, 0);
+            TScoreValue currScore = score(score_, *x, cy);
             if (*x == cy && !(sw.forbidden[position(finger0)]))
             {
-                v = h + score_match;
+                v = h + currScore;
                 h = *finger1;
             }
             else
@@ -474,7 +475,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
                 else
                 {
                     if(sw.forbidden[position(finger0)]) s1 = 0;
-                    else s1 = h + score_mismatch;
+                    else s1 = h + currScore;
                 }
 
                 h = *finger1;
@@ -522,13 +523,16 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
 // ----------------------------------------------------------------------------
 
 // Traceback.
-template <typename TSourceH, typename TGapsSpecH, typename TSourceV, typename TGapsSpecV, typename TScoreValue, unsigned DIMENSION>
+template <typename TSourceH, typename TGapsSpecH,
+          typename TSourceV, typename TGapsSpecV,
+          typename TScoreValue, typename TScoreSpec,
+          unsigned DIMENSION>
 typename Iterator<Matrix<TScoreValue, DIMENSION>, Standard >::Type
 _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
                     Gaps<TSourceV, TGapsSpecV> & gapsV,
                     typename LocalAlignmentFinder<TScoreValue>::TBoolMatrix & fb_matrix,
                     Iter< Matrix<TScoreValue, DIMENSION>, PositionIterator > source_,
-                    Score<TScoreValue, Simple> const & scoring_) {
+                    Score<TScoreValue, TScoreSpec> const & scoring_) {
     //typedefs
     typedef Iter<Matrix<TScoreValue, DIMENSION>, PositionIterator > TMatrixIterator;
     typedef typename Position<Matrix<TScoreValue, DIMENSION> >::Type TPosition;
@@ -559,7 +563,6 @@ _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
     TSourceIteratorV it_1 = iter(strV, pos_1, Standard());
     TSourceIteratorV it_1_end = end(strV);
 
-    TScoreValue score_mismatch = scoreMismatch(scoring_);
     TScoreValue score_gap = scoreGapExtend(scoring_);
 
     //-------------------------------------------------------------------------
@@ -586,7 +589,7 @@ _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
                 d = 0;
             else{
                 goNext(it_, 1);
-                d = *it_ + score_mismatch;
+                d = *it_ + score(scoring_, *it_0, *it_1);
             }
 
             it_ = source_;
@@ -678,7 +681,9 @@ _getNextBestEndPosition(LocalAlignmentFinder<TScoreValue> & sw ,
 // ----------------------------------------------------------------------------
 
 // Wrapper that computes the matrix and does the backtracking for the best alignment
-template <typename TSourceH, typename TGapsSpecH, typename TSourceV, typename TGapsSpecV, typename TScoreValue, typename TScoreSpec>
+template <typename TSourceH, typename TGapsSpecH,
+          typename TSourceV, typename TGapsSpecV,
+          typename TScoreValue, typename TScoreSpec>
 TScoreValue
 _smithWaterman(Gaps<TSourceH, TGapsSpecH> & gapsH,
                Gaps<TSourceV, TGapsSpecV> & gapsV,

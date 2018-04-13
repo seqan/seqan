@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@
 
 #include <seqan/align.h>
 #include <seqan/align_extend.h>
+#include <seqan/align_parallel.h>
 #include <seqan/align_profile.h>
 #include <seqan/align_split.h>
 #include <seqan/alignment_free.h>

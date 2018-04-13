@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -701,7 +701,7 @@ struct ClearSpaceStringPacked2_
         typename Size<T>::Type start,
         typename Size<T>::Type end)
     {
-        return _clearSpace_(seq, size, start, end, maxValue<typename Size<T>::Type >());
+        return _clearSpace_(seq, size, start, end, std::numeric_limits<typename Size<T>::Type >::max());
     }
 
     template <typename T>

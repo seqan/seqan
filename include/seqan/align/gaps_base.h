@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -142,6 +142,12 @@ typedef Tag<RightOfViewPos_> RightOfViewPos;
 
 template <typename TSequence, typename TSpec = ArrayGaps>
 class Gaps;
+
+template <typename TSequence, typename TSpec>
+SEQAN_CONCEPT_IMPL((Gaps<TSequence, TSpec>), (AlignedSequenceConcept));
+
+template <typename TSequence, typename TSpec>
+SEQAN_CONCEPT_IMPL((Gaps<TSequence, TSpec> const), (AlignedSequenceConcept));
 
 // ============================================================================
 // Metafunctions
@@ -455,7 +461,7 @@ bool isGap(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @fn Gaps#isCharacer
  * @brief Query positions in a Gaps object for being a character.
  *
- * @signature bool isGap(gaps, viewPos);
+ * @signature bool isCharacter(gaps, viewPos);
  *
  * @param[in] gaps    The Gaps object to query.
  * @param[in] viewPos The view position (including clipping and gaps).

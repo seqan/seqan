@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -63,6 +63,8 @@
 #include <future>
 #include <mutex>
 #include <condition_variable>
+#include <unordered_map>
+#include <shared_mutex>
 
 // ============================================================================
 // Module Headers
@@ -89,5 +91,9 @@
 #include <seqan/parallel/parallel_queue_suspendable.h>
 #include <seqan/parallel/parallel_resource_pool.h>
 #include <seqan/parallel/parallel_serializer.h>
+#include <seqan/parallel/enumerable_thread_local.h>
+#include <seqan/parallel/enumerable_thread_local_iterator.h>
+#include <seqan/parallel/parallel_thread_pool.h>
+
 
 #endif  // SEQAN_PARALLEL_H_

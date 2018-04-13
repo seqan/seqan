@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
 {
     // The file contains 13 annotations in total which will be checked line
     // after line.
-    seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/store/example_knownGene.txt");
+    seqan::CharString ucscPath = seqan::getAbsolutePath("/tests/store/example_knownGene.txt");
 
     UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
@@ -56,10 +55,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue(getAnnotation(it).parentId));
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<decltype(getAnnotation(it).parentId)>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -166,10 +165,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes_and_isoforms)
 {
     // The file contains 13 annotations in total which will be checked line
     // after line.
-    seqan::CharString ucscGenesPath = SEQAN_PATH_TO_ROOT();
-    append(ucscGenesPath, "/tests/store/example_knownGene.txt");
-    seqan::CharString ucscIsoformsPath = SEQAN_PATH_TO_ROOT();
-    append(ucscIsoformsPath, "/tests/store/example_knownIsoforms.txt");
+    seqan::CharString ucscGenesPath = getAbsolutePath("/tests/store/example_knownGene.txt");
+    seqan::CharString ucscIsoformsPath = getAbsolutePath("/tests/store/example_knownIsoforms.txt");
 
     UcscFileIn finGenes(toCString(ucscGenesPath));
     UcscFileIn finIsoforms(toCString(ucscIsoformsPath));
@@ -181,10 +178,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes_and_isoforms)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue(getAnnotation(it).parentId));
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<decltype(getAnnotation(it).parentId)>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -325,8 +322,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes_and_isoforms)
 
 SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 {
-    seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/tests/store/example_knownGene.txt");
+    seqan::CharString ucscPath = getAbsolutePath("/tests/store/example_knownGene.txt");
 
     UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
@@ -338,16 +334,14 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
     writeRecords(fout, store);
     close(fout);
 
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/tests/store/example_knownGene.txt");
+    seqan::CharString goldPath = getAbsolutePath("/tests/store/example_knownGene.txt");
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_gff)
 {
-    seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/tests/store/example.gff");
+    seqan::CharString gffPath = getAbsolutePath("/tests/store/example.gff");
 
     GffFileIn f(toCString(gffPath));
     typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
@@ -360,10 +354,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue<TId>());
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<TId>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -393,8 +387,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_write_gff)
 {
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/tests/store/example.gff");
+    seqan::CharString goldPath = getAbsolutePath("/tests/store/example.gff");
 
     GffFileIn fin(toCString(goldPath));
     seqan::FragmentStore<> store;
@@ -413,8 +406,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
 {
     typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
 
-    seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
-    append(gtfPath, "/tests/store/example.gtf");
+    seqan::CharString gtfPath = getAbsolutePath("/tests/store/example.gtf");
 
     GffFileIn fin(toCString(gtfPath));
     seqan::FragmentStore<> store;
@@ -424,10 +416,10 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
     it = begin(store, AnnotationTree<>());
 
     SEQAN_ASSERT_EQ(getType(it), "<root>");
-    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, maxValue(getAnnotation(it).beginPos));
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, maxValue(getAnnotation(it).endPos));
+    SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, std::numeric_limits<decltype(getAnnotation(it).beginPos)>::max());
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, std::numeric_limits<decltype(getAnnotation(it).endPos)>::max());
     SEQAN_ASSERT_EQ(value(it), 0u);
-    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, maxValue<TId>());
+    SEQAN_ASSERT_EQ(getAnnotation(it).parentId, std::numeric_limits<TId>::max());
     SEQAN_ASSERT_EQ(getParentName(it), "<root>");
     goNext(it);
 
@@ -529,8 +521,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
 
 SEQAN_DEFINE_TEST(test_store_io_write_gtf)
 {
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/tests/store/example.gtf");
+    seqan::CharString goldPath = getAbsolutePath("/tests/store/example.gtf");
 
     GffFileIn fin(toCString(goldPath));
     seqan::FragmentStore<> store;
@@ -551,11 +542,11 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    std::string goldPathRef = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.fa";
+    std::string goldPathRef = getAbsolutePath("/tests/store/ex1.fa");
     loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.copy.sam";
+    std::string goldPathSam = getAbsolutePath("/tests/store/ex1.copy.sam");
     BamFileIn inFile(toCString(goldPathSam));
     readRecords(store, inFile);
 
@@ -573,11 +564,11 @@ SEQAN_DEFINE_TEST(test_store_io_sam2)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    std::string goldPathRef = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.fa";
+    std::string goldPathRef = getAbsolutePath("/tests/store/ex1.fa");
     loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.copy.sam";
+    std::string goldPathSam = getAbsolutePath("/tests/store/ex1.copy.sam");
     BamFileIn inFile(toCString(goldPathSam));
     readRecords(store, inFile);
 
@@ -595,7 +586,7 @@ void _appendReadAlignments(TFragStore &store, char const *fileName)
 {
     using namespace seqan;
 
-    std::string str = (std::string)SEQAN_PATH_TO_ROOT() + fileName;
+    std::string str = getAbsolutePath(fileName);
     BamFileIn inFile(str.c_str());
     readRecords(store, inFile);
   }
@@ -612,7 +603,8 @@ void _writeStore(TFragStore &store, std::string const &outPath, char const *suff
     printAlignment(file, layout, store, 1, 0, 1030, 0, 36);
     file.close();
 
-    std::string goldPathTxt = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.splitmerge" + suffix;
+    std::string goldFileName = (std::string)"/tests/store/ex1.splitmerge" + (std::string)suffix;
+    std::string goldPathTxt = seqan::getAbsolutePath(goldFileName.c_str());
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathTxt), toCString(goldPathTxt)));
 }
 
@@ -623,7 +615,7 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.fa";
+    std::string fastaFileName = seqan::getAbsolutePath("/tests/store/ex1.fa");
     loadContigs(store, toCString(fastaFileName));
 
     std::string outPath = (std::string)SEQAN_TEMP_FILENAME();
@@ -642,7 +634,7 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
     writeRecords(outFile, store);
     close(outFile);
 
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.splitmerge.sam";
+    std::string goldPathSam = seqan::getAbsolutePath("/tests/store/ex1.splitmerge.sam");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathSam), toCString(goldPathSam)));
 }
 
@@ -654,11 +646,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.fa";
+    std::string fastaFileName = seqan::getAbsolutePath("/tests/store/ex1.fa");
     loadContigs(store, toCString(fastaFileName));
 
     // 2. LOAD BAM ALIGNMENTS
-    std::string bamFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.bam";
+    std::string bamFileName = seqan::getAbsolutePath("/tests/store/ex1.bam");
 
     // Read reference Sam from file.
     {
@@ -678,8 +670,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     close(outFile);
 
     // 4. COMPARE BOTH SAM FILES
-    CharString samFileName = SEQAN_PATH_TO_ROOT();
-    append(samFileName, "/tests/store/ex1.copy.sam");
+    CharString samFileName = seqan::getAbsolutePath("/tests/store/ex1.copy.sam");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(samFileName), toCString(outFileName)));
 }
 
@@ -690,7 +681,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
 SEQAN_DEFINE_TEST(test_store_io_read_amos)
 {
     // Get path to input file.
-    std::string inPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/toy.amos";
+    std::string inPath = seqan::getAbsolutePath("/tests/store/toy.amos");
     // Get path to temporary file.
     std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
     std::string outPathFasta = (std::string)SEQAN_TEMP_FILENAME() + ".fa";
@@ -718,11 +709,9 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
     SEQAN_ASSERT_EQ(length(store.matePairStore), 1u);
     SEQAN_ASSERT_EQ(length(store.alignedReadStore), 12u);
 
-    seqan::CharString goldPathSam = SEQAN_PATH_TO_ROOT();
-    append(goldPathSam, "/tests/store/amos_to_sam_result.sam");
+    seqan::CharString goldPathSam = seqan::getAbsolutePath("/tests/store/amos_to_sam_result.sam");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathSam), toCString(goldPathSam)));
-    seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
-    append(goldPathFasta, "/tests/store/amos_to_sam_result.fasta");
+    seqan::CharString goldPathFasta = seqan::getAbsolutePath("/tests/store/amos_to_sam_result.fasta");
 
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathFasta), toCString(goldPathFasta)));
@@ -732,8 +721,8 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
 SEQAN_DEFINE_TEST(test_store_io_write_amos)
 {
     // Get path to input files.
-    std::string inPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.copy.sam";
-    std::string inPathFasta = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.fa";
+    std::string inPathSam = seqan::getAbsolutePath("/tests/store/ex1.copy.sam");
+    std::string inPathFasta = seqan::getAbsolutePath("/tests/store/ex1.fa");
     // Get path to temporary file.
     std::string outPathAmos = SEQAN_TEMP_FILENAME();
 
@@ -749,8 +738,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
     fAmosOut.close();
 
     // Compare result.
-    seqan::CharString goldPathAmos = SEQAN_PATH_TO_ROOT();
-    append(goldPathAmos, "/tests/store/sam_to_amos_result.amos");
+    seqan::CharString goldPathAmos = seqan::getAbsolutePath("/tests/store/sam_to_amos_result.amos");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathAmos), toCString(goldPathAmos)));
 }
 
@@ -758,7 +746,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_amos)
 SEQAN_DEFINE_TEST(test_store_io_readwrite_amos)
 {
     // Get path to input files.
-    std::string goldPathAmos = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/toy.amos";
+    std::string goldPathAmos = seqan::getAbsolutePath("/tests/store/toy.amos");
     // Get path to temporary file.
     std::string outPathAmos = SEQAN_TEMP_FILENAME();
 

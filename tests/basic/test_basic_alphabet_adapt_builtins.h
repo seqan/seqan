@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -70,19 +70,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_bool)
         SEQAN_ASSERT_EQ(b, true);
     }
 
-    // Ordered Alphabet Concept
-    {
-        bool b = false, c = true;
-
-        SEQAN_ASSERT_EQ(minValue(bool()), false);
-        SEQAN_ASSERT_EQ(minValue<bool>(), false);
-        SEQAN_ASSERT_EQ(+(MinValue<bool>::VALUE), 0/*false*/);
-        SEQAN_ASSERT_EQ(maxValue(bool()), true);
-        SEQAN_ASSERT_EQ(maxValue<bool>(), true);
-        SEQAN_ASSERT_EQ(+(MaxValue<bool>::VALUE), 1/*true*/);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         bool b = false;
@@ -112,19 +99,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
         SEQAN_ASSERT_EQ(+(BitsPerValue<char>::VALUE), 8u);
         assign(b, true);
         SEQAN_ASSERT_EQ(b, true);
-    }
-
-    // Ordered Alphabet Concept
-    {
-        char b = false, c = true;
-        SEQAN_ASSERT_EQ(minValue(char()), '\0');
-        SEQAN_ASSERT_EQ(minValue<char>(), '\0');
-        SEQAN_ASSERT_EQ(+(MinValue<char>::VALUE), '\0');
-        // TODO(holtgrew): Is the following correct?
-        SEQAN_ASSERT_EQ(maxValue(char()), char(-1));
-        SEQAN_ASSERT_EQ(maxValue<char>(), char(-1));
-        SEQAN_ASSERT_EQ(+(MaxValue<char>::VALUE), char(-1));
-        SEQAN_ASSERT(b < c);
     }
 
     // Finite Ordered Alphabet
@@ -168,19 +142,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_short)
         SEQAN_ASSERT_EQ(b, 1);
     }
 
-    // Ordered Alphabet Concept
-    {
-        short b = 0, c = 42;
-
-        SEQAN_ASSERT_LEQ(minValue(short()), -32768);
-        SEQAN_ASSERT_LEQ(minValue<short>(), -32768);
-        SEQAN_ASSERT_LEQ(+(MinValue<short>::VALUE), -32768);
-        SEQAN_ASSERT_GEQ(maxValue(short()), 32767);
-        SEQAN_ASSERT_GEQ(maxValue<short>(), 32767);
-        SEQAN_ASSERT_GEQ(+(MaxValue<short>::VALUE), 32767);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         short b = 0;
@@ -214,21 +175,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int)
         SEQAN_ASSERT_EQ(b, 1);
     }
 
-    // Ordered Alphabet Concept
-    {
-        int b = 0, c = 42;
-
-        // note(marehr): -2147483648 would produce the compiler warning C4146:
-        // unary minus operator applied to unsigned type, result still unsigned
-        SEQAN_ASSERT_EQ(minValue(int()), -2147483647 - 1);
-        SEQAN_ASSERT_EQ(minValue<int>(), -2147483647 - 1);
-        SEQAN_ASSERT_EQ(+(MinValue<int>::VALUE), -2147483647 - 1);
-        SEQAN_ASSERT_EQ(maxValue(int()), 2147483647);
-        SEQAN_ASSERT_EQ(maxValue<int>(), 2147483647);
-        SEQAN_ASSERT_EQ(+(MaxValue<int>::VALUE), 2147483647);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         int b = 0;
@@ -260,19 +206,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
         SEQAN_ASSERT_EQ(+(BitsPerValue<long>::VALUE), sizeof(long) * 8);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
-    }
-
-    // Ordered Alphabet Concept
-    {
-        long b = 0, c = 42;
-
-        SEQAN_ASSERT_LEQ(minValue(long()), +(MinValue<int>::VALUE));
-        SEQAN_ASSERT_LEQ(minValue<long>(), +(MinValue<int>::VALUE));
-        SEQAN_ASSERT_LEQ(+(MinValue<long>::VALUE), +(MinValue<int>::VALUE));
-        SEQAN_ASSERT_GEQ(maxValue(long()), +(MaxValue<int>::VALUE));
-        SEQAN_ASSERT_GEQ(maxValue<long>(), +(MaxValue<int>::VALUE));
-        SEQAN_ASSERT_GEQ(+(MaxValue<long>::VALUE), +(MaxValue<int>::VALUE));
-        SEQAN_ASSERT(b < c);
     }
 
     // Finite Ordered Alphabet
@@ -317,19 +250,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
         SEQAN_ASSERT_EQ(b, 1);
     }
 
-    // Ordered Alphabet Concept
-    {
-        int8_t b = 0, c = 42;
-
-        SEQAN_ASSERT_EQ(minValue(int8_t()), -128);
-        SEQAN_ASSERT_EQ(minValue<int8_t>(), -128);
-        SEQAN_ASSERT_EQ(+(MinValue<int8_t>::VALUE), -128);
-        SEQAN_ASSERT_GEQ(maxValue(int8_t()), 127);
-        SEQAN_ASSERT_GEQ(maxValue<int8_t>(), 127);
-        SEQAN_ASSERT_GEQ(+(MaxValue<int8_t>::VALUE), 127);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         int8_t b = 0;
@@ -363,19 +283,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint8)
         SEQAN_ASSERT_EQ(b, 1);
     }
 
-    // Ordered Alphabet Concept
-    {
-        uint8_t b = 0, c = 42;
-
-        SEQAN_ASSERT_EQ(minValue(uint8_t()), 0u);
-        SEQAN_ASSERT_EQ(minValue<uint8_t>(), 0u);
-        SEQAN_ASSERT_EQ(+(MinValue<uint8_t>::VALUE), 0);
-        SEQAN_ASSERT_EQ(maxValue(uint8_t()), 255u);
-        SEQAN_ASSERT_EQ(maxValue<uint8_t>(), 255u);
-        SEQAN_ASSERT_EQ(+(MaxValue<uint8_t>::VALUE), 255);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         uint8_t b = 0;
@@ -406,19 +313,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int16)
         SEQAN_ASSERT_EQ(+(BitsPerValue<int16_t>::VALUE), 16u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
-    }
-
-    // Ordered Alphabet Concept
-    {
-        int16_t b = 0, c = 42;
-
-        SEQAN_ASSERT_EQ(minValue(int16_t()), -32768);
-        SEQAN_ASSERT_EQ(minValue<int16_t>(), -32768);
-        SEQAN_ASSERT_EQ(+(MinValue<int16_t>::VALUE), -32768);
-        SEQAN_ASSERT_EQ(maxValue(int16_t()), 32767);
-        SEQAN_ASSERT_EQ(maxValue<int16_t>(), 32767);
-        SEQAN_ASSERT_EQ(+(MaxValue<int16_t>::VALUE), 32767);
-        SEQAN_ASSERT(b < c);
     }
 
     // Finite Ordered Alphabet
@@ -454,19 +348,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint16)
         SEQAN_ASSERT_EQ(b, 1);
     }
 
-    // Ordered Alphabet Concept
-    {
-        uint16_t b = 0, c = 42;
-
-        SEQAN_ASSERT_EQ(minValue(uint16_t()), 0u);
-        SEQAN_ASSERT_EQ(minValue<uint16_t>(), 0u);
-        SEQAN_ASSERT_EQ(+(MinValue<uint16_t>::VALUE), 0);
-        SEQAN_ASSERT_EQ(maxValue(uint16_t()), 65535u);
-        SEQAN_ASSERT_EQ(maxValue<uint16_t>(), 65535u);
-        SEQAN_ASSERT_EQ(+(MaxValue<uint16_t>::VALUE), 65535);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         uint16_t b = 0;
@@ -497,21 +378,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int32)
         SEQAN_ASSERT_EQ(+(BitsPerValue<int32_t>::VALUE), 32u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
-    }
-
-    // Ordered Alphabet Concept
-    {
-        int32_t b = 0, c = 42;
-
-        // note(marehr): -2147483648 would produce the compiler warning C4146:
-        // unary minus operator applied to unsigned type, result still unsigned
-        SEQAN_ASSERT_EQ(minValue(int32_t()), -2147483647 - 1);
-        SEQAN_ASSERT_EQ(minValue<int32_t>(), -2147483647 - 1);
-        SEQAN_ASSERT_EQ(+(MinValue<int32_t>::VALUE), -2147483647 - 1);
-        SEQAN_ASSERT_EQ(maxValue(int32_t()), 2147483647);
-        SEQAN_ASSERT_EQ(maxValue<int32_t>(), 2147483647);
-        SEQAN_ASSERT_EQ(+(MaxValue<int32_t>::VALUE), 2147483647);
-        SEQAN_ASSERT(b < c);
     }
 
     // Finite Ordered Alphabet
@@ -547,19 +413,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint32)
         SEQAN_ASSERT_EQ(b, 1u);
     }
 
-    // Ordered Alphabet Concept
-    {
-        uint32_t b = 0, c = 42;
-
-        SEQAN_ASSERT_EQ(minValue(uint32_t()), 0u);
-        SEQAN_ASSERT_EQ(minValue<uint32_t>(), 0u);
-        SEQAN_ASSERT_EQ(+(MinValue<uint32_t>::VALUE), 0u);
-        SEQAN_ASSERT_EQ(maxValue(uint32_t()), 4294967295u);
-        SEQAN_ASSERT_EQ(maxValue<uint32_t>(), 4294967295u);
-        SEQAN_ASSERT_EQ(+(MaxValue<uint32_t>::VALUE), 4294967295u);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         uint32_t b = 0;
@@ -590,19 +443,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int64)
         SEQAN_ASSERT_EQ(+(BitsPerValue<int64_t>::VALUE), 64u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
-    }
-
-    // Ordered Alphabet Concept
-    {
-        int64_t b = 0, c = 42;
-
-        SEQAN_ASSERT_LT(minValue((int64_t)(0)), minValue((int32_t)(0)));
-        SEQAN_ASSERT_LT(minValue<int64_t>(), minValue<int32_t>());
-        SEQAN_ASSERT_LT(+(MinValue<int64_t>::VALUE), +(MinValue<int32_t>::VALUE));
-        SEQAN_ASSERT_GT(maxValue((int64_t)(0)), maxValue((int32_t)(0)));
-        SEQAN_ASSERT_GT(maxValue<int64_t>(), maxValue<int32_t>());
-        SEQAN_ASSERT_GT(+(MaxValue<int64_t>::VALUE), +(MaxValue<int32_t>::VALUE));
-        SEQAN_ASSERT(b < c);
     }
 
     // Finite Ordered Alphabet
@@ -638,19 +478,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint64)
         SEQAN_ASSERT_EQ(b, 1u);
     }
 
-    // Ordered Alphabet Concept
-    {
-        uint64_t b = 0, c = 42;
-
-        SEQAN_ASSERT_EQ(minValue(uint64_t()), 0u);
-        SEQAN_ASSERT_EQ(minValue<uint64_t>(), 0u);
-        SEQAN_ASSERT_EQ(+(MinValue<uint64_t>::VALUE), 0u);
-        SEQAN_ASSERT_GT(maxValue(uint64_t()), maxValue(uint32_t()));
-        SEQAN_ASSERT_GT(maxValue<uint64_t>(), maxValue<uint32_t>());
-        SEQAN_ASSERT_GT(+(MaxValue<uint64_t>::VALUE), +(MaxValue<uint32_t>::VALUE));
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet
     {
         uint64_t b = 0;
@@ -684,19 +511,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_float)
         SEQAN_ASSERT_EQ(b, 1);
     }
 
-    // Ordered Alphabet Concept
-    {
-        float b = 0, c = 42;
-
-        SEQAN_ASSERT_LT(minValue(float()), 0);
-        SEQAN_ASSERT_LT(minValue<float>(), 0);
-        SEQAN_ASSERT_LT(+(MinValue<float>::VALUE), 0);
-        SEQAN_ASSERT_GT(maxValue(float()), 0);
-        SEQAN_ASSERT_GT(maxValue<float>(), 0);
-        SEQAN_ASSERT_GT(+(MaxValue<float>::VALUE), 0);
-        SEQAN_ASSERT(b < c);
-    }
-
     // Finite Ordered Alphabet - Not Applicable
     // Alphabet With Gaps - Not Applicable
     // Alphabet With Unknown Value - Not Applicable
@@ -714,19 +528,6 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_double)
         SEQAN_ASSERT_EQ(+(BitsPerValue<double>::VALUE), 64u);
         assign(b, 1);
         SEQAN_ASSERT_EQ(b, 1);
-    }
-
-    // Ordered Alphabet Concept
-    {
-        double b = 0, c = 42;
-
-        SEQAN_ASSERT_LT(minValue(double()), 0);
-        SEQAN_ASSERT_LT(minValue<double>(), 0);
-        SEQAN_ASSERT_LT(+(MinValue<double>::VALUE), 0);
-        SEQAN_ASSERT_GT(maxValue(double()), 0);
-        SEQAN_ASSERT_GT(maxValue<double>(), 0);
-        SEQAN_ASSERT_GT(+(MaxValue<double>::VALUE), 0);
-        SEQAN_ASSERT(b < c);
     }
 
     // Alphabet With Gaps - Not Applicable

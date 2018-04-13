@@ -210,7 +210,7 @@ bool loadReadsSam(
 	if (!open(file, fileName)) return false;
 
 	options.maxReadRegionsEnd = 0;
-	options.minReadRegionsStart = maxValue<int>();
+	options.minReadRegionsStart = std::numeric_limits<int>::max();
 	TContigPos regionBegin = options.minReadRegionsStart;
 	TContigPos regionEnd = options.maxReadRegionsEnd;
 
@@ -351,7 +351,7 @@ void compactSplicedMatches(TMatches &matches,
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int scoreDistCutOff = MinValue<int>::VALUE;
+	int scoreDistCutOff = std::numeric_limits<int>::min();
 	
 	TIterator it = begin(matches, Standard());
 	TIterator itEnd = end(matches, Standard());
@@ -442,7 +442,7 @@ void compactAndCountSplicedMatches(TMatches &matches,
 	unsigned readNo = -1;
 	unsigned hitCount = 0;
 	unsigned hitCountCutOff = options.maxHits;
-	int scoreDistCutOff = MinValue<int>::VALUE;
+	int scoreDistCutOff = std::numeric_limits<int>::min();
 	
 	clear(states);
 	
@@ -643,7 +643,7 @@ matchVerify(
 #endif
 	
 	unsigned ndlLength = _min(sequenceLength(rseqNo, readSet),options.minMatchLen);
-	int maxScore = MinValue<int>::VALUE;
+	int maxScore = std::numeric_limits<int>::min();
 	int minScore = - maxNumSeedErrors(options,TSufPrefSpec());
 
 	TMyersFinder maxPos;
@@ -1117,7 +1117,7 @@ findBestSplitPosition(String<Pair<TScore,int> > & maxColsL,
 	::std::cout << "findBestSplitEditForward\n";
 #endif
 
-	TScore maxSum = minValue<TScore>();
+	TScore maxSum = std::numeric_limits<TScore>::min();
 	int bestL = rowPosL1;
 	int bestR = rowPosR1;
 	int bestTraceExtL = rowPosL1;
@@ -1319,8 +1319,8 @@ _alignBandedNeedlemanWunsch(TTrace& trace,
 	resize(mat, diagonalWidth);
 	resize(trace, height * diagonalWidth);
 //      ::std::cout <<height << "<-hieght\n";
-	overallMaxValue[0] = MinValue<TScoreValue>::VALUE;
-	overallMaxValue[1] = MinValue<TScoreValue>::VALUE;
+	overallMaxValue[0] = std::numeric_limits<TScoreValue>::min();
+	overallMaxValue[1] = std::numeric_limits<TScoreValue>::min();
 	overallMaxIndex[0] = diagonalWidth;     overallMaxIndex[1] = height;
 	overallMaxIndex[2] = diagonalWidth;     overallMaxIndex[3] = height;
 
@@ -1346,14 +1346,14 @@ _alignBandedNeedlemanWunsch(TTrace& trace,
 	TScoreValue verti_val = 0;
 	TScoreValue hori_val = 0;
 	for(TSize row = 0; row < height; ++row) {
-		TScoreValue maxRowVal = MinValue<TScoreValue>::VALUE;
+		TScoreValue maxRowVal = std::numeric_limits<TScoreValue>::min();
 		unsigned maxRowCol = 0;
 		actualRow = row + lo_row;
 		if (lo_diag > 0) --lo_diag;
 		if (row + lo_row >= len1 - diagU) --hi_diag;
 		TTraceIter traceIt = begin(trace, Standard()) + row * diagonalWidth + lo_diag;
 		TRowIter matIt = begin(mat, Standard()) + lo_diag;
-		hori_val = MinValue<TScoreValue>::VALUE;
+		hori_val = std::numeric_limits<TScoreValue>::min();
 		for(TSize col = lo_diag; col<hi_diag; ++col, ++matIt, ++traceIt) {
 			actualCol = col + diagL + actualRow;
 			//std::cerr << row << ',' << col << ':' << value(originalMat, actualRow * len1 + actualCol) << std::endl;
@@ -1365,14 +1365,14 @@ _alignBandedNeedlemanWunsch(TTrace& trace,
 				*traceIt = Diagonal;
 				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) +
 				    scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : std::numeric_limits<TScoreValue>::min()) > *matIt)
 				{
 					*matIt = verti_val;
 					*traceIt = Vertical;
 				}
 				if ((hori_val = (col > 0) ? hori_val +
 				    scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : std::numeric_limits<TScoreValue>::min()) > *matIt)
 				{
 					*matIt = hori_val;
 					*traceIt = Horizontal;
@@ -1481,7 +1481,7 @@ findBestSplitPosition(String<Pair<TScore,int> > & maxColsL,
 	::std::cout << "findBestSplitEditReverse\n";
 #endif
 
-	TScore maxSum = minValue<TScore>();
+	TScore maxSum = std::numeric_limits<TScore>::min();
 	int bestL = rowPosL2;
 	int bestR = rowPosR2;
 	int bestTraceExtR = rowPosL1;

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1395,8 +1395,9 @@ void createQGramIndex(TIndex &index)
     _qgramRefineSuffixArray(sa, text, shape, dir);
 }
 
-// DEPRECATED
-// better use createQGramIndex(index) (above)
+// DEPRECATED: Use createQGramIndex(index) instead. (above)
+// NOTE: This function is currently still used in the app search join (status 25.10.2016) so the deprecation macro
+// can't be used yet. As soon as the app is altered accordingly the macro shall be applied.
 template <
 typename TSA,
 typename TDir,
@@ -1404,6 +1405,7 @@ typename TBucketMap,
 typename TText,
 typename TShape,
 typename TStepSize >
+/*[[deprecated("Use createQGramIndex(index) instead.")]]*/
 void createQGramIndex(
                       TSA &sa,
                       TDir &dir,
@@ -1428,8 +1430,9 @@ void createQGramIndex(
     _qgramFillSuffixArray(sa, text, shape, dir, bucketMap, stepSize, False());
 }
 
-// DEPRECATED
-// better use createQGramIndex(index) (above)
+// DEPRECATED: Use createQGramIndex(index) instead.
+// NOTE: This function is currently still used in the app search join (status 25.10.2016) so the deprecation macro
+// can't be used yet. As soon as the app is altered accordingly the macro shall be applied.
 template <
 typename TSA,
 typename TDir,
@@ -1437,6 +1440,7 @@ typename TBucketMap,
 typename TText,
 typename TShape,
 typename TStepSize >
+/*[[deprecated("Use createQGramIndex(index) instead.")]]*/
 void createQGramIndex(
                       TSA &sa,
                       TDir &dir,

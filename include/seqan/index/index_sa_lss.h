@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -256,7 +256,7 @@ struct ContextLss_
 
        for (s=0, i=k-l; i; i>>=1)
           ++s;                      /* s is number of bits in old symbol.*/
-       e=MaxValue<TValue>::VALUE>>s; /* e is for overflow checking.*/
+       e=std::numeric_limits<TValue>::max()>>s; /* e is for overflow checking.*/
        for (b=d=r=0; r<n && d<=e && (c=d<<s|(k-l))<=q; ++r) {
           b=b<<s|(x[r]-l+1);        /* b is start of x in chunk alphabet.*/
           d=c;                      /* d is max symbol in chunk alphabet.*/
@@ -317,7 +317,7 @@ struct ContextLss_
           j=transform(V, I, n, k, l, n);
           bucketsort(V, I, n, j);   /* bucketsort on first r positions.*/
        } else {
-          transform(V, I, n, k, l, MaxValue<TValue>::VALUE);
+          transform(V, I, n, k, l, std::numeric_limits<TValue>::max());
           for (i=0; i<=n; ++i)
              I[i]=i;                /* initialize I with suffix numbers.*/
           h=0;

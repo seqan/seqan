@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -85,6 +85,14 @@ include(CheckIncludeFileCXX)
 include(CheckCXXSourceCompiles)
 
 # ----------------------------------------------------------------------------
+# Set CMAKE policies.
+# ----------------------------------------------------------------------------
+
+if (POLICY CMP0054)  # Disables auto-dereferencing of variables in quoted statements
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
+# ----------------------------------------------------------------------------
 # Define Constants.
 # ----------------------------------------------------------------------------
 
@@ -158,9 +166,9 @@ elseif (COMPILER_CLANG)
 
 elseif (COMPILER_LINTEL OR COMPILER_WINTEL)
 
-    # require at least icpc 16.0.2
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0.2)
-        message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 16.0.2! Anything below is untested.")
+    # require at least icpc 17.0.0
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17.0.0)
+        message(AUTHOR_WARNING "Intel Compiler version (${CMAKE_CXX_COMPILER_VERSION}) should be at least 17.0.0! Anything below is untested.")
     endif ()
 
 elseif (COMPILER_MSVC)
@@ -238,9 +246,8 @@ endif (WIN32)
 # Visual Studio Setup
 if (COMPILER_MSVC OR COMPILER_WINTEL)
   # Enable intrinics (e.g. _interlockedIncrease)
-  # /EHsc will be set automatically for COMPILER_MSVC and COMPILER_WINTEL, but
   # COMPILER_CLANG (clang/c2 3.7) can not handle the /EHsc and /Oi flag
-  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /Oi)
+  set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} /EHsc /Oi)
 endif ()
 
 # ----------------------------------------------------------------------------
@@ -298,12 +305,9 @@ if ((${CMAKE_SYSTEM_NAME} STREQUAL "Linux") OR (${CMAKE_SYSTEM_NAME} STREQUAL "k
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
 endif ()
 
+# some OSes don't link pthread fully when building statically so we explicitly include whole archive
 if (UNIX AND NOT APPLE)
-  if ((CMAKE_CXX_FLAGS MATCHES "-static") OR (SEQAN_CXX_FLAGS MATCHES "-static") OR (CMAKE_EXE_LINKER_FLAGS MATCHES "-static"))
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive")
-  else ()
-    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
-  endif ()
 endif ()
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") OR (${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD"))
@@ -350,6 +354,15 @@ list(FIND SEQAN_FIND_DEPENDENCIES "BZip2" _SEQAN_FIND_BZIP2)
 mark_as_advanced(_SEQAN_FIND_BZIP2)
 if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
     find_package(BZip2 QUIET)
+endif ()
+
+if (NOT ZLIB_FOUND AND BZIP2_FOUND)
+    # NOTE(marehr): iostream_bzip2 uses the type `uInt`, which is defined by
+    # `zlib`. Therefore, `bzip2` will cause a ton of errors without `zlib`.
+    message(AUTHOR_WARNING "Disabling BZip2 [which was successfully found], "
+            "because ZLIB was not found. BZip2 is depending on ZLIB.")
+    unset(BZIP2_FOUND)
+    unset(SEQAN_HAS_BZIP2)
 endif ()
 
 if (BZIP2_FOUND)

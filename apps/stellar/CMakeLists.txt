@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_stellar CXX)
 message (STATUS "Configuring apps/stellar")
 
-set (SEQAN_APP_VERSION "1.4.10")
+set (SEQAN_APP_VERSION "1.4.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -60,7 +60,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install stellar in ${PREFIX}/bin directory
 install (TARGETS stellar
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/stellar for SeqAn release builds.

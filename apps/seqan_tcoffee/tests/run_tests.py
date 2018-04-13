@@ -12,6 +12,7 @@ Usage:  run_tests.py SOURCE_ROOT_PATH BINARY_ROOT_PATH
 import logging
 import os.path
 import sys
+import platform
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
@@ -22,6 +23,11 @@ import seqan.app_tests as app_tests
 
 def main(source_base, binary_base):
     """Main entry point of the script."""
+
+    if platform.machine().startswith('mips') or platform.machine().startswith('s390'):
+        print 'Skipping tests for seqan_tcoffee on mips* and s390*'
+        print '==================================================='
+        return 0
 
     print 'Executing test for seqan_tcoffee'
     print '================================'

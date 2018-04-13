@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fiona CXX)
 message (STATUS "Configuring apps/fiona")
 
-set (SEQAN_APP_VERSION "0.2.9")
+set (SEQAN_APP_VERSION "0.2.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -83,7 +83,7 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install fiona in ${PREFIX}/bin directory
-install (TARGETS fiona compute_gain DESTINATION bin)
+install (TARGETS fiona compute_gain DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/fiona for SeqAn release builds.

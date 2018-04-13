@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ public:
     TTraceValue _traceValue;            // the trace direction
 
     TraceSegment_() :
-        _horizontalBeginPos(0), _verticalBeginPos(0), _length(0), _traceValue(+TraceBitMap_<TTraceValue>::NONE){}
+        _horizontalBeginPos(0), _verticalBeginPos(0), _length(0), _traceValue(TraceBitMap_<TTraceValue>::NONE){}
 
     TraceSegment_(TraceSegment_ const & other) :
         _horizontalBeginPos(other._horizontalBeginPos),
@@ -328,11 +328,11 @@ inline void _recordSegment(TTraceSegments & traceSegments,
         return;  // we don't store empty segments
 
     if (traceValue & TraceBitMap_<TTraceValue>::DIAGONAL)
-        appendValue(traceSegments, TTraceSegment(horizontalBeginPos, verticalBeginPos, segmentLength, +TraceBitMap_<TTraceValue>::DIAGONAL));
+        appendValue(traceSegments, TTraceSegment(horizontalBeginPos, verticalBeginPos, segmentLength, TraceBitMap_<TTraceValue>::DIAGONAL));
     else if (traceValue & TraceBitMap_<TTraceValue>::VERTICAL)
-        appendValue(traceSegments, TTraceSegment(horizontalBeginPos, verticalBeginPos, segmentLength, +TraceBitMap_<TTraceValue>::VERTICAL));
+        appendValue(traceSegments, TTraceSegment(horizontalBeginPos, verticalBeginPos, segmentLength, TraceBitMap_<TTraceValue>::VERTICAL));
     else if (traceValue & TraceBitMap_<TTraceValue>::HORIZONTAL)
-        appendValue(traceSegments, TTraceSegment(horizontalBeginPos, verticalBeginPos, segmentLength, +TraceBitMap_<TTraceValue>::HORIZONTAL));
+        appendValue(traceSegments, TTraceSegment(horizontalBeginPos, verticalBeginPos, segmentLength, TraceBitMap_<TTraceValue>::HORIZONTAL));
     // everything else is not tracked.
 }
 

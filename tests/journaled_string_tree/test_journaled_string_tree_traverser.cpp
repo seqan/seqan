@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,7 @@ SEQAN_BEGIN_TESTSUITE(test_journaled_string_tree_traverser)
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_context_size);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_branch_size);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_at_end);
+    SEQAN_CALL_TEST(test_journaled_string_tree_traverser_is_base);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_advance);
     SEQAN_CALL_TEST(test_journaled_string_tree_traverser_context_iterator);
 

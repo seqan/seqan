@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -601,7 +601,7 @@ insert(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
     typedef typename Value<TIds>::Type                      TID;
     typedef typename Size<TJst>::Type                       TSize   SEQAN_TYPEDEF_FOR_DEBUG;
 
-    if (IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
+    SEQAN_IF_CONSTEXPR (IsSameType<TDeltaType, DeltaTypeIns>::VALUE)
         SEQAN_ASSERT_LEQ(static_cast<TSize>(srcPos), length(impl::member(jst, JstSourceMember())));  // Make sure the delta position does not exceed the source.
     else
         SEQAN_ASSERT_LT(static_cast<TSize>(srcPos), length(impl::member(jst, JstSourceMember())));

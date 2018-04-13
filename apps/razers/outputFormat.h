@@ -934,7 +934,12 @@ void dumpMatches(
 			}
 			break;
 		case 3: // Gff:  printf "$chr $name_$format read $pos %ld . $dir . ID=$col[0]$unique$rest\n",$pos+$len-1;
-			for (unsigned filecount = 0; filecount < length(genomeFileNameList); ++filecount)
+			// NOTE(marehr): filecount+=2 might be a potential bug [https://github.com/seqan/seqan/issues/2165]
+			// In revision 4dbf27b55 and before, filecount was incremented twice at the
+			// end of the for loop, which caused a compiler warning (once in the body
+			// and once in the iteration_expression of the for loop). We kept this
+			// behaviour, because we have no active maintainer for this app.
+			for (unsigned filecount = 0; filecount < length(genomeFileNameList); filecount+=2)
 			{
 				// open genome file	
 				SeqFileIn gFile;
@@ -1201,7 +1206,6 @@ void dumpMatches(
 					}
 				}
 				close(gFile);
-				++filecount;
 			}
 			break;
 	}

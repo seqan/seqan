@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_razers3 CXX)
 message (STATUS "Configuring apps/razers3")
 
-set (SEQAN_APP_VERSION "3.5.7")
+set (SEQAN_APP_VERSION "3.5.8")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -92,7 +92,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install razers3 in ${PREFIX}/bin directory
 install (TARGETS razers3
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/razers3 for SeqAn release builds.

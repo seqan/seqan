@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  SAK
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,9 +85,9 @@ struct SakOptions
     SakOptions() :
         verbosity(1),
         seqInfixBegin(0),
-        seqInfixEnd(seqan::maxValue<uint64_t>()),
+        seqInfixEnd(std::numeric_limits<uint64_t>::max()),
         reverseComplement(false),
-        maxLength(seqan::maxValue<uint64_t>())
+        maxLength(std::numeric_limits<uint64_t>::max())
     {
     }
 };
@@ -118,7 +118,7 @@ bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeS
 
     if (empty(buffer))
     {
-        endPos = seqan::maxValue<TNum>();
+        endPos = std::numeric_limits<TNum>::max();
         return true;
     }
 
@@ -354,12 +354,12 @@ int main(int argc, char ** argv)
     }
 
     // Compute index of last sequence to write if any.
-    uint64_t endIdx = seqan::maxValue<uint64_t>();
+    uint64_t endIdx = std::numeric_limits<uint64_t>::max();
     for (unsigned i = 0; i < length(options.seqIndices); ++i)
-        if (endIdx == seqan::maxValue<uint64_t>() || endIdx > options.seqIndices[i] + 1)
+        if (endIdx == std::numeric_limits<uint64_t>::max() || endIdx > options.seqIndices[i] + 1)
             endIdx = options.seqIndices[i] + 1;
     for (unsigned i = 0; i < length(options.seqIndexRanges); ++i)
-        if (endIdx == seqan::maxValue<uint64_t>() || endIdx > options.seqIndexRanges[i].i2)
+        if (endIdx == std::numeric_limits<uint64_t>::max() || endIdx > options.seqIndexRanges[i].i2)
             endIdx = options.seqIndexRanges[i].i2;
     if (options.verbosity >= 2)
         std::cerr << "Sequence end idx: " << endIdx << "\n";

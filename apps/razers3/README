@@ -51,23 +51,23 @@ and BAM formats (.sam or .bam).
 2. Installation
 ------------------------------------------------------------------------------
 
-To install RazerS 3, you can either compile the latest version from the SVN
-trunk or use a precompiled binary.
+To install RazerS 3, you can either compile the latest version from the Git
+version or use a precompiled binary.
 
 ------------------------------------------------------------------------------
 2.1. Compilation from source code
 ------------------------------------------------------------------------------
 
 Follow the "Getting Started" section on http://trac.seqan.de/wiki and check
-out the latest SVN trunk. Instead of creating a project file in Debug mode,
+out the latest Git repo. Instead of creating a project file in Debug mode,
 switch to Release mode (-DCMAKE_BUILD_TYPE=Release) and compile razers3. This
 can be done as follows:
 
-  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
-  mkdir seqan-trunk/build
-  cd seqan-trunk/build
-  cmake .. -DCMAKE_BUILD_TYPE=Release
-  make razers3
+  1)  git clone https://github.com/seqan/seqan.git
+  2)  mkdir seqan/buld; cd seqan/build
+  3)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  4)  make razers3
+  5)  ./bin/razers3 --help
 
 If RazerS 3 will be run on the same machine it is compiled on, you may
 consider to optimize for the given system architecture. For gcc or llvm/clang

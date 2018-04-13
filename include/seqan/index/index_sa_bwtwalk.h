@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ namespace seqan
     // Public function
     // NOTE: This function uses the supremum value of Value<TSA>::Type as NIL symbol
     //       for temporary calculations. Therefore, the caller must ensure that
-    //       length(s) < MaxValue<TValue>::VALUE. Otherwise, behaviour is undefined!
+    //       length(s) < std::numeric_limits<TValue>::max(). Otherwise, behaviour is undefined!
     template < typename TSA, typename TText, typename TSpec >
     inline void createSuffixArray(
         TSA &SA,
@@ -89,7 +89,7 @@ namespace seqan
     {
         value(lexprevpos, p) = predecessor;
         value(lexnextpos, p) = successor;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
         if (predecessor != NIL) value(lexnextpos, predecessor) = p;
         if (successor != NIL) value(lexprevpos, successor) = p;
     }
@@ -124,7 +124,7 @@ namespace seqan
         TValue predecessor,
         TValue successor)
     {
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
         value(lexxorpos, p) = predecessor ^ successor;
         if (predecessor != NIL) value(lexxorpos, predecessor) = getValue(lexxorpos, predecessor) ^ successor ^ p;
         if (successor != NIL) value(lexxorpos, successor) = getValue(lexxorpos, successor) ^ predecessor ^ p;
@@ -140,7 +140,7 @@ namespace seqan
     {
         typedef typename Value<TSA>::Type TValue;
         typedef typename Iterator<TSA, Standard>::Type TSaIter;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
 
         if (empty(s)) return;
 
@@ -174,7 +174,7 @@ namespace seqan
     {
         typedef typename Value<TSA>::Type TValue;
         typedef typename Iterator<TSA, Standard>::Type TSaIter;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
         typedef String<TValue> TArray;
 
         if (empty(s)) return;
@@ -208,7 +208,7 @@ namespace seqan
     {
         typedef typename Value<TSA>::Type TValue;
         typedef typename Iterator<TSA, Standard>::Type TSaIter;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
         typedef String<TValue> TArray;
 
         if (empty(s)) return;
@@ -380,7 +380,7 @@ namespace seqan
         True const &)
     {
         typedef typename Value<TSA>::Type TValue;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
 
         const TValue FLAGBIT = (TValue)1 << (BitsPerValue<TValue>::VALUE-1);
         const TValue NOTFLAGBIT = ~FLAGBIT;
@@ -408,7 +408,7 @@ namespace seqan
         TValue &pPlus,
         unsigned int cOrd)
     {
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
 
         // current char does not exist
         // first find pMinus ...
@@ -444,7 +444,7 @@ namespace seqan
 
         typedef typename Value<const TText>::Type TChar;
         const unsigned int ALPHABETSIZE = ValueSize<TChar>::VALUE;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
         typedef String<TValue, Array<ALPHABETSIZE> > TAlphabetArray;
 
         TAlphabetArray lexfirstpos, lexlastpos;
@@ -539,7 +539,7 @@ namespace seqan
 
         typedef typename Value<const TText>::Type TChar;
         const unsigned int ALPHABETSIZE = ValueSize<TChar>::VALUE;
-        const TValue NIL = MaxValue<TValue>::VALUE;
+        const TValue NIL = std::numeric_limits<TValue>::max();
         typedef String<TValue, Array<ALPHABETSIZE> > TAlphabetArray;
 
         TAlphabetArray lexfirstpos;

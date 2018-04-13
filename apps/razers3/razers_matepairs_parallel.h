@@ -371,7 +371,7 @@ void initializeThreadLocalStoragesPaired(TThreadLocalStorages & threadLocalStora
         typedef typename TThreadLocalStorage::TMatchFilter TMatchFilter;
         double READ_FRAC_WITH_HISTO = 0.01;
         tls.matchFilter.reset(new TMatchFilter(tls.splitters[i + 1] - tls.splitters[i], options.matchHistoStartThreshold, READ_FRAC_WITH_HISTO, tls, tls.splitters[i], tls.globalStore->readSeqStore, tls.options));
-        tls.options.compactThresh = MaxValue<unsigned>::VALUE;
+        tls.options.compactThresh = std::numeric_limits<unsigned>::max();
 #endif // #ifdef RAZERS_DEFER_COMPACTION
 
         unsigned offset = splitters[i];
@@ -663,8 +663,8 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
             }
         }
 
-        int bestLeftScore = MinValue<int>::VALUE;
-        int bestLibSizeError = MaxValue<int>::VALUE;
+        int bestLeftScore = std::numeric_limits<int>::min();
+        int bestLibSizeError = std::numeric_limits<int>::max();
         TDequeueIterator bestLeft = TDequeueIterator();
 
         bool rightVerified = false;
@@ -822,7 +822,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
         }
 
         // (4) Verify right mate, if left mate matches.
-        if (bestLeftScore != MinValue<int>::VALUE)
+        if (bestLeftScore != std::numeric_limits<int>::min())
         {
             fL.i2 = (*bestLeft).i2;
 
@@ -1477,7 +1477,7 @@ int _mapMatePairReadsParallel(
 
     // Save compaction threshold and set global threshold to infinity, so matchVerify does not compact!
     int oldThreshold = options.compactThresh;
-    options.compactThresh = MaxValue<unsigned>::VALUE;
+    options.compactThresh = std::numeric_limits<unsigned>::max();
 
     SEQAN_PROTIMESTART(findTime);
     for (int contigId = 0; contigId < (int)length(store.contigStore); ++contigId)

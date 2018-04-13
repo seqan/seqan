@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
@@ -543,15 +543,15 @@ inline bool _goDownString(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDow
     typedef typename Iterator<TSA const, Standard>::Type    TSAIterator;
     typedef SearchTreeIterator<TSA const, SortedList>       TSearchTreeIterator;
 
-    // Save vertex descriptor.
-    _historyPush(it);
-
 #ifdef SEQAN_DEBUG
     std::cout << "parent: " << value(it).range << std::endl;
 #endif
 
     if (!empty(pattern))
     {
+        // Save vertex descriptor.
+        _historyPush(it);
+
         TIndex const & index = container(it);
         TSA const & sa = indexSA(index);
         TText const & text = indexText(index);

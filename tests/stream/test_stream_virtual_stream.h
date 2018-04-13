@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -76,8 +76,7 @@ IIIIIIII\n";
 
 SEQAN_TYPED_TEST(VStreamTest, Construct)
 {
-    CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/tests/seq_io/test_dna.fq");
+    CharString fileName = getAbsolutePath("/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<typename TestFixture::Type>::VALUE[0]);
     VirtualStream<char, Input> vstream(toCString(fileName), OPEN_RDONLY);
     SEQAN_ASSERT((bool)vstream);
@@ -89,8 +88,7 @@ SEQAN_TYPED_TEST(VStreamTest, Construct)
 
 SEQAN_TYPED_TEST(VStreamTest, OpenClose)
 {
-    CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/tests/seq_io/test_dna.fq");
+    CharString fileName = getAbsolutePath("/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<typename TestFixture::Type>::VALUE[0]);
     VirtualStream<char, Input> vstream;
 
@@ -111,8 +109,7 @@ SEQAN_TYPED_TEST(VStreamTest, OpenClose)
 SEQAN_TYPED_TEST(VStreamTest, Decompression)
 {
     typedef typename TestFixture::Type TCompressionTag;
-    CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/tests/seq_io/test_dna.fq");
+    CharString fileName = getAbsolutePath("/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<TCompressionTag>::VALUE[0]);
     VirtualStream<char, Input> vstream(toCString(fileName), OPEN_RDONLY);
     SEQAN_ASSERT((bool)vstream);
@@ -123,8 +120,7 @@ SEQAN_TYPED_TEST(VStreamTest, Decompression)
     close(vstream);
     SEQAN_ASSERT_NOT((bool)vstream);
 
-    fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/tests/seq_io/test_dna.fa");
+    fileName = getAbsolutePath("/tests/seq_io/test_dna.fa");
     append(fileName, FileExtensions<TCompressionTag>::VALUE[0]);
     open(vstream, toCString(toCString(fileName)), OPEN_RDONLY);
 
@@ -164,8 +160,7 @@ SEQAN_TYPED_TEST(VStreamTest, Compression)
 SEQAN_TYPED_TEST(VStreamTest, AutoDetection)
 {
     typedef typename TestFixture::Type TCompressionTag;
-    CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/tests/seq_io/test_dna.fq");
+    CharString fileName = getAbsolutePath("/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<TCompressionTag>::VALUE[0]);
     std::fstream file(toCString(fileName), std::ios::in | std::ios::binary);
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -129,7 +129,7 @@ struct GffRecord
      * @var int32_t GffRecord::INVALID_IDX;
      * @brief Static member with invalid/sentinel rID value.
      */
-    static int32_t const INVALID_POS = 2147483647;  // TODO(singer): Should be MaxValue<int32_t>::VALUE, but that is not a constant expression :(
+    static int32_t const INVALID_POS = 2147483647;  // TODO(singer): Should be std::numeric_limits<int32_t>::max(), but that is not a constant expression :(
 
     /*!
      * @var CharString GffRecord::ref;
@@ -349,12 +349,13 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
     IsNewline isNewline;
 
-    // skip commented lines
+    // skip commented lines as well as ## directives
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
     while (!atEnd(iter) && value(iter) == '#')
         skipLine(iter);
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
 
     clear(record);
-    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
 
     // read column 1: seqid
     readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
@@ -436,6 +437,14 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
             break;
         }
     }
+
+    // The last line might be a "### directive" specifically in GFF3
+    // Need to skip it to avoid another call of readRecords
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
+    while (!atEnd(iter) && value(iter) == '#')
+        skipLine(iter);
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
+
     return;
 }
 

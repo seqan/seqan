@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -202,12 +202,24 @@ struct Spec
     typedef void Type;
 };
 
-// Case for one template argument.
+// Case for variable number of template arguments.
+// Note, that a spec by default should be the last template argument in SeqAn.
+// This helper recursively reduces the template argument list to the last template argument.
+template <size_t REMAINING, typename T1, typename ...TRemainingTypes>
+struct GetSpecHelper_ : GetSpecHelper_<sizeof...(TRemainingTypes), TRemainingTypes...>
+{};
 
-template <template <typename> class T, typename TSpec>
-struct Spec<T<TSpec> >
+// Recursion anchor.
+template <typename T1>
+struct GetSpecHelper_<1, T1>
 {
-    typedef TSpec Type;
+    using Type = T1;
+};
+
+template <template <typename ...> class T, typename ...TArgs>
+struct Spec<T<TArgs...> >
+{
+    using Type = typename GetSpecHelper_<sizeof...(TArgs), TArgs...>::Type;
 };
 
 template <typename T>

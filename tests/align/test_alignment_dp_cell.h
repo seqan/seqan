@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         test_alignment_dp_cell.h
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ void testDPCellDefaultInfinity(TGapCosts const &)
     int result1 = DPCellDefaultInfinity<TDPCell>::VALUE;
     int result2 = DPCellDefaultInfinity<TDPConstCell>::VALUE;
 
-    int test = MinValue<int>::VALUE / 2;
+    int test = std::numeric_limits<int>::min() / 2;
     SEQAN_ASSERT_EQ(result1, test);
     SEQAN_ASSERT_EQ(result2, test);
 }

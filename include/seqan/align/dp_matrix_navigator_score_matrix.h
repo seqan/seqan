@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,21 +56,66 @@ namespace seqan {
 // The navigator for the score matrix.
 //
 // This navigator runs on a FullDPMatrix while it navigates column wise.
-template <typename TValue>
-class DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise>
+
+template <typename TValue, typename THost, typename TNavigationSpec>
+class DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, TNavigationSpec>
 {
 public:
-    typedef  DPMatrix_<TValue, FullDPMatrix> TDPMatrix_;
+    typedef  DPMatrix_<TValue, FullDPMatrix, THost> TDPMatrix_;
     typedef typename Pointer_<TDPMatrix_>::Type TDPMatrixPointer_;
     typedef typename Iterator<TDPMatrix_, Standard>::Type TDPMatrixIterator;
 
-    TDPMatrixPointer_ _ptrDataContainer     = nullptr;  // Pointer to the matrix this navigator is working on.
-    int _laneLeap                           = 0;  // Stores the jump to the next column
-    TDPMatrixIterator _activeColIterator    = TDPMatrixIterator();  // The active column iterator.
-    TDPMatrixIterator _prevColIterator      = TDPMatrixIterator();  // The previous column iterator.
-    TValue _prevCellDiagonal                = TValue();  // The previous diagonal cell
-    TValue _prevCellHorizontal              = TValue();  // The previous Horizontal cell
-    TValue _prevCellVertical                = TValue();  // The previous Vertical cell
+    template <typename TBandSpec,
+              std::enable_if_t<std::is_same<TBandSpec, BandOff>::value, int> = 0>
+    DPMatrixNavigator_(TDPMatrix_ & matrix,
+                       DPBandConfig<TBandSpec> const & /*band*/)
+    {
+        _ptrDataContainer = &matrix;
+        _prevColIteratorOffset = _dataFactors(matrix)[DPMatrixDimension_::HORIZONTAL];
+        _activeColIterator = begin(matrix, Standard());
+        _prevColIterator = _activeColIterator - _prevColIteratorOffset;
+        _laneLeap = 1;
+        *_activeColIterator = TValue();
+    }
+
+    template <typename TBandSpec,
+              std::enable_if_t<!std::is_same<TBandSpec, BandOff>::value, int> = 0>
+    DPMatrixNavigator_(TDPMatrix_ & matrix,
+                       DPBandConfig<TBandSpec> const & band)
+    {
+        using TMatrixSize = typename Size<TDPMatrix_>::Type;
+        using TSignedSize = std::make_signed_t<TMatrixSize>;
+
+        _ptrDataContainer = &matrix;
+        _prevColIteratorOffset = _dataFactors(matrix)[DPMatrixDimension_::HORIZONTAL];
+        // Band begins within the first row.
+        if (lowerDiagonal(band) >= 0)
+        {
+            _laneLeap = _min(length(matrix, DPMatrixDimension_::VERTICAL), bandSize(band));
+            _activeColIterator = begin(matrix, Standard()) + _dataLengths(matrix)[DPMatrixDimension_::VERTICAL] - 1;
+        }
+        else if (upperDiagonal(band) <= 0)  // Band begins within the first column.
+        {
+            _laneLeap = 1;
+            _activeColIterator = begin(matrix, Standard());
+        }
+        else  // Band intersects with the point of origin.
+        {
+            TMatrixSize lengthVertical = length(matrix, DPMatrixDimension_::VERTICAL);
+            int lastPos = _max(-static_cast<TSignedSize>(lengthVertical - 1), lowerDiagonal(band));
+            _laneLeap = lengthVertical + lastPos;
+            _activeColIterator = begin(matrix, Standard()) + _laneLeap - 1;
+        }
+        // Set previous iterator to same position, one column left.
+        _prevColIterator = _activeColIterator - _prevColIteratorOffset;
+        *_activeColIterator = TValue();
+    }
+
+    TDPMatrixPointer_ _ptrDataContainer{nullptr};   // Pointer to the matrix this navigator is working on.
+    int               _laneLeap{0};                 // Stores the jump to the next column
+    size_t            _prevColIteratorOffset{0};    // Offset to reset the previous column iterator when going to the next cell.
+    TDPMatrixIterator _activeColIterator{};         // The active column iterator.
+    TDPMatrixIterator _prevColIterator{};           // The previous column iterator.
 };
 
 // ============================================================================
@@ -82,288 +127,268 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _init()
+// Function _goNextCell                                     [banded, FirstCell]
 // ----------------------------------------------------------------------------
 
-// Initializes the navigator for an unbanded alignment.
-template <typename TValue>
+// Needed to avoid ambigious overload.
+template <typename TValue, typename TDPMatrixSpec, typename THost>
 inline void
-_init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & navigator,
-      DPMatrix_<TValue, FullDPMatrix> & dpMatrix,
-      DPBandConfig<BandOff> const &)
-{
-    navigator._ptrDataContainer = &dpMatrix;
-    navigator._activeColIterator = begin(dpMatrix, Standard());
-    navigator._prevColIterator = navigator._activeColIterator - _dataFactors(dpMatrix)[DPMatrixDimension_::HORIZONTAL];
-    navigator._laneLeap = 1;
-    assignValue(navigator._activeColIterator, TValue());
-}
-
-// Initializes the navigator for a banded alignment.
-template <typename TValue>
-inline void
-_init(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & navigator,
-      DPMatrix_<TValue, FullDPMatrix> & dpMatrix,
-      DPBandConfig<BandOn> const & band)
-{
-    typedef typename Size<DPMatrix_<TValue, FullDPMatrix> >::Type TMatrixSize;
-    typedef typename MakeSigned<TMatrixSize>::Type TSignedSize;
-    navigator._ptrDataContainer = &dpMatrix;
-
-
-    // Band begins within the first row.
-    if (lowerDiagonal(band) >= 0)
-    {
-        navigator._laneLeap = _min(length(dpMatrix, DPMatrixDimension_::VERTICAL), bandSize(band));
-        navigator._activeColIterator = begin(dpMatrix, Standard()) + _dataLengths(dpMatrix)[DPMatrixDimension_::VERTICAL] - 1;
-    }
-    else if (upperDiagonal(band) <= 0)  // Band begins within the first column.
-    {
-        navigator._laneLeap = 1;
-        navigator._activeColIterator = begin(dpMatrix, Standard());
-    }
-    else  // Band intersects with the point of origin.
-    {
-        TMatrixSize lengthVertical = length(dpMatrix, DPMatrixDimension_::VERTICAL);
-        int lastPos = _max(-static_cast<TSignedSize>(lengthVertical - 1), lowerDiagonal(band));
-        navigator._laneLeap = lengthVertical + lastPos;
-        navigator._activeColIterator = begin(dpMatrix, Standard()) + navigator._laneLeap - 1;
-    }
-    // Set previous iterator to same position, one column left.
-    navigator._prevColIterator = navigator._activeColIterator - _dataFactors(dpMatrix)[DPMatrixDimension_::HORIZONTAL];
-    assignValue(navigator._activeColIterator, TValue());
-}
-
-// ----------------------------------------------------------------------------
-// Function _goNextCell()                          [DPInitialColumn, FirstCell]
-// ----------------------------------------------------------------------------
-
-// In the initial column we don't need to do anything because, the navigagtor is already initialized.
-template <typename TValue>
-inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & /*dpNavigator*/,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & /*dpNavigator*/,
             MetaColumnDescriptor<DPInitialColumn, PartialColumnTop> const &,
             FirstCell const &)
 {
     // no-op
 }
 
-template <typename TValue>
+// Needed to avoid ambigious overload.
+template <typename TValue, typename TDPMatrixSpec, typename THost>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & /*dpNavigator*/,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & /*dpNavigator*/,
             MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
             FirstCell const &)
 {
     // no-op
 }
 
-template <typename TValue, typename TColumnLocation>
+// specialized for initialization column and all other column locations.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnLocation>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & /*dpNavigator*/,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & /*dpNavigator*/,
             MetaColumnDescriptor<DPInitialColumn, TColumnLocation> const &,
             FirstCell const &)
 {
     // no-op
 }
 
-// ----------------------------------------------------------------------------
-// Function _goNextCell()                         [PartialColumnTop, FirstCell]
-// ----------------------------------------------------------------------------
-
-// We are in the banded case, where the band crosses the first row.
-// The left cell of the active cell is not valid, beacause we only can come from horizontal direction.
-// The lower left cell of the active cell is the horizontal direction.
-template <typename TValue, typename TColumnType>
+//  specialized for all other column types located at the top.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnType>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<TColumnType, PartialColumnTop> const &,
             FirstCell const &)
 {
     --dpNavigator._laneLeap;
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
+    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset + 1;
 }
 
-// ----------------------------------------------------------------------------
-// Function _goNextCell()                               [FullColumn, FirstCell]
-// ----------------------------------------------------------------------------
-
-// We are in the unbanded case or in the middle phase of the wide band.
-// The left cell of the active cell represents horizontal direction.
-template <typename TValue, typename TColumnType>
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnType>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<TColumnType, FullColumn> const &,
             FirstCell const &)
 {
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevCellHorizontal = value(dpNavigator._prevColIterator);
+    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset;
 }
 
-// ----------------------------------------------------------------------------
-// Function _goNextCell() [PartialColumnMiddle, PartialColumnBottom, FirstCell]
-// ----------------------------------------------------------------------------
-
-// We are in the banded case.
-// The left cell of the active cell represents diagonal direction. The lower left diagonal represents the horizontal direction.
-
-template <typename TValue, typename TColumnType, typename TColumnLocation>
+// version for all other column types and locations.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnType, typename TColumnLocation>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<TColumnType, TColumnLocation> const &,
             FirstCell const &)
 {
     dpNavigator._activeColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevColIterator += dpNavigator._laneLeap;
-    dpNavigator._prevCellDiagonal = value(dpNavigator._prevColIterator);
-    dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
+    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset + 1;
 }
 
 // ----------------------------------------------------------------------------
-// Function _goNextCell                            [DPInitialColumn, InnerCell]
+// Function _goNextCell                                   [unbanded, FirstCell]
 // ----------------------------------------------------------------------------
 
-// If we are in the initial column, we only need to represent the vertical direction.
-// But we still have to update the previous column iterator.
-template <typename TValue, typename TColumnLocation>
+// specialized for initalization column.
+template <typename TValue, typename THost>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, NavigateColumnWise> & /*dpNavigator*/,
+            MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
+            FirstCell const &)
+{
+    // no-op
+}
+
+// all other column types.
+template <typename TValue, typename THost,
+          typename TColumnType>
+inline void
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+            MetaColumnDescriptor<TColumnType, FullColumn> const &,
+            FirstCell const &)
+{
+    // Set to begin of column.
+    dpNavigator._activeColIterator += dpNavigator._laneLeap;
+    dpNavigator._prevColIterator = dpNavigator._activeColIterator - dpNavigator._prevColIteratorOffset;
+
+}
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                     [banded, InnerCell]
+// ----------------------------------------------------------------------------
+
+// specilized for the initialization column and all column locations.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnLocation>
+inline void
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<DPInitialColumn, TColumnLocation> const &,
             InnerCell const &)
 {
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
     ++dpNavigator._activeColIterator;
-    ++dpNavigator._prevColIterator;  // Do we have to increase the prevColIterator....
 }
 
-// ----------------------------------------------------------------------------
-// Function _goNextCell                                  [AnyColumn, InnerCell]
-// ----------------------------------------------------------------------------
-
-// For any other column type and location we can use the same navigation procedure.
-template <typename TValue, typename TColumnType, typename TColumnLocation>
+// specialized for the standard band processing.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnType, typename TColumnLocation>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<TColumnType, TColumnLocation> const &,
             InnerCell const &)
 {
-    dpNavigator._prevCellDiagonal = dpNavigator._prevCellHorizontal;
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
-    dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
-    ++dpNavigator._activeColIterator;
-}
-
-// ----------------------------------------------------------------------------
-// Function _goNextCell                             [DPInitialColumn, LastCell]
-// ----------------------------------------------------------------------------
-
-// If we are in the initial column we only need to represent the vertical direction.
-// But we still have to update the previous column iterator.
-template <typename TValue, typename TColumnLocation>
-inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
-            MetaColumnDescriptor<DPInitialColumn, TColumnLocation> const &,
-            LastCell const &)
-{
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
     ++dpNavigator._activeColIterator;
     ++dpNavigator._prevColIterator;
 }
 
-// We need this function to avoid ambiguous function calls.
-template <typename TValue>
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                   [unbanded, InnerCell]
+// ----------------------------------------------------------------------------
+
+// specialized for the initialization column.
+template <typename TValue, typename THost>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+            MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
+            InnerCell const &)
+{
+    ++dpNavigator._activeColIterator;
+}
+
+// version for the all other column types.
+template <typename TValue, typename THost,
+          typename TColumnType>
+inline void
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+            MetaColumnDescriptor<TColumnType, FullColumn> const &,
+            InnerCell const &)
+{
+    ++dpNavigator._activeColIterator;
+    ++dpNavigator._prevColIterator;
+}
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                      [banded, LastCell]
+// ----------------------------------------------------------------------------
+
+// specilaized for initialization column and bottom column.
+template <typename TValue, typename TDPMatrixSpec, typename THost>
+inline void
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<DPInitialColumn, PartialColumnBottom> const &,
             LastCell const &)
 {
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
     ++dpNavigator._activeColIterator;
-    ++dpNavigator._prevColIterator;
 }
 
-// We need this function to avoid ambiguous function calls.
-template <typename TValue>
+// specilaized for initialization column and all other column locations.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnLocation>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
-            MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
+            MetaColumnDescriptor<DPInitialColumn, TColumnLocation> const &,
             LastCell const &)
 {
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
-    ++dpNavigator._activeColIterator;
-    ++dpNavigator._prevColIterator;
-}
-
-// ----------------------------------------------------------------------------
-// Function _goNextCell                                  [FullColumn, LastCell]
-// ----------------------------------------------------------------------------
-
-// If we are in a full column the values correspond to standard dp directions.
-template <typename TValue, typename TColumnType>
-inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
-            MetaColumnDescriptor<TColumnType, FullColumn> const &,
-            LastCell const &)
-{
-    dpNavigator._prevCellDiagonal = dpNavigator._prevCellHorizontal;
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
-    dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
     ++dpNavigator._activeColIterator;
 }
 
-// ----------------------------------------------------------------------------
-// Function _goNextCell                         [PartialColumnBottom, LastCell]
-// ----------------------------------------------------------------------------
-
-// If we are in banded case and are the band crosses the last row, we have to update
-// the additional leap for the current track.
-template <typename TValue, typename TColumnType>
+// specialized for all column types and bottom column.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnType>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<TColumnType, PartialColumnBottom> const &,
             LastCell const &)
 {
-    dpNavigator._prevCellDiagonal = dpNavigator._prevCellHorizontal;
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
-    dpNavigator._prevCellHorizontal = value(++dpNavigator._prevColIterator);
     ++dpNavigator._activeColIterator;
+    ++dpNavigator._prevColIterator;
     ++dpNavigator._laneLeap;
 }
 
-// ----------------------------------------------------------------------------
-// Function _goNextCell      [PartialColumnTop & PartialColumnBottom, LastCell]
-// ----------------------------------------------------------------------------
-
-// If we are in the banded case the left cell of the active represents the diagonal direction.
-template <typename TValue, typename TColumnType, typename TColumnLocation>
+// generic case for all other column types and column locations.
+template <typename TValue, typename TDPMatrixSpec, typename THost,
+          typename TColumnType, typename TColumnLocation>
 inline void
-_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, TDPMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> & dpNavigator,
             MetaColumnDescriptor<TColumnType, TColumnLocation> const &,
             LastCell const &)
 {
-    dpNavigator._prevCellDiagonal = dpNavigator._prevCellHorizontal;
-    dpNavigator._prevCellVertical = value(dpNavigator._activeColIterator);
+    ++dpNavigator._activeColIterator;
+    ++dpNavigator._prevColIterator;
+}
+
+// ----------------------------------------------------------------------------
+// Function _goNextCell                                    [unbanded, LastCell]
+// ----------------------------------------------------------------------------
+
+// specilaized for initialization column.
+template <typename TValue, typename THost>
+inline void
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+            MetaColumnDescriptor<DPInitialColumn, FullColumn> const &,
+            LastCell const &)
+{
     ++dpNavigator._activeColIterator;
 }
 
-// ----------------------------------------------------------------------------
-// Function previousCellDiagonal()
-// ----------------------------------------------------------------------------
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> >::Type
-previousCellDiagonal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> & dpNavigator)
+// version for all other column types.
+template <typename TValue, typename THost,
+          typename TColumnType>
+inline void
+_goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMatrix, NavigateColumnWise> & dpNavigator,
+            MetaColumnDescriptor<TColumnType, FullColumn> const &,
+            LastCell const &)
 {
-    return dpNavigator._prevCellDiagonal;
+    ++dpNavigator._activeColIterator; // go to next cell.
+    ++dpNavigator._prevColIterator; // go to next cell.
 }
 
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const>::Type
-previousCellDiagonal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const & dpNavigator)
+// ----------------------------------------------------------------------------
+// Function _preInitCacheDiagonal()
+// ----------------------------------------------------------------------------
+
+template <typename TDPCell,
+          typename TValue, typename TMatrixSpec, typename THost,
+          typename TColumnType>
+inline void
+_preInitCacheDiagonal(TDPCell & cacheDiagonal,
+                      DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> const & dpNavigator,
+                      MetaColumnDescriptor<TColumnType, PartialColumnMiddle> const & /*tag*/)
 {
-    return dpNavigator._prevCellDiagonal;
+    _scoreOfCell(cacheDiagonal) = _scoreOfCell(*(dpNavigator._prevColIterator - 1));
+}
+
+template <typename TDPCell,
+          typename TValue, typename TMatrixSpec, typename THost,
+          typename TColumnType>
+inline void
+_preInitCacheDiagonal(TDPCell & cacheDiagonal,
+                      DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> const & dpNavigator,
+                      MetaColumnDescriptor<TColumnType, PartialColumnBottom> const & /*tag*/)
+{
+    _scoreOfCell(cacheDiagonal) = _scoreOfCell(*(dpNavigator._prevColIterator - 1));
+}
+
+template <typename TDPCell,
+          typename TValue, typename TMatrixSpec, typename THost, typename TNavigationSpec,
+          typename TColumnType, typename TColumnLocation>
+inline void
+_preInitCacheDiagonal(TDPCell & /*cacheDiagonal*/,
+                      DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, TNavigationSpec> const & /*dpNavigator*/,
+                      MetaColumnDescriptor<TColumnType, TColumnLocation> const & /*tag*/)
+{
+    // no-op
 }
 
 // ----------------------------------------------------------------------------
@@ -374,32 +399,14 @@ template <typename TDPMatrix, typename TNavigationSpec>
 inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> >::Type
 previousCellHorizontal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> & dpNavigator)
 {
-    return dpNavigator._prevCellHorizontal;
+    return *dpNavigator._prevColIterator;
 }
 
 template <typename TDPMatrix, typename TNavigationSpec>
 inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const>::Type
 previousCellHorizontal(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const & dpNavigator)
 {
-    return dpNavigator._prevCellHorizontal;
-}
-
-// ----------------------------------------------------------------------------
-// Function previousCellVertical()
-// ----------------------------------------------------------------------------
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> >::Type
-previousCellVertical(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> & dpNavigator)
-{
-    return dpNavigator._prevCellVertical;
-}
-
-template <typename TDPMatrix, typename TNavigationSpec>
-inline typename Reference<DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const>::Type
-previousCellVertical(DPMatrixNavigator_<TDPMatrix, DPScoreMatrix, TNavigationSpec> const & dpNavigator)
-{
-    return dpNavigator._prevCellVertical;
+    return *dpNavigator._prevColIterator;
 }
 
 }  // namespace seqan

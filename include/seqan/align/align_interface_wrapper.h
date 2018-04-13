@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -58,14 +58,20 @@ namespace seqan
 // Function _alignWrapperSequential(); Score; StringSet vs. StringSet
 // ----------------------------------------------------------------------------
 
-template <typename TString1, typename TSpec1,
-          typename TString2, typename TSpec2,
+template <typename TSetH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSetH>>,
+                                   Is<ContainerConcept<typename Value<TSetH>::Type>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<ContainerConcept<typename Value<TSetV>::Type>>>
+                               >::VALUE,
+                           int> = 0>
 inline auto
-_alignWrapperSequential(StringSet<TString1, TSpec1> const & stringsH,
-                        StringSet<TString2, TSpec2> const & stringsV,
+_alignWrapperSequential(TSetH const & stringsH,
+                        TSetV const & stringsV,
                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
                         TAlignConfig const & config,
                         TGapModel const & /*gaps*/)
@@ -92,14 +98,20 @@ _alignWrapperSequential(StringSet<TString1, TSpec1> const & stringsH,
 // Function _alignWrapperSequential(); Score; String vs. StringSet
 // ----------------------------------------------------------------------------
 
-template <typename TString1,
-          typename TString2, typename TSpec,
+template <typename TSeqH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSeqH>>,
+                                   Not<Is<ContainerConcept<typename Value<TSeqH>::Type>>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<ContainerConcept<typename Value<TSetV>::Type>>>
+                               >::VALUE,
+                           int> = 0>
 inline auto
-_alignWrapperSequential(TString1 const & stringH,
-                        StringSet<TString2, TSpec> const & stringsV,
+_alignWrapperSequential(TSeqH const & stringH,
+                        TSetV const & stringsV,
                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
                         TAlignConfig const & config,
                         TGapModel const & /*gaps*/)
@@ -125,21 +137,27 @@ _alignWrapperSequential(TString1 const & stringH,
 // Function _alignWrapperSequential(); Gaps
 // ----------------------------------------------------------------------------
 
-template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
-          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+template <typename TSetH,
+          typename TSetV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlignConfig,
-          typename TGapModel>
+          typename TGapModel,
+          std::enable_if_t<And<And<Is<ContainerConcept<TSetH>>,
+                                   Is<AlignedSequenceConcept<typename Value<TSetH>::Type>>>,
+                               And<Is<ContainerConcept<TSetV>>,
+                                   Is<AlignedSequenceConcept<typename Value<TSetV>::Type>>>
+                               >::VALUE,
+                           int> = 0>
 inline auto
-_alignWrapperSequential(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
-                        StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+_alignWrapperSequential(TSetH & gapSeqSetH,
+                        TSetV & gapSeqSetV,
                         Score<TScoreValue, TScoreSpec> const & scoringScheme,
                         TAlignConfig const & config,
                         TGapModel const & /*gaps*/)
 
 {
-    typedef typename Size<TSequenceH>::Type TSize;
-    typedef typename Position<TSequenceH>::Type TPosition;
+    typedef typename Size<TSetH>::Type TSize;
+    typedef typename Position<TSetH>::Type TPosition;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
     String<TScoreValue> results;
@@ -167,7 +185,8 @@ _alignWrapperSequential(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gap
 template <typename... TArgs>
 inline auto _alignWrapper(TArgs && ...args)
 {
-#ifdef SEQAN_SIMD_ENABLED
+// NOTE(marehr): ume_simd is currently not working, thus falling back to sequential case
+#if defined(SEQAN_SIMD_ENABLED) && !defined(SEQAN_UMESIMD_ENABLED)
     return _alignWrapperSimd(std::forward<TArgs>(args)...);
 #else
     return _alignWrapperSequential(std::forward<TArgs>(args)...);

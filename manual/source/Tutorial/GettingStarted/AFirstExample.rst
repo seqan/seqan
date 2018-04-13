@@ -353,6 +353,8 @@ Assignment 4
 
         .. includefrags:: demos/tutorial/a_first_example/solution_4.cpp.stdout
 
+.. _oop-to-seqan:
+
 From Object-Oriented Programming to SeqAn
 -----------------------------------------
 
@@ -375,6 +377,7 @@ In addition, because they are so frequently used there are shortcuts as well.
 For example :dox:`Blosum62` is really a **shortcut** for ``Score<int, ScoreMatrix<AminoAcid, Blosum62_> >``, which is obviously very helpful.
 Other shortcuts are ``DnaString`` for ``String<Dna>`` (:ref:`sequence tutorial <tutorial-datastructures-sequences>`), ``CharString`` for ``String<char>``, ...
 
+.. _template-subclassing:
 .. tip::
 
    Template Subclassing

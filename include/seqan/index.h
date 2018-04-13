@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -233,6 +233,7 @@
 #include <seqan/index/find2_vstree_factory.h>
 #include <seqan/index/find2_index_multi.h>
 #include <seqan/index/find2_functors.h>
+#include <seqan/index/find2_index_approx.h>
 
 // ----------------------------------------------------------------------------
 // Lambda interface.

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -135,26 +135,20 @@ public:
     // Members;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-    TValue value;
+    TValue value{0};
 
     // ------------------------------------------------------------------------
     // Constructors;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
     // TODO(holtgrew): Do we want default initialization?
-   
-    SimpleType() : value(0)
-    {}
-
-   
-    SimpleType(SimpleType const & other)
-    {
-        assign(*this, other);
-    }
+    SimpleType() = default;
+    SimpleType(SimpleType const &) = default;
+    SimpleType(SimpleType &&) = default;
+    ~SimpleType() = default;
 
     // TODO(holtgrew): Do we want an explicit here?
     template <typename T>
-   
     SimpleType(T const & other)
     {
         assign(*this, other);
@@ -163,13 +157,8 @@ public:
     // ------------------------------------------------------------------------
     // Assignment Operator;  Have to be defined in class.
     // ------------------------------------------------------------------------
-
-   
-    SimpleType & operator=(SimpleType const & other)
-    {
-        assign(*this, other);
-        return *this;
-    }
+    SimpleType & operator=(SimpleType const &) = default;
+    SimpleType & operator=(SimpleType &&) = default;
 
     template <typename T>
     inline SimpleType &
@@ -264,6 +253,67 @@ public:
 };
 #pragma pack(pop)
 
+} // namespace seqan
+
+// ----------------------------------------------------------------------------
+// Class numeric_limits
+// ----------------------------------------------------------------------------
+namespace std
+{
+
+template <typename TValue, typename TSpec>
+class numeric_limits<seqan::SimpleType<TValue, TSpec> >
+{
+public:
+    static constexpr bool is_specialized    = true;
+    static constexpr bool is_signed         = false;
+    static constexpr bool is_integer        = false;
+    static constexpr bool is_exact          = true;
+    static constexpr bool has_infinity      = false;
+    static constexpr bool has_quiet_NaN     = false;
+    static constexpr bool has_signaling_NaN = false;
+    static constexpr float_denorm_style has_denorm = denorm_absent;
+    static constexpr bool has_denorm_loss   = false;
+    static constexpr float_round_style round_style = round_toward_zero;
+    static constexpr bool is_iec559         = false;
+    static constexpr bool is_bounded        = true;
+    static constexpr bool is_modulu         = false;
+    static constexpr int  digits            = seqan::BitsPerValue<seqan::SimpleType<TValue, TSpec>>::VALUE;
+    static constexpr int  digits10          = digits - 1;
+    static constexpr int  max_digits10      = 0;
+    static constexpr int  radix             = 2;
+    static constexpr int  min_exponent      = 0;
+    static constexpr int  min_exponent10    = 0;
+    static constexpr int  max_exponent      = 0;
+    static constexpr int  max_exponent10    = 0;
+    static constexpr bool traps             = false;
+    static constexpr bool tinyness_before   = false;
+
+    static constexpr seqan::SimpleType<TValue, TSpec> min()
+    {
+        return seqan::SimpleType<TValue, TSpec>(0);
+    }
+
+    static constexpr seqan::SimpleType<TValue, TSpec> max()
+    {
+        return seqan::SimpleType<TValue, TSpec>(((TValue)seqan::ValueSize<seqan::SimpleType<TValue, TSpec> >::VALUE - 1));
+    }
+
+    static constexpr seqan::SimpleType<TValue, TSpec> lowest()
+    {
+        return seqan::SimpleType<TValue, TSpec>(0);
+    }
+
+    static constexpr seqan::SimpleType<TValue, TSpec> infinity()
+    {
+        return seqan::SimpleType<TValue, TSpec>(((TValue)seqan::ValueSize<seqan::SimpleType<TValue, TSpec> >::VALUE - 1));
+    }
+};
+
+} //namespace std
+
+namespace seqan
+{
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -319,7 +369,7 @@ struct MinValue<SimpleType<TValue, TSpec> >
 };
 
 template <typename TValue, typename TSpec>
-const SimpleType<TValue, TSpec> MinValue<SimpleType<TValue, TSpec> >::VALUE = SimpleType<TValue, TSpec>(0);
+const SimpleType<TValue, TSpec> MinValue<SimpleType<TValue, TSpec> >::VALUE = std::numeric_limits<SimpleType<TValue, TSpec>>::min();
 
 template <typename TValue, typename TSpec>
 inline SimpleType<TValue, TSpec> const &
@@ -339,7 +389,7 @@ struct MaxValue<SimpleType<TValue, TSpec> >
 };
 
 template <typename TValue, typename TSpec>
-const SimpleType<TValue, TSpec> MaxValue<SimpleType<TValue, TSpec> >::VALUE = SimpleType<TValue, TSpec>(((TValue)ValueSize<SimpleType<TValue, TSpec> >::VALUE - 1));
+const SimpleType<TValue, TSpec> MaxValue<SimpleType<TValue, TSpec> >::VALUE = std::numeric_limits<SimpleType<TValue, TSpec>>::max();
 
 template <typename TValue, typename TSpec>
 inline SimpleType<TValue, TSpec> const &

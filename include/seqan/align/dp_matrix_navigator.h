@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -83,6 +83,14 @@ struct NavigateColumnWise_;
 typedef Tag<NavigateColumnWise_> NavigateColumnWise;
 
 // ----------------------------------------------------------------------------
+// Tag NavigateColumnWiseBanded
+// ----------------------------------------------------------------------------
+
+// Facilitates banded column wise navigation through the dp-matrix.
+struct NavigateColumnWiseBanded_;
+typedef Tag<NavigateColumnWiseBanded_> NavigateColumnWiseBanded;
+
+// ----------------------------------------------------------------------------
 // Class DPMatrixNavigator_
 // ----------------------------------------------------------------------------
 
@@ -92,6 +100,24 @@ class DPMatrixNavigator_;
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction MatrixType
+// ----------------------------------------------------------------------------
+
+template <typename TNavigator>
+struct MatrixType;
+
+template <typename TDPMatrix, typename TDPMatrixType, typename TNavigationSpec>
+struct MatrixType<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> >
+{
+    using Type = TDPMatrixType;
+};
+
+template <typename TDPMatrix, typename TDPMatrixType, typename TNavigationSpec>
+struct MatrixType<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> const> :
+    MatrixType<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> >
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
@@ -141,6 +167,16 @@ struct Container<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> c
     typedef TDPMatrix const Type;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction Position
+// ----------------------------------------------------------------------------
+
+template <typename TDPMatrix, typename TDPMatrixType, typename TNavigationSpec>
+struct Position<DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> >
+{
+    typedef typename Position<TDPMatrix>::Type Type;
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -154,7 +190,7 @@ inline void
 assignValue(DPMatrixNavigator_<TDPMatrix, TDPMatrixType, TNavigationSpec> & dpNavigator,
             TValue const & element)
 {
-    assignValue(dpNavigator._activeColIterator, element);
+    *dpNavigator._activeColIterator = element;
 }
 
 // ----------------------------------------------------------------------------

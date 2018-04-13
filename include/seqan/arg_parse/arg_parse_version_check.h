@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -68,18 +68,18 @@ struct VersionControlTags_
     static constexpr char const * const UNREGISTERED_APP   = "UNREGISTERED_APP";
 
     static constexpr char const * const MESSAGE_SEQAN_UPDATE =
-        "[SEQAN INFO] :: There is a newer SeqAn version available!\n"
+        "[SEQAN INFO] :: A new SeqAn version is available online.\n"
         "[SEQAN INFO] :: Please visit www.seqan.de for an update or inform the developer of this app.\n"
-        "[SEQAN INFO] :: If you don't want to recieve this message again set --version-check OFF\n\n";
+        "[SEQAN INFO] :: If you don't wish to receive further notifications, set --version-check OFF.\n\n";
     static constexpr char const * const MESSAGE_APP_UPDATE =
-        "[APP INFO] :: There is a newer version of this application available.\n"
-        "[APP INFO] :: If this app is developed by SeqAn, visit www.seqan.de for updates.\n"
-        "[APP INFO] :: If you don't want to recieve this message again set --version_check OFF\n\n";
+        "[APP INFO] :: A new version of this application is now available.\n"
+        "[APP INFO] :: Visit www.seqan.de for updates of official SeqAn applications.\n"
+        "[APP INFO] :: If you don't wish to receive further notifications, set --version-check OFF.\n\n";
     static constexpr char const * const MESSAGE_UNREGISTERED_APP =
         "[SEQAN INFO] :: Thank you for using SeqAn!\n"
-        "[SEQAN INFO] :: You might want to regsiter you app for support and version check features?\n"
-        "[SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.\n"
-        "[SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF\n\n";
+        "[SEQAN INFO] :: Do you wish to register your app for update notifications?\n"
+        "[SEQAN INFO] :: Just send an email to support@seqan.de with your app name and version number.\n"
+        "[SEQAN INFO] :: If you don't wish to receive further notifications, set --version-check OFF.\n\n";
     static constexpr char const * const MESSAGE_REGISTERED_APP_UPDATE =
         "[APP INFO] :: We noticed the app version you use is newer than the one registered with us.\n"
         "[APP INFO] :: Please send us an email with the new version so we can correct it (support@seqan.de)\n\n";

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -203,7 +203,7 @@ SEQAN_TYPED_TEST(TokenizationTest, read)
     // check EOF-handling
     clear(buf);
     readUntil(buf, ctx.iter, EqualsChar<'*'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), '*');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '*');
 
     clear(buf);
     SEQAN_ASSERT_EQ(read(buf,ctx.iter, 3), 1);
@@ -222,14 +222,14 @@ SEQAN_TYPED_TEST(TokenizationTest, ReadIgnoring)
 
     // skip to where we want to go
     readUntil(buf, ctx.iter, IsInAlphabet<Dna5>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     readUntil(buf2, ctx.iter, NotFunctor<OrFunctor<IsInAlphabet<Dna5>, IsWhitespace> >(), IsWhitespace());
     SEQAN_ASSERT_EQ(buf2, "AAAACCCGGGTTTTCG");
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'f');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'f');
 
     readUntil(buf, ctx.iter, IsInAlphabet<Dna5>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     clear(buf2);
     readUntil(buf2, ctx.iter, EqualsChar<'_'>(), NotFunctor<IsInAlphabet<Dna5> >());
@@ -246,16 +246,16 @@ SEQAN_TYPED_TEST(TokenizationTest, ReadUntil_ReadLine)
     CharString buf;
     // skip to where we want to go
     readUntil(buf, ctx.iter, EqualsChar<'A'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     clear(buf);
     readLine(buf, ctx.iter);
     SEQAN_ASSERT_EQ(buf, "AAAACCCGGGTTT");
-    SEQAN_ASSERT_EQ(value(ctx.iter), ' ');
+    SEQAN_ASSERT_EQ(*(ctx.iter), ' ');
 
     clear(buf);
     readLine(buf, ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\a');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\a');
 
     clear(buf);
     readUntil(buf, ctx.iter, EqualsChar<'1'>());
@@ -263,12 +263,12 @@ SEQAN_TYPED_TEST(TokenizationTest, ReadUntil_ReadLine)
     clear(buf);
     readLine(buf, ctx.iter);
     SEQAN_ASSERT_EQ(buf, "123gogogo ");
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'T');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'T');
 
     // check EOF-handling
     clear(buf);
     readUntil(buf, ctx.iter, EqualsChar<'*'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), '*');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '*');
 
     clear(buf);
     readLine(buf, ctx.iter);
@@ -283,35 +283,35 @@ SEQAN_TYPED_TEST(TokenizationTest, SkipUntil)
     SEQAN_ASSERT_NOT(atEnd(ctx.iter));
 
     skipUntil(ctx.iter, EqualsChar<'.'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), '.');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '.');
 
     skipUntil(ctx.iter, IsBlank());
-    SEQAN_ASSERT_EQ(value(ctx.iter), ' ');
+    SEQAN_ASSERT_EQ(*(ctx.iter), ' ');
 
     skipUntil(ctx.iter, EqualsChar<'A'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     skipUntil(ctx.iter, IsWhitespace());
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\n');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\n');
 
     skipUntil(ctx.iter, EqualsChar<'A'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     skipUntil(ctx.iter, IsBlank());
-    SEQAN_ASSERT_EQ(value(ctx.iter), ' ');
+    SEQAN_ASSERT_EQ(*(ctx.iter), ' ');
 
     skipUntil(ctx.iter, EqualsChar<'A'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     skipUntil(ctx.iter, IsWhitespace());
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\n');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\n');
 
     skipUntil(ctx.iter, IsGraph()); // skip over \a
-    SEQAN_ASSERT_EQ(value(ctx.iter), '1');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '1');
 
     // check EOF-handling
     skipUntil(ctx.iter, EqualsChar<'*'>());
-    SEQAN_ASSERT_EQ(value(ctx.iter), '*');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '*');
 
     skipUntil(ctx.iter, IsWhitespace());
     SEQAN_ASSERT(atEnd(ctx.iter));
@@ -324,37 +324,37 @@ SEQAN_TYPED_TEST(TokenizationTest, SkipLine)
     SEQAN_ASSERT_NOT(atEnd(ctx.iter));
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), ' ');
+    SEQAN_ASSERT_EQ(*(ctx.iter), ' ');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\a');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\a');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'T');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'T');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'e');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'e');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'e');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'e');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\n');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\n');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\v');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\v');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\r');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\r');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), '\n');
+    SEQAN_ASSERT_EQ(*(ctx.iter), '\n');
 
     skipLine(ctx.iter);
-    SEQAN_ASSERT_EQ(value(ctx.iter), 'A');
+    SEQAN_ASSERT_EQ(*(ctx.iter), 'A');
 
     skipLine(ctx.iter);
     SEQAN_ASSERT(atEnd(ctx.iter));

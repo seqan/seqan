@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -120,16 +120,23 @@ class RnaRecord
 {
 private:
     // Constant for an undefined ID.
-    static std::uint32_t const undef = UINT32_MAX;
+    static std::uint32_t const _undef = std::numeric_limits<std::uint32_t>::max();
 
 public:
+    // NOTE(marehr): Explicitly define a default constructor, to fix a msvc 2017
+    // (msvc versions before did not have this bug) compiler bug:
+    //     error C2248: 'seqan::RnaRecord::_undef': cannot access private member
+    //     declared in class 'seqan::RnaRecord'
+    RnaRecord() : recordID{_undef}
+    {}
+
     /*!
      * @var std::uint32_t RnaRecord::recordID
      * @brief Identification of the record.
      *
      * In an RNA structure file the first record gets ID 0, the following ID 1 and so on.
      */
-    std::uint32_t recordID{undef};
+    std::uint32_t recordID{_undef};
 
     /*!
      * @var TSizeRna5String RnaRecord::seqLen
@@ -234,7 +241,7 @@ public:
      */
     bool hasUndefinedID() const
     {
-        return recordID == undef;
+        return recordID == _undef;
     }
 
     /*!
@@ -244,7 +251,7 @@ public:
      */
     void clearID()
     {
-        recordID = undef;
+        recordID = _undef;
     }
 };
 

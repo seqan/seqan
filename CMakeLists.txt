@@ -75,7 +75,10 @@ set (SEQAN_CTD_EXECUTABLES CACHE INTERNAL "Global list of executables for workfl
 
 option (SEQAN_STATIC_APPS "Build static apps." OFF)
 option (SEQAN_ARCH_SSE4 "Build SSE optimized binaries." OFF)
-option (SEQAN_ARCH_AVX2 "Build AVX optimized binaries." OFF)
+option (SEQAN_ARCH_AVX2 "Build AVX2 optimized binaries." OFF)
+option (SEQAN_ARCH_AVX512_KNL "Build AVX512 optimized binaries for Knights Landing." OFF)
+option (SEQAN_ARCH_AVX512_SKX "Build AVX512 optimized binaries for Skylake." OFF)
+option (SEQAN_ARCH_AVX512_CNL "Build AVX512 optimized binaries for Cannon Lake." OFF)
 option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 
 # ===========================================================================
@@ -132,8 +135,10 @@ if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     message (STATUS "Configuring demos")
     add_subdirectory (demos)
 
-    message (STATUS "Configuring manual")
-    add_subdirectory (manual)
+    if (NOT SEQAN_NO_DOX)
+        message (STATUS "Configuring manual")
+        add_subdirectory (manual)
+    endif ()
 endif ()
 
 if ((("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP") OR

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -53,6 +53,7 @@
 #include <algorithm>
 
 #include <seqan/basic.h>
+#include <seqan/simd.h>
 #include <seqan/modifier.h>  // ModifiedAlphabet<>.
 #include <seqan/align/align_metafunctions.h>
 #include <seqan/graph_align.h>  // TODO(holtgrew): We should not have to depend on this.
@@ -75,6 +76,8 @@
 // ============================================================================
 
 #include <seqan/align/fragment.h>
+
+#include <seqan/align/aligned_sequence_concept.h>
 
 #include <seqan/align/gaps_base.h>
 #include <seqan/align/gaps_iterator_base.h>

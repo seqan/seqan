@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -451,7 +451,7 @@ struct TrackingEnabled_<TDPMetaColumn, LastCell>:
 template <typename TAlgo, typename TColumnDescriptor>
 struct LastColumnEnabled_
 {
-    typedef typename IsSameType<typename TColumnDescriptor::TColumnProperty, DPLastColumn>::Type Type;
+    typedef typename IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::Type Type;
 };
 
 template <typename TAlgo, typename TGapSpec, typename TTraceSpec, typename TColumnDescriptor>

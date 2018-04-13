@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,14 @@
 # build system.
 # ============================================================================
 
+# ----------------------------------------------------------------------------
+# Set CMAKE policies.
+# ----------------------------------------------------------------------------
+
+if (POLICY CMP0054)  # Disables auto-dereferencing of variables in quoted statements
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
 # Valid values for SEQAN_BUILD_SYSTEM:
 #
 # DEVELOP
@@ -44,8 +52,20 @@
 # SEQAN_RELEASE_LIBRARY
 # APP:${app_name}
 
+# require python 2.7, not python3
+set(PythonInterp_FIND_VERSION 2.7)
+set(PythonInterp_FIND_VERSION_MAJOR 2)
+set(PythonInterp_FIND_VERSION_MINOR 7)
+set(PythonInterp_FIND_VERSION_COUNT 2)
+
 include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
+
+if (DEFINED CMAKE_INSTALL_DOCDIR)
+    set(CMAKE_INSTALL_DOCDIR_IS_SET ON)
+endif ()
+
+include (GNUInstallDirs)
 
 set (COMPILER_CLANG FALSE)
 set (COMPILER_GCC FALSE)
@@ -200,7 +220,7 @@ macro (seqan_build_system_init)
         # TODO(h-2): raise this to W4
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3")
     else()
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic -fstrict-aliasing -Wstrict-aliasing")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
         # disable some warnings on ICC
@@ -227,15 +247,16 @@ macro (seqan_build_system_init)
     endif ()
 
     # Architecture.
-    if (NOT SEQAN_64BIT_TARGET_PLATFORM)
+    if ((NOT SEQAN_64BIT_TARGET_PLATFORM) OR COMPILER_MSVC)
         set (SEQAN_ARCH_SSE4 FALSE)
         set (SEQAN_ARCH_AVX2 FALSE)
+        set (SEQAN_ARCH_AVX512_KNL FALSE)
+        set (SEQAN_ARCH_AVX512_SKX FALSE)
+        set (SEQAN_ARCH_AVX512_CNL FALSE)
     endif ()
 
     if (COMPILER_MSVC)
         set (SEQAN_STATIC_APPS FALSE)
-        set (SEQAN_ARCH_SSE4 FALSE)
-        set (SEQAN_ARCH_AVX2 FALSE)
         set (SEQAN_ARCH_NATIVE FALSE)
     endif ()
 
@@ -248,8 +269,9 @@ macro (seqan_build_system_init)
         endif ()
     endif ()
 
-    # Enable SSE4 if AVX2 is set.
-    if (SEQAN_ARCH_AVX2)
+    # Enable SSE4 if AVX[\d]+ is set. (Other parts in our build system expect it
+    # to be set and it is basically the synonym for 'SIMD is enabled')
+    if (SEQAN_ARCH_AVX2 OR SEQAN_ARCH_AVX512_KNL OR SEQAN_ARCH_AVX512_SKX OR SEQAN_ARCH_AVX512_CNL)
         set (SEQAN_ARCH_SSE4 TRUE)
     endif ()
 
@@ -265,21 +287,31 @@ macro (seqan_build_system_init)
         if (COMPILER_LINTEL)
             set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2 -xHOST")
         endif ()
-    else ()
-        if (SEQAN_ARCH_SSE4)
-            if (SEQAN_ARCH_AVX2)
-                message (STATUS "Building optimized binaries up to AVX2 and POPCNT.")
-                set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mavx -mavx2")
-            else ()
-                message (STATUS "Building optimized binaries up to SSE4 and POPCNT.")
-            endif ()
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mmmx -msse -msse2 -msse3 -mssse3 -msse4")
-            if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
-                set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mpopcnt")
-            endif ()
-            if (COMPILER_LINTEL)
-                set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2")
-            endif ()
+    elseif (SEQAN_ARCH_SSE4)
+        include (SeqAnSimdUtility)
+
+        if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -mpopcnt")
+        endif ()
+        if (COMPILER_LINTEL)
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -ipo -no-prec-div -fp-model fast=2")
+        endif ()
+
+        if (SEQAN_ARCH_AVX512_CNL)
+            message (STATUS "Building optimized binaries up to AVX512 CNL and POPCNT.")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_SIMD_AVX512_CNL_OPTIONS}")
+        elseif (SEQAN_ARCH_AVX512_SKX)
+            message (STATUS "Building optimized binaries up to AVX512 SKX and POPCNT.")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_SIMD_AVX512_SKX_OPTIONS}")
+        elseif (SEQAN_ARCH_AVX512_KNL)
+            message (STATUS "Building optimized binaries up to AVX512 KNL and POPCNT.")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_SIMD_AVX512_KNL_OPTIONS}")
+        elseif (SEQAN_ARCH_AVX2)
+            message (STATUS "Building optimized binaries up to AVX2 and POPCNT.")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_SIMD_AVX2_OPTIONS}")
+        else ()
+            message (STATUS "Building optimized binaries up to SSE4 and POPCNT.")
+            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} ${SEQAN_SIMD_SSE4_OPTIONS}")
         endif ()
     endif ()
     # TODO(h-2): for icc on windows, replace the " -" in SEQAN_CXX_FLAGS with " /"
@@ -371,24 +403,24 @@ macro (seqan_setup_library)
         install (FILES LICENSE
                        README.rst
                        CHANGELOG.rst
-                 DESTINATION share/doc/seqan)
+                 DESTINATION ${CMAKE_INSTALL_DOCDIR})
         # Install pkg-config file, except on Windows.
         if (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
             configure_file("util/pkgconfig/seqan.pc.in" "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" @ONLY)
-            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION lib/pkgconfig)
+            install(FILES "${CMAKE_BINARY_DIR}/util/pkgconfig/seqan-${SEQAN_VERSION_MAJOR}.pc" DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
         endif (NOT CMAKE_SYSTEM_NAME MATCHES Windows)
         # Install FindSeqAn TODO(h-2) rename seqan-config.cmake to seqan-config${SEQAN_VERSION_MAJOR}.cmake after 2.x cycle
-        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION lib/cmake/seqan/)
+        install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/seqan-config.cmake" DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/seqan/)
 
         # Install headers
         file (GLOB HEADERS
-              RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+              RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/include/
               include/seqan/[A-z]*/[A-z]/[A-z]*.h
               include/seqan/[A-z]*/[A-z]*.h
               include/seqan/[A-z]*.h)
         foreach (HEADER ${HEADERS})
             get_filename_component (_DESTINATION ${HEADER} PATH)
-            install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER} DESTINATION ${_DESTINATION})
+            install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/${HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${_DESTINATION})
         endforeach ()
     endif ()
 
@@ -445,8 +477,11 @@ macro (seqan_setup_install_vars APP_NAME)
         set (SEQAN_PREFIX_SHARE ".")
         set (SEQAN_PREFIX_SHARE_DOC ".")
     else ()
-        set (SEQAN_PREFIX_SHARE "share/${APP_NAME}")
-        set (SEQAN_PREFIX_SHARE_DOC "share/doc/${APP_NAME}")
+        if (NOT DEFINED CMAKE_INSTALL_DOCDIR_IS_SET)
+            set (CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc" CACHE STRING "Documentation root (DATAROOTDIR/doc)" FORCE)
+        endif ()
+        set (SEQAN_PREFIX_SHARE "${CMAKE_INSTALL_DATADIR}/${APP_NAME}")
+        set (SEQAN_PREFIX_SHARE_DOC "${CMAKE_INSTALL_DOCDIR}/${APP_NAME}")
     endif ()
 endmacro (seqan_setup_install_vars)
 
@@ -516,12 +551,18 @@ macro(INTEL_FILES_FOR_VERSION version)
   endforeach()
 endmacro()
 
+# TODO: Remove once we have cmake > 3.10.x installed on windows clients, as it should be found automatically.
 macro (seqan_install_required_system_libraries)
   set (CMAKE_INSTALL_OPENMP_LIBRARIES ${OPENMP_FOUND})
 
   # include intel dll's
   if(COMPILER_WINTEL)
-    INTEL_FILES_FOR_VERSION(2016)
+    foreach (wintel_version 2018 2017 2016)
+        INTEL_FILES_FOR_VERSION(wintel_version)
+        if (INTEL${wintel_version}_REDIST_DIR)
+            break()
+        endif ()
+    endforeach ()
   endif()
 
   # The following include automates the MS Redistributable installer.
@@ -772,9 +813,15 @@ function (seqan_register_demos PREFIX)
             (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0))
             set (SKIP TRUE)
         # bug in visual studio
-        elseif ((ENTRY MATCHES "queue_example.cpp") AND
-                COMPILER_MSVC)
+        elseif ((ENTRY MATCHES "queue_example.cpp") AND COMPILER_MSVC)
             set (SKIP TRUE)
+        # all demos/* that require ZLIB[_FOUND]
+        elseif (NOT ZLIB_FOUND)
+            if ((ENTRY MATCHES "tabix_io/tabix_vcf.cpp") OR
+                (ENTRY MATCHES "sam_and_bam_io/example7.cpp") OR
+                (ENTRY MATCHES "unassigned_or_unused/bamutil.cpp"))
+                set (SKIP TRUE)
+            endif()
         endif ()
 
         if (SKIP)

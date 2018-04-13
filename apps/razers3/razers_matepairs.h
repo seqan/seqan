@@ -425,8 +425,8 @@ void compactPairMatches(
     unsigned matePairId = -2;
     unsigned hitCount = 0;
     unsigned hitCountCutOff = options.maxHits;
-    int scoreDistCutOff = MinValue<int>::VALUE;
-    int scoreRangeBest = (options.scoreDistanceRange == 0u) ? MinValue<int>::VALUE : -(int)options.scoreDistanceRange;
+    int scoreDistCutOff = std::numeric_limits<int>::min();
+    int scoreRangeBest = (options.scoreDistanceRange == 0u) ? std::numeric_limits<int>::min() : -(int)options.scoreDistanceRange;
 
     TIterator it = begin(matches, Standard());
     TIterator itEnd = end(matches, Standard());
@@ -751,8 +751,8 @@ void _mapMatePairReads(
             }
         }
 
-        int bestLeftScore = MinValue<int>::VALUE;
-        int bestLibSizeError = MaxValue<int>::VALUE;
+        int bestLeftScore = std::numeric_limits<int>::min();
+        int bestLibSizeError = std::numeric_limits<int>::max();
         TDequeueIterator bestLeft = TDequeueIterator();
 
         bool rightVerified = false;
@@ -916,7 +916,7 @@ void _mapMatePairReads(
         }
 
         // verify right mate, if left mate matches
-        if (bestLeftScore != MinValue<int>::VALUE)
+        if (bestLeftScore != std::numeric_limits<int>::min())
         {
             fL.i2 = (*bestLeft).i2;
 

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -484,6 +484,8 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         seqan::CharString buffer;
         snpRecord.haplotype = 0;
         for (; !atEnd(inputIter); ++inputIter)
+        {
+            if (*inputIter == ':') break;
             if ((*inputIter == '|' || *inputIter == '/'))
             {
                 if (!empty(buffer))
@@ -504,6 +506,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
             {
                 appendValue(buffer, *inputIter);
             }
+        }
         if (!empty(buffer))
         {
             unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer),
@@ -522,8 +525,8 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         smallIndel.rId = vcfRecord.rID;
         smallIndel.pos = vcfRecord.beginPos + 1;
 
-        SEQAN_ASSERT_NOT(contains(vcfRecord.alt, ","));  // only one alternative
-        SEQAN_ASSERT((length(vcfRecord.alt) == 1u) != (length(vcfRecord.ref) == 1u));  // XOR
+        if (contains(vcfRecord.alt, ",")) return;  // only one alternative
+        if (length(vcfRecord.alt) > 1u && length(vcfRecord.ref) > 1u) return; // skip MNP and COMPLEX variants
 
         smallIndel.haplotype = 0;
         if (length(vcfRecord.ref) == 1u)  // insertion

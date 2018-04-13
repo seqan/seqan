@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -56,18 +56,16 @@ struct HistoryStackFM_
     TSize       repLen;
     TAlphabet   lastChar;
 
-   
     HistoryStackFM_() {}
 
     template <typename TSize_, typename TAlphabet_>
-   
+
     HistoryStackFM_(Pair<TSize_> const &_range, TSize_ _repLen, TAlphabet_ _lastChar):
         range(_range),
         repLen(_repLen),
         lastChar(_lastChar)
     {}
 
-   
     HistoryStackFM_ const &
     operator=(HistoryStackFM_ const & _origin)
     {
@@ -90,7 +88,6 @@ struct VertexFM
     TSize       repLen;
     TAlphabet   lastChar;
 
-   
     VertexFM() :
         range(0, 0),
         smaller(0),
@@ -98,7 +95,6 @@ struct VertexFM
         lastChar(0)
     {}
 
-   
     VertexFM(MinimalCtor) :
         range(0, 0),
         smaller(0),
@@ -106,7 +102,6 @@ struct VertexFM
         lastChar(0)
     {}
 
-   
     VertexFM(Pair<TSize> newCurrentRange, TSize newSmallerValue, TSize newRepLen, TAlphabet newChar) :
         range(newCurrentRange),
         smaller(newSmallerValue),
@@ -114,7 +109,6 @@ struct VertexFM
         lastChar(newChar)
     {}
 
-   
     VertexFM(VertexFM const & other) :
         range(other.range),
         smaller(other.smaller),
@@ -359,10 +353,13 @@ _goDownString(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<
     typedef Pair<TSize2>                                        TRange;
     typedef typename Iterator<TString const, Standard>::Type    TStringIter;
 
-    _historyPush(it);
-
     TStringIter stringIt = begin(string, Standard());
     TStringIter stringEnd = end(string, Standard());
+
+    if (SEQAN_UNLIKELY(stringIt == stringEnd))
+        return true;
+
+    _historyPush(it);
 
     for (lcp = 0; stringIt != stringEnd; ++stringIt, ++lcp)
     {
@@ -466,7 +463,7 @@ nodeUp(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree< TopDown< Paren
     typedef typename VertexDescriptor<TIndex>::Type         TVertexDescriptor;
 
     if (!empty(it.history))
-        return TVertexDescriptor(back(it.history).range, back(it.history).repLen, back(it.history).lastChar);
+        return TVertexDescriptor(back(it.history).range, 0, back(it.history).repLen, back(it.history).lastChar);
     else
         return value(it);
 }

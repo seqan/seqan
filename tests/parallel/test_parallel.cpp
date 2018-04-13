@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,8 @@
 #include "test_parallel_splitting.h"
 #include "test_parallel_algorithms.h"
 #include "test_parallel_queue.h"
+#include "test_parallel_thread_pool.h"
+#include "test_parallel_enumerable_thread_local.h"
 
 SEQAN_BEGIN_TESTSUITE(test_parallel) {
 #if defined(_OPENMP)
@@ -96,5 +98,24 @@ SEQAN_BEGIN_TESTSUITE(test_parallel) {
 //        SEQAN_CALL_TEST(test_parallel_queue_mpmc_fixedsize);
 //        SEQAN_CALL_TEST(test_parallel_queue_mpmc_dynamicsize);
     }
+
+    // -----------------------------------------------------------------------
+    // Test thread pool.
+    // -----------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_parallel_thread_pool_construct);
+    SEQAN_CALL_TEST(test_parallel_thread_pool_spawn);
+    SEQAN_CALL_TEST(test_parallel_thread_pool_join);
+    SEQAN_CALL_TEST(test_parallel_thread_pool_destruct);
+
+    // -----------------------------------------------------------------------
+    // Test Enumerable Thread Specific.
+    // -----------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_construct);
+    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_local);
+    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_enumerate);
+    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_combine_unary);
+    SEQAN_CALL_TEST(test_parallel_enumerable_thread_local_combine_binary);
 }
 SEQAN_END_TESTSUITE

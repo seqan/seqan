@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -237,7 +237,7 @@ public:
         setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
         setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
-        getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
+        getCigarString(record.cigar, gapsContig, gapsRead, std::numeric_limits<int>::max());
         getMDString(mdString, gapsContig, gapsRead);
     }
 
@@ -558,7 +558,7 @@ public:
         setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
         setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
 
-        getCigarString(record.cigar, gapsContig, gapsRead, seqan::maxValue<int>());
+        getCigarString(record.cigar, gapsContig, gapsRead, std::numeric_limits<int>::max());
         getMDString(mdString, gapsContig, gapsRead);
     }
 

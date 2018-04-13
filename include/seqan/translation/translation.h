@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -312,8 +312,8 @@ _translateImplLoopOMPWrapper(TTarget & target,
 {
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic))
     for (int64_t i = 0; i < static_cast<int64_t>(length(target)); ++i)
-        _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(),
-                           Frames_<frames>());
+        if (length(source[i/frames]) >= 3) // make sure there is enough to translate
+            _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(), Frames_<frames>());
 }
 
 template <typename TSource, typename TTarget, uint8_t frames,
@@ -327,8 +327,8 @@ _translateImplLoopOMPWrapper(TTarget & target,
 {
     typedef typename Size<TTarget>::Type TPos;
     for (TPos i = 0; i < length(target); ++i)
-        _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(),
-                           Frames_<frames>());
+        if (length(source[i/frames]) >= 3) // make sure there is enough to translate
+            _translateImplLoop(target, i, source, GeneticCode<CODE_SPEC>(), Frames_<frames>());
 }
 
 // --------------------------------------------------------------------------
@@ -353,7 +353,7 @@ _translateImpl(StringSet<String<AminoAcid, TSpec1>, TSpec2> & target,
         // current dnastring's length / 3 (3DNA -> 1 AA)
         TPos len = length(source[i/n]) / 3;
         // shorten for shifted frames
-        if (( n > 2 ) && ( length(source[i/n]) % 3 ) < ( i%3 ))
+        if ((len > 0) && ( n > 2 ) && ((length(source[i/n]) % 3) < (i % 3)))
             --len;
         resize(target[i], len, Exact());
     }
@@ -383,7 +383,7 @@ _translateImpl(StringSet<String<AminoAcid,
         // current dnastring's length / 3 (3DNA -> 1 AA)
         TPos len = length(source[i/n]) / 3;
         // shorten for shifted frames
-        if (( n > 2 ) && ( length(source[i/n]) % 3 ) < ( i%3 ))
+        if ((len > 0) && ( n > 2 ) && ( length(source[i/n]) % 3 ) < ( i%3 ))
             --len;
         target.limits[i+1] = target.limits[i] + len;
     }

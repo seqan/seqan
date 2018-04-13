@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -76,6 +76,18 @@ struct WTRDConfig : LevelsRDConfig<TSize, TFibre, LEVELS, WORDS_PER_BLOCK>
 
 template <typename TSpec = void, typename TConfig = WTRDConfig<> >
 struct WaveletTree {};
+
+template <typename T>
+struct isWaveletTree
+{
+    static constexpr bool Value = false;
+};
+
+template <typename TSpec, typename TConfig>
+struct isWaveletTree<WaveletTree<TSpec, TConfig> >
+{
+    static constexpr bool Value = true;
+};
 
 struct FibreTreeStructure_;
 typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
@@ -346,6 +358,49 @@ getRank(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos 
     return 0;
 }
 
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
+_getRankAndValue(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, TPos pos, TChar & character)
+{
+    typedef typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type const    TWaveletTreeStructure;
+
+    typename Iterator<TWaveletTreeStructure, TopDown<> >::Type iter(dict.waveletTreeStructure, 0);
+
+    bool zero = false;
+    TPos posChar = pos + 1;
+    character = dict.waveletTreeStructure.minCharValue;
+
+    while (true)
+    {
+        TPos rank1 = getRank(dict.ranks[getPosition(iter)], posChar);
+        bool value = getValue(dict.ranks[getPosition(iter)], posChar);
+        TPos addValue = rank1 - value;
+
+        if (value)
+        {
+            character = getCharacter(iter);
+            if (addValue == 0) zero = true;
+            posChar = rank1 - 1;  // -1 because strings start at 0
+            pos = addValue - 1;
+            if (!goRightChild(iter))
+                break;
+        }
+        else
+        {
+            if (addValue > pos) zero = true;
+            posChar -= rank1;
+            pos -= addValue;
+            if (!goLeftChild(iter))
+                break;
+        }
+    }
+
+    if (zero)
+         return 0;
+
+    return pos + 1;
+}
+
 // ----------------------------------------------------------------------------
 // Function _fillStructure()
 // ----------------------------------------------------------------------------
@@ -375,7 +430,7 @@ inline void _fillStructure(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > 
         while (true)
         {
             // decide whether the character is smaller then the pivot element of the current node
-            if (ordGreater(getCharacter(it), value(textIt)))
+            if (ordGreater(getCharacter(it), *textIt))
             {
                 // TODO(esiragusa): use resize() & setValue() instead of appendValue().
                 appendValue(dict.ranks[getPosition(it)], false);

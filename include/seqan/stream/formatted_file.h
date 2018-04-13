@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -363,6 +363,30 @@ struct FormattedFile
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction IsInputFile
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsInputFile : False
+{};
+
+template <typename TFormat, typename TSpec>
+struct IsInputFile<FormattedFile<TFormat, Input, TSpec> > : True
+{};
+
+// ----------------------------------------------------------------------------
+// Metafunction IsOutputFile
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct IsOutputFile : False
+{};
+
+template <typename TFormat, typename TSpec>
+struct IsOutputFile<FormattedFile<TFormat, Output, TSpec> > : True
+{};
 
 // ----------------------------------------------------------------------------
 // Metafunction DirectionIterator

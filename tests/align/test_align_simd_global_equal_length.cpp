@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,27 +29,39 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: David Weese <david.weese@fu-berlin.de>
+// Author: René Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
-// Tests for SIMD vectors.
-// ==========================================================================
+
 
 #include <seqan/basic.h>
-#include "test_basic_simd_vector.h"
+#include <seqan/stream.h>
 
-SEQAN_BEGIN_TESTSUITE(test_basic_simd_vector)
-{
-#ifdef SEQAN_SIMD_ENABLED
-#ifdef SEQAN_SSE4
-    SEQAN_CALL_TEST(test_basic_simd_shuffle);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_8x8);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_16x16);
-#ifdef __AVX2__
-    SEQAN_CALL_TEST(test_basic_simd_shuffle_avx);
-    SEQAN_CALL_TEST(test_basic_simd_transpose_32x32);
-#endif  // #ifdef __AVX2__
-#endif  // #ifdef SEQAN_SSE4
-#endif
+#include "test_align_simd_base.h"
+
+// ----------------------------------------------------------------------------
+// Configuration of typed tests for global alignment.
+// ----------------------------------------------------------------------------
+
+template <typename T>
+class SimdAlignTestCommon : public SimdAlignTest<T>
+{};
+
+typedef
+        seqan::TagList<std::tuple<seqan::AlignConfig<>,                         impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<true, true, true, true>,   impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<true, false, false, true>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<false, true, true, false>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<>,                         impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<true, true, true, true>,   impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<true, false, false, true>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>,
+        seqan::TagList<std::tuple<seqan::AlignConfig<false, true, true, false>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>
+        > > > > > > > > SimdAlignGlobalEqualLengthTestTypes;
+
+SEQAN_TYPED_TEST_CASE(SimdAlignTestCommon, SimdAlignGlobalEqualLengthTestTypes);
+
+#include "test_align_simd_global.h"
+
+int main(int argc, char const ** argv) {
+    seqan::TestSystem::init(argc, argv);
+    return seqan::TestSystem::runAll();
 }
-SEQAN_END_TESTSUITE
-

@@ -30,7 +30,7 @@ int main()
     Iterator<TConcat>::Type itEnd = end(concatSet);
     for (; it != itEnd; goNext(it))
     {
-        std::cout << getValue(it) << " ";
+        std::cout << *it << " ";
     }
     std::cout << '\n';
 //![concatenator]

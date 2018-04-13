@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_ngs_roi CXX)
 message (STATUS "Configuring apps/ngs_roi")
 
-set (SEQAN_APP_VERSION "0.2.11")
+set (SEQAN_APP_VERSION "0.2.12")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -21,6 +21,11 @@ set (SEQAN_APP_VERSION "0.2.11")
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (ZLIB)
     find_package (SeqAn CONFIG REQUIRED)
+endif ()
+
+if (NOT ZLIB_FOUND)
+  message (STATUS "  ZLIB not found: ngs_roi will not be built.")
+  return ()
 endif ()
 
 # ----------------------------------------------------------------------------
@@ -72,7 +77,7 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 install (TARGETS bam2roi
                  roi_feature_projection
                  roi_plot_thumbnails
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install helper scripts into ${PREFIX}/bin directory.
 install (FILES # Scripts for sorting.
@@ -83,7 +88,7 @@ install (FILES # Scripts for sorting.
                  tool_shed/roi_plot_9.sh
                  tool_shed/plot.awk
                  tool_shed/ps2pswLinks.gawk
-         DESTINATION bin)
+         DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/ngs_roi for SeqAn release builds.
