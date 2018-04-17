@@ -35,6 +35,8 @@
 #ifndef APP_YARA_MAPPER_ALIGNER_H_
 #define APP_YARA_MAPPER_ALIGNER_H_
 
+//#define YARA_PRINT_ALIGN
+
 using namespace seqan;
 
 // ============================================================================
@@ -215,14 +217,30 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
         setContigPosition(match, contigBegin, contigEnd);
     }
 
+#ifdef YARA_PRINT_ALIGN
+        write(std::cerr, match);
+
+        Align<Dna5String, TAnchorGaps> align;
+        resize(rows(align), 2);
+        assignSource(row(align, 0), contigInfix);
+        assignSource(row(align, 1), readSeq);
+        _align(row(align, 0), row(align, 1), errors, TSpec());
+        clipSemiGlobal(row(align, 0), row(align, 1));
+        std::cerr << row(align, 0) << std::endl;
+        std::cerr << row(align, 1) << std::endl;
+#endif // YARA_PRINT_ALIGN
+
     // Compute cigar.
     clear(me.cigar);
     getCigarString(me.cigar, contigGaps, readGaps, length(contigInfix));
+    SEQAN_CHECK(_getQueryLength(me.cigar) == length(readSeq), "CIGAR error.");
+//    SEQAN_ASSERT_EQ(_getQueryLength(me.cigar), length(readSeq));
 
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.
 //    me.cigarSet[getReadId(match)] = me.cigar;
-    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getMember(match, ReadId())]));
+    SEQAN_CHECK(length(me.cigar) <= length(me.cigarSet[getMember(match, ReadId())]), "CIGAR error.");
+//    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getMember(match, ReadId())]));
     std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getMember(match, ReadId())], Standard()));
     assignValue(me.cigarLimits, getMember(match, ReadId()) + 1, length(me.cigar));
 
