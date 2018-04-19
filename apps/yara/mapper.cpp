@@ -174,10 +174,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Consider all alignments within --error-rate. Default: consider only \
-                                                  alignments within --strata-rate."));
-    hideOption(getOption(parser, "all"));
-
     addOption(parser, ArgParseOption("y", "sensitivity", "Sensitivity with respect to edit distance. \
                                                           Full sensitivity guarantees to find all considered alignments \
                                                           but increases runtime, low sensitivity decreases runtime by \
@@ -295,12 +291,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     if (getOptionValue(strataRate, parser, "strata-rate"))
         options.strataRate = strataRate / 100.0;
 
-    if (isSet(parser, "all"))
-    {
-        options.mappingMode = ALL;
-        options.strataRate = options.errorRate;
-    }
-
     getOptionValue(options.sensitivity, parser, "sensitivity", options.sensitivityList);
 
     // Parse paired-end mapping options.
@@ -339,51 +329,51 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 // Function configureMapper()
 // ----------------------------------------------------------------------------
 
-template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TSeedsDistance>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TSeedsDistance const & distance)
 {
     if (options.contigsSum <= std::numeric_limits<uint32_t>::max())
     {
-        spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, distance);
     }
     else
     {
-        spawnMapper<TContigsSize, TContigsLen, uint64_t>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint64_t>(options, threading, sequencing, distance);
     }
 }
 
-template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+template <typename TContigsSize, typename TThreading, typename TSequencing, typename TSeedsDistance>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TSeedsDistance const & distance)
 {
     if (options.contigsMaxLength <= std::numeric_limits<uint32_t>::max())
     {
-        configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, distance);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<TContigsSize, uint64_t>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint64_t>(options, threading, sequencing, distance);
 #else
         throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
     }
 }
 
-template <typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+template <typename TThreading, typename TSequencing, typename TSeedsDistance>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TSeedsDistance const & distance)
 {
     if (options.contigsSize <= std::numeric_limits<uint8_t>::max())
     {
-        configureMapper<uint8_t>(options, threading, sequencing, strategy);
+        configureMapper<uint8_t>(options, threading, sequencing, distance);
     }
     else if (options.contigsSize <= std::numeric_limits<uint16_t>::max())
     {
-        configureMapper<uint16_t>(options, threading, sequencing, strategy);
+        configureMapper<uint16_t>(options, threading, sequencing, distance);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<uint32_t>(options, threading, sequencing, strategy);
+        configureMapper<uint32_t>(options, threading, sequencing, distance);
 #else
         throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
@@ -393,17 +383,10 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TThreading, typename TSequencing>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
 {
-    switch (options.mappingMode)
-    {
-    case STRATA:
-        return configureMapper(options, threading, sequencing, Strata());
-
-    case ALL:
-        return configureMapper(options, threading, sequencing, All());
-
-    default:
-        return;
-    }
+    if (options.sensitivity == FULL)
+        return configureMapper(options, threading, sequencing, EditDistance());
+    else
+        return configureMapper(options, threading, sequencing, HammingDistance());
 }
 
 template <typename TThreading>
