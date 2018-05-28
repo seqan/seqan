@@ -91,7 +91,7 @@ Once we have created the graph we may want to have a look at it.
 SeqAn offers the possibility to write a graph to a dot file.
 With a tool like `Graphviz <http://www.graphviz.org/>`_ you can then visualize the graph.
 
-The only thing that we have to do is to call the function :dox:`Graph#write` on a file stream with the tag ``DotDrawing()`` and pass over our graph ``g``.
+The only thing that we have to do is to call the function :dox:`Graph#writeRecords` on a file stream with the tag ``DotDrawing()`` and pass over our graph ``g``.
 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: main-graph-io
