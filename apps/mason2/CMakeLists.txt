@@ -103,14 +103,14 @@ add_executable (mason_splicing mason_splicing.cpp)
 add_executable (mason_tests mason_tests.cpp)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (mason_frag_sequencing ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_genome ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_materializer ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_methylation ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_simulator ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_splicing ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_tests ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_variator ${SEQAN_LIBRARIES} mason_sim)
+target_link_libraries (mason_frag_sequencing mason_sim)
+target_link_libraries (mason_genome mason_sim)
+target_link_libraries (mason_materializer mason_sim)
+target_link_libraries (mason_methylation mason_sim)
+target_link_libraries (mason_simulator mason_sim)
+target_link_libraries (mason_splicing mason_sim)
+target_link_libraries (mason_tests mason_sim)
+target_link_libraries (mason_variator mason_sim)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
