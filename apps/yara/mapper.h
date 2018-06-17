@@ -68,6 +68,7 @@ struct Options
     float               errorRate;
     float               indelRate;
     float               strataRate;
+    uint64_t            strataCount;
     Sensitivity         sensitivity;
     TList               sensitivityList;
 
@@ -97,6 +98,7 @@ struct Options
         errorRate(0.05f),
         indelRate(0.25f),
         strataRate(0.00f),
+        strataCount(-1u),
         sensitivity(HIGH),
         singleEnd(true),
         libraryLength(),

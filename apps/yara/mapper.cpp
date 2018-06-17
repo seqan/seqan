@@ -174,6 +174,14 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
+    addOption(parser, ArgParseOption("sc", "strata-count", "Consider suboptimal alignments within this absolute number \
+                                      of errors from the optimal alignment. Increase this threshold to increase \
+                                      the number of alternative alignments at the expense of runtime.",
+                                                          ArgParseOption::INTEGER));
+    setMinValue(parser, "strata-count", "0");
+    setMaxValue(parser, "strata-count", "127");
+    setDefaultValue(parser, "strata-count", 0);
+
     addOption(parser, ArgParseOption("y", "sensitivity", "Sensitivity with respect to edit distance. \
                                                           Full sensitivity guarantees to find all considered alignments \
                                                           but increases runtime, low sensitivity decreases runtime by \
@@ -287,9 +295,18 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     if (getOptionValue(errorRate, parser, "error-rate"))
         options.errorRate = errorRate / 100.0;
 
+    if (isSet(parser, "strata-rate") && isSet(parser, "strata-count"))
+    {
+        std::cerr << getAppName(parser) << ": 'strata-rate' and 'strata-count' cannot be specified at the same time." << std::endl;
+        return ArgumentParser::PARSE_ERROR;
+    }
+
     unsigned strataRate;
     if (getOptionValue(strataRate, parser, "strata-rate"))
         options.strataRate = strataRate / 100.0;
+
+    if (isSet(parser, "strata-count"))
+            getOptionValue(options.strataCount, parser, "strata-count");
 
     getOptionValue(options.sensitivity, parser, "sensitivity", options.sensitivityList);
 
