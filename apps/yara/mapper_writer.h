@@ -54,7 +54,8 @@ struct MatchesWriter
     typedef typename Traits::TMatchesViewView  TMatchesView;
     typedef typename Traits::TMatchesViewSet   TMatchesViewSet;
     typedef typename Traits::TMatchesProbs     TMatchesProbs;
-    typedef typename Traits::TCigarSet         TCigarSet;
+    typedef typename Traits::TCigarsView       TCigarsView;
+    typedef typename Traits::TCigarsSet        TCigarsSet;
     typedef typename Traits::TOutputFile       TOutputFile;
     typedef typename Traits::TReadsContext     TReadsContext;
 
@@ -70,7 +71,8 @@ struct MatchesWriter
     TMatchesViewSet const & matchesSet;
     TMatchesView const &    primaryMatches;
     TMatchesProbs const &   primaryMatchesProbs;
-    TCigarSet const &       cigarSet;
+    TCigarsView const &     primaryCigars;
+    TCigarsSet const &      cigarSet;
     TReadsContext const &   ctx;
     TReads const &          reads;
     Options const &         options;
@@ -79,7 +81,8 @@ struct MatchesWriter
                   TMatchesViewSet const & matchesSet,
                   TMatchesView const & primaryMatches,
                   TMatchesProbs const & primaryMatchesProbs,
-                  TCigarSet const & cigarSet,
+                  TCigarsView const & primaryCigars,
+                  TCigarsSet const & cigarSet,
                   TReadsContext const & ctx,
                   TReads const & reads,
                   Options const & options) :
@@ -87,6 +90,7 @@ struct MatchesWriter
         matchesSet(matchesSet),
         primaryMatches(primaryMatches),
         primaryMatchesProbs(primaryMatchesProbs),
+        primaryCigars(primaryCigars),
         cigarSet(cigarSet),
         ctx(ctx),
         reads(reads),
@@ -319,17 +323,16 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     me.record.mapQ = getMapq(prob);
 
     // Find the primary match in the list of matches.
-    TIter it = findMatch(matches, primary);
-    TSize primaryPos = position(it, matches);
-    SEQAN_ASSERT_LT(primaryPos, length(matches));
+    TIter primaryIt = findMatch(matches, primary);
+    SEQAN_ASSERT(!atEnd(primaryIt, matches));
 
-    if (me.options.secondaryAlignments == TAG)
-        _fillXa(me, matches, primaryPos);
+    if (me.options.secondaryMatches == TAG)
+        _fillXa(me, matches, primaryIt);
 
     _writeRecord(me);
 
-    if (me.options.secondaryAlignments == RECORD)
-        _writeSecondary(me, matches, primaryPos, SingleEnd());
+    if (me.options.secondaryMatches == RECORD)
+        _writeSecondary(me, matches, primaryIt, SingleEnd());
 }
 
 template <typename TSpec, typename Traits, typename TReadId, typename TMatch>
@@ -384,37 +387,36 @@ inline void _writeMappedRead(MatchesWriter<TSpec, Traits> & me, TReadId readId, 
     }
 
     // Find the primary match in the list of matches.
-    TIter it = findMatch(matches, primary);
-    TSize primaryPos = position(it, matches);
+    TIter primaryIt = findMatch(matches, primary);
+    SEQAN_ASSERT(!atEnd(primaryIt, matches));
 
-    if (me.options.secondaryAlignments == TAG)
-        _fillXa(me, matches, primaryPos);
+    if (me.options.secondaryMatches == TAG)
+        _fillXa(me, matches, primaryIt);
 
     _writeRecord(me);
 
-    if (me.options.secondaryAlignments == RECORD)
-        _writeSecondary(me, matches, primaryPos, PairedEnd());
+    if (me.options.secondaryMatches == RECORD)
+        _writeSecondary(me, matches, primaryIt, PairedEnd());
 }
 
 // ----------------------------------------------------------------------------
 // Function _writeSecondary()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits, typename TMatches, typename TPos, typename TSequencing>
-inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TPos primaryPos, TSequencing const & tag)
+template <typename TSpec, typename Traits, typename TMatches, typename TIter, typename TSequencing>
+inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TIter primaryIt, TSequencing const & /* tag */)
 {
-    _writeSecondary(me, prefix(matches, primaryPos), tag);
-    _writeSecondary(me, suffix(matches, _min(primaryPos + 1, length(matches))), tag);
-}
-
-template <typename TSpec, typename Traits, typename TMatches, typename TSequencing>
-inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TSequencing const & /* tag */)
-{
-    forEach(matches, [&](typename Value<TMatches const>::Type const & match)
+    typedef typename Value<TMatches const>::Type TMatch;
+    iterate(matches, [&](typename Iterator<TMatches const>::Type matchIt)
     {
+        if (matchIt == primaryIt)
+            return;
+        TMatch const & match = *matchIt;
         clear(me.record);
         _fillReadName(me, getReadSeqId(match, me.reads.seqs));
         _fillReadPosition(me, match);
+        if (me.options.alignSecondary)
+            _fillSecondaryReadAlignment(me, match, position(matchIt, matches));
         _fillReadOrientation(me, match);
         _fillReadDistance(me, match);
         if (IsSameType<TSequencing, PairedEnd>::VALUE)
@@ -422,7 +424,7 @@ inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & 
         appendExtraPosition(me.record, getMember(match, ContigEnd()));
         me.record.flag |= BAM_FLAG_SECONDARY;
         _writeRecord(me);
-    });
+    }, Standard(), Serial());
 }
 
 // ----------------------------------------------------------------------------
@@ -484,7 +486,18 @@ inline void _fillReadOrientation(MatchesWriter<TSpec, Traits> & me, TMatch const
 template <typename TSpec, typename Traits, typename TMatch>
 inline void _fillReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const & match)
 {
-    me.record.cigar = me.cigarSet[getMember(match, ReadId())];
+    me.record.cigar = me.primaryCigars[getMember(match, ReadId())];
+    SEQAN_ASSERT_EQ(_getQueryLength(me.record.cigar), length(me.reads.seqs[getMember(match, ReadId())]));
+}
+
+// ----------------------------------------------------------------------------
+// Function _fillSecondaryReadAlignment()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename Traits, typename TMatch, typename TPos>
+inline void _fillSecondaryReadAlignment(MatchesWriter<TSpec, Traits> & me, TMatch const & match, TPos const pos)
+{
+    me.record.cigar = me.cigarSet[getMember(match, ReadId())][pos];
     SEQAN_ASSERT_EQ(_getQueryLength(me.record.cigar), length(me.reads.seqs[getMember(match, ReadId())]));
 }
 
@@ -577,34 +590,47 @@ inline void _fillReadInfo(MatchesWriter<TSpec, Traits> & me, TCount bestCount, T
 // Function _fillXa()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits, typename TMatches, typename TPos>
-inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TPos primaryPos)
+template <typename TSpec, typename Traits, typename TMatches, typename TIter>
+inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TIter const & primaryIt)
 {
+    typedef typename Value<TMatches const>::Type TMatch;
     clear(me.xa);
 
-    // Exclude primary match from matches list.
-    _fillXa(me, prefix(matches, primaryPos));
-    _fillXa(me, suffix(matches, std::min(primaryPos + 1, (TPos)length(matches))));
-
-    appendAlignments(me.record, me.xa);
-}
-
-template <typename TSpec, typename Traits, typename TMatches>
-inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
-{
-    forEach(matches, [&](typename Value<TMatches const>::Type const & match)
+    iterate(matches, [&](typename Iterator<TMatches const>::Type const & matchIt)
     {
+        if (matchIt == primaryIt)
+            return;
+        TMatch const & match = *matchIt;
         append(me.xa, contigNames(context(me.outputFile))[getMember(match, ContigId())]);
         appendValue(me.xa, ',');
-        appendNumber(me.xa, getMember(match, ContigBegin()) + 1);
-        appendValue(me.xa, ',');
-        appendNumber(me.xa, getMember(match, ContigEnd()) + 1);
-        appendValue(me.xa, ',');
-        appendValue(me.xa, onForwardStrand(match) ? '+' : '-');
-        appendValue(me.xa, ',');
-        appendNumber(me.xa, getMember(match, Errors()));
-        appendValue(me.xa, ';');
-    });
+        if (me.options.alignSecondary)
+        {
+            appendValue(me.xa, onForwardStrand(match) ? '+' : '-');
+            appendNumber(me.xa, getMember(match, ContigBegin()) + 1);
+            appendValue(me.xa, ',');
+            for (CigarElement<> const & cigElement : me.cigarSet[getMember(match, ReadId())][position(matchIt, matches)])
+            {
+                appendNumber(me.xa, cigElement.count);
+                appendValue(me.xa, cigElement.operation);
+            }
+            appendValue(me.xa, ',');
+            appendNumber(me.xa, getMember(match, Errors()));
+            appendValue(me.xa, ';');
+        }
+        else
+        {
+            appendNumber(me.xa, getMember(match, ContigBegin()) + 1);
+            appendValue(me.xa, ',');
+            appendNumber(me.xa, getMember(match, ContigEnd()) + 1);
+            appendValue(me.xa, ',');
+            appendValue(me.xa, onForwardStrand(match) ? '+' : '-');
+            appendValue(me.xa, ',');
+            appendNumber(me.xa, getMember(match, Errors()));
+            appendValue(me.xa, ';');
+        }
+    }, Standard(), Serial());
+
+    appendAlignments(me.record, me.xa);
 }
 
 // ----------------------------------------------------------------------------

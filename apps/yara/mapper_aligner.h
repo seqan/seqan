@@ -47,15 +47,13 @@ using namespace seqan;
 // Class MatchesAligner
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits>
+template <typename TSpec, typename Traits, typename TMatches>
 struct MatchesAligner
 {
     typedef typename Traits::TContigSeqs       TContigSeqs;
     typedef typename Traits::TReadSeqs         TReadSeqs;
-    typedef typename Traits::TMatches          TMatches;
-    typedef typename Traits::TMatchesViewView  TMatchesView;
-    typedef typename Traits::TCigar            TCigar;
-    typedef typename Traits::TCigarSet         TCigarSet;
+    typedef typename Traits::TCigarString      TCigarString;
+    typedef typename Traits::TCigars           TCigars;
     typedef typename Traits::TCigarLimits      TCigarLimits;
 
     typedef String<GapAnchor<int> >            TGapAnchors;
@@ -64,22 +62,22 @@ struct MatchesAligner
     // Thread-private data.
     TGapAnchors contigAnchors;
     TGapAnchors readAnchors;
-    TCigar      cigar;
+    TCigarString cigar;
 //    CharString  md;
 
     // Shared-memory read-write data.
-    TCigarSet &             cigarSet;
+    TCigars &               cigarSet;
     TCigarLimits &          cigarLimits;
-    TMatchesView &          matches;
+    TMatches &              matches;
 
     // Shared-memory read-only data.
     TContigSeqs const &     contigSeqs;
     TReadSeqs const &       readSeqs;
     Options const &         options;
 
-    MatchesAligner(TCigarSet & cigarSet,
+    MatchesAligner(TCigars & cigarSet,
                    TCigarLimits & cigarLimits,
-                   TMatchesView & matches,
+                   TMatches & matches,
                    TContigSeqs const & contigSeqs,
                    TReadSeqs const & readSeqs,
                    Options const & options) :
@@ -93,10 +91,10 @@ struct MatchesAligner
         _alignMatches(*this);
     }
 
-    template <typename TMatch>
-    void operator() (TMatch & match)
+    template <typename TMatchIt>
+    void operator() (TMatchIt & matchIt)
     {
-        _alignMatchImpl(*this, match);
+        _alignMatchImpl(*this, matchIt);
     }
 };
 
@@ -108,11 +106,11 @@ struct MatchesAligner
 // Function _alignMatches()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits>
-inline void _alignMatches(MatchesAligner<TSpec, Traits> & me)
+template <typename TSpec, typename Traits, typename TMatches>
+inline void _alignMatches(MatchesAligner<TSpec, Traits, TMatches> & me)
 {
-    typedef typename Traits::TCigarSet                  TCigarSet;
-    typedef typename StringSetLimits<TCigarSet>::Type   TCigarLimits;
+    typedef typename Traits::TCigars                    TCigars;
+    typedef typename StringSetLimits<TCigars>::Type     TCigarLimits;
     typedef typename Suffix<TCigarLimits>::Type         TCigarSuffix;
     typedef typename Traits::TMatchSpec                 TMatchSpec;
 
@@ -131,7 +129,7 @@ inline void _alignMatches(MatchesAligner<TSpec, Traits> & me)
 
     // Fill the cigars.
     resize(me.cigarLimits, length(me.matches) + 1, 0, Exact());
-    iterate(me.matches, me, Standard(), typename Traits::TThreading());
+    iterate(me.matches, me, Rooted(), typename Traits::TThreading());
 
     // Shrink the cigar limits.
     assign(cigarLimits, me.cigarLimits);
@@ -166,24 +164,27 @@ inline int _align(TContigGaps & contigGaps, TReadGaps & readGaps, TErrors errors
 // ----------------------------------------------------------------------------
 // Aligns one match.
 
-template <typename TSpec, typename Traits, typename TMatchIt>
-inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & matchIt)
+template <typename TSpec, typename Traits, typename TMatches, typename TMatchIt>
+inline void _alignMatchImpl(MatchesAligner<TSpec, Traits, TMatches> & me, TMatchIt & matchIt)
 {
     typedef typename Value<TMatchIt>::Type          TMatch;
     typedef typename Traits::TContigSeqs            TContigSeqs;
     typedef typename Value<TContigSeqs const>::Type TContigSeq;
     typedef typename StringSetPosition<TContigSeqs const>::Type TContigPos;
     typedef typename Infix<TContigSeq>::Type        TContigInfix;
+    typedef typename Size<TMatches>::Type           TSize;
 
     typedef typename Traits::TReadSeqs              TReadSeqs;
     typedef typename Value<TReadSeqs const>::Type   TReadSeq;
 
-    typedef MatchesAligner<TSpec, Traits>           TMatchesAligner;
+    typedef MatchesAligner<TSpec, Traits, TMatches> TMatchesAligner;
     typedef typename TMatchesAligner::TAnchorGaps   TAnchorGaps;
     typedef Gaps<TContigInfix, TAnchorGaps>         TContigGaps;
     typedef Gaps<TReadSeq, TAnchorGaps>             TReadGaps;
 
     TMatch & match = value(matchIt);
+    TSize matchId = matchIt - begin(me.matches, Standard());
+
 
     if (isInvalid(match)) return;
 
@@ -239,10 +240,10 @@ inline void _alignMatchImpl(MatchesAligner<TSpec, Traits> & me, TMatchIt & match
     // Copy cigar to set.
     // TODO(esiragusa): use assign if possible.
 //    me.cigarSet[getReadId(match)] = me.cigar;
-    SEQAN_CHECK(length(me.cigar) <= length(me.cigarSet[getMember(match, ReadId())]), "CIGAR error.");
+    SEQAN_CHECK(length(me.cigar) <= length(me.cigarSet[matchId]), "CIGAR error.");
 //    SEQAN_ASSERT_LEQ(length(me.cigar), length(me.cigarSet[getMember(match, ReadId())]));
-    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[getMember(match, ReadId())], Standard()));
-    assignValue(me.cigarLimits, getMember(match, ReadId()) + 1, length(me.cigar));
+    std::copy(begin(me.cigar, Standard()), end(me.cigar, Standard()), begin(me.cigarSet[matchId], Standard()));
+    assignValue(me.cigarLimits, matchId + 1, length(me.cigar));
 
 //    clear(me.md);
 //    getMDString(me.md, contigGaps, readGaps);
