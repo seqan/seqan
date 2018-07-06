@@ -3,6 +3,18 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.4.1
+~~~~~~~~~~~~~
+
+App Updates
+^^^^^^^^^^^
+
+- Yara:
+    - Fixed verification of N's for seeds and boundary checking for anchors (restores full-sensitivity)
+    - Removed option --all (was deprecated)
+    - Added option to compute and output alignments for secondary matches
+    - Added option to specify strata threshold as absolute number of errors
+
 Release 2.4.0
 ~~~~~~~~~~~~~
 
