@@ -280,7 +280,7 @@ inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & s
         s.startPos = 0;
         for (uint8_t i = 0; i < s.pi.size(); ++i)
             if (s.pi[i] < s.pi[0])
-                s.startPos += s.blocklength[i] - ((i > 0) ? s.blocklength[i-1] : 0);
+                s.startPos += s.blocklength[i] - s.blocklength[i - 1];
     }
 }
 
