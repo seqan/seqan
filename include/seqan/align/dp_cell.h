@@ -142,7 +142,7 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
 
 template <typename TScoreValue, typename TGapCostFunction>
     const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE =
-        createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::min()) / createVector<TScoreValue>(2);
+        createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::lowest()) / createVector<TScoreValue>(2);
 
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :
