@@ -2725,4 +2725,34 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_global_different_container)
     }
 }
 
+SEQAN_DEFINE_TEST(test_alignment_algorithms_fix_floating_point_scores)
+{
+    using namespace seqan;
+
+    Dna5String strH = "AAATGACGGATTG";
+    DnaString strV = "AGTCGGATCTACTG";
+
+    Align<Dna5String, ArrayGaps> align;
+    resize(rows(align), 2);
+    assignSource(row(align, 0), strH);
+    assignSource(row(align, 1), strV);
+
+    std::stringstream stream1, stream2, stream3;
+
+    int score_int = globalAlignment(align, Score<int, Simple>(4, -2, -2, -4), AffineGaps());
+    stream1 << align;
+    std::string const expected = stream1.str();
+    SEQAN_ASSERT_EQ(score_int, 16);
+
+    double score_dbl = globalAlignment(align, Score<double, Simple>(4., -2., -2., -4.), AffineGaps());
+    stream2 << align;
+    SEQAN_ASSERT_EQ(stream2.str(), expected);
+    SEQAN_ASSERT_IN_DELTA(score_dbl, 16.0, 1e-3);
+
+    float score_flt = globalAlignment(align, Score<float, Simple>(4.f, -2.f, -2.f, -4.f), AffineGaps());
+    stream3 << align;
+    SEQAN_ASSERT_EQ(stream3.str(), expected);
+    SEQAN_ASSERT_IN_DELTA(score_flt, 16.f, 1e-3f);
+}
+
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_ALGORITHMS_GLOBAL_H_
