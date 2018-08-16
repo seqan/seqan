@@ -107,16 +107,18 @@ constexpr std::array<OptimalSearch<5>, 4> OptimalSearchSchemes<0, 3, TVoidType>:
 template <typename TVoidType>
 struct OptimalSearchSchemes<0, 4, TVoidType>
 {
-    static constexpr std::array<OptimalSearch<5>, 3> VALUE
+    static constexpr std::array<OptimalSearch<6>, 5> VALUE
     {{
-        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 0, 4}}, {{0, 3, 3, 4, 4}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{2, 3, 4, 5, 1}}, {{0, 0, 0, 0, 0}}, {{2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 3, 3}}, {{0, 0, 4, 4, 4}}, {{0, 0, 0, 0, 0}}, 0 }
+        { {{1, 2, 3, 4, 5, 6}}, {{0, 0, 0, 0, 0, 4}}, {{0, 3, 3, 3, 4, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{2, 3, 4, 5, 6, 1}}, {{0, 0, 0, 0, 0, 0}}, {{0, 2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{3, 2, 4, 5, 6, 1}}, {{0, 1, 1, 1, 1, 1}}, {{0, 2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{4, 3, 2, 5, 6, 1}}, {{0, 1, 2, 2, 2, 2}}, {{0, 1, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{6, 5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3, 3}}, {{0, 0, 4, 4, 4, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 }
     }};
 };
 
 template <typename TVoidType>
-constexpr std::array<OptimalSearch<5>, 3> OptimalSearchSchemes<0, 4, TVoidType>::VALUE;
+constexpr std::array<OptimalSearch<6>, 5> OptimalSearchSchemes<0, 4, TVoidType>::VALUE;
 
 template <typename TVoidType>
 struct OptimalSearchSchemes<1, 1, TVoidType>
