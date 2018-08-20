@@ -476,8 +476,11 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     SEQAN_CALL_TEST(test_alignment_algorithms_fragments_gaps_semi_global_affine);
     SEQAN_CALL_TEST(test_alignment_algorithms_score_semi_global_affine);
 
-    // Global Alignment with Differnt Container Types
+    // Global Alignment with Different Container Types
     SEQAN_CALL_TEST(test_alignment_algorithms_global_different_container);
+
+    // Fix for Floating Point Scores
+    SEQAN_CALL_TEST(test_alignment_algorithms_fix_floating_point_scores);
 
     // Local Alignment.
     SEQAN_CALL_TEST(test_alignment_algorithms_align_local_linear);
