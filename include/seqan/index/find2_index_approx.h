@@ -47,7 +47,17 @@ struct OptimalSearch
     std::array<uint8_t, N> u; // maximum number of errors at the end of the corresponding block
 
     std::array<uint32_t, N> blocklength; // cumulated values / prefix sums
+    //NOTE (svnbgnk) added additional information about search schemes depending on the read length
+    //These values are not set Zero during the creation of Optimal Search Schemes  //TODO?
+    std::array<uint32_t, N> chronBL;  //cumulated values from block 1, 2, ...
+    std::array<uint32_t, N> revChronBL; // cumulated values from block n, n - 1 , n - 2, ...
+    std::array<uint8_t, N> min; //Note (svnbgnk) not used by the implemented functions in the moment
+    std::array<uint8_t, N> max; //               not used by the implemented functions in the moment
+
     uint32_t startPos;
+
+    uint8_t startUniDir; //                      not used by the implemented functions in the moment
+
 };
 
 template <size_t min, size_t max, typename TVoidType = void>
