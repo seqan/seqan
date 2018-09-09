@@ -1,13 +1,22 @@
-
 #include <cstdlib>
-#include <iterator>
 
-#include <seqan/align.h>
-#include <seqan/seeds.h>
-#include <seqan/index.h>
-#include <seqan/arg_parse.h>
-#include <seqan/stream.h>
+//![include_seq_io]
 #include <seqan/seq_io.h>
+#include <seqan/stream.h>
+//![include_seq_io]
+
+//![include_align]
+#include <seqan/align.h>
+//![include_align]
+//![include_arg_parse]
+#include <seqan/arg_parse.h>
+//![include_arg_parse]
+//![include_index]
+#include <seqan/index.h>
+//![include_index]
+//![include_seeds]
+#include <seqan/seeds.h>
+//![include_seeds]
 
 using namespace seqan;
 
