@@ -282,15 +282,23 @@ inline void _optimalSearchSchemeSetBlockLength(std::array<OptimalSearch<nbrBlock
 template <size_t nbrBlocks, size_t N>
 inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & ss)
 {
-    // check whether 2nd block is on the left or right and choose initialDirection accordingly
+    // check whether 2nd block is on the left or right and choose initialDirection accordingly //NOTE (svnbngk) added this
     // (more efficient since we do not have to switch directions and thus have better caching performance)
     // for that we need to slightly modify search()
     for (OptimalSearch<nbrBlocks> & s : ss)
     {
-        s.startPos = 0;
-        for (uint8_t i = 0; i < s.pi.size(); ++i)
-            if (s.pi[i] < s.pi[0])
-                s.startPos += s.blocklength[i] - ((i > 0) ? s.blocklength[i-1] : 0);
+        bool initialDirectionRight = s.pi[1] > s.pi[0];
+        if(initialDirectionRight){
+            s.startPos = 0;
+            for (uint8_t i = 1; i < s.pi.size(); ++i)
+                if (s.pi[i] < s.pi[0])
+                    s.startPos += s.blocklength[i] - s.blocklength[i-1];
+        }else{
+            s.startPos = s.blocklength[s.pi.size() - 1];
+            for (uint8_t i = 0; i < s.pi.size(); ++i)
+                if(s.pi[i] > s.pi[0])
+                    s.startPos -= s.blocklength[i] - s.blocklength[i-1];
+        }
     }
 }
 
@@ -306,6 +314,26 @@ inline void _optimalSearchSchemeComputeFixedBlocklength(std::array<OptimalSearch
 
     _optimalSearchSchemeSetBlockLength(ss, blocklengths);
     _optimalSearchSchemeInit(ss);
+}
+
+//NOTE (svnbngk) added new function to calculate added parameters from OptimalSearch
+template <size_t nbrBlocks, size_t N>
+inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch<nbrBlocks>, N> & ss)
+{
+    for (OptimalSearch<nbrBlocks> & s : ss){
+        s.chronBL[s.pi[0] - 1]  = s.blocklength[0];
+        for(int j = 1; j < nbrBlocks; ++j)
+            s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
+        for(int j = 1; j < nbrBlocks; ++j)
+            s.chronBL[j] += s.chronBL[j - 1];
+
+        s.revChronBL[s.pi[nbrBlocks - 1] - 1]  = s.blocklength[nbrBlocks - 1] - s.blocklength[nbrBlocks - 2];
+        for(int i = static_cast<int> (nbrBlocks) - 2; i >= 0; --i)
+            s.revChronBL[s.pi[i] - 1] = s.blocklength[i] - ((i > 0) ? s.blocklength[i - 1] : 0);
+
+        for(int i = static_cast<int> (nbrBlocks) - 2; i >= 0; --i)
+            s.revChronBL[i] += s.revChronBL[i + 1];
+    }
 }
 
 template <typename TDelegate,
@@ -563,7 +591,13 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                  OptimalSearch<nbrBlocks> const & s,
                                  TDistanceTag const & /**/)
 {
-    _optimalSearchScheme(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Rev(), TDistanceTag());
+    //NOTE (svnbngk) search as long as possible in one Direction from the beginning
+    bool initialDirection = s.pi[1] > s.pi[0];
+    if(initialDirection)
+        _optimalSearchScheme(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Rev(), TDistanceTag());
+    else
+        _optimalSearchScheme(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Fwd(), TDistanceTag());
+
 }
 
 template <typename TDelegate,
@@ -648,5 +682,7 @@ find(TDelegate & delegate,
 }
 
 }
+
+
 
 #endif  // #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_H_
