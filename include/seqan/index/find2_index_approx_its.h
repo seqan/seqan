@@ -104,7 +104,8 @@ inline void directSearch(TDelegateD & delegateDirect,
 }
 
 
-//added lambda functions for In Text Search to _optimalSearchSchemeChildren, _optimalSearchSchemeExact and _optimalSearchScheme
+//added lambda functions "In Text Search" and ITS condition to _optimalSearchSchemeChildren, _optimalSearchSchemeExact
+//and _optimalSearchScheme
 //(from find2_index_approx.h)
 template <typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndex, typename TIndexSpec,
