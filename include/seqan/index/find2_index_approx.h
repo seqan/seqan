@@ -46,9 +46,9 @@ struct OptimalSearch
     std::array<uint8_t, N> l; // minimum number of errors at the end of the corresponding block
     std::array<uint8_t, N> u; // maximum number of errors at the end of the corresponding block
 
-    std::array<uint32_t, N> blocklength; // cumulated length of the block in Search Scheme order
+    std::array<uint32_t, N> blocklength; // cumulated length of the blocks in Search Scheme order
     //NOTE (svnbgnk) added additional information about search schemes depending on the read length
-    //These values are not set Zero during the creation of Optimal Search Schemes
+    //These values are not set to Zero during the creation of Optimal Search Schemes
     std::array<uint32_t, N> chronBL;  //cumulated length of block from left
     std::array<uint32_t, N> revChronBL; // cumulated length of block from right
     std::array<uint8_t, N> min;
