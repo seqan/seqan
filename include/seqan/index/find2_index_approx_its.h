@@ -22,19 +22,18 @@
 // ARE DISCLAIMED. IN NO EVENT SHALL NVIDIA CORPORATION BE LIABLE
 // FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)sven.boenigk@fu-berlin.de HOWEVER
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 // LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Sven Boenigk <github@svnbgnk.de>
+// Author: Sven Boenigk <sven.boenigk@fu-berlin.de>
 // ==========================================================================
 // Approximate String matching via search schemes on a substring index.
 // ==========================================================================
 
-//TODO (svnbgnk) modify copyright notice in any way?
 //NOTE (svnbgnk) this file has to be include as <seqan/index/find2_index_approx_its.h>
 #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_ITS_H_
 #define SEQAN_INDEX_FIND2_INDEX_APPROX_ITS_H_
