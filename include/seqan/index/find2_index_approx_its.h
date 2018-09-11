@@ -33,13 +33,13 @@
 // ==========================================================================
 // Approximate String matching via search schemes on a substring index.
 // ==========================================================================
-
-//NOTE this file has to be include as <seqan/index/find2_index_approx_its.h>
+//TODO (svnbgnk) modify copyright notice in any way?
+//NOTE (svnbgnk) this file has to be include as <seqan/index/find2_index_approx_its.h>
 #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_ITS_H_
 #define SEQAN_INDEX_FIND2_INDEX_APPROX_ITS_H_
 
 namespace seqan {
-
+// Compare potential occurrences directly to genome if the range on the iterator is small enough.
 template <typename TDelegateD,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
@@ -104,7 +104,7 @@ inline void directSearch(TDelegateD & delegateDirect,
 }
 
 
-//added lamda function for In Text Search to _optimalSearchSchemeChildren, _optimalSearchSchemeExact and _optimalSearchScheme
+//added lamda functions for In Text Search to _optimalSearchSchemeChildren, _optimalSearchSchemeExact and _optimalSearchScheme
 //(from find2_index_approx.h)
 template <typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndex, typename TIndexSpec,

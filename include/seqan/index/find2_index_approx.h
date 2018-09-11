@@ -48,16 +48,13 @@ struct OptimalSearch
 
     std::array<uint32_t, N> blocklength; // cumulated values / prefix sums
     //NOTE (svnbgnk) added additional information about search schemes depending on the read length
-    //These values are not set Zero during the creation of Optimal Search Schemes  //TODO?
+    //These values are not set Zero during the creation of Optimal Search Schemes
     std::array<uint32_t, N> chronBL;  //cumulated values from block 1, 2, ...
     std::array<uint32_t, N> revChronBL; // cumulated values from block n, n - 1 , n - 2, ...
     std::array<uint8_t, N> min; //Note (svnbgnk) not used by the implemented functions in the moment
     std::array<uint8_t, N> max; //               not used by the implemented functions in the moment
-
     uint32_t startPos;
-
     uint8_t startUniDir; //                      not used by the implemented functions in the moment
-
 };
 
 template <size_t min, size_t max, typename TVoidType = void>
@@ -282,7 +279,8 @@ inline void _optimalSearchSchemeSetBlockLength(std::array<OptimalSearch<nbrBlock
 template <size_t nbrBlocks, size_t N>
 inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & ss)
 {
-    // check whether 2nd block is on the left or right and choose initialDirection accordingly //NOTE (svnbngk) added this
+    // check whether 2nd block is on the left or right and choose initialDirection accordingly
+    //NOTE (svnbngk) done
     // (more efficient since we do not have to switch directions and thus have better caching performance)
     // for that we need to slightly modify search()
     for (OptimalSearch<nbrBlocks> & s : ss)
@@ -592,12 +590,10 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                  TDistanceTag const & /**/)
 {
     //NOTE (svnbngk) search as long as possible in one Direction from the beginning
-    bool initialDirection = s.pi[1] > s.pi[0];
-    if(initialDirection)
+    if(s.pi[1] > s.pi[0])
         _optimalSearchScheme(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Rev(), TDistanceTag());
     else
         _optimalSearchScheme(delegate, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Fwd(), TDistanceTag());
-
 }
 
 template <typename TDelegate,
@@ -682,7 +678,5 @@ find(TDelegate & delegate,
 }
 
 }
-
-
 
 #endif  // #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_H_
