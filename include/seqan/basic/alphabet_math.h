@@ -38,8 +38,6 @@
 #include <climits>
 #include <limits>
 
-using namespace std;
-
 #ifndef SEQAN_BASIC_ALPHABET_MATH_H_
 #define SEQAN_BASIC_ALPHABET_MATH_H_
 
@@ -79,9 +77,9 @@ struct MaximumValueDouble_ { static const double VALUE; };
 template <typename T>
 const T MaximumValueSigned_<T>::VALUE = ((((T)1 << (BitsPerValue<T>::VALUE - 2)) - 1) << 1) + 1;
 template <typename T>
-const float MaximumValueFloat_<T>::VALUE = numeric_limits<float>::max();
+const float MaximumValueFloat_<T>::VALUE = std::numeric_limits<float>::max();
 template <typename T>
-const double MaximumValueDouble_<T>::VALUE = numeric_limits<double>::max();
+const double MaximumValueDouble_<T>::VALUE = std::numeric_limits<double>::max();
 
 template <>
 struct MaximumValueSigned_<bool>
@@ -137,9 +135,9 @@ const T MinimumValueUnsigned_<T>::VALUE = T(0);
 template <typename T>
 const T MinimumValueSigned_<T>::VALUE = ~(T)MaximumValueSigned_<T>::VALUE;
 template <typename T>
-const float MinimumValueFloat_<T>::VALUE = numeric_limits<float>::lowest();
+const float MinimumValueFloat_<T>::VALUE = std::numeric_limits<float>::lowest();
 template <typename T>
-const double MinimumValueDouble_<T>::VALUE = numeric_limits<double>::lowest();
+const double MinimumValueDouble_<T>::VALUE = std::numeric_limits<double>::lowest();
 
 template <>
 struct MinimumValueSigned_<bool>
