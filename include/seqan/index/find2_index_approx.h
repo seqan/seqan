@@ -731,8 +731,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
     };
     auto delegateDummy = [](Pair<uint16_t, uint32_t> const & /*pos*/, DnaString const & /*needle*/,
                             uint8_t const /*errors*/)
-    {
-    };
+    {};
 
     for (auto & s : ss)
         _optimalSearchScheme(delegate, delegateDummy, dummy, it, needle, s, TDistanceTag());
@@ -836,8 +835,7 @@ find(TDelegate & delegate,
 
        auto delegateDummy = [](Pair<uint16_t, uint32_t> const & /*pos*/, DnaString const & /*needle*/,
                                uint8_t const /*errors*/)
-    {
-    };
+    {};
     find<minErrors, maxErrors>(delegate, delegateDummy, dummy, index, needles, TDistanceTag(), Serial());
 }
 
