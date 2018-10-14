@@ -83,7 +83,7 @@ struct OptimalSearchSchemes<0, 2, TVoidType>
 {
     static constexpr std::array<OptimalSearch<4>, 3> VALUE
     {{
-        { {{2, 1, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
+        { {{1, 2, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{3, 2, 1, 4}}, {{0, 0, 0, 0}}, {{0, 1, 1, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{4, 3, 2, 1}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}}, {{0, 0, 0, 0}}, 0 }
     }};
@@ -282,15 +282,18 @@ inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & s
     for (OptimalSearch<nbrBlocks> & s : ss)
     {
         bool initialDirectionRight = s.pi[1] > s.pi[0];
-        if(initialDirectionRight){
+        if (initialDirectionRight)
+        {
             s.startPos = 0;
             for (uint8_t i = 1; i < s.pi.size(); ++i)
                 if (s.pi[i] < s.pi[0])
                     s.startPos += s.blocklength[i] - s.blocklength[i-1];
-        }else{
+        }
+        else
+        {
             s.startPos = s.blocklength[s.pi.size() - 1];
             for (uint8_t i = 0; i < s.pi.size(); ++i)
-                if(s.pi[i] > s.pi[0])
+                if (s.pi[i] > s.pi[0])
                     s.startPos -= s.blocklength[i] - s.blocklength[i-1];
         }
     }
@@ -314,7 +317,8 @@ inline void _optimalSearchSchemeComputeFixedBlocklength(std::array<OptimalSearch
 template <size_t nbrBlocks, size_t N>
 inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch<nbrBlocks>, N> & ss)
 {
-    for (OptimalSearch<nbrBlocks> & s : ss){
+    for (OptimalSearch<nbrBlocks> & s : ss)
+    {
         s.chronBL[s.pi[0] - 1]  = s.blocklength[0];
         for (int j = 1; j < nbrBlocks; ++j)
             s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
@@ -346,44 +350,52 @@ inline void inTextVerification(TDelegateD & delegateDirect,
 
     std::vector<uint32_t> blockStarts(blocks - blockIndex);
     std::vector<uint32_t> blockEnds(blocks - blockIndex);
-    for(uint32_t j = blockIndex; j < s.pi.size(); ++j){
+    for (uint32_t j = blockIndex; j < s.pi.size(); ++j)
+    {
         uint32_t blockStart = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];
         blockStarts[j - blockIndex] = blockStart;
         blockEnds[j - blockIndex] = s.chronBL[s.pi[j] - 1];
     }
 
     //modifie blockStart or blockEnd if we are already inside a block
-    if(std::is_same<TDir, Rev>::value){
-        if(needleRightPos - 1 > blockStarts[0] && needleRightPos - 1 < blockEnds[0])
+    if (std::is_same<TDir, Rev>::value)
+    {
+        if (needleRightPos - 1 > blockStarts[0] && needleRightPos - 1 < blockEnds[0])
             blockStarts[0] = needleRightPos - 1;
-    }else{
-        if(needleLeftPos > blockStarts[0] && needleLeftPos < blockEnds[0])
+    }
+    else
+    {
+        if (needleLeftPos > blockStarts[0] && needleLeftPos < blockEnds[0])
             blockEnds[0] = needleLeftPos;
     }
 
-    for(uint32_t i = iter.fwdIter.vDesc.range.i1; i < iter.fwdIter.vDesc.range.i2; ++i){
+    for (uint32_t i = iter.fwdIter.vDesc.range.i1; i < iter.fwdIter.vDesc.range.i2; ++i)
+    {
         bool valid = true;
         Pair<uint16_t, uint32_t> sa_info = iter.fwdIter.index->sa[i];
         //dont need look at the reverse index in this case since i dont use mappability
         uint32_t chromlength = length(genome[sa_info.i1]);
-        if(!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + needleL - 1))
+        if (!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + needleL - 1))
             continue;
 
         sa_info.i2 = sa_info.i2 - needleLeftPos;
         uint8_t errors2 = errors;
 	//iterate over each block according to search scheme
-        for(uint32_t j = 0; j < blockStarts.size(); ++j){
+        for (uint32_t j = 0; j < blockStarts.size(); ++j)
+        {
             // compare bases to needle
-            for(uint32_t k = blockStarts[j]; k <  blockEnds[j]; ++k){
-                if(needle[k] != genome[sa_info.i1][sa_info.i2 + k])
+            for (uint32_t k = blockStarts[j]; k <  blockEnds[j]; ++k)
+            {
+                if (needle[k] != genome[sa_info.i1][sa_info.i2 + k])
                     ++errors2;
             }
-            if(errors2 < s.l[blockIndex + j] || errors2 > s.u[blockIndex + j]){
+            if (errors2 < s.l[blockIndex + j] || errors2 > s.u[blockIndex + j])
+            {
                 valid = false;
                 break;
             }
         }
-        if(valid)
+        if (valid)
             delegateDirect(sa_info, needle, errors2);
     }
 }
@@ -626,7 +638,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
             }
         }
         //use lambda function to determine if In Text Search should be used
-        if(itvCondition(iter, needleLeftPos, needleRightPos, errors, s, blockIndex))
+        if (itvCondition(iter, needleLeftPos, needleRightPos, errors, s, blockIndex))
         {
             inTextVerification(delegateDirect, iter, needle, needleLeftPos, needleRightPos, errors, s, blockIndex, TDir());
             return;
@@ -650,7 +662,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                  TDistanceTag const & /**/)
 {
     //NOTE (svnbngk) search as long as possible in one Direction from the beginning
-    if(s.pi[1] > s.pi[0])
+    if (s.pi[1] > s.pi[0])
         _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Rev(), TDistanceTag());
     else
         _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Fwd(), TDistanceTag());
@@ -717,6 +729,7 @@ find(TDelegate & delegate,
 {
     auto scheme = OptimalSearchSchemes<minErrors, maxErrors>::VALUE;
     _optimalSearchSchemeComputeFixedBlocklength(scheme, length(needle));
+    _optimalSearchSchemeComputeChronBlocklength(scheme);
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<> > > it(index);
     _optimalSearchScheme(delegate,  delegateDirect, itvCondition, it, needle, scheme, TDistanceTag());
 }
