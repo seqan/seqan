@@ -359,7 +359,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
     std::copy(std::begin(s.blockStarts) + blockIndex, std::end(s.blockStarts), std::begin(blockStarts));
     std::copy(std::begin(s.blockEnds) + blockIndex, std::end(s.blockEnds), std::begin(blockEnds));
 
-    // modifie blockStart or blockEnd if we are already inside a block
+    // modify blockStart or blockEnd if we are already inside a block
     if (std::is_same<TDir, Rev>::value)
     {
         if (needleRightPos - 1 > blockStarts[0] && needleRightPos - 1 < blockEnds[0])
