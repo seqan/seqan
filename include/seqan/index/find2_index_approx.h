@@ -327,7 +327,6 @@ inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch
     }
 }
 
-
 // Compare potential occurrences directly to genome if the range on the index is small enough.
 template <typename TDelegateD,
           typename TText, typename TIndex, typename TIndexSpec,
@@ -399,6 +398,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
             delegateDirect(sa_info, needle, errors2);
     }
 }
+
 
 template <typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndex, typename TIndexSpec,
