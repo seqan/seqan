@@ -50,6 +50,8 @@ struct OptimalSearch
     //NOTE (svnbgnk) added additional information about search schemes depending on the read length
     //These values are not set to Zero during the creation of Optimal Search Schemes
     std::array<uint32_t, N> chronBL;     //cumulated length of blocks from left to right
+    std::array<uint32_t, N> blockStarts; //starting position of each block
+    std::array<uint32_t, N> blockEnds;   //ending position of each block
     uint32_t startPos;
 };
 
@@ -273,7 +275,7 @@ inline void _optimalSearchSchemeSetBlockLength(std::array<OptimalSearch<nbrBlock
 
 //NOTE (svnbngk) added new function to calculate added chronological block length in the search schemes (requires blocklength)
 template <size_t nbrBlocks, size_t N>
-inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch<nbrBlocks>, N> & ss)
+inline void _optimalSearchSchemeComputeBlockBorders(std::array<OptimalSearch<nbrBlocks>, N> & ss)
 {
     for (OptimalSearch<nbrBlocks> & s : ss)
     {
@@ -282,6 +284,15 @@ inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch
             s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
         for (int j = 1; j < nbrBlocks; ++j)
             s.chronBL[j] += s.chronBL[j - 1];
+    }
+
+    for (OptimalSearch<nbrBlocks> & s : ss)
+    {
+        for (uint32_t j = 0; j < s.pi.size(); ++j)
+        {
+            s.blockStarts[j] = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];;
+            s.blockEnds[j] = s.chronBL[s.pi[j] - 1];
+        }
     }
 }
 
@@ -294,8 +305,7 @@ inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & s
     // for that we need to slightly modify search()
     for (OptimalSearch<nbrBlocks> & s : ss)
     {
-        bool initialDirectionRight = s.pi[1] > s.pi[0];
-        if (initialDirectionRight)
+        if (s.pi[1] > s.pi[0])
         {
             s.startPos = 0;
             for (uint8_t i = 1; i < s.pi.size(); ++i)
@@ -323,6 +333,7 @@ inline void _optimalSearchSchemeComputeFixedBlocklength(std::array<OptimalSearch
         blocklengths.push_back(blocklength + (i < rest));
 
     _optimalSearchSchemeSetBlockLength(ss, blocklengths);
+    _optimalSearchSchemeComputeBlockBorders(ss);
     _optimalSearchSchemeInit(ss);
 }
 
@@ -343,16 +354,11 @@ inline void inTextVerification(TDelegateD & delegateDirect,
                   TDir const & /**/)
 {
     auto const & genome = indexText(*iter.fwdIter.index);
-    uint32_t needleL = length(needle);
-    uint32_t blocks = s.pi.size();
-
-    std::vector<uint32_t> blockStarts(blocks - blockIndex);
-    std::vector<uint32_t> blockEnds(blocks - blockIndex);
-    for (uint32_t j = blockIndex; j < s.pi.size(); ++j)
-    {
-        blockStarts[j - blockIndex] = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];;
-        blockEnds[j - blockIndex] = s.chronBL[s.pi[j] - 1];
-    }
+    std::vector<uint32_t> blockStarts(s.pi.size() - blockIndex);
+    std::vector<uint32_t> blockEnds(s.pi.size() - blockIndex);
+    //cut of blockStarts and Ends that where already checked by the search
+    std::copy(std::begin(s.blockStarts) + blockIndex, std::end(s.blockStarts), std::begin(blockStarts));
+    std::copy(std::begin(s.blockEnds) + blockIndex, std::end(s.blockEnds), std::begin(blockEnds));
 
     // modifie blockStart or blockEnd if we are already inside a block
     if (std::is_same<TDir, Rev>::value)
@@ -372,7 +378,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
         bool valid = true;
         Pair<uint16_t, uint32_t> sa_info = iter.fwdIter.index->sa[i];
         uint32_t chromlength = length(genome[sa_info.i1]);
-        if (!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + needleL - 1))
+        if (!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + length(needle) - 1))
             continue;
 
         sa_info.i2 = sa_info.i2 - needleLeftPos;
@@ -728,7 +734,6 @@ find(TDelegate & delegate,
 {
     auto scheme = OptimalSearchSchemes<minErrors, maxErrors>::VALUE;
     _optimalSearchSchemeComputeFixedBlocklength(scheme, length(needle));
-    _optimalSearchSchemeComputeChronBlocklength(scheme);
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<> > > it(index);
     _optimalSearchScheme(delegate,  delegateDirect, itvCondition, it, needle, scheme, TDistanceTag());
 }
