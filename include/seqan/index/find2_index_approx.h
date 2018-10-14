@@ -42,14 +42,14 @@ namespace seqan {
 template <size_t N>
 struct OptimalSearch
 {
-    std::array<uint8_t, N> pi; // order of the blocks. permutation of [1..n]
-    std::array<uint8_t, N> l; // minimum number of errors at the end of the corresponding block
-    std::array<uint8_t, N> u; // maximum number of errors at the end of the corresponding block
+    std::array<uint8_t, N> pi;           // order of the blocks. permutation of [1..n]
+    std::array<uint8_t, N> l;            // minimum number of errors at the end of the corresponding block
+    std::array<uint8_t, N> u;            // maximum number of errors at the end of the corresponding block
 
     std::array<uint32_t, N> blocklength; // cumulated length of the blocks in Search Scheme order
     //NOTE (svnbgnk) added additional information about search schemes depending on the read length
     //These values are not set to Zero during the creation of Optimal Search Schemes
-    std::array<uint32_t, N> chronBL;  //cumulated length of block from left
+    std::array<uint32_t, N> chronBL;     //cumulated length of blocks from left to right
     uint32_t startPos;
 };
 
@@ -271,6 +271,20 @@ inline void _optimalSearchSchemeSetBlockLength(std::array<OptimalSearch<nbrBlock
             s.blocklength[i] = blocklength[s.pi[i]-1] + ((i > 0) ? s.blocklength[i-1] : 0);
 }
 
+//NOTE (svnbngk) added new function to calculate added chronological block length in the search schemes (requires blocklength)
+template <size_t nbrBlocks, size_t N>
+inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch<nbrBlocks>, N> & ss)
+{
+    for (OptimalSearch<nbrBlocks> & s : ss)
+    {
+        s.chronBL[s.pi[0] - 1]  = s.blocklength[0];
+        for (int j = 1; j < nbrBlocks; ++j)
+            s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
+        for (int j = 1; j < nbrBlocks; ++j)
+            s.chronBL[j] += s.chronBL[j - 1];
+    }
+}
+
 // requires blocklength to be already set!
 template <size_t nbrBlocks, size_t N>
 inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & ss)
@@ -312,21 +326,7 @@ inline void _optimalSearchSchemeComputeFixedBlocklength(std::array<OptimalSearch
     _optimalSearchSchemeInit(ss);
 }
 
-//NOTE (svnbngk) added new function to calculate added parameters from OptimalSearch
-template <size_t nbrBlocks, size_t N>
-inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch<nbrBlocks>, N> & ss)
-{
-    for (OptimalSearch<nbrBlocks> & s : ss)
-    {
-        s.chronBL[s.pi[0] - 1]  = s.blocklength[0];
-        for (int j = 1; j < nbrBlocks; ++j)
-            s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
-        for (int j = 1; j < nbrBlocks; ++j)
-            s.chronBL[j] += s.chronBL[j - 1];
-    }
-}
-
-// Compare potential occurrences directly to genome if the range on the index is small enough.
+//NOTE (svnbngk) Compare potential occurrences directly to genome if the range on the index is small enough.
 template <typename TDelegateD,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
@@ -355,7 +355,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
         blockEnds[j - blockIndex] = s.chronBL[s.pi[j] - 1];
     }
 
-    //modifie blockStart or blockEnd if we are already inside a block
+    // modifie blockStart or blockEnd if we are already inside a block
     if (std::is_same<TDir, Rev>::value)
     {
         if (needleRightPos - 1 > blockStarts[0] && needleRightPos - 1 < blockEnds[0])
@@ -367,18 +367,18 @@ inline void inTextVerification(TDelegateD & delegateDirect,
             blockEnds[0] = needleLeftPos;
     }
 
+    // over each potential occurrence inside the range
     for (uint32_t i = iter.fwdIter.vDesc.range.i1; i < iter.fwdIter.vDesc.range.i2; ++i)
     {
         bool valid = true;
         Pair<uint16_t, uint32_t> sa_info = iter.fwdIter.index->sa[i];
-        //dont need look at the reverse index in this case since i dont use mappability
         uint32_t chromlength = length(genome[sa_info.i1]);
         if (!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + needleL - 1))
             continue;
 
         sa_info.i2 = sa_info.i2 - needleLeftPos;
         uint8_t errors2 = errors;
-	//iterate over each block according to search scheme
+	// iterate over each block according to search in search scheme
         for (uint32_t j = 0; j < blockStarts.size(); ++j)
         {
             // compare bases to needle
@@ -387,6 +387,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
                 if (needle[k] != genome[sa_info.i1][sa_info.i2 + k])
                     ++errors2;
             }
+            // check after each block if errors conform with the search in search scheme
             if (errors2 < s.l[blockIndex + j] || errors2 > s.u[blockIndex + j])
             {
                 valid = false;
@@ -660,7 +661,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                  OptimalSearch<nbrBlocks> const & s,
                                  TDistanceTag const & /**/)
 {
-    //NOTE (svnbngk) search as long as possible in one Direction from the beginning
+    //NOTE (svnbgnk) search as long as possible in one Direction from the beginning
     if (s.pi[1] > s.pi[0])
         _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0, Rev(), TDistanceTag());
     else
