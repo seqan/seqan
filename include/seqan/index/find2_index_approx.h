@@ -350,8 +350,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
     std::vector<uint32_t> blockEnds(blocks - blockIndex);
     for (uint32_t j = blockIndex; j < s.pi.size(); ++j)
     {
-        uint32_t blockStart = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];
-        blockStarts[j - blockIndex] = blockStart;
+        blockStarts[j - blockIndex] = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];;
         blockEnds[j - blockIndex] = s.chronBL[s.pi[j] - 1];
     }
 
