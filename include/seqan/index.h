@@ -234,7 +234,6 @@
 #include <seqan/index/find2_index_multi.h>
 #include <seqan/index/find2_functors.h>
 #include <seqan/index/find2_index_approx.h>
-#include <seqan/index/find2_index_approx_itv.h>
 
 // ----------------------------------------------------------------------------
 // Lambda interface.

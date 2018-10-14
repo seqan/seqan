@@ -50,11 +50,7 @@ struct OptimalSearch
     //NOTE (svnbgnk) added additional information about search schemes depending on the read length
     //These values are not set to Zero during the creation of Optimal Search Schemes
     std::array<uint32_t, N> chronBL;  //cumulated length of block from left
-    std::array<uint32_t, N> revChronBL; // cumulated length of block from right
-    std::array<uint8_t, N> min;
-    std::array<uint8_t, N> max;
     uint32_t startPos;
-    uint8_t startUniDir;
 };
 
 template <size_t min, size_t max, typename TVoidType = void>
@@ -320,17 +316,10 @@ inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch
 {
     for (OptimalSearch<nbrBlocks> & s : ss){
         s.chronBL[s.pi[0] - 1]  = s.blocklength[0];
-        for(int j = 1; j < nbrBlocks; ++j)
+        for (int j = 1; j < nbrBlocks; ++j)
             s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
-        for(int j = 1; j < nbrBlocks; ++j)
+        for (int j = 1; j < nbrBlocks; ++j)
             s.chronBL[j] += s.chronBL[j - 1];
-
-        s.revChronBL[s.pi[nbrBlocks - 1] - 1]  = s.blocklength[nbrBlocks - 1] - s.blocklength[nbrBlocks - 2];
-        for(int i = static_cast<int> (nbrBlocks) - 2; i >= 0; --i)
-            s.revChronBL[s.pi[i] - 1] = s.blocklength[i] - ((i > 0) ? s.blocklength[i - 1] : 0);
-
-        for(int i = static_cast<int> (nbrBlocks) - 2; i >= 0; --i)
-            s.revChronBL[i] += s.revChronBL[i + 1];
     }
 }
 
