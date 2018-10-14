@@ -342,14 +342,14 @@ template <typename TDelegateD,
           size_t nbrBlocks,
           typename TDir>
 inline void inTextVerification(TDelegateD & delegateDirect,
-                  Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
-                  TNeedle const & needle,
-                  uint32_t const needleLeftPos,
-                  uint32_t const needleRightPos,
-                  uint8_t const errors,
-                  OptimalSearch<nbrBlocks> const & s,
-                  uint8_t const blockIndex,
-                  TDir const & /**/)
+                               Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
+                               TNeedle const & needle,
+                               uint32_t const needleLeftPos,
+                               uint32_t const needleRightPos,
+                               uint8_t const errors,
+                               OptimalSearch<nbrBlocks> const & s,
+                               uint8_t const blockIndex,
+                               TDir const & /**/)
 {
     auto const & genome = indexText(*iter.fwdIter.index);
 
