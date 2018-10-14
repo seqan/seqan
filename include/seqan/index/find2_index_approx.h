@@ -276,7 +276,6 @@ template <size_t nbrBlocks, size_t N>
 inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & ss)
 {
     // check whether 2nd block is on the left or right and choose initialDirection accordingly
-    //NOTE (svnbngk) done
     // (more efficient since we do not have to switch directions and thus have better caching performance)
     // for that we need to slightly modify search()
     for (OptimalSearch<nbrBlocks> & s : ss)
