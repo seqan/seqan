@@ -323,7 +323,6 @@ inline void _optimalSearchSchemeComputeChronBlocklength(std::array<OptimalSearch
     }
 }
 
-
 // Compare potential occurrences directly to genome if the range on the index is small enough.
 template <typename TDelegateD,
           typename TText, typename TIndex, typename TIndexSpec,
@@ -387,6 +386,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
             delegateDirect(sa_info, needle, errors2);
     }
 }
+
 
 template <typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndex, typename TIndexSpec,
@@ -626,7 +626,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
             }
         }
         //use lambda function to determine if In Text Search should be used
-        if(itvCondition(iter, needleLeftPos, needleRightPos, errors, s, blockIndex))
+        if(itvCondition(iter, needleLeftPos, needleRightPos, errors, s, blockIndex) && !std::is_same<TDistanceTag, EditDistance>::value) //TODO remove
         {
             inTextVerification(delegateDirect, iter, needle, needleLeftPos, needleRightPos, errors, s, blockIndex, TDir());
             return;
