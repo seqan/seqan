@@ -290,7 +290,7 @@ inline void _optimalSearchSchemeComputeBlockBorders(std::array<OptimalSearch<nbr
     {
         for (uint32_t j = 0; j < s.pi.size(); ++j)
         {
-            s.blockStarts[j] = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];;
+            s.blockStarts[j] = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];
             s.blockEnds[j] = s.chronBL[s.pi[j] - 1];
         }
     }
@@ -354,9 +354,10 @@ inline void inTextVerification(TDelegateD & delegateDirect,
                   TDir const & /**/)
 {
     auto const & genome = indexText(*iter.fwdIter.index);
+
+    //cut of blockStarts and Ends that where already checked by the search
     std::vector<uint32_t> blockStarts(s.pi.size() - blockIndex);
     std::vector<uint32_t> blockEnds(s.pi.size() - blockIndex);
-    //cut of blockStarts and Ends that where already checked by the search
     std::copy(std::begin(s.blockStarts) + blockIndex, std::end(s.blockStarts), std::begin(blockStarts));
     std::copy(std::begin(s.blockEnds) + blockIndex, std::end(s.blockEnds), std::begin(blockEnds));
 
@@ -372,7 +373,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
             blockEnds[0] = needleLeftPos;
     }
 
-    // over each potential occurrence inside the range
+    // iterate over each potential occurrence inside the range
     for (uint32_t i = iter.fwdIter.vDesc.range.i1; i < iter.fwdIter.vDesc.range.i2; ++i)
     {
         bool valid = true;
