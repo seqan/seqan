@@ -49,9 +49,8 @@ struct OptimalSearch
     std::array<uint32_t, N> blocklength; // cumulated length of the blocks in Search Scheme order
     //NOTE (svnbgnk) added additional information about search schemes depending on the read length
     //These values are not set to Zero during the creation of Optimal Search Schemes
-    std::array<uint32_t, N> chronBL;     //cumulated length of blocks from left to right
-    std::array<uint32_t, N> blockStarts; //starting position of each block
-    std::array<uint32_t, N> blockEnds;   //ending position of each block
+    std::array<uint32_t, N> blockStarts; //starting position of each block left to right
+    std::array<uint32_t, N> blockEnds;   //ending position of each block left to right
     uint32_t startPos;
 };
 
@@ -279,19 +278,17 @@ inline void _optimalSearchSchemeComputeBlockBorders(std::array<OptimalSearch<nbr
 {
     for (OptimalSearch<nbrBlocks> & s : ss)
     {
-        s.chronBL[s.pi[0] - 1]  = s.blocklength[0];
+        std::vector<uint32_t> chronBL(s.pi.size());
+        chronBL[s.pi[0] - 1]  = s.blocklength[0];
         for (int j = 1; j < nbrBlocks; ++j)
-            s.chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
+            chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
         for (int j = 1; j < nbrBlocks; ++j)
-            s.chronBL[j] += s.chronBL[j - 1];
-    }
+            chronBL[j] += chronBL[j - 1];
 
-    for (OptimalSearch<nbrBlocks> & s : ss)
-    {
         for (uint32_t j = 0; j < s.pi.size(); ++j)
         {
-            s.blockStarts[j] = (s.pi[j] - 1 == 0) ? 0 : s.chronBL[s.pi[j] - 2];
-            s.blockEnds[j] = s.chronBL[s.pi[j] - 1];
+            s.blockStarts[j] = (s.pi[j] - 1 == 0) ? 0 : chronBL[s.pi[j] - 2];
+            s.blockEnds[j] = chronBL[s.pi[j] - 1];
         }
     }
 }
