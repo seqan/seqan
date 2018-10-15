@@ -382,7 +382,7 @@ inline void inTextVerification(TDelegateD & delegateDirect,
 
         sa_info.i2 = sa_info.i2 - needleLeftPos;
         uint8_t errors2 = errors;
-	// iterate over each block according to search in search scheme
+        // iterate over each block according to search in search scheme
         for (uint32_t j = 0; j < nbrBlocks - blockIndex; ++j)
         {
             // compare bases to needle
