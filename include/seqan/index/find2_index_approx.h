@@ -36,7 +36,6 @@
 
 #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_H_
 #define SEQAN_INDEX_FIND2_INDEX_APPROX_H_
-
 namespace seqan {
 
 template <size_t N>
@@ -84,7 +83,7 @@ struct OptimalSearchSchemes<0, 2, TVoidType>
 {
     static constexpr std::array<OptimalSearch<4>, 3> VALUE
     {{
-        { {{1, 2, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
+        { {{2, 1, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{3, 2, 1, 4}}, {{0, 0, 0, 0}}, {{0, 1, 1, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{4, 3, 2, 1}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}}, {{0, 0, 0, 0}}, 0 }
     }};
@@ -272,20 +271,21 @@ inline void _optimalSearchSchemeSetBlockLength(std::array<OptimalSearch<nbrBlock
             s.blocklength[i] = blocklength[s.pi[i]-1] + ((i > 0) ? s.blocklength[i-1] : 0);
 }
 
-//NOTE (svnbngk) added new function to calculate added chronological block length in the search schemes
+//NOTE (svnbngk) added new function to calculate start and end of each block in the search schemes
 template <size_t nbrBlocks, size_t N>
-inline void _optimalSearchSchemeComputeBlockBorders(std::array<OptimalSearch<nbrBlocks>, N> & ss)
+inline void _optimalSearchSchemeSetBlockBorders(std::array<OptimalSearch<nbrBlocks>, N> & ss)
 {
     for (OptimalSearch<nbrBlocks> & s : ss)
     {
-        std::vector<uint32_t> chronBL(s.pi.size());
+        std::array<uint32_t, nbrBlocks> chronBL;
+//         assert (nbrBlocks == s.pi.size()); //TODO assert does not work in the moment
         chronBL[s.pi[0] - 1]  = s.blocklength[0];
-        for (int j = 1; j < nbrBlocks; ++j)
+        for (uint8_t j = 1; j < nbrBlocks; ++j)
             chronBL[s.pi[j] - 1] = s.blocklength[j] -  s.blocklength[j - 1];
-        for (int j = 1; j < nbrBlocks; ++j)
+        for (uint8_t j = 1; j < nbrBlocks; ++j)
             chronBL[j] += chronBL[j - 1];
 
-        for (uint32_t j = 0; j < s.pi.size(); ++j)
+        for (uint8_t j = 0; j < s.pi.size(); ++j)
         {
             s.blockStarts[j] = (s.pi[j] - 1 == 0) ? 0 : chronBL[s.pi[j] - 2];
             s.blockEnds[j] = chronBL[s.pi[j] - 1];
@@ -331,7 +331,7 @@ inline void _optimalSearchSchemeComputeFixedBlocklength(std::array<OptimalSearch
         blocklengths.push_back(blocklength + (i < rest));
 
     _optimalSearchSchemeSetBlockLength(ss, blocklengths);
-    _optimalSearchSchemeComputeBlockBorders(ss);
+    _optimalSearchSchemeSetBlockBorders(ss);
     _optimalSearchSchemeInit(ss);
 }
 
@@ -354,8 +354,8 @@ inline void inTextVerification(TDelegateD & delegateDirect,
     auto const & genome = indexText(*iter.fwdIter.index);
 
     //cut of blockStarts and Ends that where already checked by the search
-    std::vector<uint32_t> blockStarts(s.pi.size() - blockIndex);
-    std::vector<uint32_t> blockEnds(s.pi.size() - blockIndex);
+    std::array<uint32_t, nbrBlocks> blockStarts;
+    std::array<uint32_t, nbrBlocks> blockEnds;
     std::copy(std::begin(s.blockStarts) + blockIndex, std::end(s.blockStarts), std::begin(blockStarts));
     std::copy(std::begin(s.blockEnds) + blockIndex, std::end(s.blockEnds), std::begin(blockEnds));
 
@@ -376,14 +376,14 @@ inline void inTextVerification(TDelegateD & delegateDirect,
     {
         bool valid = true;
         Pair<uint16_t, uint32_t> sa_info = iter.fwdIter.index->sa[i];
-        uint32_t chromlength = length(genome[sa_info.i1]);
+        uint32_t const chromlength = length(genome[sa_info.i1]);
         if (!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + length(needle) - 1))
             continue;
 
         sa_info.i2 = sa_info.i2 - needleLeftPos;
         uint8_t errors2 = errors;
 	// iterate over each block according to search in search scheme
-        for (uint32_t j = 0; j < blockStarts.size(); ++j)
+        for (uint32_t j = 0; j < nbrBlocks - blockIndex; ++j)
         {
             // compare bases to needle
             for (uint32_t k = blockStarts[j]; k <  blockEnds[j]; ++k)
@@ -412,8 +412,8 @@ template <typename TDelegate, typename TDelegateD, typename TCondition,
 inline void _optimalSearchSchemeDeletion(TDelegate & delegate,
                                          TDelegateD & delegateDirect,
                                          TCondition & itvCondition,
-                                         Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<
-                                         TIndexSpec> > > iter,
+                                         Iter<Index<TText, BidirectionalIndex<TIndex> >,
+                                            VSTree<TopDown<TIndexSpec> > > iter,
                                          TNeedle const & needle,
                                          uint32_t const needleLeftPos,
                                          uint32_t const needleRightPos,
@@ -461,8 +461,8 @@ template <typename TDelegate, typename TDelegateD, typename TCondition,
 inline void _optimalSearchSchemeChildren(TDelegate & delegate,
                                          TDelegateD & delegateDirect,
                                          TCondition & itvCondition,
-                                         Iter<Index<TText, BidirectionalIndex<TIndex> >,VSTree<TopDown<
-                                         TIndexSpec> > > iter,
+                                         Iter<Index<TText, BidirectionalIndex<TIndex> >,
+                                            VSTree<TopDown<TIndexSpec> > > iter,
                                          TNeedle const & needle,
                                          uint32_t const needleLeftPos,
                                          uint32_t const needleRightPos,
@@ -542,8 +542,8 @@ template <typename TDelegate, typename TDelegateD, typename TCondition,
 inline void _optimalSearchSchemeExact(TDelegate & delegate,
                                       TDelegateD & delegateDirect,
                                       TCondition & itvCondition,
-                                      Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<
-                                      TIndexSpec> > > iter,
+                                      Iter<Index<TText, BidirectionalIndex<TIndex> >,
+                                          VSTree<TopDown<TIndexSpec> > > iter,
                                       TNeedle const & needle,
                                       uint32_t const needleLeftPos,
                                       uint32_t const needleRightPos,
@@ -676,28 +676,6 @@ inline void _optimalSearchScheme(TDelegate & delegate,
 template <typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
-          size_t nbrBlocks,
-          typename TDistanceTag>
-inline void _optimalSearchScheme(TDelegate & delegate,
-                                 TDelegateD & delegateDirect,
-                                 TCondition & itvCondition,
-                                 Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
-                                 TNeedle const & needle,
-                                 OptimalSearch<nbrBlocks> const & s,
-                                 TDistanceTag const & /**/)
-{
-    //NOTE (svnbgnk) search as long as possible in one Direction from the beginning
-    if (s.pi[1] > s.pi[0])
-        _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0,
-                             Rev(), TDistanceTag());
-    else
-        _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0,
-                             Fwd(), TDistanceTag());
-}
-
-template <typename TDelegate, typename TDelegateD, typename TCondition,
-          typename TText, typename TIndex, typename TIndexSpec,
-          typename TNeedle,
           size_t nbrBlocks, size_t N,
           typename TDistanceTag>
 inline void _optimalSearchScheme(TDelegate & delegate,
@@ -709,7 +687,15 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                  TDistanceTag const & /**/)
 {
     for (auto & s : ss)
-        _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s, TDistanceTag());
+    {
+        //NOTE (svnbgnk) search as long as possible in one Direction from the beginning
+        if (s.pi[1] > s.pi[0])
+            _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0,
+                                 Rev(), TDistanceTag());
+        else
+            _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0,
+                                 Fwd(), TDistanceTag());
+    }
 }
 
 //NOTE added this function so find function can be run on single needle without ITV condition
@@ -724,33 +710,29 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                  std::array<OptimalSearch<nbrBlocks>, N> const & ss,
                                  TDistanceTag const & /**/)
 {
-    auto dummy = [](auto /*iter*/, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/, uint8_t /*errors*/,
+    auto conditionDummy = [](auto /*iter*/, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/, uint8_t /*errors*/,
                     auto /*s*/, uint8_t const /*blockIndex*/)
     {
-        return(false);
+        return false;
     };
     auto delegateDummy = [](Pair<uint16_t, uint32_t> const & /*pos*/, DnaString const & /*needle*/,
                             uint8_t const /*errors*/)
     {};
 
-    for (auto & s : ss)
-        _optimalSearchScheme(delegate, delegateDummy, dummy, it, needle, s, TDistanceTag());
+    _optimalSearchScheme(delegate, delegateDummy, conditionDummy, it, needle, ss, TDistanceTag());
 }
-
 
 // ----------------------------------------------------------------------------
 // Function find()
 // ----------------------------------------------------------------------------
 
 template <size_t minErrors, size_t maxErrors,
-          typename TDelegate, typename TDelegateD, typename TCondition,
+          typename TDelegate,
           typename TText, typename TIndexSpec,
           typename TChar, typename TStringSpec,
           typename TDistanceTag>
 inline void
 find(TDelegate & delegate,
-     TDelegateD & delegateDirect,
-     TCondition & itvCondition,
      Index<TText, BidirectionalIndex<TIndexSpec> > & index,
      String<TChar, TStringSpec> const & needle,
      TDistanceTag const & /**/)
@@ -758,7 +740,7 @@ find(TDelegate & delegate,
     auto scheme = OptimalSearchSchemes<minErrors, maxErrors>::VALUE;
     _optimalSearchSchemeComputeFixedBlocklength(scheme, length(needle));
     Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<> > > it(index);
-    _optimalSearchScheme(delegate,  delegateDirect, itvCondition, it, needle, scheme, TDistanceTag());
+    _optimalSearchScheme(delegate, it, needle, scheme, TDistanceTag());
 }
 
 // ----------------------------------------------------------------------------
@@ -766,15 +748,13 @@ find(TDelegate & delegate,
 // ----------------------------------------------------------------------------
 
 template <size_t minErrors, size_t maxErrors,
-          typename TDelegate, typename TDelegateD, typename TCondition,
+          typename TDelegate,
           typename TText, typename TIndexSpec,
           typename TNeedle, typename TStringSetSpec,
           typename TDistanceTag,
           typename TParallelTag>
 inline void
 find(TDelegate & delegate,
-     TDelegateD & delegateDirect,
-     TCondition & itvCondition,
      Index<TText, BidirectionalIndex<TIndexSpec> > & index,
      StringSet<TNeedle, TStringSetSpec> const & needles,
      TDistanceTag const & /**/,
@@ -785,31 +765,9 @@ find(TDelegate & delegate,
     iterate(needles, [&](TNeedleIt const & needleIt)
     {
         TNeedleRef needle = value(needleIt);
-        find<minErrors, maxErrors>(delegate, delegateDirect, itvCondition, index, needle, TDistanceTag());
+        find<minErrors, maxErrors>(delegate, index, needle, TDistanceTag());
     },
     Rooted(), TParallelTag());
-}
-
-// ----------------------------------------------------------------------------
-// Function find()
-// ----------------------------------------------------------------------------
-
-template <size_t minErrors, size_t maxErrors,
-          typename TDelegate, typename TDelegateD, typename TCondition,
-          typename TText, typename TIndexSpec,
-          typename TNeedle, typename TStringSetSpec,
-          typename TDistanceTag>
-inline void
-find(TDelegate & delegate,
-     TDelegateD & delegateDirect,
-     TCondition & itvCondition,
-     Index<TText, BidirectionalIndex<TIndexSpec> > & index,
-     StringSet<TNeedle, TStringSetSpec> const & needles,
-     TDistanceTag const & /**/)
-{
-    if (std::is_same<TDistanceTag, EditDistance>::value)
-        std::cerr << "In Text Verification was not implemented for EditDistance" << "\n";
-    find<minErrors, maxErrors>(delegate, delegateDirect, itvCondition, index, needles, TDistanceTag(), Serial());
 }
 
 // ----------------------------------------------------------------------------
@@ -827,16 +785,7 @@ find(TDelegate & delegate,
      StringSet<TNeedle, TStringSetSpec> const & needles,
      TDistanceTag const & /**/)
 {
-    auto dummy = [](auto /*iter*/, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/, uint8_t /*errors*/, auto s,
-                    uint8_t const /*blockIndex*/)
-    {
-        return(false);
-    };
-
-       auto delegateDummy = [](Pair<uint16_t, uint32_t> const & /*pos*/, DnaString const & /*needle*/,
-                               uint8_t const /*errors*/)
-    {};
-    find<minErrors, maxErrors>(delegate, delegateDummy, dummy, index, needles, TDistanceTag(), Serial());
+    find<minErrors, maxErrors>(delegate, index, needles, TDistanceTag(), Serial());
 }
 
 }
