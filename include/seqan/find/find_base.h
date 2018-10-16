@@ -244,19 +244,12 @@ struct Needle<Segment<THost, TSpec> const>
  * The following example shows how to restart a search from the beginning of a
  * text.
  *
- * @code{.cpp}
- * CharString hstck = "I spy with my little eye something that is yellow";
- * Finder<CharString> finder(hstck);
+ * @include demos/dox/find/finder_online.cpp
  *
- * Pattern<CharString, Horspool> p1("y");
- * findAll(finder, p1);
+ * The output is as follows:
  *
- * goBegin(finder);    // move Finder to the beginning of the text
- * clear(finder);      // reset Finder
- *
- * Pattern<CharString, Horspool> p2("t");
- * findAll(finder, p2);
- * @endcode
+ * @include demos/dox/find/finder_online.cpp.stdout
+ * 
  * Demo: Demo.Index Finder StringSet
  *
  * Demo: Demo.Index Finder
