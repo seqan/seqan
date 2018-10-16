@@ -698,7 +698,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
     }
 }
 
-//NOTE added this function so find function can be run on single needle without ITV condition
+//NOTE this function so find function can be run on single needle without ITV condition
 template <typename TDelegate,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
