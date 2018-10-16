@@ -353,7 +353,6 @@ inline void checkOccurrence(TDelegateD & delegateDirect,
                             Pair<TUInt1, TUInt2> & sa_info,
                             TDir const & /**/)
 {
-//     auto const & genome = indexText(*iter.fwdIter.index); //TODO move this up
     uint32_t const chromlength = length(genome[sa_info.i1]);
     if (!(needleLeftPos <= sa_info.i2 && chromlength - 1 >= sa_info.i2 - needleLeftPos + length(needle) - 1))
         return;
@@ -396,7 +395,6 @@ inline void checkOccurrence(TDelegateD & delegateDirect,
                             TUInt & sa_info,
                             TDir const & /**/)
 {
-//     auto const & genome = indexText(*iter.fwdIter.index); //TODO move this up
     uint32_t const chromlength = length(genome);
     if (!(needleLeftPos <= sa_info && chromlength - 1 >= sa_info - needleLeftPos + length(needle) - 1))
         return;
