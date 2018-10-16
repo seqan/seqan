@@ -274,6 +274,47 @@ inline void _optimalSearchScheme(TDelegate & delegate,
     _optimalSearchScheme(delegate, delegateDummy, conditionDummy, it, needle, s, TDistanceTag());
 }
 
+template <size_t minErrors, size_t maxErrors,
+          typename TDelegate, typename TDelegateD, typename TCondition,
+          typename TText, typename TIndexSpec,
+          typename TChar, typename TStringSpec,
+          typename TDistanceTag>
+inline void
+find(TDelegate & delegate,
+     TDelegateD & delegateDirect,
+     TCondition & itvCondition,
+     Index<TText, BidirectionalIndex<TIndexSpec> > & index,
+     String<TChar, TStringSpec> const & needle,
+     TDistanceTag const & /**/)
+{
+    auto scheme = OptimalSearchSchemes<minErrors, maxErrors>::VALUE;
+    _optimalSearchSchemeComputeFixedBlocklength(scheme, length(needle));
+    Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<> > > it(index);
+    _optimalSearchScheme(delegate,  delegateDirect, itvCondition, it, needle, scheme, TDistanceTag());
+}
+
+
+template <size_t minErrors, size_t maxErrors,
+          typename TDelegate, typename TDelegateD, typename TCondition,
+          typename TText, typename TIndexSpec,
+          typename TNeedle, typename TStringSetSpec,
+          typename TDistanceTag>
+inline void
+find(TDelegate & delegate,
+     TDelegateD & delegateDirect,
+     TCondition & itvCondition,
+     Index<TText, BidirectionalIndex<TIndexSpec> > & index,
+     StringSet<TNeedle, TStringSetSpec> const & needles,
+     TDistanceTag const & /**/)
+{
+    uint32_t k = 0;
+    while(k < length(needles))
+    {
+        find<minErrors, maxErrors>(delegate, delegateDirect, itvCondition, index, needles[k], TDistanceTag());
+        ++k;
+    }
+}
+
 template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks, typename TDistanceTag>
 inline void testOptimalSearch(Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
                               OptimalSearch<nbrBlocks> const & s,
@@ -530,6 +571,55 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_small_test)
     hits.clear();
     find<1, 2>(delegate, index, needles, EditDistance(), Parallel());
     SEQAN_ASSERT(hits == expectedHits);
+}
+
+SEQAN_DEFINE_TEST(test_find2_index_approx_small_test_itv)
+{
+    DnaString genome(
+        "GAGAGGCCACTCGCAGGATTAAGTCAATAAGTTAATGGCGTCGGCTTCCTGGTATGTAGTACGACGCCCACAGTGACCTCATCGGTGCATTTCCTCATCGTAG"
+        "GCGGAACGGTAGACACAAGGCATGATGTCAAATCGCGACTCCAATCCCAAGGTCGCAAGCCTATATAGGAACCCGCTTATGCCCTCTAATCCCGGACAGACCC"
+        "CAAATATGGCATAGCTGGTTGGGGGTACCTACTAGGCACAGCCGGAAGCA");
+    Index<DnaString, BidirectionalIndex<FMIndex<> > > index(genome);
+    StringSet<DnaString> needles;
+    appendValue(needles, "AATAAGTA");
+    appendValue(needles, "ATAAGTGA");
+    appendValue(needles, "CACAGCCA");
+    appendValue(needles, "TGGCATAC");
+
+    std::vector<uint32_t> expectedHits, hits, hitsDirect;
+    auto delegate = [&expectedHits](auto & iter, DnaString const & /*pattern*/, uint8_t /*errors*/)
+    {
+        for (auto occ : getOccurrences(iter))
+            expectedHits.push_back(occ);
+    };
+    find<0, 2>(delegate, index, needles, HammingDistance());
+        auto delegate2 = [&hits](auto & iter, DnaString const & /*pattern*/, uint8_t /*errors*/)
+    {
+        for (auto occ : getOccurrences(iter))
+            hits.push_back(occ);
+    };
+
+    auto delegateDirect = [&hitsDirect] (auto const & pos, DnaString const & /*pattern*/, uint8_t /*errors*/)
+    {
+        hitsDirect.push_back(pos);
+    };
+
+
+    uint32_t activationCount = 0;
+    auto inTextSearchCondition = [&activationCount](auto iter, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/, uint8_t /*errors*/, auto /*s*/, uint8_t const /*blockIndex*/)
+    {
+        if(iter.fwdIter.vDesc.range.i2 - iter.fwdIter.vDesc.range.i1 < 2)
+            ++activationCount;
+        return(iter.fwdIter.vDesc.range.i2 - iter.fwdIter.vDesc.range.i1 < 2);
+    };
+
+    find<0, 2>(delegate2, delegateDirect, inTextSearchCondition, index, needles, HammingDistance());
+    std::sort(expectedHits.begin(), expectedHits.end());
+    hits.insert(hits.end(), hitsDirect.begin(), hitsDirect.end());
+    std::sort(hits.begin(), hits.end());
+    SEQAN_ASSERT(hits == expectedHits);
+    SEQAN_ASSERT(activationCount >= hitsDirect.size());
+    SEQAN_ASSERT(activationCount >= hitsDirect.size());
 }
 
 #endif  // TESTS_FIND2_INDEX_APPROX_H_
