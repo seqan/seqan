@@ -277,26 +277,6 @@ inline void _optimalSearchScheme(TDelegate & delegate,
 template <size_t minErrors, size_t maxErrors,
           typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndexSpec,
-          typename TChar, typename TStringSpec,
-          typename TDistanceTag>
-inline void
-find(TDelegate & delegate,
-     TDelegateD & delegateDirect,
-     TCondition & itvCondition,
-     Index<TText, BidirectionalIndex<TIndexSpec> > & index,
-     String<TChar, TStringSpec> const & needle,
-     TDistanceTag const & /**/)
-{
-    auto scheme = OptimalSearchSchemes<minErrors, maxErrors>::VALUE;
-    _optimalSearchSchemeComputeFixedBlocklength(scheme, length(needle));
-    Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<> > > it(index);
-    _optimalSearchScheme(delegate,  delegateDirect, itvCondition, it, needle, scheme, TDistanceTag());
-}
-
-
-template <size_t minErrors, size_t maxErrors,
-          typename TDelegate, typename TDelegateD, typename TCondition,
-          typename TText, typename TIndexSpec,
           typename TNeedle, typename TStringSetSpec,
           typename TDistanceTag>
 inline void
@@ -310,7 +290,10 @@ find(TDelegate & delegate,
     uint32_t k = 0;
     while(k < length(needles))
     {
-        find<minErrors, maxErrors>(delegate, delegateDirect, itvCondition, index, needles[k], TDistanceTag());
+        auto scheme = OptimalSearchSchemes<minErrors, maxErrors>::VALUE;
+        _optimalSearchSchemeComputeFixedBlocklength(scheme, length(needles[k]));
+        Iter<Index<TText, BidirectionalIndex<TIndexSpec> >, VSTree<TopDown<> > > it(index);
+        _optimalSearchScheme(delegate,  delegateDirect, itvCondition, it, needles[k], scheme, TDistanceTag());
         ++k;
     }
 }
@@ -606,7 +589,8 @@ SEQAN_DEFINE_TEST(test_find2_index_approx_small_test_itv)
 
 
     uint32_t activationCount = 0;
-    auto inTextSearchCondition = [&activationCount](auto iter, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/, uint8_t /*errors*/, auto /*s*/, uint8_t const /*blockIndex*/)
+    auto inTextSearchCondition = [&activationCount](auto iter, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/,
+                                                    uint8_t /*errors*/, auto /*s*/, uint8_t const /*blockIndex*/)
     {
         if(iter.fwdIter.vDesc.range.i2 - iter.fwdIter.vDesc.range.i1 < 2)
             ++activationCount;
