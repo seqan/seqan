@@ -420,7 +420,8 @@ inline void checkOccurrence(TDelegateD & delegateDirect,
 }
 
 
-//NOTE (svnbngk) Compare potential occurrences directly to genome if the range on the index is small enough.
+//NOTE (svnbngk) For Hamming Distance compare potential occurrences directly to genome if the range on the index is
+//               small enough.
 template <typename TDelegateD,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
@@ -720,12 +721,15 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                      needleRightPos2, errors + 1, s, blockIndex, TDir(), TDistanceTag());
             }
         }
-        //use lambda function to determine if In Text Search should be used
-        if (itvCondition(iter, needleLeftPos, needleRightPos, errors, s, blockIndex))
+        else
         {
-            inTextVerification(delegateDirect, iter, needle, needleLeftPos, needleRightPos, errors, s, blockIndex,
-                               TDir());
-            return;
+            //use lambda function to determine if In Text Search should be used
+            if (itvCondition(iter, needleLeftPos, needleRightPos, errors, s, blockIndex))
+            {
+                inTextVerification(delegateDirect, iter, needle, needleLeftPos, needleRightPos, errors, s, blockIndex,
+                                   TDir());
+                return;
+            }
         }
 
         _optimalSearchSchemeChildren(delegate, delegateDirect, itvCondition, iter, needle, needleLeftPos,
