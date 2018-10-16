@@ -168,6 +168,11 @@ _readBamRecordWithoutSize(TBuffer & rawRecord, TForwardIter & iter)
     if (recordLen == 0x014D4142)
         SEQAN_THROW(ParseError("Unexpected BAM header encountered."));
 
+    // The recordLen after readRawPod() was -1 for a corrupted BAM file (EOF marker absent)
+    // which made the following write(rawRecord, iter, (size_t)recordLen) function call
+    // throw a std::bad_alloc exception.
+    SEQAN_ASSERT_MSG(recordLen >= 0, "Cannot read BAM record of length < 0. Possibly corrupted BAM file!");
+
     clear(rawRecord);
     write(rawRecord, iter, (size_t)recordLen);
     return recordLen;
