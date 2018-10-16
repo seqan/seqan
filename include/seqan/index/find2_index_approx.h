@@ -36,6 +36,7 @@
 
 #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_H_
 #define SEQAN_INDEX_FIND2_INDEX_APPROX_H_
+
 namespace seqan {
 
 template <size_t N>

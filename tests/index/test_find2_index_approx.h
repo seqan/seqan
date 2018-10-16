@@ -415,6 +415,7 @@ inline void testOptimalSearchScheme(std::array<OptimalSearch<nbrBlocks>, N> ss, 
     typedef FastFMIndexConfig<void, uint32_t, 2, 1> TMyFastConfig;
     typedef Index<TText, BidirectionalIndex<FMIndex<void, TMyFastConfig> > > TIndex;
     typedef Iter<TIndex, VSTree<TopDown<> > > TIter;
+
     time_t seed = std::time(nullptr);
     std::srand(seed);
 
