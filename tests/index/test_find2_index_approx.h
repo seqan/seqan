@@ -228,11 +228,6 @@ inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, u
     _optimalSearchSchemeInit(ss);
 }
 
-
-
-//NOTE find function can be run on single needle without ITV condition and only one search
-//in gedit
-
 template <typename TDelegate, typename TDelegateD, typename TCondition,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
@@ -256,10 +251,6 @@ inline void _optimalSearchScheme(TDelegate & delegate,
                                 Fwd(), TDistanceTag());
 }
 
-//NOTE  find function can be run on single needle without ITV condition
-//in gedit2
-
-
 template <typename TDelegate,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
@@ -276,7 +267,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
     {
         return false;
     };
-    auto delegateDummy = [](uint32_t const & /*pos*/, DnaString const & /*needle*/,
+    auto delegateDummy = [](auto const & /*pos*/, DnaString const & /*needle*/,
                             uint8_t const /*errors*/)
     {};
 
