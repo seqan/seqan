@@ -228,6 +228,61 @@ inline void setRandomBlockLength(std::array<OptimalSearch<nbrBlocks>, N> & ss, u
     _optimalSearchSchemeInit(ss);
 }
 
+
+
+//NOTE find function can be run on single needle without ITV condition and only one search
+//in gedit
+
+template <typename TDelegate, typename TDelegateD, typename TCondition,
+          typename TText, typename TIndex, typename TIndexSpec,
+          typename TNeedle,
+          size_t nbrBlocks,
+          typename TDistanceTag>
+inline void _optimalSearchScheme(TDelegate & delegate,
+                                 TDelegateD & delegateDirect,
+                                 TCondition & itvCondition,
+                                 Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
+                                 TNeedle const & needle,
+                                 OptimalSearch<nbrBlocks> const & s,
+                                 TDistanceTag const & /**/)
+{
+
+    //NOTE (svnbgnk) search as long as possible in one Direction from the beginning
+    if (s.pi[1] > s.pi[0])
+        _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0,
+                                Rev(), TDistanceTag());
+    else
+        _optimalSearchScheme(delegate, delegateDirect, itvCondition, it, needle, s.startPos, s.startPos + 1, 0, s, 0,
+                                Fwd(), TDistanceTag());
+}
+
+//NOTE  find function can be run on single needle without ITV condition
+//in gedit2
+
+
+template <typename TDelegate,
+          typename TText, typename TIndex, typename TIndexSpec,
+          typename TNeedle,
+          size_t nbrBlocks,
+          typename TDistanceTag>
+inline void _optimalSearchScheme(TDelegate & delegate,
+                                 Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
+                                 TNeedle const & needle,
+                                 OptimalSearch<nbrBlocks> const & s,
+                                 TDistanceTag const & /**/)
+{
+    auto conditionDummy = [](auto /*iter*/, uint32_t /*needleLeftPos*/, uint32_t /*needleRightPos*/, uint8_t /*errors*/,
+                    auto /*s*/, uint8_t const /*blockIndex*/)
+    {
+        return false;
+    };
+    auto delegateDummy = [](uint32_t const & /*pos*/, DnaString const & /*needle*/,
+                            uint8_t const /*errors*/)
+    {};
+
+    _optimalSearchScheme(delegate, delegateDummy, conditionDummy, it, needle, s, TDistanceTag());
+}
+
 template <typename TText, typename TIndex, typename TIndexSpec, size_t nbrBlocks, typename TDistanceTag>
 inline void testOptimalSearch(Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > it,
                               OptimalSearch<nbrBlocks> const & s,
@@ -369,7 +424,6 @@ inline void testOptimalSearchScheme(std::array<OptimalSearch<nbrBlocks>, N> ss, 
     typedef FastFMIndexConfig<void, uint32_t, 2, 1> TMyFastConfig;
     typedef Index<TText, BidirectionalIndex<FMIndex<void, TMyFastConfig> > > TIndex;
     typedef Iter<TIndex, VSTree<TopDown<> > > TIter;
-
     time_t seed = std::time(nullptr);
     std::srand(seed);
 

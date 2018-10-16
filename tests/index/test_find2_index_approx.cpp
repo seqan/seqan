@@ -40,7 +40,7 @@ SEQAN_BEGIN_TESTSUITE(test_find_index_approx)
 {
     // Call tests.
     SEQAN_CALL_TEST(test_find2_index_approx_hamming);
-    SEQAN_CALL_TEST(test_find2_index_approx_edit);
-    SEQAN_CALL_TEST(test_find2_index_approx_small_test);
+//     SEQAN_CALL_TEST(test_find2_index_approx_edit);
+//     SEQAN_CALL_TEST(test_find2_index_approx_small_test);
 }
 SEQAN_END_TESTSUITE

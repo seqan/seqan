@@ -333,7 +333,7 @@ inline void _optimalSearchSchemeComputeFixedBlocklength(std::array<OptimalSearch
     _optimalSearchSchemeSetBlockBorders(ss);
     _optimalSearchSchemeInit(ss);
 }
-
+/*
 //NOTE (svnbngk) Compare potential occurrences directly to genome if the range on the index is small enough.
 template <typename TDelegateD,
           typename TText, typename TIndex, typename TIndexSpec,
@@ -341,14 +341,15 @@ template <typename TDelegateD,
           size_t nbrBlocks,
           typename TDir>
 inline void inTextVerification(TDelegateD & delegateDirect,
-                               Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
+//                                Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
+                               Iter<Index<TText, BidirectionalIndex<FMIndex<void, FastFMIndexConfig<void, uint32_t, 2, 1> > > >, VSTree<TopDown<TIndexSpec> > > iter,
                                TNeedle const & needle,
                                uint32_t const needleLeftPos,
                                uint32_t const needleRightPos,
                                uint8_t const errors,
                                OptimalSearch<nbrBlocks> const & s,
                                uint8_t const blockIndex,
-                               TDir const & /**/)
+                               TDir const & ) //TODO insert nothing
 {
     auto const & genome = indexText(*iter.fwdIter.index);
 
@@ -388,6 +389,75 @@ inline void inTextVerification(TDelegateD & delegateDirect,
             for (uint32_t k = blockStarts[j]; k <  blockEnds[j]; ++k)
             {
                 if (needle[k] != genome[sa_info.i1][sa_info.i2 + k])
+                    ++errors2;
+            }
+            // check after each block if errors conform with the search in search scheme
+            if (errors2 < s.l[blockIndex + j] || errors2 > s.u[blockIndex + j])
+            {
+                valid = false;
+                break;
+            }
+        }
+        if (valid)
+            delegateDirect(sa_info, needle, errors2);
+    }
+}*/
+
+//NOTE (svnbngk) Compare potential occurrences directly to genome if the range on the index is small enough.
+template <typename TDelegateD,
+          typename TText, /*typename TIndex,*/ typename TIndexSpec,
+          typename TNeedle,
+          size_t nbrBlocks,
+          typename TDir>
+inline void inTextVerification(TDelegateD & delegateDirect,
+//                                Iter<Index<TText, BidirectionalIndex<TIndex> >, VSTree<TopDown<TIndexSpec> > > iter,
+                               Iter<Index<TText, BidirectionalIndex<FMIndex<void, FastFMIndexConfig<void, uint32_t, 2, 1> > > >, VSTree<TopDown<TIndexSpec> > > iter,
+                               TNeedle const & needle,
+                               uint32_t const needleLeftPos,
+                               uint32_t const needleRightPos,
+                               uint8_t const errors,
+                               OptimalSearch<nbrBlocks> const & s,
+                               uint8_t const blockIndex,
+                               TDir const & /**/)
+{
+    auto const & genome = indexText(*iter.fwdIter.index);
+
+    //cut of blockStarts and Ends that where already checked by the search
+    std::array<uint32_t, nbrBlocks> blockStarts;
+    std::array<uint32_t, nbrBlocks> blockEnds;
+    std::copy(std::begin(s.blockStarts) + blockIndex, std::end(s.blockStarts), std::begin(blockStarts));
+    std::copy(std::begin(s.blockEnds) + blockIndex, std::end(s.blockEnds), std::begin(blockEnds));
+
+    // modify blockStart or blockEnd if we are already inside a block
+    if (std::is_same<TDir, Rev>::value)
+    {
+        if (needleRightPos - 1 > blockStarts[0] && needleRightPos - 1 < blockEnds[0])
+            blockStarts[0] = needleRightPos - 1;
+    }
+    else
+    {
+        if (needleLeftPos > blockStarts[0] && needleLeftPos < blockEnds[0])
+            blockEnds[0] = needleLeftPos;
+    }
+
+    // iterate over each potential occurrence inside the range
+    for (uint32_t i = iter.fwdIter.vDesc.range.i1; i < iter.fwdIter.vDesc.range.i2; ++i)
+    {
+        bool valid = true;
+        uint32_t sa_info = iter.fwdIter.index->sa[i];
+        uint32_t const chromlength = length(genome);
+        if (!(needleLeftPos <= sa_info && chromlength - 1 >= sa_info - needleLeftPos + length(needle) - 1))
+            continue;
+
+        sa_info = sa_info - needleLeftPos;
+        uint8_t errors2 = errors;
+        // iterate over each block according to search in search scheme
+        for (uint32_t j = 0; j < nbrBlocks - blockIndex; ++j)
+        {
+            // compare bases to needle
+            for (uint32_t k = blockStarts[j]; k <  blockEnds[j]; ++k)
+            {
+                if (needle[k] != genome[sa_info + k])
                     ++errors2;
             }
             // check after each block if errors conform with the search in search scheme
@@ -697,7 +767,7 @@ inline void _optimalSearchScheme(TDelegate & delegate,
     }
 }
 
-//NOTE this function so find function can be run on single needle without ITV condition
+//NOTE  find function can be run on single needle without ITV condition
 template <typename TDelegate,
           typename TText, typename TIndex, typename TIndexSpec,
           typename TNeedle,
