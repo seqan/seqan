@@ -155,6 +155,164 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function viewRecords()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamFileIn#viewRecords
+ * @brief Extract all reads overlapping a region from a BamFileIn mimicking samtools view.
+ *
+ * You provide a 1-based region <tt>[regionStart, regionEnd]</tt> on the reference
+ * <tt>refID</tt> and the functions extracts all reads that overlap this region
+ * with at least one base. The overlapping records are **appended** in the
+ * <tt>resultContainer</tt>, which must be a container over @link BamAlignmentRecord @endlink.
+ * This function extracts the same records as samtools view would do when the
+ * same region is specified.
+ * The result container remains empty if an error occurred or no reads were found.
+ *
+ * @signature bool viewRecords(resultContainer, bamFileIn, bamIndex, refID, regionStart, regionEnd, index);
+ *
+ * @param[in,out] resultContainer Container of @link BamAlignmentRecord @endlink 's to store the alignments.
+ * @param[in,out] bamFileIn       The @link BamFileIn @endlink to extract reads from.
+ * @param[in]     bamIndex        The @link BamIndex @endlink over the `bamFileIn`.
+ * @param[in]     refID           The reference id to extract reads from (<tt>int32_t</tt>).
+ * @param[in]     regionStart     The begin of the region to extract reads from (<tt>int32_t</tt>).
+ * @param[in]     regionEnd       The end of the region to extract reads from (<tt>int32_t</tt>).
+ *
+ * @throw ParseError when reading the bamFile or index fails.
+ * @throw std::logical_error when the input arguments are invalid.
+ *
+ * @section Remarks
+ * This function fails if <tt>refID</tt>/<tt>regionStart</tt> are invalid.
+ */
+
+//! See SAM specifications https://samtools.github.io/hts-specs/SAMv1.pdf page 16.
+//! This function expects 0-based coordinates and includes the positions beg and end.
+static inline void
+_baiReg2bins(std::vector<uint16_t> & list, uint32_t const beg, uint32_t const end)
+{
+    SEQAN_ASSERT_LEQ(beg, end);
+    SEQAN_ASSERT_LT(end, 536870912u); // BAM format only allows reference of size < 2^29
+
+    list.clear();
+
+    unsigned k;
+    list.push_back(0);
+    for (k =    1 + (beg>>26); k <=    1 + (end>>26); ++k) list.push_back(k);
+    for (k =    9 + (beg>>23); k <=    9 + (end>>23); ++k) list.push_back(k);
+    for (k =   73 + (beg>>20); k <=   73 + (end>>20); ++k) list.push_back(k);
+    for (k =  585 + (beg>>17); k <=  585 + (end>>17); ++k) list.push_back(k);
+    for (k = 4681 + (beg>>14); k <= 4681 + (end>>14); ++k) list.push_back(k);
+}
+
+inline bool
+_getMinFileOffset(uint64_t & minFileOffset,
+                  BamIndex<Bai> const & bamIndex,
+                  int32_t const refId,
+                  uint32_t const position)
+{
+    uint32_t windowIdx = position >> 14; // Linear index consists of 16kb windows.
+
+    if (windowIdx >= length(bamIndex._linearIndices[refId]))
+        return false;
+
+    minFileOffset = bamIndex._linearIndices[refId][windowIdx];
+
+    return true;
+}
+
+template <typename TContainer, typename TSpec>
+inline
+SEQAN_FUNC_ENABLE_IF(And<IsSameType<typename Value<TContainer>::Type, BamAlignmentRecord>,
+                     Not<IsSameType<typename Value<TContainer>::Type, TContainer>>>, void)
+viewRecords(TContainer & resultContainer,
+            FormattedFile<Bam, Input, TSpec> & bamFile,
+            BamIndex<Bai> const & bamIndex,
+            int32_t const refId,
+            uint32_t regionStart,
+            uint32_t regionEnd)
+{
+    typedef typename std::map<uint32_t, BaiBamIndexBinData_>::const_iterator TMapIter;
+    typedef String<Pair<uint64_t, uint64_t>>                                 TChunk;
+    typedef Iterator<TChunk const, Rooted>::Type                             TChunkIter;
+
+    // Sanity checks
+    // -------------------------------------------------------------------------
+    if (!isEqual(format(bamFile), Bam()))
+        SEQAN_THROW(std::logic_error("You attempt to use a BAM format specific functionality on a non-BAM format (function viewRecord)."));
+
+    if (refId < 0 ||
+        static_cast<decltype(length(contigNames(context(bamFile))))>(refId) > length(contigNames(context(bamFile))))
+        SEQAN_THROW(std::logic_error("Invalid reference identifier 'refId' passed to function viewRecords."));
+
+    if (static_cast<decltype(length(bamIndex._binIndices))>(refId) >= length(bamIndex._binIndices))
+        SEQAN_THROW(std::logic_error("BAM index bin directory does not match the given reference identifier 'refId'. "
+                   "Maybe your BAM index is corrupted or refers to a different BAM file."));
+
+    if (regionEnd > static_cast<uint32_t>(contigLengths(context(bamFile))[refId]))
+        SEQAN_THROW(std::logic_error("The 'regionEnd' parameter point to a position greater than the length of the reference."));
+
+    if (regionStart > regionEnd)
+        SEQAN_THROW(std::logic_error("Invalid region specified. Parameter regionStart was greater than regionEnd."));
+
+    if (regionStart == 0 || regionEnd == 0)
+        SEQAN_THROW(std::logic_error("Invalid region specified. Region is expected to be 1-based but 0 was passed as an argument."));
+
+    // Adjust region
+    // -------------------------------------------------------------------------
+    // We want to mimic samtools view. Since SAM/BAM files are 1-based we expect
+    // the given region to be also 1-based, to be consistent with samtools.
+    // Since SeqAn works 0-based we need to subtract 1.
+    // (Underflow won't happen because of prior sanity checks)
+    --regionStart;
+    --regionEnd;
+
+    // Retrieve the candidate bin identifiers for [regionStart, regionEnd).
+    // -------------------------------------------------------------------------
+    std::vector<uint16_t> candidateBins;
+    _baiReg2bins(candidateBins, regionStart, regionEnd); // 0-based, closed interval
+
+    // Retrieve the smallest required offset from the linear index.
+    // -------------------------------------------------------------------------
+    uint64_t linearMinOffset;
+    if (!_getMinFileOffset(linearMinOffset, bamIndex, refId, regionStart))
+        linearMinOffset = 0; // if linear index query was unsuccessful, value 0 never limits chunk seeking
+
+    // Iterate over chunks in candidate bins and extract records
+    // -------------------------------------------------------------------------
+    BamAlignmentRecord record;
+    for (uint16_t bin : candidateBins)
+    {
+        TMapIter mIt = bamIndex._binIndices[refId].find(bin);
+
+        if (mIt == bamIndex._binIndices[refId].end()) // empty bins are not stored
+            continue;
+
+        for (TChunkIter chunkIt = begin(mIt->second.chunkBegEnds, Rooted()); !atEnd(chunkIt); goNext(chunkIt))
+        {
+            if (chunkIt->i2 < linearMinOffset) // i2 is the end-file-offset of the chunk
+                continue; // use linearMinOffset to discard unnecessary chunks
+
+            setPosition(bamFile, chunkIt->i1); // jump to candidate chunk
+
+            while(static_cast<uint64_t>(position(bamFile)) != chunkIt->i2) // this includes end of file
+            {
+                readRecord(record, bamFile);
+
+                if (record.beginPos == -1 /*invalid pos*/ || static_cast<uint32_t>(record.beginPos) > regionEnd)
+                    break; // chunk of consecutive reads is already out of bounds
+
+                // max(1, length) in if clause because if read is unmapped, the endPos calculation is wrong.
+                // (Could be also done by checking if (unmapped) but might be less efficient than max.
+                if (static_cast<uint32_t>(record.beginPos) <= regionEnd &&
+                    (record.beginPos + std::max(1u, getAlignmentLengthInRef(record)) - 1) >= regionStart)
+                    appendValue(resultContainer, record, Generous());
+            }
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
 // Function jumpToRegion()
 // ----------------------------------------------------------------------------
 
@@ -162,13 +320,15 @@ public:
  * @fn BamFileIn#jumpToRegion
  * @brief Seek in BamFileIn using an index.
  *
- * You provide a region <tt>[regionStart, regionEnd]</tt> on the reference <tt>refID</tt>
- * that you want to jump to and the function jumps to the first alignment (bam record)
- * whose start position lies inside this region, if any.
- * Note: The current inmplementation only consideres the read start positions.
+ * You provide a 1-based region <tt>[regionStart, regionEnd]</tt> on the reference
+ * <tt>refID</tt> that you want to jump to and the function jumps to the first
+ * alignment (bam record) whose **start position** lies inside this region, if any.
+ *
+ * Note: The current implementation only considers the read start positions.
  *       Therefore, we do guarantee that reads overlapping the region are included.
  *       To account for this limitation you may want to choose the start of your
- *       your region with an appropiate offset (e.g. start - length_of_read).
+ *       your region with an appropriate offset (e.g. start - length_of_read) or
+ *       use viewRecords().
  *
  * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, regionStart, regionEnd, index);
  *
@@ -180,159 +340,81 @@ public:
  * @param[in]     regionEnd     The end of the region to jump to (<tt>int32_t</tt>).
  * @param[in]     index         The @link BamIndex @endlink to use for the jumping.
  *
- * @return bool true if seeking was successful, false if not.
+ * @return bool `false` if an error occurred while seeking, otherwise `true`.
+ *
+ * @throw ParseError when reading the bamFile or index fails.
+ * @throw std::logical_error when the input arguments are invalid.
  *
  * @section Remarks
  *
  * This function fails if <tt>refID</tt>/<tt>regionStart</tt> are invalid.
  */
 
-static inline void
-_baiReg2bins(String<uint16_t> & list, uint32_t beg, uint32_t end)
-{
-    unsigned k;
-    if (beg >= end) return;
-    if (end >= 1u<<29) end = 1u<<29;
-    --end;
-    appendValue(list, 0);
-    for (k =    1 + (beg>>26); k <=    1 + (end>>26); ++k) appendValue(list, k);
-    for (k =    9 + (beg>>23); k <=    9 + (end>>23); ++k) appendValue(list, k);
-    for (k =   73 + (beg>>20); k <=   73 + (end>>20); ++k) appendValue(list, k);
-    for (k =  585 + (beg>>17); k <=  585 + (end>>17); ++k) appendValue(list, k);
-    for (k = 4681 + (beg>>14); k <= 4681 + (end>>14); ++k) appendValue(list, k);
-}
-
 template <typename TSpec>
 inline bool
 jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
              bool & hasAlignments,
-             int32_t refId,
-             int32_t regionStart,
-             int32_t regionEnd,
+             int32_t const refId,
+             uint32_t regionStart,
+             uint32_t regionEnd,
              BamIndex<Bai> const & index)
 {
-    if (!isEqual(format(bamFile), Bam()))
-        return false;
-
     hasAlignments = false;
-    if (refId < 0)
-        return false;  // Cannot seek to invalid reference.
-    if (static_cast<unsigned>(refId) >= length(index._binIndices))
-        return false;  // Cannot seek to invalid reference.
 
-    // ------------------------------------------------------------------------
-    // Compute offset in BGZF file.
-    // ------------------------------------------------------------------------
-    uint64_t offset = std::numeric_limits<uint64_t>::max();
+    // Sanity checks
+    // -------------------------------------------------------------------------
+    // Sanity checks
+    // -------------------------------------------------------------------------
+    if (!isEqual(format(bamFile), Bam()))
+        SEQAN_THROW(std::logic_error("You attempt to use a BAM format specific functionality on a non-BAM format (function viewRecord)."));
 
-    // Retrieve the candidate bin identifiers for [regionStart, regionEnd).
-    String<uint16_t> candidateBins;
-    _baiReg2bins(candidateBins, regionStart, regionEnd);
+    if (refId < 0 ||
+        static_cast<decltype(length(contigNames(context(bamFile))))>(refId) > length(contigNames(context(bamFile))))
+        SEQAN_THROW(std::logic_error("Invalid reference identifier 'refId' passed to function viewRecords."));
+
+    if (static_cast<decltype(length(index._binIndices))>(refId) >= length(index._binIndices))
+        SEQAN_THROW(std::logic_error("BAM index bin directory does not match the given reference identifier 'refId'. "
+                   "Maybe your BAM index is corrupted or refers to a different BAM file."));
+
+    if (regionEnd > static_cast<uint32_t>(contigLengths(context(bamFile))[refId]))
+        SEQAN_THROW(std::logic_error("The 'regionEnd' parameter point to a position greater than the length of the reference."));
+        // correct end positions that exceed the reference length for release build.
+
+    if (regionStart > regionEnd)
+        SEQAN_THROW(std::logic_error("Invalid region specified. Parameter regionStart was greater than regionEnd."));
+
+    if (regionStart == 0 || regionEnd == 0)
+        SEQAN_THROW(std::logic_error("Invalid region specified. Region is expected to be 1-based but 0 was passed as an argument."));
+
+    // Adjust region
+    // -------------------------------------------------------------------------
+    // We want to be consistent with viewRecords and thus expect 1-based coordinates.
+    // Since SeqAn works 0-based we need to subtract 1.
+    --regionStart;
+    --regionEnd;
 
     // Retrieve the smallest required offset from the linear index.
-    unsigned windowIdx = regionStart >> 14;  // Linear index consists of 16kb windows.
-    uint64_t linearMinOffset = 0;
-    if (windowIdx >= length(index._linearIndices[refId]))
-    {
-        // TODO(holtgrew): Can we simply always take case 1?
+    // -------------------------------------------------------------------------
+    uint64_t linearMinOffset;
+    if (!_getMinFileOffset(linearMinOffset, index, refId, regionStart)) // 0-based coordinates.
+        return false;
 
-        // This is the case were we want to jump in a non-existing window.
-        //
-        // If there are no linear indices for this reference then we use the linear min offset of the next
-        // reference that has an linear index.
-        if (empty(index._linearIndices[refId]))
-        {
-            for (unsigned i = refId; i < length(index._linearIndices); ++i)
-            {
-                if (!empty(index._linearIndices[i]))
-                {
-                    linearMinOffset = front(index._linearIndices[i]);
-                    if (linearMinOffset != 0u)
-                        break;
-                    for (unsigned j = 1; j < length(index._linearIndices[i]); ++j)
-                    {
-                        if (index._linearIndices[i][j] > linearMinOffset)
-                        {
-                            linearMinOffset = index._linearIndices[i][j];
-                            break;
-                        }
-                    }
-                    if (linearMinOffset != 0u)
-                        break;
-                }
-            }
-        }
-        else
-        {
-            linearMinOffset = back(index._linearIndices[refId]);
-        }
-    }
-    else
-    {
-        linearMinOffset = index._linearIndices[refId][windowIdx];
-    }
-
-    // Combine candidate bins and smallest required offset from linear index into candidate offset.
-    typedef std::set<uint64_t> TOffsetCandidates;
-    TOffsetCandidates offsetCandidates;
-    typedef typename Iterator<String<uint16_t>, Rooted>::Type TCandidateIter;
-    for (TCandidateIter it = begin(candidateBins, Rooted()); !atEnd(it); goNext(it))
-    {
-        typedef typename std::map<uint32_t, BaiBamIndexBinData_>::const_iterator TMapIter;
-        TMapIter mIt = index._binIndices[refId].find(*it);
-        if (mIt == index._binIndices[refId].end())
-            continue;  // Candidate is not in index!
-
-        typedef typename Iterator<String<Pair<uint64_t, uint64_t> > const, Rooted>::Type TBegEndIter;
-        for (TBegEndIter it2 = begin(mIt->second.chunkBegEnds, Rooted()); !atEnd(it2); goNext(it2))
-            if (it2->i2 >= linearMinOffset)
-                offsetCandidates.insert(it2->i1);
-    }
-
-    // Search through candidate offsets, find rightmost possible.
-    //
-    // Note that it is not necessarily the first.
-    //
-    // TODO(holtgrew): Can this be optimized similar to how bamtools does it?
-    typedef typename TOffsetCandidates::const_iterator TOffsetCandidateIter;
-    BamAlignmentRecord record;
-    for (TOffsetCandidateIter candIt = offsetCandidates.begin(); candIt != offsetCandidates.end(); ++candIt)
-    {
-        setPosition(bamFile, *candIt);
-
-        readRecord(record, bamFile);
-
-        // std::cerr << "record.beginPos == " << record.beginPos << "\n";
-        if (record.rID != refId)
-            continue;  // Wrong contig.
-
-        if (record.beginPos <= regionStart)
-        {
-            offset = *candIt;
-        }
-
-        if (record.beginPos >= regionEnd)
-            break;  // Cannot find overlapping any more.
-    }
-
-    if (offset == std::numeric_limits<uint64_t>::max())
-        return true; // Finding no overlapping alignment is not an error, hasAlignments is false.
-
-    // Now only the right most offset was found but it is not ensured that the
+    // Now only the minimum offset was found but it is not ensured that the
     // alignment at the start of the offset lies inside the region.
     // Therefore we must advance further or until the region ends.
-    setPosition(bamFile, offset);
+    setPosition(bamFile, linearMinOffset);
+    BamAlignmentRecord record;
 
     while (!atEnd(bamFile))
     {
-        auto seek_pos = position(bamFile); // store current pos to reset bamFile if necessary
+        uint64_t seek_pos = position(bamFile); // store current pos to reset bamFile if necessary
 
         readRecord(record, bamFile);
 
-        if (record.beginPos >= regionEnd)
-            break;
+        if (record.beginPos == -1 /*invalid pos*/ || static_cast<uint32_t>(record.beginPos) > regionEnd)
+            break; // no records can be found anymore in coordinate sorted file
 
-        if (record.beginPos >= regionStart)
+        if (static_cast<uint32_t>(record.beginPos) >= regionStart) // we do not support overlap but the start position of a record
         {
             hasAlignments = true;
             setPosition(bamFile, seek_pos);

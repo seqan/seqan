@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_tree_recon CXX)
 message (STATUS "Configuring apps/tree_recon")
 
-set (SEQAN_APP_VERSION "1.4.8")
+set (SEQAN_APP_VERSION "1.4.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -75,7 +75,7 @@ seqan_add_app_test (tree_recon)
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
 # ----------------------------------------------------------------------------
-	
+
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} tree_recon CACHE INTERNAL "")
 
@@ -91,4 +91,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:tree_recon")
 
   seqan_configure_cpack_app (tree_recon "tree_recon")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:tree_recon")
-

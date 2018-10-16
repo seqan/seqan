@@ -60,15 +60,15 @@ struct Options
     Pair<CharString>    readsFile;
     CharString          outputFile;
     TOutputFormat       outputFormat;
-    SecondaryAlignments secondaryAlignments;
-    TList               secondaryAlignmentsList;
+    SecondaryAlignments secondaryMatches;
+    TList               secondaryMatchesList;
     bool                uncompressedBam;
     CharString          readGroup;
 
-    MappingMode         mappingMode;
     float               errorRate;
     float               indelRate;
     float               strataRate;
+    uint64_t            strataCount;
     Sensitivity         sensitivity;
     TList               sensitivityList;
 
@@ -83,6 +83,7 @@ struct Options
     unsigned            threadsCount;
     unsigned            hitsThreshold;
     bool                rabema;
+    bool                alignSecondary;
     unsigned            verbose;
 
     CharString          commandLine;
@@ -92,13 +93,13 @@ struct Options
         contigsSize(),
         contigsMaxLength(),
         contigsSum(),
-        secondaryAlignments(TAG),
+        secondaryMatches(TAG),
         uncompressedBam(false),
         readGroup("none"),
-        mappingMode(STRATA),
         errorRate(0.05f),
         indelRate(0.25f),
         strataRate(0.00f),
+        strataCount(-1u),
         sensitivity(HIGH),
         singleEnd(true),
         libraryLength(),
@@ -109,14 +110,15 @@ struct Options
         threadsCount(1),
         hitsThreshold(300),
         rabema(false),
+        alignSecondary(false),
         verbose(0)
     {
 #ifdef _OPENMP
         threadsCount = std::thread::hardware_concurrency();
 #endif
-        appendValue(secondaryAlignmentsList, "tag");
-        appendValue(secondaryAlignmentsList, "record");
-        appendValue(secondaryAlignmentsList, "omit");
+        appendValue(secondaryMatchesList, "tag");
+        appendValue(secondaryMatchesList, "record");
+        appendValue(secondaryMatchesList, "omit");
 
         appendValue(sensitivityList, "low");
         appendValue(sensitivityList, "high");
@@ -134,7 +136,7 @@ struct Options
 
 template <typename TThreading_       = Parallel,
           typename TSequencing_      = SingleEnd,
-          typename TStrategy_        = Strata,
+          typename TSeedsDistance_   = HammingDistance,
           typename TContigsSize_     = uint8_t,
           typename TContigsLen_      = uint32_t,
           typename TContigsSum_      = uint32_t,
@@ -144,7 +146,7 @@ struct ReadMapperConfig
 {
     typedef TThreading_         TThreading;
     typedef TSequencing_        TSequencing;
-    typedef TStrategy_          TStrategy;
+    typedef TSeedsDistance_     TSeedsDistance;
     typedef TContigsSize_       TContigsSize;
     typedef TContigsLen_        TContigsLen;
     typedef TContigsSum_        TContigsSum;
@@ -162,7 +164,7 @@ struct MapperTraits
 {
     typedef typename TConfig::TThreading                            TThreading;
     typedef typename TConfig::TSequencing                           TSequencing;
-    typedef typename TConfig::TStrategy                             TStrategy;
+    typedef typename TConfig::TSeedsDistance                        TSeedsDistance;
     typedef typename TConfig::TContigsSize                          TContigsSize;
     typedef typename TConfig::TContigsLen                           TContigsLen;
     typedef typename TConfig::TContigsSum                           TContigsSum;
@@ -220,9 +222,13 @@ struct MapperTraits
     typedef ModifiedString<TMatchesView, ModPos<TMatchesPositions> > TMatchesViewView;
     typedef String<double>                                          TMatchesProbs;
 
-    typedef String<CigarElement<> >                                 TCigar;
-    typedef StringSet<TCigar, Segment<TCigar> >                     TCigarSet;
-    typedef StringSetLimits<TCigarSet>::Type                        TCigarLimits;
+    typedef String<CigarElement<> >                                 TCigarString;
+    typedef StringSet<TCigarString, Segment<TCigarString> >         TCigars;
+    typedef StringSetLimits<TCigars>::Type                          TCigarLimits;
+    typedef Position<TCigars>::Type                                 TCigarsPos;
+    typedef String<TCigarsPos>                                      TCigarsPositions;
+    typedef ModifiedString<TCigars, ModPos<TCigarsPositions> >      TCigarsView;
+    typedef StringSet<TCigars, Owner<ConcatDirect<> > >             TCigarsSet;
 };
 
 // ----------------------------------------------------------------------------
@@ -308,21 +314,25 @@ struct Mapper
     typename Traits::TMatchesView       matchesByErrors;
     typename Traits::TMatchesViewSet    matchesSetByErrors;
     typename Traits::TMatchesViewSet    optimalMatchesSet;
-    typename Traits::TMatchesViewSet    suboptimalMatchesSet;
+    typename Traits::TMatchesViewSet    matchesSet;
     typename Traits::TMatchesViewView   primaryMatches;
     typename Traits::TMatchesProbs      primaryMatchesProbs;
 
     typename Traits::TMates             matesByCoord;
     typename Traits::TMatesSet          matesSetByCoord;
 
-    typename Traits::TCigar             cigars;
-    typename Traits::TCigarSet          cigarSet;
+    typename Traits::TCigarString       cigarString;
+    typename Traits::TCigarsSet         cigarsSet;
+    typename Traits::TCigars &          cigars;
+    typename Traits::TCigarsPositions   primaryCigarPositions;
+    typename Traits::TCigarsView        primaryCigars;
 
     Mapper(Options const & options) :
         options(options),
         libraryLength(),
         libraryDev(),
-        readsFile(options.readsCount)
+        readsFile(options.readsCount),
+        cigars(concat(cigarsSet))
     {};
 };
 
@@ -602,10 +612,7 @@ inline void findSeeds(Mapper<TSpec, TConfig> & me, TBucketId bucketId)
     {
         // Estimate the number of hits.
         reserve(me.hits[bucketId], lengthSum(me.seeds[bucketId]) * Power<ERRORS, 2>::VALUE, Exact());
-        if (me.options.sensitivity == FULL)
-            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, EditDistance());
-        else
-            _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, HammingDistance());
+        _findSeedsImpl(me, me.hits[bucketId], me.seeds[bucketId], ERRORS, typename TConfig::TSeedsDistance());
     }
     else
     {
@@ -802,7 +809,7 @@ inline void clearMatches(Mapper<TSpec, TConfig> & me)
 {
     clear(me.matchesSetByCoord);
     clear(me.optimalMatchesSet);
-    clear(me.suboptimalMatchesSet);
+    clear(me.matchesSet);
 
     clear(me.matchesByCoord);
     shrinkToFit(me.matchesByCoord);
@@ -852,8 +859,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     clipMatches(me.optimalMatchesSet, countMatchesInBestStratum<TMatchesViewSetValue>, typename TTraits::TThreading());
 
     // Select all sub-optimal matches.
-    assign(me.suboptimalMatchesSet, me.matchesSetByErrors);
-    clipMatches(me.suboptimalMatchesSet, [&](TMatchesViewSetValue const & matches)
+    assign(me.matchesSet, me.matchesSetByErrors);
+    clipMatches(me.matchesSet, [&](TMatchesViewSetValue const & matches)
     {
         if (empty(matches)) return TMatchesSize(0);
 
@@ -992,10 +999,10 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         double secondMatchOptimalRate = toErrorRate(readSeqs, secondId, getMinErrors(me.ctx, secondId));
 
         auto firstBestCount = countMatchesInBestStratum(me.optimalMatchesSet[firstId]);
-        auto firstSubCount = length(me.suboptimalMatchesSet[firstId]) - firstBestCount;
+        auto firstSubCount = length(me.matchesSet[firstId]) - firstBestCount;
 
         auto secondBestCount = countMatchesInBestStratum(me.optimalMatchesSet[secondId]);
-        auto secondSubCount = length(me.suboptimalMatchesSet[secondId]) - secondBestCount;
+        auto secondSubCount = length(me.matchesSet[secondId]) - secondBestCount;
 
         // First mate match with all second mate matches.
         Pair<TMatchesSetValueIt, double> firstPrimary =
@@ -1139,7 +1146,7 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
             // Set primary matches probabilities.
             double errorRate = getErrorRate(me.primaryMatches[anchorId], me.reads.seqs);
             auto bestCount = countMatchesInBestStratum(me.optimalMatchesSet[anchorId]);
-            auto subCount = length(me.suboptimalMatchesSet[anchorId]) - bestCount;
+            auto subCount = length(me.matchesSet[anchorId]) - bestCount;
             me.primaryMatchesProbs[anchorId] = getMatchProb(errorRate, errorRate, bestCount, subCount);
             me.primaryMatchesProbs[mateId] = me.primaryMatchesProbs[anchorId];
 
@@ -1171,18 +1178,65 @@ inline void _verifyMatchesImpl(Mapper<TSpec, TConfig> & me, PairedEnd)
 template <typename TSpec, typename TConfig>
 inline void alignMatches(Mapper<TSpec, TConfig> & me)
 {
-    typedef MapperTraits<TSpec, TConfig>            TTraits;
-    typedef MatchesAligner<LinearGaps, TTraits>     TLinearAligner;
-    typedef MatchesAligner<AffineGaps , TTraits>    TAffineAligner;
+    typedef MapperTraits<TSpec, TConfig>                        TTraits;
+    typedef typename TTraits::TMatches                          TMatches;
+    typedef typename Iterator<TMatches const, Standard>::Type   TIter;
+    typedef typename Size<TMatches>::Type                       TSize;
+    typedef typename TTraits::TMatchesViewView                  TMatchesView;
+    typedef typename TTraits::TMatchesViewSet                   TMatchesViewSet;
+    typedef typename TTraits::TCigarsPos                        TCigarsPos;
+    typedef typename TTraits::TMatchesViewView                  TMatchesViewView;
+    typedef typename Iterator<TMatchesViewView, Rooted>::Type   TMatchesViewViewIt;
+    typedef typename Concatenator<TMatchesViewSet>::Type        TConcatenator;
+    typedef MatchesAligner<LinearGaps, TTraits, TMatchesView>   TLinearAligner;
+    typedef MatchesAligner<AffineGaps , TTraits, TMatchesView>  TAffineAligner;
+    typedef MatchesAligner<AffineGaps , TTraits, TConcatenator> TAffineAlignerConcat;
+    typedef MatchesAligner<LinearGaps , TTraits, TConcatenator> TLinearAlignerConcat;
 
     start(me.timer);
-    setHost(me.cigarSet, me.cigars);
+    setHost(me.cigars, me.cigarString);
     typename TTraits::TCigarLimits cigarLimits;
 
-    if (me.options.rabema)
-        TLinearAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads.seqs, me.options);
+    TConcatenator matchesConcat = concat(me.matchesSet);
+    if (me.options.rabema && me.options.alignSecondary)
+        TLinearAlignerConcat aligner(me.cigars, cigarLimits, matchesConcat, me.contigs.seqs, me.reads.seqs, me.options);
+    else if (me.options.rabema && !me.options.alignSecondary)
+        TLinearAligner aligner(me.cigars, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads.seqs, me.options);
+    else if (!me.options.rabema && me.options.alignSecondary)
+        TAffineAlignerConcat aligner(me.cigars, cigarLimits, matchesConcat, me.contigs.seqs, me.reads.seqs, me.options);
     else
-        TAffineAligner aligner(me.cigarSet, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads.seqs, me.options);
+        TAffineAligner aligner(me.cigars, cigarLimits, me.primaryMatches, me.contigs.seqs, me.reads.seqs, me.options);
+
+    setHost(me.primaryCigars, me.cigars);
+    setCargo(me.primaryCigars, me.primaryCigarPositions);
+
+    if (me.options.alignSecondary)
+    {
+        // Bucket the cigars equivalently to the set of matches
+        assign(stringSetLimits(me.cigarsSet), stringSetLimits(me.matchesSet), Exact());
+
+        // Find primary cigars
+        resize(me.primaryCigarPositions, length(me.primaryMatchesPositions));
+        iterate(me.primaryMatches, [&](TMatchesViewViewIt it)
+            {
+                unsigned readId = position(it);
+                if (!isValid(*it))
+                {
+                    me.primaryCigarPositions[readId] = -1u;
+                    return;
+                }
+                TMatches const & matches = me.matchesSet[readId];
+                TIter primaryIt = findMatch(matches, *it);
+                TSize primaryPos = position(primaryIt, matches);
+                SEQAN_ASSERT_LT(primaryPos, length(matches));
+                me.primaryCigarPositions[readId] = stringSetLimits(me.cigarsSet)[readId] + primaryPos;
+            }, Rooted(), typename TTraits::TThreading());
+    }
+    else
+    {
+        // If only the primary matches were aligned, we use the identity modifier
+        assign(me.primaryCigarPositions, seqan::Range<TCigarsPos>(0, length(me.primaryMatches)), Exact());
+    }
 
     stop(me.timer);
     me.stats.alignMatches += getValue(me.timer);
@@ -1199,9 +1253,9 @@ inline void alignMatches(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void clearAlignments(Mapper<TSpec, TConfig> & me)
 {
+    clear(me.cigarString);
     clear(me.cigars);
-    clear(me.cigarSet);
-    shrinkToFit(me.cigarSet);
+    shrinkToFit(me.cigars);
 }
 
 // ----------------------------------------------------------------------------
@@ -1216,8 +1270,9 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
 
     start(me.timer);
     TMatchesWriter writer(me.outputFile,
-                          me.suboptimalMatchesSet,
-                          me.primaryMatches, me.primaryMatchesProbs, me.cigarSet,
+                          me.matchesSet,
+                          me.primaryMatches, me.primaryMatchesProbs,
+                          me.primaryCigars, me.cigarsSet,
                           me.ctx, me.reads,
                           me.options);
     stop(me.timer);
@@ -1234,51 +1289,15 @@ inline void writeMatches(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void mapReads(Mapper<TSpec, TConfig> & me)
 {
-    _mapReadsImpl(me, me.reads.seqs, typename TConfig::TStrategy());
+    _mapReadsImpl(me, me.reads.seqs);
 }
 
 // ----------------------------------------------------------------------------
-// Function _mapReadsImpl(); All
+// Function _mapReadsImpl()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TReadSeqs>
-inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, All)
-{
-    initReadsContext(me, readSeqs);
-    initSeeds(me, readSeqs);
-
-    collectSeeds<0>(me, readSeqs);
-    findSeeds<0>(me, 0);
-    classifyReads(me);
-    collectSeeds<1>(me, readSeqs);
-    collectSeeds<2>(me, readSeqs);
-    findSeeds<1>(me, 1);
-    if (me.options.sensitivity == LOW)
-        findSeeds<1>(me, 2);
-    else
-        findSeeds<2>(me, 2);
-    reserveMatches(me);
-    extendHits<0>(me, 0);
-    extendHits<1>(me, 1);
-    extendHits<2>(me, 2);
-    clearSeeds(me);
-    clearHits(me);
-    aggregateMatches(me, readSeqs);
-    rankMatches(me, readSeqs);
-    if (me.options.verifyMatches)
-        verifyMatches(me);
-    alignMatches(me);
-    writeMatches(me);
-    clearMatches(me);
-    clearAlignments(me);
-}
-
-// ----------------------------------------------------------------------------
-// Function _mapReadsImpl(); Strata
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TConfig, typename TReadSeqs>
-inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs, Strata)
+inline void _mapReadsImpl(Mapper<TSpec, TConfig> & me, TReadSeqs & readSeqs)
 {
     initReadsContext(me, readSeqs);
     initSeeds(me, readSeqs);
@@ -1349,8 +1368,7 @@ inline void printStats(Mapper<TSpec, TConfig> const & me, Timer<TValue> const & 
     std::cerr << "Seeding time:\t\t\t" << me.stats.collectSeeds << " sec" << "\t\t" << me.stats.collectSeeds / total << " %" << std::endl;
     std::cerr << "Filtering time:\t\t\t" << me.stats.findSeeds << " sec" << "\t\t" << me.stats.findSeeds / total << " %" << std::endl;
     std::cerr << "Classification time:\t\t" << me.stats.classifyReads << " sec" << "\t\t" << me.stats.classifyReads / total << " %" << std::endl;
-    if (IsSameType<typename TConfig::TStrategy, Strata>::VALUE)
-        std::cerr << "Ranking time:\t\t\t" << me.stats.rankSeeds << " sec" << "\t\t" << me.stats.rankSeeds / total << " %" << std::endl;
+    std::cerr << "Ranking time:\t\t\t" << me.stats.rankSeeds << " sec" << "\t\t" << me.stats.rankSeeds / total << " %" << std::endl;
     std::cerr << "Extension time:\t\t\t" << me.stats.extendHits << " sec" << "\t\t" << me.stats.extendHits / total << " %" << std::endl;
     std::cerr << "Sorting time:\t\t\t" << me.stats.sortMatches << " sec" << "\t\t" << me.stats.sortMatches / total << " %" << std::endl;
     std::cerr << "Compaction time:\t\t" << me.stats.compactMatches << " sec" << "\t\t" << me.stats.compactMatches / total << " %" << std::endl;
@@ -1420,13 +1438,13 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContigsSize, typename TContigsLen, typename TContigsSum,
-          typename TThreading, typename TSequencing, typename TStrategy>
+          typename TThreading, typename TSequencing, typename TSeedsDistance>
 inline void spawnMapper(Options const & options,
                         TThreading const & /* tag */,
                         TSequencing const & /* tag */,
-                        TStrategy const & /* tag */)
+                        TSeedsDistance const & /* tag */)
 {
-    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy, TContigsSize, TContigsLen, TContigsSum>  TConfig;
+    typedef ReadMapperConfig<TThreading, TSequencing, TSeedsDistance, TContigsSize, TContigsLen, TContigsSum>  TConfig;
 
     Mapper<void, TConfig> mapper(options);
     runMapper(mapper);

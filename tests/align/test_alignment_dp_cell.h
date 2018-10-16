@@ -77,15 +77,19 @@ void testDPCellDefaultInfinity(TGapCosts const &)
 {
     using namespace seqan;
 
-    typedef DPCell_<int, TGapCosts> TDPCell;
-    typedef DPCell_<int, TGapCosts> const TDPConstCell;
+    int    result_int       = DPCellDefaultInfinity<DPCell_<int, TGapCosts>>::VALUE;
+    int    result_int_const = DPCellDefaultInfinity<DPCell_<int, TGapCosts> const>::VALUE;
+    float  result_flt       = DPCellDefaultInfinity<DPCell_<float, TGapCosts>>::VALUE;
+    float  result_flt_const = DPCellDefaultInfinity<DPCell_<float, TGapCosts> const>::VALUE;
+    double result_dbl       = DPCellDefaultInfinity<DPCell_<double, TGapCosts>>::VALUE;
+    double result_dbl_const = DPCellDefaultInfinity<DPCell_<double, TGapCosts> const>::VALUE;
 
-    int result1 = DPCellDefaultInfinity<TDPCell>::VALUE;
-    int result2 = DPCellDefaultInfinity<TDPConstCell>::VALUE;
-
-    int test = std::numeric_limits<int>::min() / 2;
-    SEQAN_ASSERT_EQ(result1, test);
-    SEQAN_ASSERT_EQ(result2, test);
+    SEQAN_ASSERT_EQ      (result_int,       std::numeric_limits<int>::lowest() / 2);
+    SEQAN_ASSERT_EQ      (result_int_const, std::numeric_limits<int>::lowest() / 2);
+    SEQAN_ASSERT_IN_DELTA(result_flt,       std::numeric_limits<float>::lowest() / 2.0f, 1e-3);
+    SEQAN_ASSERT_IN_DELTA(result_flt_const, std::numeric_limits<float>::lowest() / 2.0f, 1e-3);
+    SEQAN_ASSERT_IN_DELTA(result_dbl,       std::numeric_limits<double>::lowest() / 2.0, 1e-3);
+    SEQAN_ASSERT_IN_DELTA(result_dbl_const, std::numeric_limits<double>::lowest() / 2.0, 1e-3);
 }
 
 template <typename TGaps>

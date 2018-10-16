@@ -35,6 +35,8 @@
 #ifndef APP_YARA_FIND_EXTENDER_H_
 #define APP_YARA_FIND_EXTENDER_H_
 
+//#define YARA_PRINT_ALIGN
+
 using namespace seqan;
 
 // ============================================================================
@@ -45,37 +47,8 @@ using namespace seqan;
 // Class Extender
 // ----------------------------------------------------------------------------
 
-template <typename THaystack, typename TNeedle, typename TDistance = Nothing, typename TSpec = void>
+template <typename THaystack, typename TNeedle, typename TSpec = void>
 struct Extender
-{
-    Extender(THaystack const &) {}
-};
-
-// ----------------------------------------------------------------------------
-// Class Extender<HammingDistance>
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec>
-struct Extender<THaystack, TNeedle, HammingDistance, TSpec>
-{
-    typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
-    typedef ModifiedString<THaystackInfix, ModReverse>   THaystackInfixRev;
-    typedef typename InfixOnValue<TNeedle const>::Type   TNeedleInfix;
-    typedef ModifiedString<TNeedleInfix, ModReverse>     TNeedleInfixRev;
-
-    THaystack const &   haystack;
-
-    Extender(THaystack const & haystack) :
-        haystack(haystack)
-    {}
-};
-
-// ----------------------------------------------------------------------------
-// Class Extender<EditDistance>
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec>
-struct Extender<THaystack, TNeedle, EditDistance, TSpec>
 {
     typedef typename InfixOnValue<THaystack const>::Type THaystackInfix;
     typedef ModifiedString<THaystackInfix, ModReverse>   THaystackInfixRev;
@@ -108,34 +81,14 @@ struct Extender<THaystack, TNeedle, EditDistance, TSpec>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _extendDelta<HammingDistance>()
-// ----------------------------------------------------------------------------
-
-template <typename TErrors>
-inline TErrors _extendDelta(TErrors /* maxErrors */, HammingDistance)
-{
-    return 0u;
-}
-
-// ----------------------------------------------------------------------------
-// Function _extendDelta<EditDistance>()
-// ----------------------------------------------------------------------------
-
-template <typename TErrors>
-inline TErrors _extendDelta(TErrors maxErrors, EditDistance)
-{
-    return maxErrors;
-}
-
-// ----------------------------------------------------------------------------
-// Function checkHammingDistance()
+// Function _checkSeed()
 // ----------------------------------------------------------------------------
 
 template <typename THaystackInfix, typename TNeedleInfix, typename TErrors, typename TMaxErrors>
-inline bool checkHammingDistance(THaystackInfix & haystackInfix,
-                                 TNeedleInfix & needleInfix,
-                                 TErrors & needleErrors,
-                                 TMaxErrors maxErrors)
+inline bool _checkSeed(THaystackInfix & haystackInfix,
+                       TNeedleInfix & needleInfix,
+                       TErrors & matchErrors,
+                       TMaxErrors maxErrors)
 {
     typedef typename Iterator<THaystackInfix, Standard>::Type   THaystackIt;
     typedef typename Iterator<TNeedleInfix, Standard>::Type     TNeedleIt;
@@ -146,66 +99,26 @@ inline bool checkHammingDistance(THaystackInfix & haystackInfix,
     THaystackIt hEnd = end(haystackInfix, Standard());
     TNeedleIt nIt = begin(needleInfix, Standard());
 
-    for (; hIt != hEnd && needleErrors <= maxErrors; ++hIt, ++nIt)
-        needleErrors += !ordEqual(value(hIt), value(nIt));
+    for (; hIt != hEnd && matchErrors <= maxErrors; ++hIt, ++nIt)
+        matchErrors += !ordEqual(value(hIt), value(nIt));
 
-    return hIt == hEnd && needleErrors <= maxErrors;
+    return hIt == hEnd && matchErrors <= maxErrors;
 }
 
 // ----------------------------------------------------------------------------
-// Function _extendLeft<HammingDistance>()
+// Function _extendLeft()
 // ----------------------------------------------------------------------------
 
 template <typename THaystack, typename TNeedle, typename TSpec,
           typename THaystackInfix, typename TNeedleInfix, typename THaystackPos, typename TErrors, typename TMaxErrors>
-inline bool _extendLeft(Extender<THaystack, TNeedle, HammingDistance, TSpec> & /* extender */,
+inline bool _extendLeft(Extender<THaystack, TNeedle, TSpec> & extender,
                         THaystackInfix & haystackInfix,
                         TNeedleInfix & needleInfix,
                         THaystackPos & matchBegin,
-                        TErrors & needleErrors,
+                        TErrors & matchErrors,
                         TMaxErrors maxErrors)
 {
-    if (!checkHammingDistance(haystackInfix, needleInfix, needleErrors, maxErrors))
-        return false;
-
-    matchBegin = posAdd(matchBegin, -length(haystackInfix));
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function _extendRight<HammingDistance>()
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec,
-          typename THaystackInfix, typename TNeedleInfix, typename THaystackPos, typename TErrors, typename TMaxErrors>
-inline bool _extendRight(Extender<THaystack, TNeedle, HammingDistance, TSpec> & /* extender */,
-                         THaystackInfix & haystackInfix,
-                         TNeedleInfix & needleInfix,
-                         THaystackPos & matchEnd,
-                         TErrors & needleErrors,
-                         TMaxErrors maxErrors)
-{
-    if (!checkHammingDistance(haystackInfix, needleInfix, needleErrors, maxErrors))
-        return false;
-
-    matchEnd = posAdd(matchEnd, length(haystackInfix));
-    return true;
-}
-
-// ----------------------------------------------------------------------------
-// Function _extendLeft<EditDistance>()
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec,
-          typename THaystackInfix, typename TNeedleInfix, typename THaystackPos, typename TErrors, typename TMaxErrors>
-inline bool _extendLeft(Extender<THaystack, TNeedle, EditDistance, TSpec> & extender,
-                        THaystackInfix & haystackInfix,
-                        TNeedleInfix & needleInfix,
-                        THaystackPos & matchBegin,
-                        TErrors & needleErrors,
-                        TMaxErrors maxErrors)
-{
-    typedef Extender<THaystack, TNeedle, EditDistance, TSpec>   TExtender;
+    typedef Extender<THaystack, TNeedle, TSpec>                 TExtender;
     typedef typename TExtender::THaystackInfixRev               THaystackInfixRev;
     typedef typename TExtender::TNeedleInfixRev                 TNeedleInfixRev;
     typedef typename TExtender::TFinderLeft                     TFinderLeft;
@@ -229,7 +142,7 @@ inline bool _extendLeft(Extender<THaystack, TNeedle, EditDistance, TSpec> & exte
     setEndPosition(haystackInfix, endPosition(haystackInfix) - lcp);
     setEndPosition(needleInfix, endPosition(needleInfix) - lcp);
 
-    TErrors remainingErrors = maxErrors - needleErrors;
+    TErrors remainingErrors = maxErrors - matchErrors;
     TErrors minErrors = remainingErrors + 1;
     THaystackSize endPos = 0;
 
@@ -254,26 +167,26 @@ inline bool _extendLeft(Extender<THaystack, TNeedle, EditDistance, TSpec> & exte
         }
     }
 
-    needleErrors += minErrors;
+    matchErrors += minErrors;
 	matchBegin = posAdd(matchBegin, -(typename MakeSigned<THaystackSize>::Type)(endPos + lcp));
 
-    return needleErrors <= maxErrors;
+    return matchErrors <= maxErrors;
 }
 
 // ----------------------------------------------------------------------------
-// Function _extendRight<EditDistance>()
+// Function _extendRight()
 // ----------------------------------------------------------------------------
 
 template <typename THaystack, typename TNeedle, typename TSpec,
           typename THaystackInfix, typename TNeedleInfix, typename THaystackPos, typename TErrors, typename TMaxErrors>
-inline bool _extendRight(Extender<THaystack, TNeedle, EditDistance, TSpec> & extender,
+inline bool _extendRight(Extender<THaystack, TNeedle, TSpec> & extender,
                          THaystackInfix & haystackInfix,
                          TNeedleInfix & needleInfix,
                          THaystackPos & matchEnd,
-                         TErrors & needleErrors,
+                         TErrors & matchErrors,
                          TMaxErrors maxErrors)
 {
-    typedef Extender<THaystack, TNeedle, EditDistance, TSpec>   TExtender;
+    typedef Extender<THaystack, TNeedle, TSpec>                 TExtender;
     typedef typename TExtender::TFinderRight                    TFinderRight;
 
     typedef typename Value<THaystack>::Type                     THaystackString;
@@ -288,9 +201,9 @@ inline bool _extendRight(Extender<THaystack, TNeedle, EditDistance, TSpec> & ext
     }
     else if (lcp == length(haystackInfix))
     {
-        needleErrors += length(needleInfix) - length(haystackInfix);
+        matchErrors += length(needleInfix) - length(haystackInfix);
         matchEnd = posAdd(matchEnd, lcp);
-        return needleErrors <= maxErrors;
+        return matchErrors <= maxErrors;
     }
     setBeginPosition(haystackInfix, beginPosition(haystackInfix) + lcp);
     setBeginPosition(needleInfix, beginPosition(needleInfix) + lcp);
@@ -298,7 +211,7 @@ inline bool _extendRight(Extender<THaystack, TNeedle, EditDistance, TSpec> & ext
     // NOTE(esiragusa): Uncomment this to disable lcp trick.
 //    THaystackPos lcp = 0;
 
-    TErrors remainingErrors = maxErrors - needleErrors;
+    TErrors remainingErrors = maxErrors - matchErrors;
     TErrors minErrors = remainingErrors + 1;
     THaystackSize endPos = 0;
 
@@ -334,50 +247,34 @@ inline bool _extendRight(Extender<THaystack, TNeedle, EditDistance, TSpec> & ext
         }
     }
 
-    needleErrors += minErrors;
+    matchErrors += minErrors;
     matchEnd = posAdd(matchEnd, endPos + lcp + 1);
 
-    return needleErrors <= maxErrors;
+    return matchErrors <= maxErrors;
 }
 
 // ----------------------------------------------------------------------------
-// Function extend<Nothing>()
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename TNeedle, typename TSpec,
-          typename THaystackPos, typename TNeedlePos, typename TErrors, typename TMaxErrors, typename TDelegate>
-inline void
-extend(Extender<THaystack, TNeedle, Nothing, TSpec> & /* extender */,
-       TNeedle const & /* needle */,
-       THaystackPos /* haystackBegin */,
-       THaystackPos /* haystackEnd */,
-       TNeedlePos /* needleBegin */,
-       TNeedlePos /* needleEnd */,
-       TErrors /* needleErrors */,
-       TMaxErrors /* maxErrors */,
-       TDelegate && /* delegate */)
-{}
-
-// ----------------------------------------------------------------------------
-// Function extend<Hamming/EditDistance>()
+// Function extend()
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): _setScoreThreshold(me, maxErrors)
-// TODO(esiragusa): extend(me, haystackInfix, needleInfix(needle=host), needleErrors, delegate)
+// TODO(esiragusa): extend(me, haystackInfix, needleInfix(needle=host), matchErrors, delegate)
 
-template <typename THaystack, typename TNeedle, typename TDistance, typename TSpec,
-          typename THaystackPos, typename TNeedlePos, typename TErrors, typename TMaxErrors, typename TDelegate>
+template <typename THaystack,typename TNeedle, typename TSpec,
+          typename THaystackPos, typename TNeedlePos, typename TDistance, 
+          typename TErrors, typename TMaxErrors, typename TDelegate>
 inline void
-extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
+extend(Extender<THaystack, TNeedle, TSpec> & extender,
        TNeedle const & needle,
        THaystackPos haystackBegin,
        THaystackPos haystackEnd,
        TNeedlePos needleBegin,
        TNeedlePos needleEnd,
-       TErrors needleErrors,
+       TDistance /* tag */,
+       TErrors /* needleErrors */,
        TMaxErrors maxErrors,
        TDelegate && delegate)
 {
-    typedef Extender<THaystack, TNeedle, TDistance, TSpec>  TExtender;
+    typedef Extender<THaystack, TNeedle, TSpec>             TExtender;
     typedef typename TExtender::THaystackInfix              THaystackInfix;
     typedef typename TExtender::TNeedleInfix                TNeedleInfix;
     typedef typename Id<THaystack>::Type                    THaystackId;
@@ -389,28 +286,83 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
     THaystackSize haystackLength = length(extender.haystack[haystackId]);
     TNeedlePos needleLength = length(needle);
 
+    TErrors matchErrors = 0;
+
+#ifdef YARA_PRINT_ALIGN
+    std::cerr << std::endl << "======================================================================" << std::endl;
+    std::cerr << "SEED: " << Pair<THaystackPos>(haystackBegin, haystackEnd) << " -- " << 
+                Pair<TNeedlePos>(needleBegin, needleEnd) << std::endl;
+
+    {
+        Align<Dna5String, AnchorGaps<>> align;
+        resize(rows(align), 2);
+        assignSource(row(align, 0), infix(extender.haystack, haystackBegin, haystackEnd));
+        assignSource(row(align, 1), infix(needle, needleBegin, needleEnd));
+
+        globalAlignment(row(align, 0), row(align, 1), Score<short, EditDistance>(),
+                        AlignConfig<false, false, false, false>(),
+                        -(int)maxErrors, (int)maxErrors);
+
+        std::cerr << row(align, 0) << std::endl;
+        std::cerr << row(align, 1) << std::endl;
+//        std::cerr << align << std::endl;
+    }
+#endif // YARA_PRINT_ALIGN
+
     // Check seed due to Ns randomization in the index.
-    TErrors needleErrorsCheck = 0;
-    THaystackInfix haystackSeed = infix(extender.haystack, haystackBegin, haystackEnd);
-    TNeedleInfix needleSeed = infix(needle, needleBegin, needleEnd);
-    if (!checkHammingDistance(haystackSeed, needleSeed, needleErrorsCheck, needleErrors)) return;
-    SEQAN_ASSERT_EQ(needleErrors, needleErrorsCheck);
+    THaystackPos haystackLeftEnd = haystackEnd;
+    TNeedlePos needleLeftEnd = needleEnd;
+
+    if (IsSameType<TDistance, HammingDistance>::VALUE)
+    {
+        THaystackInfix haystackSeed = infix(extender.haystack, haystackBegin, haystackEnd);
+        TNeedleInfix needleSeed = infix(needle, needleBegin, needleEnd);
+        if (!_checkSeed(haystackSeed, needleSeed, matchErrors, maxErrors)) 
+            return;
+
+        haystackLeftEnd = haystackBegin;
+        needleLeftEnd = needleBegin;
+    }
 
     // Extend left.
-    THaystackPos matchBegin = haystackBegin;
+    THaystackPos matchBegin = haystackLeftEnd;
 
-    if (needleBegin > 0)
+    if (needleLeftEnd > 0)
     {
         THaystackPos haystackLeftBegin = haystackBegin;
-        THaystackSize haystackLeftOffset = needleBegin + _extendDelta(maxErrors - needleErrors, TDistance());
+        THaystackSize haystackLeftOffset = needleBegin + (maxErrors - matchErrors);
         setSeqOffset(haystackLeftBegin, 0);
         if (getSeqOffset(haystackBegin) > haystackLeftOffset)
             setSeqOffset(haystackLeftBegin, getSeqOffset(haystackBegin) - haystackLeftOffset);
 
-        THaystackInfix haystackLeft = infix(extender.haystack, haystackLeftBegin, haystackBegin);
-        TNeedleInfix needleLeft = infix(needle, 0, needleBegin);
+        THaystackInfix haystackLeft = infix(extender.haystack, haystackLeftBegin, haystackLeftEnd);
+        TNeedleInfix needleLeft = infix(needle, 0, needleLeftEnd);
 
-        if (!_extendLeft(extender, haystackLeft, needleLeft, matchBegin, needleErrors, maxErrors)) return;
+#ifdef YARA_PRINT_ALIGN
+        std::cerr << "----------------------------------------------------------------------" << std::endl;
+        std::cerr << "LEFT: " << Pair<THaystackPos>(haystackLeftBegin, haystackEnd) << " -- " 
+                  << Pair<TNeedlePos>(0, needleEnd) << std::endl;
+
+        typename TExtender::THaystackInfixRev haystackLeftRev(haystackLeft);
+        typename TExtender::TNeedleInfixRev needleLeftRev(needleLeft);
+        Align<Dna5String, AnchorGaps<>> align;
+        resize(rows(align), 2);
+        assignSource(row(align, 0), haystackLeftRev);
+        assignSource(row(align, 1), needleLeftRev);
+#endif // YARA_PRINT_ALIGN
+
+        if (!_extendLeft(extender, haystackLeft, needleLeft, matchBegin, matchErrors, maxErrors)) 
+            return;
+
+#ifdef YARA_PRINT_ALIGN
+        globalAlignment(row(align, 0), row(align, 1), Score<short, EditDistance>(),
+                        AlignConfig<false, false, false, true>(),
+                        -(int)maxErrors, (int)maxErrors);
+//        clipSemiGlobal(row(align, 0), row(align, 1));
+        std::cerr << row(align, 0) << std::endl;
+        std::cerr << row(align, 1) << std::endl;
+        std::cerr << "TOTAL ERRORS: " << matchErrors << std::endl;
+#endif // YARA_PRINT_ALIGN
     }
 
     // Extend right.
@@ -418,7 +370,7 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
 
     if (needleEnd < needleLength)
     {
-        THaystackSize haystackRightOffset = needleLength - needleBegin + _extendDelta(maxErrors - needleErrors, TDistance());
+        THaystackSize haystackRightOffset = needleLength - needleBegin + (maxErrors - matchErrors);
         THaystackPos haystackRightEnd = THaystackPos(haystackId, haystackLength);
         if (getSeqOffset(haystackRightEnd) > getSeqOffset(haystackBegin) + haystackRightOffset)
             setSeqOffset(haystackRightEnd, getSeqOffset(haystackBegin) + haystackRightOffset);
@@ -426,11 +378,35 @@ extend(Extender<THaystack, TNeedle, TDistance, TSpec> & extender,
         THaystackInfix haystackRight = infix(extender.haystack, haystackEnd, haystackRightEnd);
         TNeedleInfix needleRight = infix(needle, needleEnd, needleLength);
 
-        if (!_extendRight(extender, haystackRight, needleRight, matchEnd, needleErrors, maxErrors)) return;
+#ifdef YARA_PRINT_ALIGN
+        std::cerr << "----------------------------------------------------------------------" << std::endl;
+        std::cerr << "RIGHT: " << Pair<THaystackPos>(haystackEnd, haystackRightEnd) << " -- " 
+                  << Pair<TNeedlePos>(needleEnd, needleLength) << std::endl;
+
+        Align<Dna5String, AnchorGaps<>> align;
+        resize(rows(align), 2);
+        assignSource(row(align, 0), haystackRight);
+        assignSource(row(align, 1), needleRight);
+#endif // YARA_PRINT_ALIGN
+
+        if (!_extendRight(extender, haystackRight, needleRight, matchEnd, matchErrors, maxErrors)) 
+            return;
+
+#ifdef YARA_PRINT_ALIGN
+        globalAlignment(row(align, 0), row(align, 1), Score<short, EditDistance>(),
+                        AlignConfig<false, false, false, true>());
+//        clipSemiGlobal(row(align, 0), row(align, 1));
+        std::cerr << row(align, 0) << std::endl;
+        std::cerr << row(align, 1) << std::endl;
+        std::cerr << "TOTAL ERRORS: " << matchErrors << std::endl;
+#endif // YARA_PRINT_ALIGN
     }
 
-//    delegate(extender);
-    delegate(matchBegin, matchEnd, needleErrors);
+#ifdef YARA_PRINT_ALIGN
+    std::cerr << "MATCH: " << Pair<THaystackPos>(matchBegin, matchEnd) << " # " << matchErrors << std::endl;
+#endif // YARA_PRINT_ALIGN
+
+    delegate(matchBegin, matchEnd, matchErrors);
 }
 
 #endif  // #ifndef APP_YARA_FIND_EXTENDER_H_

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_samcat CXX)
 message (STATUS "Configuring apps/samcat")
 
-set (SEQAN_APP_VERSION "0.3.8")
+set (SEQAN_APP_VERSION "0.3.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -99,4 +99,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
 
   seqan_configure_cpack_app (samcat "samcat")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
-

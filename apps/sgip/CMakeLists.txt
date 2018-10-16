@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sgip CXX)
 message (STATUS "Configuring apps/sgip")
 
-set (SEQAN_APP_VERSION "1.4.8")
+set (SEQAN_APP_VERSION "1.4.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -91,4 +91,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:sgip")
 
   seqan_configure_cpack_app (sgip "sgip")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:sgip")
-

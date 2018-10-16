@@ -80,7 +80,7 @@ struct OptimalSearchSchemes<0, 2, TVoidType>
 {
     static constexpr std::array<OptimalSearch<4>, 3> VALUE
     {{
-        { {{2, 1, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
+        { {{1, 2, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{3, 2, 1, 4}}, {{0, 0, 0, 0}}, {{0, 1, 1, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{4, 3, 2, 1}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}}, {{0, 0, 0, 0}}, 0 }
     }};
@@ -92,30 +92,33 @@ constexpr std::array<OptimalSearch<4>, 3> OptimalSearchSchemes<0, 2, TVoidType>:
 template <typename TVoidType>
 struct OptimalSearchSchemes<0, 3, TVoidType>
 {
-    static constexpr std::array<OptimalSearch<5>, 3> VALUE
+    static constexpr std::array<OptimalSearch<5>, 4> VALUE
     {{
-        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 2, 2}}, {{0, 0, 3, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{4, 3, 2, 1, 5}}, {{0, 0, 0, 0, 0}}, {{1, 1, 2, 2, 3}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 }
+        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 },
+        { {{2, 3, 4, 5, 1}}, {{0, 0, 0, 2, 2}}, {{0, 1, 2, 2, 3}}, {{0, 0, 0, 0, 0}}, 0 },
+        { {{3, 4, 5, 2, 1}}, {{0, 0, 1, 1, 1}}, {{0, 1, 1, 2, 3}}, {{0, 0, 0, 0, 0}}, 0 },
+        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 0}}, {{0, 0, 3, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 }
     }};
 };
 
 template <typename TVoidType>
-constexpr std::array<OptimalSearch<5>, 3> OptimalSearchSchemes<0, 3, TVoidType>::VALUE;
+constexpr std::array<OptimalSearch<5>, 4> OptimalSearchSchemes<0, 3, TVoidType>::VALUE;
 
 template <typename TVoidType>
 struct OptimalSearchSchemes<0, 4, TVoidType>
 {
-    static constexpr std::array<OptimalSearch<5>, 3> VALUE
+    static constexpr std::array<OptimalSearch<6>, 5> VALUE
     {{
-        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 0, 4}}, {{0, 3, 3, 4, 4}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{2, 3, 4, 5, 1}}, {{0, 0, 0, 0, 0}}, {{2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 3, 3}}, {{0, 0, 4, 4, 4}}, {{0, 0, 0, 0, 0}}, 0 }
+        { {{1, 2, 3, 4, 5, 6}}, {{0, 0, 0, 0, 0, 4}}, {{0, 3, 3, 3, 4, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{2, 3, 4, 5, 6, 1}}, {{0, 0, 0, 0, 0, 0}}, {{0, 2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{3, 2, 4, 5, 6, 1}}, {{0, 1, 1, 1, 1, 1}}, {{0, 2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{4, 3, 2, 5, 6, 1}}, {{0, 1, 2, 2, 2, 2}}, {{0, 1, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{6, 5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3, 3}}, {{0, 0, 4, 4, 4, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 }
     }};
 };
 
 template <typename TVoidType>
-constexpr std::array<OptimalSearch<5>, 3> OptimalSearchSchemes<0, 4, TVoidType>::VALUE;
+constexpr std::array<OptimalSearch<6>, 5> OptimalSearchSchemes<0, 4, TVoidType>::VALUE;
 
 template <typename TVoidType>
 struct OptimalSearchSchemes<1, 1, TVoidType>
@@ -280,7 +283,7 @@ inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & s
         s.startPos = 0;
         for (uint8_t i = 0; i < s.pi.size(); ++i)
             if (s.pi[i] < s.pi[0])
-                s.startPos += s.blocklength[i] - ((i > 0) ? s.blocklength[i-1] : 0);
+                s.startPos += s.blocklength[i] - s.blocklength[i - 1];
     }
 }
 

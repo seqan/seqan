@@ -282,8 +282,8 @@ inline TReadSeqSize getReadIndels(TOptions const & options, TReadSeqSize readSeq
 template <typename TMatch, typename TOptions, typename TReadSeqSize>
 inline TReadSeqSize getReadStrata(TOptions const & options, TReadSeqSize readSeqLength)
 {
-    return std::min((TReadSeqSize)(readSeqLength * options.strataRate),
-                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
+    TReadSeqSize readStrata = options.strataCount != -1u ? options.strataCount : readSeqLength * options.strataRate;
+    return std::min(readStrata, (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
 }
 
 // ----------------------------------------------------------------------------

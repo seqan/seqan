@@ -87,19 +87,19 @@ def main(source_base, binary_base):
     # Run Single-End Mapper Tests
     # ============================================================
 
-#    mapper_args = [
-#                    ['--threads', '1' ]],
-#                    ['--threads', '8' ]
-#                  ]
-#    mapper_suffix = ['t1', 't8']
-
-    mapper_args = [['--threads', '1']]
-    mapper_suffix = ['t1']
+    mapper_args = [
+            ['--threads', '1'],
+            ['--threads', '1', '-sm', 'record', '-s', '10'],
+            ['--threads', '1', '-sm', 'tag', '-s', '10'],
+            ['--threads', '1', '-sm', 'record', '-as', '-s', '10'],
+            ['--threads', '1', '-sm', 'tag', '-as', '-s', '10']
+            ]
+    mapper_suffix = ['t1', 'rec.t1', 'tag.t1', 'as.rec.t1', 'as.tag.t1']
 
     for organism in ['adeno']:
         for i in range(0, len(mapper_args)):
 
-            conf = app_tests.TestConf(
+            basic = app_tests.TestConf(
                 program=path_to_mapper,
                 args=[ph.inFile('gold/%s-genome' % organism),
                       ph.inFile('input/%s-reads_1.fa' % organism),
@@ -108,7 +108,7 @@ def main(source_base, binary_base):
                 to_diff=[(ph.inFile('gold/%s-reads_1.%s.sam' % (organism, mapper_suffix[i])),
                           ph.outFile('%s-reads_1.%s.sam' % (organism, mapper_suffix[i])),
                           sam_transforms)])
-            conf_list.append(conf)
+            conf_list.append(basic)
 
     # ============================================================
     # Execute the tests

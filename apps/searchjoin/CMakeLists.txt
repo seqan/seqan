@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_searchjoin CXX)
 message (STATUS "Configuring apps/searchjoin")
 
-set (SEQAN_APP_VERSION "0.5.8")
+set (SEQAN_APP_VERSION "0.5.9")
 
 if (SEQAN_TRAVIS_BUILD)
     message (STATUS "  Skipping build and test of searchjoin on Travis CI.")
@@ -90,4 +90,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:searchjoin")
 
   seqan_configure_cpack_app (searchjoin "searchjoin")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:searchjoin")
-

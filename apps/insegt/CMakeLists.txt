@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_insegt CXX)
 message (STATUS "Configuring apps/insegt")
 
-set (SEQAN_APP_VERSION "1.1.10")
+set (SEQAN_APP_VERSION "1.1.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -87,12 +87,12 @@ endif(PYTHONINTERP_FOUND)
 
 seqan_add_app_test (insegt)
 
-# ---------------------------------------------------------------------------- 
-# Setup Common Tool Description for Generic Workflow Nodes 
-# ---------------------------------------------------------------------------- 
- 
-# Include executable razers in CTD structure. 
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} insegt CACHE INTERNAL "") 
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
+
+# Include executable razers in CTD structure.
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} insegt CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -106,4 +106,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:insegt")
 
   seqan_configure_cpack_app (insegt "insegt")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:insegt")
-

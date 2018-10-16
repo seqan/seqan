@@ -287,7 +287,7 @@ resize(UnionFind<TValue> & unionFind,
  * @signature TSize resizeVertexMap(uf, g);
  *
  * @param[in,out] uf The Union-Find object to resize.
- * @param[in]     g  The graph to use for getting the vertex number.
+ * @param[in]     g  The graph to use for getting an upper bound on the maximum used vertex ID, which determines the size.
  *
  * @return TSize New size of the vertex map  (Metafunction: @link UnionFind#Size @endlink).
  */
@@ -298,7 +298,8 @@ resizeVertexMap(UnionFind<TValue> & unionFind,
                 Graph<TSpec> const & g)
 {
     clear(unionFind);
-    return resize(unionFind, numVertices(g));
+    resizeVertexMap(unionFind._values, g, -1);
+    return length(unionFind);		// Note: Other resizeVertexMap() overloads return void...
 }
 
 // ----------------------------------------------------------------------------
