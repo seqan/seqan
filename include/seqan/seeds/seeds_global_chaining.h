@@ -138,8 +138,14 @@ chainSeedsGlobally(
     // We copy over the seeds from the seed set into an array of seeds.  We can then directly reference seed by their
     // index in this array which is simpler than handling iterators into the std::set<> of the seed set.
     String<TSeed> seeds;
-    resize(seeds, length(seedSet));
-    std::copy(seedSet._seeds.begin(), seedSet._seeds.end(), begin(seeds, Standard()));
+    reserve(seeds, length(seedSet));
+    for (auto const & seed : seedSet._seeds)
+    {
+        SEQAN_ASSERT_LT(beginPositionH(seed), endPositionH(seed)); // [beginH, endH) must be at least of length 1
+        SEQAN_ASSERT_LT(beginPositionV(seed), endPositionV(seed)); // [beginV, endV) must be at least of length 1
+        appendValue(seeds, seed);
+    }
+    // std::copy(seedSet._seeds.begin(), seedSet._seeds.end(), begin(seeds, Standard()));
 
     // -----------------------------------------------------------------------
     // Step 1: Generate the sorted list of interval points.
