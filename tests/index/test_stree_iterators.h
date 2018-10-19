@@ -121,6 +121,31 @@ SEQAN_DEFINE_TEST(goDownOnEmptyString)
     SEQAN_ASSERT_EQ(representative(it), DnaString("TC"));
 }
 
+SEQAN_DEFINE_TEST(bidirectionalGoDownStringHistory)
+{
+    typedef Index<DnaString, BidirectionalIndex<FMIndex<> > > TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<ParentLinks<> > > > TIter;
+
+    DnaString text("GCTAAAA");
+    TIndex index(text);
+    TIter it(index);
+
+    SEQAN_ASSERT_EQ(goDown(it, "AAAT"), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "TAAA");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "AAAT");
+    SEQAN_ASSERT_EQ(goDown(it, "CG"), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "GCTAAA");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "AAATCG");
+    SEQAN_ASSERT_EQ(goUp(it), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "TAAA");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "AAAT");
+    SEQAN_ASSERT_EQ(goUp(it), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "");
+    SEQAN_ASSERT_EQ(length(_iter(it, Fwd()).history), 0u);
+    SEQAN_ASSERT_EQ(length(_iter(it, Rev()).history), 0u);
+}
+
 SEQAN_DEFINE_TEST(testBuild)
 {
         typedef String<char> TText;
