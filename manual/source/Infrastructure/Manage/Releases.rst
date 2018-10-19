@@ -75,5 +75,5 @@ They have the advantage of not requiring any build steps, simply copy the ``incl
 Application Package(s)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Beyond that package maintainers have the choice to create either a single package called **seqan-apps** that contains all the applications *or* a seperate package per application (with the respective name of that app). Based on the above instructions this should be fairly easy to accomplish.
+Beyond that package maintainers have the choice to create either a single package called **seqan-apps** that contains all the applications *or* a separate package per application (with the respective name of that app). Based on the above instructions this should be fairly easy to accomplish.
 

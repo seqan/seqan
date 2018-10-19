@@ -94,7 +94,7 @@ The following example shows how to read an GTF file:
     :fragment: LOAD
 
 The GFF-reader is also able to detect and read GTF files.
-The UCSC Genome Browser uses two seperate files, the ``kownGene.txt`` and ``knownIsoforms.txt``.
+The UCSC Genome Browser uses two separate files, the ``knownGene.txt`` and ``knownIsoforms.txt``.
 They must be read by using two different :dox:`UcscFileIn` objects (one for ``knownGene.txt`` and one for ``knownIsoforms.txt``).
 Finally you call :dox:`FragmentStore#readRecords` with both :dox:`UcscFileIn` objects.
 
@@ -102,7 +102,7 @@ Finally you call :dox:`FragmentStore#readRecords` with both :dox:`UcscFileIn` ob
 
     An annotation can be loaded without loading the corresponding contigs.
 
-    In that case empty contigs are created in the contigStore with names given in the annonation.
+    In that case empty contigs are created in the contigStore with names given in the annotation.
     A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
 
 Traversing the Annotation Tree
@@ -111,7 +111,7 @@ Traversing the Annotation Tree
 This section will illustrate how to use iterators to traverse the annotation tree.
 
 The annotation tree can be traversed and accessed with the :dox:`AnnotationTreeIterator AnnotationTree Iterator`.
-Again we use the metafunction `dox:ContainerConcept#Iterator Iterator` to determine the appropriate iterator type for our container.
+Again we use the metafunction :dox:`ContainerConcept#Iterator` to determine the appropriate iterator type for our container.
 A new AnnotationTree iterator can be obtained by calling :dox:`ContainerConcept#begin` with a reference to the :dox:`FragmentStore` and the ``AnnotationTree`` tag:
 
 .. includefrags:: demos/tutorial/genome_annotations/base.cpp
@@ -209,7 +209,7 @@ Assume we have loaded the file ``example.gtf`` with the following content to the
 
 .. includefrags:: demos/tutorial/genome_annotations/example.gtf
 
-We now want to iterate to the first exon and output a few information:
+We now want to iterate to the first exon and output a few pieces of information:
 
 .. includefrags:: demos/tutorial/genome_annotations/base.cpp
     :fragment: ACCESS
@@ -287,7 +287,7 @@ Assignment 4
        Transfer
 
      Objective
-       Write a small statistic tool to analyse a given set of annotations.
+       Write a small statistical tool to analyse a given set of annotations.
 
        #. Load the annotations given in the GTF file :download:`assignment_annotations.gtf <assignment_annotations.gtf>`.
        #. Output the average number of mRNAs for genes.

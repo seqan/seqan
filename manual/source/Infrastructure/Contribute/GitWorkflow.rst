@@ -69,7 +69,7 @@ The git history of your contribution should be concise. Please follow the follow
 
 * A single commit should be a logical unit; don't split a logical change over multiple commits and don't address different issues in one commit.
 * Do not include revisions to your changes in your history, i.e. if you receive comments on your PR, change your previous commits via ``git commit --amend`` or ``git rebase``, don't just push more changes onto the history.
-* Always split functional changes and style changes, including whitespace changes, into seperate commits.
+* Always split functional changes and style changes, including whitespace changes, into separate commits.
 * Follow our style for `commit messages <infra-contribute-git-commits>`_.
 * If you don't follow these rules your contribution will be squashed into a single commit by the project member doing the merge.
 
