@@ -257,14 +257,14 @@ chainSeedsGlobally(
 
             TIntermediateSolution sol(endPositionV(seed_k), qualityOfChainEndingIn[it_k->i3], it_k->i3);
             // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ")" << __LINE__  << std::endl;
-            intermediateSolutions.insert(sol);
+            TIntermediateSolutionsIterator itDel = intermediateSolutions.insert(sol);
 
+            itDel++; // go to first entry in L after currently inserted triple
             // Delete all intermediate solutions where end1 >= end1 of k and have a lower score than k
             // to ensure that the invariant of V(j) >= V(j'), with j' <= j holds.
             // Roughly then, there is no chain ending in a seed below the seed_k, that has a lower score
             // than the chain ending in seed_k. Thus the last value in `intermediateSolutions` will
             // always point to the optimal chain.
-            TIntermediateSolutionsIterator itDel = intermediateSolutions.upper_bound(referenceSolution);
             TIntermediateSolutionsIterator itDelEnd = intermediateSolutions.end();
             while (itDel != itDelEnd)
             {
@@ -274,6 +274,13 @@ chainSeedsGlobally(
                 {
                     // std::cout << "  ERASE (" << ptr->i1 << ", " << ptr->i2 << ", " << ptr->i3 << ")" << std::endl;
                     intermediateSolutions.erase(ptr);
+                }
+                else
+                {
+                    // since intermediateSolutions are sorted ascending by
+                    // ptr->i2 (score) we can break on the first entry
+                    // which is >= qualityOfChainEndingIn[it_k->i3]
+                    break;
                 }
             }
 
