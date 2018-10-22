@@ -263,7 +263,7 @@ Final alignment
 
 In the original algorithm, the steps from above would be repeated for the gaps between the anchors selected by the global chaining algorithm.
 In this tutorial we will skip the iterative step and directly compute the final alignment along the global map produced by the chaining algorithm.
-SeqAn offers already an alignment function for filling the gaps and connecting them with the anchors, which is available in the ``seeds`` module.
+SeqAn already offers an alignment function for filling the gaps and connecting them with the anchors, which is available in the ``seeds`` module.
 
 Assignment 5
 ^^^^^^^^^^^^
