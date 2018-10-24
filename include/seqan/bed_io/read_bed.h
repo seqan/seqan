@@ -189,41 +189,56 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
                      TForwardIter & iter,
                      CharString & buffer)
 {
-    IsNewline isNewline;
+    typedef AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> AssertNoNewline;
+
     // Read first three fields.
     _readBedRecordNoData(static_cast<BedRecord<Bed6 > &>(record), iter, buffer);
 
     // Read THICK BEGIN
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertNoNewline>());
     record.thickBegin = lexicalCast<int32_t>(buffer);
     skipOne(iter);
 
     // Read THICK END
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertNoNewline>());
     record.thickEnd = lexicalCast<int32_t>(buffer);
     skipOne(iter);
 
     // Read ITEM RGB
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, OrFunctor<EqualsChar<','>, AssertNoNewline> >());
     record.itemRgb.red = lexicalCast<int32_t>(buffer);
-    skipOne(iter);
+    if (value(iter) == ',')
+    {
+        skipOne(iter);
 
-    clear(buffer);
-    readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.itemRgb.green = lexicalCast<int32_t>(buffer);
-    skipOne(iter);
+        clear(buffer);
+        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertNoNewline>());
+        record.itemRgb.green = lexicalCast<int32_t>(buffer);
+        skipOne(iter);
 
-    clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
-    record.itemRgb.blue = lexicalCast<int32_t>(buffer);
-    skipOne(iter);
+        clear(buffer);
+        readUntil(buffer, iter, OrFunctor<IsTab, AssertNoNewline>());
+        record.itemRgb.blue = lexicalCast<int32_t>(buffer);
+        skipOne(iter);
+    }
+    else if (value(iter) == '\t' && record.itemRgb.red == 0)
+    {
+        skipOne(iter);
+        record.itemRgb.green = 0;
+        record.itemRgb.blue = 0;
+    }
+    else
+    {
+        throw ParseError("While parsing field 9 (itemRGB) in BED12 file: "
+                         "value must be either 0 or a list of three integer values r,g,b.");
+    }
 
     // Read BLOCK COUNT
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertNoNewline>());
     record.blockCount = lexicalCast<int32_t>(buffer);
     skipOne(iter);
 
@@ -231,32 +246,36 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
     for (int i = 0; i < record.blockCount - 1; ++i)
     {
         clear(buffer);
-        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertNoNewline>());
         appendValue(record.blockSizes, lexicalCast<int>(buffer));
         skipOne(iter);
     }
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+    readUntil(buffer, iter, OrFunctor<IsTab, OrFunctor<EqualsChar<','>, AssertNoNewline> >());
     appendValue(record.blockSizes, lexicalCast<int>(buffer));
+    if (value(iter) == ',')
+        skipOne(iter);
+
     skipOne(iter);
 
     // READ BLOCK STARTS
     for (int i = 0; i < record.blockCount - 1; ++i)
     {
         clear(buffer);
-        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Bed> >());
+        readUntil(buffer, iter, OrFunctor<EqualsChar<','>, AssertNoNewline>());
         appendValue(record.blockBegins, lexicalCast<int>(buffer));
         skipOne(iter);
     }
     clear(buffer);
-    readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+    readUntil(buffer, iter, OrFunctor<IsTab, OrFunctor<EqualsChar<','>, IsNewline> >());
     appendValue(record.blockBegins, lexicalCast<int>(buffer));
-    if (isNewline(value(iter)))
-    {
-        skipLine(iter);
-        return;
-    }
-    skipOne(iter);
+    if (!atEnd(iter) && value(iter) == ',')
+        skipOne(iter);
+
+    if (!atEnd(iter) && value(iter) == '\t')
+        skipOne(iter);
+
+    // DO NOT skip line here, because the rest of the line is written into record.data!
 }
 
 // The front-end function automatically calls the correct overload of
