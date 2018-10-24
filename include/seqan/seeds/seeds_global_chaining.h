@@ -145,7 +145,6 @@ chainSeedsGlobally(
         SEQAN_ASSERT_LT(beginPositionV(seed), endPositionV(seed)); // [beginV, endV) must be at least of length 1
         appendValue(seeds, seed);
     }
-    // std::copy(seedSet._seeds.begin(), seedSet._seeds.end(), begin(seeds, Standard()));
 
     // -----------------------------------------------------------------------
     // Step 1: Generate the sorted list of interval points.
@@ -196,11 +195,7 @@ chainSeedsGlobally(
         // The seed belonging ot the interval point is seed k.
         TSeed const & seed_k = seeds[it_k->i3];
 
-        // std::cout << "Processing interval point (" << it_k->i1 << ", " << it_k->i2 << ", " << it_k->i3 << ")" /*<< std::endl*/;
-        // std::cout << " of Seed" << it_k->i3 << ":" << beginPositionH(seed_k) << ","
-        //                                              << beginPositionV(seed_k) << ","
-        //                                              << endPositionH(seed_k) << ","
-        //                                              << endPositionV(seed_k) << "," << std::endl;
+        // std::cout << "Processing interval point (" << it_k->i1 << ", " << it_k->i2 << ", " << it_k->i3 << ")" << std::endl;
         if (it_k->i2) {  // Is is begin point.
             // Find the closest seed j (in y-dimension) with an
             // entry in L whose end coordinate is less or equal the begin position of k.
@@ -283,7 +278,6 @@ chainSeedsGlobally(
                     break;
                 }
             }
-
             // Check if the invariant holds, that the scores in L are in a non-decreasing order.
             SEQAN_ASSERT(_checkScoreInvariant(intermediateSolutions));
         }
