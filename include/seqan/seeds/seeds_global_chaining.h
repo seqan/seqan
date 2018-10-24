@@ -243,8 +243,7 @@ chainSeedsGlobally(
                 // both k and j end at the same vertical position, while
                 // the score of the chain ending in k is bigger than the
                 // score of the chain ending in j.
-                if (endPositionV(seed_j) > endPositionV(seed_k) ||
-                    (endPositionV(seed_j) == endPositionV(seed_k) && qualityOfChainEndingIn[it_k->i3] > it_j->i2))
+                if (endPositionV(seed_j) >= endPositionV(seed_k) && qualityOfChainEndingIn[it_k->i3] > it_j->i2)
                 {
                     TIntermediateSolution sol(endPositionV(seed_k), qualityOfChainEndingIn[it_k->i3], it_k->i3);
                     // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ")" << __LINE__  << std::endl;
