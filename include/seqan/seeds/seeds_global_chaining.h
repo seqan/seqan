@@ -138,8 +138,13 @@ chainSeedsGlobally(
     // We copy over the seeds from the seed set into an array of seeds.  We can then directly reference seed by their
     // index in this array which is simpler than handling iterators into the std::set<> of the seed set.
     String<TSeed> seeds;
-    resize(seeds, length(seedSet));
-    std::copy(seedSet._seeds.begin(), seedSet._seeds.end(), begin(seeds, Standard()));
+    reserve(seeds, length(seedSet));
+    for (auto const & seed : seedSet._seeds)
+    {
+        SEQAN_ASSERT_LT(beginPositionH(seed), endPositionH(seed)); // [beginH, endH) must be at least of length 1
+        SEQAN_ASSERT_LT(beginPositionV(seed), endPositionV(seed)); // [beginV, endV) must be at least of length 1
+        appendValue(seeds, seed);
+    }
 
     // -----------------------------------------------------------------------
     // Step 1: Generate the sorted list of interval points.
@@ -190,7 +195,7 @@ chainSeedsGlobally(
         // The seed belonging ot the interval point is seed k.
         TSeed const & seed_k = seeds[it_k->i3];
 
-        // std::cout << "Processing interval point (" << it->i1 << ", " << it->i2 << ", " << it->i3 << ")" << std::endl;
+        // std::cout << "Processing interval point (" << it_k->i1 << ", " << it_k->i2 << ", " << it_k->i3 << ")" << std::endl;
         if (it_k->i2) {  // Is is begin point.
             // Find the closest seed j (in y-dimension) with an
             // entry in L whose end coordinate is less or equal the begin position of k.
@@ -216,9 +221,9 @@ chainSeedsGlobally(
             SEQAN_ASSERT_LEQ(endPositionV(seeds[it_j->i3]), beginPositionV(seed_k));
             // Update the intermediate solution value for k and set predecessor.
             qualityOfChainEndingIn[it_k->i3] += it_j->i2;
-            // std::cout << "  UPDATE qualityOfChainEndingIn[" << it->i3 << "] == " << qualityOfChainEndingIn[it->i3] << std::endl;
+            // std::cout << "  UPDATE qualityOfChainEndingIn[" << it_k->i3 << "] == " << qualityOfChainEndingIn[it_k->i3] << std::endl;
             predecessor[it_k->i3] = it_j->i3;
-            // std::cout << "         predecessor[" << it->i3 << "] == " << itJ->i3 << std::endl;
+            // std::cout << "         predecessor[" << it_k->i3 << "] == " << it_j->i3 << std::endl;
         } else {  // Is end point.
             // Search for the first triple j in L with l_j >= l_k.
             // Or to put it in differently, find the first chain that ends
@@ -232,50 +237,46 @@ chainSeedsGlobally(
             TIntermediateSolution referenceSolution(endPositionV(seed_k), 0, std::numeric_limits<unsigned>::max());
             TIntermediateSolutionsIterator it_j = intermediateSolutions.lower_bound(referenceSolution);
 
-            // If there was a valid solution in L...
-            if (it_j != intermediateSolutions.end())
+            if (!(it_j == intermediateSolutions.begin() || intermediateSolutions.empty())) // else, seed k is inserted anyway
             {
-                // Found this intermediate solution.
-                SEQAN_ASSERT_GEQ(it_j->i1, endPositionV(seed_k));
-                TSeed const & seed_j = seeds[it_j->i3];
-                // ... start a new chain at k if the vertical end of k is
-                // above the vertical end of the chain ending in j or if
-                // both k and j end at the same vertical position, while
-                // the score of the chain ending in k is bigger than the
-                // score of the chain ending in j.
-                if (endPositionV(seed_j) > endPositionV(seed_k) ||
-                    (endPositionV(seed_j) == endPositionV(seed_k) && qualityOfChainEndingIn[it_k->i3] > it_j->i2))
-                {
-                    TIntermediateSolution sol(endPositionV(seed_k), qualityOfChainEndingIn[it_k->i3], it_k->i3);
-                    // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ")" << __LINE__  << std::endl;
-                    intermediateSolutions.insert(sol);
+                --it_j;
+                SEQAN_ASSERT_LT(it_j->i1, endPositionV(seed_k));
 
-                    // Delete all intermediate solutions where end1 >= end1 of k and have a lower score than k
-                    // to ensure that the invariant of V(j) >= V(j'), with j' <= j holds.
-                    // Roughly then, there is no chain ending in a seed below the seed_k, that has a lower score
-                    // than the chain ending in seed_k. Thus the last value in `intermediateSolutions` will
-                    // always point to the optimal chain.
-                    TIntermediateSolutionsIterator itDel = intermediateSolutions.upper_bound(referenceSolution);
-                    TIntermediateSolutionsIterator itDelEnd = intermediateSolutions.end();
-                    while (itDel != itDelEnd)
-                    {
-                        TIntermediateSolutionsIterator ptr = itDel;
-                        ++itDel;
-                        if (qualityOfChainEndingIn[it_k->i3] > ptr->i2)
-                        {
-                            // std::cout << "  ERASE (" << ptr->i1 << ", " << ptr->i2 << ", " << ptr->i3 << ")" << std::endl;
-                            intermediateSolutions.erase(ptr);
-                        }
-                    }
-                }
-            } // ... otherwise, add a triple for k in L if either L is empty or the last triple in
-              // L has a lower score than the chain ending in k.
-            else if (intermediateSolutions.empty() || (--it_j)->i2 < qualityOfChainEndingIn[it_k->i3])
+                // Found an intermediate solution.
+                // ... start a new chain at k if
+                // the score of the chain ending in k is bigger than the
+                // score of the chain ending in j. If not continue with for loop
+                if (qualityOfChainEndingIn[it_k->i3] <= it_j->i2)
+                    continue;
+            }
+
+            TIntermediateSolution sol(endPositionV(seed_k), qualityOfChainEndingIn[it_k->i3], it_k->i3);
+            // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ")" << __LINE__  << std::endl;
+            TIntermediateSolutionsIterator itDel = intermediateSolutions.insert(sol);
+
+            itDel++; // go to first entry in L after currently inserted triple
+            // Delete all intermediate solutions where end1 >= end1 of k and have a lower score than k
+            // to ensure that the invariant of V(j) >= V(j'), with j' <= j holds.
+            // Roughly then, there is no chain ending in a seed below the seed_k, that has a lower score
+            // than the chain ending in seed_k. Thus the last value in `intermediateSolutions` will
+            // always point to the optimal chain.
+            TIntermediateSolutionsIterator itDelEnd = intermediateSolutions.end();
+            while (itDel != itDelEnd)
             {
-                // None found.  Insert a new triple for seed k.
-                TIntermediateSolution sol(endPositionV(seed_k), qualityOfChainEndingIn[it_k->i3], it_k->i3);
-                // std::cout << "  INSERT (" << sol.i1 << ", " << sol.i2 << ", " << sol.i3 << ") " << __LINE__ << std::endl;
-                intermediateSolutions.insert(sol);
+                TIntermediateSolutionsIterator ptr = itDel;
+                ++itDel;
+                if (qualityOfChainEndingIn[it_k->i3] > ptr->i2)
+                {
+                    // std::cout << "  ERASE (" << ptr->i1 << ", " << ptr->i2 << ", " << ptr->i3 << ")" << std::endl;
+                    intermediateSolutions.erase(ptr);
+                }
+                else
+                {
+                    // since intermediateSolutions are sorted ascending by
+                    // ptr->i2 (score) we can break on the first entry
+                    // which is >= qualityOfChainEndingIn[it_k->i3]
+                    break;
+                }
             }
             // Check if the invariant holds, that the scores in L are in a non-decreasing order.
             SEQAN_ASSERT(_checkScoreInvariant(intermediateSolutions));
