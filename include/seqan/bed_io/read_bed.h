@@ -224,7 +224,7 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
         record.itemRgb.blue = lexicalCast<int32_t>(buffer);
         skipOne(iter);
     }
-    else if (value(iter) == '\t' && record.itemRgb.red == 0)
+    else if (value(iter) == '\t' && record.itemRgb.red == 0) // allow a single '0' value for 0,0,0
     {
         skipOne(iter);
         record.itemRgb.green = 0;
@@ -253,7 +253,7 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, OrFunctor<EqualsChar<','>, AssertNoNewline> >());
     appendValue(record.blockSizes, lexicalCast<int>(buffer));
-    if (value(iter) == ',')
+    if (value(iter) == ',') // allow trailing comma at the end of the list
         skipOne(iter);
 
     skipOne(iter);
@@ -269,13 +269,14 @@ _readBedRecordNoData(BedRecord<Bed12> & record,
     clear(buffer);
     readUntil(buffer, iter, OrFunctor<IsTab, OrFunctor<EqualsChar<','>, IsNewline> >());
     appendValue(record.blockBegins, lexicalCast<int>(buffer));
-    if (!atEnd(iter) && value(iter) == ',')
+    if (!atEnd(iter) && value(iter) == ',') // allow trailing comma at the end of the list
         skipOne(iter);
 
     if (!atEnd(iter) && value(iter) == '\t')
         skipOne(iter);
 
-    // DO NOT skip line here, because the rest of the line is written into record.data!
+    // DO NOT skip line here, because the rest of the line (empty or not) is written
+    // into record.data in the readRecord function below.
 }
 
 // The front-end function automatically calls the correct overload of
