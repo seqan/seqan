@@ -219,6 +219,30 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.data, "data again!");
 }
 
+SEQAN_DEFINE_TEST(test_bed_read_bed12_ucsc_compatibility)
+{
+    // Prepare in-memory data.
+    String<char> test = "I\t123\t456\tNAME\t3\t-\t33\t66\t255,0,0\t3\t10,11,12\t1,2,3\n" // no text after 12th column
+                        "II\t999\t1000\tNAME2\t2e5\t.\t44\t55\t0\t3\t3,4,5\t4,5,6\tdata again!\n" // RGB = 0
+                        "III\t1001\t2000\tNAME3\t2e4\t.\t22\t23\t0,0,0\t3\t12,13,14,\t7,8,9,\n"; // additional comma
+
+    // Iterator to use
+    DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
+
+    // The record to load into.
+    seqan::BedRecord<seqan::Bed12> record;
+    CharString buffer;
+
+    // Perform tests.
+    readRecord(record, buffer, iter, seqan::Bed());
+
+    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT(record.itemRgb == BedRgb(0,0,0));
+    SEQAN_ASSERT_EQ(record.data, "data again!");
+
+    readRecord(record, buffer, iter, seqan::Bed());
+}
+
 SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
 {
     seqan::BedRecord<seqan::Bed3> record1;
@@ -480,6 +504,7 @@ SEQAN_BEGIN_TESTSUITE(test_bed_io)
     SEQAN_CALL_TEST(test_bed_read_bed5_record);
     SEQAN_CALL_TEST(test_bed_read_bed6_record);
     SEQAN_CALL_TEST(test_bed_read_bed12_record);
+    SEQAN_CALL_TEST(test_bed_read_bed12_ucsc_compatibility);
 
     // Writing of BED records.
     SEQAN_CALL_TEST(test_bed_write_bed3_record);
