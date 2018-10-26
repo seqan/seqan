@@ -17,7 +17,7 @@ Duration
   4h
 
 Prerequisites
-  :ref:`tutorial-datastructures-store-genome-annotations`, :ref:`tutorial-datastructures-store-fragment-store`, experience with OpenMP (optional)
+  :ref:`tutorial-getting-started-parsing-command-line-arguments`, :ref:`tutorial-algorithms-alignment-pairwise-sequence-alignment`, :ref:`tutorial-algorithms-seed-extension`, :ref:`tutorial-datastrucures-indices-q-gram-index`, :ref:`tutorial-io-sequence-io`
 
 Introduction
 """"""""""""
@@ -35,13 +35,13 @@ It is an iterative algorithm with the following three steps.
     #. Compute final alignment along the global map
 
 The CHAOS chaining finds local alignments depending on three parameters: the seed size (of the q-grams), the distance and the gap parameter.
-The distance parameter limits the distance between two endpoints of two neighboring seeds along the diagonal.
+The distance parameter limits the distance between two endpoints of two neighbouring seeds along the diagonal.
 The band limits the shift of two seeds in vertical and horizontal direction of the matrix.
-In order to find a good tradeoff between speed and sensitivity the algorithm performs step 1 and 2 recursively until two neighboring anchors are less than a threshold apart.
-In the first iteration the parameters are set more restrictive (high seed size, smaller distance and gap size.)
-For every gap that is bigger than the given threshold, the parameters are set more permissive (smaller seed size and higher distance and gap sizes).
+In order to find a good tradeoff between speed and sensitivity the algorithm performs step 1 and 2 recursively until two neighbouring anchors are less than a threshold apart.
+In the first iteration the parameters are set more restrictive (large seed size, smaller distance and gap size.)
+For every gap that is bigger than the given threshold, the parameters are set more permissive (smaller seed size and larger distance and gap sizes).
 
-Finally, if the global map has been constructed, the algorithm performs an limited alignment around the anchors and connects the anchors with a standard alignment algorithm.
+Finally, after the global map has been constructed, the algorithm performs a limited alignment around the anchors and connects the anchors with a standard alignment algorithm.
 
 Main method and ArgumentParser
 """"""""""""""""""""""""""""""
@@ -57,7 +57,11 @@ We create a ``LaganOption`` class where we store the arguments passed to our too
 .. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
     :fragment: lagan_option
 
-The we read in the arguments using SeqAn's :dox:`ArgumentParser`:
+After that, we parse given command line arguments using SeqAn's :dox:`ArgumentParser`.
+Firstly, we include the source code for the argument parser by adding the following include directory:
+
+.. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
+    :fragment: include_arg_parse
 
 .. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
     :fragment: parse_arguments
@@ -66,8 +70,12 @@ The we read in the arguments using SeqAn's :dox:`ArgumentParser`:
 
     If you want to learn more about parsing arguments with SeqAn read the :ref:`tutorial-getting-started-parsing-command-line-arguments` tutorial.
 
-Now we have setup our initial tool and we can start implementing the algorithm.
+With this, we have set up our initial tool. Let's start implementing the algorithm.
 To do so, we need to first load the sequences using the class :dox:`SeqFileIn`.
+We can get access to the data structures and methods by including the following modules:
+
+.. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
+    :fragment: include_seq_io
 
 Assignment 1
 ^^^^^^^^^^^^
@@ -119,7 +127,11 @@ SeqAn provides for this kind of task indexes which can be queried efficiently to
 
     There are several index implementations and we recommend to read :ref:`tutorial-datastructures-indices` to learn more about the available index data structures.
 
-In this tutorial we are going to use a :dox:`IndexQGram` (see :ref:`tutorial-datastrucures-indices-q-gram-index` for more information).
+In this tutorial we are going to use a :dox:`IndexQGram` (see :ref:`tutorial-datastrucures-indices-q-gram-index` for more information), which can be included with the following module:
+
+.. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
+    :fragment: include_index
+
 This index type will create a directory with all distinct q-grams and stores the positions of the indexed sequence, where a specific q-gram occurs.
 It therefor will generate a suffix array, which is sorted by the first ```q`` symbols of every suffix.
 
@@ -185,6 +197,9 @@ SeqAn offers a data structure called :dox:`SeedSet` for this.
 The following snippet shows the declaration of a ``SeedSet``:
 
 .. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
+    :fragment: include_seeds
+
+.. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
     :fragment: declare_seed_set
 
 The first line declares the type of the seed we want to use.
@@ -247,8 +262,8 @@ Final alignment
 """""""""""""""
 
 In the original algorithm, the steps from above would be repeated for the gaps between the anchors selected by the global chaining algorithm.
-In this tutorial we will skip the iterative step and directly compute the final alignment along the global map produced by the chaining algorithm.
-SeqAn offers already an alignment function for filling the gaps and connecting them with the anchors.
+In this tutorial we skip the iterative step and directly compute the final alignment along the global map produced by the chaining algorithm.
+SeqAn already offers an alignment function for filling the gaps and connecting them with the anchors, which is available in the ``seeds`` module.
 
 Assignment 5
 ^^^^^^^^^^^^
