@@ -2365,7 +2365,7 @@ inline void fail()
 #define SEQAN_END_TESTSUITE \
     return 0;                                   \
     }
-#define SEQAN_CALL_TEST(test_name) do { SEQAN_TEST_ ## test_name(); } while (false)
+#define SEQAN_CALL_TEST(test_name) do { SEQAN_TEST_ ## test_name<true>(); } while (false)
 #define SEQAN_SKIP_TEST do {} while (false)
 
 #endif  // #if !SEQAN_ENABLE_TESTING
