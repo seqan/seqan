@@ -35,13 +35,13 @@ It is an iterative algorithm with the following three steps.
     #. Compute final alignment along the global map
 
 The CHAOS chaining finds local alignments depending on three parameters: the seed size (of the q-grams), the distance and the gap parameter.
-The distance parameter limits the distance between two endpoints of two neighboring seeds along the diagonal.
+The distance parameter limits the distance between two endpoints of two neighbouring seeds along the diagonal.
 The band limits the shift of two seeds in vertical and horizontal direction of the matrix.
-In order to find a good tradeoff between speed and sensitivity the algorithm performs step 1 and 2 recursively until two neighboring anchors are less than a threshold apart.
-In the first iteration the parameters are set more restrictive (high seed size, smaller distance and gap size.)
-For every gap that is bigger than the given threshold, the parameters are set more permissive (smaller seed size and higher distance and gap sizes).
+In order to find a good tradeoff between speed and sensitivity the algorithm performs step 1 and 2 recursively until two neighbouring anchors are less than a threshold apart.
+In the first iteration the parameters are set more restrictive (large seed size, smaller distance and gap size.)
+For every gap that is bigger than the given threshold, the parameters are set more permissive (smaller seed size and larger distance and gap sizes).
 
-Finally, if the global map has been constructed, the algorithm performs a limited alignment around the anchors and connects the anchors with a standard alignment algorithm.
+Finally, after the global map has been constructed, the algorithm performs a limited alignment around the anchors and connects the anchors with a standard alignment algorithm.
 
 Main method and ArgumentParser
 """"""""""""""""""""""""""""""
@@ -57,8 +57,8 @@ We create a ``LaganOption`` class where we store the arguments passed to our too
 .. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
     :fragment: lagan_option
 
-Then we read in the arguments using SeqAn's :dox:`ArgumentParser`.
-First we include the source code for the argument parser by adding the following include directory:
+After that, we parse given command line arguments using SeqAn's :dox:`ArgumentParser`.
+Firstly, we include the source code for the argument parser by adding the following include directory:
 
 .. includefrags:: demos/tutorial/simple_genome_alignment/lagan.cpp
     :fragment: include_arg_parse
@@ -70,7 +70,7 @@ First we include the source code for the argument parser by adding the following
 
     If you want to learn more about parsing arguments with SeqAn read the :ref:`tutorial-getting-started-parsing-command-line-arguments` tutorial.
 
-Now we have setup our initial tool and we can start implementing the algorithm.
+With this, we have set up our initial tool. Let's start implementing the algorithm.
 To do so, we need to first load the sequences using the class :dox:`SeqFileIn`.
 We can get access to the data structures and methods by including the following modules:
 
@@ -262,7 +262,7 @@ Final alignment
 """""""""""""""
 
 In the original algorithm, the steps from above would be repeated for the gaps between the anchors selected by the global chaining algorithm.
-In this tutorial we will skip the iterative step and directly compute the final alignment along the global map produced by the chaining algorithm.
+In this tutorial we skip the iterative step and directly compute the final alignment along the global map produced by the chaining algorithm.
 SeqAn already offers an alignment function for filling the gaps and connecting them with the anchors, which is available in the ``seeds`` module.
 
 Assignment 5
