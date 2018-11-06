@@ -96,11 +96,10 @@ public:
     // Constructors
     // ------------------------------------------------------------------------
 
-   
-    Iter() : data_container()
-    {
-        data_iterator = TIterator();
-    }
+
+    Iter() : data_container(),
+             data_iterator()
+    {}
 
     /*
     // TODO(doering): welches "begin" zur initialisierung von "data_iterator" aufrufen?
@@ -116,15 +115,13 @@ public:
     Iter(typename Parameter_<TContainer>::Type container_, TIterator it_)
             : data_container(_toPointer(container_)),
               data_iterator(it_)
-    {
-    }
+    {}
 
    
     Iter(Iter const & other_)
             : data_container(other_.data_container),
               data_iterator(other_.data_iterator)
-    {
-    }
+    {}
 
     // TODO(holtgrew): Use this technique to the other Iter specializations.
     template <typename TContainer_, typename TIterator2>
