@@ -79,6 +79,9 @@ seqan_add_app_test (tree_recon)
 # Include executable seqan_tcoffee in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} tree_recon CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (tree_recon)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------

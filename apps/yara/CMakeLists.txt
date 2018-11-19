@@ -157,6 +157,10 @@ seqan_add_app_test (yara)
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES}
                            yara_indexer yara_mapper CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (yara_indexer)
+seqan_add_ctd_test (yara_mapper)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
