@@ -96,6 +96,10 @@ void Test_VertexIterator()
     goBegin(it2);
     SEQAN_ASSERT(it2 != it);
     SEQAN_ASSERT(&hostGraph(it) == &g);
+
+    TGraph emptyGraph;
+    TVertexIterator emptyVertexIter(emptyGraph);
+    SEQAN_ASSERT(atEnd(emptyVertexIter) == true);
 }
 
 void Test_TreeInternalVertexIterator()
@@ -131,6 +135,10 @@ void Test_TreeInternalVertexIterator()
     itV--;
     SEQAN_ASSERT(getValue(itV) == 0);
     SEQAN_ASSERT(atBegin(itV) == true);
+
+    TTree emptyTree;
+    TVertexIterator emptyVertexIter(emptyTree);
+    SEQAN_ASSERT(atEnd(emptyVertexIter) == true);
 }
 
 template <typename TGraphType>
@@ -277,6 +285,10 @@ void Test_EdgeIterator()
     goBegin(it2);
     SEQAN_ASSERT(it2 != it);
     SEQAN_ASSERT(&hostGraph(it) == &g);
+
+    TGraph emptyGraph;
+    TEdgeIterator emptyEdgeIter(emptyGraph);
+    SEQAN_ASSERT(atEnd(emptyEdgeIter) == true);
 }
 
 template <typename TGraphType>

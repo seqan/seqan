@@ -92,8 +92,10 @@ public:
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_vertex,v))
+        data_edge()
     {
+        if (!empty(_graph.data_vertex))
+            data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -155,8 +157,10 @@ public:
     Iter(TGraph const& _graph, TVertexDescriptor const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_vertex,v))
+        data_edge()
     {
+        if (!empty(_graph.data_vertex))
+            data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -218,8 +222,10 @@ public:
     Iter(TGraph const& _graph, TVertexDescriptor const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_vertex,v))
+        data_edge()
     {
+        if (!empty(_graph.data_vertex))
+            data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -289,9 +295,9 @@ public:
         TVertexDescriptor_ nilVal = getNil<TVertexDescriptor_>();
         TSize_ table_length = ValueSize<TAlphabet>::VALUE;
         TSize_ pos = 0;
-        while (    (pos < table_length) &&
-                (_graph.data_vertex[v].data_edge[pos].data_target == nilVal))
+        if (!empty(_graph.data_vertex))
         {
+            while (pos < table_length && _graph.data_vertex[v].data_edge[pos].data_target == nilVal)
                 ++pos;
         }
         data_pos = pos;
@@ -365,8 +371,10 @@ public:
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_model.data_vertex,v))
+        data_edge()
     {
+        if (!empty(_graph.data_model.data_vertex))
+            data_edge = getValue(_graph.data_model.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
