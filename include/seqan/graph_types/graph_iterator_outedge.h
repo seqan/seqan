@@ -94,8 +94,8 @@ public:
         data_source(v),
         data_edge()
     {
-        if (!empty(_graph.data_vertex))
-            data_edge = getValue(_graph.data_vertex, v);
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -105,7 +105,8 @@ public:
     {
     }
 
-    ~Iter() {
+    ~Iter()
+    {
     }
 
     Iter const&    operator = (Iter const & _other) {
@@ -159,8 +160,8 @@ public:
         data_source(v),
         data_edge()
     {
-        if (!empty(_graph.data_vertex))
-            data_edge = getValue(_graph.data_vertex, v);
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -170,7 +171,8 @@ public:
     {
     }
 
-    ~Iter() {
+    ~Iter()
+    {
     }
 
     Iter const&    operator = (Iter const & _other) {
@@ -224,8 +226,8 @@ public:
         data_source(v),
         data_edge()
     {
-        if (!empty(_graph.data_vertex))
-            data_edge = getValue(_graph.data_vertex, v);
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -235,7 +237,8 @@ public:
     {
     }
 
-    ~Iter() {
+    ~Iter()
+    {
     }
 
     Iter const&    operator = (Iter const & _other) {
@@ -295,11 +298,11 @@ public:
         TVertexDescriptor_ nilVal = getNil<TVertexDescriptor_>();
         TSize_ table_length = ValueSize<TAlphabet>::VALUE;
         TSize_ pos = 0;
-        if (!empty(_graph.data_vertex))
-        {
-            while (pos < table_length && _graph.data_vertex[v].data_edge[pos].data_target == nilVal)
-                ++pos;
-        }
+
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        while (pos < table_length && _graph.data_vertex[v].data_edge[pos].data_target == nilVal)
+            ++pos;
+
         data_pos = pos;
         data_begin = pos;
         data_end = table_length;
@@ -373,8 +376,8 @@ public:
         data_source(v),
         data_edge()
     {
-        if (!empty(_graph.data_model.data_vertex))
-            data_edge = getValue(_graph.data_model.data_vertex, v);
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_model.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_model.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
