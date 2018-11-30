@@ -66,9 +66,7 @@ public:
     TVertexDescriptor_ data_source;
     TEdgeDescriptor_ data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
