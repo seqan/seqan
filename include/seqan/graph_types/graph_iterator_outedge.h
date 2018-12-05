@@ -85,9 +85,7 @@ public:
     TVertexDescriptor_ data_source;
     TEdgeDescriptor_ data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
@@ -151,9 +149,7 @@ public:
     TVertexDescriptor data_source;
     TEdgeDescriptor data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph const& _graph, TVertexDescriptor const v) :
         data_host(&_graph),
@@ -217,9 +213,7 @@ public:
     TVertexDescriptor data_source;
     TEdgeDescriptor data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph const& _graph, TVertexDescriptor const v) :
         data_host(&_graph),
@@ -287,9 +281,7 @@ public:
     TSize_ data_begin;
     TSize_ data_end;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
@@ -367,9 +359,7 @@ public:
     TVertexDescriptor_ data_source;
     TEdgeDescriptor_ data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
