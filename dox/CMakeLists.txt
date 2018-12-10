@@ -21,6 +21,17 @@ if (NOT PYTHONINTERP_FOUND OR NOT(${PYTHON_VERSION_MAJOR} MATCHES "2"))
     return ()
 endif ()
 
+# require jinja2 python package
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import jinja2"
+                RESULT_VARIABLE PYTHON_JINJA2_NOT_FOUND
+                OUTPUT_VARIABLE _IGNORED
+                ERROR_VARIABLE _IGNORED)
+
+if (PYTHON_JINJA2_NOT_FOUND)
+  message (STATUS "  The Python package jinja2 is required for building dox ('import jinja2' failed). (skip the tests)")
+  return ()
+endif (PYTHON_JINJA2_NOT_FOUND)
+
 # Add building the documentation as a test.
 add_test (build_dox
   ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
