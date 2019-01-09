@@ -233,6 +233,8 @@ yieldProcessor()
     __asm__ __volatile__ ("or 27,27,27" ::: "memory");
 #elif defined(__SSE2__)  // AMD and Intel
     _mm_pause();
+#elif defined(__ia64__)  // IA64
+    __asm__ __volatile__ ("hint @pause");
 #else  // everything else.
     asm volatile ("nop" ::: "memory");  // default operation - does nothing => Might lead to passive spinning.
 #endif
