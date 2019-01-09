@@ -179,7 +179,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-rate", "0");
     setMaxValue(parser, "strata-rate", "10");
-    setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
     addOption(parser, ArgParseOption("sc", "strata-count", "Consider suboptimal alignments within this absolute number \
                                       of errors from the optimal alignment. Increase this threshold to increase \
@@ -187,7 +186,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-count", "0");
     setMaxValue(parser, "strata-count", "127");
-    setDefaultValue(parser, "strata-count", 0);
 
     addOption(parser, ArgParseOption("y", "sensitivity", "Sensitivity with respect to edit distance. \
                                                           Full sensitivity guarantees to find all considered alignments \
