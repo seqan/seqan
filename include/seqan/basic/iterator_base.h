@@ -262,7 +262,7 @@ operator*(Iter<TContainer, TSpec> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-inline Iter<TContainer, TSpec> const &
+inline Iter<TContainer, TSpec> &
 operator++(Iter<TContainer, TSpec> & me)
 {
     goNext(me);
@@ -283,7 +283,7 @@ operator++(Iter<TContainer, TSpec> & me, int)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-inline Iter<TContainer, TSpec> const &
+inline Iter<TContainer, TSpec> &
 operator--(Iter<TContainer, TSpec> & me)
 {
     goPrevious(me);
@@ -317,7 +317,7 @@ operator+(Iter<TContainer, TSpec> const & me, TSize size)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TSize>
-inline Iter<TContainer, TSpec> const &
+inline Iter<TContainer, TSpec> &
 operator+=(Iter<TContainer, TSpec> & me, TSize size)
 {
     goFurther(me, size);
