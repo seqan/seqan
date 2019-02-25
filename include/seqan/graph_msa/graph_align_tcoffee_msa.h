@@ -426,21 +426,6 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         }
     }
 
-    // Include a T-Coffee library
-    if (!empty(msaOpt.libfiles))
-    {
-        typedef typename Iterator<String<std::string> const, Standard>::Type TIter;
-        TIter begIt = begin(msaOpt.libfiles, Standard());
-        TIter begItEnd = end(msaOpt.libfiles, Standard());
-        for (; begIt != begItEnd; goNext(begIt))
-        {
-            std::ifstream strm_lib;
-            strm_lib.open((*begIt).c_str(), std::ios_base::in | std::ios_base::binary);
-            read(strm_lib, matches, scores, sequenceNames, TCoffeeLib());
-            strm_lib.close();
-        }
-    }
-
     // Include MUMmer segment matches
     if (!empty(msaOpt.mummerfiles))
     {
@@ -471,17 +456,33 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         }
     }
 
+    // Re-score the matches.
+    TGraph g(seqSet);
+    if (msaOpt.rescore) // in current implementation always true
+        _scoreMatches(stringSet(g), msaOpt.sc, matches, scores);
+
+    // Include a T-Coffee library.
+    if (!empty(msaOpt.libfiles))
+    {
+        typedef typename Iterator<String<std::string> const, Standard>::Type TIter;
+        TIter begIt = begin(msaOpt.libfiles, Standard());
+        TIter begItEnd = end(msaOpt.libfiles, Standard());
+        for (; begIt != begItEnd; goNext(begIt))
+        {
+            std::ifstream strm_lib;
+            strm_lib.open((*begIt).c_str(), std::ios_base::in | std::ios_base::binary);
+            read(strm_lib, matches, scores, sequenceNames, TCoffeeLib());
+            strm_lib.close();
+        }
+    }
+
 #ifdef SEQAN_TCOFFEE_DEBUG
     std::cout << std::setw(30) << std::left << "Segment-match generation:" << std::setw(10) << std::right << sysTime() - segmentGenerationTime << "  s" << std::endl;
     std::cout << std::setw(30) << std::left << "Number of segment-matches:" << std::setw(10) << std::right << length(matches) << std::endl;
 #endif
 
-    // Use these segment matches for the initial alignment graph
-    TGraph g(seqSet);
-    if (!msaOpt.rescore)
-        buildAlignmentGraph(matches, scores, g, FractionalScore());
-    else
-        buildAlignmentGraph(matches, scores, g, msaOpt.sc, ReScore());
+    // Use these segment matches for the initial alignment graph.
+    buildAlignmentGraph(matches, scores, g, FractionalScore());
     clear(matches);
     clear(scores);
 

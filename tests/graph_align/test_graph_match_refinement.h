@@ -410,7 +410,6 @@ getAlignments(String<TAlign> & alis, StringSet<TSequence, TSeqSpec> & seq, TScor
 
 SEQAN_DEFINE_TEST(RefineAlign)
 {
-    SEQAN_SKIP_TEST;
     typedef String<char> TString;
     typedef StringSet<TString> TStringSet;
     typedef StringSet<TString,Dependent<> > TDepStringSet;
