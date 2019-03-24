@@ -41,6 +41,14 @@
 
 #include <seqan/platform.h>
 
+#if defined(STDLIB_VS)
+#include <io.h>
+#include <Windows.h>
+#else
+#include <unistd.h>
+#include <sys/ioctl.h>
+#endif  // defined(STDLIB_VS)
+
 namespace seqan {
 
 // ============================================================================
@@ -78,8 +86,6 @@ namespace seqan {
 
 #if defined(STDLIB_VS)
 
-#include <io.h>
-
 inline bool isTerminal()
 {
     return false;  // Windows does not understand ANSI codes.
@@ -88,8 +94,6 @@ inline bool isTerminal()
 #endif  // #if defined(STDLIB_VS)
 
 #if !defined(STDLIB_VS)
-
-#include <unistd.h>
 
 inline bool isTerminal()
 {
@@ -171,8 +175,6 @@ inline bool isAnsiColorTerminal()
 
 #if defined(STDLIB_VS)
 
-#include <Windows.h>
-
 // NOTE: cols actually is the buffer size :(
 inline bool getTerminalSize(unsigned & cols, unsigned & rows)
 {
@@ -190,9 +192,6 @@ inline bool getTerminalSize(unsigned & cols, unsigned & rows)
 #endif  // #if defined(STDLIB_VS)
 
 #if !defined(STDLIB_VS)
-
-#include <sys/ioctl.h>
-#include <unistd.h>
 
 inline bool getTerminalSize(unsigned & cols, unsigned & rows)
 {
