@@ -370,6 +370,20 @@ position(Iter<TContainer, TSpec> const & me,
     return position(me);
 }
 
+// ----------------------------------------------------------------------------
+// Function begin()
+// ----------------------------------------------------------------------------
+
+// This makes `begin` SFINAE friendly. Without this `begin` on iterators gives
+// hard errors and std::ranges::Range on seqan iterators will not work.
+template <typename T, typename TSpec>
+inline void begin(Iter<T, TSpec> &) = delete;
+
+// This makes `begin` SFINAE friendly. Without this `begin` on iterators gives
+// hard errors and std::ranges::Range on seqan iterators will not work.
+template <typename T, typename TSpec>
+inline void begin(Iter<T, TSpec> const &) = delete;
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
