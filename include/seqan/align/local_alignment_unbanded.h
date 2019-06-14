@@ -320,13 +320,15 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
 // Function localAlignment()             [unbanded, SIMD version, GapsH, GapsV]
 // ----------------------------------------------------------------------------
 
-template <typename TGapSequenceH, typename TSetSpecH,
-          typename TGapSequenceV, typename TSetSpecV,
+template <typename TSequenceH,
+          typename TSequenceV,
           typename TScoreValue, typename TScoreSpec,
           typename TAlgoTag>
-inline auto
-localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
-               StringSet<TGapSequenceV, TSetSpecV> & gapSeqSetV,
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSequenceH>>, Is<ContainerConcept<typename Value<TSequenceH>::Type>>>,
+                         And<Is<ContainerConcept<TSequenceV>>, Is<ContainerConcept<typename Value<TSequenceV>::Type>>>
+                        >, String<TScoreValue>)
+localAlignment(TSequenceH & gapSeqSetH,
+               TSequenceV & gapSeqSetV,
                Score<TScoreValue, TScoreSpec> const & scoringScheme,
                TAlgoTag const & /*algoTag*/)
 {
@@ -334,6 +336,22 @@ localAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type                      TGapModel;
 
     return _alignWrapper(gapSeqSetH, gapSeqSetV, scoringScheme, TAlignConfig2(), TGapModel());
+}
+
+template <typename TSequenceH,
+          typename TSequenceV,
+          typename TScoreValue, typename TScoreSpec>
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSequenceH>>, Is<ContainerConcept<typename Value<TSequenceH>::Type>>>,
+                         And<Is<ContainerConcept<TSequenceV>>, Is<ContainerConcept<typename Value<TSequenceV>::Type>>>
+                        >, String<TScoreValue>)
+localAlignment(TSequenceH & gapSeqSetH,
+               TSequenceV & gapSeqSetV,
+               Score<TScoreValue, TScoreSpec> const & scoringScheme)
+{
+   if (_usesAffineGaps(scoringScheme, source(gapSeqSetH[0]), source(gapSeqSetV[0])))
+        return localAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, AffineGaps());
+   else
+        return localAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, LinearGaps());
 }
 
 // ----------------------------------------------------------------------------

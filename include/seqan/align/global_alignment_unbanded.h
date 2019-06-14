@@ -742,14 +742,17 @@ String<TScoreValue> globalAlignmentScore(TString1 const & stringH,
 // Function globalAlignment()            [unbanded, SIMD version, GapsH, GapsV]
 // ----------------------------------------------------------------------------
 
-template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
-          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+template <typename TSeqH,
+          typename TSeqV,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
           typename TAlgoTag>
-inline auto
-globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
-                StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                      String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
                 TAlgoTag const & /*algoTag*/)
@@ -763,14 +766,18 @@ globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
 }
 
 // Interface without algorithm tag.
-template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
-          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+template <typename TSeqH,
+          typename TSeqV,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
-String<TScoreValue> globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
-                                    StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
-                                    Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                    AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
+                Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
 {
     if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
         return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, NeedlemanWunsch());
@@ -779,12 +786,16 @@ String<TScoreValue> globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSet
 }
 
 // Interface without AlignConfig<> and algorithm tag.
-template <typename TSequenceH, typename TGapsSpecH, typename TSetSpecH,
-          typename TSequenceV, typename TGapsSpecV, typename TSetSpecV,
+template <typename TSeqH,
+          typename TSeqV,
           typename TScoreValue, typename TScoreSpec>
-String<TScoreValue> globalAlignment(StringSet<Gaps<TSequenceH, TGapsSpecH>, TSetSpecH> & gapSeqSetH,
-                                    StringSet<Gaps<TSequenceV, TGapsSpecV>, TSetSpecV> & gapSeqSetV,
-                                    Score<TScoreValue, TScoreSpec> const & scoringScheme)
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
+                Score<TScoreValue, TScoreSpec> const & scoringScheme)
 {
     AlignConfig<> alignConfig;
     return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig);
