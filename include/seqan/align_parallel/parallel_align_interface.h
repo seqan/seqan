@@ -60,8 +60,8 @@ struct ParallelAlignmentExecutor
               typename ...TArgs>
     auto operator()(Sequential const & /*execPolicy*/,
                     TKernel && kernel,
-                    TSetH const & setH,
-                    TSetV const & setV,
+                    TSetH && setH,
+                    TSetV && setV,
                     TArgs && ...args)
     {
         SEQAN_ASSERT_EQ(length(setH), length(setV));
@@ -87,7 +87,7 @@ struct ParallelAlignmentExecutor
               typename ...TArgs>
     auto operator()(ExecutionPolicy<Serial, Vectorial> const & /*execPolicy*/,
                     TKernel && kernel,
-                    TSetH const & setH,
+                    TSetH && setH,
                     TArgs && ...args)
     {
 #ifdef DP_PARALLEL_SHOW_PROGRESS
@@ -103,8 +103,8 @@ struct ParallelAlignmentExecutor
               typename ...TArgs>
     auto operator()(SEQAN_UNUSED ExecutionPolicy<Parallel, Vectorial> const & execPolicy,  // maybe unused due to missing OMP support in clang.
                     TKernel && kernel,
-                    TSetH const & setH,
-                    TSetV const & setV,
+                    TSetH && setH,
+                    TSetV && setV,
                     TArgs && ...args)
 
     {
@@ -150,8 +150,8 @@ struct ParallelAlignmentExecutor
               typename ...TArgs>
     auto operator()(ExecutionPolicy<Parallel, Serial> const & execPolicy,
                     TKernel && kernel,
-                    TSetH const & setH,
-                    TSetV const & setV,
+                    TSetH && setH,
+                    TSetV && setV,
                     TArgs && ...args)
 
     {
@@ -275,6 +275,38 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
  * Wrapper functions for calling globalAlignmentScore and localAlignmentScore with an ExecutionPolicy.
  * Note the parallel interfaces are documented as part of the standard documentation in seqan/align module.
  */
+template <typename TParallelPolicy, typename TVectorizationPolicy,
+          typename ...TArgs,
+          std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
+                           std::is_same<TParallelPolicy, Parallel>::value,
+                           int> = 0>
+inline auto
+globalAlignment(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
+                TArgs && ...args)
+{
+    auto kernel = [](auto && ...args)
+    {
+        return globalAlignment(std::forward<decltype(args)>(args)...);
+    };
+    return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
+}
+
+template <typename TParallelPolicy, typename TVectorizationPolicy,
+          typename ...TArgs,
+          std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
+                           std::is_same<TParallelPolicy, Parallel>::value,
+                           int> = 0>
+inline auto
+localAlignment(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
+               TArgs && ...args)
+{
+    auto kernel = [](auto && ...args)
+    {
+        return localAlignment(std::forward<decltype(args)>(args)...);
+    };
+    return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
+}
+
 template <typename TParallelPolicy, typename TVectorizationPolicy,
           typename ...TArgs,
           std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
