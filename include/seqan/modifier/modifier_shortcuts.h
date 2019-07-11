@@ -200,13 +200,13 @@ typedef ReverseComplementString<Rna5String>::Type    Rna5StringReverseComplement
  */
 
 template <typename TSequence >
-inline void complement(TSequence & sequence)
+inline SEQAN_FUNC_ENABLE_IF(IsSequence<TSequence>, void) complement(TSequence & sequence)
 {
     convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
 }
 
 template <typename TSequence >
-inline void complement(TSequence const & sequence)
+inline SEQAN_FUNC_ENABLE_IF(IsSequence<TSequence>, void) complement(TSequence const & sequence)
 {
     convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
 }
