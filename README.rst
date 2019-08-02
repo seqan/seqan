@@ -2,6 +2,13 @@
    :target: https://seqan.readthedocs.io/en/develop?badge=develop
    :alt: Documentation Status
 
++----------------------------------------------------------------------------------------------------+
+| **ATTENTION: SeqAn3 is out and hosted in a different repository: https://github.com/seqan/seqan3** |
++----------------------------------------------------------------------------------------------------+
+| All new applications should be based on SeqAn3 and all existing applications that receive updates  |
+| should be ported.                                                                                  |
++----------------------------------------------------------------------------------------------------+
+
 SeqAn - The Library for Sequence Analysis
 =========================================
 
