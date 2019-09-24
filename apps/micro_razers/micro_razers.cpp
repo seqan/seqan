@@ -314,25 +314,6 @@ int main(int argc, const char *argv[])
     getOptionValue(options.readNaming, parser, "read-naming");
     getOptionValue(options.positionFormat, parser, "position-format");
 
-    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
-    if (isSet(parser, "output"))
-    {
-        getOptionValue(options.output, parser, "output");
-    }
-    else
-    {
-        options.output = readFileNames[0];
-        append(options.output, ".razers");
-    }
-
-    CharString tmp = options.output;
-    toLower(tmp);
- 
-    if (endsWith(tmp, ".sam"))
-        options.outputFormat = 4;
-    else
-        options.outputFormat = 0;   // default is ".razers"
-
     getOptionValue(options.shape, parser, "shape");				// undocumented for own use
     getOptionValue(options.threshold, parser, "threshold");		// undocumented
     getOptionValue(options.lowMemory, parser, "low-memory");
@@ -354,6 +335,25 @@ int main(int argc, const char *argv[])
     resize(readFileNames, 1, Exact());
     getArgumentValue(readFileNames[0], parser, 1, 0);
     
+    // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
+    if (isSet(parser, "output"))
+    {
+        getOptionValue(options.output, parser, "output");
+    }
+    else
+    {
+        options.output = readFileNames[0];
+        append(options.output, ".razers");
+    }
+
+    CharString tmp = options.output;
+    toLower(tmp);
+ 
+    if (endsWith(tmp, ".sam"))
+        options.outputFormat = 4;
+    else
+        options.outputFormat = 0;   // default is ".razers"
+	
     //////////////////////////////////////////////////////////////////////////////
     // Check options
     if (seedError) options.exactSeed = false;
