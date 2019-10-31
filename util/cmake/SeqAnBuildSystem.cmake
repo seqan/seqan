@@ -423,19 +423,18 @@ macro (seqan_add_ctd_test APP_NAME)
     # Check if we are good to go for testing the file.
     if (NOT CTD_TEST_ENABLED)
         message (STATUS "CTD testing was not configured.")
-        return ()
+    else ()
+        # Add a custom command to create the ctd once the binary has been built.
+        add_custom_command(TARGET ${APP_NAME}
+                        POST_BUILD
+                        COMMAND ${CMAKE_BINARY_DIR}/bin/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
+
+        # Add the ctd test.
+        add_test (NAME ctd_test_${APP_NAME}
+                COMMAND ${XMLLINT_EXECUTABLE}
+                -schema ${CTD_SCHEMA_ROOT}/CTD.xsd
+                ${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd)
     endif ()
-
-    # Add a custom command to create the ctd once the binary has been built.
-    add_custom_command(TARGET ${APP_NAME}
-                       POST_BUILD
-                       COMMAND ${CMAKE_BINARY_DIR}/bin/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
-
-    # Add the ctd test.
-    add_test (NAME ctd_test_${APP_NAME}
-              COMMAND ${XMLLINT_EXECUTABLE}
-              -schema ${CTD_SCHEMA_ROOT}/CTD.xsd
-              ${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd)
 endmacro (seqan_add_ctd_test APP_NAME)
 
 # ---------------------------------------------------------------------------
