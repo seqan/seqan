@@ -76,13 +76,20 @@ class Fragment;
 /*!
  * @fn globalAlignment
  * @headerfile <seqan/align.h>
+ * @headerfile <seqan/align_parallel.h>
  * @brief Computes the best global pairwise alignment.
  *
+ * @signature TScoreCollection globalAlignment([exec,] alignCollection,                  scoringScheme, [alignConfig,] [lowerDiag, upperDiag]);
+ * @signature TScoreCollection globalAlignment([exec,] gapsHCollection, gapsVCollection, scoringScheme, [alignConfig,] [lowerDiag, upperDiag]);
  * @signature TScoreVal globalAlignment(align,          scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(gapsH, gapsV,   scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(frags, strings, scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(alignGraph,     scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  *
+ * @param[in]     exec             The @link ExecutionPolicy @endlink used for the alignment algorithm.
+ * @param[in,out] alignCollection  A collection of @link Align @endlink objects containing the sequences to compute the alignment for.
+ * @param[in,out] gapsHCollection  A collection of @link Gaps @endlink objects containing the first sequences to compute the alignment for.
+ * @param[in,out] gapsVCollection  A collection of @link Gaps @endlink objects containing the second sequences to compute the alignment for.
  * @param[in,out] align        The @link Align @endlink object to use for storing the pairwise alignment.
  * @param[in,out] gapsH        The @link Gaps @endlink object for the first row (horizontal in the DP matrix).
  * @param[in,out] gapsV        The @link Gaps @endlink object for the second row (vertical in the DP matrix).
@@ -98,6 +105,10 @@ class Fragment;
  *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
  *                     the type of <tt>scoringScheme</tt>).
+ *
+ * @return TScoreCollection A collection of computed scores for every aligned sequence pair.  The value type of
+ *                          this score is @link String @endlink over the score type of the passed scoring scheme.
+ *                          (Metafunction: @link Score#Value @endlink of the type of <tt>scoringScheme</tt>).
  *
  * There exist multiple overloads for this function with four configuration dimensions.
  *
@@ -149,6 +160,39 @@ class Fragment;
  * @include demos/dox/align/global_alignment_banded.cpp.stdout
  *
  * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ *
+ * @section Execution policies
+ *
+ * SeqAn supports parallel and vectorised execution of pairwise alignments.
+ * This additional interface takes not just a single pair of sequences but a collection of sequence pairs
+ * either in form of a collection over @link Align @endlink objects or as two collections of @link Gaps @endlink
+ * where both collections must have the same size. The collection based interface allows to additionally specify an
+ * @link ExecutionPolicy @endlink. This execution policy can be used to select the multi-threaded or vectorised
+ * implementation or the combination of thereof for the alignment algorithm. SeqAn implements an inter-sequence
+ * vectorisation scheme which means that <tt>x</tt> alignments are computed in parallel in one
+ * <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> vector where <tt>x</tt> is the number of elements a vector
+ * can compute in parallel. This depends on the architecture's supported SIMD vector width (128 bit, 256 bit or 512 bit)
+ * and the selected score type, e.g. <tt>int16_t</tt>. For example on a CPU architecture that supports SSE4 and a score
+ * type of <tt>int16_t</tt>, <tt>128/16 = 8</tt> alignments can be computed in parallel on a single core.
+ * In addition, the execution policy can be configured for multi-threaded execution, such that chunks of sequence
+ * pairs from the initial collection are spawned and executed on different threads. The number of threads can be
+ * set via the execution policy.
+ *
+ * @note In order to get the performance advantage of vectorised execution, one has to compile the code with the
+ *       respective CPU flags. For most Intel based CPUs the compiler flag <tt>-msse4</tt> can be used for gcc and
+ *       clang to enable vectorisation for 128 bit wide registers. For CPUs that support wider registers please read
+ *       the respective documentation on how to select the correct compilation flags.
+ *
+ * @warning There are currently some limitations in the use of the execution policy.
+ *          The @link WavefrontExecutionPolicy @endlink cannot yet compute the traceback and is only allowed for the
+ *          @link globalAlignmentScore @endlink and @link localAlignmentScore @endlink interface.
+ *          The banded version only works for collections if all sequences within one collection have the
+ *          same size.
+ *
+ * The following example shows an example for a multi-threaded and vectorised execution of global alignments
+ * for two collections of sequences:
+ *
+ * @include demos/dox/align/global_alignment_unbanded_execution_policy.cpp
  *
  * @section References
  *
@@ -455,28 +499,38 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
 /*!
  * @fn globalAlignmentScore
  * @headerfile <seqan/align.h>
+ * @headerfile <seqan/align_parallel.h>
  * @brief Computes the best global pairwise alignment score.
  *
- * @signature TScoreVal globalAlignmentScore([exec,] subject, query, scoringScheme[, alignConfig][, lowerDiag, upperDiag]);
+ * @signature TScoreCollection globalAlignmentScore([exec,] seqHCollection, seqVCollection, scoringScheme[, alignConfig][, lowerDiag, upperDiag]);
+ * @signature TScoreCollection globalAlignmentScore([exec,] seqH, seqVCollection, scoringScheme[, alignConfig][, lowerDiag, upperDiag]);
  * @signature TScoreVal globalAlignmentScore(strings,    scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
  * @signature TScoreVal globalAlignmentScore(seqH, seqV, {MyersBitVector | MyersHirschberg});
  * @signature TScoreVal globalAlignmentScore(strings,    {MyersBitVector | MyersHirschberg});
  *
- * @param[in] exec          @link ExecutionPolicy Policy@endlink to select execution mode of alignment algorithm.
- * @param[in] subject       Subject sequence(s) (horizontal in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
- * @param[in] query         Query sequence(s) (vertical in alignment matrix). Must satisfy @link ContainerConcept @endlink or container-of-container concept.
- * @param[in] strings       A @link StringSet @endlink containing two sequences.  Type: StringSet.
- * @param[in] alignConfig   The @link AlignConfig @endlink to use for the alignment.  Type: AlignConfig
- * @param[in] scoringScheme The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
- *                          that the scoring scheme is compatible with <tt>algorithmTag</tt>.  Type: @link Score @endlink.
- * @param[in] lowerDiag     Optional lower diagonal.  Types: <tt>int</tt>
- * @param[in] upperDiag     Optional upper diagonal.  Types: <tt>int</tt>
- * @param[in] algorithmTag  The Tag for picking the alignment algorithm. Types: @link PairwiseLocalAlignmentAlgorithms
- *                          @endlink.
+ * @param[in] exec           The @link ExecutionPolicy @endlink used for the alignment algorithm.
+ * @param[in]seqHCollection  A collection of sequences aligned pairwise against the respective sequence in
+ *                           <tt>seqVCollection</tt>.
+ * @param[in]seqVCollection  A collection of sequences aligned pairwise against the respective sequence in
+ *                           <tt>seqHCollection</tt> or with <tt>seqH</tt>.
+ * @param[in] strings        A @link StringSet @endlink containing two sequences.  Type: StringSet.
+ * @param[in] seqH           A single sequence to be aligned against <tt>seqV</tt> or <tt>seqVCollection</tt>.
+ * @param[in] seqV           A single sequence to be aligned against <tt>seqH</tt>.
+ * @param[in] alignConfig    The @link AlignConfig @endlink to use for the alignment.  Type: AlignConfig
+ * @param[in] scoringScheme  The scoring scheme to use for the alignment.  Note that the user is responsible for ensuring
+ *                           that the scoring scheme is compatible with <tt>algorithmTag</tt>.
+ *                           Type: @link Score @endlink.
+ * @param[in] lowerDiag      Optional lower diagonal.  Types: <tt>int</tt>
+ * @param[in] upperDiag      Optional upper diagonal.  Types: <tt>int</tt>
+ * @param[in] algorithmTag   The Tag for picking the alignment algorithm. Types: @link PairwiseLocalAlignmentAlgorithms
+ *                           @endlink.
  *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
- *                     the type of <tt>scoringScheme</tt>). If subject and query are sets the function returns a
- *                     set of scores representing the score for each pairwise alignment (<tt>subject[i]</tt> with <tt>query[i]</tt>).
+ *                     the type of <tt>scoringScheme</tt>).
+ *
+ * @return TScoreCollection A collection of computed scores for every aligned sequence pair.  The value type of
+ *                          this score is @link String @endlink over the score type of the passed scoring scheme.
+ *                          (Metafunction: @link Score#Value @endlink of the type of <tt>scoringScheme</tt>).
  *
  * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
  * step.  Note that Myers' bit-vector algorithm does not compute an alignment (only in the Myers-Hirschberg variant) but
@@ -486,19 +540,51 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * The same limitations to algorithms as in @link globalAlignment @endlink apply.  Furthermore, the
  * <tt>MyersBitVector</tt> and <tt>MyersHirschberg</tt> variants can only be used without any other parameter.
  *
- * @section Parallel execution
+ * @section Execution policies
  *
- * Some of the global alingment score functions are parallelized and vectorized and work on sets of sequences.
- * The parallelization mode can be selected via the @link ExecutionPolicy @endlink as first argument.
- * Following execution modes are possible: <i>sequential</i>, <i>parallel</i>, <i>wave-front</i>, <i>vectorized</i>,
- * <i>parallel+vectorized</i> and <i>wave-front+vectorized</i>.
+ * SeqAn supports parallel and vectorised execution of pairwise alignments.
+ * This additional interface takes not just a single pair of sequences but a collection of sequences where both
+ * collections must have the same size.
+ * The collection based interface allows to additionally specify an
+ * @link ExecutionPolicy @endlink. This execution policy can be used to select the multi-threaded or vectorised
+ * implementation or the combination thereof for the alignment algorithm. SeqAn implements an inter-sequence
+ * vectorisation scheme which means that <tt>x</tt> alignments are computed in parallel in one
+ * <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> vector where <tt>x</tt> is the number of elements a vector
+ * can compute in parallel. This depends on the architecture's supported SIMD vector width (128 bit, 256 bit or 512 bit)
+ * and the selected score type, e.g. <tt>int16_t</tt>. For example on a CPU architecture that supports SSE4 and a score
+ * type of <tt>int16_t</tt>, <tt>128/16 = 8</tt> alignments can be computed in parallel on a single core.
+ *
+ * In addition, the execution policy can be configured for multi-threaded execution, such that either chunks of sequence
+ * pairs from the initial collection are spawned and executed on different threads or an intra-sequence parallelization
+ * is used to parallelize a single alignment. In total the following execution modes are possible:
+ * <i>sequential</i>, <i>parallel</i>, <i>wave-front</i>, <i>vectorized</i>, <i>parallel+vectorized</i> and
+ * <i>wave-front+vectorized</i>.
  *
  * The wave-front execution can be selected via the @link WavefrontExecutionPolicy @endlink, which can also be combined
  * with a vectorized execution. In addition the wave-front execution parallelizes a single pairwise alignment, while the
  * standard @link ParallelismTags#Parallel @endlink specialization does only parallelizes the sequence set via chunking.
- * Note, the banded version is at the moment only supported for the following execution modes: <i>sequential</i>,
- * <i>parallel</i>, <i>vectorized</i> and <i>parallel+vectorized</i>. At the moment the vectorized version only works
- * reliable if all subject sequences and respectively all query sequences have the same length.
+ * Note,
+ *
+ * @note In order to get the performance advantage of vectorised execution one has to compile the code with the
+ *       respective CPU flags. For most Intel based CPUs the compiler flag <tt>-msse4</tt> can be used for gcc and
+ *       clang to enable vectorisation for 128 bit wide registers. For CPUs that support wider register please read
+ *       the respective documentation on how to select the correct compilation flags.
+ *
+ * @warning There are currently some limitations in the use of the execution policy.
+ *          The banded version is at the moment only supported for the following execution modes: <i>sequential</i>,
+ *          <i>parallel</i>, <i>vectorized</i> and <i>parallel+vectorized</i>.
+ *          The banded version only works for collections if all sequences within one collection have the
+ *          same size.
+ *
+ * The following example shows an example for a multi-threaded and vectorised execution of global alignments
+ * for two collections of sequences:
+ *
+ * @include demos/dox/align/global_alignment_unbanded_score_execution_policy_parallel.cpp
+ *
+ * The following example shows an example for a wavefront and vectorised execution of global alignments
+ * for two collections of large sequences:
+ *
+ * @include demos/dox/align/global_alignment_unbanded_score_execution_policy_wavefront.cpp
  *
  * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see globalAlignment
@@ -556,9 +642,9 @@ template <typename TSequenceH,
           typename TScoreValue, typename TScoreSpec,
           bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
 auto globalAlignmentScore(TSequenceH const & seqH,
-                                 TSequenceV const & seqV,
-                                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
-                                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
+                          TSequenceV const & seqV,
+                          Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                          AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig)
 {
     if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
         return globalAlignmentScore(seqH, seqV, scoringScheme, alignConfig, NeedlemanWunsch());
