@@ -1,0 +1,46 @@
+name: Workflow to deploy dox for SeqAn
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  my_job:
+    name: My Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+
+      - name: test branch name
+        shell: bash
+        run: echo The branch name is ${GITHUB_REF#refs/heads/}
+
+      - name: setup python 2.7 environment
+        uses: actions/setup-python@v1.1.1
+        with:
+          python-version: 2.x # optional, default is 3.x
+
+      - name: install dox requirements
+        shell: bash
+        run: pip install -r manual/requirements.txt
+
+      - name: intialise and build dox
+        shell: bash
+        run: |
+          cd dox
+          cp dox_only.sh.in dox_only.sh
+          chmod 775 dox_only.sh
+          ./dox_only.sh
+
+      - name: deploy
+        uses: Pendect/action-rsyncer@master
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_HOST_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+        with:
+          flags: '-avzr --delete'
+          src: 'dox/html/'
+          dest: '$REMOTE_USER@$REMOTE_HOST:$TARGET'
