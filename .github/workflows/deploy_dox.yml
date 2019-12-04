@@ -1,0 +1,26 @@
+name: Workflow to deploy dox for SeqAn
+# This workflow is triggered every 10 minutes
+on:
+  schedule:
+  - cron: '0/10 * * * *'
+
+jobs:
+  my_job:
+    name: My Job
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print a greeting
+      env:
+            MY_VAR: Hi there! My name is
+            FIRST_NAME: Mona
+            MIDDLE_NAME: The
+            LAST_NAME: Octocat
+      run: |
+            echo $MY_VAR $FIRST_NAME $MIDDLE_NAME $LAST_NAME.
+#         # This step uses checkout action to get the sources
+#         name: checkout
+#             - uses: actions/checkout@v1
+#                 with:
+#                     ref: refs/heads/develop
+
+
