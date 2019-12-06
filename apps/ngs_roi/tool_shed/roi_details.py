@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Generation of detailed ROI reports with larger plots.
 
 This report generation works for hundred of ROIs.
@@ -109,7 +109,7 @@ class DetailedRoiGenerator(ngs_roi.app.App):
         vals = {'args': self.args, 'records': records, 'data_keys': keys,
                 'href': lambda x: self.buildHref(x.ref, x.start_pos, x.end_pos)}
         t = Cheetah.Template.Template(PAGE_TPL, searchList=vals)
-        
+
         with open(file_name, 'wb') as f:
             f.write(str(t))
 

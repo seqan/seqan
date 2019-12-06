@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Small, simple and powerful template-engine for python.
@@ -43,7 +43,7 @@ See documentation for a list of features, template-syntax etc.
         >>> t = Template("hello escaped: @!name!@, unescaped: $!name!$")
         >>> t(name='''<>&'"''')
         u'hello escaped: &lt;&gt;&amp;&#39;&quot;, unescaped: <>&\\'"'
-    
+
     result-encoding::
         # encode the unicode-object to your encoding with encode()
         >>> t = Template("hello äöü€")
@@ -132,7 +132,7 @@ See documentation for a list of features, template-syntax etc.
         >>> t(optional_list=[1,2,3])
         u'123'
 
-        
+
         # but make sure to put the expression in quotation marks, otherwise:
         >>> Template('@!default(optional,"fallback")!@')()
         Traceback (most recent call last):
@@ -143,7 +143,7 @@ See documentation for a list of features, template-syntax etc.
         >>> t = Template('$!setvar("i", "i+1")!$@!i!@')
         >>> t(i=6)
         u'7'
-        
+
         >>> t = Template('''<!--(if isinstance(s, (list,tuple)))-->$!setvar("s", '"\\\\\\\\n".join(s)')!$<!--(end)-->@!s!@''')
         >>> t(isinstance=isinstance, s="123")
         u'123'
@@ -206,7 +206,7 @@ def scol(string, i):
 
 def sindex(string, row, col):
     """Get index of the character at `row`/`col` in `string`.
-   
+
     :Parameters:
         - `row`: row number, starting at 1.
         - `col`: column number, starting at 1.
@@ -357,7 +357,7 @@ class LoaderString:
 
 class LoaderFile:
     """Load template from a file.
-    
+
     When loading a template from a file, it's possible to including other
     templates (by using 'include' in the template). But for simplicity
     and security, all included templates have to be in the same directory!
@@ -406,7 +406,7 @@ class LoaderFile:
 
 class Parser(object):
     """Parse a template into a parse-tree.
-    
+
     Includes a syntax-check, an optional expression-check and verbose
     error-messages.
 
@@ -541,7 +541,7 @@ class Parser(object):
 
     def _parse_sub(self, parsetree, text, fpos=0):
         """Parse substitutions, and append them to the parse-tree.
-        
+
         Additionally, remove comments.
         """
         curr = 0
@@ -552,7 +552,7 @@ class Parser(object):
 
             if match.group("sub") is not None:
                 if not match.group("end"):
-                    raise TemplateSyntaxError("Missing closing tag '%s' for '%s'." 
+                    raise TemplateSyntaxError("Missing closing tag '%s' for '%s'."
                             % (self._sub_end, match.group()), self._errpos(fpos+start))
                 if len(match.group("sub")) > 0:
                     self._testexpr(match.group("sub"), fpos+start)
@@ -573,7 +573,7 @@ class Parser(object):
 
     def _parse(self, template, fpos=0):
         """Recursive part of `parse()`.
-        
+
         :Parameters:
             - template
             - fpos: position of ``template`` in the complete template (for error-messages)
@@ -832,7 +832,7 @@ class EvalPseudoSandbox:
 
         - Use a compile-cache.
         - Raise a `NameError` if `expr` contains a name beginning with ``_``.
-        
+
         :Returns: the compiled `expr`
         :Exceptions:
             - `SyntaxError`: for compile-errors
@@ -849,7 +849,7 @@ class EvalPseudoSandbox:
 
     def eval(self, expr, locals):
         """Eval a python-eval-expression.
-        
+
         Sets ``self.locals_ptr`` to ``locales`` and compiles the code
         before evaluating.
         """
@@ -875,7 +875,7 @@ class EvalPseudoSandbox:
               time.strftime instead of datetime.datetime.strftime)
 
         :Example:
-            
+
             >>> from datetime import datetime
             >>> import pyratemp
             >>> t = pyratemp.Template('@!mytime.strftime("%H:%M:%S")!@')
@@ -898,7 +898,7 @@ class EvalPseudoSandbox:
 
     def f_exists(self, varname):
         """``exists()`` for the sandboxed code.
-        
+
         Test if the variable `varname` exists in the current locals-namespace.
 
         This only works for single variable names. If you want to test
@@ -912,7 +912,7 @@ class EvalPseudoSandbox:
 
     def f_default(self, expr, default=None):
         """``default()`` for the sandboxed code.
-        
+
         Try to evaluate an expression and return the result or a
         fallback-/default-value; the `default`-value is used
         if `expr` does not exist/is invalid/results in None.
@@ -952,7 +952,7 @@ class EvalPseudoSandbox:
 
 class TemplateBase:
     """Basic template-class.
-    
+
     Used both for the template itself and for 'macro's ("subtemplates") in
     the template.
     """
@@ -982,7 +982,7 @@ class TemplateBase:
     def __call__(self, **override):
         """Fill out/render the template.
 
-        :Parameters: 
+        :Parameters:
             - `override`: objects to add to the data-namespace, overriding
               the "default"-data.
         :Returns:    the filled template (in unicode)
@@ -1020,7 +1020,7 @@ class _dontescape(unicode):
 
 class Renderer(object):
     """Render a template-parse-tree.
-    
+
     :Uses: `TemplateBase` for macros
     """
 
@@ -1151,7 +1151,7 @@ class Template(TemplateBase):
         """
         if [string, filename, parsetree].count(None) != 2:
             raise ValueError('Exactly 1 of string,filename,parsetree is necessary.')
-  
+
         tmpl = None
         # load template
         if filename is not None:

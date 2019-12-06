@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Code related to violations and suppressions."""
 
 from __future__ import with_statement
@@ -18,10 +18,10 @@ class RuleViolation(object):
         self.file = file
         self.line = line
         self.column = column
-    
+
     def key(self):
         return (self.file, self.line, self.column, self.rule_id, self.violator)
-    
+
     def __str__(self):
         msg = '[%s:%d/%d] %s "%s": %s'
         return msg % ('/'.join(self.file.split('/')[-2:]), self.line, self.column,
@@ -35,10 +35,10 @@ class SimpleRuleViolation(object):
         self.line = line
         self.column = column
         self.msg = msg
-    
+
     def key(self):
         return (self.file, self.line, self.column, self.rule_id)
-    
+
     def __str__(self):
         msg = '[%s:%d/%d] %s : %s'
         return msg % ('/'.join(self.file.split('/')[-2:]), self.line, self.column,

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import copy
 import operator
@@ -167,7 +167,7 @@ class FileCache(object):
         content  Dict with cache content mapping file name to pair of mtime
                  and data associated with the cache.
     """
-    
+
     def __init__(self, path):
         self.path = path
         self.content = {}
@@ -310,7 +310,7 @@ class FileLoader(object):
         cache    FileCache to use for caching.
         entries  List of DddocEntries objects.
     """
-    
+
     def __init__(self, cache):
         self.cache = cache
         self.entries = []
@@ -352,9 +352,9 @@ class FileLoader(object):
             line = line.rstrip()
             str_line = ""
             if len(line) == 0:
-                if not innextcomment and not incomment: 
+                if not innextcomment and not incomment:
                     str_line = "."
-                else: 
+                else:
                     str_line = " "
 
             while len(line) > 0 :
@@ -372,7 +372,7 @@ class FileLoader(object):
                         if inextract: str_line += line;
                         break;
                     else:
-                        if inextract: 
+                        if inextract:
                             str_line += line[:pos1];
                             line = line[pos1 + 3:];
                         else:
@@ -389,12 +389,12 @@ class FileLoader(object):
                             inextract = (line[pos1 + 2] == "/") or (line[pos1 + 2] == "*")
                         else:
                             inextract = False
-                        if pos9 < 0 : 
+                        if pos9 < 0 :
                             if inextract: str_line += line[pos1 + 3:]
                             incomment = True
                             break
-                        else: 
-                            if inextract: 
+                        else:
+                            if inextract:
                                 str_line += line[pos1 + 3: pos3]
                                 line = line[pos9 + 3:]
                             else:
@@ -535,7 +535,7 @@ class FileLoader(object):
             value_no_trailing = value_no_leading.rstrip()
             line_count3 = len(value_no_trailing.splitlines())
             line_no_end = entry[3] - line_count2 + line_count3
-             
+
             # Store the DDDoc entry.
             if path:
                 self.entries.append(DddocEntry(cleanPath(path), value_no_trailing, filename, line_no_begin, line_no_end))
@@ -581,7 +581,7 @@ class DddocTreeNode(object):
         children  dict with the children as key/value pairs.
         texts     Array of strings with the texts.
     """
-    
+
     def __init__(self, tree, key, path, entry, children={}):
         self.tree = tree
         self.key = key
@@ -620,7 +620,7 @@ class DddocTree(object):
         glossary_nodes  List of nodes that contain glossary entries.  Built
                         in finalize().
     """
-    
+
     def __init__(self, entries):
         self.entries = entries
         #for e in self.entries:
@@ -893,7 +893,7 @@ def generateInheritedElements(tree):
                         # Copy over path.
                         target_node.children[target_field].texts.append(path)
                         ## print '  appending', path
-                
+
         # Clear out the stuff that we completed.
         to_delete = []
         for key in depends_on:  # Clear out all done.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 Code for parsing comments from C++ files.
 """
@@ -41,7 +41,7 @@ class Comment(object):
                 self.offset_line == other.offset_line and
                 self.text == other.text and
                 self.raw_text == other.raw_text)
-        
+
     def __str__(self):
         return 'Comment(%d, %d, %d, %d, %d, %d, %d, %d, %s, %s)' % (
             self.line, self.col, self.pos, self.end_line, self.end_col,
@@ -50,7 +50,7 @@ class Comment(object):
 
     def __repr__(self):
         return str(self)
-        
+
 
 class File(object):
     """Represents one C++ files with simplified access to comments.
@@ -124,7 +124,7 @@ class File(object):
 class FileManager(object):
     """Handles loading of comments from files
     """
-    
+
     def __init__(self, enable_cache=False, start_markers=['*!']):
         self.enable_cache = enable_cache
         self.start_markers = start_markers

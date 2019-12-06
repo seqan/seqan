@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Fix gcov output.
 
 Fix gcov output with templates.  This is done by first parsing in the .cpp files

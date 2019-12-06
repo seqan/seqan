@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Demo checker script.
 
 Given a demo .cpp file PATH.cpp we can make it a small test if there is a file
@@ -113,7 +113,7 @@ def main():
     else:
         print >>sys.stderr, 'Standard error was as expected.'
 
-    # here we used not because we need return-code 0 (False) if test is successful 
+    # here we used not because we need return-code 0 (False) if test is successful
     return not (is_stdout_as_expected and is_stderr_as_expected)
 
 

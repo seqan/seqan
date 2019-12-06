@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Processed version of the documentation.
 
 The documentation from the objects of raw_doc is further processed into
@@ -35,7 +35,7 @@ class DocumentationBuildException(dox_parser.ParserError):
 
 class LinkResolver(object):
     """Member of ProcDoc for resolving links."""
-    
+
     def __init__(self, proc_doc):
         self.proc_doc = proc_doc
 
@@ -94,7 +94,7 @@ class ProcDoc(object):
         # update local name counter
         self.local_name_counter.setdefault(second, 0)
         self.local_name_counter[second] += 1
-        
+
     def addVariable(self, x):
         """Add a variable entry."""
         self.registerEntry(x)
@@ -119,7 +119,7 @@ class ProcDoc(object):
                 token, 'Unknown top level entry %s' % x.type, 'error')
         else:
             self.top_level_entries[x.type].registerSubentry(x)
-        
+
     def registerEntry(self, x):
         """Register an entry."""
 
@@ -391,22 +391,22 @@ class ProcCodeEntry(ProcEntry):
 
     def addHeaderfile(self, h):
         self.headerfiles.append(h)
-        
+
     def addDeprecationMsg(self, m):
         self.deprecation_msgs.append(m)
 
     def addNote(self, n):
         self.notes.append(n)
-        
+
     def addWarning(self, w):
         self.warnings.append(w)
-        
+
     def addAkas(self, a):
         self.akas.append(a)
-        
+
     def addInternal(self, i):
         self.internals.append(i)
-        
+
     def subEntries(self, kind):
         return []
 
@@ -657,7 +657,7 @@ class ProcThrow(object):
     def visitTextNodes(self, visitor):
         """Visit all text nodes using the given visitor."""
         visitor.visit(self.desc)
-        
+
 
 class ProcDataRace(object):
     """Documentation of a @datarace entry.
@@ -726,7 +726,7 @@ class ProcFunction(ProcCodeEntry):
             t.visitTextNodes(visitor)
         for d in self.dataraces:
             d.visitTextNodes(visitor)
-        
+
     def addParam(self, p):
         self.params.append(p)
 
@@ -738,7 +738,7 @@ class ProcFunction(ProcCodeEntry):
 
     def addThrow(self, t):
         self.throws.append(t)
-    
+
     def addDataRace(self, t):
         self.dataraces.append(t)
 
@@ -795,7 +795,7 @@ class ProcMacro(ProcCodeEntry):
 
     def addThrow(self, t):
         self.throws.append(t)
-        
+
     def addDataRace(self, d):
         self.dataraces.append(d)
 
@@ -920,7 +920,7 @@ class HtmlTagParser(HTMLParser.HTMLParser):
 
     def __init__(self):
         self.reset()
-    
+
     def reset(self):
         HTMLParser.HTMLParser.reset(self)
         self.tag = None
@@ -1137,7 +1137,7 @@ class EntryConverter(object):
     def __init__(self, doc_proc):
         self.doc_proc = doc_proc
         self.entry_class = None
-    
+
     def rawTextToTextNode(self, raw_text, strip_lt_line_space=False, verbatim=False):
         """Convert RawText object into a TextNode object.
 
@@ -1231,14 +1231,14 @@ class EntryConverter(object):
         entry.raw_entry = raw_entry
         return entry
 
-    
+
 class CodeEntryConverter(EntryConverter):
     """Base for the processing RawCodeEntry objects into processed entries."""
 
     def __init__(self, doc_proc):
         EntryConverter.__init__(self, doc_proc)
         self.parse_signature = True
-    
+
     def process(self, raw_entry):
         entry = EntryConverter.process(self, raw_entry)
         # Add headerfile paths as list of strings.
@@ -1271,7 +1271,7 @@ class CodeEntryConverter(EntryConverter):
                     pass
                     #print >>sys.stderr, '\nWARNING: Could not parse signature: %s' % e
                     #print >>sys.stderr, 'Signature is: %s' % s.text.text.strip()
-                
+
         return entry
 
 
@@ -1279,7 +1279,7 @@ class EnumConverter(CodeEntryConverter):
     def __init__(self, doc_proc):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcEnum
-    
+
     def process(self, raw_entry):
         return CodeEntryConverter.process(self, raw_entry)
 
@@ -1289,7 +1289,7 @@ class AdaptionConverter(CodeEntryConverter):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcAdaption
         self.parse_signature = False
-    
+
     def process(self, raw_entry):
         return CodeEntryConverter.process(self, raw_entry)
 
@@ -1299,7 +1299,7 @@ class TypedefConverter(CodeEntryConverter):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcTypedef
         self.parse_signature = False
-    
+
     def process(self, raw_entry):
         return CodeEntryConverter.process(self, raw_entry)
 
@@ -1308,7 +1308,7 @@ class ConceptConverter(CodeEntryConverter):
     def __init__(self, doc_proc):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcConcept
-    
+
     def process(self, raw_entry):
         concept = CodeEntryConverter.process(self, raw_entry)
         for e in raw_entry.extends:
@@ -1320,7 +1320,7 @@ class ClassConverter(CodeEntryConverter):
     def __init__(self, doc_proc):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcClass
-    
+
     def process(self, raw_entry):
         klass = CodeEntryConverter.process(self, raw_entry)
         for e in raw_entry.extends:
@@ -1360,7 +1360,7 @@ class FunctionConverter(CodeEntryConverter):
             'out': ProcParam.OUT,
             'in,out': ProcParam.IN_OUT,
             }
-    
+
     def process(self, raw_entry):
         function = CodeEntryConverter.process(self, raw_entry)
         for p in raw_entry.params:
@@ -1387,7 +1387,7 @@ class FunctionConverter(CodeEntryConverter):
             function.addThrow(proc_throw)
         for d in raw_entry.dataraces:
             proc_datarace = ProcDataRace(d)
-            proc_datarace.desc = self.rawTextToTextNode(d.text) 
+            proc_datarace.desc = self.rawTextToTextNode(d.text)
             function.addDataRace(proc_datarace)
         return function
 
@@ -1402,7 +1402,7 @@ class MacroConverter(CodeEntryConverter):
             'in,out': ProcParam.IN_OUT,
             }
         self.parse_signature = False
-        
+
     def process(self, raw_entry):
         macro = CodeEntryConverter.process(self, raw_entry)
         for p in raw_entry.params:
@@ -1424,7 +1424,7 @@ class MacroConverter(CodeEntryConverter):
             macro.addThrow(proc_throw)
         for d in raw_entry.dataraces:
             proc_datarace = ProcDataRace(d)
-            proc_datarace.desc = self.rawTextToTextNode(d.text) 
+            proc_datarace.desc = self.rawTextToTextNode(d.text)
             macro.addDataRace(proc_datarace)
         return macro
 
@@ -1465,7 +1465,7 @@ class EnumValueConverter(CodeEntryConverter):
     def __init__(self, doc_proc):
         CodeEntryConverter.__init__(self, doc_proc)
         self.entry_class = ProcEnumValue
-    
+
     def process(self, raw_entry):
         enum_value = CodeEntryConverter.process(self, raw_entry)
         if raw_entry.type:
@@ -1478,10 +1478,10 @@ class TagStack(object):
 
     def __init__(self):
         self.stack = []
-         
+
     def push(self, token):
         pass
-             
+
     def pop(self, token):
         pass
 
@@ -1518,7 +1518,7 @@ class LinkChecker(TextNodeVisitor):
 
     Raw links are links of the form <a href="seqan:$target">$label</a>.
     """
-    
+
     def __init__(self, doc):
         self.doc = doc
 
@@ -1556,7 +1556,7 @@ class DocProcessor(object):
     @ivar msg_printer: The dox_parser.MessagePrinter instance to use for
                        printing messages.
     """
-    
+
     def __init__(self, logger=None, include_dirs=['.'], expected_tags=[],
                  msg_printer=None):
         self.logger = logger
@@ -1589,8 +1589,8 @@ class DocProcessor(object):
         self.msg_printer = msg_printer or dox_parser.MessagePrinter()
         self.validators = [x(self.msg_printer) for x in validation.VALIDATORS]
         self.entry_filenames = []
-        self.topLevelEntry_filenames = {} 
-        self.secondLevelEntry_filenames = {} 
+        self.topLevelEntry_filenames = {}
+        self.secondLevelEntry_filenames = {}
 
     def run(self, doc):
         res = ProcDoc(self)
@@ -1770,7 +1770,7 @@ class DocProcessor(object):
 
     def validate(self, doc):
         """Execute validation using the validators from self.validators.
-        
+
         @param doc: The ProcDoc object to validate.
         """
         self.log('  5) Running validation.')
@@ -1785,7 +1785,7 @@ class DocProcessor(object):
         if not self.logger:
             return
         self.logger.info(msg, *args, **kwargs)
-        
+
     def logWarning(self, msg, *args, **kwargs):
         """Print the given message to the configured logger if any.
         """

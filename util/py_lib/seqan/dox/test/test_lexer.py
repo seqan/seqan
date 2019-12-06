@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the lexer module.
 
 We got the lexer itself from an external source so we do not write tests for

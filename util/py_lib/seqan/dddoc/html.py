@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import sys
 import os
@@ -84,7 +84,7 @@ def escapeFiles(text):
     ret = ret.replace("\\", "_5c")
     ret = ret.replace("|", "_7c")
     ret = ret.replace(" ", "+")
-    
+
     if not ret or ret[0] == '_':
         return ret
     else:
@@ -738,7 +738,7 @@ class HtmlHelper(object):
                 next_lineno += len(lines)
             else:
                 txts.append('<p class="' + class_ + '">' + self.translateMarkup('\n'.join(lines), node=node) + '</p>')
-        
+
         return '\n'.join(txts)
 
     def _loadSnippet(self, path, snippet_key):

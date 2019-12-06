@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Parser for the signature supported by the SeqAn Doxygen-style documentation.
 """
 
@@ -38,7 +38,7 @@ class SigParseException(Exception):
         Exception.__init__(self, msg)
         self.line = line
         self.column = column
-    
+
 
 class Arg(object):
     """
@@ -214,7 +214,7 @@ class SigParser(object):
           Name<TParam>::Type
           Klass#Name<TParam>::Type
           T var
-        
+
         @param token: lexer.Token object with the previous token.
 
         """
@@ -293,7 +293,7 @@ class SigParser(object):
             raise SigParseException('Expecting identifier after "%s"!' % kind)
         sig_entry.name = t.val
         return sig_entry
-        
+
     def parseClass(self, token):
         return self.parseCSE('class')
 
@@ -309,7 +309,7 @@ class SigParser(object):
     def expectNotEof(self, token):
         if token.type == 'EOF':
             raise SigParseException('Unexpecte EOF!')
-        
+
     def parse(self):
         try:
             t = self.tokens.next()

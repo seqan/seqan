@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Convert SeqAn profiling information into PDF graphic.
 
 USAGE: profile2pdf.py <program.profile.txt> <out.pdf>
@@ -42,7 +42,7 @@ def htmlColorToRgb(colorstring):
     r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
     r, g, b = [int(n, 16) for n in (r, g, b)]
     return (r / 255.0, g / 255.0, b / 255.0)
-COLORS = map(htmlColorToRgb, COLORS)  
+COLORS = map(htmlColorToRgb, COLORS)
 
 class Meta(object):
   def __init__(self, beginTimestamp, endTimestamp):
@@ -56,7 +56,7 @@ class JobType(object):
     self.shortName = shortName
     self.longName = longName or shortName
     self.color = color or COLORS[identifier % len(COLORS)]
-  
+
   @classmethod
   def fromString(klass, s):
     columns = s.split('\t')
@@ -265,7 +265,7 @@ def createDiagram(meta, jobTypes, forests, path):
 
   cs = cairo.PDFSurface(path, width, height)
   cr = cairo.Context(cs)
-  
+
   for threadId, forest in forests.iteritems():
     for section in forest:
       drawBoxesForSection(cr, jobTypes, section, totalBegin, threadId)
@@ -279,7 +279,7 @@ def main(args):
     print >>sys.stderr, 'Invalid number of arguments!'
     print >>sys.stderr, 'USAGE: profile2pdf.py <program.profile.txt> <out.pdf>'
     return 1
-  
+
   # Load input file.
   print >>sys.stderr, 'Loading file', args[1]
   meta, jobTypes, events = loadFile(args[1])
@@ -309,7 +309,7 @@ def main(args):
   # Show how much time each thread spent in each job type.
   breakDownTimes(jobTypes, forests)
   print 'TOTAL TIME: %f s' % (meta.endTimestamp - meta.beginTimestamp)
-  
+
   return 0
 
 if __name__ == '__main__':

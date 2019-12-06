@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
@@ -78,7 +78,7 @@ class GenericSymbolNameRule(object):
             #print 'different kind'
             return True
         return False
-    
+
     def check(self, node):
         displayname = node.displayname
         #print 'checking', displayname
@@ -160,13 +160,13 @@ class FunctionTemplateRule(object):
 
 class InIncludeDirsRule(object):
     """Rule to block visiting and recursion outside include dirs."""
-    
+
     def __init__(self, include_dirs, exclude_dirs, source_files):
         self.include_dirs = [os.path.abspath(x) for x in include_dirs]
         self.source_files = [os.path.abspath(x) for x in source_files]
         self.exclude_dirs = [os.path.abspath(x) for x in exclude_dirs]
         self.cache = {}
-    
+
     def allowVisit(self, node):
         """Return True if visiting is allowed."""
         if node.kind == ci.CursorKind.TRANSLATION_UNIT:
@@ -195,7 +195,7 @@ class InIncludeDirsRule(object):
                     break
         self.cache[node.location.file.name] = result
         return result
-    
+
     def allowRecurse(self, node):
         """Return True if we want to recurse below node."""
         return self.allowVisit(node)

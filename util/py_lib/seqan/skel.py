@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """SeqAn code generation from templates / skeletons.
 
 This module contains code to help the creation of modules, tests, apps etc.
@@ -394,7 +394,7 @@ def createAppTests(location, options):
     print '    ${CMAKE_BINARY_DIR})'
     print 'endif(PYTHONINTERP_FOUND)'
     print '=' * 80
-    
+
     return 0
 
 def main():

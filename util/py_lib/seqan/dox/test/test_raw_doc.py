@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the raw_doc module."""
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
@@ -575,7 +575,7 @@ class ThrowTest(unittest.TestCase):
         ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
         self.assertEqual(ret.getFormatted(self.formatter),
                          '@throw type text\n')
-        
+
 
 class DataRaceTest(unittest.TestCase):
     """Test for the RawDataRace class, mostly tests instance variables."""

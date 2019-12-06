@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Simple regex-based lexer.
 
 Taken from Eli Bendersky [1].
@@ -55,7 +55,7 @@ class Lexer(object):
 
             skip_whitespace:
                 If True, whitespace (\s+) will be skipped and not
-                reported by the lexer. Otherwise, you have to 
+                reported by the lexer. Otherwise, you have to
                 specify your rules for whitespace, or it will be
                 flagged as an error.
 
@@ -71,9 +71,9 @@ class Lexer(object):
         self.skip_whitespace = skip_whitespace
         self.line_offset = line_offset
         self.col_offset = col_offset
-        
+
         self.re_ws_skip = re.compile('\S')
-        
+
     def input(self, buf, file_name='<mem>', line=0, col=0, offset_col=None):
         """ Initialize the lexer with a buffer as input.
         """
@@ -86,9 +86,9 @@ class Lexer(object):
             self.col_offset = offset_col
 
     def token(self):
-        """ Return the next token (a Token object) found in the 
-            input buffer. None is returned if the end of the 
-            buffer was reached. 
+        """ Return the next token (a Token object) found in the
+            input buffer. None is returned if the end of the
+            buffer was reached.
             In case of a lexing error (the current chunk of the
             buffer matches no rule), a LexerError is raised with
             the position of the error.

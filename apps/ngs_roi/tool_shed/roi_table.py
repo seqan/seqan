@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """ROI Table Generator
 
 Generates a HTML page with a table of ROI record details.  Besides showing the

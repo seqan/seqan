@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Writing for HTML pages."""
 
 import distutils.dir_util
@@ -40,7 +40,7 @@ def escapeAnchor(name):
 
 class PathManager(object):
     """Handles the path and link generation."""
-    
+
     def __init__(self, out_dir):
         self.out_dir = out_dir
         self.this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -139,7 +139,7 @@ class TextNodeToHtml(object):
             for c in text_node.children:
                 self.handleTag(c)
             self.res += self.closeTag(text_node)
-        
+
     def convert(self):
         if not self.text_node:
             return None
@@ -253,7 +253,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
 
     Raw links are links of the form <a href="seqan:$target">$label</a>.
     """
-    
+
     def __init__(self, doc):
         self.doc = doc
         self.path_converter = PathConverter(doc)
@@ -297,7 +297,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
             if a_node.attrs.get('href'):
                 del a_node.attrs['href']
             #a_node.addChild(target_title)
-    
+
     def _replaceNode(self, text_node):
         if text_node.type == '<text>':
             return text_node
@@ -310,7 +310,7 @@ class LinkConverter(proc_doc.TextNodeVisitor):
 
 class ImagePathUpdater(proc_doc.TextNodeVisitor):
     """Update image paths to target image path."""
-    
+
     def __init__(self, doc, prefix):
         self.doc = doc
         self.prefix = prefix
@@ -554,7 +554,7 @@ class HtmlWriter(object):
                                      development=self.args.development)
         with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
             f.write(js)
-            
+
     def log(self, s, *args):
         print >>sys.stderr, s % args
 

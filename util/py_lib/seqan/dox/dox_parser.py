@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Parser for SeqAn Doxygen dialect.
 
 The Doxygen documentation has a regular grammar and thus can be parsed quite
@@ -88,7 +88,7 @@ class MessagePrinter(object):
 
 class ParserError(Exception):
     """Raised when there is a parser error."""
-    
+
     def __init__(self, token=None, msg=''):
         if msg and token:
             args = (token.file_name, token.lineno, token.column, repr(token.val), msg)
@@ -127,7 +127,7 @@ def normalizeWhitespaceTokens(token_list, strip_lt_breaks=False):
 class GenericSimpleClauseState(object):
     """Handler used in *DocState for handling simple text clauses clauses.
     """
-    
+
     def __init__(self, parser, parent):
         self.parser = parser
         self.parent = parent
@@ -171,7 +171,7 @@ class GenericSimpleClauseState(object):
 
 class ParagraphState(GenericSimpleClauseState):
     """Handler used in *DocState for handling tokens of a paragraph."""
-    
+
     def __init__(self, parser, parent):
         GenericSimpleClauseState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawParagraph
@@ -179,7 +179,7 @@ class ParagraphState(GenericSimpleClauseState):
 
 class SignatureState(GenericSimpleClauseState):
     """Handler used in *DocState for handling tokens of a paragraph."""
-    
+
     def __init__(self, parser, parent):
         GenericSimpleClauseState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawSignature
@@ -187,7 +187,7 @@ class SignatureState(GenericSimpleClauseState):
 
 class CodeState(GenericSimpleClauseState):
     """Handler used in *DocState for handling tokens of a paragraph."""
-    
+
     def __init__(self, parser, parent):
         GenericSimpleClauseState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawCode
@@ -203,7 +203,7 @@ class CodeState(GenericSimpleClauseState):
 
 class HtmlOnlyState(GenericSimpleClauseState):
     """Handler used in *DocState for handling tokens of a paragraph."""
-    
+
     def __init__(self, parser, parent):
         GenericSimpleClauseState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawHtmlOnly
@@ -301,7 +301,7 @@ class SeeState(GenericSimpleClauseState):
 class ParamState(GenericSimpleClauseState):
     """Handler used in *DocState for handling @param clauses.
     """
-    
+
     def __init__(self, parser, parent):
         GenericSimpleClauseState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawParam
@@ -331,7 +331,7 @@ class ParamState(GenericSimpleClauseState):
 class TParamState(ParamState):
     """Handler used in *DocState for handling @tparam clauses.
     """
-    
+
     def __init__(self, parser, parent):
         ParamState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawTParam
@@ -339,12 +339,12 @@ class TParamState(ParamState):
 
 class ReturnState(ParamState):
     """Handler used in *DocState for handling @return clauses.
-    
+
     Stores return type in self.name (member variable inherited from
     ParamState).  Sorry for any confusion.  The flag self.type_read
     is used for storing whether the type has been read.
     """
-    
+
     def __init__(self, parser, parent):
         ParamState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawReturn
@@ -362,12 +362,12 @@ class ReturnState(ParamState):
 
 class ThrowState(ParamState):
     """Handler used in *DocState for handling @throw clauses.
-    
+
     Stores throw type in self.name (member variable inherited from
     ParamState).  Sorry for any confusion.  The flag self.type_read
     is used for storing whether the type has been read.
     """
-    
+
     def __init__(self, parser, parent):
         ParamState.__init__(self, parser, parent)
         self.entry_class = raw_doc.RawThrow
@@ -384,7 +384,7 @@ class ThrowState(ParamState):
 
 class DataRaceState(GenericSimpleClauseState):
     """Handler used in *DocState for handling @datarace clauses.
-        
+
        Inherits from GenericSimpleClauseState.
     """
 
@@ -397,7 +397,7 @@ class DataRaceState(GenericSimpleClauseState):
 class SectionState(object):
     """Handler used in *DocState for handling @section clauses.
     """
-    
+
     def __init__(self, parser, parent):
         self.first_token = None
         self.parser = parser
@@ -428,7 +428,7 @@ class SectionState(object):
 class SubsectionState(SectionState):
     """Handler used in *DocState for handling @subsection clauses.
     """
-    
+
     def __init__(self, parser, parent):
         SectionState.__init__(self, parser, parent)
         self.level = 1
@@ -437,7 +437,7 @@ class SubsectionState(SectionState):
 class IncludeState(object):
     """Handler used in *DocState for handling @include clauses.
     """
-    
+
     def __init__(self, parser, parent):
         self.first_token = None
         self.parser = parser
@@ -466,7 +466,7 @@ class IncludeState(object):
 class SnippetState(object):
     """Handler used in *DocState for handling @snippet clauses.
     """
-    
+
     def __init__(self, parser, parent):
         self.first_token = None
         self.parser = parser
@@ -506,7 +506,7 @@ class SnippetState(object):
 
 class TopLevelState(object):
     """Top level state, expecting a command starting a documentation item.
-    
+
     Whitespace is skipped.
     """
 
@@ -706,7 +706,7 @@ class GenericDocState(object):
 
 class ClassDocState(GenericDocState):
     """State for documentation of a class."""
-    
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawClass, 'class')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -719,7 +719,7 @@ class ClassDocState(GenericDocState):
 
 class FunctionDocState(GenericDocState):
     """State for documentation of a function."""
-    
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawFunction, 'function')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -727,14 +727,14 @@ class FunctionDocState(GenericDocState):
                                      'COMMAND_PARAM',
                                      'COMMAND_SECTION', 'COMMAND_SUBSECTION',
                                      'COMMAND_INCLUDE', 'COMMAND_SNIPPET', 'COMMAND_RETURN',
-                                     'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 
-                                     'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA', 
+                                     'COMMAND_THROW', 'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED',
+                                     'COMMAND_NOTE', 'COMMAND_WARNING', 'COMMAND_AKA',
                                      'COMMAND_INTERNAL', 'COMMAND_DATARACE'])
 
 
 class MacroDocState(GenericDocState):
     """State for documentation of a macro."""
-    
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawMacro, 'macro')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -748,7 +748,7 @@ class MacroDocState(GenericDocState):
 
 class MetafunctionDocState(GenericDocState):
     """State for documentation of a metafunction."""
-    
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawMetafunction, 'metafunction')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -761,7 +761,7 @@ class MetafunctionDocState(GenericDocState):
 
 class ConceptDocState(GenericDocState):
     """State for documentation of a concept."""
-    
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawConcept, 'concept')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -774,7 +774,7 @@ class ConceptDocState(GenericDocState):
 
 class PageState(GenericDocState):
     """State for a documentation page."""
-        
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawPage, 'page')
         self.allowed_commands = set(['COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -785,7 +785,7 @@ class PageState(GenericDocState):
 
 class MainPageState(GenericDocState):
     """State for a documentation main page."""
-        
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawMainPage, 'mainpage')
         self.allowed_commands = set(['COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -810,7 +810,7 @@ class GroupState(GenericDocState):
 
 class VariableState(GenericDocState):
     """State for a variable."""
-        
+
     def __init__(self, parser, entry_class=raw_doc.RawVariable, state_name='var'):
         GenericDocState.__init__(self, parser, entry_class, state_name)
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -887,7 +887,7 @@ class TagState(GenericDocState):
 
 class EnumState(GenericDocState):
     """State for an enum."""
-        
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawEnum, 'enum')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -900,7 +900,7 @@ class EnumState(GenericDocState):
 
 class AdaptionState(GenericDocState):
     """State for an adaption."""
-        
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawAdaption, 'adaption')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -913,7 +913,7 @@ class AdaptionState(GenericDocState):
 
 class TypedefState(GenericDocState):
     """State for an typedef."""
-        
+
     def __init__(self, parser):
         GenericDocState.__init__(self, parser, raw_doc.RawTypedef, 'typedef')
         self.allowed_commands = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_HTMLONLY',
@@ -926,7 +926,7 @@ class TypedefState(GenericDocState):
 
 class Parser(object):
     """The parser class takes tokens from a lexer.Lexer class.
-    
+
     It generates a raw_doc.RawDoc object from this with
     raw_doc.RawEntry objects.
     """

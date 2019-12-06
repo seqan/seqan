@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Thumbnail Plot Generator.
 
 This report generator uses the binary roi_plot_thumbnails (C++ program, must

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Code for translating a DDDoc tree and its node into raw_doc objects.
 """
 
@@ -46,7 +46,7 @@ class TokenTranslator(object):
             else:
                 result.append(token)
         return result
-        
+
     def translateTT(self, token_list):
         result = []
         for token in token_list:
@@ -71,7 +71,7 @@ class TokenTranslator(object):
                 result.append(token)
         return result
 
-    
+
 def translateTokens(tokens):
     return TokenTranslator().translate(tokens)
 
@@ -663,7 +663,7 @@ class GenericMigration(object):
         if unhandled:
             print 'Missed %s in %s' % (unhandled, node)
             sys.exit(1)
-            
+
     def _processTextNode(self, node):
         texts = []
         for text in node.texts:
@@ -695,33 +695,33 @@ class ClassMigration(GenericMigration):
         self.entry_class = raw_doc.RawClass
         self.is_type = True
 
-    
+
 class EnumMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawEnum
         self.is_type = True
 
-    
+
 class ConceptMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawConcept
         self.is_type = True
 
-    
+
 class MacroMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawMacro
 
-    
+
 class MetafunctionMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawMetafunction
 
-    
+
 class TagMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)

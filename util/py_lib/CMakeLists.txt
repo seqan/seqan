@@ -9,20 +9,15 @@
 # ===========================================================================
 
 # Look for Python and stop if it could not be found.
-# require python 2.7, not python3
-set(PythonInterp_FIND_VERSION 2.7)
-set(PythonInterp_FIND_VERSION_MAJOR 2)
-set(PythonInterp_FIND_VERSION_MINOR 7)
-set(PythonInterp_FIND_VERSION_COUNT 2)
-find_package (PythonInterp)
+find_package (Python)
 
-if (NOT PYTHONINTERP_FOUND)
+if (NOT Python_Interpreter_FOUND)
   message (STATUS "  Python not found, cannot test py_lib.")
   return ()
-endif (NOT PYTHONINTERP_FOUND)
+endif (NOT Python_Interpreter_FOUND)
 
 # Look for nosetests and stop if it cannot be found
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -m "nose"
+execute_process(COMMAND ${Python_EXECUTABLE} -m "nose"
                 RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND
                 OUTPUT_VARIABLE _IGNORED
                 ERROR_VARIABLE _IGNORED)

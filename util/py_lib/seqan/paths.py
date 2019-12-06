@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """SeqAn path utilities.
 
 Code to get paths within the SeqAn repository; Useful for setting defaults in

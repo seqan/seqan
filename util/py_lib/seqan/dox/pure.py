@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Implementation of the SeqAn Doxygen dialect.
 """
 
@@ -84,12 +84,12 @@ class Config(object):
 
 class FileNameSource(object):
     """Recursive traversal of directory hierarchy, generating doxumentable files.
-    
+
     Create with list to paths to crawl.  Then generate() creates a generator that
     yields all of these files.
-    
+
     Attributes:
-    
+
       paths -- list of strings of paths to crawl
       extensions -- list of strings with file extensions to yield in generate
       ignore -- list of strings with entry names to ignore
@@ -165,7 +165,7 @@ def doMain(args):
         return 1
 
     # Validate documentation.
-        
+
     # Generate resulting HTML
     html_writer = write_html.HtmlWriter(doc_proc, args, config)
     html_writer.generateFor()

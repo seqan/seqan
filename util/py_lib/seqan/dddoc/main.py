@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import datetime
 import optparse
@@ -31,7 +31,7 @@ class DDDocRunner(object):
       index_only  Boolean, true iff only index pages are built.
       doc_dirs    List of strings.  Names of directories with dddoc files.
     """
-    
+
     def __init__(self, index_only=False, doc_dirs=[], out_dir='html',
                  demos_dir='.', cache_only=False, include_dirs=[]):
         """Initialize, arguments correspond to attributes."""
@@ -62,7 +62,7 @@ class DDDocRunner(object):
             for path in base_paths:
                 os.path.normpath(path)
                 app.loadFiles(path)
-                
+
             # Scan doc directories.
             for doc_dir in self.doc_dirs:
                 print 'Scanning %s...' % doc_dir
@@ -79,14 +79,14 @@ class DDDocRunner(object):
         # Done, print end message.
         print 'Documentation created/updated.'
         return res
-    
-    
+
+
 def main(argv):
     """Program entry point."""
     print '%s\n' % HEADER
 
     start_time = datetime.datetime.now()
-    
+
     # Parse arguments.
     parser = optparse.OptionParser()
     parser.add_option('-d', '--doc-dir', dest='doc_dirs', action='append',
@@ -108,7 +108,7 @@ def main(argv):
     options, args = parser.parse_args(argv)
     print 'doc dirs: %s' % ', '.join(options.doc_dirs)
     print
-    
+
     # Show help if no arguments are given.
     if len(args) < 2:
         print CMD_HELP % args[0]
@@ -125,7 +125,7 @@ def main(argv):
     print >>sys.stderr, 'Took %d s' % elapsed.seconds
 
     return res
-    
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

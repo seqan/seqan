@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import argparse
 import sys
@@ -25,7 +25,7 @@ class CLIElement(object):
 
 class ParametersNode(object):
     """Represents a <NODE> tag inside the <PARAMETERS> tags."""
-    
+
     def __init__(self, kind='', name='', description='', value='', type_='', tags='',
                  restrictions='', supported_formats=''):
         self.name = name
@@ -72,12 +72,12 @@ class Tool(object):
              self.manual, self.doc_url, self.category)
         return 'Tool(%s, %s, %s, %s, %s, %s, %s)' % tuple(map(repr, list(t)))
 
-        
+
 
 class CTDFormatException(Exception):
     """Raised when there is a format error in CTD."""
 
-    
+
 class CTDHandler(xml.sax.handler.ContentHandler):
     def __init__(self):
         self.result = None
@@ -186,7 +186,7 @@ def main():
     for cli in tool.cli_elements:
         print '  %s' % cli
     print tool.parameters
-        
+
 
 if __name__ == '__main__':
     sys.exit(main())
