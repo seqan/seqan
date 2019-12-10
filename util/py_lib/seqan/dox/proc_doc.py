@@ -9,19 +9,19 @@ into structured documents such as HTML more easily.
 # TODO(holtgrew): Location traceability for entries and text.
 
 import os.path
-import HTMLParser
+import html.parser
 import logging
 import re
 import sys
 import xml.etree.ElementTree
 import xml.sax.saxutils
 
-import inc_mgr
-import sig_parser
-import dox_parser
-import dox_tokens
-import raw_doc
-import validation
+from . import inc_mgr
+from . import sig_parser
+from . import dox_parser
+from . import dox_tokens
+from . import raw_doc
+from . import validation
 
 
 def escapeForXml(s):
@@ -155,7 +155,7 @@ class ProcDoc(object):
     def runTextVisitor(self, v):
         """Run visitor v on all Text members of all entries and sub entries.
         """
-        for e in self.entries.itervalues():
+        for e in self.entries.values():
             e.runTextVisitor(v)
 
 
@@ -256,16 +256,16 @@ class TextNode(object):
         """
         if self.type == '<text>':
             if self.attrs:
-                print >>sys.stderr, 'WARNING: Attributes on text node!'
+                print('WARNING: Attributes on text node!', file=sys.stderr)
             return self.text
         else:
             dash = {True: '', False: ' /'}.get(bool(self.children))  # Whether empty
             res = []
             if not skip_top_tag:
                 res += ['<', self.type]
-                for key, value in self.attrs.iteritems():
+                for key, value in self.attrs.items():
                     res += [' ', key, '=', '"', repr(value)[1:-1], '"']
-                for key, value in kwargs.iteritems():
+                for key, value in kwargs.items():
                     res += [' ', key, '=', '"', value, '"']
                 res.append(dash + '>')
             if self.children:
@@ -915,14 +915,15 @@ class ProcGroup(ProcEntry):
         self.typedefs.append(t)
 
 
-class HtmlTagParser(HTMLParser.HTMLParser):
+class HtmlTagParser(html.parser.HTMLParser):
     """Used for parsing HTML and storing the first tag and its attributes."""
 
     def __init__(self):
+        super().__init__()
         self.reset()
 
     def reset(self):
-        HTMLParser.HTMLParser.reset(self)
+        html.parser.HTMLParser.reset(self)
         self.tag = None
         self.attrs = None
         self.is_open = None
@@ -980,7 +981,7 @@ class RawTextToTextNodeConverter(object):
             self.tag_stack.append(self.html_parser.tag)
             self.node_stack.append(self.current)
             tag = TextNode(type=self.html_parser.tag, raw_html=True)
-            for key, value in self.html_parser.attrs.items():
+            for key, value in list(self.html_parser.attrs.items()):
                 tag.setAttr(key, value)
             self.current = self.current.addChild(tag)
 
@@ -1010,8 +1011,8 @@ class RawTextToTextNodeConverter(object):
             else:  # not closing current
                 self.tokens_cmd.append(token)
         else:  # no command active, open
-            if not token.type in self.command_pairs.keys():
-                expected = map(dox_tokens.transToken, self.command_pairs.keys())
+            if not token.type in list(self.command_pairs.keys()):
+                expected = list(map(dox_tokens.transToken, list(self.command_pairs.keys())))
                 raise dox_parser.ParserError(token, 'Unexpected token.  Must be one of %s' % expected)
             self.current_cmd = token.type
 
@@ -1027,7 +1028,7 @@ class RawTextToTextNodeConverter(object):
             while self.tokens_cmd and isWhitespace(self.tokens_cmd[-1]):
                 self.tokens_cmd.pop(-1)
             if not self.tokens_cmd:
-                print >>sys.stderr, 'WARNING: Empty @link @endlink.'
+                print('WARNING: Empty @link @endlink.', file=sys.stderr)
                 return
             # Get link target.
             target_tokens = []
@@ -1194,7 +1195,7 @@ class EntryConverter(object):
                     res.addChild(x)
                 elif p.getType() == 'htmlonly':
                     res.addChild(TextNode(text=p.text.text, verbatim=True))
-            except inc_mgr.IncludeException, e:
+            except inc_mgr.IncludeException as e:
                 e2 = dox_parser.ParserError(msg=str(e), token=p.text.tokens[0])
                 self.doc_proc.msg_printer.printParserError(e2)
                 n = TextNode(type='div', attrs={'class': 'note warning'})
@@ -1267,7 +1268,7 @@ class CodeEntryConverter(EntryConverter):
                 try:
                     sig_entry = sig_parser.SigParser(s.text.text).parse()
                     entry.addSignatureEntry(sig_entry)
-                except sig_parser.SigParseException, e:
+                except sig_parser.SigParseException as e:
                     pass
                     #print >>sys.stderr, '\nWARNING: Could not parse signature: %s' % e
                     #print >>sys.stderr, 'Signature is: %s' % s.text.text.strip()
@@ -1684,7 +1685,7 @@ class DocProcessor(object):
         """
         self.log('  3) Checking References.')
         link_checker = LinkChecker(res)
-        for proc_entry in res.entries.values():
+        for proc_entry in list(res.entries.values()):
             proc_entry.visitTextNodes(link_checker)
 
     def buildInheritanceLists(self, doc):
@@ -1703,7 +1704,7 @@ class DocProcessor(object):
         """
         self.log('  4) Building Inheritance Lists.')
         # Process concepts: All extended and all extending.
-        concepts = [x for x in doc.top_level_entries.values()
+        concepts = [x for x in list(doc.top_level_entries.values())
                     if x.kind == 'concept']
         # Get all concepts that c extends into c.all_extended.
         for c in concepts:
@@ -1720,7 +1721,7 @@ class DocProcessor(object):
             for name in c.all_extended:
                 doc.top_level_entries[name].all_extending.add(c.name)
         # Process classes: All extended and all extending classes.
-        classes = [x for x in doc.top_level_entries.values()
+        classes = [x for x in list(doc.top_level_entries.values())
                    if x.kind in ['class', 'specialization']]
         # Get all classes that c extends into c.all_extended.
         for c in classes:
@@ -1745,7 +1746,7 @@ class DocProcessor(object):
         # Build list of all direct implementing classes for all concepts.
         for cl in classes:
             for name in cl.implements:
-                if '\u0001' in name:
+                if '\\u0001' in name:
                     continue  # Skip transitive inheritance.
                 if not doc.top_level_entries.get(name):
                     self.logWarning('Could not find entry for implementing: %s', name)
@@ -1774,7 +1775,7 @@ class DocProcessor(object):
         @param doc: The ProcDoc object to validate.
         """
         self.log('  5) Running validation.')
-        for name, entry in doc.entries.iteritems():
+        for name, entry in doc.entries.items():
             for v in self.validators:
                 #print v, entry
                 v.validate(entry)

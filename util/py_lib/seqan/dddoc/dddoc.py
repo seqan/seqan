@@ -37,9 +37,9 @@ class DddocCache(object):
             with open(self.path, 'rb') as f:
                 self.content = pickle.load(f)
         except:
-            print >>sys.stderr, 'Could not load cache %s' % self.path
+            print('Could not load cache %s' % self.path, file=sys.stderr)
             return False
-        print >>sys.stderr, 'Successfully loaded cache %s' % self.path
+        print('Successfully loaded cache %s' % self.path, file=sys.stderr)
         return True
 
     def flush(self):
@@ -47,16 +47,16 @@ class DddocCache(object):
             with open(self.path, 'wb') as f:
                 pickle.dump(self.content, f)
         except:
-            print >>sys.stderr, 'Could not store cache %s' % self.path
+            print('Could not store cache %s' % self.path, file=sys.stderr)
             return False
-        print >>sys.stderr, 'Successfully stored cache %s' % self.path
+        print('Successfully stored cache %s' % self.path, file=sys.stderr)
         return True
 
     def has_key(self, key):
-        return self.content.has_key(key)
+        return key in self.content
 
     def isFresh(self, filename):
-        if not self.has_key(filename):
+        if filename not in self:
             return False
         mtime = os.stat(filename).st_mtime
         return mtime >= self.content[filename][0]
@@ -173,7 +173,7 @@ class Data:
           Data object with the lines below the given path.
         """
         # If possible, return from cache.
-        if self.cache.has_key(str):
+        if str in self.cache:
             return self.cache[str]
 
         arr = splitName(str)
@@ -274,7 +274,7 @@ class Data:
             if len(line.nodes) > self.level + level:
                 dict[line.nodes[self.level + level]] = 1
 
-        arr = dict.keys()
+        arr = list(dict.keys())
         arr.sort()
         return arr
 
@@ -283,14 +283,14 @@ class Data:
         for line in self.lines:
             if len(line.nodes) > self.level + level:
                 key = line.nodes[self.level + level]
-                if not dict.has_key(key) or (dict[key] > line.id):
+                if key not in dict or (dict[key] > line.id):
                     dict[key] = line.id
 
         dict2 = {}
         for key in dict:
             dict2[dict[key]] = key
 
-        arr2 = dict2.keys()
+        arr2 = list(dict2.keys())
         arr2.sort()
 
         arr = []

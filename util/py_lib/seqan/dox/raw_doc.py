@@ -7,8 +7,8 @@ and cross-linking.
 """
 
 import textwrap
-import dox_tokens
-import raw_doc
+from . import dox_tokens
+from . import raw_doc
 
 class DoxFormatter(object):
     """Formatter for printing correctly indented and wrapped in Doxygen style.

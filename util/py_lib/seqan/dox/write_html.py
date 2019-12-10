@@ -8,11 +8,11 @@ import os.path
 import shutil
 import sys
 import xml.sax.saxutils
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import jinja2
-import proc_doc
-import raw_doc
+from . import proc_doc
+from . import raw_doc
 
 
 def escapeForXml(s):
@@ -83,9 +83,9 @@ class TextNodeToHtml(object):
             res = ['<', text_node.type]
         else:
             res = ['<', self.heading_table.get(text_node.type, text_node.type)]
-        for key, value in text_node.attrs.iteritems():
+        for key, value in text_node.attrs.items():
             res += [' ', key, '=', '"', repr(value)[1:-1], '"']
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             res += [' ', key, '=', '"', value, '"']
         res.append('>')
         return res
@@ -157,7 +157,7 @@ def toDox(proc_entry, line_length=110, in_comment=False):
     formatter = raw_doc.DoxFormatter()
     result = []
     result.append(proc_entry.raw_entry.getFormatted(formatter))
-    for key, lst in proc_entry.subentries.iteritems():
+    for key, lst in proc_entry.subentries.items():
         for elem in lst:
             result.append(elem.raw_entry.getFormatted(formatter))
     if in_comment:
@@ -202,7 +202,7 @@ class TemplateManager(object):
             return x
         self.env.filters['escape_name'] = escapeName
         self.env.filters['escape_anchor'] = escapeAnchor
-        self.env.filters['url_encode'] = urllib.quote
+        self.env.filters['url_encode'] = urllib.parse.quote
         self.env.filters['transtext'] = transTextNode
         self.env.filters['to_dox'] = toDox
         self.env.filters['translink'] = createTransLink(doc, self)
@@ -377,7 +377,7 @@ class HtmlWriter(object):
         self.generateLanguageEntities()
 
     def makedirs(self):
-        for path in self.out_dirs.values():
+        for path in list(self.out_dirs.values()):
             if not os.path.exists(path):
                 #self.log('Creating directory %s', path)
                 os.makedirs(path)
@@ -417,14 +417,14 @@ class HtmlWriter(object):
 
     def translateLinks(self, doc):
         link_converter = LinkConverter(doc)
-        for proc_entry in doc.entries.values():
+        for proc_entry in list(doc.entries.values()):
             #self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(link_converter)
 
     def updateImagePaths(self, doc):
         """Appends image output directory to src attributes."""
         updater = ImagePathUpdater(doc, 'img')
-        for proc_entry in doc.entries.values():
+        for proc_entry in list(doc.entries.values()):
             #self.log('    * %s', proc_entry.name)
             proc_entry.visitTextNodes(updater)
 
@@ -436,7 +436,7 @@ class HtmlWriter(object):
         except ImportError:
             pygments_style = '<!-- pygments not available -->'
 
-        for entry in doc.top_level_entries.values():
+        for entry in list(doc.top_level_entries.values()):
             path = self.path_manager.getEntryPath(entry)
             #self.log('Creating %s', path)
             self.generatePage(entry, path, doc, config, pygments_style)
@@ -485,8 +485,8 @@ class HtmlWriter(object):
 
     def generateDemoPages(self, doc):
         """Copy over all demo pages."""
-        file_names = set(doc.doc_processor.include_mgr.file_cache.keys() +
-                         [x[0] for x in doc.doc_processor.include_mgr.snippet_cache.keys()])
+        file_names = set(list(doc.doc_processor.include_mgr.file_cache.keys()) +
+                         [x[0] for x in list(doc.doc_processor.include_mgr.snippet_cache.keys())])
         for path in sorted(file_names):
             self.generateDemoPage(path)
 
@@ -504,13 +504,13 @@ class HtmlWriter(object):
         """Generate the search index."""
         js = ['window.searchData = [']
         js_module = ['window.searchDataModule = [']
-        for entry in doc.top_level_entries.itervalues():
+        for entry in doc.top_level_entries.values():
             akas, subentries, headerfile = '', '', ''
             if hasattr(entry, 'akas'):
                 akas = ','.join(entry.akas)
             if hasattr(entry, 'subentries'):
                 subentries = []
-                for t in entry.subentries.values():
+                for t in list(entry.subentries.values()):
                     for s in t:
                         sID = s.title
                         title = proc_doc.splitSecondLevelEntry(s.title)[1]
@@ -534,28 +534,28 @@ class HtmlWriter(object):
         js_module.append('];')
 
         with open(os.path.join(self.out_dirs['js'], 'search.data.js'), 'wb') as f:
-            f.write('\n'.join(js))
+            f.write('\n'.join(js).encode())
         with open(os.path.join(self.out_dirs['js'], 'search.data.module.js'), 'wb') as f:
-            f.write('\n'.join(js_module))
+            f.write('\n'.join(js_module).encode())
 
     def generateLinkData(self, doc):
         """Generate the Data for top level entry links."""
         js = ['window.lookup = {']
-        for entry in doc.top_level_entries.itervalues():
+        for entry in doc.top_level_entries.values():
             js.append('    \'%(name)s\': \'%(kind)s_%(name)s\',' % { 'name': entry.name,
                                                                      'kind': entry.kind })
         js.append('};')
         with open(os.path.join(self.out_dirs['js'], 'link.data.js'), 'wb') as f:
-            f.write('\n'.join(js))
+            f.write('\n'.join(js).encode())
 
     def generateLanguageEntities(self):
         """Generate language entities JavaScript file."""
         js = self.tpl_manager.render('js/lang_entities.js', config=self.config,
                                      development=self.args.development)
         with open(os.path.join(self.out_dirs['js'], 'lang_entities.js'), 'wb') as f:
-            f.write(js)
+            f.write(js.encode())
 
     def log(self, s, *args):
-        print >>sys.stderr, s % args
+        print(s % args, file=sys.stderr)
 
 

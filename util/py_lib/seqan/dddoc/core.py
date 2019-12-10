@@ -7,6 +7,7 @@ import os.path
 import pickle
 import string
 import sys
+from functools import reduce
 
 # Constant for C++ files.
 FILETYPE_CPP = 2
@@ -178,9 +179,9 @@ class FileCache(object):
             with open(self.path, 'rb') as f:
                 self.content = pickle.load(f)
         except:
-            print >>sys.stderr, 'Could not load cache %s' % self.path
+            print('Could not load cache %s' % self.path, file=sys.stderr)
             return False
-        print >>sys.stderr, 'Successfully loaded cache %s' % self.path
+        print('Successfully loaded cache %s' % self.path, file=sys.stderr)
         return True
 
     def flush(self):
@@ -189,14 +190,14 @@ class FileCache(object):
             with open(self.path, 'wb') as f:
                 pickle.dump(self.content, f)
         except:
-            print >>sys.stderr, 'Could not store cache %s' % self.path
+            print('Could not store cache %s' % self.path, file=sys.stderr)
             return False
-        print >>sys.stderr, 'Successfully stored cache %s' % self.path
+        print('Successfully stored cache %s' % self.path, file=sys.stderr)
         return True
 
     def has_key(self, key):
         """Returns True if the cache has data for this key."""
-        return self.content.has_key(key)
+        return key in self.content
 
     def isFresh(self, filename):
         """Returns True if the cache is fresh.
@@ -204,7 +205,7 @@ class FileCache(object):
         The cache is fresh if the file at the given path is not newer than the
         data in the cache.
         """
-        if not self.has_key(filename):
+        if filename not in self:
             return False
         mtime = os.stat(filename).st_mtime
         return mtime >= self.content[filename][0]
@@ -256,9 +257,9 @@ def splitKeys(text, delimiters, limit=None, _cache={}):
         >>> splitKeys('.Adaption.\'std::string\'.summary')
         ['', 'Adaption', '\'std::string\'', 'summary']
     """
-    if '\u0001' in text:
-        text = text.split('\u0001', 1)[0]  # Remove optional label, used in inheritance.
-    if _cache.has_key((text, delimiters)):
+    if '\\u0001' in text:
+        text = text.split('\\u0001', 1)[0]  # Remove optional label, used in inheritance.
+    if (text, delimiters) in _cache:
         return _cache[(text, delimiters)]
     count = 0
     current = []
@@ -299,7 +300,7 @@ def cleanPath(path_arr):
     """
     def _cleanPathElement(x):
         return x.strip().replace('\'', '').replace('"', '')
-    return map(_cleanPathElement, path_arr)
+    return list(map(_cleanPathElement, path_arr))
 
 
 class FileLoader(object):
@@ -522,7 +523,7 @@ class FileLoader(object):
             ## print '  empty_count', empty_count
             if empty_count <= len(stack):
                 stack = stack[:empty_count]
-                stack_len_sum = reduce(operator.add, map(len, stack), 0)
+                stack_len_sum = reduce(operator.add, list(map(len, stack)), 0)
             stack.append(path[empty_count:])
             stack_len_sum += len(stack[-1])
             path = reduce(operator.add, stack, [])
@@ -600,14 +601,14 @@ class DddocTreeNode(object):
             if prefix:
                 prefix = prefix + ' --> '
             res = '%s %sDddocTreeNode(key=%s, texts=%s)' % (space, prefix, repr(node.key), repr(node.texts))
-            for k, child in node.children.iteritems():
+            for k, child in node.children.items():
                 res += '\n' + _str(child, level + 1, k)
             return res
         return _str(self)
 
     def dump(self, stream=sys.stdout):
         """Debug recursive dumping of a tree node."""
-        print >>stream, self
+        print(self, file=stream)
 
 
 class DddocTree(object):
@@ -642,12 +643,12 @@ class DddocTree(object):
         Enables caching and builds some indices.
         """
         self._enableFindCache()
-        print >>sys.stderr, 'Indexing Glossary Pages'
+        print('Indexing Glossary Pages', file=sys.stderr)
         if 'Page' in self.root.children:
-            for key, node in self.root.children['Page'].children.iteritems():
+            for key, node in self.root.children['Page'].children.items():
                 if 'glossary' in node.children:
                     self.glossary_nodes.append(node.children['glossary'])
-                    print >>sys.stderr, '  Found Page.%s' % node.key
+                    print('  Found Page.%s' % node.key, file=sys.stderr)
 
     def _buildSubtree(self, path, begin_index, end_index, level):
         # First, identify the entries belonging to each node (entry.path[i] are
@@ -705,7 +706,7 @@ class DddocTree(object):
                 key = '.'.join(path)
             else:
                 key = path
-            if self.cache.has_key(key):
+            if key in self.cache:
                 return self.cache[key]
         # Split path if is string, ignore leading dot if any.
         if type(path) is str:
@@ -717,7 +718,7 @@ class DddocTree(object):
             """Helper function that searches for the node with given path."""
             if not path:
                 return node
-            if not node.children.has_key(path[0]):
+            if path[0] not in node.children:
                 return None
             return findRecurse(node.children[path[0]], path[1:])
         res = findRecurse(self.root, path)
@@ -754,10 +755,10 @@ def _matchTreesInNode(tree, node, path, func, block_paths=[['globals']], level=0
     ## print '  ' * level, '_matchTreesInNode(tree', node.path, path, func, level, ')'
     if path:
         if path[0] == '*':
-            for child in node.children.itervalues():
+            for child in node.children.values():
                 _matchTreesInNode(tree, child, path[1:], func, block_paths, level+1)
         else:
-            if node.children.has_key(path[0]):
+            if path[0] in node.children:
                 _matchTreesInNode(tree, node.children[path[0]], path[1:], func, block_paths, level+1)
     else:
         for block_path in block_paths:
@@ -800,7 +801,7 @@ def processInlineSummaries(tree, paths):
 
 def generateAutomaticReferences(tree):
     """Interpret the globals.relations entries."""
-    print >>sys.stderr, 'Generating Automatic References'
+    print('Generating Automatic References', file=sys.stderr)
     relations_node = tree.find('globals.relations')
     if not relations_node:
         return  # Empty, do nothing.
@@ -816,7 +817,7 @@ def generateAutomaticReferences(tree):
             if not res:
                 continue  # Not found, Skip  # TODO(holtgrew): Warning?
             additions.append((res.path + [key], '.'.join(node.path[:2])))
-    for key, node in relations_node.children.iteritems():
+    for key, node in relations_node.children.items():
         ## print 'GENERATE', key, node
         for txt in node.texts:
             path = splitKeys(txt, '.')
@@ -837,7 +838,7 @@ def generateAutomaticReferences(tree):
 
 def generateInheritedElements(tree):
     """Push through inheritances."""
-    print >>sys.stderr, 'Linking Inherited Entities'
+    print('Linking Inherited Entities', file=sys.stderr)
     inherit_node = tree.find('globals.inherit')
     # Contains children: $TARGET_FIELD:$THROUGH_FIELD.$SOURCE_FIELD
 
@@ -846,7 +847,7 @@ def generateInheritedElements(tree):
     inheritance_rules = []
 
     # First build a dependency graph.
-    for target_field, child in inherit_node.children.items():
+    for target_field, child in list(inherit_node.children.items()):
         for txt in child.texts:
             arr = splitKeys(txt, '.')
             through_field = arr[0]
@@ -885,8 +886,8 @@ def generateInheritedElements(tree):
                     if not source_field in source_node.children:
                         continue  # Skip if no source field.
                     for path in source_node.children[source_field].texts:
-                        if not '\u0001' in path:  # We use this ugly hack to add the inheritance source here.
-                            path = path + '\u0001' + '.'.join(source_node.path)
+                        if not '\\u0001' in path:  # We use this ugly hack to add the inheritance source here.
+                            path = path + '\\u0001' + '.'.join(source_node.path)
                         # If necessary then create child in target node.
                         if not target_field in target_node.children:
                             target_node.children[target_field] = DddocTreeNode(tree, target_field, target_node.path + [target_field], source_node.children[source_field].entry)
@@ -909,7 +910,7 @@ def generateInheritedElements(tree):
 def removeDuplicateTexts(tree):
     """Remove duplicates from texts members.
 
-    Suffixes starting with '\u0001' are ignored for the comparisons
+    Suffixes starting with '\\u0001' are ignored for the comparisons
     and strings with these suffixes are preferred.
     """
     ##print 'remove duplicates'
@@ -918,20 +919,20 @@ def removeDuplicateTexts(tree):
         cleaned = []
         for txt in node.texts:
             clean = txt
-            pos = txt.find('\u0001')
+            pos = txt.find('\\u0001')
             if pos != -1:
                 clean = txt[:pos]
             ##print cleaned, repr(clean)
             if clean in in_cleaned:
-                if '\u0001' in clean and not '\u0001' in cleaned[in_cleaned[clean]]:
+                if '\\u0001' in clean and not '\\u0001' in cleaned[in_cleaned[clean]]:
                     cleaned[in_cleaned[clean]] = txt
             else:
                 in_cleaned[clean] = len(cleaned)
                 cleaned.append(txt)
         node.texts = cleaned
-        for child in node.children.itervalues():
+        for child in node.children.values():
             recurse(child)
-    for child in tree.root.children.itervalues():
+    for child in tree.root.children.values():
         recurse(child)
 
 
@@ -946,15 +947,15 @@ def buildByTypeAndCatIndex(tree):
     def recurse(result, path, node):
         ## print path, node.path
         if len(path) == 2:
-            if node.children.has_key('cat'):
+            if 'cat' in node.children:
                 for cat in node.children['cat'].texts:
                     result.setdefault(path[0], {}).setdefault(cat, []).append(node)
             else:
                 result.setdefault(path[0], {})[path[1]] = node
         if len(path) < 2:
-            for key, child in node.children.iteritems():
+            for key, child in node.children.items():
                 recurse(result, path + [key], child)
-    for key, child in tree.root.children.iteritems():
+    for key, child in tree.root.children.items():
         recurse(result, [key], child)
     ## for k1, v1 in result.iteritems():
     ##     for k2, v2 in v1.iteritems():
@@ -968,11 +969,11 @@ class ErrorLogger(object):
     def invalidReference(self, txt, locations):
         self.error_count += 1
         if not locations:
-            print >>sys.stderr, 'ERROR: Invalid Reference %s in unknown location (sorry).' % txt
+            print('ERROR: Invalid Reference %s in unknown location (sorry).' % txt, file=sys.stderr)
         else:
-            print >>sys.stderr, 'ERROR: Invalid Reference %s in one of the following locations:' % txt
+            print('ERROR: Invalid Reference %s in one of the following locations:' % txt, file=sys.stderr)
             for filename, line in locations:
-                print >>sys.stderr, '  %s:%s' % (filename, line)
+                print('  %s:%s' % (filename, line), file=sys.stderr)
 
 
 class App(object):

@@ -4,7 +4,6 @@
 USAGE: profile2pdf.py <program.profile.txt> <out.pdf>
 """
 
-from __future__ import with_statement
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
@@ -38,11 +37,11 @@ def htmlColorToRgb(colorstring):
     colorstring = colorstring.strip()
     if colorstring[0] == '#': colorstring = colorstring[1:]
     if len(colorstring) != 6:
-        raise ValueError, "input #%s is not in #RRGGBB format" % colorstring
+        raise ValueError("input #%s is not in #RRGGBB format" % colorstring)
     r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
     r, g, b = [int(n, 16) for n in (r, g, b)]
     return (r / 255.0, g / 255.0, b / 255.0)
-COLORS = map(htmlColorToRgb, COLORS)
+COLORS = list(map(htmlColorToRgb, COLORS))
 
 class Meta(object):
   def __init__(self, beginTimestamp, endTimestamp):
@@ -61,7 +60,7 @@ class JobType(object):
   def fromString(klass, s):
     columns = s.split('\t')
     if columns[0] != '@EVENT':
-      print >>sys.stderr, 'First column\'s value was not "@EVENT@'
+      print('First column\'s value was not "@EVENT@', file=sys.stderr)
       sys.exit(1)
     identifier = int(columns[1])
     shortName = columns[2]
@@ -88,7 +87,7 @@ class Event(object):
     columns = s.split('\t')
     threadId = int(columns[0])
     if columns[1] not in ['BEGIN', 'END']:
-      print >>sys.stderr, 'Second column\'s value was not BEGIN or END'
+      print('Second column\'s value was not BEGIN or END', file=sys.stderr)
       sys.exit(1)
     isBegin = columns[1] == 'BEGIN'
     jobType = int(columns[2])
@@ -130,7 +129,7 @@ def buildSections(events):
 
 def printSection(section, jobTypes, offset, level=0):
   span = section.endTime - section.beginTime
-  print '%s%s %f  (%f to %f)' % ('\t' * level, jobTypes[section.jobType].shortName, span, section.beginTime - offset, section.endTime - offset)
+  print('%s%s %f  (%f to %f)' % ('\t' * level, jobTypes[section.jobType].shortName, span, section.beginTime - offset, section.endTime - offset))
   for s in section.children:
     printSection(s, jobTypes, offset, level+1)
 
@@ -138,13 +137,13 @@ def loadFile(path):
   with open(path, 'r') as f:
     line = f.readline()
     if line.strip() != '@SQN:PROFILE':
-      print >>sys.stderr, 'Invalid file, does not start with "@SQN:PROFILE"'
+      print('Invalid file, does not start with "@SQN:PROFILE"', file=sys.stderr)
       sys.exit(1)
     line = f.readline()
     if not line.startswith('@TIME'):
-      print >>sys.stderr, 'Invalid file, second line does not start with "@TIME"'
+      print('Invalid file, second line does not start with "@TIME"', file=sys.stderr)
       sys.exit(1)
-    meta = Meta(*map(float, line.strip().split('\t')[1:]))
+    meta = Meta(*list(map(float, line.strip().split('\t')[1:])))
     # Load job types.
     jobTypes = []
     while True:
@@ -248,12 +247,12 @@ def breakDownTimesHelper(counter, section):
 
 def breakDownTimes(jobTypes, forests):
   for threadId in sorted(forests.keys()):
-    print 'Breakdown for thread #%d' % threadId
+    print('Breakdown for thread #%d' % threadId)
     counter = {}
     for section in forests[threadId]:
       breakDownTimesHelper(counter, section)
     for jobType in jobTypes:
-      print '  %20s %10.5f' % (jobType.shortName, counter.get(jobType.identifier, 0))
+      print('  %20s %10.5f' % (jobType.shortName, counter.get(jobType.identifier, 0)))
 
 def createDiagram(meta, jobTypes, forests, path):
   totalBegin = meta.beginTimestamp
@@ -266,7 +265,7 @@ def createDiagram(meta, jobTypes, forests, path):
   cs = cairo.PDFSurface(path, width, height)
   cr = cairo.Context(cs)
 
-  for threadId, forest in forests.iteritems():
+  for threadId, forest in forests.items():
     for section in forest:
       drawBoxesForSection(cr, jobTypes, section, totalBegin, threadId)
   drawKey(cr, jobTypes, len(forests))
@@ -276,21 +275,21 @@ def createDiagram(meta, jobTypes, forests, path):
 
 def main(args):
   if len(args) != 3:
-    print >>sys.stderr, 'Invalid number of arguments!'
-    print >>sys.stderr, 'USAGE: profile2pdf.py <program.profile.txt> <out.pdf>'
+    print('Invalid number of arguments!', file=sys.stderr)
+    print('USAGE: profile2pdf.py <program.profile.txt> <out.pdf>', file=sys.stderr)
     return 1
 
   # Load input file.
-  print >>sys.stderr, 'Loading file', args[1]
+  print('Loading file', args[1], file=sys.stderr)
   meta, jobTypes, events = loadFile(args[1])
   # Partition events by thread id.
-  print >>sys.stderr, 'Partition events'
+  print('Partition events', file=sys.stderr)
   eventsForThread = {}
   for e in events:
     eventsForThread.setdefault(e.threadId, []).append(e)
 
   # Build sections list and forest for each thread.
-  print >>sys.stderr, 'Build sections'
+  print('Build sections', file=sys.stderr)
   forests = {}
   sections = {}
   for threadId in sorted(eventsForThread.keys()):
@@ -303,12 +302,12 @@ def main(args):
     #  printSection(x, jobTypes, s[0].beginTime)
 
   # Build diagram.
-  print >>sys.stderr, 'Create diagram'
+  print('Create diagram', file=sys.stderr)
   createDiagram(meta, jobTypes, forests, args[2])
 
   # Show how much time each thread spent in each job type.
   breakDownTimes(jobTypes, forests)
-  print 'TOTAL TIME: %f s' % (meta.endTimestamp - meta.beginTimestamp)
+  print('TOTAL TIME: %f s' % (meta.endTimestamp - meta.beginTimestamp))
 
   return 0
 

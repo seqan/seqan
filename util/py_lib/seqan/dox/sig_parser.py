@@ -6,7 +6,7 @@
 
 import sys
 
-import lexer
+from . import lexer
 
 
 TOKENS = (
@@ -121,7 +121,7 @@ class SigParser(object):
     def parseTemplate(self, token):
         tparams = []
         # Read <
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         if t.type != 'PANGULAR_OPEN':
             raise SigParseException('Expected opening angular parenthesis')
@@ -135,39 +135,39 @@ class SigParser(object):
         return sig_entry
 
     def parseParams(self, end_token, params_dest, type_tokens):
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         while t.type != end_token:
             if t.type not in type_tokens:
                 raise SigParseException('Expected identifier got "%s"' % t.val)
             arg = Arg(type=t.val)
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type != 'IDENTIFIER':
                 raise SigParseException('Expected identifier got "%s"' % t.val)
             arg.name = t.val
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type not in ['COMMA', end_token]:
                 raise SigParseException('Expected COMMA or closing parenthesis')
             if t.type != end_token:
-                t = self.tokens.next()
+                t = next(self.tokens)
             params_dest.append(arg)
 
     def parseMetafunctionType(self, name):
         sig_entry = SigEntry(kind='metafunction')
         sig_entry.name = name
         # Expect "#$name" or PANGULAR_CLOSE
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         if t.type == 'HASH':
             sig_entry.name += '#'
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type != 'IDENTIFIER':
                 raise SigParseException('Expecting identifier')
             sig_entry.name += t.val
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
         while t.type != 'PANGULAR_CLOSE':
             if t.type != 'IDENTIFIER':
@@ -175,20 +175,20 @@ class SigParser(object):
             arg = Arg(name=t.val)
             sig_entry.tparams.append(arg)
             # Read "," or ">"
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type not in ['PANGULAR_CLOSE', 'COMMA']:
                 raise SigParseException('Expecting ">" or ","')
             if t.type == 'COMMA':
-                t = self.tokens.next()
+                t = next(self.tokens)
                 self.expectNotEof(t)
         # Expect "::"
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         if t.type != 'NAME_SEP':
             raise SigParseException('Expecting "::"')
         # Read return_name
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         if t.type != 'IDENTIFIER':
             raise SigParseException('Expecting identifier got %s' % repr(t.val))
@@ -221,16 +221,16 @@ class SigParser(object):
         is_constructor = False
         other_name = token.val
         # get next token, i sname or "<"
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         if t.type in ['HASH', 'NAME_SEP']:
             other_name += t.val
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type != 'IDENTIFIER':
                 raise SigParseException('Expecting identifier.')
             other_name += t.val
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
         if t.type == 'PANGULAR_OPEN':
             return self.parseMetafunctionType(other_name)
@@ -240,16 +240,16 @@ class SigParser(object):
             raise SigParseException('Expecting identifier as function name.')
         name = t.val
         if not is_constructor:
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type in ['HASH', 'NAME_SEP']:
                 name += t.val
-                t = self.tokens.next()
+                t = next(self.tokens)
                 self.expectNotEof(t)
                 if t.type != 'IDENTIFIER':
                     raise SigParseException('Expecting identifier.')
                 name += t.val
-                t = self.tokens.next()
+                t = next(self.tokens)
                 self.expectNotEof(t)
             # expect "(" or "<"
             if t.type == 'PANGULAR_OPEN':
@@ -270,12 +270,12 @@ class SigParser(object):
             sig_entry.name = name
         if t.type in ['HASH', 'NAME_SEP']:
             sig_entry.name += t.val
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             if t.type != 'IDENTIFIER':
                 raise SigParseException('EOF not expected')
             sig_entry.name += t.val
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
         if t.type != 'PROUND_OPEN':
             raise SigParseException('Expecting opening parenthesis after '
@@ -287,7 +287,7 @@ class SigParser(object):
     def parseCSE(self, kind):
         """Parse class, struct, enum."""
         sig_entry = SigEntry(kind=kind)
-        t = self.tokens.next()
+        t = next(self.tokens)
         self.expectNotEof(t)
         if t.type != 'IDENTIFIER':
             raise SigParseException('Expecting identifier after "%s"!' % kind)
@@ -312,7 +312,7 @@ class SigParser(object):
 
     def parse(self):
         try:
-            t = self.tokens.next()
+            t = next(self.tokens)
             self.expectNotEof(t)
             m = {'KWD_TEMPLATE':   self.parseTemplate,
                  'KWD_CLASS':      self.parseClass,
@@ -323,5 +323,5 @@ class SigParser(object):
             if not t.type in m:
                 raise SigParseException('Unexpected token of type %s' % t.type)
             return m[t.type](t)
-        except lexer.LexerError, e:
+        except lexer.LexerError as e:
             raise SigParseException('Lexer error: %s at pos %s when parsing %s' % (e, e.pos, self.buffer))

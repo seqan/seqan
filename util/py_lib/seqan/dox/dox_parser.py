@@ -15,9 +15,9 @@ import sys
 
 import termcolor
 
-import raw_doc
-import lexer
-import dox_tokens
+from . import raw_doc
+from . import lexer
+from . import dox_tokens
 
 
 class MessagePrinter(object):
@@ -49,7 +49,7 @@ class MessagePrinter(object):
         else:
             location_str = '%s:%d:%d:' % location
             error_str = '%s:' % level
-        print >>sys.stderr, '%s %s %s' % (location_str, error_str, msg)
+        print('%s %s %s' % (location_str, error_str, msg), file=sys.stderr)
         # Increase error counter.
         self.counts[level] += 1
         if token.file_name == '<mem>':
@@ -59,11 +59,11 @@ class MessagePrinter(object):
         lines = fcontents.splitlines()
         if token.lineno >= len(lines):
             return  # Invalid line number.
-        print >>sys.stderr, '%s' % lines[token.lineno].rstrip()
+        print('%s' % lines[token.lineno].rstrip(), file=sys.stderr)
         if sys.stderr.isatty():
-            print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
+            print(token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold']), file=sys.stderr)
         else:
-            print >>sys.stderr, token.column * ' ' + '^'
+            print(token.column * ' ' + '^', file=sys.stderr)
 
     def printParserError(self, e):
         """Print user-friendly error message for ParserError e."""
@@ -74,10 +74,10 @@ class MessagePrinter(object):
             self.printTokenError(e.token, e.msg)
         else:
             self.counts['error'] += 1
-            print >>sys.stderr, 'ERROR: %s' % msg
+            print('ERROR: %s' % msg, file=sys.stderr)
 
     def printStats(self):
-        print >>sys.stderr, 'Issued %d warnings and %d errors.' % (self.counts['error'], self.counts['warning'])
+        print('Issued %d warnings and %d errors.' % (self.counts['error'], self.counts['warning']), file=sys.stderr)
 
     def numWarnings(self):
         return self.counts['warning']
@@ -639,7 +639,7 @@ class GenericDocState(object):
                              'COMMAND_INCLUDE' : IncludeState(self.parser, self),}
                 if not token.type in self.allowed_commands:
                     msg = 'Invalid command %s, expecting one of %s.'
-                    args = (repr(token.val), map(dox_tokens.transToken, self.allowed_commands))
+                    args = (repr(token.val), list(map(dox_tokens.transToken, self.allowed_commands)))
                     raise ParserError(token, msg % args)
                 if self.clause_state:
                     self.clause_state.left()

@@ -63,7 +63,7 @@ class IncludeManager(object):
         try:
             with open(full_path) as f:
                 self.file_cache[path] = f.read()
-        except IOError, e:
+        except IOError as e:
             raise IncludeException('Could not load file %s: %s' % (path, e))
 
     def _loadSnippets(self, path):

@@ -6,7 +6,7 @@ import os.path
 import shutil
 import json
 import string
-import StringIO
+import io
 import re
 import datetime
 import time
@@ -14,7 +14,7 @@ import time
 import pyratemp
 import json
 
-import core
+from . import core
 
 # TODO(holtgrew): Take this from dddoc tree ;)
 TPL_FILES = [
@@ -258,7 +258,7 @@ class TplDocsCreator(object):
 
         The files in TPL_FILE are copied verbatimly.
         """
-        print >>sys.stderr, 'Copying Template Files'
+        print('Copying Template Files', file=sys.stderr)
         for path in TPL_FILES:
             # Get target path name.
             targetPath = os.path.join(self.out_path, os.path.dirname(path))
@@ -267,7 +267,7 @@ class TplDocsCreator(object):
             # Copy file.
             srcPath = os.path.join(self.tpl_path, path)
             destPath = os.path.join(self.out_path, path)
-            print >>sys.stderr, '  %s => %s' % (srcPath, destPath)
+            print('  %s => %s' % (srcPath, destPath), file=sys.stderr)
             shutil.copyfile(srcPath, destPath)
 
     def createRootIndexPage(self):
@@ -276,7 +276,7 @@ class TplDocsCreator(object):
         The file is basically copied from tpl, but some small replacements are
         done using Python string templates.
         """
-        print >>sys.stderr, 'Creating Index Page'
+        print('Creating Index Page', file=sys.stderr)
         srcPath = os.path.join(self.tpl_path, 'index.html')
         destPath = os.path.join(self.out_path, 'index.html')
         with open(srcPath, 'rb') as f:
@@ -301,11 +301,11 @@ class TplDocsCreator(object):
         else:
             type_num = TYPE_CLASS
         # Index functions.
-        for name, node in sorted(self.tree.find([cat_type]).children.iteritems()):
+        for name, node in sorted(self.tree.find([cat_type]).children.items()):
             ## if node.children.has_key('hidefromindex'):
             ##     continue  # Skip those that are not to appear in search.
             summary = ''
-            if node.children.has_key('summary') and node.children['summary'].texts:
+            if 'summary' in node.children and node.children['summary'].texts:
                 if not ':' in node.children['summary'].texts[0]:
                     continue
                 summary = self.html_helper.translateMarkup(node.children['summary'].texts[0].split(':', 1)[1])
@@ -320,7 +320,7 @@ class TplDocsCreator(object):
             filename = getPagePath(cat_type, name, 'files')
             # Build list of include headers.
             includes = ''
-            if node.children.has_key('include'):
+            if 'include' in node.children:
                 includes = ' ' + ', '.join(node.children['include'].texts)
             if type_num == TYPE_FUNCTION:
                 name = name + '()'
@@ -339,14 +339,14 @@ class TplDocsCreator(object):
         'longSearchIndex, 'info' that are used by searchdoc.js for providing the
         search index.
         """
-        print >>sys.stderr, 'Creating Search Index'
+        print('Creating Search Index', file=sys.stderr)
         destPath = os.path.join(self.out_path, 'panel', 'search_index.js')
         search_index = []
         long_search_index = []
         info = []
         # Get category types to index from DddocTree tree and build the index
         # data for this.
-        items = self.tree.find('globals.indexes').children.items()
+        items = list(self.tree.find('globals.indexes').children.items())
         key_entries = [(x[0], x[1].entry) for x in items if x[1].entry]
         key_linenos = [(x[0], self.tree.entries[x[1][0]].line_no_begin) for x in key_entries]
         cats = [x[0] for x in sorted(key_linenos, key=lambda a:a[1])]
@@ -362,10 +362,10 @@ class TplDocsCreator(object):
         This file contains the JavaScript information for building the naviation
         tree in the left frame.
         """
-        print >>sys.stderr, 'Creating Panel Tree'
+        print('Creating Panel Tree', file=sys.stderr)
         # Translate cat/element type from internal to user-readable.
         node = self.tree.find('globals.indexes')
-        cats = [(k, v.text(), v) for k, v in node.children.iteritems() if not v.children.has_key('hidefromindex')]
+        cats = [(k, v.text(), v) for k, v in node.children.items() if 'hidefromindex' not in v.children]
         def getLocation(x):
             return (self.tree.entries[x[2].entry[0]].filename,
                     self.tree.entries[x[2].entry[0]].line_no_begin)
@@ -407,7 +407,7 @@ class TplDocsCreator(object):
                 subcat_nodes.append(subcat_node)
             filename = getIndexPagePath(self.tree, cat, 'files')
             trees_data.append([cat_title, filename, '', subcat_nodes])
-            if cat_node.children.has_key('hidefromindex'):
+            if 'hidefromindex' in cat_node.children:
                 continue
         # Write out tree as JavaScript/JSON.
         ## print 'trees_data =', trees_data
@@ -512,7 +512,7 @@ class HtmlHelper(object):
                 if not parent_key in node.children:
                     continue
                 for path in node.children[parent_key].texts:
-                    if '\u0001' in path:
+                    if '\\u0001' in path:
                         continue  # Skip automatically generated upwards links.
                     parent = self.tree.find(path)
                     if not parent:
@@ -790,7 +790,7 @@ class HtmlHelper(object):
 
 class DocsCreator(object):
     def __init__(self, error_logger, tree, tpl_path, out_path, include_dirs):
-        print >>sys.stderr, 'Setting up Docs Creator'
+        print('Setting up Docs Creator', file=sys.stderr)
         self.tree = tree
         self.error_logger = error_logger
         self.tpl_path = tpl_path
@@ -811,10 +811,10 @@ class DocsCreator(object):
     def createIndexPages(self):
         index = core.buildByTypeAndCatIndex(self.tree)
         cat_nodes = self.tree.find('globals.indexes').children
-        for cat, node in cat_nodes.iteritems():
-            if node.children.has_key('hidefromindex'):
+        for cat, node in cat_nodes.items():
+            if 'hidefromindex' in node.children:
                 continue
-            print >>sys.stderr, 'Indexes for ' + node.text()
+            print('Indexes for ' + node.text(), file=sys.stderr)
             filename = getIndexPagePath(self.tree, cat, self.out_path)
             with open(filename, 'wb') as f:
                 title_node = self.tree.find(['Indexpage', cat, 'title'])
@@ -836,7 +836,7 @@ class DocsCreator(object):
 
     def copyFiles(self):
         """Copy files in FILE_DIRS."""
-        print >>sys.stderr, 'Copying Documentation Files'
+        print('Copying Documentation Files', file=sys.stderr)
         for path in FILE_DIRS:
             entries = os.listdir(path)
             if not os.path.exists(os.path.join(self.out_path, path)):  # Make sure output path exists.
@@ -847,18 +847,18 @@ class DocsCreator(object):
                 source_path = os.path.join(path, entry)
                 target_path = os.path.join(self.out_path, path, entry)
                 # Copy file.
-                print >>sys.stderr, '  %s => %s' % (source_path, target_path)
+                print('  %s => %s' % (source_path, target_path), file=sys.stderr)
                 shutil.copyfile(source_path, target_path)
 
     def createPages(self):
         """Create the documentation pages."""
         cat_dict = self.tree.find('globals.categories').children
-        for cat, cat_node in cat_dict.iteritems():  # cat=Function,...
-            print >>sys.stderr, 'Pages for ' + cat
+        for cat, cat_node in cat_dict.items():  # cat=Function,...
+            print('Pages for ' + cat, file=sys.stderr)
             if self.tree.find(cat) is None:  # Skip empty categories.
-                print >>sys.stderr
+                print(file=sys.stderr)
                 continue
-            for subcat, node in self.tree.find(cat).children.iteritems():  # subcat=length,...
+            for subcat, node in self.tree.find(cat).children.items():  # subcat=length,...
                 filename = getPagePath(cat, subcat, self.out_path)
                 ## print filename
                 with open(filename, 'wb') as f:
@@ -876,8 +876,8 @@ class DocsCreator(object):
                                              html=HtmlHelper(self.error_logger, self.tree, os.path.dirname(filename), self.include_dirs),
                                              json=json)
                     f.write(res.encode('utf-8'))
-                print >>sys.stderr, '.',
-            print >>sys.stderr
+                print('.', end=' ', file=sys.stderr)
+            print(file=sys.stderr)
 
 
 def createDocs(error_logger, tree, tpl_path, out_path, include_dirs):

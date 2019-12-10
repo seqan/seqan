@@ -182,10 +182,10 @@ def main():
 
     ctd_parser = CTDParser()
     tool = ctd_parser.parse(args.in_file)
-    print tool
+    print(tool)
     for cli in tool.cli_elements:
-        print '  %s' % cli
-    print tool.parameters
+        print('  %s' % cli)
+    print(tool.parameters)
 
 
 if __name__ == '__main__':

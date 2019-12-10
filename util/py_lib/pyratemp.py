@@ -179,7 +179,7 @@ IN THE SOFTWARE."""
 
 #=========================================
 
-import __builtin__, os
+import builtins, os
 import re
 
 #=========================================
@@ -224,7 +224,7 @@ def dictkeyclean(d):
     """Convert all keys of the dict `d` to strings.
     """
     new_d = {}
-    for k, v in d.iteritems():
+    for k, v in list(d.items()):
         new_d[str(k)] = v
     return new_d
 
@@ -247,7 +247,7 @@ def dummy_raise(exception, value):
 #=========================================
 # escaping
 
-(NONE, HTML, LATEX) = range(0, 3)
+(NONE, HTML, LATEX) = list(range(0, 3))
 ESCAPE_SUPPORTED = {"NONE":None, "HTML":HTML, "LATEX":LATEX} #for error-/parameter-checking
 
 def escape(s, format=HTML):
@@ -277,25 +277,25 @@ def escape(s, format=HTML):
     if format is None or format == NONE:
         pass
     elif format == HTML:
-        s = s.replace(u"&", u"&amp;") # must be done first!
-        s = s.replace(u"<", u"&lt;")
-        s = s.replace(u">", u"&gt;")
-        s = s.replace(u'"', u"&quot;")
-        s = s.replace(u"'", u"&#39;")
+        s = s.replace("&", "&amp;") # must be done first!
+        s = s.replace("<", "&lt;")
+        s = s.replace(">", "&gt;")
+        s = s.replace('"', "&quot;")
+        s = s.replace("'", "&#39;")
     elif format == LATEX:
         #TODO: which are the "reserved" characters for LaTeX?
         #      are there more than these?
-        s = s.replace("\\", u"\\backslash{}")   #must be done first!
-        s = s.replace("#",  u"\\#")
-        s = s.replace("$",  u"\\$")
-        s = s.replace("%",  u"\\%")
-        s = s.replace("&",  u"\\&")
-        s = s.replace("_",  u"\\_")
-        s = s.replace("{",  u"\\{")
-        s = s.replace("}",  u"\\}")
+        s = s.replace("\\", "\\backslash{}")   #must be done first!
+        s = s.replace("#",  "\\#")
+        s = s.replace("$",  "\\$")
+        s = s.replace("%",  "\\%")
+        s = s.replace("&",  "\\&")
+        s = s.replace("_",  "\\_")
+        s = s.replace("{",  "\\{")
+        s = s.replace("}",  "\\}")
     else:
         raise ValueError('Invalid format (only None, HTML and LATEX are supported).')
-    return unicode(s)
+    return str(s)
 
 #=========================================
 
@@ -349,10 +349,10 @@ class LoaderString:
     def load(self, string):
         """Return template-string as unicode.
         """
-        if isinstance(string, unicode):
+        if isinstance(string, str):
             u = string
         else:
-            u = unicode(string, self.encoding)
+            u = str(string, self.encoding)
         return u
 
 class LoaderFile:
@@ -397,7 +397,7 @@ class LoaderFile:
         string = f.read()
         f.close()
 
-        u = unicode(string, self.encoding)
+        u = str(string, self.encoding)
 
         return u
 
@@ -504,11 +504,11 @@ class Parser(object):
         else:
             try:    # test if testexpr() works
                 testexpr("i==1")
-            except Exception,err:
+            except Exception as err:
                 raise ValueError("Invalid 'testexpr' (%s)." %(err))
             self._testexprfunc = testexpr
 
-        if escape not in ESCAPE_SUPPORTED.values():
+        if escape not in list(ESCAPE_SUPPORTED.values()):
             raise ValueError("Unsupported 'escape' (%s)." %(escape))
         self.escape = escape
         self._includestack = []
@@ -536,7 +536,7 @@ class Parser(object):
         """Test a template-expression to detect errors."""
         try:
             self._testexprfunc(expr)
-        except SyntaxError,err:
+        except SyntaxError as err:
             raise TemplateSyntaxError(err, self._errpos(fpos))
 
     def _parse_sub(self, parsetree, text, fpos=0):
@@ -707,7 +707,7 @@ class Parser(object):
                     block_type = 'include'
                     try:
                         u = self._load(content.strip())
-                    except Exception,err:
+                    except Exception as err:
                         raise TemplateIncludeError(err, self._errpos(pos__))
                     self._includestack.append((content.strip(), u))  # current filename/template for error-msg.
                     p = self._parse(u)
@@ -773,42 +773,40 @@ class EvalPseudoSandbox:
     """
 
     safe_builtins = {
-        "True"      : __builtin__.True,
-        "False"     : __builtin__.False,
-        "None"      : __builtin__.None,
+        "True"      : getattr(builtins, 'True'),
+        "False"     : getattr(builtins, 'False'),
+        "None"      : getattr(builtins, 'None'),
 
-        "abs"       : __builtin__.abs,
-        "chr"       : __builtin__.chr,
-        "cmp"       : __builtin__.cmp,
-        "divmod"    : __builtin__.divmod,
-        "hash"      : __builtin__.hash,
-        "hex"       : __builtin__.hex,
-        "len"       : __builtin__.len,
-        "max"       : __builtin__.max,
-        "min"       : __builtin__.min,
-        "oct"       : __builtin__.oct,
-        "ord"       : __builtin__.ord,
-        "pow"       : __builtin__.pow,
-        "range"     : __builtin__.range,
-        "round"     : __builtin__.round,
-        "sorted"    : __builtin__.sorted,
-        "sum"       : __builtin__.sum,
-        "unichr"    : __builtin__.unichr,
-        "zip"       : __builtin__.zip,
+        "abs"       : builtins.abs,
+        "chr"       : builtins.chr,
+        "divmod"    : builtins.divmod,
+        "hash"      : builtins.hash,
+        "hex"       : builtins.hex,
+        "len"       : builtins.len,
+        "max"       : builtins.max,
+        "min"       : builtins.min,
+        "oct"       : builtins.oct,
+        "ord"       : builtins.ord,
+        "pow"       : builtins.pow,
+        "range"     : builtins.range,
+        "round"     : builtins.round,
+        "sorted"    : builtins.sorted,
+        "sum"       : builtins.sum,
+        "unichr"    : builtins.chr,
+        "zip"       : builtins.zip,
 
-        "bool"      : __builtin__.bool,
-        "complex"   : __builtin__.complex,
-        "dict"      : __builtin__.dict,
-        "enumerate" : __builtin__.enumerate,
-        "float"     : __builtin__.float,
-        "int"       : __builtin__.int,
-        "list"      : __builtin__.list,
-        "long"      : __builtin__.long,
-        "reversed"  : __builtin__.reversed,
-        "str"       : __builtin__.str,
-        "tuple"     : __builtin__.tuple,
-        "unicode"   : __builtin__.unicode,
-        "xrange"    : __builtin__.xrange,
+        "bool"      : builtins.bool,
+        "complex"   : builtins.complex,
+        "dict"      : builtins.dict,
+        "enumerate" : builtins.enumerate,
+        "float"     : builtins.float,
+        "int"       : builtins.int,
+        "list"      : builtins.list,
+        "reversed"  : builtins.reversed,
+        "str"       : builtins.str,
+        "tuple"     : builtins.tuple,
+        "unicode"   : builtins.str,
+        "range"     : builtins.range,
     }
 
     def __init__(self):
@@ -991,7 +989,7 @@ class TemplateBase:
         """
         self.current_data = self.data.copy()
         self.current_data.update(override)
-        u = u"".join(self._render(self.parsetree, self.current_data))
+        u = "".join(self._render(self.parsetree, self.current_data))
         self.current_data = self.data       # restore current_data
         return _dontescape(u)               # (see class _dontescape)
 
@@ -1005,7 +1003,7 @@ class TemplateBase:
 #-----------------------------------------
 # Renderer
 
-class _dontescape(unicode):
+class _dontescape(str):
     """Unicode-string which should not be escaped.
 
     If ``isinstance(object,_dontescape)``, then don't escape the object in
@@ -1042,7 +1040,7 @@ class Renderer(object):
         try:
             return self.evalfunc(expr, data)
         #TODO: any other errors to catch here?
-        except (TypeError,NameError,IndexError,KeyError,AttributeError, SyntaxError), err:
+        except (TypeError,NameError,IndexError,KeyError,AttributeError, SyntaxError) as err:
             raise TemplateRenderError("Cannot eval expression '%s'. (%s: %s)" %(expr, err.__class__.__name__, err))
 
     def render(self, parsetree, data):
@@ -1065,31 +1063,31 @@ class Renderer(object):
             if   "str"   == elem[0]:
                 output.append(elem[1])
             elif "sub"   == elem[0]:
-                output.append(unicode(_eval(elem[1], data)))
+                output.append(str(_eval(elem[1], data)))
             elif "esc"   == elem[0]:
                 obj = _eval(elem[2], data)
                 #prevent double-escape
                 if isinstance(obj, _dontescape) or isinstance(obj, TemplateBase):
-                    output.append(unicode(obj))
+                    output.append(str(obj))
                 else:
-                    output.append(self.escapefunc(unicode(obj), elem[1]))
+                    output.append(self.escapefunc(str(obj), elem[1]))
             elif "for"   == elem[0]:
                 do_else = True
                 (names, iterable) = elem[1:3]
                 try:
                     loop_iter = iter(_eval(iterable, data))
-                except TypeError, e:
-                    print data
-                    print iterable
-                    print type(_eval(iterable, data))
-                    print e
+                except TypeError as e:
+                    print(data)
+                    print(iterable)
+                    print((type(_eval(iterable, data))))
+                    print(e)
                     raise TemplateRenderError("Cannot loop over '%s'." % iterable)
                 for i in loop_iter:
                     do_else = False
                     if len(names) == 1:
                         data[names[0]] = i
                     else:
-                        data.update(zip(names, i))   #"for a,b,.. in list"
+                        data.update(list(zip(names, i)))   #"for a,b,.. in list"
                     output.extend(self.render(elem[3], data))
             elif "if"    == elem[0]:
                 do_else = True

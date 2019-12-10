@@ -3,7 +3,7 @@
 Automatic building of SeqAn apps and releases.
 """
 
-from __future__ import print_function
+
 
 import subprocess
 import optparse
