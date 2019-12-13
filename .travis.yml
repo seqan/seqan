@@ -11,7 +11,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
-          packages: ['g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip', 'libxml2-utils']
+          packages: ['g++-4.9', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python3', 'virtualenv', 'libxml2-utils']
       install: export CXX="g++-4.9" CC="gcc-4.9"
 
     - os: linux
@@ -19,7 +19,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
-          packages: ['g++-5', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip', 'libxml2-utils']
+          packages: ['g++-5', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python3', 'virtualenv', 'libxml2-utils']
       install: export CXX="g++-5" CC="gcc-5"
 
     - os: linux
@@ -27,7 +27,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
-          packages: ['g++-7', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip', 'libxml2-utils']
+          packages: ['g++-7', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python3', 'virtualenv', 'libxml2-utils']
       install: export CXX="g++-7" CC="gcc-7"
 
     # - os: linux
@@ -35,7 +35,7 @@ matrix:
     #   addons:
     #     apt:
     #       sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports' , 'llvm-toolchain-precise-3.8']
-    #       packages: ['clang-3.8', 'g++-4.9', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip'] # g++ required for newer libstdc++
+    #       packages: ['clang-3.8', 'g++-4.9', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python3', 'virtualenv'] # g++ required for newer libstdc++
     #   install: export CXX="clang++-3.8" CC="clang-3.8"
 
     # clang-3.9 currently not white listed.
@@ -44,7 +44,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports' , 'llvm-toolchain-precise-3.9']
-          packages: ['clang-3.9', 'g++-7', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip', 'libxml2-utils'] # g++ required for newer libstdc++
+          packages: ['clang-3.9', 'g++-7', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python3', 'virtualenv', 'libxml2-utils'] # g++ required for newer libstdc++
       install: export CXX="clang++-3.9" CC="clang-3.9"
 
     - os: linux
@@ -52,7 +52,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7', 'cmake', 'cmake-data', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python', 'python-nose', 'python-jinja2', 'python-pip', 'libxml2-utils'] # g++ required for newer libstdc++
+          packages: ['clang-7', 'g++-7', 'zlib1g-dev', 'libbz2-dev', 'libboost-dev', 'python3', 'virtualenv', 'libxml2-utils'] # g++ required for newer libstdc++
       install: export CXX="clang++-7" CC="clang-7"
 
 # currently too slow on osx
@@ -74,7 +74,11 @@ matrix:
 
 before_script:
   - export PATH=$HOME/.local/bin:/usr/lib/ccache:$PATH
-  - pip install --user -r manual/requirements.txt
+  - mkdir -p venv
+  - virtualenv -p python3 venv
+  - source venv/bin/activate
+  - pip install -r manual/requirements.txt
+  - pip install cmake
   - rm -rf ${HOME}/.ccache
   - mkdir -p ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX}
   - ln -s  ${HOME}/ccache/${TRAVIS_BRANCH}/${TRAVIS_OS_NAME}/${CXX} ${HOME}/.ccache
