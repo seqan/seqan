@@ -56,10 +56,10 @@ def loadExpected(args):
     out, err = '', ''
     if args.stdout_path:
         with open(args.stdout_path, 'rb') as f:
-            out = f.read()
+            out = f.read().decode()
     if args.stderr_path:
         with open(args.stderr_path, 'rb') as f:
-            err = f.read()
+            err = f.read().decode()
     return t(out.strip()).split('\n'), t(err.strip()).split('\n')
 
 
@@ -67,7 +67,7 @@ def runDemo(args):
     cmd = [args.binary_path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdoutbuff, stderrbuff = p.communicate()
-    return t(stdoutbuff.strip()).split('\n'), t(stderrbuff.strip()).split('\n'), p.returncode
+    return t(stdoutbuff.strip().decode()).split('\n'), t(stderrbuff.strip().decode()).split('\n'), p.returncode
 
 
 def main():
