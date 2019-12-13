@@ -42,7 +42,7 @@ Architecture support:
   * All Debian release architectures supported, including most ARM and all PowerPC platforms.
 
 To build tests, demos, and official SeqAn applications you also need:
-  * CMake ≥ 3.0 [CMake ≥ 3.4 recommended]
+  * CMake ≥ 3.12
 
 Some of the official applications might have additional requirements or work only on a subset of platforms.
 
