@@ -263,7 +263,7 @@ class TextNode(object):
             res = []
             if not skip_top_tag:
                 res += ['<', self.type]
-                for key, value in self.attrs.items():
+                for key, value in sorted(self.attrs.items()):
                     res += [' ', key, '=', '"', repr(value)[1:-1], '"']
                 for key, value in kwargs.items():
                     res += [' ', key, '=', '"', value, '"']
