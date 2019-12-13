@@ -1,4 +1,5 @@
-seqansphinx>=0.3.2
+seqansphinx>=0.4.0
 sphinx_rtd_theme
 sphinxcontrib-bibtex
 nose
+jinja2
