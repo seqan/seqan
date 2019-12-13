@@ -8,7 +8,7 @@ that shows all HTML files.
 Plotting is done using the fine matplotlib.
 """
 
-from __future__ import print_function
+
 
 __author__    = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 __copyright__ = 'Copyring 2013, Freie Universitaet Berlin'

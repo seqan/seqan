@@ -332,11 +332,11 @@ def runTest(test_conf):
                     result = False
             else:
                 with open(expected_path, 'rb') as f:
-                    expected_str = f.read()
+                    expected_str = f.read().decode()
                 for t in transforms:
                     expected_str = t.apply(expected_str, True)
                 with open(result_path, 'rb') as f:
-                    result_str = f.read()
+                    result_str = f.read().decode()
                 for t in transforms:
                     result_str = t.apply(result_str, False)
                 if expected_str == result_str:

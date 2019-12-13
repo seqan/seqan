@@ -38,7 +38,7 @@ class ResultChecker(object):
                     '-g', self.path_to_ref,
                     '--pre', self.path_to_sam,
                     '--post', self.path_to_post]
-        print ' '.join(cmd_line)
+        print(' '.join(cmd_line))
         process = subprocess.Popen(cmd_line, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         stdoutbuff, stderrbuff = process.communicate()
@@ -55,9 +55,9 @@ class ResultChecker(object):
 def main(source_base, binary_base):
     """Main entry point of the script."""
 
-    print 'Executing test for fiona'
-    print '========================'
-    print
+    print('Executing test for fiona')
+    print('========================')
+    print()
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
@@ -161,21 +161,21 @@ def main(source_base, binary_base):
     for conf in conf_list:
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join(conf.commandLineArgs())
+        print(' '.join(conf.commandLineArgs()))
         if res:
-             print 'OK'
+             print('OK')
         else:
             failures += 1
-            print 'FAILED'
+            print('FAILED')
 
     # Cleanup.
     ph.deleteTempDir()
 
-    print '=============================='
-    print '     total tests: %d' % len(conf_list)
-    print '    failed tests: %d' % failures
-    print 'successful tests: %d' % (len(conf_list) - failures)
-    print '=============================='
+    print('==============================')
+    print('     total tests: %d' % len(conf_list))
+    print('    failed tests: %d' % failures)
+    print('successful tests: %d' % (len(conf_list) - failures))
+    print('==============================')
     # Compute and return return code.
     return failures != 0
 

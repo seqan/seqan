@@ -25,13 +25,13 @@ def main(source_base, binary_base):
     """Main entry point of the script."""
 
     if platform.machine().startswith('mips') or platform.machine().startswith('s390'):
-        print 'Skipping tests for seqan_tcoffee on mips* and s390*'
-        print '==================================================='
+        print('Skipping tests for seqan_tcoffee on mips* and s390*')
+        print('===================================================')
         return 0
 
-    print 'Executing test for seqan_tcoffee'
-    print '================================'
-    print
+    print('Executing test for seqan_tcoffee')
+    print('================================')
+    print()
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
@@ -251,21 +251,21 @@ def main(source_base, binary_base):
     for conf in conf_list:
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join(['seqan_tcoffee'] + conf.args),
+        print(' '.join(['seqan_tcoffee'] + conf.args), end=' ')
         if res:
-             print 'OK'
+             print('OK')
         else:
             failures += 1
-            print 'FAILED'
+            print('FAILED')
 
     # Cleanup.
     ph.deleteTempDir()
 
-    print '=============================='
-    print '     total tests: %d' % len(conf_list)
-    print '    failed tests: %d' % failures
-    print 'successful tests: %d' % (len(conf_list) - failures)
-    print '=============================='
+    print('==============================')
+    print('     total tests: %d' % len(conf_list))
+    print('    failed tests: %d' % failures)
+    print('successful tests: %d' % (len(conf_list) - failures))
+    print('==============================')
     # Compute and return return code.
     return failures != 0
 

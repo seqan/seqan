@@ -24,9 +24,9 @@ import seqan.app_tests as app_tests
 def main(source_base, binary_base):
     """Main entry point of the script."""
 
-    print 'Executing test for bs_tools'
-    print '========================='
-    print
+    print('Executing test for bs_tools')
+    print('=========================')
+    print()
 
     ##############################################################
     ### Casbar
@@ -226,7 +226,7 @@ def main(source_base, binary_base):
                     ph.outFile('meths_pe_0.bed'))])
         conf_list.append(conf)
     else:
-        print "Some tests only run on Linux+x86/amd64 because of rounding differences."
+        print("Some tests only run on Linux+x86/amd64 because of rounding differences.")
 
 
     # ============================================================
@@ -235,22 +235,22 @@ def main(source_base, binary_base):
     failures = 0
     for conf in conf_list:
         # Output to the user.
-        print ' '.join([os.path.basename(conf.program)] + conf.args)
+        print(' '.join([os.path.basename(conf.program)] + conf.args))
         res = app_tests.runTest(conf)
         if res:
-             print 'OK'
+             print('OK')
         else:
             failures += 1
-            print 'FAILED'
+            print('FAILED')
 
     # Cleanup.
     ph.deleteTempDir()
 
-    print '=============================='
-    print '     total tests: %d' % len(conf_list)
-    print '    failed tests: %d' % failures
-    print 'successful tests: %d' % (len(conf_list) - failures)
-    print '=============================='
+    print('==============================')
+    print('     total tests: %d' % len(conf_list))
+    print('    failed tests: %d' % failures)
+    print('successful tests: %d' % (len(conf_list) - failures))
+    print('==============================')
 
 
     # Compute and return return code.

@@ -31,13 +31,13 @@ def main(source_base, binary_base):
     """Main entry point of the script."""
 
     if platform.machine().startswith('alpha'):
-        print 'Skipping tests for searchjoin on alpha'
-        print '======================================'
+        print('Skipping tests for searchjoin on alpha')
+        print('======================================')
         return 0
 
-    print 'Executing test for searchjoin'
-    print '==========================='
-    print
+    print('Executing test for searchjoin')
+    print('===========================')
+    print()
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
@@ -128,21 +128,21 @@ def main(source_base, binary_base):
     for conf in conf_list:
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join([conf.program] + conf.args),
+        print(' '.join([conf.program] + conf.args), end=' ')
         if res:
-             print 'OK'
+             print('OK')
         else:
             failures += 1
-            print 'FAILED'
+            print('FAILED')
 
     # Cleanup.
     ph.deleteTempDir()
 
-    print '=============================='
-    print '     total tests: %d' % len(conf_list)
-    print '    failed tests: %d' % failures
-    print 'successful tests: %d' % (len(conf_list) - failures)
-    print '=============================='
+    print('==============================')
+    print('     total tests: %d' % len(conf_list))
+    print('    failed tests: %d' % failures)
+    print('successful tests: %d' % (len(conf_list) - failures))
+    print('==============================')
     # Compute and return return code.
     return failures != 0
 

@@ -23,7 +23,7 @@ import seqan.app_tests as app_tests
 
 def unzip_file_into_dir(file, dir):
     if not os.path.exists(dir):
-        os.mkdir(dir, 0777)
+        os.mkdir(dir, 0o777)
     zfobj = zipfile.ZipFile(file)
     for name in zfobj.namelist():
         if name.endswith('/'):
@@ -37,9 +37,9 @@ def unzip_file_into_dir(file, dir):
 def main(source_base, binary_base):
     """Main entry point of the script."""
 
-    print 'Executing test for dfi'
-    print '======================'
-    print
+    print('Executing test for dfi')
+    print('======================')
+    print()
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
@@ -84,21 +84,21 @@ def main(source_base, binary_base):
     for conf in conf_list:
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join(['dfi'] + conf.args),
+        print(' '.join(['dfi'] + conf.args), end=' ')
         if res:
-             print 'OK'
+             print('OK')
         else:
             failures += 1
-            print 'FAILED'
+            print('FAILED')
 
     # Cleanup.
     ph.deleteTempDir()
 
-    print '=============================='
-    print '     total tests: %d' % len(conf_list)
-    print '    failed tests: %d' % failures
-    print 'successful tests: %d' % (len(conf_list) - failures)
-    print '=============================='
+    print('==============================')
+    print('     total tests: %d' % len(conf_list))
+    print('    failed tests: %d' % failures)
+    print('successful tests: %d' % (len(conf_list) - failures))
+    print('==============================')
     # Compute and return return code.
     return failures != 0
 

@@ -107,7 +107,7 @@ class RoiFile(object):
         """Return iterator (self)."""
         return self
 
-    def next(self):
+    def __next__(self):
         """Return next record."""
         if self.line == '':  # EOF
             raise StopIteration

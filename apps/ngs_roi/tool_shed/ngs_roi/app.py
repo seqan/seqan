@@ -56,12 +56,12 @@ class PlotThumbnailsRunner(object):
                     '--plot-width', self.args.plot_width,
                     '--border-width', self.args.border_width,
                     '--spacing', self.args.spacing]
-        cmd_args = ['roi_plot_thumbnails'] + map(str, cmd_args)
+        cmd_args = ['roi_plot_thumbnails'] + list(map(str, cmd_args))
         #import pdb; pdb.set_trace()
         import sys
-        print >>sys.stderr, 'Running %s' % ' '.join(cmd_args)
+        print('Running %s' % ' '.join(cmd_args), file=sys.stderr)
         p = subprocess.Popen(cmd_args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         res = p.wait()
         if res:
-            print 'ERROR', p.stdin, p.stderr
+            print('ERROR', p.stdin, p.stderr)
         return res

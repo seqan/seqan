@@ -103,13 +103,13 @@ class ParametersNode(object):
             self.path.append(self.name)
         if not self.children:
             return  # nothing to do: early exit.
-        for name, child in self.children.items():
+        for name, child in list(self.children.items()):
             child.computePath(False, self.path)
 
     def applyFunc(self, f):
         """Apply f to self and all children."""
         f(self)
-        for c in self.children.values():
+        for c in list(self.children.values()):
             c.applyFunc(f)
 
     def find(self, path):
@@ -315,7 +315,7 @@ class XMLWriter(object):
     def appendTag(self, tag, text='', args={}):
         """Append a tag to self.result with text content only or no content at all."""
         e = xml.sax.saxutils.quoteattr
-        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in args.items() if value is not None)
+        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in list(args.items()) if value is not None)
         if args_str:
             args_str = ' '+ args_str
         vals = {'indent': self.indent(),
@@ -330,7 +330,7 @@ class XMLWriter(object):
     def openTag(self, tag, args={}):
         """Append an opening tag to self.result."""
         e = xml.sax.saxutils.quoteattr
-        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in args.items())
+        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in list(args.items()))
         if args_str:
             args_str = ' ' + args_str
         vals = {'indent': self.indent(),
@@ -345,7 +345,7 @@ class XMLWriter(object):
 
     def handleParameters(self, node):
         """Recursion for appending tags for ParametersNode."""
-        for pn in node.children.values():
+        for pn in list(node.children.values()):
             if pn.kind in ['item', 'itemlist']:
                 args = {'name': pn.name,
                         'value': pn.value,

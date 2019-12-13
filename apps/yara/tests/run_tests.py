@@ -35,13 +35,13 @@ def main(source_base, binary_base):
 
     # gold standard binary files created on little endian
     if sys.byteorder != 'little':
-        print 'Skipping tests for Yara on big endian'
-        print '====================================='
+        print('Skipping tests for Yara on big endian')
+        print('=====================================')
         return 0
 
-    print 'Executing test for Yara'
-    print '=============================='
-    print
+    print('Executing test for Yara')
+    print('==============================')
+    print()
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
@@ -118,21 +118,21 @@ def main(source_base, binary_base):
     for conf in conf_list:
         res = app_tests.runTest(conf)
         # Output to the user.
-        print ' '.join([conf.program] + conf.args),
+        print(' '.join([conf.program] + conf.args), end=' ')
         if res:
-             print 'OK'
+             print('OK')
         else:
             failures += 1
-            print 'FAILED'
+            print('FAILED')
 
     # Cleanup.
     ph.deleteTempDir()
 
-    print '=============================='
-    print '     total tests: %d' % len(conf_list)
-    print '    failed tests: %d' % failures
-    print 'successful tests: %d' % (len(conf_list) - failures)
-    print '=============================='
+    print('==============================')
+    print('     total tests: %d' % len(conf_list))
+    print('    failed tests: %d' % failures)
+    print('successful tests: %d' % (len(conf_list) - failures))
+    print('==============================')
     # Compute and return return code.
     return failures != 0
 
