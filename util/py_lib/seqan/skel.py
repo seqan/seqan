@@ -389,7 +389,7 @@ def createAppTests(location, options):
     print('')
     print('# Add app tests if Python interpreter could be found.')
     print('if(PYTHONINTERP_FOUND)')
-    print('  add_test(NAME app_test_%s COMMAND ${PYTHON_EXECUTABLE}' % os.path.split(location)[-1])
+    print('  add_test(NAME app_test_%s COMMAND ${Python3_EXECUTABLE}' % os.path.split(location)[-1])
     print('    ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}')
     print('    ${CMAKE_BINARY_DIR})')
     print('endif(PYTHONINTERP_FOUND)')

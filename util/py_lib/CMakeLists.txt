@@ -9,15 +9,15 @@
 # ===========================================================================
 
 # Look for Python and stop if it could not be found.
-find_package (Python)
+find_package (Python3)
 
-if (NOT Python_Interpreter_FOUND)
+if (NOT Python3_Interpreter_FOUND)
   message (STATUS "  Python not found, cannot test py_lib.")
   return ()
-endif (NOT Python_Interpreter_FOUND)
+endif (NOT Python3_Interpreter_FOUND)
 
 # Look for nosetests and stop if it cannot be found
-execute_process(COMMAND ${Python_EXECUTABLE} -m "nose"
+execute_process(COMMAND ${Python3_EXECUTABLE} -m "nose"
                 RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND
                 OUTPUT_VARIABLE _IGNORED
                 ERROR_VARIABLE _IGNORED)
