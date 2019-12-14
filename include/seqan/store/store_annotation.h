@@ -268,13 +268,8 @@ public:
         store(&_store),
         _id(TAnnotation::INVALID_ID) {}
 
-    inline Iter const &
-    operator = (Iter const &_origin)
-    {
-        store = &container(_origin);
-        _id = _origin._id;
-        return *this;
-    }
+    Iter(Iter const &) = default;
+    inline Iter & operator=(Iter const &_origin) = default;
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -285,12 +285,9 @@ public:
     {
     }
 
-    IntervalTreeNode(IntervalTreeNode const & other) :
-        center(other.center),
-        list1(other.list1),
-        list2(other.list2)
-    {
-    }
+    IntervalTreeNode(IntervalTreeNode const & other) = default;
+
+    IntervalTreeNode & operator=(IntervalTreeNode const &) = default;
 
 };
 

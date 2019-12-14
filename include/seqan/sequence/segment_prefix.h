@@ -113,6 +113,11 @@ public:
         data_end_position(endPosition(_other))
     {}
 
+    Segment(Segment const & source)
+    {
+        assign(*this, source);
+    }
+
     inline Segment &
     operator = (Segment const & source)
     {

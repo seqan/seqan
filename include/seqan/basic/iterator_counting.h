@@ -71,9 +71,9 @@ public:
         data_position(position)
     {}
 
-    Iter(Iter const & other) :
-        data_position(other.data_position)
-    {}
+    Iter(Iter const &) = default;
+
+    Iter & operator=(Iter const &) = default;
 };
 
 // ============================================================================

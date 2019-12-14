@@ -71,6 +71,8 @@ struct CountingChar
         numConstruct += 1;
     }
 
+    CountingChar & operator=(CountingChar const &) = default;
+
     ~CountingChar()
     {
         numDeconstruct += 1;

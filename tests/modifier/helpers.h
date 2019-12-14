@@ -44,8 +44,8 @@ struct CaesarChiffre : public std::unary_function<TArgChar, TResultChar>
     TArgChar _delta;
 
     CaesarChiffre() : _delta(0) {}
-    CaesarChiffre(CaesarChiffre &other) : _delta(other._delta) {}
-    CaesarChiffre(CaesarChiffre const &other) : _delta(other._delta) {}
+    CaesarChiffre(CaesarChiffre const &other) = default;
+    CaesarChiffre & operator=(CaesarChiffre const &) = default;
 
     CaesarChiffre(TArgChar delta) {
         if (delta < 0)

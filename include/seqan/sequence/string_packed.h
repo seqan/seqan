@@ -153,6 +153,11 @@ public:
         reserve(*this, capacity(source), Exact());
         assign(*this, source);
     }
+    String(String const & source)
+    {
+        reserve(*this, capacity(source), Exact());
+        assign(*this, source);
+    }
 
     template <typename TSource>
     String & operator =(TSource const & source)

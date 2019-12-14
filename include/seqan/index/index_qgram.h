@@ -275,15 +275,9 @@ public:
     cargo(other.cargo),
     stepSize(1) {}
 
-    Index(Index const &other):
-    text(other.text),
-    sa(other.sa),
-    dir(other.dir),
-    counts(other.counts),
-    countsDir(other.countsDir),
-    shape(other.shape),
-    cargo(other.cargo),
-    stepSize(1) {}
+    Index(Index const &other) = default;
+
+    Index & operator=(Index const &) = default;
 
     template <typename TText__>
     Index(TText__ &_text):

@@ -66,6 +66,8 @@ struct HistoryStackFM_
         lastChar(_lastChar)
     {}
 
+    HistoryStackFM_(HistoryStackFM_ const &) = default;
+
     HistoryStackFM_ const &
     operator=(HistoryStackFM_ const & _origin)
     {

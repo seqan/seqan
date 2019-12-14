@@ -104,14 +104,9 @@ namespace seqan
             factor2 = _intPow((THValue)ValueSize<TValue>::VALUE, blockLen2);
         }
 
-        Shape(Shape const &other):
-            blockLen1(other.blockLen1),
-            gapLen(other.gapLen),
-            blockLen2(other.blockLen2),
-            hValue(other.hValue),
-            leftChar(other.leftChar),
-            factor1(other.factor1),
-            factor2(other.factor2) {}
+        Shape(Shape const &other) = default;
+
+        Shape & operator=(Shape const &) = default;
 
         template <typename TSpec>
         Shape(Shape<TValue, TSpec> const &other) :
