@@ -213,7 +213,7 @@ struct MyersSmallState_<TNeedle, AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>
 #endif
     typedef typename Value<TNeedle>::Type TValue;
 
-    TWord bitMasks[ValueSize<TValue>::VALUE];
+    TWord bitMasks[ValueSize<TValue>::VALUE + 1];
     TWord VP0;                    // VP[0] (saves one dereferentiation)
     TWord VN0;                    // VN[0]
     unsigned short errors;      // the current number of errors
