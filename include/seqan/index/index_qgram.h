@@ -247,7 +247,7 @@ public:
     TShape            shape;        // underlying shape
     TCargo            cargo;        // user-defined cargo
     TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
-    TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+    TSize            stepSize{1};   // store every <stepSize>'th q-gram in the index
 
     /*!
      * @fn IndexQGram::Index

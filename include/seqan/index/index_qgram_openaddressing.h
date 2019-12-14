@@ -107,7 +107,7 @@ namespace seqan
         TShape            shape;        // underlying shape
         TCargo            cargo;        // user-defined cargo
         TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
-        TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+        TSize            stepSize{1};   // store every <stepSize>'th q-gram in the index
 
         double            alpha;        // for m entries the hash map has at least size alpha*m
 
