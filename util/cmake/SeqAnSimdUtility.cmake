@@ -94,7 +94,7 @@ find_package (Umesimd)
 include(CheckCXXSourceCompiles)
 include(CheckCXXSourceRuns)
 
-set(SEQAN_SIMD_UTILITY_VERBOSE OFF)
+option(SEQAN_SIMD_UTILITY_VERBOSE OFF)
 set(SEQAN_SIMD_SUPPORTED_EXTENSIONS "sse4;avx2;avx512_knl;avx512_skx;avx512_cnl")
 
 if (COMPILER_MSVC)
@@ -190,25 +190,6 @@ int main() {
   std::random_device r;
   std::default_random_engine e(r());
   std::uniform_int_distribution<int64_t> d(1, 10);
-
-  { // Some avx2 bug on AppleClang when compiling with avx512_skx or higher
-    using TSimdVector = int8_t __attribute__ ((__vector_size__(32)));
-
-    TSimdVector a{0u}, b{0u};
-
-    for (auto i = 0; i < 32; ++i)
-    {
-        a[i] = (i - 1) * 3;
-        b[i] = 32 - i;
-    }
-    TSimdVector c = _mm256_cmpeq_epi8(a, b);
-
-    for (auto i = 0; i < 32; ++i)
-    {
-        if (c[i] == (a[i] == b[i]))
-            std::cout << \"Failed!\" << std::endl;
-    }
-  }
 
   {
     alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
@@ -310,22 +291,7 @@ set(SEQAN_SIMD_SEQANSIMD_AVX512_KNL_SOURCE
 "#include <x86intrin.h>
 #include <iostream>
 
-
 int main() {
-  // clang bug 4.0.0, https://bugs.llvm.org//show_bug.cgi?id=31731
-  // -std=c++14 -mavx512bw -O3
-
-  {
-    using int8x32_t = signed char __attribute__ ((__vector_size__(32)));
-    unsigned length = sizeof(int8x32_t) / sizeof(char);
-    int8x32_t a{}, b{};
-    for (auto i = 0u; i < length; ++i) { a[i] = i-1; b[i] = -i; }
-
-    auto c = a < b;
-    for(auto i = 0u; i < length; ++i)
-      std::cout << (int)c[i] << std::endl;
-  }
-
   // gcc 5.0 bug
   // -std=c++14 -mavx512f -O3
   {
@@ -339,6 +305,25 @@ int main() {
       std::cout << (int)c[i] << std::endl;
   }
   return 0;
+}")
+
+set(SEQAN_SIMD_SEQANSIMD_AVX512_SKX_SOURCE
+"#include <x86intrin.h>
+#include <iostream>
+
+int main() {
+  // clang bug 4.0.0, https://bugs.llvm.org//show_bug.cgi?id=31731
+  // -std=c++14 -mavx512bw -O3
+  {
+    using int8x32_t = signed char __attribute__ ((__vector_size__(32)));
+    unsigned length = sizeof(int8x32_t) / sizeof(char);
+    int8x32_t a{}, b{};
+    for (auto i = 0u; i < length; ++i) { a[i] = i-1; b[i] = -i; }
+
+    auto c = a < b;
+    for(auto i = 0u; i < length; ++i)
+      std::cout << (int)c[i] << std::endl;
+  }
 }")
 
 # list1 and list2
@@ -435,6 +420,9 @@ macro(detect_simd_support)
             if (${SIMD_EXT}_SOURCE_RUNS_COMPILED)
                 list(APPEND SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS "${simd_ext}")
             elseif (CMAKE_REQUIRED_FLAGS)
+                # On MSVC there might be missing FLAGS for some instruction sets
+                # (e.g. SEQAN_SIMD_AVX512_KNL_FLAGS). This try-compile should
+                # silently fail for those instruction sets.
                 message(STATUS "=> Abort simd detection of newer instruction sets")
                 break()
             endif()
@@ -446,14 +434,21 @@ macro(detect_simd_support)
 
         # try-compile known compiler crashes/errors with seqan-simd and exclude them
         if (SEQAN_SIMD_SEQANSIMD_SUPPORTED)
-            set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_AVX512_KNL_FLAGS}")
-            check_cxx_simd_source_runs("${SEQAN_SIMD_SEQANSIMD_AVX512_KNL_SOURCE}" SEQANSIMD_AVX512_KNL_SOURCE_RUNS)
+            set(_SEQANSIMD_SUPPORTED "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
 
-            if (SEQANSIMD_AVX512_KNL_SOURCE_RUNS_COMPILED)
-                set(_SEQANSIMD_SUPPORTED "${SEQAN_SIMD_SUPPORTED_EXTENSIONS}")
-            else ()
-                simd_list_version_less(_SEQANSIMD_SUPPORTED "avx512_knl")
-            endif()
+            foreach(simd_ext ${SEQAN_SIMD_SUPPORTED_EXTENSIONS})
+                string(TOUPPER ${simd_ext} SIMD_EXT)
+                set(CMAKE_REQUIRED_FLAGS "${SEQAN_SIMD_${SIMD_EXT}_FLAGS}")
+                if(SEQAN_SIMD_SEQANSIMD_${SIMD_EXT}_SOURCE AND CMAKE_REQUIRED_FLAGS)
+                  check_cxx_simd_source_runs("${SEQAN_SIMD_SEQANSIMD_${SIMD_EXT}_SOURCE}" SEQANSIMD_${SIMD_EXT}_SOURCE_RUNS)
+
+                  # Abort: seqan-simd fails compiling $simd_ext
+                  if (NOT SEQANSIMD_${SIMD_EXT}_SOURCE_RUNS_COMPILED)
+                      simd_list_version_less(_SEQANSIMD_SUPPORTED "${simd_ext}")
+                      break()
+                  endif()
+                endif()
+            endforeach()
         endif()
 
         # seqan-simd also uses intrinsics, so exclude those that failed the intrinsic try-compile
