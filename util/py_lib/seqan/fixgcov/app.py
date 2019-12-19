@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Small libclang based app to fix gcov output.
 
 Fix gcov output with templates.  This is done by first parsing in the .cpp files
@@ -45,12 +45,12 @@ def _hasFileLocation(node):
 
 class CollectCompoundStatementNodeVisitor(object):
     """Visitor for AST nodes that collects compound statements."""
-    
+
     def __init__(self, options):
         self.options = options
         self.stack = []
         self.ranges = []
-    
+
     def enterNode(self, node):
         """Called when a node is entered ("pre-order" traversal)."""
         self.stack.append(node)
@@ -81,7 +81,7 @@ class CollectCompoundStatementNodeVisitor(object):
 
 class VisitAllowedRule(object):
     """Decides whether a AST node and its children is visited."""
-    
+
     def __init__(self, options):
         self.options = options
         self.include_dirs = [os.path.abspath(x) for x in options.include_dirs]
@@ -114,7 +114,7 @@ class VisitAllowedRule(object):
 
 class AstTraverser(object):
     """Traverses AST tree and applies given visitor object."""
-    
+
     def __init__(self, node_visitor, options):
         self.node_visitor = node_visitor
         self.options = options
@@ -139,7 +139,7 @@ class AstTraverser(object):
         if self.options.verbosity >= 1:
             print 'Translation unit: %s.' % tu.spelling
         return self._recurse(tu.cursor)
-    
+
     @classmethod
     def visitFile(klass, filename, node_visitor, options):
         """Don't instantiate AstTraverser yourself, use this function."""

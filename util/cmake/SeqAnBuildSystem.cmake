@@ -52,12 +52,6 @@ endif()
 # SEQAN_RELEASE_LIBRARY
 # APP:${app_name}
 
-# require python 2.7, not python3
-set(PythonInterp_FIND_VERSION 2.7)
-set(PythonInterp_FIND_VERSION_MAJOR 2)
-set(PythonInterp_FIND_VERSION_MINOR 7)
-set(PythonInterp_FIND_VERSION_COUNT 2)
-
 include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
 
@@ -398,14 +392,14 @@ macro (seqan_add_app_test APP_NAME)
     else ()
         set (_VALGRIND_FLAG)
     endif ()
-    find_package (PythonInterp)
-    if (PYTHONINTERP_FOUND)
+    find_package (Python3)
+    if (Python3_Interpreter_FOUND)
       add_test (NAME app_test_${APP_NAME}${ARGV1}
-                COMMAND ${PYTHON_EXECUTABLE}
+                COMMAND ${Python3_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests${ARGV1}.py
                         ${_VALGRIND_FLAG}
                         ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
-    endif (PYTHONINTERP_FOUND)
+    endif (Python3_Interpreter_FOUND)
 endmacro (seqan_add_app_test APP_NAME)
 
 # ---------------------------------------------------------------------------
@@ -807,12 +801,12 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         endif()
 
         # Add the test.
-        find_package (PythonInterp)
-        if (PYTHONINTERP_FOUND)
+        find_package (Python3)
+        if (Python3_Interpreter_FOUND)
           add_test (NAME test_${EXECUTABLE}
-                    COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
-          #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
-        endif (PYTHONINTERP_FOUND)
+                    COMMAND ${Python3_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
+          #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${Python3_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
+        endif (Python3_Interpreter_FOUND)
     endif ()
 endmacro (_seqan_setup_demo_test CPP_FILE)
 

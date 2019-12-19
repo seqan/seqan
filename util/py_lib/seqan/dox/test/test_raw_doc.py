@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the raw_doc module."""
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
@@ -45,12 +45,12 @@ class TestText(unittest.TestCase):
                   lexer.Token('WORD', 'foo', 0, 0, 0)]
         text = raw_doc.RawText(tokens)
         self.assertEqual(text.tokens, tokens)
-        self.failIf(text.empty)
+        self.assertFalse(text.empty)
 
     def testConstructionWithoutTokens(self):
         text = raw_doc.RawText()
         self.assertEqual(text.tokens, [])
-        self.assert_(text.empty)
+        self.assertTrue(text.empty)
 
 
 class TestDocumentation(unittest.TestCase):
@@ -575,7 +575,7 @@ class ThrowTest(unittest.TestCase):
         ret = raw_doc.RawThrow(self.tok, self.txt_type, self.txt_text)
         self.assertEqual(ret.getFormatted(self.formatter),
                          '@throw type text\n')
-        
+
 
 class DataRaceTest(unittest.TestCase):
     """Test for the RawDataRace class, mostly tests instance variables."""

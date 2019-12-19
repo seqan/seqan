@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """pyclangcheck driver code
 
 This code is the driver code for the pyclangcheck tool.
@@ -61,7 +61,7 @@ class FileCache(object):
 
 class CollectViolationsVisitor(object):
     """Visitor for AST nodes that collects rule violations."""
-    
+
     def __init__(self, options, rules):
         self.options = options
         self.rules = rules
@@ -73,7 +73,7 @@ class CollectViolationsVisitor(object):
         self.class_stack = []
         self.seen_files = set()
         self.blocked_files = set()
-   
+
     def seenToBlocked(self):
         """Move seen files to blocked files."""
         self.blocked_files |= self.seen_files
@@ -89,7 +89,7 @@ class CollectViolationsVisitor(object):
         # Mark file as seen for nodes that are directly below the compilation unit.
         if len(self.stack) <= 2 and _hasFileLocation(node):
             self.seen_files.add(node.location.file.name)
-        
+
         if self.options.verbosity >= 2:
             if node.extent.start.file:
                 filename = node.extent.start.file.name
@@ -139,7 +139,7 @@ class CollectViolationsVisitor(object):
 
 class VisitAllowedRule(object):
     """Decides whether a AST node and its children is visited."""
-    
+
     def __init__(self, options, blocked_files):
         self.options = options
         self.include_dirs = [os.path.abspath(x) for x in options.include_dirs]
@@ -177,7 +177,7 @@ class VisitAllowedRule(object):
 
 class AstTraverser(object):
     """Traverses AST tree and applies given visitor object."""
-    
+
     def __init__(self, node_visitor, options):
         self.node_visitor = node_visitor
         self.options = options
@@ -202,7 +202,7 @@ class AstTraverser(object):
         if self.options.verbosity >= 1:
             print 'Translation unit: %s.' % tu.spelling
         return self._recurse(tu.cursor)
-    
+
     @classmethod
     def visitFile(klass, filename, node_visitor, options):
         """Don't instantiate AstTraverser yourself, use this function."""

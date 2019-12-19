@@ -1,12 +1,12 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import datetime
 import optparse
 import os
 import sys
 
-import core
-import html
+from . import core
+from . import html
 
 
 HEADER = """
@@ -31,7 +31,7 @@ class DDDocRunner(object):
       index_only  Boolean, true iff only index pages are built.
       doc_dirs    List of strings.  Names of directories with dddoc files.
     """
-    
+
     def __init__(self, index_only=False, doc_dirs=[], out_dir='html',
                  demos_dir='.', cache_only=False, include_dirs=[]):
         """Initialize, arguments correspond to attributes."""
@@ -52,41 +52,41 @@ class DDDocRunner(object):
           Return code of the application.  Is 0 for no problem, and 1 on
           errors and warnings.
         """
-        print 'Scanning modules...'
+        print('Scanning modules...')
         app = core.App()
         if self.cache_only:
-            for fn in app.cache.content.iterkeys():
+            for fn in app.cache.content.keys():
                 core.parseFile(fn, app.cache)
         else:
             # Scan some/all modules.
             for path in base_paths:
                 os.path.normpath(path)
                 app.loadFiles(path)
-                
+
             # Scan doc directories.
             for doc_dir in self.doc_dirs:
-                print 'Scanning %s...' % doc_dir
+                print('Scanning %s...' % doc_dir)
                 app.loadFiles(doc_dir)
 
         app.loadingComplete()
 
         # Actually build the HTML files.
-        print 'Creating HTML Documentation...'
+        print('Creating HTML Documentation...')
         tpl_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'tpl'))
         res = html.createDocs(app.error_logger, app.dddoc_tree, tpl_path, self.out_dir,
                               self.include_dirs)
 
         # Done, print end message.
-        print 'Documentation created/updated.'
+        print('Documentation created/updated.')
         return res
-    
-    
+
+
 def main(argv):
     """Program entry point."""
-    print '%s\n' % HEADER
+    print('%s\n' % HEADER)
 
     start_time = datetime.datetime.now()
-    
+
     # Parse arguments.
     parser = optparse.OptionParser()
     parser.add_option('-d', '--doc-dir', dest='doc_dirs', action='append',
@@ -106,12 +106,12 @@ def main(argv):
                       action='store_true',
                       help='Ignore files if cache file exists.')
     options, args = parser.parse_args(argv)
-    print 'doc dirs: %s' % ', '.join(options.doc_dirs)
-    print
-    
+    print('doc dirs: %s' % ', '.join(options.doc_dirs))
+    print()
+
     # Show help if no arguments are given.
     if len(args) < 2:
-        print CMD_HELP % args[0]
+        print(CMD_HELP % args[0])
         return 1
     # Create application object and run documentation generation.
     app = DDDocRunner(index_only=False, doc_dirs=options.doc_dirs,
@@ -122,10 +122,10 @@ def main(argv):
     res = app.run(args)
 
     elapsed = datetime.datetime.now() - start_time
-    print >>sys.stderr, 'Took %d s' % elapsed.seconds
+    print('Took %d s' % elapsed.seconds, file=sys.stderr)
 
     return res
-    
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

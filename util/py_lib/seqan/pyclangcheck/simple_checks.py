@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Simple source code checks, e.g. trailing whitespace."""
 
 from __future__ import with_statement
@@ -11,7 +11,7 @@ import violations
 
 RULE_TRAILING_WHITESPACE = 'whitespace.trailing'
 RULE_TEXT_TRAILING_WHITESPACE = 'Trailing whitespace is not allowed.'
- 
+
 RULE_TODO_ONE_SPACE = 'whitespace.todo'
 RULE_TEXT_TODO_ONE_SPACE= 'There should be exactly one space before TODO.'
 

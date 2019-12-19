@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """SeqAn code generation from templates / skeletons.
 
 This module contains code to help the creation of modules, tests, apps etc.
@@ -28,7 +28,7 @@ Copyright: (c) 2010, Knut Reinert, FU Berlin
 License:   3-clause BSD (see LICENSE)
 """
 
-from __future__ import with_statement
+
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
@@ -39,7 +39,7 @@ import os.path
 import sys
 import string
 
-import paths
+from . import paths
 
 # Add os.path.relpath if it is not already there, so we can use Python 2.5, too.
 # TODO(holtgrew): This could go into a "compatibility" module.
@@ -111,30 +111,30 @@ library modules, tests, apps, app tests, and demos inside a sandbox.
 #""".strip()
 
 def createDirectory(path, dry_run=False):
-    print 'mkdir(%s)' % path
-    print
+    print('mkdir(%s)' % path)
+    print()
     if not dry_run:
         if not os.path.exists(path):
             os.mkdir(path)
 
 def configureFile(target_file, source_file, replacements, dry_run, options):
-    print 'Configuring file.'
-    print '  Source:', source_file
-    print '  Target:', target_file
-    print
+    print('Configuring file.')
+    print('  Source:', source_file)
+    print('  Target:', target_file)
+    print()
     if os.path.exists(target_file) and not options.force:
         msg = 'Target file already exists.  Move it away and call the script again.'
-        print >>sys.stderr, msg
+        print(msg, file=sys.stderr)
         return 1
 
     with open(source_file, 'rb') as f:
         contents = f.read()
     target_contents = contents % replacements
     if dry_run:
-        print 'The contents of the target file are:'
-        print '-' * 78
-        print target_contents
-        print '-' * 78
+        print('The contents of the target file are:')
+        print('-' * 78)
+        print(target_contents)
+        print('-' * 78)
     else:
         with open(target_file, 'wb') as f:
             f.write(target_contents)
@@ -177,13 +177,13 @@ def _checkTargetPaths(target_path, options):
     # Check that the given path does not exist yet.
     if os.path.exists(target_path) and not options.force:
         msg = 'The path %s already exists. Move it and call this script again.'
-        print >>sys.stderr, msg % target_path
+        print(msg % target_path, file=sys.stderr)
         return False
     # Check that the parent path already exists.
     if not os.path.exists(os.path.dirname(target_path)):
         msg = 'The parent of the target path does not exist yet: %s'
-        print >>sys.stderr, msg % os.path.dirname(target_path)
-        print >>sys.stderr, 'Please create it and call this script again.'
+        print(msg % os.path.dirname(target_path), file=sys.stderr)
+        print('Please create it and call this script again.', file=sys.stderr)
         return False
     return True
 
@@ -192,14 +192,14 @@ def createModule(name, location, options):
     seqan_path = os.path.join(include_path, 'seqan')
     module_path = os.path.join(seqan_path, name)
     header_path = os.path.join(seqan_path, '%s.h' % name)
-    print 'Creating module in %s' % module_path
+    print('Creating module in %s' % module_path)
     if options.create_dirs and not _checkTargetPaths(module_path, options):
         return 1
     if options.create_dirs and not _checkTargetPaths(header_path, options):
         return 1
-    print '  Module path is: %s' % module_path
-    print '  Module header path is: %s' % header_path
-    print ''
+    print('  Module path is: %s' % module_path)
+    print('  Module header path is: %s' % header_path)
+    print('')
     if options.create_dirs:
         # Create directory.
         createDirectory(module_path, options.dry_run)
@@ -220,11 +220,11 @@ def createModule(name, location, options):
 
 def createTest(name, location, options):
     target_path = paths.pathToTest(location, name)
-    print 'Creating test in %s' % target_path
+    print('Creating test in %s' % target_path)
     if options.create_dirs and not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
     if options.create_dirs:
         # Create directory.
         createDirectory(target_path, options.dry_run)
@@ -252,11 +252,11 @@ def createTest(name, location, options):
 
 def createApp(name, location, options):
     target_path = paths.pathToApp(location, name)
-    print 'Creating app in %s' % target_path
+    print('Creating app in %s' % target_path)
     if options.create_dirs and not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
     if options.create_programs:
         # Create directory.
         createDirectory(target_path, options.dry_run)
@@ -277,11 +277,11 @@ def createApp(name, location, options):
 
 def createDemo(name, location, options):
     target_path = paths.pathToDemo(location, name)
-    print 'Creating demo in %s' % target_path
+    print('Creating demo in %s' % target_path)
     if options.create_dirs and not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
     if options.create_programs:
         # Copy over .cpp file for app and perform replacements.
         source_file = paths.pathToTemplate('demo_template', 'demo.cpp')
@@ -293,27 +293,27 @@ def createDemo(name, location, options):
 
 def createHeader(name, location, options):
     target_path = paths.pathToHeader(location, name)
-    print 'Creating (non-library) header in %s' % target_path
+    print('Creating (non-library) header in %s' % target_path)
     if not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
     # Copy over .h file for app and perform replacements.
     source_file = paths.pathToTemplate('header_template', 'header.h')
     target_file = os.path.join(target_path)
     replacements = buildReplacements('header', name, location, target_file, options)
     res = configureFile(target_file, source_file, replacements, options.dry_run, options)
     if res: return res
-    print 'NOTE: Do not forget to add the header to the CMakeLists.txt file!'
+    print('NOTE: Do not forget to add the header to the CMakeLists.txt file!')
     return 0
 
 def createLibraryHeader(name, location, options):
     target_path = paths.pathToHeader(location, name)
-    print 'Creating library header in %s' % target_path
+    print('Creating library header in %s' % target_path)
     if not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
     # Copy over .h file for app and perform replacements.
     source_file = paths.pathToTemplate('header_template', 'library_header.h')
     target_file = os.path.join(target_path)
@@ -323,12 +323,12 @@ def createLibraryHeader(name, location, options):
     return 0
 
 def createRepository(location, options):
-    print 'Creating module %s' % location
+    print('Creating module %s' % location)
     target_path = paths.pathToRepository(location)
     if options.create_dirs and not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
     if options.create_dirs:
         # Create directories.
         createDirectory(target_path, options.dry_run)
@@ -361,13 +361,13 @@ def createRepository(location, options):
     return 0
 
 def createAppTests(location, options):
-    print 'Creating app tests at %s' % location
+    print('Creating app tests at %s' % location)
     tests_location = os.path.join(location, 'tests')
     target_path = paths.pathToRepository(tests_location)
     if options.create_dirs and not _checkTargetPaths(target_path, options):
         return 1
-    print '  Target path is: %s' % target_path
-    print ''
+    print('  Target path is: %s' % target_path)
+    print('')
 
     # Create directories.
     if options.create_dirs:
@@ -384,17 +384,17 @@ def createAppTests(location, options):
     replacements = buildReplacements('app_tests', location, target_path, target_file, options)
     configureFile(target_file, source_file, replacements, options.dry_run, options)
 
-    print '=' * 80
-    print 'Do not forget to add the tests in %s:' % os.path.join(location, 'CMakeLists.txt')
-    print ''
-    print '# Add app tests if Python interpreter could be found.'
-    print 'if(PYTHONINTERP_FOUND)'
-    print '  add_test(NAME app_test_%s COMMAND ${PYTHON_EXECUTABLE}' % os.path.split(location)[-1]
-    print '    ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}'
-    print '    ${CMAKE_BINARY_DIR})'
-    print 'endif(PYTHONINTERP_FOUND)'
-    print '=' * 80
-    
+    print('=' * 80)
+    print('Do not forget to add the tests in %s:' % os.path.join(location, 'CMakeLists.txt'))
+    print('')
+    print('# Add app tests if Python interpreter could be found.')
+    print('if(PYTHONINTERP_FOUND)')
+    print('  add_test(NAME app_test_%s COMMAND ${Python3_EXECUTABLE}' % os.path.split(location)[-1])
+    print('    ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}')
+    print('    ${CMAKE_BINARY_DIR})')
+    print('endif(PYTHONINTERP_FOUND)')
+    print('=' * 80)
+
     return 0
 
 def main():
@@ -434,15 +434,15 @@ def main():
         parser.print_help(file=sys.stderr)
         return 1
     if len(args) < 2:
-        print >>sys.stderr, 'Invalid argument count!'
+        print('Invalid argument count!', file=sys.stderr)
         return 1
     if args[0] not in ['module', 'test', 'app', 'demo', 'repository',
                        'header', 'lheader', 'app_tests']:
-        print >>sys.stderr, 'Invalid template "%s".' % args[0]
+        print('Invalid template "%s".' % args[0], file=sys.stderr)
         return 1
     if args[0] in['repository', 'app_tests']:
         if len(args) != 2:
-            print >>sys.stderr, 'Invalid argument count!'
+            print('Invalid argument count!', file=sys.stderr)
             return 1
 
     if args[0] == 'repository':
@@ -450,7 +450,7 @@ def main():
     elif args[0] == 'app_tests':
         return createAppTests(args[1], options)
     elif len(args) != 3:
-        print >>sys.stderr, 'Invalid argument count!'
+        print('Invalid argument count!', file=sys.stderr)
         return 1
     create_methods = {
         'module' : createModule,

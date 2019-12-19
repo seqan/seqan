@@ -856,7 +856,7 @@ finline void
 _myersPreInit(PatternState_<TNeedle, TSpec> &state, False)
 {
     typedef typename Value<TNeedle>::Type TValue;
-    memset(state.bitMasks, 0, (ValueSize<TValue>::VALUE + 1) * sizeof(state.bitMasks[0]));
+    memset(state.bitMasks, 0, ValueSize<TValue>::VALUE * sizeof(state.bitMasks[0]));
     memset(state.shift, 0, ValueSize<TValue>::VALUE * sizeof(state.shift[0]));
 }
 

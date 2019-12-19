@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Thumbnail Plot Generator.
 
 This report generator uses the binary roi_plot_thumbnails (C++ program, must
@@ -112,14 +112,14 @@ class PlotThumbnailsApp(ngs_roi.app.App):
 
     def run(self):
         # Load ROI records.
-        print >>sys.stderr, 'Loading ROI'
+        print('Loading ROI', file=sys.stderr)
 
         # Create plots.
         runner = ngs_roi.app.PlotThumbnailsRunner(self.args)
         runner.run()
 
         # Create HTML.
-        print >>sys.stderr, 'Creating HTML...'
+        print('Creating HTML...', file=sys.stderr)
         num_plots = self.args.num_cols * self.args.num_rows  # plots on grid
         for i, roi in enumerate(ngs_roi.io.RoiFile(self.args.in_file)):
             if self.args.max_rois > 0 and i >= self.args.max_rois:
@@ -127,13 +127,13 @@ class PlotThumbnailsApp(ngs_roi.app.App):
             # Write out old grid (if any) and create new one.
             if i % num_plots == 0:
                 if self.grid:
-                    print >>sys.stderr, '  Writing plot %d...' % self.plot_idx
+                    print('  Writing plot %d...' % self.plot_idx, file=sys.stderr)
                 self.writeGrid()
                 self.grid = RoiPlotGrid(self.args.plot_width, self.args.plot_height,
                                         self.args.num_cols, self.args.num_rows)
             # Put the next plot on the grid.
             self.grid.plotRecord(roi)
-        print >>sys.stderr, '  Writing plot %d...' % self.plot_idx
+        print('  Writing plot %d...' % self.plot_idx, file=sys.stderr)
         self.writeGrid()  # Write last grid.
         self.createHtml(self.args.out_file)
         return 0
@@ -149,7 +149,7 @@ class PlotThumbnailsApp(ngs_roi.app.App):
         self.grid_links.append(GridLinks(os.path.basename(file_name), self.grid.link_regions))
 
     def createHtml(self, file_name):
-        print >>sys.stderr, 'Writing HTML to %s' % file_name
+        print('Writing HTML to %s' % file_name, file=sys.stderr)
         with open(file_name, 'wb') as f:
             f.write('<html><body>\n')
             f.write('<h1>ROI Thumbnail Plots</h1>')

@@ -1,10 +1,10 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Code for translating a DDDoc tree and its node into raw_doc objects.
 """
 
 import copy
-import lexer
-import raw_doc
+from . import lexer
+from . import raw_doc
 import re
 import sys
 
@@ -46,7 +46,7 @@ class TokenTranslator(object):
             else:
                 result.append(token)
         return result
-        
+
     def translateTT(self, token_list):
         result = []
         for token in token_list:
@@ -71,7 +71,7 @@ class TokenTranslator(object):
                 result.append(token)
         return result
 
-    
+
 def translateTokens(tokens):
     return TokenTranslator().translate(tokens)
 
@@ -93,7 +93,7 @@ def migratePages(node):
     #print >>sys.stderr, 'Migrating pages...'
     pages = []
     #print node
-    for name, child in node.children.iteritems():
+    for name, child in node.children.items():
         if name == 'Glossary':
             continue
         page = raw_doc.RawPage()
@@ -125,7 +125,7 @@ def migratePages(node):
                     raw_par = raw_doc.RawParagraph(raw_doc.RawText(translateTokens([t])))
                 page.body.addParagraph(raw_par)
         pages.append(page)
-    print 'RESULTING PAGES %s' % [p.title.text for p in pages]
+    print('RESULTING PAGES %s' % [p.title.text for p in pages])
     return pages
 
 
@@ -141,7 +141,7 @@ class GenericMigration(object):
         #print self.node.key
         #if self.node.key == 'Memfunc':
         #    print 'GOT', self.node.key
-        for name, child in self.node.children.iteritems():
+        for name, child in self.node.children.items():
             #if 'StringSet' in name or self.node.key == 'Memfunc':
             #    print 'GOT', self.node.key, name
             #print name
@@ -322,7 +322,7 @@ class GenericMigration(object):
             # Check that we processed all attributes.
             unhandled = set(child.children.keys()) - processed
             if unhandled:
-                print 'Missed %s in %s (processed: %s)' % (unhandled, child, processed)
+                print('Missed %s in %s (processed: %s)' % (unhandled, child, processed))
                 sys.exit(1)
         return raw_entries
 
@@ -338,7 +338,7 @@ class GenericMigration(object):
 
     def processExtends(self, entry, node):
         for text in node.texts:
-            if '\u0001' in text:
+            if '\\u0001' in text:
                 continue  # do not add inherited
             if text.startswith('Class.'):
                 t = lexer.Token('WORD', text[len('Class.'):], 0, 0, 0)
@@ -396,7 +396,7 @@ class GenericMigration(object):
         result = []
         enum_name = translate(node.key)
         #print value_nodes
-        for key, value in value_nodes.children.iteritems():
+        for key, value in value_nodes.children.items():
             raw_var = raw_doc.RawVariable()
             #print value
             var_name = value.key
@@ -414,7 +414,7 @@ class GenericMigration(object):
 
             unhandled = set(value.children.keys()) - processed
             if unhandled:
-                print 'Missed %s in %s' % (unhandled, child)
+                print('Missed %s in %s' % (unhandled, child))
                 sys.exit(1)
 
             #print raw_var.getFormatted(formatter)
@@ -424,7 +424,7 @@ class GenericMigration(object):
     def processTags(self, entry, node, tag_nodes):
         result = []
         group_name = translate(node.key)
-        for key, value in tag_nodes.children.iteritems():
+        for key, value in tag_nodes.children.items():
             raw_tag = raw_doc.RawTag()
             tag_name = value.key
             t = lexer.Token('WORD', group_name + '#' + tag_name, 0, 0, 0)
@@ -462,7 +462,7 @@ class GenericMigration(object):
 
             unhandled = set(value.children.keys()) - processed
             if unhandled:
-                print 'Missed %s in %s processed: %s' % (unhandled, node, processed)
+                print('Missed %s in %s processed: %s' % (unhandled, node, processed))
                 sys.exit(1)
 
             #print raw_tag.getFormatted(formatter)
@@ -534,7 +534,7 @@ class GenericMigration(object):
             entry.addSignature(raw_sig)
 
     def processParams(self, entry, node):
-        for name, child in node.children.iteritems():
+        for name, child in node.children.items():
             ts = []
             if child.children.get('summary'):
                 for summary in child.children['summary'].texts:
@@ -614,7 +614,7 @@ class GenericMigration(object):
             # Check that we processed all attributes.
             unhandled = set(child.children.keys()) - set(['summary', 'remarks', 'type', 'default', 'text', 'concept', 'metafunction', 'remark', 'note', 'see', 'class', 'value', 'nowarn', 'tableheader', 'table'])
             if unhandled:
-                print 'Missed %s in %s' % (unhandled, node)
+                print('Missed %s in %s' % (unhandled, node))
                 sys.exit(1)
 
     def processReturns(self, entry, node):
@@ -661,9 +661,9 @@ class GenericMigration(object):
         # Check that we processed all attributes.
         unhandled = set(node.children.keys()) - set(['summary', 'remarks', 'type', 'metafunction', 'text', 'param', 'note', 'default'])
         if unhandled:
-            print 'Missed %s in %s' % (unhandled, node)
+            print('Missed %s in %s' % (unhandled, node))
             sys.exit(1)
-            
+
     def _processTextNode(self, node):
         texts = []
         for text in node.texts:
@@ -695,33 +695,33 @@ class ClassMigration(GenericMigration):
         self.entry_class = raw_doc.RawClass
         self.is_type = True
 
-    
+
 class EnumMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawEnum
         self.is_type = True
 
-    
+
 class ConceptMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawConcept
         self.is_type = True
 
-    
+
 class MacroMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawMacro
 
-    
+
 class MetafunctionMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
         self.entry_class = raw_doc.RawMetafunction
 
-    
+
 class TagMigration(GenericMigration):
     def __init__(self, node):
         GenericMigration.__init__(self, node)
@@ -777,7 +777,7 @@ def addGroups(raw_entries):
 
 
 def migrate(tree):
-    print 'Class.keys', tree.root.children['Class'].children.keys()
+    print('Class.keys', list(tree.root.children['Class'].children.keys()))
     res = []
     res += migratePages(tree.root.children['Page'])
     res += migratePages(tree.root.children['Indexpage'])

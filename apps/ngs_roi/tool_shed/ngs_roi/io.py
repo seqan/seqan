@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Input / Output Routines for ROI files.
 
 You can load the records sequentially one by one by iterating over a
@@ -107,7 +107,7 @@ class RoiFile(object):
         """Return iterator (self)."""
         return self
 
-    def next(self):
+    def __next__(self):
         """Return next record."""
         if self.line == '':  # EOF
             raise StopIteration

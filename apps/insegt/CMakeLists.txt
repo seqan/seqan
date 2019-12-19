@@ -80,7 +80,7 @@ install (FILES example/annoOutput.gff
 
 # Add app tests if Python interpreter could be found.
 if(PYTHONINTERP_FOUND)
-  add_test(NAME app_test_insegt COMMAND ${PYTHON_EXECUTABLE}
+  add_test(NAME app_test_insegt COMMAND ${Python3_EXECUTABLE}
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR})
 endif(PYTHONINTERP_FOUND)

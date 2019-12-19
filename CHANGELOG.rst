@@ -15,6 +15,11 @@ App Updates
     - Added option to compute and output alignments for secondary matches
     - Added option to specify strata threshold as absolute number of errors
 
+Build System
+~~~~~~~~~~~~
+
+- The minimum CMake version requirement was raised to 3.12.
+
 Release 2.4.0
 ~~~~~~~~~~~~~
 

@@ -45,7 +45,7 @@ GNU/Linux, macOS & BSD
 ^^^^^^^^^^^^^^^^^^^^^^
 
 * The binary packages should be built on the **oldest supported kernel** and with the **oldest supported GCC** compiler.
-* The CMake version on the building system should be at least 3.1.
+* The CMake version on the building system should be at least 3.12.
 * Builds should be static (``-DSEQAN_STATIC_APPS=1``).
 * There should be a 32Bit package, built on a 32Bit system or cross-compiled (``-DCMAKE_CXX_FLAGS="-m32"``).
 * There should be a 64Bit package.

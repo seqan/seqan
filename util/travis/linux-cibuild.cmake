@@ -36,7 +36,7 @@ CONFIGURE_FILE (${CTEST_SOURCE_DIRECTORY}/util/cmake/CTestConfig.cmake
 
 # run the classical ctest suite without update
 # travis-ci handles this for us
-ctest_start     (Continuous)
+ctest_start     (Continuous TRACK "Continuous-$ENV{TRAVIS_BRANCH}")
 ctest_configure (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE _configure_ret)
 ctest_build     (BUILD "${CTEST_BINARY_DIRECTORY}" NUMBER_ERRORS _build_errors
                                                    NUMBER_WARNINGS _build_warnings)

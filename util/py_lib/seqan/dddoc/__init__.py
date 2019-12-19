@@ -1,6 +1,6 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
-import main as m
+from . import main as m
 import sys
 
 def main():

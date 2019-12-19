@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Generation of detailed ROI reports with larger plots.
 
 This report generation works for hundred of ROIs.
@@ -73,7 +73,7 @@ class DetailedRoiGenerator(ngs_roi.app.App):
 
         :return: integer with the result.
         """
-        print >>sys.stderr, 'Loading ROI'
+        print('Loading ROI', file=sys.stderr)
         records = ngs_roi.io.load(self.args.in_file, self.args.max_rois)
         keys = records[0].data_keys
 
@@ -90,7 +90,7 @@ class DetailedRoiGenerator(ngs_roi.app.App):
         for i, roi in enumerate(records):
             file_name = 'plot_%d.png' % i
             file_name = os.path.join(self.args.out_dir, file_name)
-            print >>sys.stderr, 'Writing plot %s' % file_name
+            print('Writing plot %s' % file_name, file=sys.stderr)
             plt.figure(figsize=(4, 2.5))
             plt.gcf().subplots_adjust(bottom=0.16, left=0.15)
             plt.plot(roi.points, color=COLOR, linewidth=LINE_WIDTH, linestyle=LINE_STYLE)
@@ -104,12 +104,12 @@ class DetailedRoiGenerator(ngs_roi.app.App):
 
     def writeHtml(self, keys, records):
         file_name = self.args.out_file
-        print >>sys.stderr, 'Writing HTML file %s' % file_name
+        print('Writing HTML file %s' % file_name, file=sys.stderr)
 
         vals = {'args': self.args, 'records': records, 'data_keys': keys,
                 'href': lambda x: self.buildHref(x.ref, x.start_pos, x.end_pos)}
         t = Cheetah.Template.Template(PAGE_TPL, searchList=vals)
-        
+
         with open(file_name, 'wb') as f:
             f.write(str(t))
 
