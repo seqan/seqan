@@ -107,6 +107,8 @@ public:
         data_container(other_.data_container)
     {}
 
+    Iter & operator=(Iter const &) = default;
+
     template <typename TContainer2, typename TSpec2>
     Iter(Iter<TContainer2, TSpec2> const & other_) :
         TBase(position(other_)),

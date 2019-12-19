@@ -140,17 +140,9 @@ namespace seqan
             stepSize(1),
             alpha(defaultAlpha) {}
 
-        Index(Index const &other):
-            text(other.text),
-            sa(other.sa),
-            dir(other.dir),
-            counts(other.counts),
-            countsDir(other.countsDir),
-            shape(other.shape),
-            cargo(other.cargo),
-            bucketMap(other.bucketMap),
-            stepSize(1),
-            alpha(defaultAlpha) {}
+        Index(Index const &other) = default;
+
+        Index & operator=(Index const &) = default;
 
         template <typename TText_>
         Index(TText_ &_text):

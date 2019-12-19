@@ -101,11 +101,9 @@ public:
         setStrings(*this, stringset);
     }
 
-    Align & operator=(Align const & other)
-    {
-        data_rows = other.data_rows;
-        return *this;
-    }
+    Align(Align const &) = default;
+
+    Align & operator=(Align const & other) = default;
 };
 
 // ============================================================================

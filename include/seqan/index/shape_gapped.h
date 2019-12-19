@@ -278,11 +278,7 @@ namespace seqan
             }
         }
 
-        Shape(Shape const &other):
-            span(other.span),
-            weight(other.weight),
-            diffs(other.diffs),
-            hValue(other.hValue) {}
+        Shape(Shape const &) = default;
 
         template <typename TSpec>
         Shape(Shape<TValue, TSpec> const &other)
@@ -303,6 +299,8 @@ namespace seqan
         }
 
 //____________________________________________________________________________
+
+        inline Shape & operator=(Shape const &) = default;
 
         template <unsigned q>
         inline Shape &

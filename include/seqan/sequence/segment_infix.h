@@ -139,6 +139,11 @@ public:
     {
     }
 
+    Segment(Segment const & source)
+    {
+        assign(*this, source);
+    }
+
     inline Segment &
     operator = (Segment const & source)
     {

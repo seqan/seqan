@@ -88,10 +88,9 @@ public:
     {}
 
     // Copy constructor, required since we specify the one with complemented const below.
-    Iter(Iter const & other) :
-            _container(other._container), _bucketIndex(other._bucketIndex), _bucketOffset(other._bucketOffset),
-            _sourcePosition(other._sourcePosition), _unclippedViewPosition(other._unclippedViewPosition)
-    {}
+    Iter(Iter const & other) = default;
+
+    Iter & operator=(Iter const &) = default;
 
     // Copy construtor for iterator -> const iterator conversion.
     // TODO(holtgrew): Think of something smarter, to restrict source types?

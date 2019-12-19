@@ -80,15 +80,11 @@ public:
 
     Index() {}
 
-    Index(Index & other) :
-        text(other.text),
-        sa(other.sa)
-    {}
+    Index(Index & other) = default;
 
-    Index(Index const & other) :
-        text(other.text),
-        sa(other.sa)
-    {}
+    Index(Index const & other) = default;
+
+    Index & operator=(Index const &) = default;
 
     template <typename TText_>
     Index(TText_ & _text) :
@@ -136,6 +132,8 @@ struct VertexSA : public VertexEsa<TSize>
         repLen(other.repLen),
         lastChar(other.lastChar)
     {}
+
+    VertexSA & operator=(VertexSA const &) = default;
 };
 
 template <typename TSize, typename TAlphabet>

@@ -41,11 +41,8 @@ struct GraphCargo {
     TColumns spanned_columns;
 
     GraphCargo() {}
-    GraphCargo(GraphCargo const& other) 
-    {
-        alignedRead = other.alignedRead;
-        spanned_columns = other.spanned_columns;
-    }
+    GraphCargo(GraphCargo const&) = default;
+    GraphCargo & operator=(GraphCargo const&) = default;
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -107,8 +107,8 @@ public:
     typedef typename Difference<TString>::Type  difference_type;
     // ----------------------------------------------------------------------
 
-    TStringSet *    host;
-    unsigned        objNo;
+    TStringSet *    host{nullptr};
+    unsigned        objNo{0};
     obj_iterator    _begin, _cur, _end;
 
     Iter() {}
