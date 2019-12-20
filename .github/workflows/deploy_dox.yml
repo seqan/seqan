@@ -1,8 +1,10 @@
 name: Workflow to deploy dox for SeqAn
 
 on:
-  schedule:
-    - cron: "0 1 * * *"
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   my_job:
@@ -16,10 +18,8 @@ jobs:
         shell: bash
         run: echo The branch name is ${GITHUB_REF#refs/heads/}
 
-      - name: setup python 2.7 environment
+      - name: setup python 3 environment
         uses: actions/setup-python@v1.1.1
-        with:
-          python-version: 2.x # optional, default is 3.x
 
       - name: install dox requirements
         shell: bash
