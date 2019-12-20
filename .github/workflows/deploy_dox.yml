@@ -14,10 +14,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
 
-      - name: test branch name
-        shell: bash
-        run: echo The branch name is ${GITHUB_REF#refs/heads/}
-
       - name: setup python 3 environment
         uses: actions/setup-python@v1.1.1
 
@@ -40,7 +36,8 @@ jobs:
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
+          BRANCH: ${GITHUB_REF#refs/heads/}
         with:
           flags: '-avzr --delete'
           src: 'dox/html/'
-          dest: '$REMOTE_USER@$REMOTE_HOST:$TARGET'
+          dest: '$REMOTE_USER@$REMOTE_HOST:$TARGET/$BRANCH'
