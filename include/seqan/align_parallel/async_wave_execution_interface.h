@@ -74,9 +74,9 @@ public:
     unsigned                                    _alignCounter{0};
     unsigned                                    _blockSize{};
 
-    template <typename TSpec>
+    template <typename TSpec, typename TIgnoreVectorSpec>
     AsyncWaveAlignExecutor(TSettings settings,
-                           ExecutionPolicy<WavefrontAlignment<TSpec>, Serial> const & execPolicy) :
+                           ExecutionPolicy<WavefrontAlignment<TSpec>, TIgnoreVectorSpec> const & execPolicy) :
         _settings(std::move(settings)),
         _alignScheduler(parallelAlignments(execPolicy), numThreads(execPolicy)),
         _threadLocalStorage(TThreadLocal{parallelAlignments(execPolicy)}),
