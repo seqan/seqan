@@ -46,7 +46,7 @@ namespace seqan
  * @headerfile <seqan/graph_types.h>
  * @brief Iterate vertices of a graph in depth-first preorder fashion.
  *
- * @signature Iterator<TGraph, DfsPreorderIterator>::Type;
+ * @signature Iterator<TGraph, DfsPreorder>::Type;
  * @signature template <typename TGraph, typename TSpec>
  *            class Iter<TGraph, GraphIterator<InternalDfsPreorderIterator<TSpec> >;
  *
