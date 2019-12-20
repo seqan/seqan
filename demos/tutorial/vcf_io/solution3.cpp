@@ -31,10 +31,10 @@ int main()
     appendValue(header, VcfHeaderRecord("INFO", "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">"));
     appendValue(header, VcfHeaderRecord("FILTER", "<ID=q10,Description=\"Quality below 10\">"));
     appendValue(header, VcfHeaderRecord("FILTER", "<ID=s50,Description=\"Less than 50% of samples have data\">"));
-    appendValue(header, VcfHeaderRecord("ID", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
-    appendValue(header, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
-    appendValue(header, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
-    appendValue(header, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
+    appendValue(header, VcfHeaderRecord("FORMAT", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
+    appendValue(header, VcfHeaderRecord("FORMAT", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
+    appendValue(header, VcfHeaderRecord("FORMAT", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
+    appendValue(header, VcfHeaderRecord("FORMAT", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
     writeHeader(out, header);
 
     // Fill and write out the record.
