@@ -240,18 +240,14 @@ _isEmpty(TSequence const &)
 
 template <typename TFwdIterator,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlignRow0,
-          typename TAlignRow1,
+          typename ... TSpecs2,
           typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeField(TFwdIterator & s,
             BlastIOContext<TScore, p, h> & context,
-            BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & match,
+            BlastMatch<TSpecs2...> const & match,
             BlastRecord<TSpecs...> const & record,
             typename BlastMatchField<>::Enum const fieldId,
             BlastTabular const &)
@@ -320,8 +316,8 @@ _writeField(TFwdIterator & s,
             break;
         case BlastMatchField<>::Enum::Q_START:
         {
-            TPos effectiveQStart    = match.qStart;
-            TPos effectiveQEnd      = match.qEnd;
+            auto effectiveQStart    = match.qStart;
+            auto effectiveQEnd      = match.qEnd;
             auto length             = record.qLength;
             if ((match.qLength != 0) && (match.qLength != record.qLength))
                 length = match.qLength;
@@ -331,8 +327,8 @@ _writeField(TFwdIterator & s,
         } break;
         case BlastMatchField<>::Enum::Q_END:
         {
-            TPos effectiveQStart    = match.qStart;
-            TPos effectiveQEnd      = match.qEnd;
+            auto effectiveQStart    = match.qStart;
+            auto effectiveQEnd      = match.qEnd;
             auto length             = record.qLength;
             if ((match.qLength != 0) && (match.qLength != record.qLength))
                 length = match.qLength;
@@ -342,16 +338,16 @@ _writeField(TFwdIterator & s,
         } break;
         case BlastMatchField<>::Enum::S_START:
         {
-            TPos effectiveSStart    = match.sStart;
-            TPos effectiveSEnd      = match.sEnd;
+            auto effectiveSStart    = match.sStart;
+            auto effectiveSEnd      = match.sEnd;
             _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
                                    context.blastProgram);
             write(s, effectiveSStart);
         } break;
         case BlastMatchField<>::Enum::S_END:
         {
-            TPos effectiveSStart    = match.sStart;
-            TPos effectiveSEnd      = match.sEnd;
+            auto effectiveSStart    = match.sStart;
+            auto effectiveSEnd      = match.sEnd;
             _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
                                    context.blastProgram);
             write(s, effectiveSEnd);
@@ -508,20 +504,16 @@ _writeField(TFwdIterator & s,
 // Function _writeMatch()
 // ----------------------------------------------------------------------------
 
-template <typename TQId,
-          typename TSId,
-          typename TFwdIterator,
+template <typename TFwdIterator,
           typename TScore,
-          typename TPos,
-          typename TAlignRow0,
-          typename TAlignRow1,
+          typename ... TSpecs2,
           typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeMatch(TFwdIterator & stream,
            BlastIOContext<TScore, p, h> & context,
-           BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & match,
+           BlastMatch<TSpecs2...> const & match,
            BlastRecord<TSpecs...> const & record,
            BlastTabular const & /*tag*/)
 {

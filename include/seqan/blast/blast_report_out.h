@@ -440,6 +440,8 @@ template <typename TStream,
           typename TQId,
           typename TSId,
           typename TPos,
+          typename TSAccs,
+          typename TSTaxIDs,
           typename TAlignRow0,
           typename TAlignRow1,
           BlastProgram p,
@@ -447,7 +449,7 @@ template <typename TStream,
 inline void
 _writeAlignmentBlock(TStream & stream,
                      BlastIOContext<TScore, p, h> & context,
-                     BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
+                     BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId, TSAccs, TSTaxIDs> const & m,
                      BlastReport const & /*tag*/)
 {
     TPos const   windowSize  = 60;
@@ -524,17 +526,13 @@ _writeAlignmentBlock(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlignRow0,
-          typename TAlignRow1,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeFullMatch(TStream & stream,
                 BlastIOContext<TScore, p, h> & context,
-                BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
+                BlastMatch<TSpecs...> const & m,
                 BlastReport const & /*tag*/)
 {
     write(stream, "> ");
@@ -568,17 +566,13 @@ _writeFullMatch(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlignRow0,
-          typename TAlignRow1,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeMatchOneLiner(TStream & stream,
                     BlastIOContext<TScore, p, h> &,
-                    BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
+                    BlastMatch<TSpecs...> const & m,
                     BlastReport const & /*tag*/)
 {
     if (length(m.sId) == 66) // it fits
