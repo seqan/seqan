@@ -277,8 +277,6 @@ struct BlastIOContext
     TString _stringBuffer;
     StringSet<TString, Owner<ConcatDirect<>>> _setBuffer1;
     StringSet<TString, Owner<ConcatDirect<>>> _setBuffer2;
-    BlastMatch<> bufMatch;
-    BlastRecord<> bufRecord;
 };
 
 }
