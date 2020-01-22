@@ -450,6 +450,7 @@ inline void
 _writeAlignmentBlock(TStream & stream,
                      BlastIOContext<TScore, p, h> & context,
                      BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId, TSAccs, TSTaxIDs> const & m,
+                     TPos const qLength,
                      BlastReport const & /*tag*/)
 {
     TPos const   windowSize  = 60;
@@ -466,7 +467,7 @@ _writeAlignmentBlock(TStream & stream,
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.blastProgram);
+    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, qLength, context.blastProgram);
     _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.blastProgram);
 
     int8_t const  qStepOne = (m.qFrameShift < 0) ?  -1 : 1;
@@ -526,6 +527,7 @@ _writeAlignmentBlock(TStream & stream,
 
 template <typename TStream,
           typename TScore,
+          typename TPos,
           typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
@@ -533,6 +535,7 @@ inline void
 _writeFullMatch(TStream & stream,
                 BlastIOContext<TScore, p, h> & context,
                 BlastMatch<TSpecs...> const & m,
+                TPos const qLength,
                 BlastReport const & /*tag*/)
 {
     write(stream, "> ");
@@ -557,7 +560,7 @@ _writeFullMatch(TStream & stream,
 
     _writeStatsBlock(stream, context, m, BlastReport());
 
-    _writeAlignmentBlock(stream, context, m, BlastReport());
+    _writeAlignmentBlock(stream, context, m, qLength, BlastReport());
 }
 
 // ----------------------------------------------------------------------------
@@ -711,7 +714,13 @@ writeRecord(TStream & stream,
         write(stream, "\nALIGNMENTS\n");
         // full matches
         for (auto const & m : record.matches)
-            _writeFullMatch(stream, context, m, BlastReport());
+        {
+            _writeFullMatch(stream,
+                            context,
+                            m,
+                            record.qLength ? record.qLength : m.qLength,
+                            BlastReport());
+        }
     }
     else
     {
