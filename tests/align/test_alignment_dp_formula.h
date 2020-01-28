@@ -2357,7 +2357,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
     traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-    SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::DIAGONAL));
+    SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::NONE));
     SEQAN_ASSERT_EQ(activeCell._score, 0);
     SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
     SEQAN_ASSERT_EQ(prevHorizontal._score, 10);
@@ -2610,7 +2610,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::DIAGONAL));
+        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::NONE));
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 2);
@@ -2750,7 +2750,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::DIAGONAL));
+        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::NONE));
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
@@ -2978,7 +2978,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionUpperDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL));
+        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::NONE));
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, -3);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 1);
@@ -3055,7 +3055,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                    scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL));
+        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::NONE));
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(activeCell._horizontalScore, inf);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
@@ -3134,7 +3134,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
         traceValue = _computeScore(activeCell, prevDiagonal, prevHorizontal, prevVertical, 'C', 'A',
                                                scoringScheme, RecursionDirectionLowerDiagonal(), TDPProfileCompleteTrace());
 
-        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::VERTICAL));
+        SEQAN_ASSERT_EQ(static_cast<int>(traceValue), static_cast<int>(TraceBitMap_<>::NONE));
         SEQAN_ASSERT_EQ(activeCell._score, 0);
         SEQAN_ASSERT_EQ(prevDiagonal._score, 2);
         SEQAN_ASSERT_EQ(prevHorizontal._score, 1);
