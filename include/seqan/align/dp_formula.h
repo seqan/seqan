@@ -104,6 +104,25 @@ typedef Tag<RecursionDirectionZero_> RecursionDirectionZero;
 template <typename TCellTuple>
 using ExtractedScoreValueType_ = std::decay_t<decltype(_scoreOfCell(std::get<0>(std::declval<TCellTuple>())))>;
 
+// A transformation trait to select the correct _maxScore overload for checking against 0 in local alignment.
+template <typename TTraceConfig>
+struct TraceConfigForLocalAlignment_
+{
+private:
+    // If not CompleteTrace then use same type.
+    template <typename TType>
+    static auto selectType(TType) -> TType;
+
+    // In last check of local alignment always invoke SingleTrace _maxScore overload.
+    template <typename TGapsPlacement>
+    static auto selectType(TracebackOn<TracebackConfig_<CompleteTrace, TGapsPlacement>>)
+        -> TracebackOn<TracebackConfig_<SingleTrace, TGapsPlacement>>;
+
+public:
+    // The modified type
+    using Type = decltype(selectType(TTraceConfig{}));
+};
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -248,12 +267,13 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & current,
 
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         return _maxScore(_scoreOfCell(current),
                          TraceBitMap_<TScoreValue>::NONE,
                          _scoreOfCell(current),
                          TraceBitMap_<TScoreValue>::NONE,
                          TraceBitMap_<TScoreValue>::DIAGONAL,
-                         TTracebackConfig{});
+                         TMaxScorePolicy{});
     }
     else
     {
