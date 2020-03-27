@@ -3,6 +3,11 @@ dox/html
 manual/build
 sandbox
 !sandbox/CMakeLists.txt
+CMakeFiles
+CTestTestfile.cmake
+cmake_install.cmake
+Makefile
+.vscode
 *.pyc
 *~
 # Vim temp
