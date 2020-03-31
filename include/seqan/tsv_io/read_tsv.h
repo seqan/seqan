@@ -98,7 +98,7 @@ readRecord(TsvRecord & record,
     do
     {
         readLine(buffer, iter);
-    } while (empty(buffer) && !atEnd(iter));
+    } while (empty(buffer) && !atEnd(iter));    // skip empty lines
 
     strSplit(record, buffer, IsTab(), false);
 }

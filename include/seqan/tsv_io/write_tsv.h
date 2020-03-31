@@ -49,7 +49,7 @@ template <typename TTarget>
 inline void
 writeHeader(TTarget & target,
             TsvHeader const & header,
-            TsvIOContext & context,
+            TsvIOContext & /*context*/,
             Tsv const & /*tag*/)
 {
     for (unsigned i = 0; i < length(header); ++i)
@@ -71,7 +71,7 @@ template <typename TTarget>
 inline void
 writeRecord(TTarget & target,
             TsvRecord const & record,
-            TsvIOContext & context,
+            TsvIOContext & /*context*/,
             Tsv const & /*tag*/)
 {
     for (unsigned i = 0; i < length(record); ++i)
