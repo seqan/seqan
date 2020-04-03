@@ -97,6 +97,8 @@ public:
     using TBase       = DPScout_<TDPCell, Default>;
     using TScoutState = DPScoutState_<TSpec>;
 
+    TSimdVec      mCurrentColumnPosition{};
+    TSimdVec      mCurrentRowPosition{};
     TSimdVec      mHorizontalPos{};
     TSimdVec      mVerticalPos{};
     TScoutState * state{nullptr};
@@ -195,17 +197,11 @@ template<typename TDPCell, typename TScoutSpec,
 inline void
 _updateHostPositions(DPScout_<TDPCell, TScoutSpec> & dpScout,
                      TMask const & cmp,
-                     TNavigator const & navi,
+                     TNavigator const & /*navi*/,
                      DPTraceMatrix<TTraceConfig> const & /**/)
 {
-    using TSimdVector = typename Value<TDPCell>::Type;
-    dpScout.mHorizontalPos = blend(dpScout.mHorizontalPos,
-                                   createVector<TSimdVector>(coordinate(navi, +DPMatrixDimension_::HORIZONTAL)),
-                                   cmp);
-
-    dpScout.mVerticalPos = blend(dpScout.mVerticalPos,
-                                 createVector<TSimdVector>(coordinate(navi, +DPMatrixDimension_::VERTICAL)),
-                                 cmp);
+    dpScout.mHorizontalPos = blend(dpScout.mHorizontalPos, dpScout.mCurrentColumnPosition, cmp);
+    dpScout.mVerticalPos = blend(dpScout.mVerticalPos, dpScout.mCurrentRowPosition, cmp);
 }
 
 // ----------------------------------------------------------------------------
@@ -636,10 +632,24 @@ _setSimdLane(DPScout_<TDPCell, TScoutSpec> & dpScout, TPosition const pos)
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TTraits>
+template <typename TDPCell, typename TPosition>
 inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
+_preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & scout,
+                        TPosition const offset = 0)
 {
+    using TSimdVec = decltype(scout.mCurrentColumnPosition);
+
+    scout.mCurrentColumnPosition = createVector<TSimdVec>(offset);
+}
+
+template <typename TDPCell, typename TTraits, typename TPosition>
+inline void
+_preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
+                        TPosition const offset = 0)
+{
+    using TSimdVec = decltype(scout.mCurrentColumnPosition);
+
+    scout.mCurrentColumnPosition = createVector<TSimdVec>(offset);
     goBegin(scout.state->nextEndsH);
     scout.state->posH = 0;
 }
@@ -648,10 +658,24 @@ _preInitScoutHorizontal(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLe
 // Function _preInitScoutVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TTraits>
+template <typename TDPCell, typename TPosition>
 inline void
-_preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
+_preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & scout,
+                      TPosition const offset)
 {
+    using TSimdVec = decltype(scout.mCurrentRowPosition);
+
+    scout.mCurrentRowPosition = createVector<TSimdVec>(offset);
+}
+
+template <typename TDPCell, typename TTraits, typename TPosition>
+inline void
+_preInitScoutVertical(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout,
+                      TPosition const offset)
+{
+    using TSimdVec = decltype(scout.mCurrentRowPosition);
+
+    scout.mCurrentRowPosition = createVector<TSimdVec>(offset);
     // scout.state->updateMasks();
     goBegin(scout.state->nextEndsV);
     scout.state->posV = 0;
@@ -707,10 +731,20 @@ _nextVerticalEndPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength
 // Function _incHorizontalPos()
 // ----------------------------------------------------------------------------
 
+template <typename TDPCell>
+inline void
+_incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & scout)
+{
+    using TDPScout = DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> >;
+    scout.mCurrentColumnPosition += createVector<typename TDPScout::TSimdVec>(1);
+}
+
 template <typename TDPCell, typename TTraits>
 inline void
 _incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
+    using TDPScout = DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > >;
+    scout.mCurrentColumnPosition += createVector<typename TDPScout::TSimdVec>(1);
     ++scout.state->posH;
 }
 
@@ -718,10 +752,20 @@ _incHorizontalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<T
 // Function _incVerticalPos()
 // ----------------------------------------------------------------------------
 
+template <typename TDPCell>
+inline void
+_incVerticalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> > & scout)
+{
+    using TDPScout = DPScout_<TDPCell, SimdAlignmentScout<SimdAlignEqualLength> >;
+    scout.mCurrentRowPosition += createVector<typename TDPScout::TSimdVec>(1);
+}
+
 template <typename TDPCell, typename TTraits>
 inline void
 _incVerticalPos(DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > & scout)
 {
+    using TDPScout = DPScout_<TDPCell, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > >;
+    scout.mCurrentRowPosition += createVector<typename TDPScout::TSimdVec>(1);
     ++scout.state->posV;
 }
 
