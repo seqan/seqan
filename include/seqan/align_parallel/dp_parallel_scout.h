@@ -218,9 +218,10 @@ _scoutBestScore(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, void> > & dpS
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec, typename TPosition>
 inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
+_preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout,
+                        TPosition const /*offset*/)
 {
     scout.horizontalPos = 0;
 }
@@ -229,9 +230,10 @@ _preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec
 // Function _preInitScoutVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec, typename TPosition>
 inline void
-_preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout)
+_preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & scout,
+                      TPosition const /*offset*/)
 {
     scout.verticalPos = 0;
 }

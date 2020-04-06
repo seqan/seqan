@@ -250,9 +250,9 @@ terminateScout(DPScout_<TDPCell, Terminator_<TSpec> > & scout)
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSpec>
+template <typename TDPCell, typename TSpec, typename TPosition>
 inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/)
+_preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/, TPosition const /*offset*/)
 {
     // no-op.
 }
@@ -273,9 +273,9 @@ _reachedHorizontalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
 // Function _preInitScoutVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSpec>
+template <typename TDPCell, typename TSpec, typename TPosition>
 inline void
-_preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/)
+_preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/, TPosition const /*offset*/)
 {
     // no-op.
 }
