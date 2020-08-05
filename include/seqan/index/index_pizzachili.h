@@ -302,7 +302,6 @@ namespace impl {
 } // namespace impl
 
 template <typename TText, typename TSpec>
-[[deprecated("The PizzaChiliIndex is outdated and is not maintained anymore.")]]
 inline bool
 indexCreate(Index<TText, PizzaChili<TSpec> >& me, PizzaChiliCompressed const) {
     typedef
