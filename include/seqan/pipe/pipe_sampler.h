@@ -170,6 +170,8 @@ namespace seqan
             return *outRef;
         }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
         Pipe& operator++()
         {
             unsigned skipped = 0;
@@ -212,6 +214,7 @@ namespace seqan
             swap();
             return *this;
         }
+#pragma GCC diagnostic pop
     };
 
 
