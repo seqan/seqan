@@ -1,0 +1,199 @@
+name: SeqAn2 CI
+
+on:
+  push:
+    branches:
+      # Push events to branches matching refs/heads/master
+      - 'master'
+      # Push events to branches matching refs/heads/develop
+      - 'develop'
+  pull_request:
+
+env:
+  CMAKE_VERSION: 3.12.4
+  TZ: Europe/Berlin
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Linux GCC 4.9"
+            os: ubuntu-16.04
+            cxx: "g++-4.9"
+            cc: "gcc-4.9"
+            build_type: Release
+
+          - name: "Linux GCC 5"
+            os: ubuntu-18.04
+            cxx: "g++-5"
+            cc: "gcc-5"
+            build_type: Release
+
+          - name: "Linux GCC 7"
+            os: ubuntu-18.04
+            cxx: "g++-7"
+            cc: "gcc-7"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "Linux GCC 9"
+            os: ubuntu-18.04
+            cxx: "g++-9"
+            cc: "gcc-9"
+            build: unit
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "Linux Clang 3.9"
+            os: ubuntu-18.04
+            cxx: "clang++-3.9"
+            cc: "clang-3.9"
+            build_type: Release
+            cxx_flags: "-Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
+
+          - name: "Linux Clang 7"
+            os: ubuntu-18.04
+            cxx: "clang++-7"
+            cc: "clang-7"
+            build_type: Release
+            cxx_flags: "-Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
+
+          - name: "macOS GCC 7"
+            os: macos-10.15
+            cxx: "g++-7"
+            cc: "gcc-7"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "macOS GCC 9"
+            os: macos-10.15
+            cxx: "g++-9"
+            cc: "gcc-9"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "macOS Clang 7"
+            os: macos-10.15
+            cxx: "clang++-7"
+            cc: "clang-7"
+            build_type: Release
+            cxx_flags: "-Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
+
+    steps:
+      - name: Checkout SeqAn2
+        uses: actions/checkout@v2
+        with:
+          path: seqan
+
+      - name: Get cached CMake
+        uses: actions/cache@v2
+        with:
+          path: /tmp/cmake-download
+          key: ${{ runner.os }}-CMake_${{ env.CMAKE_VERSION }}
+
+      - name: Setup CMake
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            OS="Linux"
+          else
+            OS="Darwin"
+          fi
+          mkdir -p /tmp/cmake-download
+          wget --retry-connrefused --waitretry=30 --read-timeout=30 --timeout=30 --tries=20 --no-clobber --quiet --directory-prefix=/tmp/cmake-download/ https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-${OS}-x86_64.tar.gz
+          tar -C /tmp/ -zxf /tmp/cmake-download/cmake-${CMAKE_VERSION}-${OS}-x86_64.tar.gz
+          echo "/tmp/cmake-${CMAKE_VERSION}-${OS}-x86_64/bin" >> $GITHUB_PATH # Only available in subsequent steps!
+
+      - name: Add package source
+        if: runner.os == 'Linux'
+        shell: bash
+        run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa && sudo apt-get update
+
+      - name: Install ccache
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install --yes ccache
+          else
+            brew install --force-bottle ccache
+          fi
+
+      - name: Install dependencies
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install --yes libboost-dev libbz2-dev libxml2-utils zlib1g-dev
+          else
+            brew install --force-bottle boost
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install Python dependencies
+        run: |
+          pip install setuptools wheel
+          pip install -r seqan/manual/requirements.txt
+
+      - name: Install compiler ${{ matrix.cxx }}
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install --yes ${{ matrix.cxx }}
+          else
+            if [ "${{ matrix.cxx }}" == "clang++-7" ]; then
+              cxx_macos_name="llvm@7"
+            else
+              cxx_macos_name=$(echo "${{ matrix.cxx }}" | sed "s/++-/cc@/g")
+            fi
+            brew install --force-bottle $cxx_macos_name
+            brew link --overwrite $cxx_macos_name
+            if [ "${{ matrix.cxx }}" == "clang++-7" ]; then
+              ln -s /usr/local/opt/llvm@7/bin/clang++ /usr/local/opt/llvm@7/bin/clang++-7
+              echo "/usr/local/opt/llvm@7/bin" >> $GITHUB_PATH # Only available in subsequent steps!
+            fi
+          fi
+
+      - name: Load ccache
+        uses: actions/cache@v2
+        with:
+          path: .ccache
+          key: ${{ matrix.name }}-ccache-${{ github.ref }}-${{ github.run_number }}
+          # Restoring: From current branch, otherwise from base branch, otherwise from any branch.
+          restore-keys: |
+            ${{ matrix.name }}-ccache-${{ github.ref }}
+            ${{ matrix.name }}-ccache-${{ github.base_ref }}
+            ${{ matrix.name }}-ccache-
+
+      # Also pass python path: https://github.com/actions/setup-python/issues/121
+      - name: Configure tests
+        env:
+          CXX: "ccache ${{ matrix.cxx }}"
+          CC: "ccache ${{ matrix.cc }}"
+        run: |
+          mkdir seqan-build
+          cd seqan-build
+          cmake ../seqan -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DSEQAN_DISABLE_VERSION_CHECK=ON -DSEQAN_TRAVIS_BUILD:BOOL=ON -DPython3_ROOT_DIR=${pythonLocation}
+
+      - name: Build tests
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+          CCACHE_COMPRESS: true
+          CCACHE_COMPRESSLEVEL: 6
+          CCACHE_MAXSIZE: 5G
+        run: |
+          cd seqan-build
+          make -k -j2
+
+      - name: Run tests
+        run: |
+          cd seqan-build
+          ctest . -j2 --output-on-failure --timeout 120
