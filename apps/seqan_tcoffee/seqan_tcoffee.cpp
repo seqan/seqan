@@ -205,7 +205,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
         getOptionValue(tmpVal, parser, "libraries", optNo);
         if(endsWith(tmpVal,".blast"))
             appendValue(msaOpt.blastfiles, tmpVal);
-        else if(endsWith(tmpVal,".mummer"))
+        else if(endsWith(tmpVal,".mums"))
                 appendValue(msaOpt.mummerfiles, tmpVal);
             else if(endsWith(tmpVal,".lib"))
                     appendValue(msaOpt.libfiles, tmpVal);
