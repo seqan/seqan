@@ -1,0 +1,109 @@
+name: SeqAn2 Windows CI
+
+on:
+  push:
+    branches:
+      # Push events to branches matching refs/heads/master
+      - 'master'
+      # Push events to branches matching refs/heads/develop
+      - 'develop'
+  pull_request:
+
+env:
+  TZ: Europe/Berlin
+  SEQAN_CONRIB_VERSION: D20200923
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Visual Studio 16 2019"
+            os: windows-2019
+            toolset: '14.28'
+            msvc_ver: '16'
+            build_type: Release
+
+    steps:
+      - name: Checkout SeqAn2
+        uses: actions/checkout@v2
+        with:
+          path: seqan
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: ${{ matrix.toolset }}
+
+      - name: Get cached SeqAn Contrib
+        id: get-contrib
+        uses: actions/cache@v2
+        with:
+          path: seqan-contrib
+          key: SeqAn-Contrib-${{ env.SEQAN_CONRIB_VERSION }}
+
+      - name: Download SeqAn Contrib
+        if: steps.get-contrib.outputs.cache-hit != 'true'
+        run: |
+          New-Item -Name "seqan-contrib" -ItemType "directory" -Force
+          cd seqan-contrib
+          Invoke-WebRequest -OutFile seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip -TimeoutSec 30 -MaximumRetryCount 20 -RetryIntervalSec 30 http://ftp.seqan.de/contribs/seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip
+          unzip seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip
+
+      - name: Get cached python environment
+        uses: actions/cache@v2
+        with:
+          path: ~/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-${{ hashFiles('seqan/manual/environment.yml') }}
+
+      - name: Setup python environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: seqan
+          environment-file: seqan/manual/environment.yml
+          use-only-tar-bz2: true
+
+      - name: Install clcache
+        run: pip install clcache
+
+      - name: Get cached build
+        uses: actions/cache@v2
+        with:
+          path: .clcache
+          key: ${{ matrix.name }}-clcache-${{ github.ref }}-${{ github.run_number }}
+          # Restoring: From current branch, otherwise from base branch, otherwise from any branch.
+          restore-keys: |
+            ${{ matrix.name }}-clcache-${{ github.ref }}
+            ${{ matrix.name }}-clcache-${{ github.base_ref }}
+            ${{ matrix.name }}-clcache-
+
+      - name: Configure tests
+        env:
+          SEQAN_WIN_CONTRIB_DIRECTORY: ${{ github.workspace }}\seqan-contrib
+        run: |
+          New-Item -Name "seqan-build" -ItemType "directory" -Force
+          cd seqan-build
+          cmake ../seqan -G"${{ matrix.name }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DSEQAN_DISABLE_VERSION_CHECK=ON -DSEQAN_TRAVIS_BUILD:BOOL=ON
+
+      - name: Build tests
+        env:
+          CLCACHE_BASEDIR: ${{ github.workspace }}
+          CLCACHE_DIR: ${{ github.workspace }}/.clcache
+          CLCACHE_COMPRESS: true
+          CLCACHE_COMPRESSLEVEL: 6
+          CLCACHE_HARDLINK: true
+        run: |
+          cd seqan-build
+          clcache.exe -M 5368709120 # Set Maximum cache size to 5 GiB
+          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
+          clcache.exe -s
+
+      - name: Run tests
+        run: |
+          $env:Path += ";${{ github.workspace }}\seqan-contrib\seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64\vs${{ matrix.msvc_ver }}\lib\"
+          cd seqan-build
+          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 120
