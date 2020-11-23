@@ -265,7 +265,7 @@ public:
     Index():
     stepSize(1) {}
 
-    Index(Index &other):
+    Index(Index const & other):
     text(other.text),
     sa(other.sa),
     dir(other.dir),
@@ -274,8 +274,6 @@ public:
     shape(other.shape),
     cargo(other.cargo),
     stepSize(1) {}
-
-    Index(Index const &other) = default;
 
     Index & operator=(Index const &) = default;
 

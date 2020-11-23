@@ -128,7 +128,7 @@ namespace seqan
             stepSize(1),
             alpha(defaultAlpha) {}
 
-        Index(Index &other):
+        Index(Index const & other):
             text(other.text),
             sa(other.sa),
             dir(other.dir),
@@ -139,8 +139,6 @@ namespace seqan
             bucketMap(other.bucketMap),
             stepSize(1),
             alpha(defaultAlpha) {}
-
-        Index(Index const &other) = default;
 
         Index & operator=(Index const &) = default;
 

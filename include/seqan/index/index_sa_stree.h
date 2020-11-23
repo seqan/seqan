@@ -78,13 +78,11 @@ public:
     typename Fibre<Index, FibreSA>::Type            sa;
     typename Cargo<Index>::Type                     cargo;
 
-    Index() {}
-
-    Index(Index & other) = default;
-
+    Index() = default;
     Index(Index const & other) = default;
-
     Index & operator=(Index const &) = default;
+    Index(Index && other) = default;
+    Index & operator=(Index &&) = default;
 
     template <typename TText_>
     Index(TText_ & _text) :
