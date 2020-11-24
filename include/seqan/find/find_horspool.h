@@ -164,6 +164,10 @@ _findHorspool(TFinder & finder,
 
 MOVE_FURTHER:
     //move to next position
+    if (it >= haystack_end)
+    {//found nothing
+        return false;
+    }
     char_i = convert<TNeedleAlphabet>(*it); //conversion to unsigned integer -> into needle space.
     it_next = it + me.data_map[char_i];
     if (it_next >= haystack_end)
