@@ -1,4 +1,4 @@
-.. image:: https://readthedocs.io/projects/seqan/badge/?version=develop
+.. image:: https://readthedocs.org/projects/seqan/badge/?version=develop
    :target: https://seqan.readthedocs.io/en/develop?badge=develop
    :alt: Documentation Status
 
