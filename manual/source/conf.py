@@ -47,6 +47,9 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
 
+# bibliography file for sphinxcontrib.bibtex
+bibtex_bibfiles = ['seqan.bib']
+
 # The master toctree document.
 master_doc = 'index'
 

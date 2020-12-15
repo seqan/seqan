@@ -1,0 +1,55 @@
+{
+    "cited": {
+        "Tutorial/Algorithms/Alignment/MultipleSequenceAlignment": [
+            "Rausch2008",
+            "Thompson1994"
+        ],
+        "Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment": [
+            "gotoh1982improved",
+            "Urgese2014"
+        ],
+        "Tutorial/Algorithms/ConsensusAlignment": [
+            "Rausch2009"
+        ],
+        "Tutorial/Algorithms/PatternMatching/OnlinePatternMatching": [
+            "Horspool1980",
+            "Aho1975",
+            "Myers1999",
+            "Ukkonen1985",
+            "BaezaYates1999"
+        ],
+        "Tutorial/Algorithms/Realignment": [
+            "Anson1997"
+        ],
+        "Tutorial/Algorithms/SeedExtension": [
+            "Altschul1990",
+            "Pearson1990",
+            "Brudno2003",
+            "Brudno2003b",
+            "Gusfield1997"
+        ],
+        "Tutorial/DataStructures/Alignment/ScoringSchemes": [
+            "cartwright2006logarithmic",
+            "Urgese2014"
+        ],
+        "Tutorial/DataStructures/Indices/StringIndices": [
+            "Manber1993",
+            "Abouelhoda2004",
+            "Giegerich2003",
+            "Weese2008",
+            "Ferragina2001"
+        ],
+        "Tutorial/DataStructures/Seeds": [
+            "Altschul1990",
+            "Pearson1990",
+            "Brudno2003"
+        ],
+        "Tutorial/HowTo/Recipes/AccessIndexFibres": [
+            "Abouelhoda2004",
+            "Giegerich2003"
+        ],
+        "Tutorial/HowTo/UseCases/SimpleRnaSeq": [
+            "Mortazavi2008"
+        ]
+    }
+}
