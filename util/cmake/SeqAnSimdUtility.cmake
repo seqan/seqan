@@ -140,8 +140,7 @@ set(SEQAN_SIMD_COMPILER_SUPPORTS_INTRINSICS)
 set(SEQAN_SIMD_COMPILER_SUPPORTS_SEQANSIMD)
 set(SEQAN_SIMD_HOST_CPU_SUPPORTS)
 
-set(SEQAN_SIMD_SSE4_SOURCE
-"#include <cstdint>
+set(SEQAN_SIMD_SOURCE_START "#include <cstdint>
 #include <immintrin.h>
 #include <iostream>
 #include <random>
@@ -149,65 +148,86 @@ set(SEQAN_SIMD_SSE4_SOURCE
 int main() {
   std::random_device r;
   std::default_random_engine e(r());
-  std::uniform_int_distribution<int32_t> d(1, 10);
+  std::uniform_int_distribution<int32_t> d(1, 10);")
 
+set(SEQAN_SIMD_SOURCE_END "  return 0;
+}")
+
+set(SEQAN_SIMD_SSE4_SOURCE
+"${SEQAN_SIMD_SOURCE_START}
   alignas(16) int32_t t[]{0,0,0,0};
   volatile auto a = _mm_set_epi32(d(e),d(e),d(e),d(e));
   volatile auto b = _mm_set_epi32(d(e),d(e),d(e),d(e));
   volatile auto z = _mm_max_epi32(a, b);
   _mm_store_si128((__m128i*)t, z);
   std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \")\" << std::endl;
-  return 0;
-}")
+${SEQAN_SIMD_SOURCE_END}")
 
 set(SEQAN_SIMD_AVX2_SOURCE
-"#include <cstdint>
-#include <immintrin.h>
-#include <iostream>
-#include <random>
-
-int main() {
-  std::random_device r;
-  std::default_random_engine e(r());
-  std::uniform_int_distribution<int32_t> d(1, 10);
-
+"${SEQAN_SIMD_SOURCE_START}
   alignas(32) int64_t t[]{0,0,0,0};
   volatile auto a = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
   volatile auto b = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
   volatile auto z = _mm256_add_epi64(a, b);
   _mm256_store_si256((__m256i*)t, z);
   std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \")\" << std::endl;
-  return 0;
+${SEQAN_SIMD_SOURCE_END}")
+
+set(SEQAN_SIMD_AVX512_AVX512F_SOURCE "{
+  alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
+  alignas(64) uint64_t t[]{0,0,0,0,0,0,0,0};
+
+  // gcc 4.9 does not know _mm512_cmpgt_epu64_mask
+  volatile auto a = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
+  volatile auto m = _mm512_cmpgt_epu64_mask(a, _mm512_set1_epi64(4)); // m = a > 4
+  volatile auto z = _mm512_mask_load_epi64(a, m, s); // (a > 4) ? s : a
+  _mm512_store_epi64(t, z);
+
+  std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \", ...)\" << std::endl;
 }")
 
 set(SEQAN_SIMD_AVX512_KNL_SOURCE
-"#include <cstdint>
-#include <immintrin.h>
-#include <iostream>
-#include <random>
+"${SEQAN_SIMD_SOURCE_START}
+${SEQAN_SIMD_AVX512_AVX512F_SOURCE}
+${SEQAN_SIMD_SOURCE_END}")
 
-int main() {
-  std::random_device r;
-  std::default_random_engine e(r());
-  std::uniform_int_distribution<int64_t> d(1, 10);
-
-  {
-    alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
-    alignas(64) uint64_t t[]{0,0,0,0,0,0,0,0};
-
-    // gcc 4.9 does not know _mm512_cmpgt_epu64_mask
-    volatile auto a = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
-    volatile auto m = _mm512_cmpgt_epu64_mask(a, _mm512_set1_epi64(4)); // m = a > 4
-    volatile auto z = _mm512_mask_load_epi64(a, m, s); // (a > 4) ? s : a
-    _mm512_store_epi64(t, z);
-
-    std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \", ...)\" << std::endl;
-  }
-  return 0;
+set(SEQAN_SIMD_AVX512_AVX512VL_SOURCE "{
+  alignas(32) int64_t t[]{0,0,0,0};
+  volatile auto src = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
+  volatile auto k = uint8_t{0xFF};
+  volatile auto a = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
+  volatile auto b = _mm256_set_epi64x(d(e),d(e),d(e),d(e));
+  volatile auto z = _mm256_mask_add_epi64(src, k, a, b); // k ? a + b : src
+  _mm256_store_si256((__m256i*)t, z);
+  std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \")\" << std::endl;
 }")
 
-set(SEQAN_SIMD_AVX512_SKX_SOURCE "${SEQAN_SIMD_AVX512_KNL_SOURCE}")
-set(SEQAN_SIMD_AVX512_CNL_SOURCE "${SEQAN_SIMD_AVX512_KNL_SOURCE}")
+set(SEQAN_SIMD_AVX512_SKX_SOURCE
+"${SEQAN_SIMD_SOURCE_START}
+${SEQAN_SIMD_AVX512_AVX512F_SOURCE}
+${SEQAN_SIMD_AVX512_AVX512VL_SOURCE}
+${SEQAN_SIMD_SOURCE_END}")
+
+set(SEQAN_SIMD_AVX512_AVX512VBMI_SOURCE "{
+  alignas(64) uint64_t s[]{9,9,9,9,9,9,9,9};
+  alignas(64) uint64_t t[]{0,0,0,0,0,0,0,0};
+
+  volatile auto a = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
+  volatile auto b = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
+  volatile auto idx = _mm512_setr_epi64(d(e),d(e),d(e),d(e),d(e),d(e),d(e),d(e));
+  volatile auto k = __mmask64{0xFFFFFFFFu};
+  volatile auto z = _mm512_mask_permutex2var_epi8(a, k, idx, b);
+  _mm512_store_epi64(t, z);
+
+  std::cout << \"(\" << t[0] << \", \" << t[1] << \", \" << t[2] << \", \" << t[3] << \", ...)\" << std::endl;
+}")
+
+set(SEQAN_SIMD_AVX512_CNL_SOURCE
+"${SEQAN_SIMD_SOURCE_START}
+${SEQAN_SIMD_AVX512_AVX512F_SOURCE}
+${SEQAN_SIMD_AVX512_AVX512VL_SOURCE}
+${SEQAN_SIMD_AVX512_AVX512VBMI_SOURCE}
+${SEQAN_SIMD_SOURCE_END}")
 
 set(SEQAN_SIMD_SEQANSIMD_SOURCE
 "#include <cstdint>
