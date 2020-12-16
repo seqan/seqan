@@ -106,4 +106,4 @@ jobs:
         run: |
           $env:Path += ";${{ github.workspace }}\seqan-contrib\seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64\vs${{ matrix.msvc_ver }}\lib\"
           cd seqan-build
-          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 120
+          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 120 -or ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 120 --rerun-failed
