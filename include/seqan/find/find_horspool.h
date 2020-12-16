@@ -437,6 +437,9 @@ template <typename TFinder, typename TNeedle2>
 bool
 find(TFinder & finder, Pattern<TNeedle2, Horspool> & me)
 {
+    if (length(haystack(finder)) < length(needle(me)))
+        return false;
+
     bool find_first = empty(finder);
     if (find_first)
     {
