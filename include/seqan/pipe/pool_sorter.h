@@ -51,14 +51,12 @@ namespace seqan
     };
 
     template < typename TCompare >
-    struct AdaptorCompare2Less :
-        public std::function<bool(typename TCompare::first_argument_type, typename TCompare::second_argument_type)>
+    struct AdaptorCompare2Less
     {
         TCompare const & C;
         AdaptorCompare2Less(TCompare const & tmpC): C(tmpC) { }
-        inline bool operator() (
-            typename TCompare::first_argument_type const &a,
-            typename TCompare::second_argument_type const &b) const
+        template <typename t>
+        inline bool operator() (t const &a, t const &b) const
         {
             return C(a, b) < 0;
         }
