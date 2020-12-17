@@ -101,7 +101,6 @@ jobs:
           cd seqan-build
           clcache.exe -M 5368709120 # Set Maximum cache size to 5 GiB
           cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
-          clcache.exe -s
 
       - name: Run tests
         run: |
