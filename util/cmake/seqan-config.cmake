@@ -269,29 +269,27 @@ if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   endforeach (_SEQAN_BASEDIR ${CMAKE_INCLUDE_PATH})
 
   if (_SEQAN_INCLUDE_DIRS)
-    set(SEQAN_FOUND        TRUE)
     set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_INCLUDE_DIRS})
-  else (_SEQAN_INCLUDE_DIRS)
-    set(SEQAN_FOUND        FALSE)
+    set(SEQAN_INCLUDE_PATH ${SEQAN_INCLUDE_DIRS_MAIN})
   endif (_SEQAN_INCLUDE_DIRS)
 else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When NOT using the SeqAn build system then we only look for one directory
   # with subdirectory seqan and thus only one library.
-  find_path(_SEQAN_BASEDIR "seqan"
+  find_path(_SEQAN_BASEDIR "seqan/version.h"
             PATHS ${SEQAN_INCLUDE_PATH} ENV SEQAN_INCLUDE_PATH
             NO_DEFAULT_PATH)
 
   if (NOT _SEQAN_BASEDIR)
-    find_path(_SEQAN_BASEDIR "seqan")
+    find_path(_SEQAN_BASEDIR "seqan/version.h")
   endif()
 
   mark_as_advanced(_SEQAN_BASEDIR)
 
   if (_SEQAN_BASEDIR)
-    set(SEQAN_FOUND        TRUE)
     set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_BASEDIR})
+    set(SEQAN_INCLUDE_PATH ${SEQAN_INCLUDE_DIRS_MAIN})
   else ()
-    set(SEQAN_FOUND        FALSE)
+    unset(SEQAN_INCLUDE_PATH)
   endif ()
 endif (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 
@@ -480,9 +478,8 @@ endif (NOT DEFINED SEQAN_VERSION_STRING)
 # Print Variables
 # ----------------------------------------------------------------------------
 
-if (NOT SeqAn_FIND_QUIETLY)
-    message (STATUS "Found Seqan: ${SEQAN_INCLUDE_DIRS_MAIN} (found version \"${SEQAN_VERSION_STRING}\")")
-endif ()
+include (FindPackageHandleStandardArgs)
+find_package_handle_standard_args (SeqAn FOUND_VAR SEQAN_FOUND REQUIRED_VARS SEQAN_INCLUDE_PATH VERSION_VAR SEQAN_VERSION_STRING)
 
 if (SEQAN_FIND_DEBUG)
   message("Result for ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
