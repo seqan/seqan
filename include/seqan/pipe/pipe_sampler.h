@@ -200,7 +200,11 @@ namespace seqan
                 {
                     do
                     {
-                        outRef->i2.i[skipped++] = 0;
+                        // Do not go out of bounds
+                        if (skipped < LENGTH<TInput>::VALUE)
+                            outRef->i2.i[skipped] = 0;
+                        // But always increment skipped
+                        skipped += 1;
                         if (idxMod == 0) idxMod = m;
                         --idxMod; --idx;
                     }
@@ -467,7 +471,11 @@ namespace seqan
                 {
                     do
                     {
-                        outRef->i2.i[skipped++] = 0;
+                        // Do not go out of bounds
+                        if (skipped < LENGTH<TInput>::VALUE)
+                            outRef->i2.i[skipped] = 0;
+                        // But always increment skipped
+                        skipped += 1;
                         --localPos;
                     }
                     while (!filter[localPos.residue]);
