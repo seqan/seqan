@@ -317,7 +317,7 @@ void compactSplicedMatchesPurgeAmbiguous(TMatches &matches, TCounts & /*cnts*/, 
 
 
 	template <typename TReadMatch>
-	struct LessReadNoPairErrors : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessReadNoPairErrors : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{

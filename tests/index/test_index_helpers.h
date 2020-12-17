@@ -298,12 +298,12 @@ void textRandomize(TBuffer &buf) {
 }
 
 template < typename TValue >
-struct IdentityMap : public std::unary_function< TValue, TValue > {
+struct IdentityMap : public std::function<TValue ( TValue)> {
     inline TValue operator() (TValue const i) { return i; }
 };
 
 template < typename TValue >
-struct SimpleCompare : public std::binary_function< TValue const, TValue const, int > {
+struct SimpleCompare : public std::function<int ( TValue const, TValue const)> {
     inline int operator() (TValue const a, TValue const b) const {
         if (a < b) return -1;
         if (a > b) return 1;

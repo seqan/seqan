@@ -7,7 +7,7 @@ using namespace seqan;
 
 //![functor]
 struct MyFunctor :
-    public std::unary_function<char, char>
+    public std::function<char(char)>
 {
     inline char operator()(char x) const
     {

@@ -39,7 +39,7 @@
 
 // Cesar Chiffre as a test functor.
 template <typename TArgChar, typename TResultChar = TArgChar>
-struct CaesarChiffre : public std::unary_function<TArgChar, TResultChar>
+struct CaesarChiffre : public std::function<TResultChar(TArgChar)>
 {
     TArgChar _delta;
 

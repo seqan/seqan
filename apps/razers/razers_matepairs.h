@@ -218,7 +218,7 @@ bool loadReads(
 }
 
 	template <typename TReadMatch>
-	struct LessPairErrors : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessPairErrors : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{

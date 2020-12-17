@@ -6,7 +6,7 @@ using namespace seqan;
 
 // A user-defined modifier that transforms all characters to upper case.
 struct MyFunctor :
-    public std::unary_function<char, char>
+    public std::function<char(char)>
 {
     inline char operator()(char x) const
     {

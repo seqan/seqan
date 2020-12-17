@@ -252,7 +252,7 @@ SEQAN_DEFINE_TEST(test_modifier_modified_iterator_construct)
     }
 }
 
-struct LowerFunctor : std::unary_function<char, char>
+struct LowerFunctor : std::function<char(char)>
 {
     char operator()(char c) const
     {
@@ -260,7 +260,7 @@ struct LowerFunctor : std::unary_function<char, char>
     }
 };
 
-struct CaesarFunctor : std::unary_function<char, char>
+struct CaesarFunctor : std::function<char(char)>
 {
     char operator()(char c) const
     {

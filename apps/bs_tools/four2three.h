@@ -11,7 +11,7 @@ using namespace std;
 using namespace seqan;
 
 
-struct ConvertCT : public ::std::unary_function<char,char>
+struct ConvertCT : public ::std::function<char(char)>
 {
     inline char operator()(char x) const
     {
@@ -20,7 +20,7 @@ struct ConvertCT : public ::std::unary_function<char,char>
     }
 };
 
-struct ConvertGA : public ::std::unary_function<char,char>
+struct ConvertGA : public ::std::function<char(char)>
 {
     inline char operator()(char x) const
     {

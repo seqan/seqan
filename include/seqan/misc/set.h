@@ -370,7 +370,7 @@ namespace seqan
 
 
     template <typename TElement>
-    struct SetLess_ : public std::binary_function<TElement, TElement, bool>
+    struct SetLess_ : public std::function<bool(TElement, TElement)>
     {
         // key less
         inline bool operator() (TElement const &a, TElement const &b) {
