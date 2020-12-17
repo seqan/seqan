@@ -33,6 +33,7 @@
 #ifndef SEQAN_HEADER_MISC_SET_H
 #define SEQAN_HEADER_MISC_SET_H
 
+#include <functional>
 #include <set>
 #include <seqan/misc/base.h>
 
