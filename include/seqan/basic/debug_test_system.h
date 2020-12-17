@@ -164,7 +164,16 @@
 #else  // #ifdef STDLIB_VS
 #include <unistd.h>     // unlink()
 #include <sys/stat.h>   // mkdir()
+// c++17/20 has ignored attribute warnings on macOS
+#if defined(__GNUC__) && defined(__APPLE__) && __cplusplus >= 201703L
+#pragma push_macro("__unused")
+#undef __unused
+#define __unused
 #include <dirent.h>     // DIR
+#pragma pop_macro("__unused")
+#else // #if defined(__GNUC__) && defined(__APPLE__) && __cplusplus >= 201703L
+#include <dirent.h>     // DIR
+#endif // #if defined(__GNUC__) && defined(__APPLE__) && __cplusplus >= 201703L
 #if SEQAN_HAS_EXECINFO
 #include <execinfo.h>   // backtrace(), backtrace_symbols()
 #endif  // #if SEQAN_HAS_EXECINFO
