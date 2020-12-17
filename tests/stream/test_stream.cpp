@@ -328,7 +328,7 @@ SEQAN_TYPED_TEST(InputStreamTest, Tell)
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, toCString(ctx.inputFilename), DefaultOpenMode<TStream>::VALUE | OPEN_APPEND);
+    open(this->stream, toCString(ctx.inputFilename), static_cast<FileOpenMode>(DefaultOpenMode<TStream>::VALUE) | OPEN_APPEND);
 
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(this->stream, Input());
 
@@ -344,7 +344,7 @@ SEQAN_TYPED_TEST(OutputStreamTest, Tell)
     typedef typename TestFixture::Type  TStream;
 
     StreamTestContext<TStream> const & ctx = StreamTestContext<TStream>::get();
-    open(this->stream, toCString(ctx.inputFilename), DefaultOpenMode<TStream>::VALUE | OPEN_APPEND);
+    open(this->stream, toCString(ctx.inputFilename), static_cast<FileOpenMode>(DefaultOpenMode<TStream>::VALUE) | OPEN_APPEND);
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(this->stream, Output());
 
