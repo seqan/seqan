@@ -130,6 +130,8 @@ struct Triple
     inline Triple(Triple<T1_, T2_, T3_, TSpec__> const & _p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)), i3(getValueI3(_p)) {}
 
+    Triple & operator=(Triple const&) = default;
+
     // TODO(holtgrew): Move comparison operators to global functions?
     inline bool
     operator==(Triple const & other) const
