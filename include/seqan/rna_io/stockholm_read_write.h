@@ -228,7 +228,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
                 else
                 {
                     appendValue(gapPos[idx], static_cast<TSizeRna5String>(pos) + offset);
-                    erase(buffer, pos);
+                    seqan::erase(buffer, pos);
                 }
             }
 
