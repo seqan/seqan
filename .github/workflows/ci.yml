@@ -26,67 +26,110 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Linux GCC 4.9"
-            os: ubuntu-16.04
-            cxx: "g++-4.9"
-            cc: "gcc-4.9"
-            build_type: Release
-
-          - name: "Linux GCC 5"
-            os: ubuntu-18.04
-            cxx: "g++-5"
-            cc: "gcc-5"
-            build_type: Release
-
-          - name: "Linux GCC 7"
-            os: ubuntu-18.04
-            cxx: "g++-7"
-            cc: "gcc-7"
+          - name: "gcc8 (c++17) on Linux"
+            os: ubuntu-20.04
+            cxx: "g++-8"
+            cc: "gcc-8"
             build_type: Release
             cxx_flags: "-std=c++17"
 
-          - name: "Linux GCC 9"
-            os: ubuntu-18.04
+          - name: "gcc8 (c++17) on macOS"
+            os: macos-10.15
+            cxx: "g++-8"
+            cc: "gcc-8"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "gcc9 (c++17) on Linux"
+            os: ubuntu-20.04
             cxx: "g++-9"
             cc: "gcc-9"
-            build: unit
             build_type: Release
             cxx_flags: "-std=c++17"
 
-          - name: "Linux Clang 3.9"
-            os: ubuntu-18.04
-            cxx: "clang++-3.9"
-            cc: "clang-3.9"
-            build_type: Release
-            cxx_flags: "-Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
-
-          - name: "Linux Clang 7"
-            os: ubuntu-18.04
-            cxx: "clang++-7"
-            cc: "clang-7"
-            build_type: Release
-            cxx_flags: "-Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
-
-          - name: "macOS GCC 7"
-            os: macos-10.15
-            cxx: "g++-7"
-            cc: "gcc-7"
-            build_type: Release
-            cxx_flags: "-std=c++17"
-
-          - name: "macOS GCC 9"
+          - name: "gcc9 (c++17) on macOS"
             os: macos-10.15
             cxx: "g++-9"
             cc: "gcc-9"
             build_type: Release
             cxx_flags: "-std=c++17"
 
-          - name: "macOS Clang 7"
-            os: macos-10.15
-            cxx: "clang++-7"
-            cc: "clang-7"
+          - name: "gcc9 (c++2a) on Linux"
+            os: ubuntu-20.04
+            cxx: "g++-9"
+            cc: "gcc-9"
             build_type: Release
-            cxx_flags: "-Qunused-arguments -DSEQAN_IGNORE_MISSING_OPENMP=1"
+            cxx_flags: "-std=c++2a"
+
+          - name: "gcc9 (c++2a) on macOS"
+            os: macos-10.15
+            cxx: "g++-9"
+            cc: "gcc-9"
+            build_type: Release
+            cxx_flags: "-std=c++2a"
+
+          - name: "gcc10 (c++20) on Linux"
+            os: ubuntu-20.04
+            cxx: "g++-10"
+            cc: "gcc-10"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "gcc10 (c++20) on macOS"
+            os: macos-10.15
+            cxx: "g++-10"
+            cc: "gcc-10"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "clang9 (c++17) on Linux"
+            os: ubuntu-20.04
+            cxx: "clang++-9"
+            cc: "clang-9"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "clang9 (c++17) on macOS"
+            os: macos-10.15
+            cxx: "clang++-9"
+            cc: "clang-9"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "clang9 (c++2a) on Linux"
+            os: ubuntu-20.04
+            cxx: "clang++-9"
+            cc: "clang-9"
+            build_type: Release
+            cxx_flags: "-std=c++2a"
+
+          - name: "clang9 (c++2a) on macOS"
+            os: macos-10.15
+            cxx: "clang++-9"
+            cc: "clang-9"
+            build_type: Release
+            cxx_flags: "-std=c++2a"
+
+          - name: "clang10 (c++20) on Linux"
+            os: ubuntu-20.04
+            cxx: "clang++-10"
+            cc: "clang-10"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "clang11 (c++20) on Linux"
+            os: ubuntu-20.04
+            cxx: "clang++-11"
+            cc: "clang-11"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "clang11 (c++20) on macOS"
+            os: macos-10.15
+            cxx: "clang++-11"
+            cc: "clang-11"
+            build_type: Release
+            cxx_flags: "-std=c++20"
 
     steps:
       - name: Checkout SeqAn2
@@ -115,7 +158,11 @@ jobs:
       - name: Add package source
         if: runner.os == 'Linux'
         shell: bash
-        run: sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa && sudo apt-get update
+        run: |
+          sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository --yes "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
+          sudo apt-get update
 
       - name: Install ccache
         run: |
@@ -148,16 +195,16 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get install --yes ${{ matrix.cxx }}
           else
-            if [ "${{ matrix.cxx }}" == "clang++-7" ]; then
-              cxx_macos_name="llvm@7"
+            if [[ "${{ matrix.cxx }}" == "clang++-"* ]]; then
+              cxx_macos_name=$(echo "${{ matrix.cxx }}" | sed "s/clang++-/llvm@/g") # e.g. llvm@7
             else
               cxx_macos_name=$(echo "${{ matrix.cxx }}" | sed "s/++-/cc@/g")
             fi
             brew install --force-bottle $cxx_macos_name
             brew link --overwrite $cxx_macos_name
-            if [ "${{ matrix.cxx }}" == "clang++-7" ]; then
-              ln -s /usr/local/opt/llvm@7/bin/clang++ /usr/local/opt/llvm@7/bin/clang++-7
-              echo "/usr/local/opt/llvm@7/bin" >> $GITHUB_PATH # Only available in subsequent steps!
+            if [[ "${{ matrix.cxx }}" == "clang++-"* ]]; then
+              ln -s /usr/local/opt/$cxx_macos_name/bin/clang++ /usr/local/opt/$cxx_macos_name/bin/${{ matrix.cxx }}
+              echo "/usr/local/opt/$cxx_macos_name/bin" >> $GITHUB_PATH # Only available in subsequent steps!
             fi
           fi
 
