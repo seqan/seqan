@@ -38,7 +38,7 @@
 #ifndef SEQAN_HEADER_SEQUENCE_FORWARDS_H
 #define SEQAN_HEADER_SEQUENCE_FORWARDS_H
 
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703)
 
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
@@ -196,7 +196,7 @@ template <typename TValue, typename TPos> inline TValue const & value(TValue con
 
 }  // namespace seqan
 
-#endif  // #if !defined(_MSC_VER)
+#endif  // #if !defined(_MSC_VER) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703)
 
 #endif
 
