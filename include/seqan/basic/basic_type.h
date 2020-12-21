@@ -499,7 +499,7 @@ _referenceCast(typename RemovePointer<T>::Type & ptr)
 template <typename T>
 struct LENGTH
 {
-    enum { VALUE = 1 };
+    static const unsigned VALUE = 1;
 };
 
 template <typename T>

@@ -1633,7 +1633,7 @@ inline bool strContains(std::string const & inputStr, std::string const & search
 
 
 template <typename TCorrection>
-struct LessOverlap : public std::binary_function<TCorrection, TCorrection, bool >
+struct LessOverlap : public std::function<bool (TCorrection, TCorrection)>
 {
     inline bool operator() (TCorrection const &a, TCorrection const &b) const
     {
@@ -1651,7 +1651,7 @@ struct LessOverlap : public std::binary_function<TCorrection, TCorrection, bool 
 };
 
 template <typename TCorrection>
-struct LessPositionOverlap : public std::binary_function<TCorrection, TCorrection, bool >
+struct LessPositionOverlap : public std::function<bool (TCorrection, TCorrection)>
 {
     inline bool operator() (TCorrection const &a, TCorrection const &b) const
     {

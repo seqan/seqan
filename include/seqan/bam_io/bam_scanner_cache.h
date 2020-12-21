@@ -72,7 +72,7 @@ struct BamScannerCacheSearchKey_
 };
 
 struct BamScannerCacheHash_ :
-    std::unary_function<BamScannerCacheKey_, size_t>
+    std::function<size_t(BamScannerCacheKey_)>
 {
     size_t operator()(BamScannerCacheKey_ const &v) const
     {

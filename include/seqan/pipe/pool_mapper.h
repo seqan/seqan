@@ -348,7 +348,7 @@ namespace seqan
             cancel();
         }
 
-        struct insertBucket : public std::unary_function<TPageBucket,void>
+        struct insertBucket : public std::function<void(TPageBucket)>
         {
             Handler &me;
             insertBucket(Handler &_me): me(_me) {}
@@ -454,7 +454,7 @@ namespace seqan
             cancel();
         }
 
-        struct insertBucket : public std::unary_function<TPageBucket,void>
+        struct insertBucket : public std::function<void(TPageBucket)>
         {
             Handler &me;
             insertBucket(Handler &_me): me(_me) {}

@@ -14,7 +14,7 @@ using namespace seqan;
 // sort operators
     template <typename TMatches, typename TMatchQualities>
     struct LessGStackMQ :
-        public ::std::binary_function < typename Value<TMatches>::Type, typename Value<TMatchQualities>::Type, bool >
+        public ::std::function<bool ( typename Value<TMatches>::Type, typename Value<TMatchQualities>::Type)>
     {
         TMatchQualities &qualStore;
 
@@ -63,7 +63,7 @@ using namespace seqan;
 
 
     template <typename TPosLen>
-    struct LessPosLen : public ::std::binary_function < TPosLen, TPosLen, bool >
+    struct LessPosLen : public ::std::function<bool ( TPosLen, TPosLen)>
     {
         inline bool operator() (TPosLen const &a, TPosLen const &b) const
         {
@@ -78,7 +78,7 @@ using namespace seqan;
 
     template <typename TMatches, typename TMatchQualities>
     struct LessGStackOaMQ :
-        public ::std::binary_function < typename Value<TMatches>::Type, typename Value<TMatchQualities>::Type, bool >
+        public ::std::function<bool ( typename Value<TMatches>::Type, typename Value<TMatchQualities>::Type)>
     {
         TMatchQualities &qualStore;
 
@@ -126,7 +126,7 @@ using namespace seqan;
 
 
     template <typename TReadMatch>
-    struct LessId : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+    struct LessId : public ::std::function<bool ( TReadMatch, TReadMatch)>
     {
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
@@ -139,7 +139,7 @@ using namespace seqan;
 
     // ... to sort matches according to gBegin
     template <typename TReadMatch>
-    struct LessGPos : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+    struct LessGPos : public ::std::function<bool ( TReadMatch, TReadMatch)>
     {
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
@@ -162,7 +162,7 @@ using namespace seqan;
 
     // ... to sort matches according to gEnd
     template <typename TReadMatch>
-    struct LessGPosEnd : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+    struct LessGPosEnd : public ::std::function<bool ( TReadMatch, TReadMatch)>
     {
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
@@ -181,7 +181,7 @@ using namespace seqan;
 
 
     template <typename TReadMatch>
-    struct LessGPosEndOa : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+    struct LessGPosEndOa : public ::std::function<bool ( TReadMatch, TReadMatch)>
     {
         inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
@@ -203,7 +203,7 @@ using namespace seqan;
 
         // ... to sort quality values //
     template <typename TQual>
-    struct HigherQ : public ::std::binary_function < TQual, TQual, bool >
+    struct HigherQ : public ::std::function<bool ( TQual, TQual)>
     {
         inline bool operator() (TQual const &a, TQual const &b) const
         {

@@ -43,13 +43,13 @@ namespace seqan
 // Forwards
 // ==========================================================================
 
-#if !defined(_MSC_VER)
+#if !defined(_MSC_VER) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703)
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
 inline typename Cargo< std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
 cargo(std::map<TKey,TCargo, TCompare, TAlloc> & me, TKey2 const & _key);
 
-#endif  // #if !defined(_MSC_VER)
+#endif  // #if !defined(_MSC_VER) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703)
 
 //////////////////////////////////////////////////////////////////////////////
 //insertion tags

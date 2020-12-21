@@ -56,7 +56,7 @@ namespace seqan
     };
 
     template <typename InType, typename Result = typename Value< typename Value<InType, 2>::Type>::Type>
-    struct _mapInverse : public std::unary_function<InType,Result> {
+    struct _mapInverse : public std::function<Result(InType)> {
         inline Result operator()(const InType& x) const
         { return x.i2[0]; }
     };
@@ -161,7 +161,7 @@ namespace seqan
     };
 
     template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
-    struct _mapInverseMulti : public std::unary_function<InType,Result> {
+    struct _mapInverseMulti : public std::function<Result(InType)> {
         TLimitsString const &limits;
         _mapInverseMulti(TLimitsString const &_limits) : limits(_limits) {}
         inline Result operator()(const InType& x) const

@@ -842,7 +842,7 @@ inline int estimateReadLength(SeqFileIn &seqFile)
 
 template <typename TReadMatch>
 struct LessBeginPos :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     inline bool operator()(TReadMatch const & a, TReadMatch const & b) const
     {
@@ -859,7 +859,7 @@ struct LessBeginPos :
 
 template <typename TReadMatch>
 struct LessRNoBeginPos :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     inline bool operator()(TReadMatch const & a, TReadMatch const & b) const
     {
@@ -893,7 +893,7 @@ struct LessRNoBeginPos :
 
 template <typename TReadMatch>
 struct LessRNoBeginPosMP :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     inline bool operator()(TReadMatch const & a, TReadMatch const & b) const
     {
@@ -931,7 +931,7 @@ struct LessRNoBeginPosMP :
 // ... to sort matches and remove duplicates with equal gEnd
 template <typename TReadMatch>
 struct LessRNoEndPos :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     inline bool operator()(TReadMatch const & a, TReadMatch const & b) const
     {
@@ -965,7 +965,7 @@ struct LessRNoEndPos :
 
 template <typename TReadMatch>
 struct LessRNoEndPosMP :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     int libSize;
     LessRNoEndPosMP(int _libSize) :
@@ -1006,7 +1006,7 @@ struct LessRNoEndPosMP :
 
 template <typename TReadMatch>
 struct LessScoreBackport :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     inline bool operator()(TReadMatch const & a, TReadMatch const & b) const
     {
@@ -1043,7 +1043,7 @@ struct LessScoreBackport :
 
 template <typename TReadMatch>
 struct LessScoreBackport3Way :
-    public std::binary_function<TReadMatch, TReadMatch, int>
+    public std::function<int(TReadMatch, TReadMatch)>
 {
     inline int operator()(TReadMatch const & a, TReadMatch const & b) const
     {
@@ -1084,7 +1084,7 @@ struct LessScoreBackport3Way :
 
 template <typename TAlignedReadStore, typename TLessScore>
 struct LessRNoGPos :
-    public std::binary_function<typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool>
+    public std::function<bool(typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type)>
 {
     typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
     TLessScore lessScore;
@@ -1127,7 +1127,7 @@ struct LessRNoGPos :
 // ... to sort matches and remove duplicates with equal gEnd
 template <typename TAlignedReadStore, typename TLessScore>
 struct LessRNoGEndPos :
-    public std::binary_function<typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool>
+    public std::function<bool(typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type)>
 {
     typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
     TLessScore lessScore;
@@ -1171,7 +1171,7 @@ struct LessRNoGEndPos :
 
 template <typename TAlignedReadStore, typename TAlignedReadQualityStore, typename TRazerSMode>
 struct LessScore :
-    public std::binary_function<typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool>
+    public std::function<bool(typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type)>
 {
     TAlignedReadQualityStore & qualStore;
 
@@ -1215,7 +1215,7 @@ struct LessScore :
 // longest prefix mapping
 template <typename TAlignedReadStore, typename TAlignedReadQualityStore, typename TGapMode, typename TScoreMode, typename TMatchNPolicy>
 struct LessScore<TAlignedReadStore, TAlignedReadQualityStore, RazerSMode<RazerSPrefix, TGapMode, TScoreMode, TMatchNPolicy> >:
-    public std::binary_function<typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool>
+    public std::function<bool(typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type)>
 {
     TAlignedReadQualityStore & qualStore;
 

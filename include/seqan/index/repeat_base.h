@@ -117,7 +117,7 @@ namespace seqan {
     }
 
     template <typename TPos>
-    struct RepeatLess_ : public std::binary_function<TPos, TPos, bool>
+    struct RepeatLess_ : public std::function<bool(TPos, TPos)>
     {
         // key less
         inline bool operator() (TPos const &a, TPos const &b) const {

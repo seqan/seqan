@@ -200,7 +200,7 @@ struct Tuple<TValue, SIZE, Pack>
 template <typename TValue, unsigned SIZE, typename TSpec>
 struct LENGTH<Tuple<TValue, SIZE, TSpec> >
 {
-    enum { VALUE = SIZE };
+    static const unsigned VALUE = SIZE;
 };
 
 // -----------------------------------------------------------------------

@@ -33,6 +33,7 @@
 #ifndef SEQAN_HEADER_MISC_SET_H
 #define SEQAN_HEADER_MISC_SET_H
 
+#include <functional>
 #include <set>
 #include <seqan/misc/base.h>
 
@@ -370,7 +371,7 @@ namespace seqan
 
 
     template <typename TElement>
-    struct SetLess_ : public std::binary_function<TElement, TElement, bool>
+    struct SetLess_ : public std::function<bool(TElement, TElement)>
     {
         // key less
         inline bool operator() (TElement const &a, TElement const &b) {

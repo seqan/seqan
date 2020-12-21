@@ -65,7 +65,7 @@ namespace seqan
  *            class Pipe<TInput, Namer<TCompare> >;
  *
  * @tparam TInput   The type of the pipeline module this module reads from.
- * @tparam TCompare A binary function (see STL's <tt>binary_function</tt>) with result type <tt>int</tt>.  Should
+ * @tparam TCompare A function (see STL's <tt>function</tt>) with result type <tt>int</tt>.  Should
  *                  return <tt>0</tt> if and only if two elements are equal.
  *
  * The output type is a Pair of input type and size type (i.e. <tt>Pair&lt;Value&lt;TInput&gt;::Type, Size&lt;TInput&gt;::Type&gt;</tt>).

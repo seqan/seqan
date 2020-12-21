@@ -141,7 +141,7 @@ namespace seqan
     };
 
     template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
-    struct _filterGlobalizer : public std::unary_function<InType,Result> {
+    struct _filterGlobalizer : public std::function<Result(InType)> {
         TLimitsString const &limits;
         _filterGlobalizer(TLimitsString const &_limits) : limits(_limits) {}
         inline Result operator()(const InType& x) const

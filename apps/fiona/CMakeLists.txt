@@ -65,6 +65,10 @@ add_executable (fiona_illumina fiona.cpp)
 
 set_target_properties (fiona_illumina PROPERTIES COMPILE_DEFINITIONS "FIONA_ILLUMINA")
 
+# Boost 1.74.0 is not compatible with cpp20
+set_property(TARGET fiona PROPERTY CXX_STANDARD 17)
+set_property(TARGET fiona_illumina PROPERTY CXX_STANDARD 17)
+
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (compute_gain ${SEQAN_LIBRARIES})
 target_link_libraries (fiona ${SEQAN_LIBRARIES})

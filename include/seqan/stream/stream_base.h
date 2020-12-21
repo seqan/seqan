@@ -206,7 +206,7 @@ guessFormatFromStream(TStream &istream, Tag<TFormat_>)
 
     // check magic header
     unsigned i;
-    for (i = 0; i != sizeof(MagicHeader<TFormat>::VALUE) / sizeof(char); ++i)
+    for (i = 0; i != sizeof(MagicHeader<TFormat>::VALUE) / (sizeof(char)); ++i)
     {
         int c = (int)istream.get();
         if (c != (unsigned char)MagicHeader<TFormat>::VALUE[i])

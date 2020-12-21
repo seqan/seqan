@@ -1292,11 +1292,11 @@ void testSequenceErase(TString & /*Tag*/)
     // Test on a non empty string.
     TString string, string0;
     assign(string, "ACGTACGTACGT");
-    erase(string, 1);
+    seqan::erase(string, 1);
     assign(string0, "AGTACGTACGT");
     SEQAN_ASSERT(string == string0);
 
-    erase(string, 2, 5);
+    seqan::erase(string, 2, 5);
     assign(string0, "AGGTACGT");
     SEQAN_ASSERT(string == string0);
 }

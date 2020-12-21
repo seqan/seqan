@@ -640,7 +640,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 
 #ifdef RAZERS_MICRO_RNA
 	template <typename TReadMatch>
-	struct LessRNoGPos : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessRNoGPos : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{
@@ -669,7 +669,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 	};
 
 	template <typename TReadMatch>
-	struct LessRNoEdistHLen : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessRNoEdistHLen : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{
@@ -693,7 +693,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 	
 	
 	template <typename TReadMatch>
-	struct LessRNoGPos : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessRNoGPos : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{
@@ -725,7 +725,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 
 	// ... to sort matches and remove duplicates with equal gEnd
 	template <typename TReadMatch>
-	struct LessRNoGEndPos : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessRNoGEndPos : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{
@@ -757,7 +757,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 	};
 
 	template <typename TReadMatch>
-	struct LessErrors : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessErrors : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{
@@ -782,7 +782,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList)
 	
 #ifdef RAZERS_SPLICED
 template <typename TReadMatch>
-struct LessSplicedErrors : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+struct LessSplicedErrors : public ::std::function<bool ( TReadMatch, TReadMatch)>
 {
 	inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
 	{
@@ -810,7 +810,7 @@ struct LessSplicedErrors : public ::std::binary_function < TReadMatch, TReadMatc
 	struct QualityBasedScoring{};
 
 	template <typename TReadMatch>
-	struct LessRNoMQ : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessRNoMQ : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{

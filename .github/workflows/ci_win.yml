@@ -27,6 +27,7 @@ jobs:
             toolset: '14.28'
             msvc_ver: '16'
             build_type: Release
+            cxx_flags: "/std:c++latest"
 
     steps:
       - name: Checkout SeqAn2
@@ -87,7 +88,7 @@ jobs:
         run: |
           New-Item -Name "seqan-build" -ItemType "directory" -Force
           cd seqan-build
-          cmake ../seqan -G"${{ matrix.name }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DSEQAN_DISABLE_VERSION_CHECK=ON -DSEQAN_TRAVIS_BUILD:BOOL=ON
+          cmake ../seqan -G"${{ matrix.name }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DSEQAN_DISABLE_VERSION_CHECK=ON -DSEQAN_TRAVIS_BUILD:BOOL=ON
 
       - name: Build tests
         env:
@@ -100,7 +101,6 @@ jobs:
           cd seqan-build
           clcache.exe -M 5368709120 # Set Maximum cache size to 5 GiB
           cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
-          clcache.exe -s
 
       - name: Run tests
         run: |

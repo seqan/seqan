@@ -950,7 +950,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
         // Remove library outliers > 6 * median.
         unsigned libraryMedian = nthElement(libraryLengths, length(libraryLengths) / 2, typename TTraits::TThreading());
-        removeIf(libraryLengths, std::bind2nd(std::greater<unsigned>(), 6.0 * libraryMedian), typename TTraits::TThreading());
+        auto filter_predicate = [libraryMedian] (unsigned value) { return value > 6.0 * libraryMedian; };
+        removeIf(libraryLengths, filter_predicate, typename TTraits::TThreading());
 
         // If library mean length and deviation cannot be estimated proceed as single-ended.
         if (empty(libraryLengths)) return;
@@ -962,7 +963,8 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
         // Compute library standard deviation.
         String<float> libraryDiffs;
         resize(libraryDiffs, length(libraryLengths), Exact());
-        transform(libraryDiffs, libraryLengths, std::bind2nd(std::minus<float>(), libraryMean), typename TTraits::TThreading());
+        auto transform_predicate = [libraryMedian] (float value) { return value - libraryMedian; };
+        transform(libraryDiffs, libraryLengths, transform_predicate, typename TTraits::TThreading());
         float librarySqSum = innerProduct(libraryDiffs, 0.0f, typename TTraits::TThreading());
         float libraryDev = std::max(std::sqrt(librarySqSum / static_cast<float>(length(libraryLengths))), 1.0f);
 

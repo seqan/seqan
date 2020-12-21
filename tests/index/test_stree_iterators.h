@@ -464,7 +464,7 @@ SEQAN_DEFINE_TEST(testSTreeIterators_Esa)
 
 template <typename TPair>
 struct PairLess_ :
-        public std::binary_function<TPair, TPair, bool>
+        public std::function<bool(TPair, TPair)>
 {
         inline bool
         operator() (TPair const& a1, TPair const& a2) const
