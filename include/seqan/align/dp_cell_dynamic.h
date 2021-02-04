@@ -186,7 +186,7 @@ isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
 {
     bool result;
     SEQAN_IF_CONSTEXPR (IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE)
-        result =cell._flagMask & MASK_HORIZONTAL_GAP;
+        result = cell._flagMask & MASK_HORIZONTAL_GAP;
     else
         result = cell._flagMask & MASK_VERTICAL_GAP;
     return result;
