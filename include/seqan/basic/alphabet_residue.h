@@ -482,8 +482,8 @@ unknownValueImpl(Rna5 *)
  *
  * @signature typedef SimpleType<unsigned char, Iupac_> Iupac;
  *
- * The ValueSize of <tt>Iupac</tt> is 16.  The nucleotides are enumerated from 0 to 19 in this order: 'U'=0, 'T', 'A',
- * 'W', 'C', 'Y', 'M', 'H', 'G', 'K', 'R', 'D', 'S', 'B', 'V', 'N'=15.
+ * The ValueSize of <tt>Iupac</tt> is 16.  The nucleotides are enumerated from 0 to 15 in this order: '='=0, 'A'=1, 'C',
+ * 'M', 'G', 'R', 'S', 'V', 'T', 'W', 'Y', 'H', 'K', 'D', 'B', 'N'=15.
  *
  * Objects of type <tt>Iupac</tt> can be converted to various other types and vice versa.  Unknown values are converted
  * to <tt>'N'</tt>.
