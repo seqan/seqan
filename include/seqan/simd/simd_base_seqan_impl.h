@@ -143,6 +143,7 @@ struct SimdMatrixParams_
         SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                            \
         SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector const)                                                      \
         SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                                      \
+        template <> struct IsSimple_<TSimdVector> { typedef True Type; };                                       \
         template <>                                                                                             \
         SEQAN_CONCEPT_IMPL((TSimdVector),       (SimdVectorConcept));                                           \
         template <>                                                                                             \

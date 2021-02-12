@@ -548,16 +548,19 @@ template <typename TOutTagList, typename TagSpec>
 inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, Tag<TagSpec> const & inTag)
 {
     typedef typename TOutTagList::Type TFormat;
+    bool result;
 
     SEQAN_IF_CONSTEXPR (IsSameType<Tag<TagSpec>, TFormat>::VALUE)
     {
         outTagList.tagId = LENGTH<TOutTagList>::VALUE - 1;
-        return true;
+        result = true;
     }
     else
     {
-        return tagSelectIntersect(static_cast<typename TagSelector<TOutTagList>::Base & >(outTagList), inTag);
+        result = tagSelectIntersect(static_cast<typename TagSelector<TOutTagList>::Base & >(outTagList), inTag);
     }
+    
+    return result;
 }
 
 template <typename TOutTagList>

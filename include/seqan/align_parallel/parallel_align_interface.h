@@ -275,6 +275,16 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
  * Wrapper functions for calling globalAlignmentScore and localAlignmentScore with an ExecutionPolicy.
  * Note the parallel interfaces are documented as part of the standard documentation in seqan/align module.
  */
+
+struct call_global
+{
+    template <typename... TArgs>
+    auto operator()(TArgs && ...args)
+    {
+        return globalAlignment(std::forward<decltype(args)>(args)...); 
+    }
+};
+
 template <typename TParallelPolicy, typename TVectorizationPolicy,
           typename ...TArgs,
           std::enable_if_t<std::is_same<TParallelPolicy, Serial>::value ||
@@ -284,12 +294,18 @@ inline auto
 globalAlignment(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
                 TArgs && ...args)
 {
-    auto kernel = [](auto && ...args)
-    {
-        return globalAlignment(std::forward<decltype(args)>(args)...);
-    };
+    call_global kernel{};
     return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
 }
+
+struct call_local
+{
+    template <typename... TArgs>
+    auto operator()(TArgs && ...args)
+    {
+        return localAlignment(std::forward<decltype(args)>(args)...); 
+    }
+};
 
 template <typename TParallelPolicy, typename TVectorizationPolicy,
           typename ...TArgs,
@@ -300,12 +316,18 @@ inline auto
 localAlignment(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
                TArgs && ...args)
 {
-    auto kernel = [](auto && ...args)
-    {
-        return localAlignment(std::forward<decltype(args)>(args)...);
-    };
+    call_local kernel{};
     return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
 }
+
+struct call_global_score
+{
+    template <typename... TArgs>
+    auto operator()(TArgs && ...args)
+    {
+        return globalAlignmentScore(std::forward<decltype(args)>(args)...); 
+    }
+};
 
 template <typename TParallelPolicy, typename TVectorizationPolicy,
           typename ...TArgs,
@@ -316,12 +338,18 @@ inline auto
 globalAlignmentScore(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
                      TArgs && ...args)
 {
-    auto kernel = [](auto && ...args)
-    {
-        return globalAlignmentScore(std::forward<decltype(args)>(args)...);
-    };
+    call_global_score kernel{};
     return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
 }
+
+struct call_local_score
+{
+    template <typename... TArgs>
+    auto operator()(TArgs && ...args)
+    {
+        return localAlignmentScore(std::forward<decltype(args)>(args)...); 
+    }
+};
 
 template <typename TParallelPolicy, typename TVectorizationPolicy,
           typename ...TArgs,
@@ -332,10 +360,7 @@ inline auto
 localAlignmentScore(ExecutionPolicy<TParallelPolicy, TVectorizationPolicy> const & execPolicy,
                     TArgs && ...args)
 {
-    auto kernel = [](auto && ...args)
-    {
-        return localAlignmentScore(std::forward<decltype(args)>(args)...);
-    };
+    call_local_score kernel{};
     return impl::ParallelAlignmentExecutor{}(execPolicy, kernel, std::forward<TArgs>(args)...);
 }
 
