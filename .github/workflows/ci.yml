@@ -131,6 +131,14 @@ jobs:
             build_type: Release
             cxx_flags: "-std=c++20"
 
+          - name: "icc (c++20) on Linux"
+            icc_version: "2021.1.2"
+            os: ubuntu-20.04
+            cxx: icc
+            cc: icc
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
     steps:
       - name: Checkout SeqAn2
         uses: actions/checkout@v2
@@ -157,11 +165,16 @@ jobs:
 
       - name: Add package source
         if: runner.os == 'Linux'
-        shell: bash
         run: |
           sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/ppa
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo add-apt-repository --yes "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
+
+          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/oneAPI.list" -o APT::Get::List-Cleanup="0"
+
           sudo apt-get update
 
       - name: Install ccache
@@ -193,7 +206,11 @@ jobs:
       - name: Install compiler ${{ matrix.cxx }}
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get install --yes ${{ matrix.cxx }}
+            if [[ "${{ matrix.cxx }}" == "icc" ]]; then
+              sudo apt-get install --yes intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-${{ matrix.icc_version }}
+            else
+              sudo apt-get install --yes ${{ matrix.cxx }}
+            fi
           else
             if [[ "${{ matrix.cxx }}" == "clang++-"* ]]; then
               cxx_macos_name=$(echo "${{ matrix.cxx }}" | sed "s/clang++-/llvm@/g") # e.g. llvm@7
@@ -225,6 +242,9 @@ jobs:
           CXX: "ccache ${{ matrix.cxx }}"
           CC: "ccache ${{ matrix.cc }}"
         run: |
+          if [[ "${{ matrix.cxx }}" == "icc" ]]; then
+            source /opt/intel/oneapi/compiler/${{ matrix.icc_version }}/env/vars.sh
+          fi
           mkdir seqan-build
           cd seqan-build
           cmake ../seqan -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DSEQAN_DISABLE_VERSION_CHECK=ON -DSEQAN_TRAVIS_BUILD:BOOL=ON -DPython3_ROOT_DIR=${pythonLocation}
@@ -237,6 +257,9 @@ jobs:
           CCACHE_COMPRESSLEVEL: 6
           CCACHE_MAXSIZE: 5G
         run: |
+          if [[ "${{ matrix.cxx }}" == "icc" ]]; then
+            source /opt/intel/oneapi/compiler/${{ matrix.icc_version }}/env/vars.sh
+          fi
           cd seqan-build
           make -k -j2
 
