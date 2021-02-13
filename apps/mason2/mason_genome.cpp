@@ -110,7 +110,7 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("s", "seed", "The seed to use for the random number generator.",
                                             seqan::ArgParseOption::INTEGER, "INT"));
-    setDefaultValue(parser, "seed", 0);
+    setDefaultValue(parser, "seed", 42);
 
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-file", "Output file.",
