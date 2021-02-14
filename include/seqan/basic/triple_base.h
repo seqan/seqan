@@ -140,6 +140,12 @@ struct Triple
     }
 
     inline bool
+    operator!=(Triple const & other) const
+    {
+        return !operator==(other);
+    }
+
+    inline bool
     operator<(Triple const & other) const
     {
         if (i1 < other.i1)
