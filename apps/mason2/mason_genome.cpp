@@ -62,7 +62,7 @@ struct MasonGenomeOptions
     seqan::CharString outputFilename;
 
     // Lengths of the contigs.
-    seqan::String<int> contigLengths;
+    seqan::String<int64_t> contigLengths;
 
     // The seed to use for the RNG.
     int seed;
@@ -104,7 +104,7 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("l", "contig-length",
                                             "Length of the contig to simulate. Give one \\fB-l\\fP "
                                             "value for each contig to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "LENGTH", true));
+                                            seqan::ArgParseOption::INT64, "LENGTH", true));
     setMinValue(parser, "contig-length", "1");
     setRequired(parser, "contig-length");
 
@@ -143,7 +143,7 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
 
     for (unsigned i = 0; i < getOptionValueCount(parser, "contig-length"); ++i)
     {
-        int len = 0;
+        int64_t len = 0;
         getOptionValue(len, parser, "contig-length", i);
         appendValue(options.contigLengths, len);
     }

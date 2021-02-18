@@ -64,7 +64,7 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
 
         std::cerr << "contig " << id << " ...";
 
-        for (int j = 0; j < options.contigLengths[i];)
+        for (int64_t j = 0; j < options.contigLengths[i];)
         {
             double x = randomNumber();
             if (x < 0.25)
