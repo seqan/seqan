@@ -77,7 +77,7 @@
 struct MasonSimulateGenomeOptions
 {
     // A list of the lengths of the contigs to simulate.
-    seqan::String<int> contigLengths;
+    seqan::String<int64_t> contigLengths;
     // The seed to use for random number generation.
     int seed;
 

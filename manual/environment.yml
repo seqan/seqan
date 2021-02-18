@@ -2,7 +2,7 @@ name: seqan
 channels:
   - conda-forge
 dependencies:
-  - sphinx>=2.0.0
+  - sphinx=3.4.3
   - sphinx_rtd_theme
   - sphinxcontrib-bibtex
   - nose
