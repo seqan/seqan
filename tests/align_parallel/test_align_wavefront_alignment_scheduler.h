@@ -164,7 +164,7 @@ struct RaiiEvent
     {
         {
             std::unique_lock<std::mutex> lck(mutexEvent);
-            event.wait(lck, [&]{ return eventState; });
+            event.wait(lck, [&, this]{ return eventState; });
         }
     }
 
