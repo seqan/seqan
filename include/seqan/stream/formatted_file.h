@@ -286,8 +286,7 @@ struct FormattedFile
         context(otherCtx)
     {}
 
-    explicit
-    FormattedFile(FormattedFile &other) :
+    FormattedFile(FormattedFile const & other) :
         context(other.context)
     {}
 
