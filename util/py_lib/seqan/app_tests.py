@@ -238,22 +238,26 @@ def runTest(test_conf):
         stderr_file = open(test_conf.redir_stderr, 'w+')
     try:
         process = subprocess.Popen(test_conf.commandLineArgs(), stdout=stdout_file,
-                                   stderr=stderr_file)
+                                   stderr=stderr_file, text=True)
         retcode = process.wait()
         logging.debug('  return code is %d', retcode)
         if retcode != 0:
             fmt = 'Return code of command "%s" was %d.'
+
+            if stdout_file == subprocess.PIPE:
+                stdout_file = process.stdout
+            if stderr_file == subprocess.PIPE:
+                stderr_file = process.stderr
+
             print('--- stdout begin --', file=sys.stderr)
             print(fmt % (' '.join(test_conf.commandLineArgs()), retcode), file=sys.stderr)
-            print(stdout_file.read(), file=sys.stderr)
+            if len(stdout_file.read()) != 0:
+                print(stdout_file.read(), file=sys.stderr)
             print('--- stdout end --', file=sys.stderr)
-            stdout_file.close()
-            if process.stderr:
-                stderr_contents = process.stderr.read()
-            else:
-                stderr_contents = ''
+
             print('-- stderr begin --', file=sys.stderr)
-            print(stderr_contents, file=sys.stderr)
+            if len(stderr_file.read()) != 0:
+                print(stderr_file.read(), file=sys.stderr)
             print('-- stderr end --', file=sys.stderr)
             return False
     except Exception as e:
@@ -262,33 +266,18 @@ def runTest(test_conf):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_exception(exc_type, exc_value, exc_traceback)
         fmt = 'ERROR (when executing "%s"): %s'
-        if stdout_file is not subprocess.PIPE:
-            stdout_file.close()
         print(fmt % (' '.join(test_conf.commandLineArgs()), e), file=sys.stderr)
         return False
-    # Handle error of program, indicated by return code != 0.
-    if retcode != 0:
-        print('Error when executing "%s".' % ' '.join(test_conf.commandLineArgs()), file=sys.stderr)
-        print('Return code is %d' % retcode, file=sys.stderr)
-        if stdout_file is not subprocess.PIPE:
-            stdout_file.seek(0)
-        stdout_contents = process.stdout.read()
-        if stdout_contents:
-            print('-- stdout begin --', file=sys.stderr)
-            print(stdout_contents, file=sys.stderr)
-            print('-- stdout end --', file=sys.stderr)
-        else:
-            print('-- stdout is empty --', file=sys.stderr)
-        stderr_contents = process.stderr.read()
-        if stderr_contents:
-            print('-- stderr begin --', file=sys.stderr)
-            print(stderr_contents, file=sys.stderr)
-            print('-- stderr end --', file=sys.stderr)
-        else:
-            print('-- stderr is empty --', file=sys.stderr)
-    # Close standard out file if necessary.
-    if stdout_file is not subprocess.PIPE:
-        stdout_file.close()
+    finally:
+        try:
+            stdout_file.close()
+        except Exception:
+            pass
+        try:
+            stderr_file.close()
+        except Exception:
+            pass
+
     # Compare results with expected results, if the expected and actual result
     # are not equal then print diffs.
     result = True
