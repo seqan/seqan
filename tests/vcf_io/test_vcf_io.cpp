@@ -43,6 +43,7 @@ SEQAN_BEGIN_TESTSUITE(test_vcf_io)
     SEQAN_CALL_TEST(test_vcf_io_read_vcf_header);
     SEQAN_CALL_TEST(test_vcf_io_read_vcf_record);
     SEQAN_CALL_TEST(test_vcf_io_vcf_file_read_record);
+    SEQAN_CALL_TEST(test_vcf_io_access_const_io_context);
 
     SEQAN_CALL_TEST(test_vcf_io_write_vcf_header);
     SEQAN_CALL_TEST(test_vcf_io_write_vcf_record);
