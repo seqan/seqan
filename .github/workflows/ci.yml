@@ -177,6 +177,10 @@ jobs:
 
           sudo apt-get update
 
+      - name: Configure Homebrew
+        if: runner.os == 'macOS'
+        uses: Homebrew/actions/setup-homebrew@master
+
       - name: Install ccache
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
@@ -217,7 +221,8 @@ jobs:
             else
               cxx_macos_name=$(echo "${{ matrix.cxx }}" | sed "s/++-/cc@/g")
             fi
-            brew install --force-bottle $cxx_macos_name
+            brew list --versions $cxx_macos_name || brew install --force-bottle $cxx_macos_name
+            brew upgrade --force-bottle $cxx_macos_name
             brew link --overwrite $cxx_macos_name
             if [[ "${{ matrix.cxx }}" == "clang++-"* ]]; then
               ln -s /usr/local/opt/$cxx_macos_name/bin/clang++ /usr/local/opt/$cxx_macos_name/bin/${{ matrix.cxx }}
