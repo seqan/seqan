@@ -506,6 +506,25 @@ SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileIn)
     SEQAN_ASSERT(!isOpen(vcfI));
 }
 
+SEQAN_DEFINE_TEST(test_vcf_io_access_const_io_context)
+{
+    // Build path to file.
+    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
+
+    seqan::VcfFileIn vcfStream(toCString(vcfPath));
+    seqan::VcfHeader header;
+
+    readHeader(header, vcfStream);
+
+    seqan::VcfIOContext<> const & cContext = seqan::context(vcfStream);
+
+    SEQAN_ASSERT_EQ(length(contigNames(cContext)), 1u);
+    SEQAN_ASSERT(!empty(contigNamesCache(cContext)));
+
+    SEQAN_ASSERT_EQ(length(sampleNames(cContext)), 3u);
+    SEQAN_ASSERT(!empty(sampleNamesCache(cContext)));
+}
+
 SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileOut)
 {
     // Build path to file.

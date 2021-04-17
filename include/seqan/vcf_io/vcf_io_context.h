@@ -154,7 +154,7 @@ template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore const &
 contigNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    return _referenceCast<TNameStore &>(context._contigNames);
+    return _referenceCast<TNameStore const &>(context._contigNames);
 }
 
 /*!
@@ -179,7 +179,7 @@ template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache const &
 contigNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
+    return _referenceCast<TNameStoreCache const &>(context._contigNamesCache);
 }
 
 /*!
@@ -204,7 +204,7 @@ template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore const &
 sampleNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    return _referenceCast<TNameStore &>(context._sampleNames);
+    return _referenceCast<TNameStore const &>(context._sampleNames);
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -218,7 +218,7 @@ template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache const &
 sampleNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    return _referenceCast<TNameStoreCache &>(context._sampleNamesCache);
+    return _referenceCast<TNameStoreCache const &>(context._sampleNamesCache);
 }
 
 }  // namespace seqan
