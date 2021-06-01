@@ -236,14 +236,14 @@ namespace seqan2
             XValue(0),
             leftFactor(0),
             leftFactor2(0),
-            leftChar(0) {}
+            leftChar(TValue{}) {}
 
         Shape(unsigned _span):
             hValue(0),
             XValue(0),
             leftFactor(0),
             leftFactor2(0),
-            leftChar(0)
+            leftChar(TValue{})
         {
             resize(*this, _span);
         }
@@ -485,7 +485,7 @@ namespace seqan2
 
         SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-        me.leftChar = 0;
+        me.leftChar = TValue{};
         me.hValue = ordValue(*it);
         for(TSize i = 2; i < me.span; ++i) {
             ++it;
