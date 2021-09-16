@@ -82,6 +82,20 @@ jobs:
             build_type: Release
             cxx_flags: "-std=c++20"
 
+          - name: "gcc11 (c++20) on Linux"
+            os: ubuntu-20.04
+            cxx: "g++-11"
+            cc: "gcc-11"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "gcc11 (c++20) on macOS"
+            os: macos-10.15
+            cxx: "g++-11"
+            cc: "gcc-11"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
           - name: "clang9 (c++17) on Linux"
             os: ubuntu-20.04
             cxx: "clang++-9"

@@ -24,7 +24,7 @@ jobs:
         include:
           - name: "Visual Studio 16 2019"
             os: windows-2019
-            toolset: '14.28'
+            toolset: '14.29'
             msvc_ver: '16'
             build_type: Release
             cxx_flags: "/std:c++latest"
