@@ -13,7 +13,7 @@ env:
 
 defaults:
   run:
-    shell: bash -ex {0}
+    shell: bash -lex {0}
 
 jobs:
   my_job:
