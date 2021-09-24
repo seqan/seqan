@@ -10,7 +10,8 @@ jobs:
     name: "Cancel previous runs"
     runs-on: ubuntu-20.04
     steps:
-      - uses: styfle/cancel-workflow-action@0.4.1
+      - uses: styfle/cancel-workflow-action@0.9.0
         with:
-          workflow_id: 2235184, 3775919 # GitHub ID for .github/workflows/ci.yml and ci_win.yml
+          workflow_id: ci_linux.yml, ci_macos.yml, ci_win.yml, ci_icc.yml, ci.yml
+          all_but_latest: true
           access_token: ${{ github.token }}

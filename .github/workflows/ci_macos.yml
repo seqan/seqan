@@ -1,0 +1,174 @@
+name: CI on macOS
+
+on:
+  push:
+    branches:
+      # Push events to branches matching refs/heads/master
+      - 'master'
+      # Push events to branches matching refs/heads/develop
+      - 'develop'
+  pull_request:
+
+env:
+  CMAKE_VERSION: 3.12.4
+  TZ: Europe/Berlin
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: macos-10.15
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "gcc11 (c++20)"
+            cxx: "g++-11"
+            cc: "gcc-11"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "gcc10 (c++20)"
+            cxx: "g++-10"
+            cc: "gcc-10"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "gcc9 (c++2a)"
+            cxx: "g++-9"
+            cc: "gcc-9"
+            build_type: Release
+            cxx_flags: "-std=c++2a"
+
+          - name: "gcc8 (c++17)"
+            cxx: "g++-8"
+            cc: "gcc-8"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "gcc7 (c++17)"
+            cxx: "g++-7"
+            cc: "gcc-7"
+            build_type: Release
+            cxx_flags: "-std=c++17"
+
+          - name: "clang12 (c++20)"
+            cxx: "clang++-12"
+            cc: "clang-12"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "clang11 (c++20)"
+            cxx: "clang++-11"
+            cc: "clang-11"
+            build_type: Release
+            cxx_flags: "-std=c++20"
+
+          - name: "clang9 (c++2a)"
+            cxx: "clang++-9"
+            cc: "clang-9"
+            build_type: Release
+            cxx_flags: "-std=c++2a"
+
+    steps:
+      - name: Checkout SeqAn2
+        uses: actions/checkout@v2
+        with:
+          path: seqan
+          fetch-depth: 2
+
+      - name: Checkout SeqAn3
+        uses: actions/checkout@v2
+        with:
+          repository: seqan/seqan3
+          ref: 79d2ba35359f7efd795853262280630a0aa9fd7e
+          path: seqan3
+          fetch-depth: 2
+          submodules: false
+
+      - name: Configure Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install CMake
+        run: bash ./seqan3/.github/workflows/scripts/install_cmake.sh
+
+      - name: Install ccache
+        run: bash ./seqan3/.github/workflows/scripts/install_via_brew.sh ccache
+
+      - name: Install compiler ${{ matrix.cxx }}
+        env:
+          CXX: ${{ matrix.cxx }}
+        run: |
+          if [[ "${{ matrix.cxx }}" == "clang++-"* ]]; then
+            bash ./seqan3/.github/workflows/scripts/install_via_brew.sh llvm ${CXX/clang++-/}
+            install_prefix=$(brew --prefix llvm@${CXX/clang++-/})/bin
+            ln -s ${install_prefix}/clang++ ${install_prefix}/"${{ matrix.cxx }}" || true
+            echo "${install_prefix}/" >> $GITHUB_PATH
+          else
+            bash ./seqan3/.github/workflows/scripts/install_via_brew.sh gcc ${CXX/g++-/}
+          fi
+
+      - name: Tool versions
+        run: |
+          env cmake --version
+          env ${{ matrix.cxx }} --version
+
+      - name: Install dependencies
+        run: brew install --force-bottle boost
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install Python dependencies
+        run: |
+          pip install setuptools wheel
+          pip install -r seqan/manual/requirements.txt
+
+      - name: Load ccache
+        uses: actions/cache@v2
+        with:
+          path: .ccache
+          key: ${{ runner.os }}-${{ matrix.name }}-ccache-${{ github.ref }}-${{ github.run_number }}
+          # Restoring: From current branch, otherwise from base branch, otherwise from any branch.
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.name }}-ccache-${{ github.ref }}
+            ${{ runner.os }}-${{ matrix.name }}-ccache-${{ github.base_ref }}
+            ${{ runner.os }}-${{ matrix.name }}-ccache-
+
+      - name: Configure tests
+        env:
+          CXX: ${{ matrix.cxx }}
+          CC: ${{ matrix.cc }}
+        run: |
+          mkdir seqan-build
+          cd seqan-build
+          cmake ../seqan -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" \
+                         -DSEQAN_DISABLE_VERSION_CHECK=ON \
+                         -DSEQAN_TRAVIS_BUILD:BOOL=ON \
+                         -DPython3_ROOT_DIR=${pythonLocation} \
+                         -DPython3_EXECUTABLE=${pythonLocation}/bin/python3 \
+                         -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+      - name: Build tests
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+          CCACHE_COMPRESS: true
+          CCACHE_COMPRESSLEVEL: 6
+          CCACHE_MAXSIZE: 200M
+        run: |
+          cd seqan-build
+          make -k -j3
+
+      - name: Run tests
+        run: |
+          cd seqan-build
+          ctest . -j3 --output-on-failure --timeout 120 || ctest . -j3 --output-on-failure --timeout 120 --rerun-failed

@@ -1,4 +1,4 @@
-name: SeqAn2 Windows CI
+name: CI on Windows
 
 on:
   push:
@@ -55,18 +55,11 @@ jobs:
           Invoke-WebRequest -OutFile seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip -TimeoutSec 30 -MaximumRetryCount 20 -RetryIntervalSec 30 http://ftp.seqan.de/contribs/seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip
           unzip seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip
 
-      - name: Get cached python environment
-        uses: actions/cache@v2
-        with:
-          path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-${{ hashFiles('seqan/manual/environment.yml') }}
-
       - name: Setup python environment
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: seqan
           environment-file: seqan/manual/environment.yml
-          use-only-tar-bz2: true
 
       - name: Install clcache
         run: pip install clcache
@@ -99,7 +92,7 @@ jobs:
           CLCACHE_HARDLINK: true
         run: |
           cd seqan-build
-          clcache.exe -M 5368709120 # Set Maximum cache size to 5 GiB
+          clcache.exe -M 209715200 # Set Maximum cache size to 200 MiB
           cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
 
       - name: Run tests
