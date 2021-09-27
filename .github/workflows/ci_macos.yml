@@ -85,7 +85,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: seqan/seqan3
-          ref: 79d2ba35359f7efd795853262280630a0aa9fd7e
+          ref: 055a3bea684238c29ee27977b103103a0211797f
           path: seqan3
           fetch-depth: 2
           submodules: false
@@ -101,16 +101,8 @@ jobs:
 
       - name: Install compiler ${{ matrix.cxx }}
         env:
-          CXX: ${{ matrix.cxx }}
-        run: |
-          if [[ "${{ matrix.cxx }}" == "clang++-"* ]]; then
-            bash ./seqan3/.github/workflows/scripts/install_via_brew.sh llvm ${CXX/clang++-/}
-            install_prefix=$(brew --prefix llvm@${CXX/clang++-/})/bin
-            ln -s ${install_prefix}/clang++ ${install_prefix}/"${{ matrix.cxx }}" || true
-            echo "${install_prefix}/" >> $GITHUB_PATH
-          else
-            bash ./seqan3/.github/workflows/scripts/install_via_brew.sh gcc ${CXX/g++-/}
-          fi
+          CC: ${{ matrix.cc }}
+        run: bash ./seqan3/.github/workflows/scripts/install_via_brew.sh $(echo ${CC/clang/llvm} | awk -F '-' '{print $1, $2}')
 
       - name: Tool versions
         run: |
