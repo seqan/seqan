@@ -27,11 +27,11 @@ jobs:
       matrix:
         include:
           - name: "icc (c++20) on Linux"
-            icc_version: "2021.1.2"
+            icc_version: "2021.3.0"
             cxx: icc
             cc: icc
             build_type: Release
-            cxx_flags: "-std=c++20"
+            cxx_flags: "-gxx-name=g++-9 -gcc-name=gcc-9 -std=c++20"
 
     steps:
       - name: Checkout SeqAn2
@@ -71,7 +71,7 @@ jobs:
         run: |
           source /opt/intel/oneapi/compiler/${{ matrix.icc_version }}/env/vars.sh
           env cmake --version
-          env ${{ matrix.cxx }} --version
+          env ${{ matrix.cxx }} ${{ matrix.cxx_flags }} -v
 
       - name: Install dependencies
         run: sudo apt-get install --yes libboost-dev libbz2-dev libxml2-utils zlib1g-dev

@@ -132,27 +132,23 @@ struct Triple
 
     Triple & operator=(Triple const&) = default;
 
-    // TODO(holtgrew): Move comparison operators to global functions?
-    inline bool
-    operator==(Triple const & other) const
+    friend bool operator==(Triple const & me, Triple const & other)
     {
-        return i1 == other.i1 && i2 == other.i2 && i3 == other.i3;
+        return me.i1 == other.i1 && me.i2 == other.i2 && me.i3 == other.i3;
     }
 
-    inline bool
-    operator!=(Triple const & other) const
+    friend bool operator!=(Triple const & me, Triple const & other)
     {
-        return !operator==(other);
+        return !(me == other);
     }
 
-    inline bool
-    operator<(Triple const & other) const
+    friend bool operator<(Triple const & me, Triple const & other)
     {
-        if (i1 < other.i1)
+        if (me.i1 < other.i1)
             return true;
-        if (i1 == other.i1 && i2 < other.i2)
+        if (me.i1 == other.i1 && me.i2 < other.i2)
             return true;
-        if (i1 == other.i1 && i2 == other.i2 && i3 < other.i3)
+        if (me.i1 == other.i1 && me.i2 == other.i2 && me.i3 < other.i3)
                 return true;
         return false;
     }
