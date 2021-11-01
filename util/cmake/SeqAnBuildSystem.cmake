@@ -443,9 +443,9 @@ macro (seqan_setup_library)
     # or "SEQAN_LIBRARY_ONLY" are chosen.
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
 
-        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
+        # Install SeqAn LICENSE, README.md, CHANGELOG.rst files.
         install (FILES LICENSE
-                       README.rst
+                       README.md
                        CHANGELOG.rst
                  DESTINATION ${CMAKE_INSTALL_DOCDIR})
         # Install pkg-config file, except on Windows.
