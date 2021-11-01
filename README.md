@@ -1,9 +1,27 @@
 # SeqAn - The Library for Sequence Analysis
 
-[![Documentation Status][1]][2]
+[![build status][1]][2]
+[![documentation status][3]][4]
+[![license][5]][6]
+[![latest release][7]][8]
+[![platforms][9]][10]
+[![start][11]][12]
+[![twitter][13]][14]
 
-[1]: https://readthedocs.org/projects/seqan/badge/?version=develop
-[2]: https://seqan.readthedocs.io/en/develop?badge=develop
+[1]: https://img.shields.io/github/workflow/status/seqan/seqan/CI%20on%20Linux/develop?style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
+[2]: https://github.com/seqan/seqan/actions?query=branch%3Adevelop
+[3]: https://readthedocs.org/projects/seqan/badge/?version=develop "Open documentation"
+[4]: https://seqan.readthedocs.io/en/develop?badge=develop
+[5]: https://img.shields.io/badge/license-BSD-green.svg "Open license file"
+[6]: https://github.com/seqan/seqan/blob/develop/LICENSE
+[7]: https://img.shields.io/github/release/seqan/seqan.svg "Get the latest release"
+[8]: https://github.com/seqan/seqan/releases/latest
+[9]: https://img.shields.io/badge/platform-linux%20%7C%20bsd%20%7C%20osx%20%7C%20win-informational.svg "Open our API documentation"
+[10]: https://docs.seqan.de/seqan/develop/
+[11]: https://img.shields.io/github/stars/seqan/seqan.svg?style=social "See who starred us"
+[12]: https://github.com/seqan/seqan/stargazers
+[13]: https://img.shields.io/twitter/follow/SeqAnLib.svg?label=follow&style=social "Follow us on Twitter"
+[14]: https://twitter.com/seqanlib
 
 | **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**                        |
 |:--------------------------------------------------------------------------------------------------------------------------:|
@@ -22,21 +40,22 @@ The licenses for the applications themselves can be found in the LICENSE files.
 
 ## Prerequisites
 
-Linux, macOS, FreeBSD:
-  * GCC ≥ 5 [limited GCC-4.9 support on Linux]
-  * Clang/LLVM ≥ 3.6 [limited Clang-3.5 support on Linux]
-  * Intel Compiler ≥ 17.0.0 on Linux
-Windows:
-  * Visual C++ ≥ 14.0 / Visual Studio ≥ 2015
-  * Intel Compiler ≥ 17.0.0 / Visual Studio ≥ 2015u2
-  * Clang/C2 ≥ 3.8.0 / Visual Studio ≥ 2015u3 [experimental, requires CMake ≥ 3.6]
+Older compiler versions might work but are not supported.
 
-Architecture support:
+### Linux, macOS, FreeBSD
+  * GCC ≥ 7
+  * Clang/LLVM ≥ 9
+  * Intel Compiler ≥ 2021.3.0 (Intel OneAPI)
+
+### Windows
+  * Visual C++ ≥ 16.0 / Visual Studio ≥ 2019
+
+### Architecture support
   * Intel/AMD platforms, including optimisations for modern instruction sets (`POPCNT`, `SSE4`, `AVX2`, `AVX512`)
   * All Debian release architectures supported, including most ARM and all PowerPC platforms.
 
-To build tests, demos, and official SeqAn applications you also need:
-  * CMake ≥ 3.12
+### Build system
+  * To build tests, demos, and official SeqAn applications you also need CMake ≥ 3.12.
 
 Some official applications might have additional requirements or only work on a subset of platforms.
 
