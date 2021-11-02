@@ -11,7 +11,6 @@ on:
 
 env:
   TZ: Europe/Berlin
-  SEQAN_CONRIB_VERSION: D20200923
 
 jobs:
   build:
@@ -40,29 +39,21 @@ jobs:
         with:
           toolset: ${{ matrix.toolset }}
 
-      - name: Get cached SeqAn Contrib
-        id: get-contrib
-        uses: actions/cache@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
         with:
-          path: seqan-contrib
-          key: SeqAn-Contrib-${{ env.SEQAN_CONRIB_VERSION }}
+          python-version: 3.x
 
-      - name: Download SeqAn Contrib
-        if: steps.get-contrib.outputs.cache-hit != 'true'
+      - name: Install Python dependencies
         run: |
-          New-Item -Name "seqan-contrib" -ItemType "directory" -Force
-          cd seqan-contrib
-          Invoke-WebRequest -OutFile seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip -TimeoutSec 30 -MaximumRetryCount 20 -RetryIntervalSec 30 http://ftp.seqan.de/contribs/seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip
-          unzip seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64.zip
+          pip install setuptools wheel
+          pip install -r seqan/manual/requirements.txt
 
-      - name: Setup python environment
+      - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: seqan
-          environment-file: seqan/manual/environment.yml
 
-      - name: Install clcache
-        run: pip install clcache
+      - name: Install conda dependencies
+        run: conda install -c conda-forge clcache boost-cpp bzip2 libxml2 zlib
 
       - name: Get cached build
         uses: actions/cache@v2
@@ -81,7 +72,13 @@ jobs:
         run: |
           New-Item -Name "seqan-build" -ItemType "directory" -Force
           cd seqan-build
-          cmake ../seqan -G"${{ matrix.name }}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DSEQAN_DISABLE_VERSION_CHECK=ON -DSEQAN_TRAVIS_BUILD:BOOL=ON
+          cmake ../seqan -G"${{ matrix.name }}" `
+                         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" `
+                         -DSEQAN_DISABLE_VERSION_CHECK=ON `
+                         -DSEQAN_TRAVIS_BUILD:BOOL=ON `
+                         -DPython3_ROOT_DIR=$env:pythonLocation `
+                         -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3
 
       - name: Build tests
         env:
@@ -93,10 +90,15 @@ jobs:
         run: |
           cd seqan-build
           clcache.exe -M 209715200 # Set Maximum cache size to 200 MiB
-          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
+          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 `
+                -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
 
       - name: Run tests
         run: |
           $env:Path += ";${{ github.workspace }}\seqan-contrib\seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64\vs${{ matrix.msvc_ver }}\lib\"
           cd seqan-build
-          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 120 -or ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 120 --rerun-failed
+          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240
+          if (!$?)
+          {
+            ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 --rerun-failed
+          }
