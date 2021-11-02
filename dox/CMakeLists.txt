@@ -11,7 +11,7 @@ project (seqan_dox CXX)
 
 find_package (Python3)
 if (NOT Python3_Interpreter_FOUND)
-    message (STATUS "  You need Python for building dox. (skip the tests)")
+    message (STATUS "  You need Python for building dox. (skipping)")
     return ()
 endif ()
 
@@ -22,7 +22,7 @@ execute_process(COMMAND ${Python3_EXECUTABLE} -c "import jinja2"
                 ERROR_VARIABLE _IGNORED)
 
 if (PYTHON_JINJA2_NOT_FOUND)
-  message (STATUS "  The Python package jinja2 is required for building dox ('import jinja2' failed). (skip the tests)")
+  message (STATUS "  The Python package jinja2 is required for building dox ('import jinja2' failed). (skipping)")
   return ()
 endif (PYTHON_JINJA2_NOT_FOUND)
 
