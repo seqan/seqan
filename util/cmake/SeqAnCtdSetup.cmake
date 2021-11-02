@@ -64,13 +64,6 @@ endif ()
 # Variable Setup
 # ============================================================================
 
-# Get path that all binaries are placed in.  With MSVC, we have to extend that
-# path with the configuration name.
-set (SEQAN_BIN_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-if (MSVC)
-  set (SEQAN_BIN_DIR "${SEQAN_BIN_DIR}/$(ConfigurationName)")
-endif ()
-
 # The user-definable setting for the output plugin dir.
 set (WORKFLOW_PLUGIN_DIR ${CMAKE_BINARY_DIR}/workflow_plugin_dir CACHE PATH
      "Directory containing the generated plugin-sources for the SeqAn Workflow/KNIME package")
