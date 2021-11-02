@@ -17,7 +17,7 @@ if (NOT Python3_Interpreter_FOUND)
 endif (NOT Python3_Interpreter_FOUND)
 
 # Look for nosetests and stop if it cannot be found
-execute_process(COMMAND ${Python3_EXECUTABLE} -m "nose"
+execute_process(COMMAND ${Python3_EXECUTABLE} -c "import nose"
                 RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND
                 OUTPUT_VARIABLE _IGNORED
                 ERROR_VARIABLE _IGNORED)
