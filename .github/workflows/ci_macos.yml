@@ -163,4 +163,4 @@ jobs:
       - name: Run tests
         run: |
           cd seqan-build
-          ctest . -j3 --output-on-failure --timeout 120 || ctest . -j3 --output-on-failure --timeout 120 --rerun-failed
+          ctest . -j3 --output-on-failure --timeout 240 || ctest . -j3 --output-on-failure --timeout 240 --rerun-failed

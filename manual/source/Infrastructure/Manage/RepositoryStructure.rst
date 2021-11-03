@@ -46,7 +46,7 @@ The main repository structure is shown in the following picture.
       |-- CMakeLists.txt    CMake script file.
       |
       |-- LICENSE           Top-Level Information Files
-      |-- README.rst
+      |-- README.md
       |
       |-- apps              Applications
       |
@@ -62,7 +62,7 @@ The main repository structure is shown in the following picture.
       |
       `-- util              Miscellaneous and Utility Code
 
-The repository root contains some **information files** such as the ``LICENSE`` and ``README.rst``.
+The repository root contains some **information files** such as the ``LICENSE`` and ``README.md``.
 The other folders are as follows:
 
 apps

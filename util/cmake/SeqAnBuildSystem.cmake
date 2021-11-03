@@ -408,6 +408,13 @@ endmacro (seqan_add_app_test APP_NAME)
 # Add ctd test for tools that export a ctd desrciption.
 # ---------------------------------------------------------------------------
 
+# Get path that all binaries are placed in.  With MSVC, we have to extend that
+# path with the configuration name.
+set (SEQAN_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
+if (MSVC)
+  set (SEQAN_BIN_DIR "${SEQAN_BIN_DIR}/$<CONFIG>")
+endif ()
+
 # App tests are run using xmllint.
 # However, we only test this in developer mode, such that searching for the xmllint tool is
 # done globally in the build system setup routine.
@@ -420,8 +427,8 @@ macro (seqan_add_ctd_test APP_NAME)
     else ()
         # Add a custom command to create the ctd once the binary has been built.
         add_custom_command(TARGET ${APP_NAME}
-                        POST_BUILD
-                        COMMAND ${CMAKE_BINARY_DIR}/bin/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
+                           POST_BUILD
+                           COMMAND ${SEQAN_BIN_DIR}/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
 
         # Add the ctd test.
         add_test (NAME ctd_test_${APP_NAME}
@@ -443,9 +450,9 @@ macro (seqan_setup_library)
     # or "SEQAN_LIBRARY_ONLY" are chosen.
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
 
-        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
+        # Install SeqAn LICENSE, README.md, CHANGELOG.rst files.
         install (FILES LICENSE
-                       README.rst
+                       README.md
                        CHANGELOG.rst
                  DESTINATION ${CMAKE_INSTALL_DOCDIR})
         # Install pkg-config file, except on Windows.
