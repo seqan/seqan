@@ -2,5 +2,5 @@ sphinx>=2.0.0
 seqansphinx>=0.4.0
 sphinx_rtd_theme
 sphinxcontrib-bibtex
-nose
+nose2
 jinja2

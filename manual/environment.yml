@@ -5,7 +5,7 @@ dependencies:
   - sphinx=3.4.3
   - sphinx_rtd_theme
   - sphinxcontrib-bibtex
-  - nose
+  - nose2
   - jinja2
   - pip
   - pip:
