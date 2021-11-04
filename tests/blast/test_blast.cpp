@@ -36,7 +36,7 @@
 
 #include <seqan/basic.h>
 
-#ifndef COMPILER_MSVC
+#if !defined(COMPILER_MSVC) || _MSC_VER >= 1920
 
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -98,6 +98,6 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 SEQAN_END_TESTSUITE
 
 #else
-#pragma message("Due to a bug in Microsoft Visual Studio 2015 the BLAST module is deactivated.")
+#pragma message("Due to a bug in Microsoft Visual Studio < 2019, the BLAST module is deactivated.")
 int main() {}
 #endif

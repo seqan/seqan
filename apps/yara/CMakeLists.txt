@@ -14,11 +14,6 @@ message (STATUS "Configuring apps/yara")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-if (COMPILER_MSVC)
-    message (STATUS "  Skipping yara on Visual Studio")
-    return ()
-endif ()
-
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)
