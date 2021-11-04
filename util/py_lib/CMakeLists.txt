@@ -12,7 +12,7 @@
 find_package (Python3)
 
 if (NOT Python3_Interpreter_FOUND)
-  message (STATUS "  Python not found, cannot test py_lib.")
+  message (STATUS "  Skipping py_lib tests")
   return ()
 endif (NOT Python3_Interpreter_FOUND)
 
@@ -23,12 +23,13 @@ execute_process(COMMAND ${Python3_EXECUTABLE} -c "import nose2"
                 ERROR_VARIABLE _IGNORED)
 
 if (PYTHON_NOSE2_NOT_FOUND)
-  message (STATUS "  Python nose2 ('import nose2' failed), cannot add tests for seqan.dox")
+  message (STATUS "Could NOT find Python3 module nose2")
+  message (STATUS "  Skipping py_lib tests")
   return ()
 endif (PYTHON_NOSE2_NOT_FOUND)
 
 # Adding test for dox.
-message (STATUS "  adding nose2 for seqan.dox")
+message (STATUS "Found Python3 module nose2")
 add_test (NAME test_py_lib_dox
           COMMAND nose2
           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/seqan/dox)

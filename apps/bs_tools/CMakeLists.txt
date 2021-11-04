@@ -28,10 +28,15 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
-if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
-    message (STATUS "  Boost or zlib not found: Not building bs_tools.")
+if (NOT Boost_FOUND)
+    message (STATUS "  Skipping bs_tools, missing Boost")
     return ()
-endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
+endif ()
+
+if (NOT ZLIB_FOUND)
+    message (STATUS "  Skipping bs_tools, missing zlib")
+    return ()
+endif ()
 
 # ----------------------------------------------------------------------------
 # Build Setup

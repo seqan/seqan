@@ -22,7 +22,7 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
 endif ()
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message (STATUS "  Not building splazers on 32bit architectures.")
+    message (STATUS "  Skipping splazers on 32-bit architectures")
     return ()
 endif()
 

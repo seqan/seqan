@@ -15,7 +15,7 @@ message (STATUS "Configuring apps/yara")
 # ----------------------------------------------------------------------------
 
 if (COMPILER_MSVC)
-    message (STATUS "Yara is currently not build on Microsoft Visual because it requires OpenMP 3.0.")
+    message (STATUS "  Skipping yara on Visual Studio")
     return ()
 endif ()
 
@@ -29,17 +29,17 @@ endif ()
 
 # Warn if OpenMP was not found.
 if (NOT OPENMP_FOUND)
-  message (STATUS "  OpenMP 3.0 not found: building yara without multi-threading.")
+  message (STATUS "  Could NOT find OpenMP 3.0: building without multi-threading")
 endif (NOT OPENMP_FOUND)
 
 # Warn if Zlib was not found.
 if (NOT ZLIB_FOUND)
-  message (STATUS "  Zlib not found: building yara without gzipped input and BAM output.")
+  message (STATUS "  Could NOT find zlib: building without gzipped input and BAM output support")
 endif (NOT ZLIB_FOUND)
 
 # Warn if BZip2 was not found.
 if (NOT BZIP2_FOUND)
-  message (STATUS "  BZip2 not found: building yara without bzipped input.")
+  message (STATUS "  Could NOT find bzip2: building without bzipped input support")
 endif (NOT BZIP2_FOUND)
 
 # ----------------------------------------------------------------------------
