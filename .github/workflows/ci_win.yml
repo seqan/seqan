@@ -91,11 +91,10 @@ jobs:
           cd seqan-build
           clcache.exe -M 209715200 # Set Maximum cache size to 200 MiB
           cmake --build . --config "${{ matrix.build_type }}" --parallel 2 `
-                -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe
+                -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe /p:CLToolPath=$((Get-Item (Get-Command clcache.exe).Path).DirectoryName)
 
       - name: Run tests
         run: |
-          $env:Path += ";${{ github.workspace }}\seqan-contrib\seqan-contrib-$env:SEQAN_CONRIB_VERSION-x64\vs${{ matrix.msvc_ver }}\lib\"
           cd seqan-build
           ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240
           if (!$?)
