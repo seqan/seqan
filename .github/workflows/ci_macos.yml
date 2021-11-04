@@ -143,7 +143,7 @@ jobs:
           cmake ../seqan -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
                          -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" \
                          -DSEQAN_DISABLE_VERSION_CHECK=ON \
-                         -DSEQAN_TRAVIS_BUILD:BOOL=ON \
+                         -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
                          -DPython3_ROOT_DIR=${pythonLocation} \
                          -DPython3_EXECUTABLE=${pythonLocation}/bin/python3 \
                          -DCMAKE_C_COMPILER_LAUNCHER=ccache \

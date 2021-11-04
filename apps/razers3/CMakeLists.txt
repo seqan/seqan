@@ -16,9 +16,9 @@ set (SEQAN_APP_VERSION "3.5.9")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-# Disable RazerS3 on Travis CI because of computational resource limits.
-if (SEQAN_TRAVIS_BUILD)
-    message (STATUS "  RazerS 3 is not built on Travis CI.")
+# Disable RazerS3 on GitHub Actions because of computational resource limits.
+if (SEQAN_GH_ACTIONS_BUILD)
+    message (STATUS "  Skipping razers3 on GitHub Actions")
     return ()
 endif ()
 
