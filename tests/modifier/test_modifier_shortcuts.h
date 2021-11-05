@@ -317,4 +317,70 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set)
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[1]);
 }
 
+// https://github.com/seqan/seqan/pull/2433
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_packed_concat_direct_stringset)
+{
+    // It might require a few repetitions to encounter the error.
+    size_t const test_repetitions{4};
+
+    for (size_t repetition = 0; repetition < test_repetitions; ++repetition)
+    {
+        size_t const string_repetitions{4};
+        seqan::DnaString str1("ACGTAGCTCGTACGATCGATCGTAGCATCGATCG");
+        seqan::DnaString str2("ACTACGATGCTAGCTGACTGAC");
+        seqan::DnaString const EXPECTED_STRING1 = "GCTAGCTACGATGCTAGCTAGCATGCTCGATGCA";
+        seqan::DnaString const EXPECTED_STRING2 = "CAGTCAGTCGATCGTAGCATCA";
+
+        // Test non-const version.
+        seqan::StringSet<seqan::String<seqan::Dna, seqan::Packed<> >, seqan::Owner<seqan::ConcatDirect<> > > strSet;
+        for (size_t i = 0; i < string_repetitions; ++i)
+        {
+            appendValue(strSet, str1);
+            appendValue(strSet, str2);
+        }
+
+        seqan::reverse(strSet);
+        SEQAN_ASSERT_EQ(string_repetitions * 2u, length(strSet));
+
+        for (size_t i = 0; i < string_repetitions; ++i)
+        {
+            SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSet[i]);
+            SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[++i]);
+        }
+    }
+}
+
+// https://github.com/seqan/seqan/pull/2433
+SEQAN_DEFINE_TEST(test_modifer_shortcuts_reverse_complement_packed_concat_direct_stringset)
+{
+    // It might require a few repetitions to encounter the error.
+    size_t const test_repetitions{4};
+
+    for (size_t repetition = 0; repetition < test_repetitions; ++repetition)
+    {
+        size_t const string_repetitions{4};
+        seqan::DnaString str1("ACGTAGCTCGTACGATCGATCGTAGCATCGATCG");
+        seqan::DnaString str2("ACTACGATGCTAGCTGACTGAC");
+        seqan::DnaString const EXPECTED_STRING1 = "CGATCGATGCTACGATCGATCGTACGAGCTACGT";
+        seqan::DnaString const EXPECTED_STRING2 = "GTCAGTCAGCTAGCATCGTAGT";
+
+        // Test non-const version.
+        seqan::StringSet<seqan::String<seqan::Dna, seqan::Packed<> >, seqan::Owner<seqan::ConcatDirect<> > > strSet;
+        for (size_t i = 0; i < string_repetitions; ++i)
+        {
+            appendValue(strSet, str1);
+            appendValue(strSet, str2);
+        }
+
+        seqan::reverseComplement(strSet, seqan::Parallel());
+        SEQAN_ASSERT_EQ(string_repetitions * 2u, length(strSet));
+
+        for (size_t i = 0; i < string_repetitions; ++i)
+        {
+            SEQAN_ASSERT_EQ(EXPECTED_STRING1, strSet[i]);
+            SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[++i]);
+        }
+    }
+}
+
 #endif  // SEQAN_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
