@@ -68,6 +68,8 @@ SEQAN_BEGIN_TESTSUITE(test_modifier)
     SEQAN_CALL_TEST(test_modifer_shortcuts_to_lower_in_place_string_set);
     SEQAN_CALL_TEST(test_modifer_shortcuts_to_upper_in_place_string);
     SEQAN_CALL_TEST(test_modifer_shortcuts_to_upper_in_place_string_set);
+    SEQAN_CALL_TEST(test_modifer_shortcuts_reverse_packed_concat_direct_stringset);
+    SEQAN_CALL_TEST(test_modifer_shortcuts_reverse_complement_packed_concat_direct_stringset);
 
     // Test modifier functors.
     SEQAN_CALL_TEST(test_modifier_functors_functor_upcase);
