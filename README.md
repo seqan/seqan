@@ -1,27 +1,24 @@
 # SeqAn - The Library for Sequence Analysis
 
 [![build status][1]][2]
-[![documentation status][3]][4]
-[![license][5]][6]
-[![latest release][7]][8]
-[![platforms][9]][10]
-[![start][11]][12]
-[![twitter][13]][14]
+[![license][3]][4]
+[![latest release][5]][6]
+[![platforms][7]][8]
+[![start][9]][10]
+[![twitter][11]][12]
 
 [1]: https://img.shields.io/github/workflow/status/seqan/seqan/CI%20on%20Linux/develop?style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
 [2]: https://github.com/seqan/seqan/actions?query=branch%3Adevelop
-[3]: https://readthedocs.org/projects/seqan/badge/?version=develop "Open documentation"
-[4]: https://seqan.readthedocs.io/en/develop?badge=develop
-[5]: https://img.shields.io/badge/license-BSD-green.svg "Open license file"
-[6]: https://github.com/seqan/seqan/blob/develop/LICENSE
-[7]: https://img.shields.io/github/release/seqan/seqan.svg "Get the latest release"
-[8]: https://github.com/seqan/seqan/releases/latest
-[9]: https://img.shields.io/badge/platform-linux%20%7C%20bsd%20%7C%20osx%20%7C%20win-informational.svg "Open our API documentation"
-[10]: https://docs.seqan.de/seqan/develop/
-[11]: https://img.shields.io/github/stars/seqan/seqan.svg?style=social "See who starred us"
-[12]: https://github.com/seqan/seqan/stargazers
-[13]: https://img.shields.io/twitter/follow/SeqAnLib.svg?label=follow&style=social "Follow us on Twitter"
-[14]: https://twitter.com/seqanlib
+[3]: https://img.shields.io/badge/license-BSD-green.svg "Open license file"
+[4]: https://github.com/seqan/seqan/blob/develop/LICENSE
+[5]: https://img.shields.io/github/release/seqan/seqan.svg "Get the latest release"
+[6]: https://github.com/seqan/seqan/releases/latest
+[7]: https://img.shields.io/badge/platform-linux%20%7C%20bsd%20%7C%20osx%20%7C%20win-informational.svg "Open our API documentation"
+[8]: https://docs.seqan.de/seqan/develop/
+[9]: https://img.shields.io/github/stars/seqan/seqan.svg?style=social "See who starred us"
+[10]: https://github.com/seqan/seqan/stargazers
+[11]: https://img.shields.io/twitter/follow/SeqAnLib.svg?label=follow&style=social "Follow us on Twitter"
+[12]: https://twitter.com/seqanlib
 
 | **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**                        |
 |:--------------------------------------------------------------------------------------------------------------------------:|

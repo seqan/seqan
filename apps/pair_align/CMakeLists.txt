@@ -12,10 +12,10 @@ message (STATUS "Configuring apps/pair_align")
 
 set (SEQAN_APP_VERSION "1.3.9")
 
-if (SEQAN_TRAVIS_BUILD)
-    message (STATUS "  Skipping build and test of pair_align on Travis CI.")
+if (SEQAN_GH_ACTIONS_BUILD)
+    message (STATUS "  Skipping pair_align on GitHub Actions")
     return ()
-endif (SEQAN_TRAVIS_BUILD)
+endif (SEQAN_GH_ACTIONS_BUILD)
 
 # ----------------------------------------------------------------------------
 # Dependencies

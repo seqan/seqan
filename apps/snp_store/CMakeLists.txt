@@ -23,8 +23,13 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
-if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
-    message (STATUS "  Boost or zlib not found: Not building snp_store.")
+if (NOT Boost_FOUND)
+    message (STATUS "  Skipping snp_store, missing Boost")
+    return ()
+endif ()
+
+if (NOT ZLIB_FOUND)
+    message (STATUS "  Skipping snp_store, missing zlib")
     return ()
 endif ()
 

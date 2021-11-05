@@ -741,6 +741,7 @@ endmacro (seqan_get_version)
 
 macro (seqan_get_repository_info)
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
+  message (STATUS "Detected git repository:")
   message (STATUS "  Selected repository dir: ${CMAKE_SOURCE_DIR}")
   # Get Git information.
   if (EXISTS ${_SEQAN_GIT_DIR})
@@ -876,7 +877,7 @@ function (seqan_register_demos PREFIX)
         endif ()
 
         if (SKIP)
-            message(STATUS "${ENTRY} skipped on this platform." )
+            message(STATUS "Skipping ${ENTRY} on this platform" )
         else (SKIP)
             string (REPLACE "/" "_" BIN_NAME "${ENTRY}")
             string (REPLACE "\\" "_" BIN_NAME "${BIN_NAME}")

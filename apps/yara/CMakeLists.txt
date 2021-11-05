@@ -15,7 +15,7 @@ message (STATUS "Configuring apps/yara")
 # ----------------------------------------------------------------------------
 
 if (COMPILER_MSVC)
-    message (STATUS "Yara is currently not build on Microsoft Visual because it requires OpenMP 3.0.")
+    message (STATUS "  Skipping yara on Visual Studio")
     return ()
 endif ()
 
@@ -29,17 +29,17 @@ endif ()
 
 # Warn if OpenMP was not found.
 if (NOT OPENMP_FOUND)
-  message (STATUS "  OpenMP 3.0 not found: building yara without multi-threading.")
+  message (STATUS "  Could NOT find OpenMP 3.0: building without multi-threading")
 endif (NOT OPENMP_FOUND)
 
 # Warn if Zlib was not found.
 if (NOT ZLIB_FOUND)
-  message (STATUS "  Zlib not found: building yara without gzipped input and BAM output.")
+  message (STATUS "  Could NOT find zlib: building without gzipped input and BAM output support")
 endif (NOT ZLIB_FOUND)
 
 # Warn if BZip2 was not found.
 if (NOT BZIP2_FOUND)
-  message (STATUS "  BZip2 not found: building yara without bzipped input.")
+  message (STATUS "  Could NOT find bzip2: building without bzipped input support")
 endif (NOT BZIP2_FOUND)
 
 # ----------------------------------------------------------------------------
@@ -49,9 +49,9 @@ endif (NOT BZIP2_FOUND)
 set (SEQAN_APP_VERSION "1.0.3")
 
 option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
-if (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
+if (YARA_LARGE_CONTIGS AND NOT SEQAN_GH_ACTIONS_BUILD)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
-endif (YARA_LARGE_CONTIGS AND NOT SEQAN_TRAVIS_BUILD)
+endif (YARA_LARGE_CONTIGS AND NOT SEQAN_GH_ACTIONS_BUILD)
 
 # ----------------------------------------------------------------------------
 # Disable Compiler Warnings

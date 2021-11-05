@@ -13,7 +13,7 @@ message(STATUS "CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
 # create cache - mind the newline between variables!
 set(INITIAL_CACHE
 "CMAKE_BUILD_TYPE=Release
-SEQAN_TRAVIS_BUILD:BOOL=ON")
+SEQAN_GH_ACTIONS_BUILD:BOOL=ON")
 file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" ${INITIAL_CACHE})
 
 # customize reporting of errors in CDash

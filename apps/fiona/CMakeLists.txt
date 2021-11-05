@@ -24,20 +24,25 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
+# all windows compilers are currently broken with Fiona (in different ways)
+if (MSVC)
+    message (STATUS "  Skipping fiona on Visual Studio")
+    return ()
+endif()
+
 # Stop here if we cannot find Boost or OpenMP.
-if (NOT Boost_FOUND OR NOT OPENMP_FOUND)
-    message (STATUS "  Boost or OpenMP not found, not building fiona.")
+if (NOT Boost_FOUND)
+    message (STATUS "  Skipping fiona, missing Boost")
+    return ()
+endif ()
+
+if (NOT OPENMP_FOUND)
+    message (STATUS "  Skipping fiona, missing OpenMP")
     return ()
 endif ()
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message (STATUS "  Not building fiona on 32bit architectures.")
-    return ()
-endif()
-
-# all windows compilers are currently broken with Fiona (in different ways)
-if (MSVC)
-    message (STATUS "  Not building fiona under Visual Studio.")
+    message (STATUS "  Skipping fiona on 32-bit architectures")
     return ()
 endif()
 

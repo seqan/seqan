@@ -12,10 +12,10 @@ message (STATUS "Configuring apps/searchjoin")
 
 set (SEQAN_APP_VERSION "0.5.9")
 
-if (SEQAN_TRAVIS_BUILD)
-    message (STATUS "  Skipping build and test of searchjoin on Travis CI.")
+if (SEQAN_GH_ACTIONS_BUILD)
+    message (STATUS "  Skipping searchjoin on GitHub Actions")
     return ()
-endif (SEQAN_TRAVIS_BUILD)
+endif (SEQAN_GH_ACTIONS_BUILD)
 
 # ----------------------------------------------------------------------------
 # Dependencies
