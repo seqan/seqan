@@ -8,6 +8,12 @@ on:
       # Push events to branches matching refs/heads/develop
       - 'develop'
   pull_request:
+  # Enables a manual trigger, may run on any branch
+  workflow_dispatch:
+
+concurrency:
+  group: macos-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   CMAKE_VERSION: 3.12.4
@@ -22,6 +28,7 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: macos-10.15
     timeout-minutes: 180
+    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:

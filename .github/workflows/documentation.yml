@@ -7,6 +7,12 @@ on:
       - 'master'
       # Push events to branches matching refs/heads/develop
       - 'develop'
+  # Enables a manual trigger, may run on any branch
+  workflow_dispatch:
+
+concurrency:
+  group: documentation-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   TZ: Europe/Berlin
@@ -20,6 +26,7 @@ jobs:
     name: Deploy Documentation
     runs-on: ubuntu-20.04
     timeout-minutes: 30
+    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout SeqAn2
         uses: actions/checkout@v2

@@ -8,6 +8,12 @@ on:
       # Push events to branches matching refs/heads/develop
       - 'develop'
   pull_request:
+  # Enables a manual trigger, may run on any branch
+  workflow_dispatch:
+
+concurrency:
+  group: windows-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   TZ: Europe/Berlin
@@ -17,6 +23,7 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 180
+    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
@@ -96,7 +103,7 @@ jobs:
       - name: Run tests
         run: |
           cd seqan-build
-          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240
+          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 -E "build_manual|test_py_lib_dox"
           if (!$?)
           {
             ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 --rerun-failed
