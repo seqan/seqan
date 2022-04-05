@@ -199,8 +199,17 @@ guessFormatFromStream(TStream &istream, Tag<TFormat_>)
 
     SEQAN_ASSERT(istream.good());
 
+    // For any instance of this function template, the following comparison will either be always true,
+    // or always false. E.g., the bzip files will always have a magic header. The "Nothing" file or
+    // SimpleIntervalsFile do not have a magic header, i.e. NULL.
+    // This could also be solved by:
+    //   * Adding specialisations. However, this would need some forward declarations, etc.
+    //   * if constexpr. This would require to make all VALUE static constexpr.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waddress"
     if ((char *)MagicHeader<TFormat>::VALUE == NULL)
         return true;
+#pragma GCC diagnostic pop
 
     bool match = true;
 
