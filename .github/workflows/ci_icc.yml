@@ -26,7 +26,7 @@ defaults:
 jobs:
   build:
     name: ${{ matrix.name }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 180
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
@@ -34,7 +34,7 @@ jobs:
       matrix:
         include:
           - name: "icc (c++20) on Linux"
-            icc_version: "2021.3.0"
+            icc_version: "2022.1.0"
             cxx: icc
             cc: icc
             build_type: Release
@@ -42,16 +42,16 @@ jobs:
 
     steps:
       - name: Checkout SeqAn2
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: seqan
           fetch-depth: 2
 
       - name: Checkout SeqAn3
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: seqan/seqan3
-          ref: 055a3bea684238c29ee27977b103103a0211797f
+          ref: 39e696830bbdcde0e520c87811db3eb5e083d7c0
           path: seqan3
           fetch-depth: 2
           submodules: false
@@ -94,7 +94,7 @@ jobs:
           pip install -r seqan/manual/requirements.txt
 
       - name: Load ccache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .ccache
           key: ${{ runner.os }}-${{ matrix.name }}-ccache-${{ github.ref }}-${{ github.run_number }}
@@ -135,5 +135,6 @@ jobs:
 
       - name: Run tests
         run: |
+          source /opt/intel/oneapi/compiler/${{ matrix.icc_version }}/env/vars.sh
           cd seqan-build
           ctest . -j2 --output-on-failure --timeout 240 || ctest . -j2 --output-on-failure --timeout 240 --rerun-failed

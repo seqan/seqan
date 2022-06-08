@@ -171,12 +171,12 @@ install (FILES example/adeno_virus.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
-    CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11 AND
-    NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  message (STATUS "Skipping mason2 tests on Unix GCC>=11")
-else ()
+# Presumably due to https://github.com/gcc-mirror/gcc/commit/98c37d3bacbb2f8bbbe56ed53a9547d3be01b66b
+if (CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+                                            CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 10))
   seqan_add_app_test (mason2)
+else ()
+  message (STATUS "Skipping mason2 tests on Unix GCC!=10")
 endif ()
 
 # ----------------------------------------------------------------------------

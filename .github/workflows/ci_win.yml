@@ -28,16 +28,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Visual Studio 16 2019"
-            os: windows-2019
-            toolset: '14.29'
-            msvc_ver: '16'
+          - name: "Visual Studio 17 2022"
+            os: windows-2022
+            toolset: '14.32'
+            msvc_ver: '17'
             build_type: Release
             cxx_flags: "/std:c++latest"
 
     steps:
       - name: Checkout SeqAn2
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: seqan
 
@@ -63,7 +63,7 @@ jobs:
         run: conda install -c conda-forge clcache boost-cpp bzip2 libxml2 zlib
 
       - name: Get cached build
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .clcache
           key: ${{ matrix.name }}-clcache-${{ github.ref }}-${{ github.run_number }}
