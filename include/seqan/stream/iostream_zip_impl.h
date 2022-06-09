@@ -129,7 +129,7 @@ bool basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::zip_to_stream(
     typename basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::char_type * buffer_,
     std::streamsize buffer_size_)
 {
-    std::streamsize written_byte_size = 0, total_written_byte_size = 0;
+    std::streamsize written_byte_size = 0;
 
     m_zip_stream.next_in = (byte_buffer_type)buffer_;
     m_zip_stream.avail_in = static_cast<uInt>(buffer_size_ * sizeof(char_type));
@@ -144,7 +144,6 @@ bool basic_zip_streambuf<Elem, Tr, ElemA, ByteT, ByteAT>::zip_to_stream(
         if (m_err == Z_OK  || m_err == Z_STREAM_END)
         {
             written_byte_size = static_cast<std::streamsize>(m_output_buffer.size()) - m_zip_stream.avail_out;
-            total_written_byte_size += written_byte_size;
 
             // ouput buffer is full, dumping to ostream
             m_ostream.write((const char_type *) &(m_output_buffer[0]),
