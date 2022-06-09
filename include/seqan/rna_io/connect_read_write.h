@@ -207,7 +207,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Connect const & /*tag*/)
         skipUntil(iter, NotFunctor<IsWhitespace>());
 
         // paired position: add undirected edge (weight=1.0) if connected
-        unsigned pairPos;
+        unsigned pairPos{};
         readUntil(buffer, iter, IsWhitespace());
         if (!lexicalCast(pairPos, buffer))
             SEQAN_THROW(BadLexicalCast(pairPos, buffer));

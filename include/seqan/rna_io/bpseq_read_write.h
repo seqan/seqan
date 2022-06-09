@@ -159,7 +159,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Bpseq const & /*tag*/)
         if (empty(buffer))
             SEQAN_THROW(EmptyFieldError("PAIR"));
 
-        unsigned pairPos;
+        unsigned pairPos{};
         if (!lexicalCast(pairPos, buffer))
             SEQAN_THROW(BadLexicalCast(pairPos, buffer));
 

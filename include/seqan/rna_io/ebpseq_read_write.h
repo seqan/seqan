@@ -279,7 +279,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
         unsigned bppID = 0;
         forEach(columnLabels, [&](std::string const & label)
         {
-            unsigned pairPos;
+            unsigned pairPos{};
             typename Size<String<std::size_t> >::Type tID;
             readUntil(buffer, iter, IsWhitespace());
 
