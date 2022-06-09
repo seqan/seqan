@@ -52,7 +52,7 @@ using namespace seqan;
 
 struct CountingChar
 {
-    char value;                     // value of the object
+    char value{};                     // value of the object
     static unsigned numConstruct;   // number of constructor calls
     static unsigned numDeconstruct; // number of destructor calls
 
@@ -66,10 +66,17 @@ struct CountingChar
         numConstruct += 1;
     }
 
-    CountingChar(CountingChar const & other) : value(other.value)
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wstringop-overflow="
+#endif
+    CountingChar(CountingChar const & other): value(other.value)
     {
         numConstruct += 1;
     }
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#    pragma GCC diagnostic pop
+#endif
 
     CountingChar & operator=(CountingChar const &) = default;
 
