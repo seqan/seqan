@@ -175,10 +175,6 @@ void simulateReads(
 	TGenome& currentSource = genomeSet[0];
 	int seqLength = length(currentSource);
 
-	int fragmentSize = readLength;
-	if (libSize > 0)
-		fragmentSize = libSize + libError;
-
 	String<int> sortedStartPos;
 /*				# Pick a library size
 				currentLibrary = sample(1:(length(librarySizes)), 1)
