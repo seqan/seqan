@@ -731,7 +731,14 @@ inline void setValidValues(ArgParseArgument & me, std::string const & valuesStri
         }
         else
         {
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wrestrict"
+#endif
             append(current_argument, *ch);
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#    pragma GCC diagnostic pop
+#endif
         }
     }
     if (current_argument != "")
@@ -1159,7 +1166,14 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
     {
         std::string result = me._fileExtensions[pos];
         if (!result.empty() && result[0] != '.')
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wrestrict"
+#endif
             result.insert(0, ".");
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#    pragma GCC diagnostic pop
+#endif
         return result;
     }
 
