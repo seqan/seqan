@@ -322,7 +322,7 @@ inline void _optimalSearchSchemeDeletion(TDelegate & delegate,
     if (minErrorsLeftInBlock == 0)
     {
         uint8_t const blockIndex2 = std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1);
-        bool const goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
+        bool const goToRight2 = (blockIndex2 == 0) ? true : (s.pi[blockIndex2] > s.pi[blockIndex2 - 1]);
 
         if (goToRight2)
         {
@@ -395,7 +395,7 @@ inline void _optimalSearchSchemeChildren(TDelegate & delegate,
                 else
                 {
                     uint8_t blockIndex2 = std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1);
-                    bool goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
+                    bool const goToRight2 = (blockIndex2 == 0) ? true : (s.pi[blockIndex2] > s.pi[blockIndex2 - 1]);
                     if (goToRight2)
                     {
                         _optimalSearchScheme(delegate, iter, needle, needleLeftPos2, needleRightPos2, errors + delta, s,
