@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 180
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - name: "gcc12 (c++23)"
@@ -135,7 +135,7 @@ jobs:
           mkdir seqan-build
           cd seqan-build
           cmake ../seqan -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" \
+                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} -Wextra -Werror" \
                          -DSEQAN_DISABLE_VERSION_CHECK=ON \
                          -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
                          -DPython3_ROOT_DIR=${pythonLocation} \

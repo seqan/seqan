@@ -77,7 +77,7 @@ public:
 
         // In i, we will count the number of iterations so we can limit the maximal
         // number of iterations.
-        unsigned i = 0;
+        [[maybe_unused]] unsigned i = 0;
 
         // f1 is the density function for r1 and f2 the density function for r2.
 
