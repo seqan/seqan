@@ -140,8 +140,8 @@ template <>
 class BedRecord<Bed3>
 {
 public:
-    static const int INVALID_REFID = -1;
-    static const int INVALID_POS = -1;
+    inline static const int INVALID_REFID = -1;
+    inline static const int INVALID_POS = -1;
 
     // The chromosome name.
     CharString ref;

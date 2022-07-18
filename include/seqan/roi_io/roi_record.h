@@ -64,7 +64,7 @@ public:
 class RoiRecord
 {
 public:
-    static const int INVALID_POS = -1;
+    inline static const int INVALID_POS = -1;
 
     // Chromosome that this region is on.
     CharString ref;

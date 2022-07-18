@@ -128,9 +128,9 @@ class VcfRecord
 {
 public:
     // Constant for invalid reference id.
-    static const int32_t INVALID_REFID = -1;
+    inline static const int32_t INVALID_REFID = -1;
     // Constant for invalid position.
-    static const int32_t INVALID_POS = -1;
+    inline static const int32_t INVALID_POS = -1;
 
     // Numeric id of the reference sequence.
     int32_t rID;
