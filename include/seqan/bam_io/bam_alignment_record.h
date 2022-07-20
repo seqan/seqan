@@ -249,10 +249,10 @@ public:
     CharString tags;  // raw tags in BAM format
     CharString _buffer; // reusable internal buffer (used for I/O)
 
-    static int32_t const INVALID_POS = -1;
-    static int32_t const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
-    static int32_t const INVALID_LEN = 0;
-    static uint32_t const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
+    inline static int32_t const INVALID_POS = -1;
+    inline static int32_t const INVALID_REFID = -1;  // TODO(holtgrew): Rename to ...REF_ID.
+    inline static int32_t const INVALID_LEN = 0;
+    inline static uint32_t const INVALID_QID = 4294967295u;  // TODO(holtgrew): Undocumented as of yet.
 
     BamAlignmentRecord() : _qID(std::numeric_limits<unsigned>::max()) { clear(*this); }
 };

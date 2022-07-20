@@ -120,7 +120,7 @@ class RnaRecord
 {
 private:
     // Constant for an undefined ID.
-    static std::uint32_t const _undef = std::numeric_limits<std::uint32_t>::max();
+    inline static std::uint32_t const _undef = std::numeric_limits<std::uint32_t>::max();
 
 public:
     // NOTE(marehr): Explicitly define a default constructor, to fix a msvc 2017
