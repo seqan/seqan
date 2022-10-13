@@ -122,21 +122,9 @@ def doMain(args):
     config = Config()
     config.load('config.ini')
 
-    # Parse all legacy files.
-    import seqan.dddoc.core as core
-    app = core.App()
-    for path in args.legacy_doc_dirs:
-        print('Scanning %s...' % path)
-        app.loadFiles(path)
-    migrated_doc = raw_doc.RawDoc()
-    if args.legacy_doc_dirs:
-        app.loadingComplete()
-        migrated_doc.entries = migration.migrate(app.dddoc_tree)
-        print('migrated_doc.entries', [e.name.text for e in migrated_doc.entries])
     # Parse all normal input files.
     fmgr = file_mgr.FileManager()
     master_doc = raw_doc.RawDoc()
-    master_doc.merge(migrated_doc)
     fns = FileNameSource(args.inputs)
     for filename in fns.generate():
         if args.debug:
