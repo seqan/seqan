@@ -1293,12 +1293,12 @@ SEQAN_DEFINE_TEST(ticket1108)
 //            std::cerr << i << ", " << std::endl;
             TArray elem;
             resize(elem, ARRAY_SIZE);
-#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
 #    pragma GCC diagnostic push
 #    pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
             appendValue(str, elem);
-#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 2)
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
 #    pragma GCC diagnostic pop
 #endif
             SEQAN_ASSERT_LEQ(length(elem), ARRAY_SIZE);
