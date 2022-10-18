@@ -30,8 +30,7 @@ jobs:
         include:
           - name: "Visual Studio 17 2022"
             os: windows-2022
-            toolset: '14.32'
-            msvc_ver: '17'
+            vsversion : '2022'
             build_type: Release
             cxx_flags: "/std:c++latest"
 
@@ -44,7 +43,7 @@ jobs:
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: ${{ matrix.toolset }}
+          vsversion: ${{ matrix.vsversion }}
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -60,18 +59,18 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
 
       - name: Install conda dependencies
-        run: conda install -c conda-forge clcache boost-cpp bzip2 libxml2 zlib
+        run: conda install -c conda-forge ccache boost-cpp bzip2 libxml2 zlib
 
       - name: Get cached build
         uses: actions/cache@v3
         with:
-          path: .clcache
-          key: ${{ matrix.name }}-clcache-${{ github.ref }}-${{ github.run_number }}
+          path: .ccache
+          key: ${{ matrix.name }}-ccache-${{ github.ref }}-${{ github.run_number }}
           # Restoring: From current branch, otherwise from base branch, otherwise from any branch.
           restore-keys: |
-            ${{ matrix.name }}-clcache-${{ github.ref }}
-            ${{ matrix.name }}-clcache-${{ github.base_ref }}
-            ${{ matrix.name }}-clcache-
+            ${{ matrix.name }}-ccache-${{ github.ref }}
+            ${{ matrix.name }}-ccache-${{ github.base_ref }}
+            ${{ matrix.name }}-ccache-
 
       - name: Configure tests
         env:
@@ -85,20 +84,20 @@ jobs:
                          -DSEQAN_DISABLE_VERSION_CHECK=ON `
                          -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON `
                          -DPython3_ROOT_DIR=$env:pythonLocation `
-                         -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3
+                         -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3 `
+                         -DCMAKE_C_COMPILER_LAUNCHER=ccache `
+                         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build tests
         env:
-          CLCACHE_BASEDIR: ${{ github.workspace }}
-          CLCACHE_DIR: ${{ github.workspace }}/.clcache
-          CLCACHE_COMPRESS: true
-          CLCACHE_COMPRESSLEVEL: 6
-          CLCACHE_HARDLINK: true
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+          CCACHE_COMPRESS: true
+          CCACHE_COMPRESSLEVEL: 6
+          CCACHE_MAXSIZE: 200M
         run: |
           cd seqan-build
-          clcache.exe -M 209715200 # Set Maximum cache size to 200 MiB
-          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 `
-                -- /p:TrackFileAccess=false /p:CLToolExe=clcache.exe /p:CLToolPath=$((Get-Item (Get-Command clcache.exe).Path).DirectoryName)
+          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false
 
       - name: Run tests
         run: |
