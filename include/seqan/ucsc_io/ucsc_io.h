@@ -286,7 +286,7 @@ void readRecord(UcscRecord & record,
     skipOne(iter, IsTab());
 
     // read column 8: exon count
-    unsigned exons;
+    unsigned exons{};
     clear(buffer);
     readUntil(buffer, iter, nextRecord);
     lexicalCastWithException(exons, buffer);

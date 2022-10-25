@@ -469,7 +469,15 @@ template <typename TValue, typename TSpec>
 inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
 {
+// Bogus warning related to calling begin() after reallocating.
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wuse-after-free"
+#endif
     return end(me, Standard()) - begin(me, Standard());
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
+#    pragma GCC diagnostic pop
+#endif
 }
 
 // ----------------------------------------------------------------------------

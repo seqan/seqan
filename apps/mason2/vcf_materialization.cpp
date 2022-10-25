@@ -214,6 +214,27 @@ void VcfMaterializer::init()
                 throw MasonIOException("Could not write methylation levels FAI index.");
         }
     }
+
+    if (!empty(vcfFileName))
+    {
+        size_t const number_contigs_fai_index{numSeqs(faiIndex)};
+        size_t const number_contigs_vcf_file{length(contigNames(context(vcfFileIn)))};
+        auto const fai_index_path{toCString(faiIndex.faiFilename)};
+        auto const vcf_file_path{toCString(vcfFileName)};
+
+        if (number_contigs_fai_index != number_contigs_vcf_file)
+        {
+            std::stringstream error_message{};
+            error_message << "The Number of contigs in FAI index and VCF differ:\n"
+                          << "    " << number_contigs_fai_index << " contig(s) in FAI Index " << fai_index_path << '\n'
+                          << "    " << number_contigs_vcf_file << " contig(s) in VCF file " << vcf_file_path << '\n'
+                          << "Ensure the VCF file and FASTA reference contain the same contigs. Either by supplying "
+                          << "entries for each reference in the VCF file, or by removing all contigs from the FASTA "
+                          << "reference that are not part of the VCF.";
+            throw MasonIOException(error_message.str());
+
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -485,7 +506,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         snpRecord.haplotype = 0;
         for (; !atEnd(inputIter); ++inputIter)
         {
-            if (*inputIter == ':') break;
+            if (*inputIter == ':') break; // ignore information after the genotype
             if ((*inputIter == '|' || *inputIter == '/'))
             {
                 if (!empty(buffer))
@@ -546,6 +567,8 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         seqan::CharString buffer;
         smallIndel.haplotype = 0;
         for (; !atEnd(inputIter); ++inputIter)
+        {
+            if (*inputIter == ':') break; // ignore information after the genotype
             if ((*inputIter == '|' || *inputIter == '/'))
             {
                 if (!empty(buffer))
@@ -561,6 +584,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
             {
                 appendValue(buffer, *inputIter);
             }
+        }
         if (!empty(buffer))
         {
             unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);

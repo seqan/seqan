@@ -179,7 +179,14 @@ namespace seqan
                 {
                     do
                     {
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wstringop-overflow="
+#endif
                         outRef->i2.i[skipped++] = *in;
+#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
+#    pragma GCC diagnostic pop
+#endif
                         ++in;
                         if (idxMod == 0) idxMod = m;
                         --idxMod; --idx;

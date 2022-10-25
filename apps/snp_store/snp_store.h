@@ -3343,7 +3343,7 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     resize(multiReadProfile, maxPos - minPos, TProfile()); // get maxPos minPos
 
     TId refMatchPosId = 0;
-    bool refFound = false;
+    [[maybe_unused]] bool refFound = false;
     TProfIter it = begin(multiReadProfile, Standard() );
     TProfIter itEnd = end(multiReadProfile, Standard());
     TMatchIterator matchIt = begin(matches, Standard() );

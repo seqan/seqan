@@ -8,6 +8,12 @@ on:
       # Push events to branches matching refs/heads/develop
       - 'develop'
   pull_request:
+  # Enables a manual trigger, may run on any branch
+  workflow_dispatch:
+
+concurrency:
+  group: macos-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   CMAKE_VERSION: 3.12.4
@@ -20,17 +26,24 @@ defaults:
 jobs:
   build:
     name: ${{ matrix.name }}
-    runs-on: macos-10.15
+    runs-on: macos-12
     timeout-minutes: 180
+    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: "gcc11 (c++20)"
+          - name: "gcc12 (c++23)"
+            cxx: "g++-12"
+            cc: "gcc-12"
+            build_type: Release
+            cxx_flags: "-std=c++23"
+
+          - name: "gcc11 (c++23)"
             cxx: "g++-11"
             cc: "gcc-11"
             build_type: Release
-            cxx_flags: "-std=c++20"
+            cxx_flags: "-std=c++23"
 
           - name: "gcc10 (c++20)"
             cxx: "g++-10"
@@ -38,29 +51,17 @@ jobs:
             build_type: Release
             cxx_flags: "-std=c++20"
 
-          - name: "gcc9 (c++2a)"
-            cxx: "g++-9"
-            cc: "gcc-9"
+          - name: "clang13 (c++23)"
+            cxx: "clang++-13"
+            cc: "clang-13"
             build_type: Release
-            cxx_flags: "-std=c++2a"
+            cxx_flags: "-std=c++2b"
 
-          - name: "gcc8 (c++17)"
-            cxx: "g++-8"
-            cc: "gcc-8"
-            build_type: Release
-            cxx_flags: "-std=c++17"
-
-          - name: "gcc7 (c++17)"
-            cxx: "g++-7"
-            cc: "gcc-7"
-            build_type: Release
-            cxx_flags: "-std=c++17"
-
-          - name: "clang12 (c++20)"
+          - name: "clang12 (c++23)"
             cxx: "clang++-12"
             cc: "clang-12"
             build_type: Release
-            cxx_flags: "-std=c++20"
+            cxx_flags: "-std=c++2b"
 
           - name: "clang11 (c++20)"
             cxx: "clang++-11"
@@ -68,24 +69,18 @@ jobs:
             build_type: Release
             cxx_flags: "-std=c++20"
 
-          - name: "clang9 (c++2a)"
-            cxx: "clang++-9"
-            cc: "clang-9"
-            build_type: Release
-            cxx_flags: "-std=c++2a"
-
     steps:
       - name: Checkout SeqAn2
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: seqan
           fetch-depth: 2
 
       - name: Checkout SeqAn3
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: seqan/seqan3
-          ref: 055a3bea684238c29ee27977b103103a0211797f
+          ref: 39e696830bbdcde0e520c87811db3eb5e083d7c0
           path: seqan3
           fetch-depth: 2
           submodules: false
@@ -108,6 +103,7 @@ jobs:
         run: |
           env cmake --version
           env ${{ matrix.cxx }} --version
+          sudo xcode-select -s '/Applications/Xcode_13.4.1.app/Contents/Developer' # https://github.com/actions/runner-images/issues/6350
 
       - name: Install dependencies
         run: brew install --force-bottle boost
@@ -123,7 +119,7 @@ jobs:
           pip install -r seqan/manual/requirements.txt
 
       - name: Load ccache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .ccache
           key: ${{ runner.os }}-${{ matrix.name }}-ccache-${{ github.ref }}-${{ github.run_number }}
@@ -141,7 +137,7 @@ jobs:
           mkdir seqan-build
           cd seqan-build
           cmake ../seqan -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" \
+                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} -Wextra -Werror" \
                          -DSEQAN_DISABLE_VERSION_CHECK=ON \
                          -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
                          -DPython3_ROOT_DIR=${pythonLocation} \

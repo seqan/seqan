@@ -233,11 +233,11 @@ namespace seqan
     public:
 //____________________________________________________________________________
 
-        unsigned span;
-        unsigned weight;
-        String<int> diffs;
+        unsigned span{};
+        unsigned weight{};
+        String<int> diffs{};
 
-        typename Value<Shape>::Type    hValue;        // current hash value
+        typename Value<Shape>::Type    hValue{};        // current hash value
 //____________________________________________________________________________
 
 /*!

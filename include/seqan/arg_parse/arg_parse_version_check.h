@@ -166,7 +166,7 @@ struct VersionCheck
 #else
         else
             _program.clear();
-#endif // __OpenBSD__ 
+#endif // __OpenBSD__
     }
 #endif  // defined(STDLIB_VS)
 
@@ -457,7 +457,7 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
 #endif
 
-    if (!str_server_versions[0].empty() & !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
+    if (!str_server_versions[0].empty() && !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
     {
         Lexical<> version_comp(_getNumbersFromString(me._version), _getNumbersFromString(str_server_versions[0]));
 

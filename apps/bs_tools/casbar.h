@@ -1423,8 +1423,6 @@ void doSnpAndMethCalling(
         int numIndelsObservedF = 0;  // if refGap then this counts the number of insertions on forward
         int numIndelsObservedR = 0;  // if refGap then this counts the number of insertions on reverse
                         // else it counts the number of deletions
-        int indelQualF = 0;
-        int indelQualR = 0;
 
         unsigned positionCoverage = 0;   // how many reads actually span the position?
 
@@ -1582,13 +1580,11 @@ void doSnpAndMethCalling(
                     quality = (getQualityValue(reads[(*matchIt).readId][readPos-1]) + getQualityValue(reads[(*matchIt).readId][readPos])) / 2;
                     if(orientation == 'F')
                     {
-                        indelQualF += quality;
                         ++numIndelsObservedF;
                     }
                     else
                     {
                         ++numIndelsObservedR;
-                        indelQualR += quality;
                     }
                     if(options.minDifferentReadPos > 0)
                     {
