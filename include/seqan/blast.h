@@ -39,7 +39,7 @@
 
 #include <seqan/platform.h>
 
-#ifndef COMPILER_MSVC
+#if !defined(COMPILER_MSVC) || _MSC_VER >= 1920
 
 #include <cinttypes>
 #include <cmath>
@@ -67,7 +67,7 @@
 #include "blast/blast_report_out.h"
 
 #else
-#error Due to a bug in Microsoft Visual Studio 2015 the BLAST module is deactivated.
+#error Due to a bug in Microsoft Visual Studio < 2019, the BLAST module is deactivated.
 #endif
 
 #endif
