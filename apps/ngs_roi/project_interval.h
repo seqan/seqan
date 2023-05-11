@@ -81,11 +81,11 @@ struct IntersectBedOptions
 class IntersectBed
 {
 public:
-    typedef seqan::BedRecord<seqan::Bed6> TBedRecord;
-    typedef seqan::RoiRecord              TRoiRecord;
+    typedef seqan2::BedRecord<seqan2::Bed6> TBedRecord;
+    typedef seqan2::RoiRecord              TRoiRecord;
 
     // Resulting ROI file is written to out.
-    seqan::RoiFileOut & roiFileOut;
+    seqan2::RoiFileOut & roiFileOut;
 
     // Configuration for BED intersection.
     IntersectBedOptions options;
@@ -96,10 +96,10 @@ public:
     std::list<TRoiRecord> roiRecords;
 
     // name of current reference.
-    seqan::CharString ref;
+    seqan2::CharString ref;
 
     // Construct BED intersection object with out stream.
-    IntersectBed(seqan::RoiFileOut & roiFileOut, IntersectBedOptions const & options) :
+    IntersectBed(seqan2::RoiFileOut & roiFileOut, IntersectBedOptions const & options) :
             roiFileOut(roiFileOut), options(options)
     {}
 
@@ -125,20 +125,20 @@ public:
     void cleanRoiRecords();
 
     // Update connectivity from range in ROI records, depending on the configured combination mode.
-    void updateConnectivity(seqan::String<bool> & bitmap,
+    void updateConnectivity(seqan2::String<bool> & bitmap,
                             int beginPos,  // position of bitmap[0]
-                            seqan::BedRecord<seqan::Bed6> const & bedRecord,
+                            seqan2::BedRecord<seqan2::Bed6> const & bedRecord,
                             std::list<TRoiRecord>::const_iterator const & rangeBegin,
                             std::list<TRoiRecord>::const_iterator const & rangeEnd);
 
     // Create one ROI from the covered bitmap, counts, BED record and range of ROI records.
-    void writeRois(seqan::String<bool> const & bitmap,
-                   seqan::String<int> const & counts,
+    void writeRois(seqan2::String<bool> const & bitmap,
+                   seqan2::String<int> const & counts,
                    int beginPos,  // position of bitmap[0] and counts[0]
-                   seqan::BedRecord<seqan::Bed6> const & bedRecord);
+                   seqan2::BedRecord<seqan2::Bed6> const & bedRecord);
 
     // Write a BED record without overlapping ROI record as ROI record.
-    void writeEmptyBed(seqan::BedRecord<seqan::Bed6> const & bedRecord);
+    void writeEmptyBed(seqan2::BedRecord<seqan2::Bed6> const & bedRecord);
 };
 
 // ============================================================================

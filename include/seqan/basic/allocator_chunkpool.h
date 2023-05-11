@@ -40,7 +40,7 @@
 
 #include <seqan/basic/allocator_interface.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -240,6 +240,6 @@ deallocate(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me,
     me.data_recycled_blocks[count - 1] = reinterpret_cast<char *>(data);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_

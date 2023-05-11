@@ -44,7 +44,7 @@
 
 inline void testAlphabetConcepts()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<bool>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<char>));
@@ -79,7 +79,7 @@ inline void testAlphabetConcepts()
 
 inline void testOrderedAlphabetConcepts()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<bool>));
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<char>));
@@ -95,7 +95,7 @@ inline void testOrderedAlphabetConcepts()
 
 inline void testFiniteOrderedAlphabetConcepts()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<bool>));
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<char>));
@@ -107,7 +107,7 @@ inline void testFiniteOrderedAlphabetConcepts()
 
 inline void testAlphabetWithGapsConcept()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((AlphabetWithGapsConcept<char>));
     // // TODO(holtgrew): <seqan/modifier.h> is required for this.
@@ -118,7 +118,7 @@ inline void testAlphabetWithGapsConcept()
 
 inline void testAlphabetWithUnknownValueConcept()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((AlphabetWithUnknownValueConcept<char>));
 }

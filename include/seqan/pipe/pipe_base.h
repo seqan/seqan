@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_PIPE_BASE_H
 #define SEQAN_HEADER_PIPE_BASE_H
 
-namespace seqan {
+namespace seqan2 {
 
     // shortcuts to ease pipeline construction
     #define TypeOf_(TObject)  typename Value<TObject>::Type
@@ -728,7 +728,7 @@ namespace seqan {
         inline bool begin()
         {
             buffer = handler.first();
-            cur = seqan::begin(buffer, Standard());
+            cur = seqan2::begin(buffer, Standard());
             return true;
         }
 
@@ -739,10 +739,10 @@ namespace seqan {
 
         inline void pop()
         {
-            if (++cur == seqan::end(buffer, Standard()))
+            if (++cur == seqan2::end(buffer, Standard()))
             {
                 buffer = handler.next();
-                cur = seqan::begin(buffer, Standard());
+                cur = seqan2::begin(buffer, Standard());
             }
         }
 
@@ -754,10 +754,10 @@ namespace seqan {
 
         inline void push(TValue const & Val_)
         {
-            if (cur == seqan::end(buffer, Standard()))
+            if (cur == seqan2::end(buffer, Standard()))
             {
                 buffer = handler.next();
-                cur = seqan::begin(buffer, Standard());
+                cur = seqan2::begin(buffer, Standard());
             }
             *cur = Val_;
             ++cur;

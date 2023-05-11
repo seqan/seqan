@@ -40,8 +40,8 @@
 // A simple test for the ProfileChar type.
 SEQAN_DEFINE_TEST(test_align_profile_profile_test)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    seqan::String<TDnaProfile> profile = "CGAT";
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    seqan2::String<TDnaProfile> profile = "CGAT";
 
     SEQAN_ASSERT_EQ(length(profile), 4u);
 
@@ -73,18 +73,18 @@ SEQAN_DEFINE_TEST(test_align_profile_profile_test)
 // Align a profile with a sequence.
 SEQAN_DEFINE_TEST(test_align_profile_align_profile_sequence)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    typedef seqan2::String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq = "CGGAAT";
+    seqan2::DnaString seq = "CGGAAT";
 
-    seqan::Gaps<TProfileString> gapsH(profile);
-    seqan::Gaps<seqan::DnaString> gapsV(seq);
+    seqan2::Gaps<TProfileString> gapsH(profile);
+    seqan2::Gaps<seqan2::DnaString> gapsV(seq);
 
-    seqan::Score<int, seqan::ProfileSeqScore> sScheme(profile);
+    seqan2::Score<int, seqan2::ProfileSeqScore> sScheme(profile);
 
-    int val = globalAlignment(gapsH, gapsV, sScheme, seqan::NeedlemanWunsch());
+    int val = globalAlignment(gapsH, gapsV, sScheme, seqan2::NeedlemanWunsch());
     SEQAN_ASSERT_EQ(val, -2097152);
 
     SEQAN_ASSERT_EQ(length(gapsV), 6u);
@@ -104,18 +104,18 @@ SEQAN_DEFINE_TEST(test_align_profile_align_profile_sequence)
 // Align a profile with a sequence.
 SEQAN_DEFINE_TEST(test_align_profile_align_profile_sequence_frac)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    typedef seqan2::String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq = "CGGAAT";
+    seqan2::DnaString seq = "CGGAAT";
 
-    seqan::Gaps<TProfileString> gapsH(profile);
-    seqan::Gaps<seqan::DnaString> gapsV(seq);
+    seqan2::Gaps<TProfileString> gapsH(profile);
+    seqan2::Gaps<seqan2::DnaString> gapsV(seq);
 
-    seqan::Score<int, seqan::ProfileSeqFracScore> sScheme(profile);
+    seqan2::Score<int, seqan2::ProfileSeqFracScore> sScheme(profile);
 
-    int val = globalAlignment(gapsH, gapsV, sScheme, seqan::NeedlemanWunsch());
+    int val = globalAlignment(gapsH, gapsV, sScheme, seqan2::NeedlemanWunsch());
     SEQAN_ASSERT_EQ(val, -2097152);
 
     SEQAN_ASSERT_EQ(length(gapsV), 6u);
@@ -136,11 +136,11 @@ SEQAN_DEFINE_TEST(test_align_profile_align_profile_sequence_frac)
 // This will first align the sequence to the profile and then update the profile with the alignment information.
 SEQAN_DEFINE_TEST(test_align_profile_add_to_profile)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    typedef seqan2::String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq = "CGGAAT";
+    seqan2::DnaString seq = "CGGAAT";
 
     addToProfile(profile, seq);
 
@@ -186,13 +186,13 @@ SEQAN_DEFINE_TEST(test_align_profile_add_to_profile)
 // Call addToProfile() three times.
 SEQAN_DEFINE_TEST(test_align_profile_add_to_profile_multiple)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    typedef seqan2::String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq1 = "CGGAAT";
-    seqan::DnaString seq2 = "CGGAT";
-    seqan::DnaString seq3 = "AGAAT";
+    seqan2::DnaString seq1 = "CGGAAT";
+    seqan2::DnaString seq2 = "CGGAT";
+    seqan2::DnaString seq3 = "AGAAT";
 
     addToProfile(profile, seq1);
     addToProfile(profile, seq2);
@@ -242,11 +242,11 @@ SEQAN_DEFINE_TEST(test_align_profile_add_to_profile_multiple)
 // This will first align the sequence to the profile and then update the profile with the alignment information.
 SEQAN_DEFINE_TEST(test_align_profile_add_to_profile_banded)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    typedef seqan2::String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq = "CGGAAT";
+    seqan2::DnaString seq = "CGGAAT";
 
     addToProfile(profile, seq, -3, 3);
 
@@ -292,13 +292,13 @@ SEQAN_DEFINE_TEST(test_align_profile_add_to_profile_banded)
 // Call addToProfile() three times.
 SEQAN_DEFINE_TEST(test_align_profile_add_to_profile_multiple_banded)
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef seqan2::ProfileChar<seqan2::Dna, int> TDnaProfile;
+    typedef seqan2::String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq1 = "CGGAAT";
-    seqan::DnaString seq2 = "CGGAT";
-    seqan::DnaString seq3 = "AGAAT";
+    seqan2::DnaString seq1 = "CGGAAT";
+    seqan2::DnaString seq2 = "CGGAT";
+    seqan2::DnaString seq3 = "AGAAT";
 
     addToProfile(profile, seq1, -3, 3);
     addToProfile(profile, seq2, -3, 3);

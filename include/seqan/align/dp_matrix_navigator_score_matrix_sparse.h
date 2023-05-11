@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -249,6 +249,6 @@ previousCellHorizontal(DPMatrixNavigator_<DPMatrix_<TValue, SparseDPMatrix, THos
     return *(dpNavigator._prevColIterator);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_SCORE_SPARSE_H_

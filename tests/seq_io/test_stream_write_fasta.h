@@ -38,7 +38,7 @@
 #ifndef TEST_STREAM_TEST_STREAM_WRITE_FASTA_H_
 #define TEST_STREAM_TEST_STREAM_WRITE_FASTA_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_stream_write_record_fasta_default)
 {
@@ -63,7 +63,7 @@ SEQAN_DEFINE_TEST(test_stream_write_record_fasta_default)
 // Test that no empty lines are written if (seq_len % line_len) == 0.
 SEQAN_DEFINE_TEST(test_stream_write_record_fasta_no_empty_lines)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     String<char> outStream;
 

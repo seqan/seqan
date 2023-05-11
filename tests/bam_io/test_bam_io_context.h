@@ -45,7 +45,7 @@
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef String<CharString> TStrings;
     TStrings ns;
@@ -57,7 +57,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_fragment_store)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename FragmentStore<>::TNameStore TNameStore;
     typedef NameStoreCache<TNameStore>           TNameStoreCache;

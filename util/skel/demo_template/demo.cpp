@@ -40,7 +40,7 @@
 
 int main(int argc, char const ** argv)
 {
-    seqan::CharString x = "Hello SeqAn!";
+    seqan2::CharString x = "Hello SeqAn!";
     std::cout << x << std::endl;
     return 0;
 }

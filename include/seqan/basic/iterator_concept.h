@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BASIC_ITERATOR_CONCEPT_H_
 #define INCLUDE_SEQAN_BASIC_ITERATOR_CONCEPT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // Forward Declaration / Prototype.
 template <typename T> struct Pointer;
@@ -861,6 +861,6 @@ SEQAN_CONCEPT_REFINE(MutableRootedRandomAccessIteratorConcept, (T), (RootedRando
     }
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BASIC_ITERATOR_CONCEPT_H_

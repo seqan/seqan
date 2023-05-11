@@ -49,7 +49,7 @@
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Test assign(), operator=()
 template <typename TStringJournalSpec>
@@ -831,7 +831,7 @@ void testJournaledStringBeginEndConstIterator(TStringJournalSpec const &)
 template <typename TStringJournalSpec>
 void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     const unsigned ASSIGN_COUNT = 2;
     const unsigned LENGTH = 1000;
@@ -892,7 +892,7 @@ void testJournaledStringSubscriptOperatorRandomized(TStringJournalSpec const &)
 template <typename TStringJournalSpec>
 void testJournaledStringFuzzying(TStringJournalSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     const unsigned INITIAL_LENGTH = 100;
     const unsigned NUM_CHANGES = 100;
@@ -1251,7 +1251,7 @@ SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_host_to_virtual_position)
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_reset)
 {
-    testJournaledStringReset(seqan::SortedArray());
+    testJournaledStringReset(seqan2::SortedArray());
 }
 
 SEQAN_DEFINE_TEST(test_sequence_journaled_sorted_array_copy_constructor)

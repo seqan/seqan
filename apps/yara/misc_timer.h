@@ -35,7 +35,7 @@
 #ifndef APP_YARA_MISC_TIMER_H_
 #define APP_YARA_MISC_TIMER_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes

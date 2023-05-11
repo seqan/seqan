@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
 #define INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions
@@ -216,6 +216,6 @@ inline void write(TTarget & target,
     writeValue(target, '\n');
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_

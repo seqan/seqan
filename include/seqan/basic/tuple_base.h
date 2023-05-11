@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -620,6 +620,6 @@ operator+(Tuple<TValue1, SIZE, TSpecL> const & left,
     return tuple;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_

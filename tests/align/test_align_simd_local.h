@@ -47,9 +47,9 @@ SEQAN_TYPED_TEST(SimdAlignTestCommon, Linear_Align)
     using TLengthParam = typename TestFixture::TLengthParam;
     using TBandSwitch = typename TestFixture::TBandSwitch;
 
-    testAlignSimd<seqan::Dna>(impl::test_align_simd::LocalAlignTester_(), seqan::Score<int>(2, -1, -1),
+    testAlignSimd<seqan2::Dna>(impl::test_align_simd::LocalAlignTester_(), seqan2::Score<int>(2, -1, -1),
                               TAlignConf(), TLengthParam(), TBandSwitch());
-    testAlignSimd<seqan::AminoAcid>(impl::test_align_simd::LocalAlignTester_(), seqan::Blosum62(-2),
+    testAlignSimd<seqan2::AminoAcid>(impl::test_align_simd::LocalAlignTester_(), seqan2::Blosum62(-2),
                                     TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
@@ -59,9 +59,9 @@ SEQAN_TYPED_TEST(SimdAlignTestCommon, Linear_Score)
     using TLengthParam = typename TestFixture::TLengthParam;
     using TBandSwitch = typename TestFixture::TBandSwitch;
 
-    testAlignSimdScore<seqan::Dna>(impl::test_align_simd::LocalScoreTester_(), seqan::Score<int>(2, -1, -1),
+    testAlignSimdScore<seqan2::Dna>(impl::test_align_simd::LocalScoreTester_(), seqan2::Score<int>(2, -1, -1),
                                    TAlignConf(), TLengthParam(), TBandSwitch());
-    testAlignSimdScore<seqan::AminoAcid>(impl::test_align_simd::LocalScoreTester_(), seqan::Blosum62(-2),
+    testAlignSimdScore<seqan2::AminoAcid>(impl::test_align_simd::LocalScoreTester_(), seqan2::Blosum62(-2),
                                          TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
@@ -71,15 +71,15 @@ SEQAN_TYPED_TEST(SimdAlignTestCommon, Affine_Align)
     using TLengthParam = typename TestFixture::TLengthParam;
     using TBandSwitch = typename TestFixture::TBandSwitch;
 
-    testAlignSimd<seqan::Dna>(impl::test_align_simd::LocalAlignTester_(), seqan::Score<int>(2, -1, -1, -3),
+    testAlignSimd<seqan2::Dna>(impl::test_align_simd::LocalAlignTester_(), seqan2::Score<int>(2, -1, -1, -3),
                               TAlignConf(), TLengthParam(), TBandSwitch());
-    testAlignSimd<seqan::AminoAcid>(impl::test_align_simd::LocalAlignTester_(), seqan::Blosum62(-2, -4),
+    testAlignSimd<seqan2::AminoAcid>(impl::test_align_simd::LocalAlignTester_(), seqan2::Blosum62(-2, -4),
                                     TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
 SEQAN_TYPED_TEST(SimdAlignTestCommon, Dynamic_Score_Matrix_Align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TAlignConf = typename TestFixture::TAlignConfig;
     using TLengthParam = typename TestFixture::TLengthParam;
@@ -88,7 +88,7 @@ SEQAN_TYPED_TEST(SimdAlignTestCommon, Dynamic_Score_Matrix_Align)
     Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > dynScore{-2, -4};
     setScoreMatrixById(dynScore, AminoAcidScoreMatrixID::PAM120);
 
-    testAlignSimd<seqan::AminoAcid>(::impl::test_align_simd::LocalAlignTester_(), dynScore,
+    testAlignSimd<seqan2::AminoAcid>(::impl::test_align_simd::LocalAlignTester_(), dynScore,
                                     TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
@@ -98,15 +98,15 @@ SEQAN_TYPED_TEST(SimdAlignTestCommon, Affine_Score)
     using TLengthParam = typename TestFixture::TLengthParam;
     using TBandSwitch = typename TestFixture::TBandSwitch;
 
-    testAlignSimdScore<seqan::Dna>(impl::test_align_simd::LocalScoreTester_(), seqan::Score<int>(2, -1, -1, -3),
+    testAlignSimdScore<seqan2::Dna>(impl::test_align_simd::LocalScoreTester_(), seqan2::Score<int>(2, -1, -1, -3),
                                    TAlignConf(), TLengthParam(), TBandSwitch());
-    testAlignSimdScore<seqan::AminoAcid>(impl::test_align_simd::LocalScoreTester_(), seqan::Blosum62(-2, -4),
+    testAlignSimdScore<seqan2::AminoAcid>(impl::test_align_simd::LocalScoreTester_(), seqan2::Blosum62(-2, -4),
                                          TAlignConf(), TLengthParam(), TBandSwitch());
 }
 
 SEQAN_TYPED_TEST(SimdAlignTestCommon, Dynamic_Score_Matrix)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TAlignConf = typename TestFixture::TAlignConfig;
     using TLengthParam = typename TestFixture::TLengthParam;
@@ -115,7 +115,7 @@ SEQAN_TYPED_TEST(SimdAlignTestCommon, Dynamic_Score_Matrix)
     Score<int, ScoreMatrix<AminoAcid, ScoreSpecSelectable> > dynScore{-2, -4};
     setScoreMatrixById(dynScore, AminoAcidScoreMatrixID::PAM120);
 
-    testAlignSimdScore<seqan::AminoAcid>(::impl::test_align_simd::LocalScoreTester_(), dynScore,
+    testAlignSimdScore<seqan2::AminoAcid>(::impl::test_align_simd::LocalScoreTester_(), dynScore,
                                          TAlignConf(), TLengthParam(), TBandSwitch());
 }
 

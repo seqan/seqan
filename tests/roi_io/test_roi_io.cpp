@@ -40,13 +40,13 @@
 
 SEQAN_DEFINE_TEST(test_roi_read_roi_record)
 {
-    seqan::String<char> inString = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
-    seqan::DirectionIterator<seqan::String<char>, seqan::Input>::Type iter = begin(inString);
+    seqan2::String<char> inString = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
+    seqan2::DirectionIterator<seqan2::String<char>, seqan2::Input>::Type iter = begin(inString);
 
-    seqan::RoiRecord record;
-    seqan::RoiIOContext context;
+    seqan2::RoiRecord record;
+    seqan2::RoiIOContext context;
 
-    readRecord(record, context, iter, seqan::Roi());
+    readRecord(record, context, iter, seqan2::Roi());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 0);
     SEQAN_ASSERT_EQ(record.endPos, 3);
@@ -65,7 +65,7 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record)
 
 SEQAN_DEFINE_TEST(test_roi_write_roi_record)
 {
-    seqan::RoiRecord record;
+    seqan2::RoiRecord record;
     record.ref = "I";
     record.beginPos = 0;
     record.endPos = 3;
@@ -79,10 +79,10 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
     appendValue(record.count, 2);
     appendValue(record.count, 4);
 
-    seqan::String<char> outString;
-    writeRecord(outString, record, seqan::Roi());
+    seqan2::String<char> outString;
+    writeRecord(outString, record, seqan2::Roi());
 
-    seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
+    seqan2::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
 
     SEQAN_ASSERT_EQ(expected, outString);
 
@@ -90,11 +90,11 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
 
 SEQAN_DEFINE_TEST(test_roi_roi_file_read)
 {
-    seqan::CharString inPath = seqan::getAbsolutePath("/tests/roi_io/example.roi");
+    seqan2::CharString inPath = seqan2::getAbsolutePath("/tests/roi_io/example.roi");
 
-    seqan::RoiFileIn roiFileIn(toCString(inPath));
+    seqan2::RoiFileIn roiFileIn(toCString(inPath));
 
-    seqan::RoiRecord record1;
+    seqan2::RoiRecord record1;
     readRecord(record1, roiFileIn);
 
     SEQAN_ASSERT_EQ(record1.ref, "I");
@@ -109,7 +109,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_read)
     SEQAN_ASSERT_EQ(record1.count[1], 2u);
     SEQAN_ASSERT_EQ(record1.count[2], 4u);
 
-    seqan::RoiRecord record2;
+    seqan2::RoiRecord record2;
     readRecord(record2, roiFileIn);
     SEQAN_ASSERT(atEnd(roiFileIn));
 
@@ -128,12 +128,12 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_read)
 
 SEQAN_DEFINE_TEST(test_roi_roi_file_write)
 {
-    seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString tmpPath = SEQAN_TEMP_FILENAME();
     append(tmpPath, ".roi");
 
-    seqan::RoiFileOut roiFileOut(toCString(tmpPath));
+    seqan2::RoiFileOut roiFileOut(toCString(tmpPath));
 
-    seqan::RoiRecord record1;
+    seqan2::RoiRecord record1;
     record1.ref = "I";
     record1.beginPos = 0;
     record1.endPos = 3;
@@ -146,7 +146,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
     appendValue(record1.count, 4);
     writeRecord(roiFileOut, record1);
 
-    seqan::RoiRecord record2;
+    seqan2::RoiRecord record2;
     record2.ref = "II";
     record2.beginPos = 1;
     record2.endPos = 4;
@@ -161,18 +161,18 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
 
     close(roiFileOut);
 
-    seqan::CharString goldPath(seqan::getAbsolutePath("/tests/roi_io/example.roi"));
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    seqan2::CharString goldPath(seqan2::getAbsolutePath("/tests/roi_io/example.roi"));
+    SEQAN_ASSERT(seqan2::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_roi_io_isOpen_fileIn)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/tests/roi_io/example.roi");
 
     // Create SequenceStream object.
-    seqan::RoiFileIn roiI;
+    seqan2::RoiFileIn roiI;
     SEQAN_ASSERT(!isOpen(roiI));
 
     // open file
@@ -187,11 +187,11 @@ SEQAN_DEFINE_TEST(test_roi_io_isOpen_fileIn)
 SEQAN_DEFINE_TEST(test_roi_io_isOpen_fileOut)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".roi");
 
     // Create SequenceStream object.
-    seqan::RoiFileOut  roiO;
+    seqan2::RoiFileOut  roiO;
     SEQAN_ASSERT(!isOpen(roiO));
 
     // open files

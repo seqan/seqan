@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_SA_BTREE_H
 #define SEQAN_HEADER_INDEX_SA_BTREE_H
 
-namespace seqan
+namespace seqan2
 {
 
     template <

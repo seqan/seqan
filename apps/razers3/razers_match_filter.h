@@ -5,7 +5,7 @@
 
 #include "razers.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -260,6 +260,6 @@ processRead(MatchFilter<TOptionsSpec, TReadSeqSet, TCallback> & filter, unsigned
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef RAZERS_MATCH_FILTER_H_

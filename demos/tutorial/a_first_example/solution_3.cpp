@@ -3,7 +3,7 @@
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 //![head_local]
 int computeLocalScore(String<char> const & subText, String<char> const & pattern)

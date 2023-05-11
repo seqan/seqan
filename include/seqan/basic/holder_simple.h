@@ -37,7 +37,7 @@
 #ifndef SEQAN_BASIC_HOLDER_SIMPLE_H_
 #define SEQAN_BASIC_HOLDER_SIMPLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -292,6 +292,6 @@ assign(Holder<TValue, Simple> & target_,
     assignValue(target_, source_);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_HOLDER_SIMPLE_H_

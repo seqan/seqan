@@ -51,7 +51,7 @@
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         Dna5String strH("GGGGCTTAAGCTTGGGG");
@@ -79,7 +79,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_align)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         DnaString strH("GGGGCTTAAGCTTGGGG");
@@ -106,7 +106,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_gaps)
 SEQAN_DEFINE_TEST(test_align_local_alignment_graph)
 {
     // TODO(holtgrew): Test after this is written.
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -145,14 +145,14 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_graph)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Test after this is written.
 }
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_banded_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         Dna5String strH("GGGGCTTAAGCTTGGGG");
@@ -180,7 +180,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_banded_align)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_banded_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         DnaString strH("GGGGCTTAAGCTTGGGG");
@@ -206,14 +206,14 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_banded_gaps)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_banded_graph)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Test after this is written.
 }
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_banded_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Test after this is written.
 }
@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_banded_fragment)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Example from original testLocalAlign2 test.
     {
@@ -346,7 +346,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_align)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Example from original testLocalAlign2 test.
     {
@@ -462,14 +462,14 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_gaps)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Test after this is written.
 }
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Example from original testLocalAlign2 test.
     {
@@ -584,7 +584,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Example from original testLocalAlign2 test.
     {
@@ -693,7 +693,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_gaps)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Test after this is written.
 }

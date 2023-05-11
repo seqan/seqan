@@ -78,35 +78,35 @@
 class ProjectSplicedRoi
 {
 public:
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
-    typedef seqan::Pair<int, int> TIntPair;
+    typedef seqan2::StringSet<seqan2::CharString> TNameStore;
+    typedef seqan2::NameStoreCache<TNameStore>   TNameStoreCache;
+    typedef seqan2::Pair<int, int> TIntPair;
 
     // Resulting ROI file is written to out.
-    seqan::RoiFileOut & roiFileOut;
+    seqan2::RoiFileOut & roiFileOut;
 
     // The names of the groups that we have seen so far.
     TNameStore groupNames;
     TNameStoreCache groupNamesCache;
     // The begin/end positions for each of the groups.
-    seqan::String<TIntPair> ranges;
+    seqan2::String<TIntPair> ranges;
 
     // The group by key.
-    seqan::CharString groupBy;
+    seqan2::CharString groupBy;
 
     // Index of the currently active group.
     unsigned currentGroup;
 
     // The currently active GFF records.
-    std::list<seqan::GffRecord> gffRecords;
+    std::list<seqan2::GffRecord> gffRecords;
     // Groups that the GFF records are part of.
-    std::list<seqan::StringSet<seqan::CharString> > gffGroups;
+    std::list<seqan2::StringSet<seqan2::CharString> > gffGroups;
     // The currently active ROI records.
-    std::list<seqan::RoiRecord> roiRecords;
+    std::list<seqan2::RoiRecord> roiRecords;
 
     int verbosity;
 
-    ProjectSplicedRoi(seqan::RoiFileOut & roiFileOut, seqan::CharString const & groupBy, int verbosity) :
+    ProjectSplicedRoi(seqan2::RoiFileOut & roiFileOut, seqan2::CharString const & groupBy, int verbosity) :
             roiFileOut(roiFileOut), groupNamesCache(groupNames), groupBy(groupBy), currentGroup(0),
             verbosity(verbosity)
     {}
@@ -122,17 +122,17 @@ public:
     void beginSecondPass();
 
     // Register a GFF record for updating the ranges.
-    void updateRanges(seqan::GffRecord const & record);
+    void updateRanges(seqan2::GffRecord const & record);
 
     // Helper function that updates a range given a record and a group name.
-    void _updateRanges(seqan::GffRecord const & record,
-                       seqan::Segment<seqan::CharString, seqan::InfixSegment> const & name);
+    void _updateRanges(seqan2::GffRecord const & record,
+                       seqan2::Segment<seqan2::CharString, seqan2::InfixSegment> const & name);
 
     // Push a GFF record for overlapping/projection.
-    void pushGff(seqan::GffRecord const & record);
+    void pushGff(seqan2::GffRecord const & record);
 
     // Push a ROI record for overlapping/projection.
-    void pushRoi(seqan::RoiRecord const & record);
+    void pushRoi(seqan2::RoiRecord const & record);
 
     // Write out the ROI for the currently active group.
     void writeCurrentGroup();

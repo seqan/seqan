@@ -37,7 +37,7 @@
 #ifndef SEQAN_BLAST_BLAST_TABULAR_LOWLEVEL_H_
 #define SEQAN_BLAST_BLAST_TABULAR_LOWLEVEL_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

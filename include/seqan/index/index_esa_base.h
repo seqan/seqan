@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_INDEX_ESA_BASE_H
 #define SEQAN_HEADER_INDEX_ESA_BASE_H
 
-namespace seqan
+namespace seqan2
 {
 
     // dfs order
@@ -200,20 +200,20 @@ namespace seqan
         Pair<TSize> range;            // current SA interval of hits (unique node identifier)
         TSize        parentRight;    // right boundary of parent node's range (allows one to go right)
 
-       
+
         VertexEsa() : range(0, 0), parentRight(0) {}
 
-       
+
         VertexEsa(MinimalCtor):
             range(0,0),
             parentRight(0) {}
 
-       
+
         VertexEsa(TSize otherRangeLeft, TSize otherRangeRight, TSize otherParentRight):
             range(Pair<TSize>(otherRangeLeft, otherRangeRight)),
             parentRight(otherParentRight) {}
 
-       
+
         VertexEsa(Pair<TSize> const &otherRange, TSize otherParentRight):
             range(otherRange),
             parentRight(otherParentRight) {}

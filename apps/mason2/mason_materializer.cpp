@@ -73,12 +73,12 @@ public:
     VcfMaterializer vcfMat;
 
     // Output sequence stream.
-    seqan::SeqFileOut outStream;
+    seqan2::SeqFileOut outStream;
     // Output breakpoints file.
     std::fstream breakpointsOut;
     // Input and output for methylation.
-    seqan::FaiIndex methFaiIndex;
-    seqan::SeqFileOut outMethLevelStream;
+    seqan2::FaiIndex methFaiIndex;
+    seqan2::SeqFileOut outMethLevelStream;
 
     MasonMaterializerApp(MasonMaterializerOptions const & _options) :
             options(_options), rng(options.seed), methRng(options.methSeed),
@@ -131,7 +131,7 @@ public:
 
         // The identifiers of the just materialized data.
         int rID = 0, hID = 0;
-        seqan::Dna5String seq;
+        seqan2::Dna5String seq;
         std::cerr << "Materializing...";
         MethylationLevels levels;
         std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
@@ -187,11 +187,11 @@ public:
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonMaterializerOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_materializer");
+    seqan2::ArgumentParser parser("mason_materializer");
     // Set short description, version, and date.
     setShortDescription(parser, "VCF Materialization");
     setDateAndVersion(parser);
@@ -208,15 +208,15 @@ parseCommandLine(MasonMaterializerOptions & options, int argc, char const ** arg
     options.addTextSections(parser);
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     options.getOptionValues(parser);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -229,13 +229,13 @@ int main(int argc, char const ** argv)
 {
     // Parse the command line.
     MasonMaterializerOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     std::cerr << "MASON VARIANT MATERIALIZER\n"
               << "==========================\n\n";

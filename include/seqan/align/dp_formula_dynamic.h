@@ -39,7 +39,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
 #define INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -674,6 +674,6 @@ _computeScore(DPCell_<TScoreValue, DynamicGaps> & current,
     return TraceBitMap_<TScoreValue>::NONE;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_

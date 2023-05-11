@@ -42,7 +42,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_UNBANDED_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_UNBANDED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -951,6 +951,6 @@ String<TScoreValue> globalAlignment(StringSet<Align<TSequence, TAlignSpec> > & a
     return globalAlignment(align, scoringScheme, alignConfig);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_UNBANDED_H_

@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
 #define INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -125,6 +125,6 @@ inline bool startsWith(TLhs const & lhs, TRhs const & rhs)
     return prefix(lhs, rhsLen) == rhs;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_

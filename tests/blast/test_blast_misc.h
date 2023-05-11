@@ -37,7 +37,7 @@
 #ifndef SEQAN_TESTS_TEST_BLAST_MISC_H_
 #define SEQAN_TESTS_TEST_BLAST_MISC_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_blast_program)
 {

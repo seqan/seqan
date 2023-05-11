@@ -40,7 +40,7 @@
 // TODO(holtgrew): GapsRight traceback is currently untested.
 // TODO(rmaerker): Change Tracback to TraceConfig<TGapsPlacement, TPathSpec> | TraceBackOff
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -633,6 +633,6 @@ _computeTraceback(TTarget & target,
     _computeTraceback(target, matrixNavigator, maxHostPosition(dpScout), seqH, seqV, band, dpProfile);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_TRACEBACK_IMPL_H_

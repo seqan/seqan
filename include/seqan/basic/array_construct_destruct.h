@@ -44,7 +44,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1265,6 +1265,6 @@ void arrayClearSpace(TValue * array_begin,
 }
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_

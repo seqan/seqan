@@ -37,7 +37,7 @@
 
 #include <tuple>
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -85,7 +85,7 @@ typedef Tag<ZipIterator_> ZipIterator;
  * It allows one to operate on a single iterator, if multiple containers need to be traversed simultaneously.
  * Note, that all operations are still executed in a serial fashion.
  * If the zip iterator is dereferenced it returns a <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
- * containing the dereferenced values of all embedded iterators. 
+ * containing the dereferenced values of all embedded iterators.
  * The metafunctions @link Value @endlink, @link GetValue @endlink and @link Reference @endlink
  * are overloaded accordingly.
  *

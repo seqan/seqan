@@ -26,7 +26,7 @@ The following example shows you how the lengthy type <code>Iterator&lt;String&lt
 (@link ContainerConcept#Iterator @endlink is a <a href="#metafunction">metafunction</a> that returns the iterator type of a container).
 
 @code{.cpp}
-using namespace seqan;
+using namespace seqan2;
 
 typedef typename Iterator<String<char, Alloc<> >::Type TIt;
 
@@ -100,10 +100,10 @@ The following shows a class <code>Klass</code> that is specialized two times usi
 
 @code{.cpp}
 struct OneKlass_;
-typedef seqan::Tag<OneKlass_> OneKlass;
+typedef seqan2::Tag<OneKlass_> OneKlass;
 
 struct OtherKlass_;
-typedef seqan::Tag<OtherKlass_> OtherKlass;
+typedef seqan2::Tag<OtherKlass_> OtherKlass;
 
 template <typename TSpec>
 class Klass;
@@ -178,7 +178,7 @@ The first example is not recommended but purely demonstrates the use of a metafu
 The second example shows the recommended use of metafunctions in combination with a <a href="#typedef">typedef</a>.
 
 @code{.cpp}
-using namespace seqan;
+using namespace seqan2;
 
 for (typename Iterator<String<char, Alloc<> >::Type it = begin(str, Standard()); it != end(str, Standard()); ++it)
     std::cout << *it;
@@ -186,7 +186,7 @@ std::cout << "\n";
 @endcode
 
 @code{.cpp}
-using namespace seqan;
+using namespace seqan2;
 
 typedef typename Iterator<String<char, Alloc<> >::Type TIt;
 
@@ -263,7 +263,7 @@ The following shows a small part of the adaption of <code>std::string</code> to 
 @code{.cpp}
 #include <string>
 
-namespace seqan
+namespace seqan2
 {
 
 size_t length(std::string const & str)
@@ -271,7 +271,7 @@ size_t length(std::string const & str)
     return str.size();
 }
 
-};  // namespace seqan
+};  // namespace seqan2
 @endcode
 
 

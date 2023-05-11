@@ -4,7 +4,7 @@
 #include <seqan/store.h>
 #include <iostream>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![load_reads]

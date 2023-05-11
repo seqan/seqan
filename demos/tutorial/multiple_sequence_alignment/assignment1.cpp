@@ -3,7 +3,7 @@
 #include <seqan/align.h>
 #include <seqan/graph_msa.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

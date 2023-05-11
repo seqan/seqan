@@ -37,7 +37,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_ALGORITHMS_H_
 #define SEQAN_PARALLEL_PARALLEL_ALGORITHMS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions
@@ -834,6 +834,6 @@ inline void stableSort(TContainer && c)
     stableSort(c, Serial());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_ALGORITHMS_H_

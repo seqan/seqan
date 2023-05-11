@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -390,6 +390,6 @@ _configValueBottom(AlignConfig<TTop, TLeft, TRight, false, TSpec> const)
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_

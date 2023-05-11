@@ -44,7 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_index_repeats_period_1_ignore_minlen_for_ns)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Repeat<unsigned, unsigned> TRepeat;
 
@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_index_repeats_period_1_ignore_minlen_for_ns)
 
 SEQAN_DEFINE_TEST(test_index_repeats_period_1_many_ns)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Repeat<unsigned, unsigned> TRepeat;
 
@@ -100,7 +100,7 @@ SEQAN_DEFINE_TEST(test_index_repeats_period_1_many_ns)
 
 SEQAN_DEFINE_TEST(test_index_repeats_period_1_no_ns)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Repeat<unsigned, unsigned> TRepeat;
 

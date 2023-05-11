@@ -38,7 +38,7 @@
 #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
 #define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -469,6 +469,6 @@ bandedChainAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & fragm
                                 bandExtension);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_

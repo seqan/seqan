@@ -49,7 +49,7 @@
 #include <omp.h>
 #endif
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -225,6 +225,6 @@ dumpTimeline(char const * path)
     dumpTimeline(path, false);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef APP_RAZERS_PROFILE_TIMELINE_H_

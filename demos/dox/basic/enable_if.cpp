@@ -39,7 +39,7 @@
 
 #include <seqan/basic.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 #if !defined(_MSC_VER)  // Currently, there are some issues with MSVC and concepts.
 class EnableIfExample

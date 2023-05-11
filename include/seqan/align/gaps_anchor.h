@@ -41,7 +41,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -933,6 +933,6 @@ clippedEndPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps)
     return _unclippedLength(gaps) - gaps.data_viewCutEnd;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_

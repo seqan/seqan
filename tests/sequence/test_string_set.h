@@ -43,7 +43,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // --------------------------------------------------------------------------
 // CountingChar is used to test sequences of non simple data types.
@@ -302,17 +302,17 @@ TStringSet createStringSet(TStringSet & stringSet)
 //     SEQAN_ASSERT_EQ(stringSet1[1], "CC");
 //     stringSet1[2] = "GGG";
 //     SEQAN_ASSERT_EQ(stringSet1[2], "GGG");
-// 
+//
 //     {
 //         TStringSet stringSet2(stringSet1);
-// 
+//
 //         SEQAN_ASSERT_EQ(getValue(stringSet2, 0), "AAAA");
 //         SEQAN_ASSERT_EQ(getValue(stringSet2, 1), "CC");
 //         SEQAN_ASSERT_EQ(getValue(stringSet2, 2), "GGG");
 //     }
 //     {
 //         TStringSet const stringSet2(stringSet1);
-// 
+//
 //         SEQAN_ASSERT_EQ(getValue(stringSet2, 0), "AAAA");
 //         SEQAN_ASSERT_EQ(getValue(stringSet2, 1), "CC");
 //         SEQAN_ASSERT_EQ(getValue(stringSet2, 2), "GGG");
@@ -338,7 +338,7 @@ void testStringSetCopyConstructible(TStringSet & /*Tag*/)
 
     {
         TStringSet stringSet2(stringSet1);
-        
+
         SEQAN_ASSERT(getValue(stringSet2, 0) == str1);
         SEQAN_ASSERT(getValue(stringSet2, 1) == str2);
         SEQAN_ASSERT(getValue(stringSet2, 2) == str3);
@@ -377,7 +377,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, CopyConstructible)
 template <typename TStringSet>
 void testStringSetDefaultConstructible(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     TStringSet stringSet;
     SEQAN_ASSERT(begin(stringSet) == end(stringSet));
@@ -399,7 +399,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, DefaultConstructible)
 template <typename TStringSet>
 void testStringSetLessGreaterEqual(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -528,7 +528,7 @@ void testStringSetAppend(StringSet<String<TValue, TStringSpec >, Dependent<TSpec
 template <typename TStringSet>
 void testStringSetAppend(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -560,7 +560,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Append)
 template <typename TStringSet>
 void testStringSetAppendValue(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -603,7 +603,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AppendValue)
 template <typename TStringSet>
 void testStringSetAssign(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     {
@@ -645,7 +645,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Assign)
 template <typename TStringSet>
 void testStringSetAssignValue(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -672,7 +672,7 @@ void testStringSetAssignValue(StringSet<String<TValue, Packed<> >, Owner<TString
 template <typename TValue>
 void testStringSetAssignValue(StringSet<String<TValue, Packed<> >, Owner<ConcatDirect<> > > & /*Tag*/) {}
 template <typename TValue, typename TStringSetSpec>
-void testStringSetAssignValue(StringSet<String<TValue, Packed<> >, Dependent<TStringSetSpec> > & /*Tag*/) {} 
+void testStringSetAssignValue(StringSet<String<TValue, Packed<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
 // // TODO(singer): Seg fault
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetAssignValue(StringSet<String<TValue, External<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
@@ -698,7 +698,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AssignValue)
 template <typename TStringSet>
 void testStringSetAssignValueById(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -752,7 +752,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AssignValueById)
 {
 // BROKEN FOR LOTS OF STUFF
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetAssignValueById(strSet);
 //
@@ -764,7 +764,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, AssignValueById)
 template <typename TStringSet>
 void testStringSetBack(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -785,7 +785,7 @@ void testStringSetBack(TStringSet & /*Tag*/)
 template <typename TStringSet>
 void testStringSetBack(TStringSet const & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
@@ -840,7 +840,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Back)
 template <typename TStringSet>
 void testStringSetBegin(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
@@ -865,8 +865,8 @@ void testStringSetBegin(TStringSet & /*Tag*/)
 // void testStringSetBegin(StringSet<String<TValue, Array<100> >, TStringSetSpec> & /*Tag*/) {}
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetBegin(StringSet<String<TValue, Array<100> >, TStringSetSpec> const & /*Tag*/) {}
-// 
-// 
+//
+//
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetBegin(StringSet<String<TValue, MMap<> >, TStringSetSpec> & /*Tag*/) {}
 // template <typename TValue, typename TStringSetSpec>
@@ -893,7 +893,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Begin)
 template <typename TStringSet>
 void testStringSetBeginPosition(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
@@ -948,7 +948,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, BeginPosition)
 template <typename TStringSet>
 void testStringSetClear(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
     // Test on an empty string set.
@@ -996,7 +996,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Clear)
 template <typename TStringSet>
 void testStringSetConcat(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
@@ -1055,7 +1055,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Concat)
 template <typename TStringSet>
 void testStringSetEnd(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
@@ -1109,7 +1109,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, End)
 template <typename TStringSet>
 void testStringSetEndPosition(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
@@ -1162,7 +1162,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, EndPosition)
 template <typename TStringSet>
 void testStringSetErase(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test on an empty string.
 
@@ -1219,7 +1219,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Erase)
 template <typename TStringSet>
 void testStringSetEraseBack(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
@@ -1268,7 +1268,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, EraseBack)
 template <typename TStringSet>
 void testStringSetFront(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -1289,7 +1289,7 @@ void testStringSetFront(TStringSet & /*Tag*/)
 template <typename TStringSet>
 void testStringSetFront(TStringSet const & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
@@ -1373,7 +1373,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValue)
 template <typename TStringSet>
 void testStringSetGetValueById(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
@@ -1418,7 +1418,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValueById)
 template <typename TStringSet>
 void testStringSetInsert(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test of inserting an empty string.
     TStringSet stringSet1;
@@ -1451,7 +1451,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Insert)
 template <typename TStringSet>
 void testStringSetInsertValue(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -1481,7 +1481,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InsertValue)
 template <typename TStringSet>
 void testStringSetIter(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
@@ -1572,7 +1572,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Iter)
 template <typename TStringSet>
 void testStringSetLength(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -1608,15 +1608,15 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 // template <typename TStringSet>
 // void testStringSetMoveValue(TStringSet & /*Tag*/)
 // {
-//     using namespace seqan;
-// 
+//     using namespace seqan2;
+//
 //     TStringSet stringSet;
-// 
+//
 //     resize(stringSet, 2u);
 //     moveValue(stringSet, 1, "ACGT");
 //     SEQAN_ASSERT_EQ(CharString(stringSet[1]), "ACGT");
 // }
-// 
+//
 // // TODO(singer): No moveValue for string sets of packed strings
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetMoveValue(StringSet<String<TValue, Alloc<> >, TStringSetSpec> & /*Tag*/) {}
@@ -1628,7 +1628,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 // void testStringSetMoveValue(StringSet<String<TValue, Packed<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetMoveValue(StringSet<String<TValue, Array<100> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-// 
+//
 // // TODO(singer): Seg fault
 // template <typename TValue, typename TStringSpec, typename TStringSetSpec>
 // void testStringSetMoveValue(StringSet<String<TValue, TStringSpec>, Dependent<TStringSetSpec> > & /*Tag*/) {}
@@ -1636,7 +1636,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 // void testStringSetMoveValue(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetMoveValue(StringSet<String<TValue, External<> >, Owner<TStringSetSpec> > & /*Tag*/) {}
-// 
+//
 // SEQAN_TYPED_TEST(StringSetTestCommon, MoveValue)
 // {
 //     // TODO(singer); Simply not working at all!
@@ -1653,7 +1653,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 //template <typename TStringSet>
 //void testStringSetReplace(TStringSet & /*Tag*/)
 //{
-//    using namespace seqan;
+//    using namespace seqan2;
 //
 //    TStringSet stringSet1;
 //    TStringSet stringSet2;
@@ -1705,7 +1705,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 template <typename TStringSet>
 void testStringSetResize(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -1757,7 +1757,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Resize)
 // template <typename TStringSet>
 // void testStringSetSwap(TStringSet & /*Tag*/)
 // {
-//    using namespace seqan;
+//    using namespace seqan2;
 //
 //    TStringSet stringSet1;
 //    TStringSet stringSet2;
@@ -1812,7 +1812,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Resize)
 template <typename TStringSet>
 void testStringSetValue(TStringSet & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
@@ -1839,7 +1839,7 @@ void testStringSetValue(TStringSet & /*Tag*/)
 template <typename TStringSet>
 void testStringSetValue(TStringSet const & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
@@ -1908,10 +1908,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 // template <typename TStringSet>
 // void testStringSetValueById(TStringSet & /*Tag*/)
 // {
-//     using namespace seqan;
-// 
+//     using namespace seqan2;
+//
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-// 
+//
 //     // In contrast to getValue(), value() does not return a copy but a reference.
 //     // We test this using the variable value_.
 //     TString str1("ACAC");
@@ -1923,25 +1923,25 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 //     appendValue(stringSet, str3);
 //     TString & value_ = valueById(stringSet, 0);
 //     SEQAN_ASSERT_EQ(value_, str1);
-// 
+//
 //     value_ = "GGGG";
 //     TString str4("GGGG");
 //     SEQAN_ASSERT_EQ(value_, str4);
 //     SEQAN_ASSERT_EQ(stringSet[0], str4);
 // }
-// 
+//
 // // Test of valueById().
 // template <typename TStringSet>
 // void testStringSetValueById(TStringSet const & /*Tag*/)
 // {
-//     using namespace seqan;
-// 
+//     using namespace seqan2;
+//
 //     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-// 
+//
 //     // In contrast to getValue(), value() does not return a copy but a reference.
 //     // We test this using the variable value_.
-// 
+//
 //     TString str1("ACAC");
 //     TString str2("AAAA");
 //     TString str3("TTTT");
@@ -1949,17 +1949,17 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 //     appendValue(nonConstStringSet, str1);
 //     appendValue(nonConstStringSet, str2);
 //     appendValue(nonConstStringSet, str3);
-// 
+//
 //     TStringSet stringSet(nonConstStringSet);
 //     TString value_ = valueById(stringSet, 0);
 //     SEQAN_ASSERT_EQ(value_, str1);
-// 
+//
 //     value_ = "GGGG";
 //     TString str4("GGGG");
 //     SEQAN_ASSERT_EQ(value_, str4);
 //     SEQAN_ASSERT_EQ(stringSet[0], str4);
 // }
-// 
+//
 // // TODO(singer): Seg. fault
 // template <typename TValue>
 // void testStringSetValueById(StringSet<String<TValue, MMap<> >, Owner<> > & /*Tag*/) {}
@@ -1969,8 +1969,8 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 // void testStringSetValueById(StringSet<String<TValue, MMap<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetValueById(StringSet<String<TValue, MMap<> >, Dependent<TStringSetSpec> > const & /*Tag*/) {}
-// 
-// 
+//
+//
 // // TODO(singer)
 // template <typename TValue>
 // void testStringSetValueById(StringSet<String<TValue, External<> >, Owner<> > & /*Tag*/) {}
@@ -1980,22 +1980,22 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 // void testStringSetValueById(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > & /*Tag*/) {}
 // template <typename TValue, typename TStringSetSpec>
 // void testStringSetValueById(StringSet<String<TValue, External<> >, Dependent<TStringSetSpec> > const & /*Tag*/) {}
-// 
+//
 // template <typename TValue, typename TStringSpec>
 // void testStringSetValueById(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > & /*Tag*/) {}
 // template <typename TValue, typename TStringSpec>
 // void testStringSetValueById(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > const & /*Tag*/) {}
-// 
+//
 // SEQAN_TYPED_TEST(StringSetTestCommon, ValueById)
 // {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetValueById(strSet);
-// 
+//
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetValueById(constStrSet);
-// 
+//
 // ////    testConstructDeconstruct(strSet);
 // }
 

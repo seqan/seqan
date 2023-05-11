@@ -41,7 +41,7 @@
 
 void testAlignmentDPMatrixDataHostMF()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
@@ -58,7 +58,7 @@ void testAlignmentDPMatrixDataHostMF()
 
 void testAlignmentDPMatrixSizeArrMF()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
@@ -75,7 +75,7 @@ void testAlignmentDPMatrixSizeArrMF()
 
 void testAlignmentDPMatrixDataHost()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
@@ -101,7 +101,7 @@ void testAlignmentDPMatrixDataHost()
 
 void testAlignmentDPMatrixDataLengths()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
@@ -121,7 +121,7 @@ void testAlignmentDPMatrixDataLengths()
 
 void testAlignmentDPMatrixDataFactors()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<char, FullDPMatrix> TDPMatrix;
     typedef DPMatrix_<char, FullDPMatrix> const TDPMatrixConst;
@@ -141,7 +141,7 @@ void testAlignmentDPMatrixDataFactors()
 
 void testAlignmentDPMatrixCheckDimension()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(_checkCorrectDimension(0u), true);
     SEQAN_ASSERT_EQ(_checkCorrectDimension(1u), true);
@@ -152,7 +152,7 @@ void testAlignmentDPMatrixCheckDimension()
 template <typename TSpec>
 void testAlignmentDPMatrixSetLength(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, TSpec> dpMatrix;
 
@@ -169,7 +169,7 @@ void testAlignmentDPMatrixSetLength(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixLengthDimension(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, TSpec> dpMatrix;
 
@@ -186,7 +186,7 @@ void testAlignmentDPMatrixLengthDimension(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixEmpty(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, TSpec> dpMatrix;
 
@@ -202,7 +202,7 @@ void testAlignmentDPMatrixEmpty(TSpec const &)
 
 void testAlignmentDPMatrixClear()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -228,7 +228,7 @@ void testAlignmentDPMatrixClear()
 
 void testAlignmentDPMatrixHost()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -242,7 +242,7 @@ void testAlignmentDPMatrixHost()
 
 void testAlignmentDPMatrixSetHost()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -255,7 +255,7 @@ void testAlignmentDPMatrixSetHost()
 template <typename TIterSpec>
 void testAlignmentDPMatrixBegin(TIterSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -272,7 +272,7 @@ void testAlignmentDPMatrixBegin(TIterSpec const &)
 template <typename TIterSpec>
 void testAlignmentDPMatrixEnd(TIterSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -289,7 +289,7 @@ void testAlignmentDPMatrixEnd(TIterSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixGetValueMF(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -304,7 +304,7 @@ void testAlignmentDPMatrixGetValueMF(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixValueMF(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -319,7 +319,7 @@ void testAlignmentDPMatrixValueMF(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixReferenceMF(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -334,7 +334,7 @@ void testAlignmentDPMatrixReferenceMF(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixPositionMF(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -351,7 +351,7 @@ void testAlignmentDPMatrixPositionMF(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixSizeMF(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -368,7 +368,7 @@ void testAlignmentDPMatrixSizeMF(TSpec const &)
 template <typename TSpec>
 void testAlignmentDPMatrixHostMF(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -384,9 +384,9 @@ void testAlignmentDPMatrixHostMF(TSpec const &)
 }
 
 template <typename TSpec>
-void testAlignmentDPMatrixIteratorMF(TSpec const &, seqan::Standard const &)
+void testAlignmentDPMatrixIteratorMF(TSpec const &, seqan2::Standard const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -409,9 +409,9 @@ void testAlignmentDPMatrixIteratorMF(TSpec const &, seqan::Standard const &)
 }
 
 template <typename TSpec>
-void testAlignmentDPMatrixIteratorMF(TSpec const &, seqan::Rooted const &)
+void testAlignmentDPMatrixIteratorMF(TSpec const &, seqan2::Rooted const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, TSpec> TDPMatrix;
     typedef DPMatrix_<int, TSpec> const TDPMatrixConst;
@@ -439,7 +439,7 @@ void testAlignmentDPMatrixIteratorMF(TSpec const &, seqan::Rooted const &)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<int, FullDPMatrix> dpMatrix;
 
@@ -453,7 +453,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_constructor)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_copy_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<int, FullDPMatrix> dpMatrix;
 
@@ -489,7 +489,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_copy_constructor)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_assigment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<int, FullDPMatrix> dpMatrix;
 
@@ -517,7 +517,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_assigment)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<int, SparseDPMatrix> dpMatrix;
 
@@ -531,7 +531,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_constructor)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_copy_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<int, SparseDPMatrix> dpMatrix;
 
@@ -566,7 +566,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_copy_constructor)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_assigment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<int, SparseDPMatrix> dpMatrix;
 
@@ -607,83 +607,83 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_metafunction_size_arr)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_value)
 {
-    testAlignmentDPMatrixValueMF(seqan::FullDPMatrix());
+    testAlignmentDPMatrixValueMF(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_value)
 {
-    testAlignmentDPMatrixValueMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixValueMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_reference)
 {
-    testAlignmentDPMatrixReferenceMF(seqan::FullDPMatrix());
+    testAlignmentDPMatrixReferenceMF(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_reference)
 {
-    testAlignmentDPMatrixReferenceMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixReferenceMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_getvalue)
 {
-    testAlignmentDPMatrixGetValueMF(seqan::FullDPMatrix());
+    testAlignmentDPMatrixGetValueMF(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_getvalue)
 {
-    testAlignmentDPMatrixGetValueMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixGetValueMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_position)
 {
-    testAlignmentDPMatrixPositionMF(seqan::FullDPMatrix());
+    testAlignmentDPMatrixPositionMF(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_position)
 {
-    testAlignmentDPMatrixPositionMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixPositionMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_size)
 {
-    testAlignmentDPMatrixSizeMF(seqan::FullDPMatrix());
+    testAlignmentDPMatrixSizeMF(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_size)
 {
-    testAlignmentDPMatrixSizeMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixSizeMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_host)
 {
-    testAlignmentDPMatrixHostMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixHostMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_host)
 {
-    testAlignmentDPMatrixHostMF(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixHostMF(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_iterator_standard)
 {
-    testAlignmentDPMatrixIteratorMF(seqan::FullDPMatrix(), seqan::Standard());
+    testAlignmentDPMatrixIteratorMF(seqan2::FullDPMatrix(), seqan2::Standard());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_metafunction_iterator_rooted)
 {
-    testAlignmentDPMatrixIteratorMF(seqan::FullDPMatrix(), seqan::Rooted());
+    testAlignmentDPMatrixIteratorMF(seqan2::FullDPMatrix(), seqan2::Rooted());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_iterator_standard)
 {
-    testAlignmentDPMatrixIteratorMF(seqan::SparseDPMatrix(), seqan::Standard());
+    testAlignmentDPMatrixIteratorMF(seqan2::SparseDPMatrix(), seqan2::Standard());
 }
 
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_metafunction_iterator_rooted)
 {
-    testAlignmentDPMatrixIteratorMF(seqan::SparseDPMatrix(), seqan::Rooted());
+    testAlignmentDPMatrixIteratorMF(seqan2::SparseDPMatrix(), seqan2::Rooted());
 }
 
 // ----------------------------------------------------------------------------
@@ -707,7 +707,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_data_factors)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_resize)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -721,7 +721,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_resize)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_resize_with_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -736,7 +736,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_resize_with_value)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_resize)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
@@ -750,7 +750,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_resize)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_resize_with_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
@@ -765,7 +765,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_resize_with_value)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -791,7 +791,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
@@ -817,7 +817,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value_with_coordinates)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -845,7 +845,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_value_with_coordinates)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_value_with_coordinates)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
@@ -878,27 +878,27 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_check_dimension)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_set_length)
 {
-    testAlignmentDPMatrixSetLength(seqan::FullDPMatrix());
+    testAlignmentDPMatrixSetLength(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_set_length)
 {
-    testAlignmentDPMatrixSetLength(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixSetLength(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_length_dimension)
 {
-    testAlignmentDPMatrixLengthDimension(seqan::FullDPMatrix());
+    testAlignmentDPMatrixLengthDimension(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_length_dimension)
 {
-    testAlignmentDPMatrixLengthDimension(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixLengthDimension(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_length)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -915,7 +915,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_length)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_length)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
@@ -932,12 +932,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_length)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_empty)
 {
-    testAlignmentDPMatrixEmpty(seqan::FullDPMatrix());
+    testAlignmentDPMatrixEmpty(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_empty)
 {
-    testAlignmentDPMatrixEmpty(seqan::SparseDPMatrix());
+    testAlignmentDPMatrixEmpty(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_clear)
@@ -957,7 +957,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_set_host)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_coordinate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, FullDPMatrix> dpMatrix;
 
@@ -977,7 +977,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_full_coordinate)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_coordinate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPMatrix_<char, SparseDPMatrix> dpMatrix;
 
@@ -995,22 +995,22 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_sparse_coordinate)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_begin_standard)
 {
-    testAlignmentDPMatrixBegin(seqan::Standard());
+    testAlignmentDPMatrixBegin(seqan2::Standard());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_begin_rooted)
 {
-    testAlignmentDPMatrixBegin(seqan::Rooted());
+    testAlignmentDPMatrixBegin(seqan2::Rooted());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_end_standard)
 {
-    testAlignmentDPMatrixEnd(seqan::Standard());
+    testAlignmentDPMatrixEnd(seqan2::Standard());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_end_rooted)
 {
-    testAlignmentDPMatrixEnd(seqan::Rooted());
+    testAlignmentDPMatrixEnd(seqan2::Rooted());
 }
 
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_MATRIX_H_

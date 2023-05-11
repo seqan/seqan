@@ -55,10 +55,10 @@ struct Options
     int verbosity;
 
     // Paths to input read files.
-    seqan::CharString inputFileName;
+    seqan2::CharString inputFileName;
 
     // Paths to output read files of accepted reads.
-    seqan::CharString outputFileName;
+    seqan2::CharString outputFileName;
 
 	// if true the experiment is strandspecific.
 	bool strandspecific;

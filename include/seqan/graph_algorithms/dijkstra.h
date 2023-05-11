@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DIJKSTRA_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_DIJKSTRA_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -139,6 +139,6 @@ void dijkstra(TPredecessorMap & predecessor,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DIJKSTRA_H_

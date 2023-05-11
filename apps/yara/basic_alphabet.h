@@ -37,7 +37,7 @@
 #ifndef APP_YARA_BASIC_ALPHABET_H_
 #define APP_YARA_BASIC_ALPHABET_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Operators
@@ -130,7 +130,7 @@ inline bool operator>=(Dna5Q const & left_, Dna5 const & right_)
 // ----------------------------------------------------------------------------
 // Functions ordLess/Equal/Greater()                             [Dna5 vs Dna5]
 // ----------------------------------------------------------------------------
-    
+
 template <>
 inline bool ordLess(Dna5 const & left_, Dna5 const & right_)
 {

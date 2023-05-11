@@ -3,67 +3,67 @@
     #include <seqan/arg_parse.h>
 
     struct ModifyStringOptions
-    {   
+    {
 	unsigned period;
 	unsigned rangeBegin, rangeEnd;
 	bool toUppercase;
 	bool toLowercase;
-	seqan::CharString text;
+	seqan2::CharString text;
 
 	ModifyStringOptions() :
 	    period(1), rangeBegin(0), rangeEnd(0),toUppercase(false),
 	    toLowercase(false)
-	{}  
-    };  
+	{}
+    };
 
-    seqan::ArgumentParser::ParseResult
+    seqan2::ArgumentParser::ParseResult
     parseCommandLine(ModifyStringOptions & options, int argc, char const ** argv)
-    {   
+    {
 	// Setup ArgumentParser.
-	seqan::ArgumentParser parser("modify_string");
+	seqan2::ArgumentParser parser("modify_string");
 
 	// We require one argument.
-	addArgument(parser, seqan::ArgParseArgument(
-	    seqan::ArgParseArgument::STRING, "TEXT"));
+	addArgument(parser, seqan2::ArgParseArgument(
+	    seqan2::ArgParseArgument::STRING, "TEXT"));
 
 	// Define Options
-	addOption(parser, seqan::ArgParseOption(
+	addOption(parser, seqan2::ArgParseOption(
 	    "i", "period", "Period to use for the index.",
-	    seqan::ArgParseArgument::INTEGER, "INT"));
+	    seqan2::ArgParseArgument::INTEGER, "INT"));
 	setMinValue(parser, "period", "1");
 	setDefaultValue(parser, "period", "1");
-	addOption(parser, seqan::ArgParseOption(
+	addOption(parser, seqan2::ArgParseOption(
 	    "U", "uppercase", "Select to-uppercase as operation."));
-	addOption(parser, seqan::ArgParseOption(
+	addOption(parser, seqan2::ArgParseOption(
 	    "L", "lowercase", "Select to-lowercase as operation."));
 
 	// Parse command line.
-	seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+	seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
 	// Only extract  options if the program will continue after parseCommandLine()
-	if (res != seqan::ArgumentParser::PARSE_OK)
+	if (res != seqan2::ArgumentParser::PARSE_OK)
 	    return res;
 
 	// Extract option values.
 	getOptionValue(options.period, parser, "period");
 	options.toUppercase = isSet(parser, "uppercase");
 	options.toLowercase = isSet(parser, "lowercase");
-	seqan::getArgumentValue(options.text, parser, 0);
+	seqan2::getArgumentValue(options.text, parser, 0);
 
 	// If both to-uppercase and to-lowercase were selected then this is an error.
 	if (options.toUppercase && options.toLowercase)
 	{
 	    std::cerr << "ERROR: You cannot specify both to-uppercase and to-lowercase!\n";
-	    return seqan::ArgumentParser::PARSE_ERROR;
+	    return seqan2::ArgumentParser::PARSE_ERROR;
 	}
 
-	return seqan::ArgumentParser::PARSE_OK;
+	return seqan2::ArgumentParser::PARSE_OK;
     }
 
-    seqan::CharString modifyString(seqan::CharString const & text,
+    seqan2::CharString modifyString(seqan2::CharString const & text,
 				   ModifyStringOptions const & options)
     {
-	seqan::CharString result;
+	seqan2::CharString result;
 
 	if (options.toLowercase)
 	{
@@ -93,12 +93,12 @@
     {
 	// Parse the command line.
 	ModifyStringOptions options;
-	seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+	seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
 	// If parsing was not successful then exit with code 1 if there were errors.
 	// Otherwise, exit with code 0 (e.g. help was printed).
-	if (res != seqan::ArgumentParser::PARSE_OK)
-	    return res == seqan::ArgumentParser::PARSE_ERROR;
+	if (res != seqan2::ArgumentParser::PARSE_OK)
+	    return res == seqan2::ArgumentParser::PARSE_ERROR;
 
 	std::cout << modifyString(options.text, options) << '\n';
 

@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_SCORE_SCORE_SIMD_WRAPPER_H_
 #define INCLUDE_SEQAN_SCORE_SCORE_SIMD_WRAPPER_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

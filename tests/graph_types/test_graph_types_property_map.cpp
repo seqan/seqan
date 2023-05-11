@@ -36,7 +36,7 @@
 // Test external property maps (using String) with standard interface
 SEQAN_DEFINE_TEST(test_graph_types_property_map_external)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Create graph typedefs.
     typedef Graph<Directed<void> >                  TGraph;
@@ -81,7 +81,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_map_external)
 // Test external property maps (using String) with assignVertexMap().
 SEQAN_DEFINE_TEST(test_graph_types_property_map_external_assign_vertex_map)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Create graph typedefs.
     typedef Graph<Directed<void> >                  TGraph;
@@ -106,7 +106,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_map_external_assign_vertex_map)
 // Test external property maps (using String) with assignEdgeMap().
 SEQAN_DEFINE_TEST(test_graph_types_property_map_external_assign_edge_map)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Create graph typedefs.
     typedef Graph<Directed<void> >                  TGraph;
@@ -132,7 +132,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_map_external_assign_edge_map)
 // Test internal pointer property maps.
 SEQAN_DEFINE_TEST(test_graph_types_property_internal_pointer_map)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Graph typedefs.
     typedef Pair<char, int>                TPair;
@@ -174,7 +174,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_pointer_map)
 
 SEQAN_DEFINE_TEST(test_graph_types_property_internal_pointer_map_assign_edge_map_member)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Create graph typedefs.
     typedef Pair<unsigned, unsigned>                TPair;
@@ -205,7 +205,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_pointer_map_assign_edge_map
 // Test internal property maps.
 SEQAN_DEFINE_TEST(test_graph_types_property_internal_map)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Graph typedefs.
     typedef Directed<char>                 TEdges;
@@ -238,7 +238,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_map)
 
 SEQAN_DEFINE_TEST(test_graph_types_property_internal_map_assign_edge_map)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Create graph typedefs.
     typedef Graph<Directed<unsigned> >                 TGraph;

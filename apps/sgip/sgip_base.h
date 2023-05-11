@@ -105,11 +105,11 @@ template <typename TString = std::vector<int> >
 struct SgipHash;
 
 template <typename TValue, unsigned int LENGTH>
-struct SgipHash<seqan::String<TValue, seqan::Array<LENGTH> > >
+struct SgipHash<seqan2::String<TValue, seqan2::Array<LENGTH> > >
 {
-    size_t operator()(seqan::String<TValue, seqan::Array<LENGTH> > const & s) const
+    size_t operator()(seqan2::String<TValue, seqan2::Array<LENGTH> > const & s) const
     {
-        using namespace seqan;
+        using namespace seqan2;
         typedef typename Iterator<String<TValue, Array<LENGTH> > >::Type TIterator;
         size_t i = 0;
         size_t sum = 0;
@@ -151,12 +151,12 @@ template <typename TString>
 struct SgipEqualTo;
 
 template <typename TValue, unsigned int LENGTH>
-struct SgipEqualTo<seqan::String<TValue, seqan::Array<LENGTH> > >
+struct SgipEqualTo<seqan2::String<TValue, seqan2::Array<LENGTH> > >
 {
-    bool operator()(seqan::String<TValue, seqan::Array<LENGTH> > const & s1,
-                    seqan::String<TValue, seqan::Array<LENGTH> > const & s2) const
+    bool operator()(seqan2::String<TValue, seqan2::Array<LENGTH> > const & s1,
+                    seqan2::String<TValue, seqan2::Array<LENGTH> > const & s2) const
     {
-        using namespace seqan;
+        using namespace seqan2;
         typedef String<TValue, Array<LENGTH> >     TString;
         typedef typename Iterator<TString>::Type   TIterator;
 
@@ -211,11 +211,11 @@ struct LessCompare_<SgipDegreeDir_<TValue> >
 };
 
 template <typename TValue, unsigned int LENGTH>
-struct LessCompare_<seqan::String<TValue, seqan::Array<LENGTH> > >
+struct LessCompare_<seqan2::String<TValue, seqan2::Array<LENGTH> > >
 {
     bool operator()(
-        seqan::String<TValue, seqan::Array<LENGTH> > const & obj1,
-        seqan::String<TValue, seqan::Array<LENGTH> > const & obj2
+        seqan2::String<TValue, seqan2::Array<LENGTH> > const & obj1,
+        seqan2::String<TValue, seqan2::Array<LENGTH> > const & obj2
         ) const
     {
         return compare_(obj1, obj2) < 0;
@@ -264,9 +264,9 @@ inline int compare_(SgipDegreeDir_<unsigned int> const & obj1, SgipDegreeDir_<un
 }
 
 template <typename TValue>
-inline int compare_(seqan::String<TValue> const & obj1, seqan::String<TValue> const & obj2)
+inline int compare_(seqan2::String<TValue> const & obj1, seqan2::String<TValue> const & obj2)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef String<TValue> const             TString;
     typedef typename Iterator<TString>::Type TIterator;
     TIterator it, itEnd, ti, tiEnd;
@@ -300,7 +300,7 @@ inline int compare_(seqan::String<TValue> const & obj1, seqan::String<TValue> co
 template <typename TValue>
 inline int compare_(std::vector<TValue> const & obj1, std::vector<TValue> const & obj2)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef std::vector<TValue> const        TString;
     typedef typename Iterator<TString>::Type TIterator;
     TIterator it, itEnd, ti, tiEnd;
@@ -336,9 +336,9 @@ inline int compare_(std::vector<TValue> const & obj1, std::vector<TValue> const 
 // --------------------------------------------------------------------------
 
 // Create undirected graphs from directed graphs.
-void _createUndir(seqan::Graph<seqan::Directed<> > const & graph, seqan::Graph<seqan::Undirected<> > & ugraph)
+void _createUndir(seqan2::Graph<seqan2::Directed<> > const & graph, seqan2::Graph<seqan2::Undirected<> > & ugraph)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Graph<Directed<> >                    TGraph;
     typedef VertexDescriptor<TGraph>::Type        TVertexDescriptor;
     typedef Iterator<TGraph, EdgeIterator>::Type  TIterator;
@@ -364,12 +364,12 @@ void _createUndir(seqan::Graph<seqan::Directed<> > const & graph, seqan::Graph<s
 
 // Get distance matrix through bfs method.
 template <typename TSpec, typename TMatrix>
-void _getDistanceMatrixBfs(seqan::Graph<TSpec> const &, TMatrix &);
+void _getDistanceMatrixBfs(seqan2::Graph<TSpec> const &, TMatrix &);
 
 template <typename TMatrix, typename TCargo, typename TSpec>
-void _getDistanceMatrixBfs(seqan::Graph<seqan::Undirected<TCargo, TSpec> > const & graph, TMatrix & mat)
+void _getDistanceMatrixBfs(seqan2::Graph<seqan2::Undirected<TCargo, TSpec> > const & graph, TMatrix & mat)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Graph<Undirected<TCargo, TSpec> >               TGraph;
     typedef typename VertexDescriptor<TGraph>::Type         TVertexDescriptor;
     typedef typename Iterator<TGraph, VertexIterator>::Type TIterator;
@@ -389,9 +389,9 @@ void _getDistanceMatrixBfs(seqan::Graph<seqan::Undirected<TCargo, TSpec> > const
 }
 
 template <typename TMatrix, typename TCargo, typename TSpec>
-void _getDistanceMatrixBfs(seqan::Graph<seqan::Directed<TCargo, TSpec> > const & graph, TMatrix & mat)
+void _getDistanceMatrixBfs(seqan2::Graph<seqan2::Directed<TCargo, TSpec> > const & graph, TMatrix & mat)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Graph<Undirected<TCargo, TSpec> > ugraph;
     _createUndir(graph, ugraph);
     _getDistanceMatrixBfs(ugraph, mat);
@@ -405,16 +405,16 @@ void _getDistanceMatrixBfs(seqan::Graph<seqan::Directed<TCargo, TSpec> > const &
 template <typename TKey, typename TValue, typename TSpec, typename THKey, typename THValue, typename TGraph>
 void _caculateDegreeMap(std::multimap<TKey, TValue, TSpec> &,
                         std::unordered_map<THKey, THValue> &,
-                        seqan::Graph<TGraph> const &);
+                        seqan2::Graph<TGraph> const &);
 
 template <typename TKey, typename TValue, typename TSpec>
 void _caculateDegreeMap(
-    std::multimap<TKey, seqan::VertexDescriptor<seqan::Graph<seqan::Directed<> > >::Type, TSpec> & orderedmap,
-    std::unordered_map<seqan::VertexDescriptor<seqan::Graph<seqan::Directed<> > >::Type, TValue> & degreemap,
-    seqan::Graph<seqan::Directed<> > const & graph
+    std::multimap<TKey, seqan2::VertexDescriptor<seqan2::Graph<seqan2::Directed<> > >::Type, TSpec> & orderedmap,
+    std::unordered_map<seqan2::VertexDescriptor<seqan2::Graph<seqan2::Directed<> > >::Type, TValue> & degreemap,
+    seqan2::Graph<seqan2::Directed<> > const & graph
     )
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Graph<Directed<> >                                                      TGraph;
     typedef typename VertexDescriptor<TGraph>::Type                                 TVertexDescriptor;
     typedef typename Iterator<TGraph, VertexIterator>::Type                         TIterator;
@@ -437,12 +437,12 @@ void _caculateDegreeMap(
 // Get refinement of a new vertexorder.
 template <typename TValue, typename TEntry>
 void _getRefinement(
-    seqan::String<TValue> const & vertexorder,
-    seqan::String<TEntry> const & mat,
-    seqan::String<TEntry> & tempmat
+    seqan2::String<TValue> const & vertexorder,
+    seqan2::String<TEntry> const & mat,
+    seqan2::String<TEntry> & tempmat
     )
 {
-    using namespace seqan;
+    using namespace seqan2;
     //typedef typename Iterator<String<TValue> >::Type TIterator;
     typedef typename Size<String<TEntry> >::Type     TSize;
     TSize     len, i, j, vi, vj;
@@ -469,7 +469,7 @@ void _getRefinement(
 template <typename TString, typename TXMap, typename TMatrix, typename TDMap>
 bool _getHeuristicList(TString & rset, TXMap & cand, TMatrix & dismat, TString & heuristicString, TDMap & degreemap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     //typedef typename TString::iterator TIterator;
     typedef typename TXMap::iterator TIter;
     typedef typename TXMap::key_type T;
@@ -543,7 +543,7 @@ template <typename TValue, typename TCandMap, typename TMatrix, typename THMap, 
                       TMat & tempmat,
                       bool isSmaller)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename TCandMap::iterator              TIterator;
     typedef std::vector<TValue>                      TVector;
     typedef typename std::vector<TValue>::iterator   TVIterator;
@@ -596,13 +596,13 @@ template <typename TString, typename TMap, typename TXMap,
                        THMap & checkmap,
                        TXMap & cand,
                        TString & heuristicString,
-                       seqan::String<TValue> & vertexorder,
-                       seqan::String<TValue> & standardVertexOrder,
+                       seqan2::String<TValue> & vertexorder,
+                       seqan2::String<TValue> & standardVertexOrder,
                        TMat & tempmat,
                        bool & flag,
                        size_t & len)
 {
-    using namespace seqan;
+    using namespace seqan2;
     unsigned local_len = length(heuristicString);
     for (unsigned i = 0; i < local_len; i++)
     {
@@ -648,7 +648,7 @@ template <typename TString, typename TMap, typename TXMap,
 
 // Check whether two vertex are parity nodes.
 template <typename TValue, typename TNum, typename TVertex>
-bool isParity(seqan::String<TValue> const & mat, TVertex it, TVertex ti, TNum n)
+bool isParity(seqan2::String<TValue> const & mat, TVertex it, TVertex ti, TNum n)
 {
     for (unsigned short i = 0; i < n; i++)
     {
@@ -667,15 +667,15 @@ bool isParity(seqan::String<TValue> const & mat, TVertex it, TVertex ti, TNum n)
 // Create parity map.
 template <typename TEntry, typename TValue, typename TSpec, typename TArrString>
 void _createParityMap(
-    seqan::String<TEntry> const & mat,
-    std::unordered_map<seqan::VertexDescriptor<seqan::Graph<seqan::Directed<> > >::Type,
-    seqan::String<seqan::VertexDescriptor<seqan::Graph<seqan::Directed<> > >::Type> > & parityMap,
-    std::multimap<TValue, seqan::VertexDescriptor<seqan::Graph<seqan::Directed<> > >::Type, TSpec> & degreeMap,
-    seqan::Graph<seqan::Directed<> > const & graph,
+    seqan2::String<TEntry> const & mat,
+    std::unordered_map<seqan2::VertexDescriptor<seqan2::Graph<seqan2::Directed<> > >::Type,
+    seqan2::String<seqan2::VertexDescriptor<seqan2::Graph<seqan2::Directed<> > >::Type> > & parityMap,
+    std::multimap<TValue, seqan2::VertexDescriptor<seqan2::Graph<seqan2::Directed<> > >::Type, TSpec> & degreeMap,
+    seqan2::Graph<seqan2::Directed<> > const & graph,
     TArrString & cand
     )
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef VertexDescriptor<Graph<Directed<> > >::Type                               TVertexDescriptor;
     typedef std::vector<TVertexDescriptor>                                            TString;
     //typedef typename Iterator<TString, Rooted>::Type                                  TStrIterator;
@@ -744,9 +744,9 @@ void _createCandMap(std::unordered_map<TVal, bool> & hmap, TString & cand)
 // --------------------------------------------------------------------------
 
 template <typename TSpec, typename TMat>
-bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
+bool getCanonicalLabel(TMat & leastmat, seqan2::Graph<TSpec> const & graph)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef bool                                                           TFlag;
     typedef Graph<TSpec>                                                   TGraph;
     typedef typename VertexDescriptor<TGraph>::Type                        TVertexDescriptor;
@@ -801,9 +801,9 @@ bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
 // --------------------------------------------------------------------------
 
 template <typename TSpec>
-bool checkIsomorphic(seqan::Graph<TSpec> const & g1, seqan::Graph<TSpec> const & g2)
+bool checkIsomorphic(seqan2::Graph<TSpec> const & g1, seqan2::Graph<TSpec> const & g2)
 {
-    typedef seqan::String<bool> TMat;
+    typedef seqan2::String<bool> TMat;
     TMat leastmat1, leastmat2;
 
     getCanonicalLabel(leastmat1, g1);

@@ -2,7 +2,7 @@
 #define APPS_BS_TOOLS_BISAR_SCORE_DATA_H_
 
 
-namespace seqan {
+namespace seqan2 {
 
 struct BsCaseCT_;
 typedef Tag<BsCaseCT_>   BsCaseCT;

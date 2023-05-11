@@ -38,7 +38,7 @@
 #ifndef TESTS_FIND_TEST_FIND_HAMMING_H_
 #define TESTS_FIND_TEST_FIND_HAMMING_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // Helper function that iterates over all values of a given length of
 // a given string and calls a functor on it.

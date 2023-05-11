@@ -49,7 +49,7 @@
 
 
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1292,6 +1292,6 @@ bool loadReads(FragmentStore<TSpec, TConfig> & store, TFileName & fileNameL, TFi
     return true;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

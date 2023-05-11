@@ -36,7 +36,7 @@
 #ifndef SEQAN_FIND_FIND_BASE_H_
 #define SEQAN_FIND_FIND_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

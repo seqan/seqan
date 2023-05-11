@@ -42,7 +42,7 @@
 template <typename TStringSet>
 void alfTestHelperGetSequences(TStringSet & sequences)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString seqIID1 =
         "TAGGTTTTCCGAAAAGGTAGCAACTTTACGTGATCAAACCTCTGACGGGGTTTTCCCCGTCGAAATTGGGTG"
         "TTTCTTGTCTTGTTCTCACTTGGGGCATCTCCGTCAAGCCAAGAAAGTGCTCCCTGGATTCTGTTGCTAACG"
@@ -68,7 +68,7 @@ void alfTestHelperGetSequences(TStringSet & sequences)
 SEQAN_DEFINE_TEST(test_alignment_free_alignment_free_comparison)
 {
     // This test is the example for the function alignmentFreeComparison
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<Dna5String> sequences;
     Dna5String seq1 =
         "TAGGTTTTCCGAAAAGGTAGCAACTTTACGTGATCAAACCTCTGACGGGGTTTTCCCCGTCGAAATTGGGTG"
@@ -110,7 +110,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_alignment_free_comparison)
 
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_probability)
 {
-    using namespace seqan;
+    using namespace seqan2;
     double p = 0.0;
     DnaString word = "CCCAAGTTT";
     String<double> model;
@@ -125,7 +125,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_calculate_probability)
 
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_variance)
 {
-    using namespace seqan;
+    using namespace seqan2;
     double var = 0.0;
     int n = 10000;
     DnaString word = "CAAGTC";
@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_calculate_variance)
 
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_covariance)
 {
-    using namespace seqan;
+    using namespace seqan2;
     double covar = 0.0;
     int n = 10000;
     DnaString word1 = "ATATAT";
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_calculate_covariance)
 
 SEQAN_DEFINE_TEST(test_alignment_free_d2_dna)
 {
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<DnaString> sequences;
     alfTestHelperGetSequences(sequences);
 
@@ -198,7 +198,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_d2_dna)
 
 SEQAN_DEFINE_TEST(test_alignment_free_d2_dna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<Dna5String> sequences;
     alfTestHelperGetSequences(sequences);
 
@@ -227,7 +227,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_d2_dna5)
 
 SEQAN_DEFINE_TEST(test_alignment_free_d2star_dna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<Dna5String> sequences;
     alfTestHelperGetSequences(sequences);
 
@@ -257,7 +257,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_d2star_dna5)
 
 SEQAN_DEFINE_TEST(test_alignment_free_d2z_dna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<Dna5String> sequences;
     alfTestHelperGetSequences(sequences);
 
@@ -287,7 +287,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_d2z_dna5)
 
 SEQAN_DEFINE_TEST(test_alignment_free_n2_dna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<Dna5String> sequences;
     alfTestHelperGetSequences(sequences);
 
@@ -367,7 +367,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_n2_dna5)
 
 SEQAN_DEFINE_TEST(test_alignment_free_count_kmers)
 {
-    using namespace seqan;
+    using namespace seqan2;
     StringSet<Dna5String> sequencesDna5;
     alfTestHelperGetSequences(sequencesDna5);
     String<unsigned> kmerCounts;
@@ -440,7 +440,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_count_kmers)
 
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_periodicity)
 {
-    using namespace seqan;
+    using namespace seqan2;
     DnaString word1 = "ATATA";
     DnaString word2 = "TATAT";
     String<int> periodicity;
@@ -459,7 +459,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_calculate_periodicity)
 
 SEQAN_DEFINE_TEST(test_alignment_free_calculate_overlap_indicator)
 {
-    using namespace seqan;
+    using namespace seqan2;
     DnaString word1 = "ATATA";
     DnaString word2 = "TATAT";
     String<int> epsilon;
@@ -478,7 +478,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_calculate_overlap_indicator)
 
 SEQAN_DEFINE_TEST(test_alignment_free_string_to_string_set)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Dna5String sequenceDna5 =
         "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG";
     StringSet<DnaString> sequencesDna;
@@ -491,7 +491,7 @@ SEQAN_DEFINE_TEST(test_alignment_free_string_to_string_set)
 
 SEQAN_DEFINE_TEST(test_alignment_free_cut_ns)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Dna5String sequenceMasked =
         "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG";
     Dna5String sequenceMaskedPartsRemoved;

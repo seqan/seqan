@@ -90,7 +90,7 @@ struct Options;
 #include "mapper_writer.h"
 #include "mapper.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Functions

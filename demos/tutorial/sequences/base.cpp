@@ -1,7 +1,7 @@
 #include <seqan/sequence.h>
 #include <seqan/file.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {
@@ -52,6 +52,6 @@ int main()
     for (unsigned i = 0; i < length(read); ++i)
     {
         appendValue(genomeFragment, genome[beginPosition + i]);
-    }    
+    }
 //![assignment5_code_to_change]
-} 
+}

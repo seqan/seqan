@@ -42,7 +42,7 @@
 #include <vector>
 #include <sstream>
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Forwards
@@ -682,7 +682,7 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  * An example of setting allowed values for a string option.
  *
  * @code{.cpp}
- * seqan::ArgParseArgument stringArg(seqan::ArgParseArgument::STRING);
+ * seqan2::ArgParseArgument stringArg(seqan2::ArgParseArgument::STRING);
  * setValidValues(stringArg, "one two three");  // one of {"one", "two", "three"}
  *
  * std::vector<std::string> values;
@@ -695,7 +695,7 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  * the example would be the same for output files.
  *
  * @code{.cpp}
- * seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE);
+ * seqan2::ArgParseArgument fileArg(seqan2::ArgParseArgument::INPUT_FILE);
  * setValidValues(fileArg, "fq fastq");  // file must end in ".fq" or ".fastq"
  *
  * std::vector<std::string> values;
@@ -1207,6 +1207,6 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
     return value.substr(dotPos + 1);
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_

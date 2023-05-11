@@ -40,25 +40,25 @@
 // ============================================================================
 
 struct Matrix_;
-typedef seqan::Tag<Matrix_> GMatrix;
+typedef seqan2::Tag<Matrix_> GMatrix;
 
 struct General_;
-typedef seqan::Tag<General_> General;
+typedef seqan2::Tag<General_> General;
 
 struct GeneralMap_;
-typedef seqan::Tag<GeneralMap_>  GeneralMap;
+typedef seqan2::Tag<GeneralMap_>  GeneralMap;
 
 struct DegreeMap_;
-typedef seqan::Tag<DegreeMap_> DegreeMap;
+typedef seqan2::Tag<DegreeMap_> DegreeMap;
 
 struct ParityMap_;
-typedef seqan::Tag<ParityMap_> ParityMap;
+typedef seqan2::Tag<ParityMap_> ParityMap;
 
 struct CheckMap_;
-typedef seqan::Tag<CheckMap_> CheckMap;
+typedef seqan2::Tag<CheckMap_> CheckMap;
 
 struct FFFF_;
-typedef seqan::Tag<FFFF_> FFFF;
+typedef seqan2::Tag<FFFF_> FFFF;
 
 // ============================================================================
 // Function
@@ -69,13 +69,13 @@ typedef seqan::Tag<FFFF_> FFFF;
 // --------------------------------------------------------------------------
 
 template <typename TStr, typename TSpec>
-void outputLabel(TStr &, seqan::Tag<TSpec>);
+void outputLabel(TStr &, seqan2::Tag<TSpec>);
 
 // Function outputLabel for String.
 template <typename TStr>
 void outputLabel(TStr & str, General const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Iterator<TStr>::Type TIterator;
     TIterator it = begin(str,Standard());
@@ -91,14 +91,14 @@ void outputLabel(TStr & str, General const &)
 }
 
 template <typename TValue, typename TSpec, typename TTag>
-void outputLabel(seqan::String<TValue, TSpec> &, TTag const &){}
+void outputLabel(seqan2::String<TValue, TSpec> &, TTag const &){}
 
 template <typename TValue, typename TSpec>
-void outputLabel(seqan::String<TValue, TSpec> & mat, General const &)
+void outputLabel(seqan2::String<TValue, TSpec> & mat, General const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
-    typedef typename Iterator<seqan::String<TValue, TSpec> >::Type TIterator;
+    typedef typename Iterator<seqan2::String<TValue, TSpec> >::Type TIterator;
     TIterator it = begin(mat);
     std::cout << "String: ";
     while (!atEnd(it))
@@ -111,7 +111,7 @@ void outputLabel(seqan::String<TValue, TSpec> & mat, General const &)
 }
 
 template <typename TValue, typename TSpec>
-void outputLabel(seqan::String<TValue, TSpec> & mat, size_t n)
+void outputLabel(seqan2::String<TValue, TSpec> & mat, size_t n)
 {
     size_t i, j;
     for (i = 0; i < n; i++)
@@ -127,7 +127,7 @@ void outputLabel(seqan::String<TValue, TSpec> & mat, size_t n)
 }
 
 template <typename TValue, typename TSpec>
-void outputLabel(seqan::String<TValue, TSpec> & mat, FFFF const &)
+void outputLabel(seqan2::String<TValue, TSpec> & mat, FFFF const &)
 {
     size_t i = 0, j;
     size_t len = length(mat);
@@ -155,9 +155,9 @@ void outputLabel(seqan::String<TValue, TSpec> & mat, FFFF const &)
 
 // Function outputLabel for StringSet.
 template <typename TString>
-void outputLabel(seqan::StringSet<TString> & mat, General const &)
+void outputLabel(seqan2::StringSet<TString> & mat, General const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Iterator<StringSet<TString>, Rooted>::Type TIterator;
     typedef typename Iterator<TString, Rooted>::Type TStrIterator;
@@ -176,7 +176,7 @@ void outputLabel(seqan::StringSet<TString> & mat, General const &)
 }
 
 template <typename TString>
-void outputLabel(seqan::StringSet<TString> & mat, size_t n)
+void outputLabel(seqan2::StringSet<TString> & mat, size_t n)
 {
     size_t i, j;
     for (i = 0; i < n; i++)
@@ -205,7 +205,7 @@ void outputMap(TMap & map, GeneralMap const &)
 template <typename TKey, typename TValue>
 void outputMap(std::unordered_map<TKey, TValue> & map, ParityMap const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename std::unordered_map<TKey, TValue>::iterator TIterator;
     typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
@@ -228,7 +228,7 @@ void outputMap(std::unordered_map<TKey, TValue> & map, ParityMap const &)
 template <typename TKey, typename TValue>
 void outputMap(std::unordered_map<TKey, TValue> & map, CheckMap const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename std::unordered_map<TKey, TValue>::iterator TIterator;
     //typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();
@@ -241,7 +241,7 @@ void outputMap(std::unordered_map<TKey, TValue> & map, CheckMap const &)
 template <typename TKey, typename TValue>
 void outputMap(std::unordered_map<TKey, TValue> & map, DegreeMap const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename std::unordered_map<TKey, TValue>::iterator TIterator;
     //typedef typename Iterator<TValue, Rooted>::Type    TStrIterator;
     TIterator it = map.begin();

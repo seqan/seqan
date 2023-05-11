@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -121,6 +121,6 @@ nextLocalAlignment(Align<TSequence, TAlignSpec> & align,
     return nextLocalAlignment(row(align, 0), row(align, 1), enumerator);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_

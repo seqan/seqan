@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_VCF_READ_VCF_H_
 #define SEQAN_INCLUDE_SEQAN_VCF_READ_VCF_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -217,6 +217,6 @@ readRecord(VcfRecord & record,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_READ_VCF_H_

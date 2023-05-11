@@ -1,7 +1,7 @@
 #include <iostream>
 #include <seqan/parallel.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

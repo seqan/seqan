@@ -89,10 +89,10 @@ public:
     static int nextId;
 
     // The reference sequence names.
-    seqan::StringSet<seqan::CharString> refNames;
+    seqan2::StringSet<seqan2::CharString> refNames;
 
     // The RoiFileOut to use for writing.
-    seqan::RoiFileOut & roiFileOut;
+    seqan2::RoiFileOut & roiFileOut;
 
     // The options to use for building the ROI file.
     RoiBuilderOptions options;
@@ -101,18 +101,18 @@ public:
     MyRoiRecord currentRoi;
 
     // The current profile of the ROI.  Required for C+G content computation.
-    typedef seqan::ProfileChar<seqan::Dna5, int> TProfileChar;
-    seqan::String<TProfileChar > currentProfile;
+    typedef seqan2::ProfileChar<seqan2::Dna5, int> TProfileChar;
+    seqan2::String<TProfileChar > currentProfile;
 
     // A bit mask that defines whether a position in the current region is considered to be connective (coverage > 1 in
     // case of single end or !options.linkedOverSkipped and a skipped-bases link/link between two mate pairs in case of
     // options.linkOverSkipped/options.usePairing.
-    seqan::String<bool> connective;
+    seqan2::String<bool> connective;
 
     // The number of reads in the current ROI.
     int readsInCurrentRoi;
 
-    RoiBuilder(seqan::RoiFileOut & roiFileOut, RoiBuilderOptions const & options) :
+    RoiBuilder(seqan2::RoiFileOut & roiFileOut, RoiBuilderOptions const & options) :
         roiFileOut(roiFileOut), options(options), readsInCurrentRoi(0)
     {}
 
@@ -122,7 +122,7 @@ public:
     }
 
 	// Add a BAM alignment record to the current ROI, create a new one if no overlap with the current ROI
-    void pushRecord(seqan::BamAlignmentRecord const & record);
+    void pushRecord(seqan2::BamAlignmentRecord const & record);
 
     // write ROI file header
     void writeHeader();
@@ -133,13 +133,13 @@ private:
 
     // Write the given roi record to text file with the given profile, doing some computation.
     int writeRecord(MyRoiRecord & record,
-                    seqan::String<TProfileChar> const & profile);
+                    seqan2::String<TProfileChar> const & profile);
 
     // Extend the current ROI.
-    void extendRoi(seqan::BamAlignmentRecord const & record);
+    void extendRoi(seqan2::BamAlignmentRecord const & record);
 
     // Create a new ROI.
-    void createRoi(seqan::BamAlignmentRecord const & record);
+    void createRoi(seqan2::BamAlignmentRecord const & record);
 };
 
 // ============================================================================

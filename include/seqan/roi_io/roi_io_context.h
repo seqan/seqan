@@ -39,7 +39,7 @@
 
 #include <seqan/store.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -65,7 +65,7 @@ public:
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ROI_IO_ROI_IO_CONTEXT_H_
 

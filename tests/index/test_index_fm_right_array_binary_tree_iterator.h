@@ -40,7 +40,7 @@
 #include <seqan/sequence.h>
 #include <seqan/index.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TIter>
 void waveletTreeStructureIteratorBegin(TIter & /*tag*/)
@@ -568,7 +568,7 @@ void _waveletTreeStructureSetRightChildPos(TIter & /*tag*/)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_begin)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef RightArrayBinaryTree<Dna5, void> TWaveletTreeStructure;
     typedef TopDown<> TIterSpec;
@@ -581,7 +581,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_begin)
 // NOTE(esiragusa): IteratorContainer test should not use operator==()
 //SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_container)
 //{
-//    using namespace seqan;
+//    using namespace seqan2;
 //
 //    RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
 //    typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -591,7 +591,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_begin)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_end)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -601,7 +601,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_end)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_character)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -611,7 +611,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_character)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_child_pos)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -621,7 +621,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_child_pos)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_num_child_vertices)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -631,7 +631,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_num_child_vertices)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_position)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -641,7 +641,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_get_position)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_child)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -651,7 +651,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_child)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_down)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -661,7 +661,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_down)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_right)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -671,7 +671,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_right)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_to_position)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -681,7 +681,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_to_position)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_up)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -691,7 +691,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_go_up)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_is_leaf)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -701,7 +701,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_is_leaf)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_is_root)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -711,7 +711,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_is_root)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_and_go_right)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -721,7 +721,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_and_go_right)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_character)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -731,7 +731,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_character)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_child_vertices_)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -741,7 +741,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_child_vertices_)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_left_child_pos_)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -751,7 +751,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_left_child_pos_)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_position_)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;
@@ -762,7 +762,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_position_)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_iterator_set_right_child_pos_)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna5, void> waveletTreeStructure;
     typedef typename Iterator<RightArrayBinaryTree<Dna5, void>, TopDown<ParentLinks<> > >::Type TIter;

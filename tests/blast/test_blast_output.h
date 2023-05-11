@@ -37,7 +37,7 @@
 #ifndef SEQAN_TESTS_TEST_BLAST_OUTPUT_H_
 #define SEQAN_TESTS_TEST_BLAST_OUTPUT_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TFile, typename TScore, typename TRecords, BlastProgram p, BlastTabularSpec h>
 inline void

@@ -45,7 +45,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 template <typename TOptions>
@@ -63,7 +63,7 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
-		
+
 		unsigned i = 1;
         CharString line;
 		while(!atEnd(reader))
@@ -209,8 +209,8 @@ int main(int argc, const char *argv[])
     options.microRNA = true;
     pm_options.optionLossRate = 0.0;
     bool seedError = false;
-    
-    
+
+
     ArgumentParser parser("micro_razers");
     setShortDescription(parser, "Map small RNA reads possibly containing 3' adapter sequence");
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
@@ -225,10 +225,10 @@ int main(int argc, const char *argv[])
     setDate(parser, SEQAN_DATE);
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, 0, seqan2::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    setValidValues(parser, 1, seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, 1, seqan2::SeqFileIn::getFileExtensions());
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     //////////////////////////////////////////////////////////////////////////////
@@ -259,7 +259,7 @@ int main(int argc, const char *argv[])
     setDefaultValue(parser, "shape", options.shape);
     hideOption(parser,"shape");
     addOption(parser, ArgParseOption("t", "threshold", "Manually set minimum k-mer count threshold.", ArgParseOption::INTEGER));
-    setMinValue(parser, "threshold", "1");    
+    setMinValue(parser, "threshold", "1");
     hideOption(parser,"threshold");
     addOption(parser, ArgParseOption("pa", "purge-ambiguous",   "purge reads with more than max-hits best matches"));
     addOption(parser, ArgParseOption("lm", "low-memory",        "decrease memory usage at the expense of runtime"));
@@ -268,27 +268,27 @@ int main(int argc, const char *argv[])
 
     addSection(parser, "Output Options:");
     addOption(parser, ArgParseOption("a", "alignment",          "dump the alignment for each match"));
-    
+
     addOption(parser, ArgParseOption("gn", "genome-naming", "Select how genomes are named. 0 = use Fasta id, 1 = enumerate beginning with 1.", ArgParseOption::INTEGER));
     setMinValue(parser, "genome-naming", "0");
     setMaxValue(parser, "genome-naming", "1");
     setDefaultValue(parser, "genome-naming", options.genomeNaming);
-    
+
     addOption(parser, ArgParseOption("rn", "read-naming", "Select how reads are named. 0 = use Fasta id, 1 = enumerate beginning with 1.", ArgParseOption::INTEGER));
     setDefaultValue(parser, "read-naming", options.readNaming);
     setMinValue(parser, "read-naming", "0");
     setMaxValue(parser, "read-naming", "1");
-    
+
     addOption(parser, ArgParseOption("so", "sort-order", "Select how matches are sorted. 0 = read number, 1 = genome position.", ArgParseOption::INTEGER));
     setDefaultValue(parser, "sort-order", options.sortOrder);
     setMinValue(parser, "sort-order", "0");
     setMaxValue(parser, "sort-order", "1");
-    
+
     addOption(parser, ArgParseOption("pf", "position-format", "Select begin/end position numbering (see Coordinate section below). 0 = gap space, 1 = position space.", ArgParseOption::INTEGER));
     setMinValue(parser, "position-format", "0");
     setMaxValue(parser, "position-format", "1");
     setDefaultValue(parser, "position-format", options.positionFormat);
-    
+
     // Parse command line.
     ArgumentParser::ParseResult res = parse(parser, argc, argv);
     if (res != ArgumentParser::PARSE_OK)
@@ -299,7 +299,7 @@ int main(int argc, const char *argv[])
     }
 
     bool stop = false;
-    
+
     //////////////////////////////////////////////////////////////////////////////
     // Extract options
     getOptionValue(seedError, parser, "seed-error");
@@ -329,12 +329,12 @@ int main(int argc, const char *argv[])
     }
 //    appendValue(genomeFileNames, getArgumentValue(parser, 0));
 //    appendValue(readFileNames, getArgumentValue(parser, 1), Generous());
-   
+
     resize(genomeFileNames, length(genomeFileNames) + 1);
     getArgumentValue(back(genomeFileNames), parser, 0);
     resize(readFileNames, 1, Exact());
     getArgumentValue(readFileNames[0], parser, 1, 0);
-    
+
     // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
     if (isSet(parser, "output"))
     {
@@ -348,12 +348,12 @@ int main(int argc, const char *argv[])
 
     CharString tmp = options.output;
     toLower(tmp);
- 
+
     if (endsWith(tmp, ".sam"))
         options.outputFormat = 4;
     else
         options.outputFormat = 0;   // default is ".razers"
-	
+
     //////////////////////////////////////////////////////////////////////////////
     // Check options
     if (seedError) options.exactSeed = false;
@@ -400,7 +400,7 @@ int main(int argc, const char *argv[])
         if ((ones < 6 || ones > maxOnes) && !stop)
             cerr << "Warning: Shape should contain at least 6 and at most " << maxOnes << " '1's" << endl;
     }
-    
+
     if ((getArgumentValueCount(parser, 1) > 1) && (stop = true))
         cerr << "More than one read file specified." << endl;
     if ((getArgumentValueCount(parser, 1) == 0) && (stop = true))

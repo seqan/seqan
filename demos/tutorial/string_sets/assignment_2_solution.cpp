@@ -2,7 +2,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Check whether the string set contains the string with the given id,
 // without comparing the actual sequences

@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_KRUSKAL_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_KRUSKAL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -132,6 +132,6 @@ void kruskalsAlgorithm(TEdges & edges,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_KRUSKAL_H_

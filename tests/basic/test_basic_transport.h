@@ -65,7 +65,7 @@ struct TransportObj_
     {
     }
 
-    TransportObj_(TransportObj_ & other, seqan::Move)
+    TransportObj_(TransportObj_ & other, seqan2::Move)
             : id(nextId++), assignedFrom(-1), setFrom(-1), movedFrom(other.id)
     {
         bool b = IsSameType<TSpec, MoveYes>::Type::VALUE;
@@ -127,7 +127,7 @@ void resetTransportObjStatics(TSpec const &)
     TransportObj_<TSpec>::moves = 0;
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct HasMoveConstructor<TransportObj_<MoveYes> >
@@ -141,7 +141,7 @@ struct HasMoveConstructor<TransportObj_<MoveYes> const>
     typedef True Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 // ==========================================================================
 // Actual Tests

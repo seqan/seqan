@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

@@ -62,7 +62,7 @@
 // ==========================================================================
 
 typedef std::mt19937 TRng;
-typedef seqan::JournalEntries<seqan::JournalEntry<unsigned, int>, seqan::SortedArray> TJournalEntries;
+typedef seqan2::JournalEntries<seqan2::JournalEntry<unsigned, int>, seqan2::SortedArray> TJournalEntries;
 
 // --------------------------------------------------------------------------
 // Class MasonVariatorOptions
@@ -81,23 +81,23 @@ struct MasonVariatorOptions
     // ----------------------------------------------------------------------
 
     // VCF file to import.
-    seqan::CharString vcfInFile;
+    seqan2::CharString vcfInFile;
     // FASTA file to import.
-    seqan::CharString fastaInFile;
+    seqan2::CharString fastaInFile;
     // VCF file to write out.
-    seqan::CharString vcfOutFile;
+    seqan2::CharString vcfOutFile;
     // FASTA file to write out with variations.
-    seqan::CharString fastaOutFile;
+    seqan2::CharString fastaOutFile;
     // FASTA file to load the methylation levels from.
-    seqan::CharString methFastaInFile;
+    seqan2::CharString methFastaInFile;
     // FASTA file to write the methylation levels to.
-    seqan::CharString methFastaOutFile;
+    seqan2::CharString methFastaOutFile;
 
     // Path to a TSV file where the first two columns giving the type of the SV to simulate and the size of the SV.
     // This overrides the simulation of SV from the sv*Rate parameters.
-    seqan::CharString inputSVSizeFile;
+    seqan2::CharString inputSVSizeFile;
     // Path to TSV file to write the resulting breakpoints in variant genomes to.
-    seqan::CharString outputBreakpointFile;
+    seqan2::CharString outputBreakpointFile;
 
     // Whether or not to generate ids of the variants.
     bool genVarIDs;
@@ -110,7 +110,7 @@ struct MasonVariatorOptions
     int numHaplotypes;
 
     // The string to use to separate the haplotype identifier from the chromosome name in the output FASTA ifle.
-    seqan::CharString haplotypeSep;
+    seqan2::CharString haplotypeSep;
 
     // ----------------------------------------------------------------------
     // Variation Simulation
@@ -196,7 +196,7 @@ void print(std::ostream & out, MasonVariatorOptions const & options)
 // --------------------------------------------------------------------------
 
 // Returns true if the position is next to an N.
-bool isNearN(seqan::CharString const & seq, unsigned pos)
+bool isNearN(seqan2::CharString const & seq, unsigned pos)
 {
     if (pos == 0u || pos + 1u >= length(seq))
         return true;  // too close to end
@@ -210,7 +210,7 @@ bool isNearN(seqan::CharString const & seq, unsigned pos)
 // --------------------------------------------------------------------------
 
 // Returns true if the interval [beginPos, endPos) overlaps with an N or is next to one.
-bool overlapsWithN(seqan::CharString const & seq, unsigned beginPos, unsigned endPos)
+bool overlapsWithN(seqan2::CharString const & seq, unsigned beginPos, unsigned endPos)
 {
     if (endPos + 1 >= length(seq) || beginPos == 0u)
         return true;  // too close to end
@@ -233,20 +233,20 @@ public:
     TRng & rng;
 
     // FAI Index for loading sequence contig-wise.
-    seqan::FaiIndex const & faiIndex;
+    seqan2::FaiIndex const & faiIndex;
 
     // The variator options.
     MasonVariatorOptions options;
 
     // Structural variation records.
-    seqan::String<VariationSizeRecord> const & variationSizeRecords;
-    seqan::String<int> variationToContig;
+    seqan2::String<VariationSizeRecord> const & variationSizeRecords;
+    seqan2::String<int> variationToContig;
 
     // Numeric idx of next simulated variant for variants.
     int nextIndelNo, nextInvNo, nextTransNo, nextDupNo;
 
-    StructuralVariantSimulator(TRng & rng, seqan::FaiIndex const & faiIndex,
-                               seqan::String<VariationSizeRecord> const & variationSizeRecords,
+    StructuralVariantSimulator(TRng & rng, seqan2::FaiIndex const & faiIndex,
+                               seqan2::String<VariationSizeRecord> const & variationSizeRecords,
                                MasonVariatorOptions const & options) :
             rng(rng), faiIndex(faiIndex), options(options), variationSizeRecords(variationSizeRecords),
             nextIndelNo(0), nextInvNo(0), nextTransNo(0), nextDupNo(0)
@@ -258,7 +258,7 @@ public:
     void _distributeVariations()
     {
         // Build prefix sume for distributing variations to contig proportional to the length.
-        seqan::String<int64_t> limits;
+        seqan2::String<int64_t> limits;
         appendValue(limits, 0);
         for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
             appendValue(limits, back(limits) + sequenceLength(faiIndex, i));
@@ -290,7 +290,7 @@ public:
 
     void simulateContig(Variants & variants, unsigned rId, int haploCount)
     {
-        seqan::CharString seq;
+        seqan2::CharString seq;
         readSequence(seq, faiIndex, rId);
 
         if (!empty(options.inputSVSizeFile))
@@ -300,7 +300,7 @@ public:
     }
 
     // Simulate the variants given variation types and kinds.
-    void _simulateFromSizes(Variants & variants, unsigned rId, int haploCount, seqan::CharString const & seq)
+    void _simulateFromSizes(Variants & variants, unsigned rId, int haploCount, seqan2::CharString const & seq)
     {
         // Picking SVs in a non-overlapping manner without any biases is too complicated to implement for a simulator.
         // Instead, we simulate the position uniformly at random and rerun picking the positions if we overlap with one
@@ -388,7 +388,7 @@ public:
         }
 
         // Sort simulated variants.
-        std::sort(begin(variants.svRecords, seqan::Standard()), end(variants.svRecords, seqan::Standard()));
+        std::sort(begin(variants.svRecords, seqan2::Standard()), end(variants.svRecords, seqan2::Standard()));
 
         // Rebuild variant names.
         if (options.genVarIDs)
@@ -405,7 +405,7 @@ public:
     }
 
     // Simulate the variants given per-position error rates.
-    void _simulateFromRates(Variants & variants, unsigned rId, int haploCount, seqan::CharString const & seq)
+    void _simulateFromRates(Variants & variants, unsigned rId, int haploCount, seqan2::CharString const & seq)
     {
         // For each base, compute the whether to simulate a SNP and/or small indel.
         for (unsigned pos = 0; pos < length(seq); ++pos)
@@ -469,7 +469,7 @@ public:
     }
 
     bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size,
-                         seqan::CharString const & seq, seqan::CharString const & indelSeq)
+                         seqan2::CharString const & seq, seqan2::CharString const & indelSeq)
     {
         if (options.verbosity >= 2)
             std::cerr << "Simulating SV INDEL indelSeq = " << indelSeq << '\n';
@@ -493,12 +493,12 @@ public:
     }
 
     bool simulateSVIndel(Variants & variants, int haploCount, int rId, unsigned pos, int size,
-                         seqan::CharString const & seq)
+                         seqan2::CharString const & seq)
     {
         // Indels are simulated for one haplotype only.
         if (options.verbosity >= 2)
             std::cerr << "Simulating SV INDEL seq for size = " << size << '\n';
-        seqan::CharString indelSeq;
+        seqan2::CharString indelSeq;
         reserve(indelSeq, options.maxSVSize);
         bool deletion = (size < 0);
         if (deletion && (pos - size) > sequenceLength(faiIndex, rId))
@@ -509,13 +509,13 @@ public:
             return false;  // do not allow insertion into gap
         std::uniform_int_distribution<int> dist(0, 3);
         for (int i = 0; i < size; ++i)  // not executed in case of deleted sequence
-            appendValue(indelSeq, seqan::Dna5(dist(rng)));
+            appendValue(indelSeq, seqan2::Dna5(dist(rng)));
 
         return simulateSVIndel(variants, haploCount, rId, pos, size, seq, indelSeq);
     }
 
     bool simulateInversion(Variants & variants, int haploCount, int rId, unsigned pos, int size,
-                           seqan::CharString const & seq)
+                           seqan2::CharString const & seq)
     {
         if (pos + size >= sequenceLength(faiIndex, rId))
             return false;
@@ -537,7 +537,7 @@ public:
     }
 
     bool simulateTranslocation(Variants & variants, int haploCount, int rId, unsigned pos, int size,
-                               seqan::CharString const & seq)
+                               seqan2::CharString const & seq)
     {
         std::uniform_int_distribution<int> distHaplo(0, haploCount - 1);
         std::uniform_int_distribution<int> distPos(pos + size + options.minSVSize,
@@ -562,7 +562,7 @@ public:
     }
 
     bool simulateDuplication(Variants & variants, int haploCount, int rId, unsigned pos, int size,
-                             seqan::CharString const & seq)
+                             seqan2::CharString const & seq)
     {
         if (!simulateTranslocation(variants, haploCount, rId, pos, size, seq))
             return false;
@@ -593,7 +593,7 @@ public:
     TRng & rng;
 
     // FAI Index for loading sequence contig-wise.
-    seqan::FaiIndex const & faiIndex;
+    seqan2::FaiIndex const & faiIndex;
 
     // The variator options.
     MasonVariatorOptions options;
@@ -601,7 +601,7 @@ public:
     // The index of the next SNP/small indel.
     int nextSnpNo, nextIndelNo;
 
-    SmallVariantSimulator(TRng & rng, seqan::FaiIndex const & faiIndex, MasonVariatorOptions const & options) :
+    SmallVariantSimulator(TRng & rng, seqan2::FaiIndex const & faiIndex, MasonVariatorOptions const & options) :
             rng(rng), faiIndex(faiIndex), options(options), nextSnpNo(0), nextIndelNo(0)
     {}
 
@@ -613,7 +613,7 @@ public:
     // The variants in variants.svRecords must be non-overlapping.
     void simulateContig(Variants & variants, unsigned rId, int haploCount)
     {
-        seqan::CharString seq;
+        seqan2::CharString seq;
         readSequence(seq, faiIndex, rId);
 
         // Index into variants.svRecords.
@@ -706,23 +706,23 @@ public:
     }
 
     // Return true if SNP could be simulated.
-    bool simulateSnp(Variants & variants, seqan::CharString & seq, int haploCount, int rId, unsigned pos)
+    bool simulateSnp(Variants & variants, seqan2::CharString & seq, int haploCount, int rId, unsigned pos)
     {
         if (isNearN(seq, pos))
             return false;  // No SNP next to an N.
 
         // We simulate an alternative base for each haplotype.
 
-        seqan::Dna5 from = seq[pos];
+        seqan2::Dna5 from = seq[pos];
         for (int hId = 0; hId < haploCount; ++hId)
         {
             std::uniform_int_distribution<int> dist(0, 2);
             int toInt = dist(rng);
             if (ordValue(from) <= toInt)
                 toInt += 1;
-            // std::cerr << hId << "\t" << rId << "\t" << pos << "\t" << from << "\t" << seqan::Dna5(toInt) << "\n";
+            // std::cerr << hId << "\t" << rId << "\t" << pos << "\t" << from << "\t" << seqan2::Dna5(toInt) << "\n";
             SEQAN_ASSERT_NEQ((int)ordValue(from), toInt);
-            seqan::Dna5 to(toInt);
+            seqan2::Dna5 to(toInt);
             appendValue(variants.snps, SnpRecord(hId, rId, pos, to));
         }
 
@@ -730,7 +730,7 @@ public:
     }
 
     // Return true if SNP could be simulated.
-    bool simulateSmallIndel(Variants & variants, seqan::CharString & seq, int haploCount, int rId, unsigned pos)
+    bool simulateSmallIndel(Variants & variants, seqan2::CharString & seq, int haploCount, int rId, unsigned pos)
     {
         // Indels are simulated for one haplotype only.
         std::uniform_int_distribution<int> distHaplo(0, haploCount - 1);
@@ -739,7 +739,7 @@ public:
         std::uniform_int_distribution<int> distDeletion(0, 1);
         std::uniform_int_distribution<int> distDNA(0, 3);
         int hId = distHaplo(rng);
-        seqan::CharString indelSeq;
+        seqan2::CharString indelSeq;
         reserve(indelSeq, options.maxSmallIndelSize);
         int indelSize = distSize(rng);
         bool deletion = distDeletion(rng);
@@ -751,7 +751,7 @@ public:
             return false;  // no insertion next to N
         indelSize = deletion ? -indelSize : indelSize;
         for (int i = 0; i < indelSize; ++i)  // not executed in case of deleted sequence
-            appendValue(indelSeq, seqan::Dna5(distDNA(rng)));
+            appendValue(indelSeq, seqan2::Dna5(distDNA(rng)));
         appendValue(variants.smallIndels, SmallIndelRecord(hId, rId, pos, indelSize, indelSeq));
         return true;
     }
@@ -772,18 +772,18 @@ public:
 
     MasonVariatorOptions options;
 
-    seqan::VcfFileOut vcfFileOut;
-    seqan::SeqFileOut outSeqStream;
+    seqan2::VcfFileOut vcfFileOut;
+    seqan2::SeqFileOut outSeqStream;
 
-    seqan::SeqFileOut outMethLevelStream;
+    seqan2::SeqFileOut outMethLevelStream;
 
     // FAI Index for loading sequence contig-wise.
-    seqan::FaiIndex const & faiIndex;
+    seqan2::FaiIndex const & faiIndex;
     // FAI Index for loading methylation data.
-    seqan::FaiIndex methFaiIndex;
+    seqan2::FaiIndex methFaiIndex;
 
     // Variation size record.
-    seqan::String<VariationSizeRecord> variationSizeRecords;
+    seqan2::String<VariationSizeRecord> variationSizeRecords;
 
     // File to write breakpoints to.
     std::fstream breakpointsOut;
@@ -791,7 +791,7 @@ public:
     // Numeric id of the variation that is written out next.
     int nextVarNo;
 
-    MasonVariatorApp(TRng & rng, TRng & methRng, seqan::FaiIndex const & faiIndex,
+    MasonVariatorApp(TRng & rng, TRng & methRng, seqan2::FaiIndex const & faiIndex,
                      MasonVariatorOptions const & options) :
             rng(rng), methRng(methRng), options(options), faiIndex(faiIndex), nextVarNo(0)
     {
@@ -807,7 +807,7 @@ public:
             {
                 if (!build(methFaiIndex, toCString(options.methFastaInFile)))
                     throw MasonIOException("Could not build FAI index for methylation FASTA.");
-                seqan::CharString faiPath = options.methFastaInFile;
+                seqan2::CharString faiPath = options.methFastaInFile;
                 append(faiPath, ".fai");
                 if (!save(methFaiIndex, toCString(faiPath)))
                     throw MasonIOException("Could not save methylation FASTA FAI.");
@@ -836,39 +836,39 @@ public:
             return 1;
         }
         // Create header.
-        seqan::VcfHeader vcfHeader;
-        appendValue(vcfHeader, seqan::VcfHeaderRecord("fileformat", "VCFv4.1"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord("source", "mason_variator"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord("reference", options.fastaInFile));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        seqan2::VcfHeader vcfHeader;
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord("fileformat", "VCFv4.1"));
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord("source", "mason_variator"));
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord("reference", options.fastaInFile));
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "INFO", "<ID=END,Number=1,Type=Integer,Description=\"End position of the variant described in this record\">"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "INFO", "<ID=SVLEN,Number=.,Type=Integer,Description=\"Difference in length between REF and ALT alleles\">"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "INFO", "<ID=SVTYPE,Number=1,Type=String,Description=\"Type of structural variant\">"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "INFO", "<ID=TARGETPOS,Number=1,Type=String,Description=\"Target position for duplications.\">"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "ALT", "<ID=INV,Description=\"Inversion\">"));
-        appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "ALT", "<ID=DUP,Description=\"Duplication\">"));
         // We don't need DEL and INS here since we report exact one with the sequence.
-        // appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        // appendValue(vcfHeader, seqan2::VcfHeaderRecord(
         //         "ALT", "<ID=DEL,Description=\"Deletion\">"));
-        // appendValue(vcfHeader, seqan::VcfHeaderRecord(
+        // appendValue(vcfHeader, seqan2::VcfHeaderRecord(
         //         "ALT", "<ID=INS,Description=\"Insertion of novel sequence\">"));
 
         // Copy over sequence names.
         for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
         {
-            seqan::CharString contigStr = "<ID=";
+            seqan2::CharString contigStr = "<ID=";
             append(contigStr, sequenceName(faiIndex, i));
             append(contigStr, ",length=");
             std::stringstream ss;
             ss << sequenceLength(faiIndex, i);
             append(contigStr, ss.str());
             append(contigStr, ">");
-            appendValue(vcfHeader, seqan::VcfHeaderRecord("contig", contigStr));
+            appendValue(vcfHeader, seqan2::VcfHeaderRecord("contig", contigStr));
 
             appendName(contigNamesCache(context(vcfFileOut)), sequenceName(faiIndex, i));
         }
@@ -954,7 +954,7 @@ public:
     int _simulateMethLevels(MethylationLevels & levels, int rId)
     {
         MethylationLevelSimulator methSim(methRng, options.methSimOptions);
-        seqan::Dna5String contig;
+        seqan2::Dna5String contig;
         readSequence(contig, faiIndex, rId);
         methSim.run(levels, contig);
 
@@ -1001,8 +1001,8 @@ public:
             return 1;
         }
 
-        seqan::DirectionIterator<std::fstream, seqan::Input>::Type inputIter =
-                directionIterator(inF, seqan::Input());
+        seqan2::DirectionIterator<std::fstream, seqan2::Input>::Type inputIter =
+                directionIterator(inF, seqan2::Input());
         VariationSizeRecord record;
         while (!atEnd(inputIter))
         {
@@ -1047,8 +1047,8 @@ public:
         // Simulate variants.
         Variants variants;
         svSim.simulateContig(variants, rId, options.numHaplotypes);
-        std::sort(begin(variants.svRecords, seqan::Standard()),
-                  end(variants.svRecords, seqan::Standard()));
+        std::sort(begin(variants.svRecords, seqan2::Standard()),
+                  end(variants.svRecords, seqan2::Standard()));
         smallSim.simulateContig(variants, rId, options.numHaplotypes);
         // TODO(holtgrew): This list is wrong.
         if (options.verbosity >= 1)
@@ -1058,7 +1058,7 @@ public:
 
         // Load contig seq.
         // TODO(holtgrew): Pass from outside, could reuse sequence from methylation levels.
-        seqan::Dna5String contig;
+        seqan2::Dna5String contig;
         readSequence(contig, faiIndex, rId);
 
         // Write out variants for contig to VCF file.
@@ -1084,11 +1084,11 @@ public:
         return 0;
     }
 
-    int _writeContigs(seqan::Dna5String const & contig, Variants const & variants, MethylationLevels const & levels, int rId, int hId)
+    int _writeContigs(seqan2::Dna5String const & contig, Variants const & variants, MethylationLevels const & levels, int rId, int hId)
     {
         // Create contig with the small and large variants.
         VariantMaterializer varMat(methRng, variants, options.methSimOptions);
-        seqan::Dna5String seqVariants;
+        seqan2::Dna5String seqVariants;
         std::vector<std::pair<int, int> > breakpoints;
         if (options.methSimOptions.simulateMethylationLevels)
         {
@@ -1109,7 +1109,7 @@ public:
         }
 
         // Build sequence id.
-        seqan::CharString id = sequenceName(faiIndex, rId);
+        seqan2::CharString id = sequenceName(faiIndex, rId);
         append(id, options.haplotypeSep);
         char buffer[20];
         snprintf(buffer, 19, "%d", hId + 1);
@@ -1126,7 +1126,7 @@ public:
     }
 
     // Write out variants for the given contig to the VCF file.
-    int _writeVcf(seqan::Dna5String const & contig, Variants const & variants, int /*rId*/)
+    int _writeVcf(seqan2::Dna5String const & contig, Variants const & variants, int /*rId*/)
     {
         // Reset the id of the next variant.
         nextVarNo = 0;
@@ -1215,7 +1215,7 @@ public:
         return 0;
     }
 
-    int _writeVcfSnp(seqan::Dna5String const & contig,
+    int _writeVcfSnp(seqan2::Dna5String const & contig,
                      Variants const & variants,
                      SnpRecord & snpRecord,
                      unsigned & snpsIdx)
@@ -1226,20 +1226,20 @@ public:
 
         // Store information used below.
         // std::cerr << "from = " << contig[snpRecord.pos] << "\n";
-        seqan::Dna5 from = contig[snpRecord.pos];
+        seqan2::Dna5 from = contig[snpRecord.pos];
         std::pair<int, int> pos = snpRecord.getPos();
 
         // Get the value of each haplotype at the position.
-        seqan::String<bool> inTos;
+        seqan2::String<bool> inTos;
         resize(inTos, 4, false);
-        seqan::Dna5String tos;
+        seqan2::Dna5String tos;
         resize(tos, options.numHaplotypes, from);
         unsigned idx = snpsIdx - 1;
         do
         {
             SEQAN_ASSERT(snpRecord.to != from);
             tos[snpRecord.haplotype] = snpRecord.to;
-            inTos[ordValue(seqan::Dna5(snpRecord.to))] = true;
+            inTos[ordValue(seqan2::Dna5(snpRecord.to))] = true;
 
             if (snpsIdx >= length(variants.snps))
                 snpRecord.rId = std::numeric_limits<int>::max();
@@ -1251,7 +1251,7 @@ public:
                snpRecord.getPos() == pos);
 
         // Create VCF vcfRecord.
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = rId;
         vcfRecord.beginPos = pos.second;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SNP, idx));
@@ -1262,7 +1262,7 @@ public:
                 continue;  // no ALT
             if (!empty(vcfRecord.alt))
                 appendValue(vcfRecord.alt, ',');
-            appendValue(vcfRecord.alt, seqan::Dna5(i));
+            appendValue(vcfRecord.alt, seqan2::Dna5(i));
         }
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
@@ -1293,13 +1293,13 @@ public:
         return 0;
     }
 
-    int _writeVcfSmallIndel(seqan::Dna5String const & contig,
+    int _writeVcfSmallIndel(seqan2::Dna5String const & contig,
                             Variants const & variants,
                             SmallIndelRecord & smallIndelRecord,
                             unsigned & smallIndelIdx)
     {
         // Collect small indel records at the same position.
-        seqan::String<SmallIndelRecord> records;
+        seqan2::String<SmallIndelRecord> records;
         unsigned idx = smallIndelIdx - 1;
         do
         {
@@ -1323,7 +1323,7 @@ public:
         SEQAN_ASSERT_NOT(empty(records));
 
         // Create VCF record.
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = front(records).rId;
         vcfRecord.beginPos = front(records).pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, idx));
@@ -1345,7 +1345,7 @@ public:
         append(vcfRecord.ref, infix(contig, vcfRecord.beginPos, vcfRecord.beginPos + numRef));
 
         // Compute ALT columns and a map to the ALT.
-        seqan::String<int> toIds;
+        seqan2::String<int> toIds;
         resize(toIds, options.numHaplotypes, 0);
         for (unsigned i = 0; i < length(records); ++i)
         {
@@ -1381,7 +1381,7 @@ public:
         return 0;
     }
 
-    int _writeVcfIndel(seqan::Dna5String const & contig,
+    int _writeVcfIndel(seqan2::Dna5String const & contig,
                        StructuralVariantRecord const & svRecord,
                        Variants const & variants,
                        unsigned svIdx)
@@ -1391,7 +1391,7 @@ public:
             std::cerr << "indel\t" << svRecord << "\n";
 
         // Create VCF record.
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
@@ -1442,13 +1442,13 @@ public:
         return 0;
     }
 
-    int _writeVcfTranslocation(seqan::Dna5String const & contig,
+    int _writeVcfTranslocation(seqan2::Dna5String const & contig,
                                StructuralVariantRecord const & svRecord,
                                Variants const & variants,
                                unsigned svIdx)
     {
         // In this function, we will create VCF records left and right of both cut positions and of the paste position.
-        seqan::VcfRecord leftOfCutL, rightOfCutL, leftOfCutR, rightOfCutR, leftOfPaste, rightOfPaste;
+        seqan2::VcfRecord leftOfCutL, rightOfCutL, leftOfCutR, rightOfCutR, leftOfPaste, rightOfPaste;
         leftOfCutL.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         rightOfCutL.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
         leftOfCutR.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
@@ -1482,7 +1482,7 @@ public:
         // ALT
         std::stringstream ssLeftOfCutL, ssRightOfCutL, ssLeftOfCutR, ssRightOfCutR,
                 ssLeftOfPaste, ssRightOfPaste;
-        seqan::CharString refName = contigNames(context(vcfFileOut))[svRecord.rId];
+        seqan2::CharString refName = contigNames(context(vcfFileOut))[svRecord.rId];
         ssLeftOfCutL << leftOfCutL.ref << "[" << refName << ":" << (rightOfCutR.beginPos + 1) << "[";
         leftOfCutL.alt = ssLeftOfCutL.str();
 
@@ -1564,14 +1564,14 @@ public:
         return 0;
     }
 
-    int _writeVcfInversion(seqan::Dna5String const & contig,
+    int _writeVcfInversion(seqan2::Dna5String const & contig,
                            StructuralVariantRecord const & svRecord,
                            Variants const & variants,
                            unsigned svIdx)
     {
         if (options.verbosity >= 2)
             std::cerr << "inversion\t" << svRecord << "\n";
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
 
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
@@ -1600,7 +1600,7 @@ public:
         return 0;
     }
 
-    int _writeVcfDuplication(seqan::Dna5String const & contig,
+    int _writeVcfDuplication(seqan2::Dna5String const & contig,
                              StructuralVariantRecord const & svRecord,
                              Variants const & variants,
                              unsigned svIdx)
@@ -1610,7 +1610,7 @@ public:
             std::cerr << "duplication\t" << svRecord << "\n";
 
         // Create VCF record.
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = svRecord.rId;
         vcfRecord.beginPos = svRecord.pos - 1;
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SV, svIdx));
@@ -1653,11 +1653,11 @@ public:
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_variator");
+    seqan2::ArgumentParser parser("mason_variator");
     // Set short description, version, and date.
     setShortDescription(parser, "Variation Simulation");
     setDateAndVersion(parser);
@@ -1679,12 +1679,12 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addSection(parser, "General Options");
 
     // We require one argument.
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
 
-    addOption(parser, seqan::ArgParseOption("s", "seed", "The seed to use for the random number generator.",
-                                            seqan::ArgParseOption::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("s", "seed", "The seed to use for the random number generator.",
+                                            seqan2::ArgParseOption::INTEGER, "INT"));
     setDefaultValue(parser, "seed", "0");
 
     // ----------------------------------------------------------------------
@@ -1693,38 +1693,38 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output");
 
-    // addOption(parser, seqan::ArgParseOption("iv", "in-vcf", "VCF file to load variations from.",
-    //                                         seqan::ArgParseOption::INPUT_FILE, "VCF"));
+    // addOption(parser, seqan2::ArgParseOption("iv", "in-vcf", "VCF file to load variations from.",
+    //                                         seqan2::ArgParseOption::INPUT_FILE, "VCF"));
     // setValidValues(parser, "in-vcf", "vcf");
 
-    addOption(parser, seqan::ArgParseOption("ir", "in-reference", "FASTA file with reference.",
-                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
+    addOption(parser, seqan2::ArgParseOption("ir", "in-reference", "FASTA file with reference.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "in-reference", "fasta fa");
     setRequired(parser, "in-reference");
 
-    addOption(parser, seqan::ArgParseOption("it", "in-variant-tsv",
+    addOption(parser, seqan2::ArgParseOption("it", "in-variant-tsv",
                                             "TSV file with variants to simulate.  See Section on the Variant TSV File below.",
-                                            seqan::ArgParseOption::INPUT_FILE, "VCF"));
+                                            seqan2::ArgParseOption::INPUT_FILE, "VCF"));
     setValidValues(parser, "in-variant-tsv", "tsv txt");
 
-    addOption(parser, seqan::ArgParseOption("ov", "out-vcf", "VCF file to write simulated variations to.",
-                                            seqan::ArgParseOption::INPUT_FILE, "VCF"));
+    addOption(parser, seqan2::ArgParseOption("ov", "out-vcf", "VCF file to write simulated variations to.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "VCF"));
     setRequired(parser, "out-vcf");
     setValidValues(parser, "out-vcf", "vcf");
 
-    addOption(parser, seqan::ArgParseOption("of", "out-fasta", "FASTA file to write simulated haplotypes to.",
-                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
+    addOption(parser, seqan2::ArgParseOption("of", "out-fasta", "FASTA file to write simulated haplotypes to.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "out-fasta", "fasta fa");
 
-    addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "TSV"));
+    addOption(parser, seqan2::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "TSV"));
     setValidValues(parser, "out-breakpoints", "tsv txt");
 
-    addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep", "Haplotype name separator in output FASTA.",
-                                            seqan::ArgParseOption::STRING, "SEP"));
+    addOption(parser, seqan2::ArgParseOption("", "haplotype-name-sep", "Haplotype name separator in output FASTA.",
+                                            seqan2::ArgParseOption::STRING, "SEP"));
     setDefaultValue(parser, "haplotype-name-sep", "/");
 
-    addOption(parser, seqan::ArgParseOption("", "no-gen-var-ids", "Do not generate variant ids."));
+    addOption(parser, seqan2::ArgParseOption("", "no-gen-var-ids", "Do not generate variant ids."));
 
     // ----------------------------------------------------------------------
     // Haplotype / Allele Configuration
@@ -1732,15 +1732,15 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 
     addSection(parser, "Haplotype / Allele Configuration");
 
-    addOption(parser, seqan::ArgParseOption("n", "num-haplotypes", "The number of haplotypes to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("n", "num-haplotypes", "The number of haplotypes to simulate.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "num-haplotypes", "1");
     setDefaultValue(parser, "num-haplotypes", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "haplotype-sep",
+    addOption(parser, seqan2::ArgParseOption("", "haplotype-sep",
                                             "The separator between the chromosome and the haplotype name "
                                             "in the output FASTA file.",
-                                            seqan::ArgParseOption::STRING, "SEP"));
+                                            seqan2::ArgParseOption::STRING, "SEP"));
     setDefaultValue(parser, "haplotype-sep", "/");
 
     // ----------------------------------------------------------------------
@@ -1749,59 +1749,59 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 
     addSection(parser, "Variation Simulation");
 
-    addOption(parser, seqan::ArgParseOption("", "snp-rate", "Per-base SNP rate.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "snp-rate", "Per-base SNP rate.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "snp-rate", "0.0");
     setMaxValue(parser, "snp-rate", "1.0");
     setDefaultValue(parser, "snp-rate", "0.0001");
 
-    addOption(parser, seqan::ArgParseOption("", "small-indel-rate", "Small indel rate.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "small-indel-rate", "Small indel rate.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "small-indel-rate", "0.0");
     setMaxValue(parser, "small-indel-rate", "1.0");
     setDefaultValue(parser, "small-indel-rate", "0.000001");
 
-    addOption(parser, seqan::ArgParseOption("", "min-small-indel-size", "Minimal small indel size to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "min-small-indel-size", "Minimal small indel size to simulate.",
+                                            seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "min-small-indel-size", "0");
     setDefaultValue(parser, "min-small-indel-size", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "max-small-indel-size", "Maximal small indel size to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "max-small-indel-size", "Maximal small indel size to simulate.",
+                                            seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "max-small-indel-size", "0");
     setDefaultValue(parser, "max-small-indel-size", "6");
 
-    addOption(parser, seqan::ArgParseOption("", "sv-indel-rate", "Per-base SNP rate.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "sv-indel-rate", "Per-base SNP rate.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "sv-indel-rate", "0.0");
     setMaxValue(parser, "sv-indel-rate", "1.0");
     setDefaultValue(parser, "sv-indel-rate", "0.0000001");
 
-    addOption(parser, seqan::ArgParseOption("", "sv-inversion-rate", "Per-base SNP rate.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "sv-inversion-rate", "Per-base SNP rate.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "sv-inversion-rate", "0.0");
     setMaxValue(parser, "sv-inversion-rate", "1.0");
     setDefaultValue(parser, "sv-inversion-rate", "0.0000001");
 
-    addOption(parser, seqan::ArgParseOption("", "sv-translocation-rate", "Per-base SNP rate.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "sv-translocation-rate", "Per-base SNP rate.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "sv-translocation-rate", "0.0");
     setMaxValue(parser, "sv-translocation-rate", "1.0");
     setDefaultValue(parser, "sv-translocation-rate", "0.0000001");
 
-    addOption(parser, seqan::ArgParseOption("", "sv-duplication-rate", "Per-base SNP rate.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "sv-duplication-rate", "Per-base SNP rate.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "sv-duplication-rate", "0.0");
     setMaxValue(parser, "sv-duplication-rate", "1.0");
     setDefaultValue(parser, "sv-duplication-rate", "0.0000001");
 
-    addOption(parser, seqan::ArgParseOption("", "min-sv-size", "Minimal SV size to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "min-sv-size", "Minimal SV size to simulate.",
+                                            seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "min-sv-size", "0");
     setDefaultValue(parser, "min-sv-size", "50");
 
-    addOption(parser, seqan::ArgParseOption("", "max-sv-size", "Maximal SV size to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "max-sv-size", "Maximal SV size to simulate.",
+                                            seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "max-sv-size", "0");
     setDefaultValue(parser, "max-sv-size", "1000");
 
@@ -1811,15 +1811,15 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     // Methylation Simulation Options
     // ----------------------------------------------------------------------
 
-    addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "Path to load original methylation levels from.  "
+    addOption(parser, seqan2::ArgParseOption("", "meth-fasta-in", "Path to load original methylation levels from.  "
                                             "Methylation levels are simulated if omitted.",
-                                            seqan::ArgParseOption::INPUT_FILE, "FILE"));
-    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
+                                            seqan2::ArgParseOption::INPUT_FILE, "FILE"));
+    setValidValues(parser, "meth-fasta-in", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "Path to write methylation levels to as FASTA.  "
+    addOption(parser, seqan2::ArgParseOption("", "meth-fasta-out", "Path to write methylation levels to as FASTA.  "
                                             "Only written if \\fB-of\\fP/\\fB--out-fasta\\fP is given.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "FILE"));
-    setValidValues(parser, "meth-fasta-out", seqan::SeqFileOut::getFileExtensions());
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "FILE"));
+    setValidValues(parser, "meth-fasta-out", seqan2::SeqFileOut::getFileExtensions());
 
 
     // ----------------------------------------------------------------------
@@ -1890,10 +1890,10 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     // TODO(holtgrew): Simulate different levels for each haplotype?
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -1937,7 +1937,7 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 
     options.methSimOptions.simulateMethylationLevels = !empty(options.methFastaOutFile);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -1947,15 +1947,15 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 int main(int argc, char const ** argv)
 {
     // Parse the command line.
-    seqan::ArgumentParser parser;
+    seqan2::ArgumentParser parser;
     MasonVariatorOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Initialize random number generators.  We need two so mason_variator and mason_materializer can yield the same
     // result.
@@ -1971,7 +1971,7 @@ int main(int argc, char const ** argv)
               << "\n";
 
     std::cerr << "Loading Reference Index " << options.fastaInFile << " ...";
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     if (!open(faiIndex, toCString(options.fastaInFile)))
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
@@ -1982,7 +1982,7 @@ int main(int argc, char const ** argv)
             return 1;
         }
         std::cerr << " OK\n";
-        seqan::CharString faiPath = options.fastaInFile;
+        seqan2::CharString faiPath = options.fastaInFile;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
         if (!save(faiIndex, toCString(faiPath)))

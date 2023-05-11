@@ -52,7 +52,7 @@
 // ============================================================================
 
 struct VariationSizeTsv_;
-typedef seqan::Tag<VariationSizeTsv_> VariationSizeTsv;
+typedef seqan2::Tag<VariationSizeTsv_> VariationSizeTsv;
 
 class VariationSizeRecord
 {
@@ -73,7 +73,7 @@ public:
     int size;
 
     // The characters to insert into the genome.
-    seqan::CharString seq;
+    seqan2::CharString seq;
 
     VariationSizeRecord() : kind(INVALID), size(-1)
     {}
@@ -91,16 +91,16 @@ template <typename TForwardIterator>
 int readRecord(VariationSizeRecord & record, TForwardIterator & iter,
                VariationSizeTsv const & /*tag*/)
 {
-    seqan::CharString buffer, buffer2;
+    seqan2::CharString buffer, buffer2;
 
     // Read until tab, must not read file end.
-    readUntil(buffer, iter, seqan::OrFunctor<seqan::IsTab, seqan::IsNewline>());
+    readUntil(buffer, iter, seqan2::OrFunctor<seqan2::IsTab, seqan2::IsNewline>());
 
     // Read until tab, must not reach file end.
-    skipOne(iter, seqan::IsTab());
+    skipOne(iter, seqan2::IsTab());
 
     // Read until tab or line break, may reach end of file.
-    readUntil(buffer2, iter, seqan::OrFunctor<seqan::IsTab, seqan::IsNewline>());
+    readUntil(buffer2, iter, seqan2::OrFunctor<seqan2::IsTab, seqan2::IsNewline>());
 
     lexicalCastWithException(record.size, buffer2);
 
@@ -125,10 +125,10 @@ int readRecord(VariationSizeRecord & record, TForwardIterator & iter,
     // In case of an insertion, check if we can read the sequence to be inserted.
     if (buffer == "INS" && !atEnd(iter) && *iter == '\t')
     {
-        skipOne(iter, seqan::IsTab());
+        skipOne(iter, seqan2::IsTab());
 
         clear(buffer2);
-        readUntil(buffer2, iter, seqan::IsWhitespace());
+        readUntil(buffer2, iter, seqan2::IsWhitespace());
         record.seq = buffer2;
         record.size = length(record.seq);
     }

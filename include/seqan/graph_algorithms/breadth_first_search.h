@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_BREADTH_FIRST_SEARCH_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_BREADTH_FIRST_SEARCH_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -133,6 +133,6 @@ void breadthFirstSearch(TPredecessorMap & predecessor,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_BREADTH_FIRST_SEARCH_H_

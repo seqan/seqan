@@ -48,7 +48,7 @@
 
 #include "test_journaled_string_tree_mock.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TTraverser>
 struct TestHelperHitCollector_

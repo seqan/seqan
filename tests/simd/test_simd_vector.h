@@ -44,7 +44,7 @@
 #include <seqan/misc/bit_twiddling.h>
 
 #if defined(SEQAN_SIMD_ENABLED)
-namespace seqan {
+namespace seqan2 {
 
 template <int ROWS, typename TVector>
 inline void test_matrix_transpose()
@@ -87,7 +87,7 @@ inline void test_matrix_transpose()
 template <typename TSimdVector>
 void fillVectors(TSimdVector & a, TSimdVector & b)
 {
-    using namespace seqan;
+    using namespace seqan2;
     constexpr auto length = LENGTH<TSimdVector>::VALUE;
 
     for (auto i = 0; i < length; ++i)
@@ -115,59 +115,59 @@ constexpr auto trueValue()
     return static_cast<TValue>(-1);
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 // ----------------------------------------------------------------------------
 // Configuration of typed tests for simd vectors.
 // ----------------------------------------------------------------------------
 
 template <typename TSimdVector_>
-class SimdVectorTestCommon : public seqan::Test
+class SimdVectorTestCommon : public seqan2::Test
 {
 public:
-    using TValue = typename seqan::Value<TSimdVector_>::Type;
-    constexpr static auto const LENGTH = seqan::LENGTH<TSimdVector_>::VALUE;
+    using TValue = typename seqan2::Value<TSimdVector_>::Type;
+    constexpr static auto const LENGTH = seqan2::LENGTH<TSimdVector_>::VALUE;
     using TSimdVector = TSimdVector_;
 };
 
 template <typename TSimdVector_>
-class SimdVectorTestGather : public seqan::Test
+class SimdVectorTestGather : public seqan2::Test
 {
 public:
-    using TValue = typename seqan::Value<TSimdVector_>::Type;
-    constexpr static auto const LENGTH = seqan::LENGTH<TSimdVector_>::VALUE;
+    using TValue = typename seqan2::Value<TSimdVector_>::Type;
+    constexpr static auto const LENGTH = seqan2::LENGTH<TSimdVector_>::VALUE;
     using TSimdVector = TSimdVector_;
 };
 
 typedef
-        seqan::TagList<seqan::SimdVector<int8_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<int16_t, 8>::Type,
-        seqan::TagList<seqan::SimdVector<int32_t, 4>::Type,
-        seqan::TagList<seqan::SimdVector<int64_t, 2>::Type,
-        seqan::TagList<seqan::SimdVector<uint8_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<uint16_t, 8>::Type,
-        seqan::TagList<seqan::SimdVector<uint32_t, 4>::Type,
-        seqan::TagList<seqan::SimdVector<uint64_t, 2>::Type
+        seqan2::TagList<seqan2::SimdVector<int8_t, 16>::Type,
+        seqan2::TagList<seqan2::SimdVector<int16_t, 8>::Type,
+        seqan2::TagList<seqan2::SimdVector<int32_t, 4>::Type,
+        seqan2::TagList<seqan2::SimdVector<int64_t, 2>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint8_t, 16>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint16_t, 8>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint32_t, 4>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint64_t, 2>::Type
         #if SEQAN_SIZEOF_MAX_VECTOR >= 32
         , // Extension of the list above
-        seqan::TagList<seqan::SimdVector<int8_t,  32>::Type,
-        seqan::TagList<seqan::SimdVector<int16_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<int32_t,  8>::Type,
-        seqan::TagList<seqan::SimdVector<int64_t,  4>::Type,
-        seqan::TagList<seqan::SimdVector<uint8_t,  32>::Type,
-        seqan::TagList<seqan::SimdVector<uint16_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<uint32_t,  8>::Type,
-        seqan::TagList<seqan::SimdVector<uint64_t,  4>::Type
+        seqan2::TagList<seqan2::SimdVector<int8_t,  32>::Type,
+        seqan2::TagList<seqan2::SimdVector<int16_t, 16>::Type,
+        seqan2::TagList<seqan2::SimdVector<int32_t,  8>::Type,
+        seqan2::TagList<seqan2::SimdVector<int64_t,  4>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint8_t,  32>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint16_t, 16>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint32_t,  8>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint64_t,  4>::Type
         #if SEQAN_SIZEOF_MAX_VECTOR >= 64
         , // Extension of the list above
-        seqan::TagList<seqan::SimdVector<int8_t,  64>::Type,
-        seqan::TagList<seqan::SimdVector<int16_t, 32>::Type,
-        seqan::TagList<seqan::SimdVector<int32_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<int64_t,  8>::Type,
-        seqan::TagList<seqan::SimdVector<uint8_t,  64>::Type,
-        seqan::TagList<seqan::SimdVector<uint16_t, 32>::Type,
-        seqan::TagList<seqan::SimdVector<uint32_t, 16>::Type,
-        seqan::TagList<seqan::SimdVector<uint64_t,  8>::Type
+        seqan2::TagList<seqan2::SimdVector<int8_t,  64>::Type,
+        seqan2::TagList<seqan2::SimdVector<int16_t, 32>::Type,
+        seqan2::TagList<seqan2::SimdVector<int32_t, 16>::Type,
+        seqan2::TagList<seqan2::SimdVector<int64_t,  8>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint8_t,  64>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint16_t, 32>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint32_t, 16>::Type,
+        seqan2::TagList<seqan2::SimdVector<uint64_t,  8>::Type
         > > > > > > > >
         #endif
         > > > > > > > >
@@ -180,7 +180,7 @@ SEQAN_TYPED_TEST_CASE(SimdVectorTestGather, SimdVectorCommonCommonTypes);
 
 SEQAN_DEFINE_TEST(test_simd_types)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // SimdVector16Char
     static_assert(std::is_same<SimdVector<int8_t, 16>::Type,  SimdVector16SChar>::value, "should be the same type");
@@ -242,12 +242,12 @@ SEQAN_DEFINE_TEST(test_simd_types)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, MetaFunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
 
     // NOTE(marehr): explicit namespace is necessary for msvc 2015:
     // error C2039: 'VALUE': is not a member of '`global namespace''
-    constexpr auto length = seqan::LENGTH<TSimdVector>::VALUE;
+    constexpr auto length = seqan2::LENGTH<TSimdVector>::VALUE;
     using TValue = typename Value<TSimdVector>::Type;
     typedef typename SimdVector<TValue, length>::Type TSimdVectorNew;
 
@@ -257,7 +257,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, MetaFunctions)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, SizeOf)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -275,7 +275,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, SizeOf)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, SubscriptType)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
 
@@ -289,7 +289,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, SubscriptType)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, ClearVector)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -309,7 +309,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ClearVector)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, CreateVector)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -326,7 +326,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CreateVector)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVectorConstant)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -346,19 +346,19 @@ template <typename TSimdVector, std::size_t... index >
 inline void
 call_fill_vector(TSimdVector & a, std::index_sequence<index...>)
 {
-    seqan::fillVector(a, index...);
+    seqan2::fillVector(a, index...);
 }
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
 
     TSimdVector a{0u};
 
-    // calls seqan::fillVector(a, 0, 1, 2, 3, ..., length-1);
+    // calls seqan2::fillVector(a, 0, 1, 2, 3, ..., length-1);
     call_fill_vector(a, std::make_index_sequence<length>{});
 
     for (auto i = 0; i < length; ++i)
@@ -370,7 +370,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, FillVector)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TSimdMaskVector = typename SimdMaskVector<TSimdVector>::Type;
     using TValue = typename TestFixture::TValue;
@@ -401,7 +401,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpEqual)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TSimdMaskVector = typename SimdMaskVector<TSimdVector>::Type;
     using TValue = typename TestFixture::TValue;
@@ -427,7 +427,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, CmpGt)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -448,7 +448,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Max)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Min)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -469,7 +469,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Min)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOr)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -490,7 +490,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOr)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOrAssign)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -512,7 +512,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseOrAssign)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAnd)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -533,7 +533,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAnd)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndAssign)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -555,7 +555,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndAssign)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseNot)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -576,7 +576,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseNot)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Addition)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -597,7 +597,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Addition)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Subtraction)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -618,7 +618,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Subtraction)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Multiplication)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -639,7 +639,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Multiplication)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Division)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -660,7 +660,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Division)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndNot)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -680,7 +680,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, BitwiseAndNot)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, ShiftRightLogical)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -705,7 +705,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShiftRightLogical)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -726,7 +726,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Blend)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Storeu)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -747,7 +747,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Storeu)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Load)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -769,7 +769,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Load)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     using TValue = typename TestFixture::TValue;
     constexpr auto length = TestFixture::LENGTH;
@@ -792,7 +792,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Gather)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant1)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     constexpr auto length = TestFixture::LENGTH;
     typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
@@ -813,7 +813,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant1)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant2)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     constexpr auto length = TestFixture::LENGTH;
     typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
@@ -834,7 +834,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, ShuffleConstant2)
 
 SEQAN_TYPED_TEST(SimdVectorTestCommon, Shuffle)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TSimdVector = typename TestFixture::TSimdVector;
     constexpr auto length = TestFixture::LENGTH;
     typedef typename SimdSwizzleVector<TSimdVector>::Type TSimdSwizzleVector;
@@ -857,7 +857,7 @@ SEQAN_TYPED_TEST(SimdVectorTestCommon, Shuffle)
 template <typename TSimdVector, typename TValue, typename TArrayValue>
 inline void test_gather_array()
 {
-    using namespace seqan;
+    using namespace seqan2;
     constexpr auto length = LENGTH<TSimdVector>::VALUE;
 
     TSimdVector idx{0u};
@@ -957,12 +957,12 @@ SEQAN_TYPED_TEST(SimdVectorTestGather, ULongArray)
 
 SEQAN_DEFINE_TEST(test_simd_transpose_8x8)
 {
-    seqan::test_matrix_transpose<8, seqan::SimdVector<unsigned char, 8>::Type>();
+    seqan2::test_matrix_transpose<8, seqan2::SimdVector<unsigned char, 8>::Type>();
 }
 
 SEQAN_DEFINE_TEST(test_simd_transpose_16x16)
 {
-    seqan::test_matrix_transpose<16, seqan::SimdVector<unsigned char, 16>::Type>();
+    seqan2::test_matrix_transpose<16, seqan2::SimdVector<unsigned char, 16>::Type>();
 }
 
 #endif  // #ifdef __SSE4_1__
@@ -970,7 +970,7 @@ SEQAN_DEFINE_TEST(test_simd_transpose_16x16)
 
 SEQAN_DEFINE_TEST(test_simd_transpose_32x32)
 {
-    seqan::test_matrix_transpose<32, seqan::SimdVector<unsigned char, 32>::Type >();
+    seqan2::test_matrix_transpose<32, seqan2::SimdVector<unsigned char, 32>::Type >();
 }
 
 #endif  // #ifdef __AVX2__

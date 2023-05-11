@@ -16,13 +16,13 @@ Library Features
 - Sequence I/O:
    - Accepting files that end in ``.fas``.
 - Indexing:
-   - Improved search schemes for 3 and 4 errors in ``seqan::bi_fm_index``.
+   - Improved search schemes for 3 and 4 errors in ``seqan2::bi_fm_index``.
 
 Selected Bug Fixes
 ^^^^^^^^^^^^^^^^^^
 
 - VCF I/O:
-   - Accessing the const reference of a ``seqan::VcfIOContext`` via ``seqan::context`` now works correctly.
+   - Accessing the const reference of a ``seqan2::VcfIOContext`` via ``seqan2::context`` now works correctly.
 - Indexing:
    - horspool: If the text is smaller than the query, abort the search.
 

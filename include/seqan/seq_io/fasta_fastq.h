@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQ_IO_FASTA_FASTQ_H_
 #define SEQAN_SEQ_IO_FASTA_FASTQ_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -493,6 +493,6 @@ writeRecord(TTarget & target,
     writeRecord(target, meta, seq, quals, tag, options);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQ_IO_FASTA_FASTQ_H_

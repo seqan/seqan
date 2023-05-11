@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
 #define INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -394,6 +394,6 @@ readRecord(BamAlignmentRecord & record,
     appendTagsSamToBam(record.tags, buffer);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_READ_SAM_H_

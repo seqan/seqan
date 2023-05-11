@@ -43,7 +43,7 @@
 // Test metafunction IsCharType<>.
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_metafunction_is_char_type)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_NOT(+(IsCharType<bool>::VALUE));
     SEQAN_ASSERT_NOT(+(IsCharType<bool const>::VALUE));
@@ -59,7 +59,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_metafunction_is_char_type)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_bool)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -90,7 +90,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_bool)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -131,7 +131,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_char)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_short)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -164,7 +164,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_short)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -239,7 +239,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_long)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -272,7 +272,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int8)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint8)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -304,7 +304,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint8)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int16)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -337,7 +337,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int16)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint16)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -369,7 +369,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint16)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int32)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -402,7 +402,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int32)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint32)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -434,7 +434,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint32)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int64)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -467,7 +467,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_int64)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint64)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -500,7 +500,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_uint64)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_float)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {
@@ -519,7 +519,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_float)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_double)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept
     {

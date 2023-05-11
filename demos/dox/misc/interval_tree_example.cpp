@@ -1,7 +1,7 @@
 #include <iostream>
 #include <seqan/misc/interval_tree.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

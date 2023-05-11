@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_QGRAM_FIND_H
 #define SEQAN_HEADER_INDEX_QGRAM_FIND_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ namespace seqan
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_
 

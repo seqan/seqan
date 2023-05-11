@@ -39,9 +39,9 @@
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_build)
 {
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(build(faiIndex, toCString(filePath)), true);
 
     SEQAN_ASSERT_EQ(numSeqs(faiIndex), 2u);
@@ -53,24 +53,24 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_build)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_write)
 {
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(build(faiIndex, toCString(filePath)), true);
 
     // Write out.
-    seqan::CharString tmpOut = SEQAN_TEMP_FILENAME();
+    seqan2::CharString tmpOut = SEQAN_TEMP_FILENAME();
     SEQAN_ASSERT_EQ(save(faiIndex, toCString(tmpOut)), true);
 
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/adeno_genome.fa.fai");
-    SEQAN_ASSERT_MSG(seqan::_compareTextFiles(toCString(pathToExpected), toCString(tmpOut)), "Output should match example.");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/adeno_genome.fa.fai");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFiles(toCString(pathToExpected), toCString(tmpOut)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read)
 {
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
 
     SEQAN_ASSERT_EQ(numSeqs(faiIndex), 2u);
@@ -82,12 +82,12 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_sequence)
 {
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
 
-    seqan::Dna5String str;
+    seqan2::Dna5String str;
     readSequence(str, faiIndex, 0);
     SEQAN_ASSERT_EQ(prefix(str, 20), "TTGCCCACTCCCTCTCTGCG");
     SEQAN_ASSERT_EQ(suffix(str, length(str) - 20), "CGCAGAGAGGGAGTGGGCAA");
@@ -97,35 +97,35 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
 {
     // From integers.
     {
-        seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+        seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-        seqan::FaiIndex faiIndex;
+        seqan2::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
 
-        seqan::Dna5String str;
+        seqan2::Dna5String str;
         readRegion(str, faiIndex, 0, 100, 110);
         SEQAN_ASSERT_EQ(str, "GAGCGCGCAG");
     }
     // From integers, over the end of the sequence.
     {
-        seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+        seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-        seqan::FaiIndex faiIndex;
+        seqan2::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
 
-        seqan::Dna5String str;
+        seqan2::Dna5String str;
         readRegion(str, faiIndex, 0, 4708, 10000);
         SEQAN_ASSERT_EQ(str, "GAGTGGGCAA");
     }
     // From GenomicRegion.
     {
-        seqan::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
+        seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/adeno_genome.fa");
 
-        seqan::FaiIndex faiIndex;
+        seqan2::FaiIndex faiIndex;
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
 
-        seqan::GenomicRegion region("gi|9632547|ref|NC_002077.1|:101-110");
-        seqan::Dna5String str;
+        seqan2::GenomicRegion region("gi|9632547|ref|NC_002077.1|:101-110");
+        seqan2::Dna5String str;
         SEQAN_ASSERT_EQ(readRegion(str, faiIndex, region), true);
         SEQAN_ASSERT_EQ(str, "GAGCGCGCAG");
     }

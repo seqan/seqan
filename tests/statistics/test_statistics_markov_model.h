@@ -43,7 +43,7 @@
 
 SEQAN_DEFINE_TEST(test_statistics_markov_model)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna TAlphabet;
     typedef String<TAlphabet> TSequence;

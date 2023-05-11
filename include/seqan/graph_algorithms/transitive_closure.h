@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -102,6 +102,6 @@ void transitiveClosure(TMatrix & closure,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_

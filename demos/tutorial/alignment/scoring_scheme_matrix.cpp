@@ -2,7 +2,7 @@
 #include <iostream>
 #include <seqan/align.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {
@@ -22,7 +22,7 @@ int main()
 //![init]
 
 //![alignment]
-    int score = globalAlignment(align, seqan::Blosum62(gap, gap));
+    int score = globalAlignment(align, seqan2::Blosum62(gap, gap));
     std::cout << "Score: " << score << std::endl;
     std::cout << align << std::endl;
 

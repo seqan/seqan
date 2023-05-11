@@ -38,7 +38,7 @@
 #ifndef INDEX_FM_RANKDICTIONARY_WT
 #define INDEX_FM_RANKDICTIONARY_WT
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Tags

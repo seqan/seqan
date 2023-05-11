@@ -2,7 +2,7 @@
 #define APPS_BS_TOOLS_BISAR_SCORE_H_
 
 
-namespace seqan {
+namespace seqan2 {
 
 struct MyFragmentStoreConfig;
 

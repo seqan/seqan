@@ -37,7 +37,7 @@
 
 SEQAN_DEFINE_TEST(test_align_integrate_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // We do not test the first interface since the second one calls the first
     // one implicitely.
@@ -199,7 +199,7 @@ SEQAN_DEFINE_TEST(test_align_integrate_align)
 
 SEQAN_DEFINE_TEST(test_align_integrate_align_infix_of_infix)
 {
-    using namespace seqan;
+    using namespace seqan2;
     // Case: both align objects are infixes
     {
         Dna5String seqH = "NNNANANANANAAAAACGATCGATATAA";

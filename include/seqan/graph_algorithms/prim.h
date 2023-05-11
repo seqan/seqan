@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -189,6 +189,6 @@ void primsAlgorithmSpaceEfficient(TPredecessorMap & predecessor,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_

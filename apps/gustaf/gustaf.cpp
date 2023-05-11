@@ -29,7 +29,7 @@
 #include "msplazer.h"
 #include "msplazer_main.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // Program entry point
 int main(int argc, char const ** argv)

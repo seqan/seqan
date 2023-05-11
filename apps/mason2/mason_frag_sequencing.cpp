@@ -56,11 +56,11 @@
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_frag_sequencing");
+    seqan2::ArgumentParser parser("mason_frag_sequencing");
     // Set short description, version, and date.
     setShortDescription(parser, "Fragment Sequencing Simulation");
     setDateAndVersion(parser);
@@ -84,22 +84,22 @@ parseCommandLine(MasonFragmentSequencingOptions & options, int argc, char const 
     options.addTextSections(parser);
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     options.getOptionValues(parser);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
 // Function trimAfterSpace()
 // --------------------------------------------------------------------------
 
-void trimAfterSpace(seqan::CharString & s)
+void trimAfterSpace(seqan2::CharString & s)
 {
     unsigned i = 0;
     for (; i < length(s); ++i)
@@ -118,9 +118,9 @@ int main(int argc, char const ** argv)
 {
     // Parse the command line.
     MasonFragmentSequencingOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     std::cerr << "MASON SEQUENCING SIMULATOR\n"
               << "==========================\n\n";
@@ -138,7 +138,7 @@ int main(int argc, char const ** argv)
 
     // Open fragments FASTA file.
     std::cerr << "Opening fragments       " << options.inputFileName << " ...";
-    seqan::SeqFileIn inFragments;
+    seqan2::SeqFileIn inFragments;
     if (!open(inFragments, toCString(options.inputFileName)))
     {
         std::cerr << " ERROR\n"
@@ -149,7 +149,7 @@ int main(int argc, char const ** argv)
 
     // Open reads output file.
     std::cerr << "Opening output file (L) " << options.outFileNameLeft << " ...";
-    seqan::SeqFileOut outReads;
+    seqan2::SeqFileOut outReads;
     if (!open(outReads, toCString(options.outFileNameLeft)))
     {
         std::cerr << " ERROR\n"
@@ -159,7 +159,7 @@ int main(int argc, char const ** argv)
     std::cerr << " OK\n";
 
     // Open output file for the right reads.
-    seqan::SeqFileOut outReadsRight;
+    seqan2::SeqFileOut outReadsRight;
     if (!empty(options.outFileNameRight))
     {
         std::cerr << "Opening output file (R) " << options.outFileNameRight << " ...";
@@ -190,11 +190,11 @@ int main(int argc, char const ** argv)
     std::unique_ptr<SequencingSimulator> sim = simFactory.make();
 
     // Buffers for reading in fragments.
-    seqan::CharString fragId;
-    seqan::Dna5String fragSeq;
+    seqan2::CharString fragId;
+    seqan2::Dna5String fragSeq;
     // Buffers for simulated reads.
-    seqan::Dna5String seqL, seqR;
-    seqan::CharString qualsL, qualsR;
+    seqan2::Dna5String seqL, seqR;
+    seqan2::CharString qualsL, qualsR;
     // The information for storing the simulation info.
     SequencingSimulationInfo simInfoL, simInfoR;
 

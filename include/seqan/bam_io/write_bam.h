@@ -38,7 +38,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
 #define INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions
@@ -271,6 +271,6 @@ void write(TTarget & target,
     _writeBamRecordWrapper(target, record, ochunk, size, tag);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_

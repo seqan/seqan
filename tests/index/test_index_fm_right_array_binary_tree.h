@@ -40,7 +40,7 @@
 #include <seqan/sequence.h>
 #include <seqan/index.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TIter, typename TBorderString, typename TChar>
 void determineBorders(TIter & it, TBorderString & borderString, TChar left, TChar right)
@@ -279,7 +279,7 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
@@ -295,7 +295,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_constructor)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_clear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
@@ -311,7 +311,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_clear)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_empty)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
@@ -327,7 +327,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_empty)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_get_fibre)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
@@ -343,7 +343,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_get_fibre)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_length)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
@@ -359,7 +359,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_length)
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_resize)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     RightArrayBinaryTree<Dna, void> dnaTag;
     RightArrayBinaryTree<Dna5, void> dna5Tag;
@@ -376,7 +376,7 @@ SEQAN_DEFINE_TEST(wavelet_tree_structure_resize)
 // NOTE(esiragusa): OpenSave test should not use operator==()
 //SEQAN_DEFINE_TEST(wavelet_tree_structure_open_save)
 //{
-//    using namespace seqan;
+//    using namespace seqan2;
 //
 //    RightArrayBinaryTree<AminoAcid, void> asTag;
 //    waveletTreeStructureOpenSave(asTag);

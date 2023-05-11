@@ -35,10 +35,10 @@
 #ifndef SEQAN_HEADER_PUMP_EXTENDER3_H
 #define SEQAN_HEADER_PUMP_EXTENDER3_H
 
-namespace seqan
+namespace seqan2
 {
 
-//namespace SEQAN_NAMESPACE_PIPELINING
+//namespace seqan2_NAMESPACE_PIPELINING
 //{
 
     struct Extender3;

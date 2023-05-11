@@ -43,7 +43,7 @@
 #include <seqan/arg_parse/arg_parse_ctd_support.h>
 #include <seqan/arg_parse/arg_parse_parse.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // TODO(aiche): write tests for basic functions in ArgumentParser
 SEQAN_DEFINE_TEST(test_argument_parser)

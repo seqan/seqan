@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_GRAPH_IMPL_ORACLE_H
 #define SEQAN_HEADER_GRAPH_IMPL_ORACLE_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -228,6 +228,6 @@ createSetOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

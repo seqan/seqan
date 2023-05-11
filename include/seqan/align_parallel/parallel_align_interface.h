@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -235,7 +235,7 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
             using TFormat        SEQAN_UNUSED = ArrayGaps;
         };
 
-        using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
+        using TDPSettings = seqan2::DPSettings<TScore, DPConfigTraits>;
 
         TDPSettings settings;
         settings.scoringScheme = scoringScheme;
@@ -252,7 +252,7 @@ doWaveAlignment(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizationPol
             using TFormat        SEQAN_UNUSED = ArrayGaps;
         };
 
-        using TDPSettings = seqan::DPSettings<TScore, DPConfigTraits>;
+        using TDPSettings = seqan2::DPSettings<TScore, DPConfigTraits>;
 
         TDPSettings settings;
         settings.scoringScheme = scoringScheme;
@@ -281,7 +281,7 @@ struct call_global
     template <typename... TArgs>
     auto operator()(TArgs && ...args)
     {
-        return globalAlignment(std::forward<decltype(args)>(args)...); 
+        return globalAlignment(std::forward<decltype(args)>(args)...);
     }
 };
 
@@ -303,7 +303,7 @@ struct call_local
     template <typename... TArgs>
     auto operator()(TArgs && ...args)
     {
-        return localAlignment(std::forward<decltype(args)>(args)...); 
+        return localAlignment(std::forward<decltype(args)>(args)...);
     }
 };
 
@@ -325,7 +325,7 @@ struct call_global_score
     template <typename... TArgs>
     auto operator()(TArgs && ...args)
     {
-        return globalAlignmentScore(std::forward<decltype(args)>(args)...); 
+        return globalAlignmentScore(std::forward<decltype(args)>(args)...);
     }
 };
 
@@ -347,7 +347,7 @@ struct call_local_score
     template <typename... TArgs>
     auto operator()(TArgs && ...args)
     {
-        return localAlignmentScore(std::forward<decltype(args)>(args)...); 
+        return localAlignmentScore(std::forward<decltype(args)>(args)...);
     }
 };
 
@@ -418,6 +418,6 @@ localAlignmentScore(ExecutionPolicy<WavefrontAlignment<TWaveSpec>, TVectorizatio
     return impl::doWaveAlignment(execPolicy, LocalAlignment_<>{}, std::forward<TArgs>(args)...);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ALIGN_INTERFACE_H_

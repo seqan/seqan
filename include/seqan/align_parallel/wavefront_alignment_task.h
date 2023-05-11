@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_TASK_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_TASK_H_
 
-namespace seqan
+namespace seqan2
 {
 // ============================================================================
 // Forwards
@@ -399,6 +399,6 @@ public:
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_TASK_H_

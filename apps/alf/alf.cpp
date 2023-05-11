@@ -48,7 +48,7 @@
 #include <seqan/arg_parse.h>
 #include <seqan/alignment_free.h>
 
-using namespace seqan;
+using namespace seqan2;
 using namespace std;
 
 // TODO(holtgrew): Adapt parameters to naming conventions, i.e. use --parameter-name.
@@ -58,7 +58,7 @@ int main(int argc, const char * argv[])
     // -----------------------------------------------------------------------
     // Setup argument parser
     // -----------------------------------------------------------------------
-    seqan::ArgumentParser parser("alf");
+    seqan2::ArgumentParser parser("alf");
 
     // Set short description, version, date.
     setShortDescription(parser, "Alignment free sequence comparison");
@@ -69,35 +69,35 @@ int main(int argc, const char * argv[])
     // Usage line and description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-i\\fP \\fIIN.FASTA\\fP [\\fB-o\\fP \\fIOUT.TXT\\fP]");
     addDescription(parser, "Compute pairwise similarity of sequences using alignment-free methods in \\fIIN.FASTA\\fP and write out tab-delimited matrix with pairwise scores to \\fIOUT.TXT\\fP.");
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "When given, details about the progress are printed to the screen."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "When given, details about the progress are printed to the screen."));
 
     // Options Section: Input / Output parameters.
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("i", "input-file", "Name of the multi-FASTA input file.", seqan::ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, "input-file", seqan::SeqFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("i", "input-file", "Name of the multi-FASTA input file.", seqan2::ArgParseArgument::INPUT_FILE));
+    setValidValues(parser, "input-file", seqan2::SeqFileIn::getFileExtensions());
     setRequired(parser, "input-file");
-    addOption(parser, seqan::ArgParseOption("o", "output-file", "Name of the file to which the tab-delimtied matrix with pairwise scores will be written to.  Default is to write to stdout.", seqan::ArgParseArgument::OUTPUT_FILE));
+    addOption(parser, seqan2::ArgParseOption("o", "output-file", "Name of the file to which the tab-delimtied matrix with pairwise scores will be written to.  Default is to write to stdout.", seqan2::ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "output-file", "alf.tsv");
 
     addSection(parser, "General Algorithm Parameters");
-    addOption(parser, seqan::ArgParseOption("m", "method", "Select method to use.", seqan::ArgParseArgument::STRING, "METHOD"));
+    addOption(parser, seqan2::ArgParseOption("m", "method", "Select method to use.", seqan2::ArgParseArgument::STRING, "METHOD"));
     setValidValues(parser, "method", "N2 D2 D2Star D2z");
     setDefaultValue(parser, "method", "N2");
-    addOption(parser, seqan::ArgParseOption("k", "k-mer-size", "Size of the k-mers.", seqan::ArgParseArgument::INTEGER, "K"));
+    addOption(parser, seqan2::ArgParseOption("k", "k-mer-size", "Size of the k-mers.", seqan2::ArgParseArgument::INTEGER, "K"));
     setDefaultValue(parser, "k-mer-size", "4");
-    addOption(parser, seqan::ArgParseOption("mo", "bg-model-order", "Order of background Markov Model.", seqan::ArgParseArgument::INTEGER, "ORDER"));
+    addOption(parser, seqan2::ArgParseOption("mo", "bg-model-order", "Order of background Markov Model.", seqan2::ArgParseArgument::INTEGER, "ORDER"));
     setDefaultValue(parser, "bg-model-order", "1");
 
     addSection(parser, "N2 Algorithm Parameters");
     // addText(parser, "The following parameters are only used in the N2 algorithm.");
-    addOption(parser, seqan::ArgParseOption("rc", "reverse-complement", "Which strand to score.  Use \\fIboth_strands\\fP to score both strands simultaneously.", seqan::ArgParseArgument::STRING, "MODE"));
+    addOption(parser, seqan2::ArgParseOption("rc", "reverse-complement", "Which strand to score.  Use \\fIboth_strands\\fP to score both strands simultaneously.", seqan2::ArgParseArgument::STRING, "MODE"));
     setValidValues(parser, "reverse-complement", "input both_strands mean min max");
     setDefaultValue(parser, "reverse-complement", "input");
-    addOption(parser, seqan::ArgParseOption("mm", "mismatches", "Number of mismatches, one of \\fI0\\fP and \\fI1\\fP.  When \\fI1\\fP is used, N2 uses the k-mer-neighbour with one mismatch.", seqan::ArgParseArgument::INTEGER, "MISMATCHES"));
+    addOption(parser, seqan2::ArgParseOption("mm", "mismatches", "Number of mismatches, one of \\fI0\\fP and \\fI1\\fP.  When \\fI1\\fP is used, N2 uses the k-mer-neighbour with one mismatch.", seqan2::ArgParseArgument::INTEGER, "MISMATCHES"));
     setDefaultValue(parser, "mismatches", "0");
-    addOption(parser, seqan::ArgParseOption("mmw", "mismatch-weight", "Real-valued weight of counts for words with mismatches.", seqan::ArgParseArgument::DOUBLE, "WEIGHT"));
+    addOption(parser, seqan2::ArgParseOption("mmw", "mismatch-weight", "Real-valued weight of counts for words with mismatches.", seqan2::ArgParseArgument::DOUBLE, "WEIGHT"));
     setDefaultValue(parser, "mismatch-weight", "0.1");
-    addOption(parser, seqan::ArgParseOption("kwf", "k-mer-weights-file", "Print k-mer weights for every sequence to this file if given.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE.TXT"));
+    addOption(parser, seqan2::ArgParseOption("kwf", "k-mer-weights-file", "Print k-mer weights for every sequence to this file if given.", seqan2::ArgParseArgument::OUTPUT_FILE, "FILE.TXT"));
     setValidValues(parser, "k-mer-weights-file", "txt");
 
     addTextSection(parser, "Contact and References");
@@ -106,10 +106,10 @@ int main(int argc, const char * argv[])
     addListItem(parser, "Project Homepage:", "http://www.seqan.de/projects/alf");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return (res == seqan::ArgumentParser::PARSE_ERROR);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return (res == seqan2::ArgumentParser::PARSE_ERROR);
 
     // Declare all parameters
     String<char> kmerWeightsFileTmp;

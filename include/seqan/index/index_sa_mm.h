@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_SA_MM_H
 #define SEQAN_HEADER_INDEX_SA_MM_H
 
-namespace seqan
+namespace seqan2
 {
 
     struct ManberMyers {};

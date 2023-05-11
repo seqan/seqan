@@ -2,7 +2,7 @@
 #include <seqan/sequence.h>
 #include <seqan/graph_algorithms.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

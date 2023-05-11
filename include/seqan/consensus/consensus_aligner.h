@@ -44,7 +44,7 @@
 #include "consensus_alignment_options.h"
 #include "consensus_builder.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -181,6 +181,6 @@ inline void ConsensusAligner_<TFragmentStore>::run()
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_

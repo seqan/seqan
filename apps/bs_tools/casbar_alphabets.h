@@ -16,7 +16,7 @@
 //#include "meths.h"
 
 
-namespace seqan
+namespace seqan2
 {
 
 

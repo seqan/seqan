@@ -385,13 +385,13 @@ Note that '''namespaces do not cause an increase in indentation level.'''
 
     .. code-block:: cpp
 
-        namespace seqan {
+        namespace seqan2 {
 
         class SomeClass
         {
         };
 
-        }  // namespace seqan
+        }  // namespace seqan2
 
 Trailing Whitespace
 ^^^^^^^^^^^^^^^^^^^
@@ -1039,7 +1039,7 @@ CPP File Structure
 
     #include "app_name.h"
 
-    using namespace seqan;
+    using namespace seqan2;
 
     // Program entry point
     int main(int argc, char const ** argv)
@@ -1165,7 +1165,7 @@ Library Header Structure
     #ifndef INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
     #define INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
 
-    namespace seqan {
+    namespace seqan2 {
 
     // ==========================================================================
     // Forwards
@@ -1195,6 +1195,6 @@ Library Header Structure
     // Function functionName()
     // --------------------------------------------------------------------------
 
-    }  // namespace seqan
+    }  // namespace seqan2
 
     #endif  // INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_

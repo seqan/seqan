@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_QGRAM_H
 #define SEQAN_HEADER_INDEX_QGRAM_H
 
-namespace seqan
+namespace seqan2
 {
 
 
@@ -2823,17 +2823,17 @@ inline bool open(
                  int openMode)
 {
     String<char> name;
-    
+
     name = fileName;    append(name, ".txt");
     if ((!open(getFibre(index, QGramText()), toCString(name), openMode)) &&
         (!open(getFibre(index, QGramText()), fileName, openMode))) return false;
-    
+
     name = fileName;    append(name, ".sa");
     if (!open(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
-    
+
     name = fileName;    append(name, ".dir");
     if (!open(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
-    
+
     return true;
 }
 template < typename TText, typename TShapeSpec, typename TSpec >
@@ -2855,17 +2855,17 @@ inline bool save(
                  int openMode)
 {
     String<char> name;
-    
+
     name = fileName;    append(name, ".txt");
     if ((!save(getFibre(index, QGramText()), toCString(name), openMode)) &&
         (!save(getFibre(index, QGramText()), fileName, openMode))) return false;
-    
+
     name = fileName;    append(name, ".sa");
     if (!save(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
-    
+
     name = fileName;    append(name, ".dir");
     if (!save(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
-    
+
     return true;
 }
 template < typename TText, typename TShapeSpec, typename TSpec >
@@ -2875,7 +2875,7 @@ inline bool save(
 {
     return save(index, fileName, OPEN_WRONLY | OPEN_CREATE);
 }
-    
+
 }
 
 #endif //#ifndef SEQAN_HEADER_...

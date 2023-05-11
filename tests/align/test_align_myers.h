@@ -40,7 +40,7 @@
 #include <seqan/align.h>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TAlphabet>
 String<TAlphabet> generate_random(int length_of_sequence)

@@ -37,7 +37,7 @@
 
 //#define YARA_PRINT_ALIGN
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes

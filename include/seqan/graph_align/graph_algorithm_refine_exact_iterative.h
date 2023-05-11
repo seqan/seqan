@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_
 #define SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 struct TagExactRefinement_;
 typedef Tag<TagExactRefinement_> const ExactRefinement;
@@ -678,6 +678,6 @@ matchRefinement(TFragmentString & matches,
     matchRefinement(matches,strSet,fake_score,ali_graph,1,anno,ExactRefinement());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_EXACT_ITERATIVE_H_

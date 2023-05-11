@@ -45,7 +45,7 @@
 #define NCBI_INT2_MAX    32767
 #endif
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -989,7 +989,7 @@ _lengthAdjustment(TSize     const & dbLength,
  * @param[in,out]   blastMatch  A @link BlastMatch @endlink that has a valid align member.
  * @param[in]       context     A @link BlastIOContext @endlink with parameters and buffers.
  *
- * The alignRow-members (@link BlastMatch::alignRow0 @endlink, @link BlastMatch::alignRow1 @endlink) are used as 
+ * The alignRow-members (@link BlastMatch::alignRow0 @endlink, @link BlastMatch::alignRow1 @endlink) are used as
  * in-parameter to compute the @link BlastMatch::alignStats @endlink member. This includes the raw
  * score, amount of gaps, mismatches et cetera. This is a prerequisite for printing a match to file or computing it's
  * e-value.

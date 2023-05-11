@@ -35,7 +35,7 @@
 
 // TODO(holtgrew): The documentation needs some improvements, possibly together with a refactoring of the module.
 
-namespace seqan
+namespace seqan2
 {
 
 // Default directed graph
@@ -754,6 +754,6 @@ operator << (TStream & target,
     return target;
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

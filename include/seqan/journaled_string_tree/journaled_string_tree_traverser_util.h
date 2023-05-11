@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_UTIL_H_
 #define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_UTIL_H_
 
-namespace seqan
+namespace seqan2
 {
 
 #if defined(JST_FIND_DEBUG)
@@ -1040,6 +1040,6 @@ positionBranch(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
     }
 #endif // JST_FIND_DEBUG
 
-}  // namespace seqan.
+}  // namespace seqan2.
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_UTIL_H_

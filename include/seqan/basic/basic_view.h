@@ -35,7 +35,7 @@
 #ifndef SEQAN_BASIC_VIEW_H
 #define SEQAN_BASIC_VIEW_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Metafunctions
@@ -185,6 +185,6 @@ view(TObject * object)
     return typename View<TObject>::Type(value(object));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_VIEW_H

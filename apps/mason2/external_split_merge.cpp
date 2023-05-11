@@ -136,7 +136,7 @@ void IdSplitter::close()
 // Function SamJoiner::init()
 // ---------------------------------------------------------------------------
 
-void SamJoiner::init(seqan::BamFileOut * outPtr)
+void SamJoiner::init(seqan2::BamFileOut * outPtr)
 {
     resize(records, splitter->files.size());
     active.resize(splitter->files.size());
@@ -144,13 +144,13 @@ void SamJoiner::init(seqan::BamFileOut * outPtr)
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
         if (i == 0u && outPtr)
-            bamFileIns.push_back(new seqan::BamFileIn(*outPtr, *splitter->files[i]));
+            bamFileIns.push_back(new seqan2::BamFileIn(*outPtr, *splitter->files[i]));
         else
-            bamFileIns.push_back(new seqan::BamFileIn(*splitter->files[i]));
+            bamFileIns.push_back(new seqan2::BamFileIn(*splitter->files[i]));
 
         // We use a separate header structure and name stores and caches.  Since the headers of all files are equal, we
         // will write out the first one only.
-        seqan::BamHeader tmpHeader;
+        seqan2::BamHeader tmpHeader;
         readHeader(tmpHeader, *bamFileIns[i]);
         if (i == 0u)
             header = tmpHeader;
@@ -164,9 +164,9 @@ void SamJoiner::init(seqan::BamFileOut * outPtr)
 // Function SamJoiner::_loadNext()
 // ---------------------------------------------------------------------------
 
-bool SamJoiner::_loadNext(seqan::BamAlignmentRecord & record, unsigned idx)
+bool SamJoiner::_loadNext(seqan2::BamAlignmentRecord & record, unsigned idx)
 {
-    if (seqan::atEnd(*bamFileIns[idx]))
+    if (seqan2::atEnd(*bamFileIns[idx]))
         return false;
     readRecord(record, *bamFileIns[idx]);
     return true;
@@ -176,7 +176,7 @@ bool SamJoiner::_loadNext(seqan::BamAlignmentRecord & record, unsigned idx)
 // Function SamJoiner::get()
 // ---------------------------------------------------------------------------
 
-int SamJoiner::get(seqan::BamAlignmentRecord & record)
+int SamJoiner::get(seqan2::BamAlignmentRecord & record)
 {
     unsigned idx = std::numeric_limits<unsigned>::max();
     for (unsigned i = 0; i < length(records); ++i)

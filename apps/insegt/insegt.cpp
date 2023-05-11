@@ -3,9 +3,9 @@
 #include <sstream>
 
 #define SEQAN_PROFILE
-#ifndef RELEASE	
-//#define SEQAN_DEBUG			
-//#define SEQAN_TEST	
+#ifndef RELEASE
+//#define SEQAN_DEBUG
+//#define SEQAN_TEST
 #endif
 
 #include <string>
@@ -23,7 +23,7 @@
 
 #include <seqan/arg_parse.h>
 
-using namespace seqan;
+using namespace seqan2;
 using namespace std;
 
 struct InsegtOptions
@@ -35,7 +35,7 @@ struct InsegtOptions
 	CharString tupleOutputFileName;
 	CharString tupleFusionOutputFileName;
 	unsigned nTuple;
-	unsigned offsetInterval; 
+	unsigned offsetInterval;
 	unsigned thresholdGaps;
 	unsigned thresholdCount;
 	double thresholdRPKM;
@@ -58,7 +58,7 @@ struct InsegtOptions
         gtf(false)
         {}
 };
- 
+
 
 ArgumentParser::ParseResult
 parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
@@ -86,17 +86,17 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     // Define Options -- Section Modification Options
 
     addSection(parser, "Options: ");
-    addOption(parser, ArgParseOption("ro", "read-output", "Output filename for read-output, which contains the mapped annotations followed by their parent annotation.", ArgParseArgument::OUTPUT_FILE)); 
+    addOption(parser, ArgParseOption("ro", "read-output", "Output filename for read-output, which contains the mapped annotations followed by their parent annotation.", ArgParseArgument::OUTPUT_FILE));
     //setDefaultValue(parser, "read-output", "readOutput.gff");
     setValidValues(parser, "read-output", "gff");
-    addOption(parser, ArgParseOption("ao", "anno-output", "Output filename for anno-output, which contains the annotations similar to the GFF input and additionally the counts of the mapped reads and the normalized expression levels in RPKM.", ArgParseArgument::OUTPUT_FILE)); 
+    addOption(parser, ArgParseOption("ao", "anno-output", "Output filename for anno-output, which contains the annotations similar to the GFF input and additionally the counts of the mapped reads and the normalized expression levels in RPKM.", ArgParseArgument::OUTPUT_FILE));
     //setDefaultValue(parser, "anno-output", "annoOutput.gff");
     setValidValues(parser, "anno-output", "gff");
-    addOption(parser, ArgParseOption("to", "tuple-output", "Output filename for tuple-output, which contains exon tuples connected by reads or matepairs.", ArgParseArgument::OUTPUT_FILE)); 
+    addOption(parser, ArgParseOption("to", "tuple-output", "Output filename for tuple-output, which contains exon tuples connected by reads or matepairs.", ArgParseArgument::OUTPUT_FILE));
     //setDefaultValue(parser, "tuple-output", "tupleOutput.gff");
     setValidValues(parser, "tuple-output", "gff");
     // Check for gene fusions: currently disabled for KNIME
-    addOption(parser, ArgParseOption("fo", "fusion-output", "Output filename for fusion-output, which contains exon tuple of gene fusions (Advanced option, currently no output port for KNIME).", ArgParseArgument::STRING)); 
+    addOption(parser, ArgParseOption("fo", "fusion-output", "Output filename for fusion-output, which contains exon tuple of gene fusions (Advanced option, currently no output port for KNIME).", ArgParseArgument::STRING));
     //setDefaultValue(parser, "fusion-output", "tupleFusionOutput.gff");
     setValidValues(parser, "fusion-output", "gff");
     //hideOption(parser, "fo");
@@ -146,7 +146,7 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     {
         options.gtf = true;
     }
-    else 
+    else
     {
         std::cerr << "ERROR: Input format of annotation file must be either GFF or GTF!\n";
         return ArgumentParser::PARSE_ERROR;
@@ -180,7 +180,7 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
 ////// main
 ///////////////////////////////////////////////////////////////////////////////
 
-int main( int argc, const char *argv[] ) 
+int main( int argc, const char *argv[] )
 {
     // Parse the command line.
     InsegtOptions options;

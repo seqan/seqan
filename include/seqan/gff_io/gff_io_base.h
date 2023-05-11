@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
 #define INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -658,7 +658,7 @@ writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag
     return;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
 

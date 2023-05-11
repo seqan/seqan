@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX512_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX512_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // SimdParams_<64, 64>: 512bit = 64 elements * 8bit
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector64Char,     char,           64)
@@ -272,13 +272,13 @@ template <typename TSimdVector1, typename TSimdVector2, int L>
 inline TSimdVector1
 _shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices, SimdParams_<64, L>, SimdParams_<64, 64>)
 {
-    constexpr auto length = seqan::LENGTH<TSimdVector1>::VALUE;
+    constexpr auto length = seqan2::LENGTH<TSimdVector1>::VALUE;
     TSimdVector1 result{};
     for(unsigned i = 0u; i < length; ++i)
         result[i] = vector[indices[i]];
     return result;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX512_H_

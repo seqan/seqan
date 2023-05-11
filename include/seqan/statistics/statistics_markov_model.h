@@ -44,7 +44,7 @@
 #include <seqan/align.h>
 #include <seqan/index.h>
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class MarkovModel

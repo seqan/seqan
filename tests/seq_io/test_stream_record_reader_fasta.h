@@ -41,7 +41,7 @@
 template <typename TRecordReader>
 void FASTA_TEST(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
@@ -64,7 +64,7 @@ void FASTA_TEST(TRecordReader & reader)
 template <typename TRecordReader>
 void FASTA_TEST_PROTEIN(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
@@ -87,7 +87,7 @@ void FASTA_TEST_PROTEIN(TRecordReader & reader)
 template <typename TRecordReader>
 void FASTA_TEST_ANNOTATED_PROTEIN(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
@@ -110,7 +110,7 @@ void FASTA_TEST_ANNOTATED_PROTEIN(TRecordReader & reader)
 template <typename TRecordReader>
 void FASTA_TEST_BATCH(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
@@ -130,7 +130,7 @@ void FASTA_TEST_BATCH(TRecordReader & reader)
 template <typename TRecordReader>
 void FASTA_TEST_BATCH_CONCAT(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT(guessStreamFormat(reader, Fasta()));
 
@@ -150,7 +150,7 @@ void FASTA_TEST_BATCH_CONCAT(TRecordReader & reader)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_single_fstream)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -164,7 +164,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_single_fstream)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_double_fstream)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_double_fstream)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_single_fstream)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -192,7 +192,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_single_fstream)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_double_fstream)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -206,7 +206,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_double_fstream)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_single_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_single_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_double_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -242,7 +242,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_double_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_single_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -260,7 +260,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_single_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_single_concat_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -278,7 +278,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_single_concat_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_double_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -296,7 +296,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_double_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_double_concat_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFile(filename);
 
@@ -314,7 +314,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_batch_double_concat_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_protein_single_fstream)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFileProtein(filename);
 
@@ -328,7 +328,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_protein_single_fstream)
 
 SEQAN_DEFINE_TEST(test_stream_record_reader_fasta_annotated_protein_single_fstream)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString filename;
     std::fstream *file = createFastAFileAnnotatedProtein(filename);
 

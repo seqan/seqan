@@ -29,8 +29,8 @@
 
 // Set the end position of the pattern in the finder.
 template <typename THaystack, typename TNeedle, typename TPosition>
-inline bool setEndPosition(seqan::Finder<THaystack, void> & finder,
-                           seqan::Pattern<TNeedle, seqan::HammingSimple> & pattern,
+inline bool setEndPosition(seqan2::Finder<THaystack, void> & finder,
+                           seqan2::Pattern<TNeedle, seqan2::HammingSimple> & pattern,
                            const TPosition & pos)
 {
 //     std::cerr << "setEndPosition(finder, pattern, " << pos << ")" << std::endl;

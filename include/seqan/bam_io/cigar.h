@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_CIGAR_H_
 #define INCLUDE_SEQAN_BAM_IO_CIGAR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -691,6 +691,6 @@ unsigned cigarToGapAnchorContig(TGaps & gaps, TCigarString const & cigar)
     return beginGaps;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_CIGAR_H_

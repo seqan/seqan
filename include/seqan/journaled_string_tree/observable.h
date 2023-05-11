@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_OBSERVABLE_H_
 #define INCLUDE_SEQAN_JOURNALED_STRING_TREE_OBSERVABLE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

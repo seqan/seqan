@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_BOM_H
 #define SEQAN_HEADER_FIND_BOM_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -211,6 +211,6 @@ find(TFinder & finder, Pattern<TNeedle, Bfam<TSpec> > & me)
     return false;
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H

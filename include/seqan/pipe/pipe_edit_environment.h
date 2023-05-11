@@ -35,10 +35,10 @@
 #ifndef SEQAN_HEADER_PIPE_EDIT_ENVIRONMENT_H
 #define SEQAN_HEADER_PIPE_EDIT_ENVIRONMENT_H
 
-namespace seqan
+namespace seqan2
 {
 
-//namespace SEQAN_NAMESPACE_PIPELINING
+//namespace seqan2_NAMESPACE_PIPELINING
 //{
 
     template < typename TDistanceSpec, unsigned STEP_SIZE = 1 >

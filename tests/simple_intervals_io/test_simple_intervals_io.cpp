@@ -44,21 +44,21 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_read_records)
     // Input file contents and input iterator.
     std::string input = "chr1:2489281-2489282\n"
                         "chr4:2489841\n";
-    typename seqan::DirectionIterator<std::string, seqan::Input>::Type it =
-        directionIterator(input, seqan::Input());
+    typename seqan2::DirectionIterator<std::string, seqan2::Input>::Type it =
+        directionIterator(input, seqan2::Input());
 
     // Buffers and record.
-    seqan::SimpleIntervalsIOContext context;
-    seqan::GenomicRegion region;
+    seqan2::SimpleIntervalsIOContext context;
+    seqan2::GenomicRegion region;
 
     // Read and check first record.
-    readRecord(region, context, it, seqan::SimpleIntervals());
+    readRecord(region, context, it, seqan2::SimpleIntervals());
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT_EQ(region.beginPos, 2489280);
     SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
-    readRecord(region, context, it, seqan::SimpleIntervals());
+    readRecord(region, context, it, seqan2::SimpleIntervals());
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
     SEQAN_ASSERT_EQ(region.beginPos, 2489840);
     SEQAN_ASSERT_EQ(region.endPos, 2489841);
@@ -70,27 +70,27 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_read_records)
 SEQAN_DEFINE_TEST(test_simple_intervals_io_write_records)
 {
     // Output buffer and output iterator.
-    seqan::CharString out;
-    typename seqan::DirectionIterator<seqan::CharString, seqan::Output>::Type it =
-        directionIterator(out, seqan::Output());
+    seqan2::CharString out;
+    typename seqan2::DirectionIterator<seqan2::CharString, seqan2::Output>::Type it =
+        directionIterator(out, seqan2::Output());
 
     // Buffer and record.
-    seqan::GenomicRegion region;
-    seqan::SimpleIntervalsIOContext context;
+    seqan2::GenomicRegion region;
+    seqan2::SimpleIntervalsIOContext context;
 
     // Write out first record.
     region.seqName = "chr1";
     region.beginPos = 2489280;
     region.endPos = 2489282;
-    writeRecord(it, context, region, seqan::SimpleIntervals());
+    writeRecord(it, context, region, seqan2::SimpleIntervals());
 
     // Write out second record.
     region.seqName = "chr4";
     region.beginPos = 2489840;
     region.endPos = 2489841;
-    writeRecord(it, context, region, seqan::SimpleIntervals());
+    writeRecord(it, context, region, seqan2::SimpleIntervals());
 
-    seqan::CharString expected = "chr1:2489281-2489282\n"
+    seqan2::CharString expected = "chr1:2489281-2489282\n"
                                  "chr4:2489841\n";
     SEQAN_ASSERT_EQ(expected, out);
 }
@@ -100,11 +100,11 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_read)
     // Input file contents and input iterator.
     std::istringstream input("chr1:2489281-2489282\n"
                              "chr4:2489841\n");
-    seqan::SimpleIntervalsFileIn simple_intervalsIn(input);
+    seqan2::SimpleIntervalsFileIn simple_intervalsIn(input);
 
     // Buffers and record.
-    seqan::SimpleIntervalsIOContext context;
-    seqan::GenomicRegion region;
+    seqan2::SimpleIntervalsIOContext context;
+    seqan2::GenomicRegion region;
 
     // Read and check first record.
     readRecord(region, simple_intervalsIn);
@@ -126,11 +126,11 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_write)
 {
     // Output buffer and output iterator.
     std::ostringstream output;
-    seqan::SimpleIntervalsFileOut simple_intervalsOut(output, seqan::SimpleIntervals());
+    seqan2::SimpleIntervalsFileOut simple_intervalsOut(output, seqan2::SimpleIntervals());
 
     // Buffer and record.
-    seqan::GenomicRegion region;
-    seqan::SimpleIntervalsIOContext context;
+    seqan2::GenomicRegion region;
+    seqan2::SimpleIntervalsIOContext context;
 
     // Write out first record.
     region.seqName = "chr1";
@@ -144,7 +144,7 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_write)
     region.endPos = 2489841;
     writeRecord(simple_intervalsOut, region);
 
-    seqan::CharString expected = "chr1:2489281-2489282\n"
+    seqan2::CharString expected = "chr1:2489281-2489282\n"
                                  "chr4:2489841\n";
     SEQAN_ASSERT_EQ(expected, output.str());
 }

@@ -77,7 +77,7 @@ Then, edit *upcase.cpp* to look as follows:
    #include <iostream>
    #include <cstring>
 
-   using namespace seqan;
+   using namespace seqan2;
 
    int main(int argc, char const ** argv)
    {

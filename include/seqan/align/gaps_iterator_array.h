@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -294,7 +294,7 @@ countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it, LeftOfViewPos 
     // Limit to the clipping begin position.
     if (it._unclippedViewPosition - result < (TSize)it._container->_clippingBeginPos)
         result = it._unclippedViewPosition - it._container->_clippingBeginPos;
-    
+
     return result;
 }
 
@@ -777,6 +777,6 @@ operator+(Iter<TGaps, GapsIterator<ArrayGaps> > const & lhs, TDifference d)
     return result;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_

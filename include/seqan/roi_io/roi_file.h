@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
 #define SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Typedefs
@@ -141,7 +141,7 @@ writeRecord(FormattedFile<Roi, Output, TSpec> & file, RoiRecord const & record)
     writeRecord(file.iter, record, file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
 

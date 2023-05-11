@@ -37,7 +37,7 @@
 #ifndef SEQAN_BLAST_BLAST_IO_CONTEXT_H__
 #define SEQAN_BLAST_BLAST_IO_CONTEXT_H__
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

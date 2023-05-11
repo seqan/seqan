@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // a metafunction returning the biggest supported SIMD vector
@@ -385,6 +385,6 @@ print(std::ostream & stream, TSimdVector const & vector)
     return stream;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_H_

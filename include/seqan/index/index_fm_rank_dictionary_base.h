@@ -35,7 +35,7 @@
 #ifndef INDEX_FM_RANK_DICTIONARY_BASE_H_
 #define INDEX_FM_RANK_DICTIONARY_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

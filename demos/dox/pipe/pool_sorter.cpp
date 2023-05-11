@@ -5,7 +5,7 @@
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Custom 3-way comparator functor.  Return a value </==/> 0 (less than, equal
 // to, greater than).

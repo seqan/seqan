@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_ALIGN_H
 #define SEQAN_HEADER_STORE_ALIGN_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1410,6 +1410,6 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

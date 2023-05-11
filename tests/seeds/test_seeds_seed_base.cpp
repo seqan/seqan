@@ -45,7 +45,7 @@
 template <typename TSeedSpec>
 void testSeedsSeedBaseGettersSetters(TSeedSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Define Seed type and declare a variable.
     typedef Seed<TSeedSpec> TSeed;
@@ -71,7 +71,7 @@ void testSeedsSeedBaseGettersSetters(TSeedSpec const &)
 template <typename TSeedSpec>
 void testSeedsSeedBaseBasicFunctions(TSeedSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Define Seed type and declare a variable.
     typedef Seed<TSeedSpec> TSeed;
@@ -87,12 +87,12 @@ void testSeedsSeedBaseBasicFunctions(TSeedSpec const &)
 template <typename TSeedSpec>
 void testSeedsSeedBaseAssign(TSeedSpec const &)
 {
-    using namespace seqan;
-    
+    using namespace seqan2;
+
     typedef Seed<TSeedSpec> TSeed;
     TSeed seed(0, 0, 3);
     setScore(seed, -3);
-    
+
     // Via copy constructor.
     {
         TSeed seed2(seed);
@@ -119,7 +119,7 @@ void testSeedsSeedBaseAssign(TSeedSpec const &)
 // for the base class Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_constructors_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseConstructors(Simple());
 }
 
@@ -127,7 +127,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_constructors_simple)
 // specified for the base class Seed (none).
 SEQAN_DEFINE_TEST(test_seeds_seed_base_metafunctions_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
 
@@ -145,7 +145,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_metafunctions_simple)
 // specified for the base class Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_getters_setters_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseGettersSetters(Simple());
 }
 
@@ -153,14 +153,14 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_getters_setters_simple)
 // specified for the base class Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_basic_functions_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseBasicFunctions(Simple());
 }
 
 // Test the assign function for the SimpleSeed specialization.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_assign_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseAssign(Simple());
 }
 
@@ -168,7 +168,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_assign_simple)
 // for the base class Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_constructors_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseConstructors(ChainedSeed());
 }
 
@@ -176,7 +176,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_constructors_chained)
 // specified for the base class Seed (none).
 SEQAN_DEFINE_TEST(test_seeds_seed_base_metafunctions_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     // No metafunctions in base, intentionally left blank.
 }
 
@@ -184,7 +184,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_metafunctions_chained)
 // specified for the base class Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_getters_setters_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseGettersSetters(ChainedSeed());
 }
 
@@ -192,14 +192,14 @@ SEQAN_DEFINE_TEST(test_seeds_seed_base_getters_setters_chained)
 // specified for the base class Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_basic_functions_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseBasicFunctions(ChainedSeed());
 }
 
 // Test the assign function for the ChainedSeed specialization.
 SEQAN_DEFINE_TEST(test_seeds_seed_base_assign_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedBaseAssign(ChainedSeed());
 }
 

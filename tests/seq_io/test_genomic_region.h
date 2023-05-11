@@ -39,7 +39,7 @@
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_default_constructed)
 {
-    seqan::GenomicRegion region;
+    seqan2::GenomicRegion region;
 
     SEQAN_ASSERT(empty(region.seqName));
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_default_constructed)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_from_string)
 {
-    seqan::GenomicRegion region("chr1:1,000-2,000");
+    seqan2::GenomicRegion region("chr1:1,000-2,000");
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
@@ -59,7 +59,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_from_string)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_clear)
 {
-    seqan::GenomicRegion region;
+    seqan2::GenomicRegion region;
     region.seqName = "chr1";
     region.rID = 10;
     region.beginPos = 100;
@@ -74,8 +74,8 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_clear)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom)
 {
-    seqan::GenomicRegion region;
-    seqan::parse(region, "chr1");
+    seqan2::GenomicRegion region;
+    seqan2::parse(region, "chr1");
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
@@ -85,8 +85,8 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom_begin)
 {
-    seqan::GenomicRegion region;
-    seqan::parse(region, "chr1:1,000");
+    seqan2::GenomicRegion region;
+    seqan2::parse(region, "chr1:1,000");
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
@@ -96,8 +96,8 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom_begin)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom_begin_end)
 {
-    seqan::GenomicRegion region;
-    seqan::parse(region, "chr1:1,000-2,000");
+    seqan2::GenomicRegion region;
+    seqan2::parse(region, "chr1:1,000-2,000");
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
@@ -107,24 +107,24 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom_begin_end)
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_to_string_interval)
 {
-    seqan::GenomicRegion region;
+    seqan2::GenomicRegion region;
     region.seqName = "chr1";
     region.beginPos = 1000;
     region.endPos = 2000;
 
-    seqan::CharString buffer;
+    seqan2::CharString buffer;
     region.toString(buffer);
     SEQAN_ASSERT_EQ(buffer, "chr1:1001-2000");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_to_string_point)
 {
-    seqan::GenomicRegion region;
+    seqan2::GenomicRegion region;
     region.seqName = "chr1";
     region.beginPos = 1000;
     region.endPos = 1001;
 
-    seqan::CharString buffer;
+    seqan2::CharString buffer;
     region.toString(buffer);
     SEQAN_ASSERT_EQ(buffer, "chr1:1001");
 }

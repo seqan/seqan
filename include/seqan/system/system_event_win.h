@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SYSTEM_EVENT_WIN_H
 #define SEQAN_HEADER_SYSTEM_EVENT_WIN_H
 
-namespace seqan {
+namespace seqan2 {
 
 // NOTE(rrahn): This calss implements an synchronization event for asynchronous file I/O on windows platforms.
 // This file is required by file_async.

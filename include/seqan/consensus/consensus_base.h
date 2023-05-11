@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_CONSENSUS_BASE_H
 #define SEQAN_HEADER_CONSENSUS_BASE_H
 
-namespace seqan
+namespace seqan2
 {
 
 
@@ -439,7 +439,7 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
  *
  * int main()
  * {
- *     using namespace seqan;
+ *     using namespace seqan2;
  *
  *     typedef StringSet<Dna5String> TStringSet;
  *     typedef Graph<Alignment<TStringSet, void, WithoutEdgeId> > TAlignGraph;
@@ -1866,6 +1866,6 @@ _writeCeleraCgb(TFile& file,
     write(target, "}\n");
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -43,7 +43,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -480,6 +480,6 @@ struct LastRowEnabled_<DPProfile_<TAlgo, TGapSpec, TTraceSpec>, TCellDescriptor,
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_META_INFO_H_

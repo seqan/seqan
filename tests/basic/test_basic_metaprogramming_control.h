@@ -39,7 +39,7 @@
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_if)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     bool b = IfC<true, False, True>::Type::VALUE;
     SEQAN_ASSERT_EQ(b, false);
@@ -52,24 +52,24 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_if)
 struct Nothing_ {};
 
 int switchTest(Nothing_ const &) { return -1; }
-int switchTest(seqan::False const &) { return 0; }
-int switchTest(seqan::True const &) { return 1; }
-int switchTest(seqan::NilCase const &) { return 2; }
+int switchTest(seqan2::False const &) { return 0; }
+int switchTest(seqan2::True const &) { return 1; }
+int switchTest(seqan2::NilCase const &) { return 2; }
 
 template <int X>
 struct SwitchTest
 {
-    typedef typename seqan::Switch<
+    typedef typename seqan2::Switch<
         X,
-        seqan::Case<-1, Nothing_,
-        seqan::Case<0, seqan::False,
-        seqan::Case<1, seqan::True
+        seqan2::Case<-1, Nothing_,
+        seqan2::Case<0, seqan2::False,
+        seqan2::Case<1, seqan2::True
         > > > >::Type Type;
 };
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_switch)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename SwitchTest<-1>::Type T1;
     SEQAN_ASSERT_EQ(switchTest(T1()), -1);
@@ -97,7 +97,7 @@ struct LoopTestWorker_
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int i[5] = { 1, 2, 3, 4, 5 };
     Loop<LoopTestWorker_, 5>::run(i);
@@ -111,7 +111,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop_reverse)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int i[5] = { 1, 2, 3, 4, 5 };
     LoopReverse<LoopTestWorker_, 5>::run(i);

@@ -39,7 +39,7 @@
 
 #include <seqan/misc/memset.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -377,6 +377,6 @@ operator<<(TStream & os, ProfileChar<TValue, TCount, TSpec> const & rhs)
     return os;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_

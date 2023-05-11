@@ -36,7 +36,7 @@
 //#define TRY_SCORES
 
 #ifdef RAZERS_SPLICED
-  #define RAZERS_MATEPAIRS				
+  #define RAZERS_MATEPAIRS
 #endif
 
 #include <seqan/platform.h>
@@ -59,7 +59,7 @@
 #include "razers_matepairs.h"
 #endif
 
-#include "razers_spliced.h" 
+#include "razers_spliced.h"
 
 
 
@@ -67,7 +67,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 template <typename TOptions>
@@ -85,7 +85,7 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
-		
+
 		unsigned i = 1;
         CharString line;
 		while(!atEnd(reader))
@@ -120,10 +120,10 @@ int mapReads(
 	StringSet<CharString>	genomeNames;	// genome names, taken from the Fasta file
 	StringSet<CharString>	readNames;		// read names, taken from the Fasta file
 	TMatches				matches;		// resulting forward/reverse matches
-	String<String<unsigned short> > 	stats;		// needed for mapping quality calculation 
+	String<String<unsigned short> > 	stats;		// needed for mapping quality calculation
 
 	// dump configuration in verbose mode
-	if (options._debugLevel >= 1) 
+	if (options._debugLevel >= 1)
 	{
 		CharString bitmap;
 		Shape<Dna, GenericShape> shape;
@@ -135,7 +135,7 @@ int mapReads(
 		{
 			stringToShape(shapeR, options.shapeR);
 			shapeToString(bitmapR, shapeR);
-		}		
+		}
 
 		cerr << "___SETTINGS____________" << endl;
 		cerr << "Genome file:                     \t" << genomeFileNames[0] << endl;
@@ -166,7 +166,7 @@ int mapReads(
 		cerr << "Taboo length:                    \t" << options.tabooLength << endl;
 		cerr << endl;
 	}
-	
+
 	// circumvent numerical obstacles
 	options.errorRate += 0.0000001;
 
@@ -198,7 +198,7 @@ int mapReads(
 			cerr << "Failed to load reads" << endl;
 			return RAZERS_READS_FAILED;
 		}
-	} 
+	}
 	if(empty(readSet))
 	{
 		cerr << "Failed to load reads. File empty? " << endl;
@@ -210,7 +210,7 @@ int mapReads(
         // is this just the first read is a low quality read?
         unsigned i = 1;
         while(i < length(readSet))
-        { 
+        {
             if(!empty(readSet[i]))
                 break;
             ++i;
@@ -255,7 +255,7 @@ int mapReads(
 			case RAZERS_GENOME_FAILED:
 				cerr << "Failed to load genomes" << endl;
 				break;
-			
+
 			case RAZERS_INVALID_SHAPE:
 				cerr << "Invalid Shape" << endl;
 				break;
@@ -281,11 +281,11 @@ int mapReads(
 		dumpMatches(matches, genomeNames, genomeFileNames, gnoToFileMap, readSet, readRegions, stats, readNames, readFileNames[0], errorPrbFileName, options);
 
 	return 0;
-}	
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Command line parsing and parameter choosing
-int main(int argc, const char *argv[]) 
+int main(int argc, const char *argv[])
 {
 	RazerSOptions<>			options;
 	ParamChooserOptions		pm_options;
@@ -297,7 +297,7 @@ int main(int argc, const char *argv[])
 	// Change defaults
 	options.forward = false;
 	options.reverse = false;
-	
+
     ArgumentParser parser("splazers");
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
 #ifdef RAZERS_MATEPAIRS
@@ -310,17 +310,17 @@ int main(int argc, const char *argv[])
             "reads are split-mapped onto anchoring target regions (specify option -an),"
             "if a Fasta/q file of reads is given, reads are split-mapped onto the whole"
             "reference sequence.");
-            
+
     addDescription(parser, "(c) Copyright 2010 by Anne-Katrin Emde.");
     setCategory(parser, "Read Mapping");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, 0, seqan2::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    std::vector<std::string> exts = seqan::SeqFileIn::getFileExtensions();
+    std::vector<std::string> exts = seqan2::SeqFileIn::getFileExtensions();
     exts.push_back(".sam");
     setValidValues(parser, 1, exts);
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
@@ -362,7 +362,7 @@ int main(int argc, const char *argv[])
 	addOption(parser, ArgParseOption("qih", "quality-in-header","quality string in fasta header"));
 
 	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUT_FILE));
-    
+
 	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
 	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));
 	addSection(parser, "Output Format Options:");
@@ -376,7 +376,7 @@ int main(int argc, const char *argv[])
     setMinValue(parser, "genome-naming", "0");
     setMaxValue(parser, "genome-naming", "1");
     setDefaultValue(parser, "genome-naming", options.genomeNaming);
-  
+
     addOption(parser, ArgParseOption("rn", "read-naming", "Select how reads are named. 0 = use Fasta id, 1 = enumerate beginning with 1.", ArgParseOption::INTEGER));
     setDefaultValue(parser, "read-naming", options.readNaming);
     setMinValue(parser, "read-naming", "0");
@@ -386,7 +386,7 @@ int main(int argc, const char *argv[])
     setDefaultValue(parser, "sort-order", options.sortOrder);
     setMinValue(parser, "sort-order", "0");
     setMaxValue(parser, "sort-order", "1");
-    
+
     addOption(parser, ArgParseOption("pf", "position-format", "Select begin/end position numbering (see Coordinate section below). 0 = gap space, 1 = position space.", ArgParseOption::INTEGER));
     setMinValue(parser, "position-format", "0");
     setMaxValue(parser, "position-format", "1");
@@ -396,21 +396,21 @@ int main(int argc, const char *argv[])
 	addSection(parser, "Split Mapping Options:");
 	addOption(parser, ArgParseOption("sm", "split-mapping",   "min. match length for prefix/suffix mapping (to disable split mapping, set to 0)", ArgParseOption::INTEGER));
     setDefaultValue(parser,"split-mapping",options.minMatchLen);
-    
+
 	addOption(parser, ArgParseOption("maxG", "max-gap",    "max. length of middle gap", ArgParseOption::INTEGER));
     setDefaultValue(parser, "max-gap", options.maxGap);
 	addOption(parser, ArgParseOption("minG", "min-gap",    "min. length of middle gap (for edit distance mapping about 10% of read length is recommended)", ArgParseOption::INTEGER));
     setDefaultValue(parser, "min-gap", options.minGap);
     addOption(parser, ArgParseOption("ep", "errors-prefix",    "max. number of errors in prefix match", ArgParseOption::INTEGER));
     setDefaultValue(parser, "errors-prefix", options.maxPrefixErrors);
-    
+
 	addOption(parser, ArgParseOption("es", "errors-suffix",    "max. number of errors in suffix match", ArgParseOption::INTEGER));
     setDefaultValue(parser, "errors-suffix", options.maxSuffixErrors);
-    
+
 	addOption(parser, ArgParseOption("gl", "genome-len",    "genome length in Mb, for computation of expected number of random matches", ArgParseOption::INTEGER));
     setDefaultValue(parser, "genome-len", options.specifiedGenomeLen);
     setMaxValue(parser, "genome-len", "10000");
-    
+
 	addOption(parser, ArgParseOption("an", "anchored",           "anchored split mapping, only unmapped reads with mapped mates will be considered, requires the reads to be given in SAM format"));
 	addOption(parser, ArgParseOption("pc",  "penalty-c",    "percent of read length, used as penalty for split-gap", ArgParseOption::INTEGER));
     setDefaultValue(parser, "penalty-c", options.penaltyC);
@@ -420,7 +420,7 @@ int main(int argc, const char *argv[])
     setDefaultValue(parser, "shape", options.shape);
     hideOption(parser,"shape");
     addOption(parser, ArgParseOption("t", "threshold", "Manually set minimum k-mer count threshold.", ArgParseOption::INTEGER));
-    setMinValue(parser, "threshold", "1");    
+    setMinValue(parser, "threshold", "1");
     hideOption(parser,"threshold");
 
     addOption(parser, ArgParseOption("oc", "overabundance-cut", "Set k-mer overabundance cut ratio.", ArgParseOption::INTEGER));
@@ -508,7 +508,7 @@ int main(int argc, const char *argv[])
     getOptionValue(options.tabooLength, parser, "taboo-length");
     getOptionValue(options.matchN, parser, "match-N");
     getOptionValue(errorPrbFileName, parser, "error-distr");
-	
+
  	getOptionValue(options.minMatchLen, parser, "split-mapping");
  	getOptionValue(options.maxGap, parser, "max-gap");
  	getOptionValue(options.minGap, parser, "min-gap");
@@ -517,10 +517,10 @@ int main(int argc, const char *argv[])
  	getOptionValue(options.specifiedGenomeLen, parser, "genome-len");
 	getOptionValue(options.anchored, parser, "anchored");
 	getOptionValue(options.penaltyC, parser, "penalty-c");
-	
+
 	getOptionValue(options.minClippedLen, parser, "min-clipped-len");
 	getOptionValue(options.fastaIdQual, parser, "quality-in-header");
-	
+
     if (isSet(parser, "help") || isSet(parser, "version")) return 0;	// print help or version and exit
 	if (isSet(parser, "verbose")) options._debugLevel = max(options._debugLevel, 1);
 	if (isSet(parser, "vverbose")) options._debugLevel = max(options._debugLevel, 3);
@@ -529,7 +529,7 @@ int main(int argc, const char *argv[])
 		options.maxHits = 1;
 		options.distanceRange = 1;
 		options.purgeAmbiguous = true;
-	}	
+	}
 	if (!options.forward && !options.reverse)  // enable both per default
 	{
 		options.forward = true;
@@ -574,7 +574,7 @@ int main(int argc, const char *argv[])
 					stop = true;
 					i = length(options.shape);
 			}
-		if ((ones == 0 || ones > 31) && !stop) 
+		if ((ones == 0 || ones > 31) && !stop)
 		{
 			cerr << "Invalid Shape" << endl;
 			stop = true;
@@ -608,7 +608,7 @@ int main(int argc, const char *argv[])
 		return RAZERS_INVALID_OPTIONS;
 	}
 
-	if (options.anchored) 
+	if (options.anchored)
 		options.reverse = false; // we know which strand to look on, because the mate is anchored and orientation is known!
 	if ((options.minMatchLen != 0 && options.minMatchLen < 6) && (stop = true))
 		cerr << "Minimal match length in spliced mapping must be a value greater than 5" << endl;
@@ -641,8 +641,8 @@ int main(int argc, const char *argv[])
 		if (options.trimLength > readLength)
 			options.trimLength = readLength;
 	}
-			
-		
+
+
 #ifndef NO_PARAM_CHOOSER
 	if (!(isSet(parser, "shape") || isSet(parser, "threshold")))
 	{
@@ -660,13 +660,13 @@ int main(int argc, const char *argv[])
 			pm_options.optionProbDELETE = (ParamChooserOptions::TFloat)0.01;	//edit distance parameter choosing
 		}
 
-		if (empty(pm_options.paramFolder)) 
+		if (empty(pm_options.paramFolder))
 		{
 			string razersFolder = argv[0];
 			size_t lastPos = razersFolder.find_last_of('/') + 1;
 			if (lastPos == razersFolder.npos + 1) lastPos = razersFolder.find_last_of('\\') + 1;
 			if (lastPos == razersFolder.npos + 1) lastPos = 0;
-			razersFolder.erase(lastPos); 
+			razersFolder.erase(lastPos);
 			pm_options.paramFolderPath = razersFolder;
 		}
 		if (options.trimLength > 0) readLength = options.trimLength;
@@ -682,7 +682,7 @@ int main(int argc, const char *argv[])
 				pm_options.optionErrorRate = (double)options.maxSuffixErrors/options.minMatchLen + 0.001;
 				if (!chooseParams(options,pm_options))
 				{
-					if (pm_options.verbose) 
+					if (pm_options.verbose)
 						cerr << "Couldn't find preprocessed parameter files. Please configure manually (options --shape and --threshold)." << endl;
 					cerr << "Using default configurations (shape = " << options.shape << " and q-gram lemma)." << endl;
 				}
@@ -696,7 +696,7 @@ int main(int argc, const char *argv[])
 				cerr << "___PARAMETER_CHOOSING__" << endl;
 			if (!chooseParams(options,pm_options))
 			{
-				if (pm_options.verbose) 
+				if (pm_options.verbose)
 					cerr << "Couldn't find preprocessed parameter files. Please configure manually (options --shape and --threshold)." << endl;
 				cerr << "Using default configurations (shape = " << options.shape << " and q-gram lemma)." << endl;
 			}
@@ -708,7 +708,7 @@ int main(int argc, const char *argv[])
 			return RAZERS_READS_FAILED;
 		}
 	}
-#endif	
+#endif
 
 #ifdef RAZERS_PARALLEL
 	tbb::task_scheduler_init scheduler;

@@ -38,7 +38,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_SPLITTING_H_
 #define SEQAN_PARALLEL_PARALLEL_SPLITTING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 struct Equidistant_;
 typedef Tag<Equidistant_> Equidistant;
@@ -315,6 +315,6 @@ void computeSplitters(TPosString & splitters, TSize size, TCount count)
     SEQAN_ASSERT_EQ(back(splitters), static_cast<TPos>(size));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_PARALLEL_PARALLEL_SPLITTING_H_

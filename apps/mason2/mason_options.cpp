@@ -178,46 +178,46 @@ char const * getBSSeqProtocolStr(BSSeqOptions::BSProtocol protocol)
 // Function MethylationLevelSimulatorOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MethylationLevelSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
+void MethylationLevelSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "Methylation Level Simulation");
 
-    addOption(parser, seqan::ArgParseOption("", "methylation-levels", "Enable methylation level simulation."));
+    addOption(parser, seqan2::ArgParseOption("", "methylation-levels", "Enable methylation level simulation."));
 
-    addOption(parser, seqan::ArgParseOption("", "meth-cg-mu", "Median of beta distribution for methylation "
-                                            "level of CpG loci.", seqan::ArgParseOption::DOUBLE, "MU"));
+    addOption(parser, seqan2::ArgParseOption("", "meth-cg-mu", "Median of beta distribution for methylation "
+                                            "level of CpG loci.", seqan2::ArgParseOption::DOUBLE, "MU"));
     setMinValue(parser, "meth-cg-mu", "0");
     setMaxValue(parser, "meth-cg-mu", "1");
     setDefaultValue(parser, "meth-cg-mu", "0.6");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-cg-sigma", "Standard deviation of beta distribution for "
-                                            "methylation level of CpG loci.", seqan::ArgParseOption::DOUBLE,
+    addOption(parser, seqan2::ArgParseOption("", "meth-cg-sigma", "Standard deviation of beta distribution for "
+                                            "methylation level of CpG loci.", seqan2::ArgParseOption::DOUBLE,
                                             "SIGMA"));
     setMinValue(parser, "meth-cg-sigma", "0");
     setMaxValue(parser, "meth-cg-sigma", "1");
     setDefaultValue(parser, "meth-cg-sigma", "0.03");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-chg-mu", "Median of beta distribution for methylation "
-                                            "level of CHG loci.", seqan::ArgParseOption::DOUBLE, "MU"));
+    addOption(parser, seqan2::ArgParseOption("", "meth-chg-mu", "Median of beta distribution for methylation "
+                                            "level of CHG loci.", seqan2::ArgParseOption::DOUBLE, "MU"));
     setMinValue(parser, "meth-chg-mu", "0");
     setMaxValue(parser, "meth-chg-mu", "1");
     setDefaultValue(parser, "meth-chg-mu", "0.08");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-chg-sigma", "Standard deviation of beta distribution for "
-                                            "methylation level of CHG loci.", seqan::ArgParseOption::DOUBLE,
+    addOption(parser, seqan2::ArgParseOption("", "meth-chg-sigma", "Standard deviation of beta distribution for "
+                                            "methylation level of CHG loci.", seqan2::ArgParseOption::DOUBLE,
                                             "SIGMA"));
     setMinValue(parser, "meth-chg-sigma", "0");
     setMaxValue(parser, "meth-chg-sigma", "1");
     setDefaultValue(parser, "meth-chg-sigma", "0.008");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-chh-mu", "Median of beta distribution for methylation "
-                                            "level of CHH loci.", seqan::ArgParseOption::DOUBLE, "MU"));
+    addOption(parser, seqan2::ArgParseOption("", "meth-chh-mu", "Median of beta distribution for methylation "
+                                            "level of CHH loci.", seqan2::ArgParseOption::DOUBLE, "MU"));
     setMinValue(parser, "meth-chh-mu", "0");
     setMaxValue(parser, "meth-chh-mu", "1");
     setDefaultValue(parser, "meth-chh-mu", "0.05");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-chh-sigma", "Standard deviation of beta distribution for "
-                                            "methylation level of CHH loci.", seqan::ArgParseOption::DOUBLE,
+    addOption(parser, seqan2::ArgParseOption("", "meth-chh-sigma", "Standard deviation of beta distribution for "
+                                            "methylation level of CHH loci.", seqan2::ArgParseOption::DOUBLE,
                                             "SIGMA"));
     setMinValue(parser, "meth-chh-sigma", "0");
     setMaxValue(parser, "meth-chh-sigma", "1");
@@ -228,7 +228,7 @@ void MethylationLevelSimulatorOptions::addOptions(seqan::ArgumentParser & parser
 // Function MethylationLevelSimulatorOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MethylationLevelSimulatorOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MethylationLevelSimulatorOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     (void)parser;
 }
@@ -237,7 +237,7 @@ void MethylationLevelSimulatorOptions::addTextSections(seqan::ArgumentParser & p
 // Function MethylationLevelSimulatorOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MethylationLevelSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MethylationLevelSimulatorOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     getOptionValue(simulateMethylationLevels, parser, "methylation-levels");
     getOptionValue(methMuCG, parser, "meth-cg-mu");
@@ -271,19 +271,19 @@ void MethylationLevelSimulatorOptions::print(std::ostream & out) const
 // Function BSSeqOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void BSSeqOptions::addOptions(seqan::ArgumentParser & parser) const
+void BSSeqOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "BS-Seq Options");
 
-    addOption(parser, seqan::ArgParseOption("", "enable-bs-seq", "Enable BS-seq simulation."));
+    addOption(parser, seqan2::ArgParseOption("", "enable-bs-seq", "Enable BS-seq simulation."));
 
-    addOption(parser, seqan::ArgParseOption("", "bs-seq-protocol", "Protocol to use for BS-Seq simulation.",
-                                            seqan::ArgParseOption::STRING, "PROTOCOL"));
+    addOption(parser, seqan2::ArgParseOption("", "bs-seq-protocol", "Protocol to use for BS-Seq simulation.",
+                                            seqan2::ArgParseOption::STRING, "PROTOCOL"));
     setDefaultValue(parser, "bs-seq-protocol", "directional");
     setValidValues(parser, "bs-seq-protocol", "directional undirectional");
 
-    addOption(parser, seqan::ArgParseOption("", "bs-seq-conversion-rate", "Conversion rate for unmethylated Cs to "
-                                            "become Ts.", seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "bs-seq-conversion-rate", "Conversion rate for unmethylated Cs to "
+                                            "become Ts.", seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "bs-seq-conversion-rate", "0");
     setMaxValue(parser, "bs-seq-conversion-rate", "1");
     setDefaultValue(parser, "bs-seq-conversion-rate", "0.99");
@@ -293,7 +293,7 @@ void BSSeqOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function BSSeqOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void BSSeqOptions::addTextSections(seqan::ArgumentParser & parser) const
+void BSSeqOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     (void)parser;
 }
@@ -302,11 +302,11 @@ void BSSeqOptions::addTextSections(seqan::ArgumentParser & parser) const
 // Function BSSeqOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void BSSeqOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void BSSeqOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     getOptionValue(bsSimEnabled, parser, "enable-bs-seq");
     getOptionValue(bsConversionRate, parser, "bs-seq-conversion-rate");
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
     getOptionValue(tmp, parser, "bs-seq-protocol");
     bsProtocol = (tmp == "undirectional") ? UNDIRECTIONAL : DIRECTIONAL;
 }
@@ -329,30 +329,30 @@ void BSSeqOptions::print(std::ostream & out) const
 // Function MaterializerOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
+void MaterializerOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "Apply VCF Variants to Reference");
 
-    addOption(parser, seqan::ArgParseOption("ir", "input-reference",
+    addOption(parser, seqan2::ArgParseOption("ir", "input-reference",
                                             "Path to FASTA file to read the reference from. Many contigs in a "
                                             "reference might be a problem due to many file handles that need to be "
                                             "openened. Check the hard limit of file handles with 'ulimit -Hn' and "
                                             "increase the soft limit to the hard limit with 'ulimit -Sn <number>' if "
                                             "necessary.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
-    setValidValues(parser, "input-reference", seqan::SeqFileIn::getFileExtensions());
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN.fa"));
+    setValidValues(parser, "input-reference", seqan2::SeqFileIn::getFileExtensions());
     setRequired(parser, "input-reference");
 
-    addOption(parser, seqan::ArgParseOption("iv", "input-vcf", "Path to the VCF file with variants to apply.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN.vcf"));
-    setValidValues(parser, "input-vcf", seqan::VcfFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("iv", "input-vcf", "Path to the VCF file with variants to apply.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN.vcf"));
+    setValidValues(parser, "input-vcf", seqan2::VcfFileIn::getFileExtensions());
 }
 
 // ----------------------------------------------------------------------------
 // Function MaterializerOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MaterializerOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MaterializerOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     addTextSection(parser, "VCF Variant Notes");
 
@@ -372,7 +372,7 @@ void MaterializerOptions::addTextSections(seqan::ArgumentParser & parser) const
 // Function MaterializerOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MaterializerOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MaterializerOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     getOptionValue(fastaFileName, parser, "input-reference");
     getOptionValue(vcfFileName, parser, "input-vcf");
@@ -394,36 +394,36 @@ void MaterializerOptions::print(std::ostream & out) const
 // Function FragmentSamplerOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void FragmentSamplerOptions::addOptions(seqan::ArgumentParser & parser) const
+void FragmentSamplerOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "Fragment Size (Insert Size) Options");
 
-    addOption(parser, seqan::ArgParseOption("", "fragment-size-model", "The model to use for the fragment size simulation.",
-                                            seqan::ArgParseOption::STRING, "MODEL"));
+    addOption(parser, seqan2::ArgParseOption("", "fragment-size-model", "The model to use for the fragment size simulation.",
+                                            seqan2::ArgParseOption::STRING, "MODEL"));
     setDefaultValue(parser, "fragment-size-model", "normal");
     setValidValues(parser, "fragment-size-model", "normal uniform");
 
-    addOption(parser, seqan::ArgParseOption("", "fragment-min-size", "Smallest fragment size to use when using "
+    addOption(parser, seqan2::ArgParseOption("", "fragment-min-size", "Smallest fragment size to use when using "
                                             "uniform fragment size simulation.",
-                                            seqan::ArgParseOption::INTEGER, "SIZE"));
+                                            seqan2::ArgParseOption::INTEGER, "SIZE"));
     setDefaultValue(parser, "fragment-min-size", "100");
     setMinValue(parser, "fragment-min-size", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "fragment-max-size", "Largest fragment size to use when using "
+    addOption(parser, seqan2::ArgParseOption("", "fragment-max-size", "Largest fragment size to use when using "
                                             "uniform fragment size simulation.",
-                                            seqan::ArgParseOption::INTEGER, "SIZE"));
+                                            seqan2::ArgParseOption::INTEGER, "SIZE"));
     setDefaultValue(parser, "fragment-max-size", "400");
     setMinValue(parser, "fragment-max-size", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "fragment-mean-size", "Mean fragment size for normally distributed "
+    addOption(parser, seqan2::ArgParseOption("", "fragment-mean-size", "Mean fragment size for normally distributed "
                                             "fragment size simulation.",
-                                            seqan::ArgParseOption::INTEGER, "SIZE"));
+                                            seqan2::ArgParseOption::INTEGER, "SIZE"));
     setDefaultValue(parser, "fragment-mean-size", "300");
     setMinValue(parser, "fragment-mean-size", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "fragment-size-std-dev", "Fragment size standard deviation when using "
+    addOption(parser, seqan2::ArgParseOption("", "fragment-size-std-dev", "Fragment size standard deviation when using "
                                             "normally distributed fragment size simulation.",
-                                            seqan::ArgParseOption::INTEGER, "SIZE"));
+                                            seqan2::ArgParseOption::INTEGER, "SIZE"));
     setDefaultValue(parser, "fragment-size-std-dev", "30");
     setMinValue(parser, "fragment-size-std-dev", "1");
 }
@@ -432,7 +432,7 @@ void FragmentSamplerOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function FragmentSamplerOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void FragmentSamplerOptions::addTextSections(seqan::ArgumentParser & parser) const
+void FragmentSamplerOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     addTextSection(parser, "Fragment Size (Insert Size) Simulation");
 
@@ -446,9 +446,9 @@ void FragmentSamplerOptions::addTextSections(seqan::ArgumentParser & parser) con
 // Function FragmentSamplerOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void FragmentSamplerOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void FragmentSamplerOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
     getOptionValue(tmp, parser, "fragment-size-model");
     model = (tmp == "normal") ? FragmentSamplerOptions::NORMAL : FragmentSamplerOptions::UNIFORM;
 
@@ -476,29 +476,29 @@ void FragmentSamplerOptions::print(std::ostream & out) const
 // Function SequencingOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void SequencingOptions::addOptions(seqan::ArgumentParser & parser) const
+void SequencingOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "Global Read Simulation Options");
 
-    addOption(parser, seqan::ArgParseOption("", "seq-technology", "Set sequencing technology to simulate.",
-                                            seqan::ArgParseOption::STRING, "TECH"));
+    addOption(parser, seqan2::ArgParseOption("", "seq-technology", "Set sequencing technology to simulate.",
+                                            seqan2::ArgParseOption::STRING, "TECH"));
     setValidValues(parser, "seq-technology", "illumina 454 sanger");
     setDefaultValue(parser, "seq-technology", "illumina");
 
-    addOption(parser, seqan::ArgParseOption("", "seq-mate-orientation", "Orientation for paired reads.  See section Read "
-                                            "Orientation below.", seqan::ArgParseOption::STRING, "ORIENTATION"));
+    addOption(parser, seqan2::ArgParseOption("", "seq-mate-orientation", "Orientation for paired reads.  See section Read "
+                                            "Orientation below.", seqan2::ArgParseOption::STRING, "ORIENTATION"));
     setValidValues(parser, "seq-mate-orientation", "FR RF FF FF2");
     setDefaultValue(parser, "seq-mate-orientation", "FR");
 
-    addOption(parser, seqan::ArgParseOption("", "seq-strands", "Strands to simulate from, only applicable to paired "
-                                            "sequencing simulation.", seqan::ArgParseOption::STRING, "STRAND"));
+    addOption(parser, seqan2::ArgParseOption("", "seq-strands", "Strands to simulate from, only applicable to paired "
+                                            "sequencing simulation.", seqan2::ArgParseOption::STRING, "STRAND"));
     setValidValues(parser, "seq-strands", "forward reverse both");
     setDefaultValue(parser, "seq-strands", "both");
 
-    addOption(parser, seqan::ArgParseOption("", "embed-read-info", "Whether or not to embed read information."));
+    addOption(parser, seqan2::ArgParseOption("", "embed-read-info", "Whether or not to embed read information."));
 
-    addOption(parser, seqan::ArgParseOption("", "read-name-prefix", "Read names will have this prefix.",
-                                            seqan::ArgParseOption::STRING, "STR"));
+    addOption(parser, seqan2::ArgParseOption("", "read-name-prefix", "Read names will have this prefix.",
+                                            seqan2::ArgParseOption::STRING, "STR"));
     setDefaultValue(parser, "read-name-prefix", "simulated.");
 
     // Add options for nested options structs.
@@ -509,7 +509,7 @@ void SequencingOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function SequencingOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void SequencingOptions::addTextSections(seqan::ArgumentParser & parser) const
+void SequencingOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     addTextSection(parser, "Sequencing Simulation");
 
@@ -539,9 +539,9 @@ void SequencingOptions::addTextSections(seqan::ArgumentParser & parser) const
 // Function SequencingOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void SequencingOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void SequencingOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
 
     getOptionValue(tmp, parser, "seq-mate-orientation");
     if (tmp == "FR")
@@ -598,133 +598,133 @@ void SequencingOptions::print(std::ostream & out) const
 // Function IlluminaSequencingOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void IlluminaSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
+void IlluminaSequencingOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "Illumina Options");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-read-length", "Read length for Illumina simulation.",
-                                            seqan::ArgParseOption::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("", "illumina-read-length", "Read length for Illumina simulation.",
+                                            seqan2::ArgParseOption::INTEGER, "INT"));
     setMinValue(parser, "illumina-read-length", "1");
     setDefaultValue(parser, "illumina-read-length", "100");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-error-profile-file",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-error-profile-file",
                                             "Path to file with Illumina error profile.  The file must be a text file "
                                             "with floating point numbers separated by space, each giving a positional "
                                             "error rate.",
-                                            seqan::ArgParseOption::INPUT_FILE, "FILE"));
+                                            seqan2::ArgParseOption::INPUT_FILE, "FILE"));
     setValidValues(parser, "illumina-error-profile-file", "txt");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-prob-insert",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-prob-insert",
                                             "Insert per-base probability for insertion in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-insert", "0");
     setMaxValue(parser, "illumina-prob-insert", "1");
     setDefaultValue(parser, "illumina-prob-insert", "0.00005");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-prob-deletion",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-prob-deletion",
                                             "Insert per-base probability for deletion in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-deletion", "0");
     setMaxValue(parser, "illumina-prob-deletion", "1");
     setDefaultValue(parser, "illumina-prob-deletion", "0.00005");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-prob-mismatch-scale",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-prob-mismatch-scale",
                                             "Scaling factor for Illumina mismatch probability.",
-                                            seqan::ArgParseOption::DOUBLE, "FACTOR"));
+                                            seqan2::ArgParseOption::DOUBLE, "FACTOR"));
     setMinValue(parser, "illumina-prob-mismatch-scale", "0");
     setDefaultValue(parser, "illumina-prob-mismatch-scale", "1.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-prob-mismatch",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-prob-mismatch",
                                             "Average per-base mismatch probability in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-mismatch", "0.0");
     setMaxValue(parser, "illumina-prob-mismatch", "1.0");
     setDefaultValue(parser, "illumina-prob-mismatch", "0.004");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-prob-mismatch-begin",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-prob-mismatch-begin",
                                             "Per-base mismatch probability of first base in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-mismatch-begin", "0.0");
     setMaxValue(parser, "illumina-prob-mismatch-begin", "1.0");
     setDefaultValue(parser, "illumina-prob-mismatch-begin", "0.002");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-prob-mismatch-end",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-prob-mismatch-end",
                                             "Per-base mismatch probability of last base in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "illumina-prob-mismatch-end", "0.0");
     setMaxValue(parser, "illumina-prob-mismatch-end", "1.0");
     setDefaultValue(parser, "illumina-prob-mismatch-end", "0.012");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-position-raise",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-position-raise",
                                             "Point where the error curve raises in relation to read length.",
-                                            seqan::ArgParseOption::DOUBLE, "FLOAT"));
+                                            seqan2::ArgParseOption::DOUBLE, "FLOAT"));
     setMinValue(parser, "illumina-position-raise", "0.0");
     setMaxValue(parser, "illumina-position-raise", "1.0");
     setDefaultValue(parser, "illumina-position-raise", "0.66");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-quality-mean-begin",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-quality-mean-begin",
                                             "Mean PHRED quality for non-mismatch bases of first base in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-quality-mean-begin", "40.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-quality-mean-end",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-quality-mean-end",
                                             "Mean PHRED quality for non-mismatch bases of last base in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-quality-mean-end", "39.5");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-quality-stddev-begin",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-quality-stddev-begin",
                                             "Standard deviation of PHRED quality for non-mismatch bases of first base "
-                                            "in Illumina sequencing.", seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            "in Illumina sequencing.", seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-quality-stddev-begin", "0.05");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-quality-stddev-end",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-quality-stddev-end",
                                             "Standard deviation of PHRED quality for non-mismatch bases of last base "
-                                            "in Illumina sequencing.", seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            "in Illumina sequencing.", seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-quality-stddev-end", "10.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-mean-begin",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-mismatch-quality-mean-begin",
                                             "Mean PHRED quality for mismatch bases of first base in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-mismatch-quality-mean-begin", "40.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-mean-end",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-mismatch-quality-mean-end",
                                             "Mean PHRED quality for mismatch bases of last base in Illumina sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-mismatch-quality-mean-end", "30.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-stddev-begin",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-mismatch-quality-stddev-begin",
                                             "Standard deviation of PHRED quality for mismatch bases of first base "
-                                            "in Illumina sequencing.", seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            "in Illumina sequencing.", seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-mismatch-quality-stddev-begin", "3.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-mismatch-quality-stddev-end",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-mismatch-quality-stddev-end",
                                             "Standard deviation of PHRED quality for mismatch bases of last base "
-                                            "in Illumina sequencing.", seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            "in Illumina sequencing.", seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "illumina-mismatch-quality-stddev-end", "15.0");
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-left-template-fastq",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-left-template-fastq",
                                             "FASTQ file to use for a template for left-end reads.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN.fq"));
-    setValidValues(parser, "illumina-left-template-fastq", seqan::SeqFileIn::getFileExtensions());
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN.fq"));
+    setValidValues(parser, "illumina-left-template-fastq", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "illumina-right-template-fastq",
+    addOption(parser, seqan2::ArgParseOption("", "illumina-right-template-fastq",
                                             "FASTQ file to use for a template for right-end reads.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN.fq"));
-    setValidValues(parser, "illumina-right-template-fastq", seqan::SeqFileIn::getFileExtensions());
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN.fq"));
+    setValidValues(parser, "illumina-right-template-fastq", seqan2::SeqFileIn::getFileExtensions());
 }
 
 // ----------------------------------------------------------------------------
 // Function IlluminaSequencingOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void IlluminaSequencingOptions::addTextSections(seqan::ArgumentParser & /*parser*/) const
+void IlluminaSequencingOptions::addTextSections(seqan2::ArgumentParser & /*parser*/) const
 {}
 
 // ----------------------------------------------------------------------------
 // Function IlluminaSequencingOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void IlluminaSequencingOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void IlluminaSequencingOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     getOptionValue(readLength, parser, "illumina-read-length");
 
@@ -790,121 +790,121 @@ void IlluminaSequencingOptions::print(std::ostream & out) const
 // Function SangerSequencingOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void SangerSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
+void SangerSequencingOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "Sanger Sequencing Options");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-read-length-model", "The model to use for sampling the Sanger "
-                                            "read length.", seqan::ArgParseOption::STRING, "MODEL"));
+    addOption(parser, seqan2::ArgParseOption("", "sanger-read-length-model", "The model to use for sampling the Sanger "
+                                            "read length.", seqan2::ArgParseOption::STRING, "MODEL"));
     setValidValues(parser, "sanger-read-length-model", "normal uniform");
     setDefaultValue(parser, "sanger-read-length-model", "normal");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-read-length-min", "The minimal read length when the read length is "
-                                            "sampled uniformly.", seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "sanger-read-length-min", "The minimal read length when the read length is "
+                                            "sampled uniformly.", seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "sanger-read-length-min", "0");
     setDefaultValue(parser, "sanger-read-length-min", "400");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-read-length-max", "The maximal read length when the read length is "
-                                            "sampled uniformly.", seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "sanger-read-length-max", "The maximal read length when the read length is "
+                                            "sampled uniformly.", seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "sanger-read-length-max", "0");
     setDefaultValue(parser, "sanger-read-length-max", "600");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-read-length-mean", "The mean read length when the read length is "
-                                            "sampled with normal distribution.", seqan::ArgParseOption::DOUBLE, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "sanger-read-length-mean", "The mean read length when the read length is "
+                                            "sampled with normal distribution.", seqan2::ArgParseOption::DOUBLE, "LEN"));
     setMinValue(parser, "sanger-read-length-mean", "0");
     setDefaultValue(parser, "sanger-read-length-mean", "400");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-read-length-error", "The read length standard deviation when the "
-                                            "read length is sampled uniformly.", seqan::ArgParseOption::DOUBLE, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "sanger-read-length-error", "The read length standard deviation when the "
+                                            "read length is sampled uniformly.", seqan2::ArgParseOption::DOUBLE, "LEN"));
     setMinValue(parser, "sanger-read-length-error", "0");
     setDefaultValue(parser, "sanger-read-length-error", "40");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-mismatch-scale",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-mismatch-scale",
                                             "Scaling factor for Sanger mismatch probability.",
-                                            seqan::ArgParseOption::DOUBLE, "FACTOR"));
+                                            seqan2::ArgParseOption::DOUBLE, "FACTOR"));
     setMinValue(parser, "sanger-prob-mismatch-scale", "0");
     setDefaultValue(parser, "sanger-prob-mismatch-scale", "1.0");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-mismatch-begin",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-mismatch-begin",
                                             "Per-base mismatch probability of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "sanger-prob-mismatch-begin", "0.0");
     setMaxValue(parser, "sanger-prob-mismatch-begin", "1.0");
     setDefaultValue(parser, "sanger-prob-mismatch-begin", "0.005");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-mismatch-end",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-mismatch-end",
                                             "Per-base mismatch probability of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "sanger-prob-mismatch-end", "0.0");
     setMaxValue(parser, "sanger-prob-mismatch-end", "1.0");
     setDefaultValue(parser, "sanger-prob-mismatch-end", "0.001");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-insertion-begin",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-insertion-begin",
                                             "Per-base insertion probability of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "sanger-prob-insertion-begin", "0.0");
     setMaxValue(parser, "sanger-prob-insertion-begin", "1.0");
     setDefaultValue(parser, "sanger-prob-insertion-begin", "0.0025");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-insertion-end",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-insertion-end",
                                             "Per-base insertion probability of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "sanger-prob-insertion-end", "0.0");
     setMaxValue(parser, "sanger-prob-insertion-end", "1.0");
     setDefaultValue(parser, "sanger-prob-insertion-end", "0.005");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-deletion-begin",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-deletion-begin",
                                             "Per-base deletion probability of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "sanger-prob-deletion-begin", "0.0");
     setMaxValue(parser, "sanger-prob-deletion-begin", "1.0");
     setDefaultValue(parser, "sanger-prob-deletion-begin", "0.0025");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-prob-deletion-end",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-prob-deletion-end",
                                             "Per-base deletion probability of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "PROB"));
+                                            seqan2::ArgParseOption::DOUBLE, "PROB"));
     setMinValue(parser, "sanger-prob-deletion-end", "0.0");
     setMaxValue(parser, "sanger-prob-deletion-end", "1.0");
     setDefaultValue(parser, "sanger-prob-deletion-end", "0.005");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-match-start-mean",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-match-start-mean",
                                             "Mean PHRED quality for non-mismatch bases of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-match-start-mean", "40.0");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-match-end-mean",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-match-end-mean",
                                             "Mean PHRED quality for non-mismatch bases of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-match-end-mean", "39.5");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-match-start-stddev",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-match-start-stddev",
                                             "Mean PHRED quality for non-mismatch bases of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-match-start-stddev", "0.1");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-match-end-stddev",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-match-end-stddev",
                                             "Mean PHRED quality for non-mismatch bases of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-match-end-stddev", "2");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-start-mean",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-error-start-mean",
                                             "Mean PHRED quality for erroneous bases of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-start-mean", "30");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-end-mean",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-error-end-mean",
                                             "Mean PHRED quality for erroneous bases of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-end-mean", "20");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-start-stddev",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-error-start-stddev",
                                             "Mean PHRED quality for erroneous bases of first base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-start-stddev", "2");
 
-    addOption(parser, seqan::ArgParseOption("", "sanger-quality-error-end-stddev",
+    addOption(parser, seqan2::ArgParseOption("", "sanger-quality-error-end-stddev",
                                             "Mean PHRED quality for erroneous bases of last base in Sanger sequencing.",
-                                            seqan::ArgParseOption::DOUBLE, "QUAL"));
+                                            seqan2::ArgParseOption::DOUBLE, "QUAL"));
     setDefaultValue(parser, "sanger-quality-error-end-stddev", "5");
 }
 
@@ -912,16 +912,16 @@ void SangerSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function SangerSequencingOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void SangerSequencingOptions::addTextSections(seqan::ArgumentParser & /*parser*/) const
+void SangerSequencingOptions::addTextSections(seqan2::ArgumentParser & /*parser*/) const
 {}
 
 // ----------------------------------------------------------------------------
 // Function SangerSequencingOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void SangerSequencingOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void SangerSequencingOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
     getOptionValue(tmp, parser, "sanger-read-length-model");
     readLengthIsUniform = (tmp == "uniform");
 
@@ -982,52 +982,52 @@ void SangerSequencingOptions::print(std::ostream & out) const
 // Function Roche454SequencingOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void Roche454SequencingOptions::addOptions(seqan::ArgumentParser & parser) const
+void Roche454SequencingOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     addSection(parser, "454 Sequencing Options");
 
-    addOption(parser, seqan::ArgParseOption("", "454-read-length-model", "The model to use for sampling the 454 read length.",
-                                            seqan::ArgParseOption::STRING, "MODEL"));
+    addOption(parser, seqan2::ArgParseOption("", "454-read-length-model", "The model to use for sampling the 454 read length.",
+                                            seqan2::ArgParseOption::STRING, "MODEL"));
     setValidValues(parser, "454-read-length-model", "normal uniform");
     setDefaultValue(parser, "454-read-length-model", "normal");
 
-    addOption(parser, seqan::ArgParseOption("", "454-read-length-min", "The minimal read length when the read length is "
-                                            "sampled uniformly.", seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "454-read-length-min", "The minimal read length when the read length is "
+                                            "sampled uniformly.", seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "454-read-length-min", "0");
     setDefaultValue(parser, "454-read-length-min", "10");
 
-    addOption(parser, seqan::ArgParseOption("", "454-read-length-max", "The maximal read length when the read length is "
-                                            "sampled uniformly.", seqan::ArgParseOption::INTEGER, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "454-read-length-max", "The maximal read length when the read length is "
+                                            "sampled uniformly.", seqan2::ArgParseOption::INTEGER, "LEN"));
     setMinValue(parser, "454-read-length-max", "0");
     setDefaultValue(parser, "454-read-length-max", "600");
 
-    addOption(parser, seqan::ArgParseOption("", "454-read-length-mean", "The mean read length when the read length is "
-                                            "sampled with normal distribution.", seqan::ArgParseOption::DOUBLE, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("", "454-read-length-mean", "The mean read length when the read length is "
+                                            "sampled with normal distribution.", seqan2::ArgParseOption::DOUBLE, "LEN"));
     setMinValue(parser, "454-read-length-mean", "0");
     setDefaultValue(parser, "454-read-length-mean", "400");
 
-    addOption(parser, seqan::ArgParseOption("", "454-read-length-stddev", "The read length standard deviation when the "
+    addOption(parser, seqan2::ArgParseOption("", "454-read-length-stddev", "The read length standard deviation when the "
                                             "read length is sampled with normal distribution.",
-                                            seqan::ArgParseOption::DOUBLE, "LEN"));
+                                            seqan2::ArgParseOption::DOUBLE, "LEN"));
     setMinValue(parser, "454-read-length-stddev", "0");
     setDefaultValue(parser, "454-read-length-stddev", "40");
 
-    addOption(parser, seqan::ArgParseOption("", "454-no-sqrt-in-std-dev", "For error model, if set then "
+    addOption(parser, seqan2::ArgParseOption("", "454-no-sqrt-in-std-dev", "For error model, if set then "
                                             "(sigma = k * r)) is used, otherwise (sigma = k * sqrt(r))."));
 
-    addOption(parser, seqan::ArgParseOption("", "454-proportionality-factor", "Proportionality factor for calculating the standard "
+    addOption(parser, seqan2::ArgParseOption("", "454-proportionality-factor", "Proportionality factor for calculating the standard "
                                             "deviation proportional to the read length.",
-                                            seqan::ArgParseOption::DOUBLE, "FLOAT"));
+                                            seqan2::ArgParseOption::DOUBLE, "FLOAT"));
     setMinValue(parser, "454-proportionality-factor", "0");
     setDefaultValue(parser, "454-proportionality-factor", "0.15");
 
-    addOption(parser, seqan::ArgParseOption("", "454-background-noise-mean", "Mean of lognormal distribution to use for "
-                                            "the noise.", seqan::ArgParseOption::DOUBLE, "MEAN"));
+    addOption(parser, seqan2::ArgParseOption("", "454-background-noise-mean", "Mean of lognormal distribution to use for "
+                                            "the noise.", seqan2::ArgParseOption::DOUBLE, "MEAN"));
     setMinValue(parser, "454-background-noise-mean", "0");
     setDefaultValue(parser, "454-background-noise-mean", "0.23");
 
-    addOption(parser, seqan::ArgParseOption("", "454-background-noise-stddev", "Standard deviation of lognormal "
-                                            "distribution to use for the noise.", seqan::ArgParseOption::DOUBLE,
+    addOption(parser, seqan2::ArgParseOption("", "454-background-noise-stddev", "Standard deviation of lognormal "
+                                            "distribution to use for the noise.", seqan2::ArgParseOption::DOUBLE,
                                             "SIGMA"));
     setMinValue(parser, "454-background-noise-stddev", "0");
     setDefaultValue(parser, "454-background-noise-stddev", "0.15");
@@ -1037,16 +1037,16 @@ void Roche454SequencingOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function Roche454SequencingOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void Roche454SequencingOptions::addTextSections(seqan::ArgumentParser & /*parser*/) const
+void Roche454SequencingOptions::addTextSections(seqan2::ArgumentParser & /*parser*/) const
 {}
 
 // ----------------------------------------------------------------------------
 // Function Roche454SequencingOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void Roche454SequencingOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void Roche454SequencingOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
     getOptionValue(tmp, parser, "454-read-length-model");
     lengthModel = (tmp == "uniform") ? Roche454SequencingOptions::UNIFORM : Roche454SequencingOptions::NORMAL;
 
@@ -1078,60 +1078,60 @@ void Roche454SequencingOptions::print(std::ostream & out) const
 // Function MasonSimulatorOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
+void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     // Add top-level options.
 
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Low verbosity."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Higher verbosity."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Low verbosity."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Higher verbosity."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
-    addOption(parser, seqan::ArgParseOption("", "seed", "Seed to use for random number generator.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "seed", "Seed to use for random number generator.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-seed", "Seed to use for methylation level random number "
-                                            "generator.", seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "meth-seed", "Seed to use for methylation level random number "
+                                            "generator.", seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "meth-seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("", "seed-spacing", "Offset for seeds to use when multi-threading.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "seed-spacing", "Offset for seeds to use when multi-threading.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "seed-spacing", "2048");
 
-    addOption(parser, seqan::ArgParseOption("", "num-threads", "Number of threads to use.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "num-threads", "Number of threads to use.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "num-threads", "1");
     setDefaultValue(parser, "num-threads", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
+    addOption(parser, seqan2::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
                                             "file is given."));
 
-    addOption(parser, seqan::ArgParseOption("", "chunk-size", "Number of fragments to simulate in one batch.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "chunk-size", "Number of fragments to simulate in one batch.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "chunk-size", "65536");
     setDefaultValue(parser, "chunk-size", "65536");
 
-    addOption(parser, seqan::ArgParseOption("n", "num-fragments", "Number of reads/pairs to simulate.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("n", "num-fragments", "Number of reads/pairs to simulate.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setRequired(parser, "num-fragments");
     setMinValue(parser, "num-fragments", "1");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
-    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN"));
+    setValidValues(parser, "meth-fasta-in", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+    addOption(parser, seqan2::ArgParseOption("o", "out", "Output of single-end/left end reads.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
+    setValidValues(parser, "out", seqan2::SeqFileOut::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
-                                            "paired-end simulation.", seqan::ArgParseOption::OUTPUT_FILE, "OUT2"));
-    setValidValues(parser, "out-right", seqan::SeqFileOut::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
+                                            "paired-end simulation.", seqan2::ArgParseOption::OUTPUT_FILE, "OUT2"));
+    setValidValues(parser, "out-right", seqan2::SeqFileOut::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("oa", "out-alignment", "SAM/BAM file with alignments.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
-    setValidValues(parser, "out-alignment", seqan::BamFileOut::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("oa", "out-alignment", "SAM/BAM file with alignments.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
+    setValidValues(parser, "out-alignment", seqan2::BamFileOut::getFileExtensions());
 
     // Add options of the component options.
     matOptions.addOptions(parser);
@@ -1147,7 +1147,7 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function MasonSimulatorOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MasonSimulatorOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MasonSimulatorOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     // Add top-level text sections.
     addTextSection(parser, "Simulation Overview");
@@ -1207,7 +1207,7 @@ void MasonSimulatorOptions::addTextSections(seqan::ArgumentParser & parser) cons
 // Function MasonSimulatorOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MasonSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MasonSimulatorOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     // Get top-level options.
     if (isSet(parser, "quiet"))
@@ -1301,43 +1301,43 @@ void MasonSimulatorOptions::print(std::ostream & out) const
 // Function MasonMaterializerOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
+void MasonMaterializerOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     // Add top-level options.
 
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Low verbosity."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Higher verbosity."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Low verbosity."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Higher verbosity."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
-    addOption(parser, seqan::ArgParseOption("", "seed", "Seed for random number generation.",
-                                            seqan::ArgParseOption::INTEGER, "Int"));
+    addOption(parser, seqan2::ArgParseOption("", "seed", "Seed for random number generation.",
+                                            seqan2::ArgParseOption::INTEGER, "Int"));
     setDefaultValue(parser, "seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-seed", "Seed for methylation simulation random number generation.",
-                                            seqan::ArgParseOption::INTEGER, "Int"));
+    addOption(parser, seqan2::ArgParseOption("", "meth-seed", "Seed for methylation simulation random number generation.",
+                                            seqan2::ArgParseOption::INTEGER, "Int"));
     setDefaultValue(parser, "meth-seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("o", "out", "Output of materialized contigs.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+    addOption(parser, seqan2::ArgParseOption("o", "out", "Output of materialized contigs.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
+    setValidValues(parser, "out", seqan2::SeqFileOut::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "TSV"));
+    addOption(parser, seqan2::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "TSV"));
     setValidValues(parser, "out-breakpoints", "tsv txt");
 
-    addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep",
+    addOption(parser, seqan2::ArgParseOption("", "haplotype-name-sep",
                                             "String separating contig name from haplotype number.",
-                                            seqan::ArgParseOption::STRING, "SEP"));
+                                            seqan2::ArgParseOption::STRING, "SEP"));
     setDefaultValue(parser, "haplotype-name-sep", "/");
 
-    addOption(parser, seqan::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
-    setValidValues(parser, "meth-fasta-in", seqan::SeqFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("", "meth-fasta-in", "FASTA file with methylation levels of the input file.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN"));
+    setValidValues(parser, "meth-fasta-in", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "FASTA file with methylation levels of the output file.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
-    setValidValues(parser, "meth-fasta-out", seqan::SeqFileOut::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("", "meth-fasta-out", "FASTA file with methylation levels of the output file.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
+    setValidValues(parser, "meth-fasta-out", seqan2::SeqFileOut::getFileExtensions());
 
     // Add options of the component options.
     matOptions.addOptions(parser);
@@ -1348,7 +1348,7 @@ void MasonMaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function MasonMaterializerOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MasonMaterializerOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MasonMaterializerOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     // Add text sections of the component options.
     matOptions.addTextSections(parser);
@@ -1359,7 +1359,7 @@ void MasonMaterializerOptions::addTextSections(seqan::ArgumentParser & parser) c
 // Function MasonMaterializerOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MasonMaterializerOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MasonMaterializerOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     // Get top-level options.
     if (isSet(parser, "quiet"))
@@ -1419,40 +1419,40 @@ void MasonMaterializerOptions::print(std::ostream & out) const
 // Function MasonSplicingOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MasonSplicingOptions::addOptions(seqan::ArgumentParser & parser) const
+void MasonSplicingOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     // Add top-level options.
 
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Low verbosity."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Higher verbosity."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Low verbosity."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Higher verbosity."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
-    addOption(parser, seqan::ArgParseOption("", "seed", "Seed for random number generation.",
-                                            seqan::ArgParseOption::INTEGER, "Int"));
+    addOption(parser, seqan2::ArgParseOption("", "seed", "Seed for random number generation.",
+                                            seqan2::ArgParseOption::INTEGER, "Int"));
     setDefaultValue(parser, "seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("o", "out", "Output of materialized contigs.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+    addOption(parser, seqan2::ArgParseOption("o", "out", "Output of materialized contigs.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
+    setValidValues(parser, "out", seqan2::SeqFileOut::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep",
+    addOption(parser, seqan2::ArgParseOption("", "haplotype-name-sep",
                                             "String separating contig name from haplotype number.",
-                                            seqan::ArgParseOption::STRING, "SEP"));
+                                            seqan2::ArgParseOption::STRING, "SEP"));
     setDefaultValue(parser, "haplotype-name-sep", "/");
 
-    addOption(parser, seqan::ArgParseOption("ig", "in-gff", "Path to input GFF or GTF file, must be "
+    addOption(parser, seqan2::ArgParseOption("ig", "in-gff", "Path to input GFF or GTF file, must be "
                                             "sorted by reference name.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN.gff"));
-    setValidValues(parser, "in-gff", seqan::GffFileIn::getFileExtensions());
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN.gff"));
+    setValidValues(parser, "in-gff", seqan2::GffFileIn::getFileExtensions());
     setRequired(parser, "in-gff");
 
-    addOption(parser, seqan::ArgParseOption("", "gff-type", "Splicing will filter to the records that have this type.",
-                                            seqan::ArgParseOption::INPUT_FILE, "TYPE"));
+    addOption(parser, seqan2::ArgParseOption("", "gff-type", "Splicing will filter to the records that have this type.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "TYPE"));
     setDefaultValue(parser, "gff-type", "exon");
 
-    addOption(parser, seqan::ArgParseOption("", "gff-group-by", "Assign features to their parent using the tag "
-                                            "with this name.", seqan::ArgParseOption::INPUT_FILE, "KEY"));
+    addOption(parser, seqan2::ArgParseOption("", "gff-group-by", "Assign features to their parent using the tag "
+                                            "with this name.", seqan2::ArgParseOption::INPUT_FILE, "KEY"));
     setDefaultValue(parser, "gff-group-by", "Parent");
 
     // Add options of the component options.
@@ -1463,7 +1463,7 @@ void MasonSplicingOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function MasonSplicingOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MasonSplicingOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MasonSplicingOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     // Add text sections of the component options.
     matOptions.addTextSections(parser);
@@ -1473,7 +1473,7 @@ void MasonSplicingOptions::addTextSections(seqan::ArgumentParser & parser) const
 // Function MasonSplicingOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MasonSplicingOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MasonSplicingOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     // Get top-level options.
     if (isSet(parser, "quiet"))
@@ -1525,33 +1525,33 @@ void MasonSplicingOptions::print(std::ostream & out) const
 // Function MasonFragmentSequencingOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) const
+void MasonFragmentSequencingOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     // Add top-level options.
 
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Low verbosity."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Higher verbosity."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Low verbosity."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Higher verbosity."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
-    addOption(parser, seqan::ArgParseOption("", "seed", "Seed to use for random number generator.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "seed", "Seed to use for random number generator.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("i", "in", "Path to input file.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
+    addOption(parser, seqan2::ArgParseOption("i", "in", "Path to input file.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "in");
-    setValidValues(parser, "in", seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, "in", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("o", "out", "Output of single-end/left end reads.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+    addOption(parser, seqan2::ArgParseOption("o", "out", "Output of single-end/left end reads.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
+    setValidValues(parser, "out", seqan2::SeqFileOut::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
-                                            "paired-end simulation.", seqan::ArgParseOption::OUTPUT_FILE, "OUT2"));
-    setValidValues(parser, "out-right", seqan::SeqFileOut::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("or", "out-right", "Output of right reads.  Giving this options enables "
+                                            "paired-end simulation.", seqan2::ArgParseOption::OUTPUT_FILE, "OUT2"));
+    setValidValues(parser, "out-right", seqan2::SeqFileOut::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
+    addOption(parser, seqan2::ArgParseOption("", "force-single-end", "Force single-end simulation although --out-right "
                                             "is given."));
 
     // Add options of the component options.
@@ -1565,7 +1565,7 @@ void MasonFragmentSequencingOptions::addOptions(seqan::ArgumentParser & parser) 
 // Function MasonFragmentSequencingOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MasonFragmentSequencingOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MasonFragmentSequencingOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     // Add text sections of the component options.
     seqOptions.addTextSections(parser);
@@ -1578,7 +1578,7 @@ void MasonFragmentSequencingOptions::addTextSections(seqan::ArgumentParser & par
 // Function MasonFragmentSequencingOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MasonFragmentSequencingOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MasonFragmentSequencingOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     // Get top-level options.
     if (isSet(parser, "quiet"))
@@ -1641,27 +1641,27 @@ void MasonFragmentSequencingOptions::print(std::ostream & out) const
 // Function MasonMethylationOptions::addOptions()
 // ----------------------------------------------------------------------------
 
-void MasonMethylationOptions::addOptions(seqan::ArgumentParser & parser) const
+void MasonMethylationOptions::addOptions(seqan2::ArgumentParser & parser) const
 {
     // Add top-level options.
 
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Low verbosity."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Higher verbosity."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Low verbosity."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Higher verbosity."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
-    addOption(parser, seqan::ArgParseOption("", "seed", "Seed for RNG.",
-                                            seqan::ArgParseOption::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("", "seed", "Seed for RNG.",
+                                            seqan2::ArgParseOption::INTEGER, "INT"));
     setDefaultValue(parser, "seed", "0");
 
-    addOption(parser, seqan::ArgParseOption("i", "in", "Input FASTA file with genome.",
-                                            seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
+    addOption(parser, seqan2::ArgParseOption("i", "in", "Input FASTA file with genome.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "IN.fa"));
     setRequired(parser, "in");
-    setValidValues(parser, "in", seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, "in", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("o", "out", "Input FASTA file with genome.",
-                                            seqan::ArgParseOption::INPUT_FILE, "OUT.fa"));
+    addOption(parser, seqan2::ArgParseOption("o", "out", "Input FASTA file with genome.",
+                                            seqan2::ArgParseOption::INPUT_FILE, "OUT.fa"));
     setRequired(parser, "out");
-    setValidValues(parser, "out", seqan::SeqFileOut::getFileExtensions());
+    setValidValues(parser, "out", seqan2::SeqFileOut::getFileExtensions());
 
     // Add options of the component options.
     methOptions.addOptions(parser);
@@ -1671,7 +1671,7 @@ void MasonMethylationOptions::addOptions(seqan::ArgumentParser & parser) const
 // Function MasonMethylationOptions::addTextSections()
 // ----------------------------------------------------------------------------
 
-void MasonMethylationOptions::addTextSections(seqan::ArgumentParser & parser) const
+void MasonMethylationOptions::addTextSections(seqan2::ArgumentParser & parser) const
 {
     // Add text sections of the component options.
     methOptions.addTextSections(parser);
@@ -1681,7 +1681,7 @@ void MasonMethylationOptions::addTextSections(seqan::ArgumentParser & parser) co
 // Function MasonMethylationOptions::getOptionValues()
 // ----------------------------------------------------------------------------
 
-void MasonMethylationOptions::getOptionValues(seqan::ArgumentParser const & parser)
+void MasonMethylationOptions::getOptionValues(seqan2::ArgumentParser const & parser)
 {
     // Get top-level options.
     if (isSet(parser, "quiet"))

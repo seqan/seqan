@@ -55,7 +55,7 @@
 // Forwards
 // ============================================================================
 
-typedef seqan::JournalEntries<seqan::JournalEntry<unsigned, int>, seqan::SortedArray> TJournalEntries;
+typedef seqan2::JournalEntries<seqan2::JournalEntry<unsigned, int>, seqan2::SortedArray> TJournalEntries;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -79,7 +79,7 @@ struct SnpRecord
     int haplotype;
 
     // The target nucleotide.
-    seqan::Dna5 to;
+    seqan2::Dna5 to;
 
     SnpRecord() : rId(-1), pos(-1), haplotype(-1), to('\0')
     {}
@@ -125,12 +125,12 @@ struct SmallIndelRecord
     int size;
 
     // The inserted sequence if any.
-    seqan::CharString seq;
+    seqan2::CharString seq;
 
     SmallIndelRecord() : rId(-1), pos(-1), haplotype(-1), size(0)
     {}
 
-    SmallIndelRecord(int haplotype, int rId, int pos, int size, seqan::CharString const & seq) :
+    SmallIndelRecord(int haplotype, int rId, int pos, int size, seqan2::CharString const & seq) :
             rId(rId), pos(pos), haplotype(haplotype), size(size), seq(seq)
     {}
 
@@ -208,7 +208,7 @@ struct StructuralVariantRecord
     int targetPos;
 
     // The inserted sequence if any.
-    seqan::CharString seq;
+    seqan2::CharString seq;
 
     StructuralVariantRecord() :
             kind(INVALID), rId(-1), pos(-1), haplotype(-1), size(0), targetRId(-1), targetPos(-1)
@@ -256,28 +256,28 @@ std::ostream & operator<<(std::ostream & out, StructuralVariantRecord const & re
 struct Variants
 {
     // SNP records.
-    seqan::String<SnpRecord> snps;
+    seqan2::String<SnpRecord> snps;
 
     // Small indel records.
-    seqan::String<SmallIndelRecord> smallIndels;
+    seqan2::String<SmallIndelRecord> smallIndels;
 
     // Structural variation record.
-    seqan::String<StructuralVariantRecord> svRecords;
+    seqan2::String<StructuralVariantRecord> svRecords;
 
     // Names of the snps, smallIndels, SVs, as in the VCF file.
-    seqan::StringSet<seqan::CharString> snpIDs;
-    seqan::StringSet<seqan::CharString> smallIndelIDs;
-    seqan::StringSet<seqan::CharString> svIDs;
+    seqan2::StringSet<seqan2::CharString> snpIDs;
+    seqan2::StringSet<seqan2::CharString> smallIndelIDs;
+    seqan2::StringSet<seqan2::CharString> svIDs;
 
     void clear()
     {
-        seqan::clear(snps);
-        seqan::clear(smallIndels);
-        seqan::clear(svRecords);
+        seqan2::clear(snps);
+        seqan2::clear(smallIndels);
+        seqan2::clear(svRecords);
 
-        seqan::clear(snpIDs);
-        seqan::clear(smallIndelIDs);
-        seqan::clear(svIDs);
+        seqan2::clear(snpIDs);
+        seqan2::clear(smallIndelIDs);
+        seqan2::clear(svIDs);
     }
 
     enum IndexKind
@@ -288,7 +288,7 @@ struct Variants
     };
 
     // Return the name of a variant from its index.
-    seqan::CharString getVariantName(int idx) const
+    seqan2::CharString getVariantName(int idx) const
     {
         std::pair<IndexKind, int> res = resolveIdx(idx);
         if (res.first == SNP)
@@ -419,11 +419,11 @@ class PositionMap
 public:
     typedef int TValue;
     typedef GenomicInterval TCargo;
-    typedef seqan::IntervalAndCargo<TValue, TCargo> TInterval;
-    typedef seqan::IntervalTree<TValue, TCargo> TIntervalTree;
+    typedef seqan2::IntervalAndCargo<TValue, TCargo> TInterval;
+    typedef seqan2::IntervalTree<TValue, TCargo> TIntervalTree;
 
-    typedef seqan::String<seqan::GapAnchor<int> > TGapAnchors;
-    typedef seqan::Gaps<seqan::Nothing, seqan::AnchorGaps<TGapAnchors> > TGaps;
+    typedef seqan2::String<seqan2::GapAnchor<int> > TGapAnchors;
+    typedef seqan2::Gaps<seqan2::Nothing, seqan2::AnchorGaps<TGapAnchors> > TGaps;
 
     // TODO(holtgrew): We need a function *in this class* that builds the large variants data strutures for better encapsulation!
 
@@ -507,23 +507,23 @@ public:
     //
     // Breakpoints is a vector of (point, id) where point is a point on the materialized contig with variants and id is
     // an integer index into variants.  See Variants::resolveIdx() for more information.
-    int run(seqan::Dna5String & resultSeq,
+    int run(seqan2::Dna5String & resultSeq,
             PositionMap & posMap,
             std::vector<SmallVarInfo> & smallVars,
             std::vector<std::pair<int, int> > & breakpoints,
-            seqan::Dna5String const & refSeq,
+            seqan2::Dna5String const & refSeq,
             int haplotypeId)
     {
         return _runImpl(&resultSeq, &posMap, 0, smallVars, breakpoints, &refSeq, 0, haplotypeId);
     }
 
     // Same as the run() above, but including reference levels.
-    int run(seqan::Dna5String & resultSeq,
+    int run(seqan2::Dna5String & resultSeq,
             PositionMap & posMap,
             MethylationLevels & resultLvls,
             std::vector<SmallVarInfo> & smallVars,
             std::vector<std::pair<int, int> > & breakpoints,
-            seqan::Dna5String const & refSeq,
+            seqan2::Dna5String const & refSeq,
             MethylationLevels const & refLvls,
             int haplotypeId)
     {
@@ -532,23 +532,23 @@ public:
 
     // Implementation of the materialization, uses pointers instead of references for deciding whether materializing
     // levels or not.
-    int _runImpl(seqan::Dna5String * resultSeq,
+    int _runImpl(seqan2::Dna5String * resultSeq,
                  PositionMap * posMap,
                  MethylationLevels * resultLvls,
                  std::vector<SmallVarInfo> & smallVars,
                  std::vector<std::pair<int, int> > & breakpoints,
-                 seqan::Dna5String const * ref,
+                 seqan2::Dna5String const * ref,
                  MethylationLevels const * refLvls,
                  int haplotypeId);
 
     // Materialization of the small variants.
     //
     // Levels passed as NULL if not given.
-    int _materializeSmallVariants(seqan::Dna5String & seq,
+    int _materializeSmallVariants(seqan2::Dna5String & seq,
                                   TJournalEntries & journal,
                                   MethylationLevels * levelsSmallVariants,
                                   std::vector<SmallVarInfo> & smallVarInfos,
-                                  seqan::Dna5String const & contig,
+                                  seqan2::Dna5String const & contig,
                                   Variants const & variants,
                                   MethylationLevels const * levels,
                                   int hId);
@@ -556,13 +556,13 @@ public:
     // Materialization of the large variants.
     //
     // Levels passed as NULL if not given.
-    int _materializeLargeVariants(seqan::Dna5String & seq,
+    int _materializeLargeVariants(seqan2::Dna5String & seq,
                                   MethylationLevels * levelsLargeVariants,
                                   std::vector<SmallVarInfo> & varInfos,
                                   std::vector<std::pair<int, int> > & breakpoints,
                                   PositionMap & positionMap,
                                   TJournalEntries const & journal,
-                                  seqan::Dna5String const & contig,
+                                  seqan2::Dna5String const & contig,
                                   std::vector<SmallVarInfo> const & smallVarInfos,
                                   Variants const & variants,
                                   MethylationLevels const * levels,

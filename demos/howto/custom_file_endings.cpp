@@ -3,7 +3,7 @@
 #include <seqan/seq_io.h>
 //![includes]
 //![custom_file]
-namespace seqan
+namespace seqan2
 {
 // Your custom file format.
 struct MyFastaAdaptor_;
@@ -55,12 +55,12 @@ readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec
 {
     readRecord(meta, seq, file.iter, Fasta());  // Just delegate to Fasta parser.
 }
-} // namespace seqan
+} // namespace seqan2
 //![custom_read_record]
 //![main]
 int main()
 {
-    using namespace seqan;
+    using namespace seqan2;
     std::string path = getAbsolutePath("demos/howto/custom_file_ending.fa.dat");
 
     MySeqFileIn seqFile(path.c_str());

@@ -38,7 +38,7 @@
 #include <seqan/arg_parse/tool_doc.h>
 #include <seqan/arg_parse/argument_parser.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions
@@ -1051,6 +1051,6 @@ inline void printHelp(ArgumentParser const & me)
     printHelp(me, std::cerr, "txt", false);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_DOC_H_

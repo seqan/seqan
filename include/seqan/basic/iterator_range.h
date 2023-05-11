@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
 #define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -409,6 +409,6 @@ inline void operator << (Range<TIterator> &dest, Pipe<TInput, TPipeSpec> &src)
     assign(dest, src);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H

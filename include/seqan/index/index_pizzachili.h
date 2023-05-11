@@ -38,7 +38,7 @@
 #include <seqan/index/pizzachili_api.h>
 #include <seqan/index/index_pizzachili_string.h>
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @defgroup PizzaChiliIndexFibres Pizza &amp; Chili Index Fibres
@@ -387,6 +387,6 @@ inline bool save(
     return e == 0;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_HEADER_INDEX_PIZZACHILI_H

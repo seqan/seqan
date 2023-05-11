@@ -149,7 +149,7 @@ struct SeqConsOptions
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(SeqConsOptions & options, int argc, char const ** argv);
 
 #endif  // #ifndef APPS_SEQCONS2_SEQCONS_OPTIONS_H_

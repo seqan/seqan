@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_MODIFIER_REVERSE_H
 #define SEQAN_HEADER_MODIFIER_REVERSE_H
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================

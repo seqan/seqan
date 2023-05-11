@@ -37,7 +37,7 @@
 #ifndef SEQAN_STREAM_TOKENIZATION_H_
 #define SEQAN_STREAM_TOKENIZATION_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functors
@@ -703,6 +703,6 @@ strSplit(TResult & result, TSequence const & sequence)
     strSplit(result, sequence, EqualsChar<' '>(), false);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_STREAM_TOKENIZATION_H_

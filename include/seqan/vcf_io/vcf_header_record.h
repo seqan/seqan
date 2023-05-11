@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
 #define SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -109,6 +109,6 @@ inline void clear(VcfHeaderRecord & record)
     clear(record.value);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_

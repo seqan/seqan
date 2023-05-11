@@ -1,7 +1,7 @@
 #ifndef APPS_BS_TOOLS_CASBAR_SCORE_DATA_H__
 #define APPS_BS_TOOLS_CASBAR_SCORE_DATA_H__
 
-namespace seqan {
+namespace seqan2 {
 
 struct Bs_;
 typedef Tag<Bs_>   Bs;

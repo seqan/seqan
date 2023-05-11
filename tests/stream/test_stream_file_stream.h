@@ -43,7 +43,7 @@
 
 #include "test_stream_generic.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Types

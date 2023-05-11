@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_ALIGNED_SEQUENCE_CONCEPT_H_
 #define INCLUDE_SEQAN_ALIGN_ALIGNED_SEQUENCE_CONCEPT_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -60,6 +60,6 @@ SEQAN_CONCEPT_REFINE(AlignedSequenceConcept, (TSequence), (ContainerConcept))
 // ============================================================================
 // Functions
 // ============================================================================
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_ALIGNED_SEQUENCE_CONCEPT_H_

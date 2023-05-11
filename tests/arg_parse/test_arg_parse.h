@@ -118,7 +118,7 @@ const char * A_TUPLE_LIST_DL_4 = "5.5";
 const char * A_TUPLE_LIST_DL_5 = "6.6";
 const char * A_TUPLE_LIST_DL_6 = "7.7";
 
-namespace seqan {
+namespace seqan2 {
 
 // moved initialization of cmd parser out of the test functions
 // to have single place to change in case of interface changes
@@ -1419,6 +1419,6 @@ SEQAN_DEFINE_TEST(test_parse_non_const_cstring)
     SEQAN_ASSERT_EQ(value, 1);
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_

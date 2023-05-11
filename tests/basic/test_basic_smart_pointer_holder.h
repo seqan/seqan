@@ -75,7 +75,7 @@ struct CDStruct
         copyConstructions += 1;
     }
 
-    CDStruct(CDStruct & other, seqan::Move const & /*tag*/)
+    CDStruct(CDStruct & other, seqan2::Move const & /*tag*/)
             : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
     {
         lastOther = &other;
@@ -163,7 +163,7 @@ void resetCDStructStatics()
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Tests for non-const holder.
     {
@@ -210,7 +210,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Simple Holder always copies, wo we do not really have to test much
     // here.
@@ -246,7 +246,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // assign()
     {
@@ -296,7 +296,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_transport)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // assignValue()
     {
@@ -343,7 +343,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_dependencies)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Since Simple Holder always copies, some simple tests are enough.
 
@@ -462,7 +462,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_dependencies)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_accessor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Holder<int, Simple> THolder;
 
@@ -483,7 +483,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_simple_accessor)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Tests for non-const holder.
     {
@@ -530,7 +530,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Holder<CDStruct, Tristate> THolder;
     typedef Holder<CDStruct, Tristate> TConstHolder;
@@ -606,7 +606,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Complete the following once holders of const values work!
 
@@ -621,7 +621,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_transport)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // assignValue()
     {
@@ -668,7 +668,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_dependencies)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Holder<CDStruct, Tristate> THolder;
 
@@ -808,7 +808,7 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_dependencies)
 
 SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_accessor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Holder<int, Tristate> THolder;
 

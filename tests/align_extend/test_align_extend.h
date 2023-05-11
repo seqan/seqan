@@ -44,7 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_align_extend_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Score<int> sc(2, -1, -2);
 
     Align<typename Infix<CharString const>::Type, ArrayGaps> align;
@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_align_extend_simple_infixes_recomp)
     // in addition this test set tests the recompute capability of alignExtend
     // by omitting origScore
 
-    using namespace seqan;
+    using namespace seqan2;
     Score<int> sc(2, -1, -2);
 
     Align<typename Infix<CharString const>::Type, ArrayGaps> align;
@@ -266,7 +266,7 @@ SEQAN_DEFINE_TEST(test_align_extend_simple_infixes_recomp)
 
 SEQAN_DEFINE_TEST(test_align_extend_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Score<int> sc(2, -1, -2);
 
     Align<typename Infix<CharString const>::Type, ArrayGaps> align;
@@ -365,7 +365,7 @@ SEQAN_DEFINE_TEST(test_align_extend_banded)
 
 SEQAN_DEFINE_TEST(test_align_extend_xdrop)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Score<int> sc(2, -1, -2);
 
     Align<typename Infix<CharString const>::Type, ArrayGaps> align;
@@ -432,7 +432,7 @@ SEQAN_DEFINE_TEST(test_align_extend_xdrop)
 
 SEQAN_DEFINE_TEST(test_align_extend_xdrop_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Score<int> sc(2, -1, -2);
 
     Align<typename Infix<CharString const>::Type, ArrayGaps> align;
@@ -534,7 +534,7 @@ SEQAN_DEFINE_TEST(test_align_extend_xdrop_banded)
 
 SEQAN_DEFINE_TEST(test_align_extend_semiglobal)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Align<typename Infix<CharString const>::Type, ArrayGaps> TAlign;
     Score<int> sc(1, -1, -1);
 

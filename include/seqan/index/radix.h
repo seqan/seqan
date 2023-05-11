@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_RADIX_H
 #define SEQAN_HEADER_RADIX_H
 
-namespace seqan
+namespace seqan2
 {
 
     // stably sort a[0..n-1] to b[0..n-1] with keys in 0..K-1 from r

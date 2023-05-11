@@ -50,15 +50,15 @@
 int main(int argc, char const ** argv)
 {
     // Parse the command line.
-    seqan::ArgumentParser parser;
+    seqan2::ArgumentParser parser;
     SeqConsOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Print the command line arguments back to the user.
     if (options.verbosity >= 1)
@@ -84,7 +84,7 @@ int main(int argc, char const ** argv)
     }
 
     // Run aplication.
-    double startTime = seqan::sysTime();
+    double startTime = seqan2::sysTime();
     try
     {
         SeqConsApp app(options);
@@ -99,7 +99,7 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
     {
-        std::cerr << "\nOverall time: " << seqan::sysTime() - startTime << " s\n"
+        std::cerr << "\nOverall time: " << seqan2::sysTime() - startTime << " s\n"
                   << "\n"
                   << "Done.  Have a nice day.\n";
     }

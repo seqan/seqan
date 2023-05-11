@@ -43,7 +43,7 @@
 
 #include <seqan/sequence.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -344,6 +344,6 @@ count(Accumulator<TValue, AccuAverage> const & acc)
     return acc.count_;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_MISC_ACCUMULATORS_H_

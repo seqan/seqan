@@ -40,7 +40,7 @@
 
 // TODO(holtgrew): Should the documentation be here?
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -124,6 +124,6 @@ void convertQuality(char & c, int q)
     c = '!' + char(q);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_

@@ -44,7 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_same_type)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the values of the VALUE members.
     SEQAN_ASSERT_EQ((+IsSameType<bool, int>::VALUE),  +false);
@@ -57,7 +57,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_same_type)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_signed)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<unsigned char>::Type,   signed char>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeSigned<signed   char>::Type,   signed char>::VALUE), true);
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_signed)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_unsigned)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<unsigned char>::Type,   unsigned char>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<MakeUnsigned<signed   char>::Type,   unsigned char>::VALUE), true);
@@ -110,7 +110,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_make_unsigned)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_remove_reference)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ((TestTypeEq<typename RemoveReference<unsigned &>::Type, unsigned>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<typename RemoveReference<unsigned  >::Type, unsigned>::VALUE),      true);
@@ -118,7 +118,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_remove_reference)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_remove_const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ((TestTypeEq<typename RemoveConst<unsigned const>::Type, unsigned>::VALUE), true);
     SEQAN_ASSERT_EQ((TestTypeEq<typename RemoveConst<unsigned      >::Type, unsigned>::VALUE), true);
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_remove_const)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_is_const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the values of the VALUE members.
     SEQAN_ASSERT_EQ((+IsConst_<bool>::VALUE),       +false);
@@ -139,7 +139,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_is_const)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_class_identifier)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(ClassIdentifier_<int>::getID(), ClassIdentifier_<int>::getID());
     SEQAN_ASSERT_NEQ(ClassIdentifier_<int>::getID(), ClassIdentifier_<bool>::getID());

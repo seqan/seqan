@@ -14,7 +14,7 @@
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Checking command line parameters.
 

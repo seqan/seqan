@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_BNDMALGO_H
 #define SEQAN_HEADER_FIND_BNDMALGO_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -249,6 +249,6 @@ inline bool find(TFinder & finder, Pattern<TNeedle, BndmAlgo> & me) {
     }
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_FIND_SHIFTAND_H

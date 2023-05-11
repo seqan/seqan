@@ -35,7 +35,7 @@
 #ifndef SEQAN_INDEX_ITER_VSTREE_FACTORY_H
 #define SEQAN_INDEX_ITER_VSTREE_FACTORY_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

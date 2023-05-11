@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_FIND_H
 #define SEQAN_HEADER_INDEX_FIND_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////

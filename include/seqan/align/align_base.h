@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -742,6 +742,6 @@ inline bool operator!=(Align<TSource, TSpec> const & lhs,
     return !(lhs == rhs);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_

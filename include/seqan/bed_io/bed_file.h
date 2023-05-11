@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
 #define SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Typedefs
@@ -122,6 +122,6 @@ writeRecord(FormattedFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & r
     writeRecord(file.iter, record, file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_

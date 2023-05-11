@@ -36,7 +36,7 @@
 #include <seqan/index.h>
 #include <seqan/store.h>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![typedefs]

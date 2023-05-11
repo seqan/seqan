@@ -79,7 +79,7 @@ struct SmallVariation
     // The length of the variant.  For SNPs, this is 1, otherwise the length of the indel.
     int len;
     // The sequence that is to be inserted here, if any.
-    seqan::Char5String seq;
+    seqan2::Char5String seq;
 
     SmallVariation() : rId(-1), pos(-1), vType(NONE), len(0)
     {}
@@ -124,11 +124,11 @@ class GenomeVariantManager
 {
 public:
     // Type for the variations for one haplotype of one chromosome.
-    typedef seqan::String<SmallVariation> THaplotypeVariations;
+    typedef seqan2::String<SmallVariation> THaplotypeVariations;
     // Type for storing the haplotypes for one contig.
-    typedef seqan::String<THaplotypeVariations> TContigHaploVariations;
+    typedef seqan2::String<THaplotypeVariations> TContigHaploVariations;
     // Type for storing the variation information for the whole genome.
-    typedef seqan::String<TContigHaploVariations> TGenomeHaploVariations;
+    typedef seqan2::String<TContigHaploVariations> TGenomeHaploVariations;
 
     // The variations for the whole genome.
     TGenomeHaploVariations _genomeHaploVariations;
@@ -154,7 +154,7 @@ public:
     unsigned numHaplotypes(unsigned contigNo) const;
 
     // Apply the variations for the given contig and haplotype to the given Journaled String.
-    void applyVariations(seqan::String<seqan::Dna5, seqan::Journaled<> > & haplotype,
+    void applyVariations(seqan2::String<seqan2::Dna5, seqan2::Journaled<> > & haplotype,
                          unsinged contigNo, unsigned haplotypeNo) const;
 };
 

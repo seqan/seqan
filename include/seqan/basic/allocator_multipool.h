@@ -39,7 +39,7 @@
 
 #include <seqan/basic/allocator_interface.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -257,6 +257,6 @@ deallocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
     me.data_recycled_blocks[block_number] = reinterpret_cast<char *>(data);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_BASIC_ALLOCATOR_MULTIPOOL_H_

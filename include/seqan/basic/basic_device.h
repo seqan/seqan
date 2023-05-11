@@ -35,7 +35,7 @@
 #ifndef SEQAN_BASIC_DEVICE_H
 #define SEQAN_BASIC_DEVICE_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -147,6 +147,6 @@ struct CtaSize
     static const unsigned VALUE = 256;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_DEVICE_H

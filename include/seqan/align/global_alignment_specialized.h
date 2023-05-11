@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -196,6 +196,6 @@ int globalAlignmentScore(StringSet<TString, TSpec> const & strings,
     return _globalAlignmentScore(strings[0], strings[1], algorithmTag);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_

@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
 #define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -452,6 +452,6 @@ _constructAndSetJournalTree(String<TValue, Journaled<THostSpec, SortedArray, TBu
     assign(journalSeq._insertionBuffer, insertionBuffer);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_

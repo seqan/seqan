@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_CONSENSUS_LIBRARY_H
 #define SEQAN_HEADER_CONSENSUS_LIBRARY_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -569,6 +569,6 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
     }
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

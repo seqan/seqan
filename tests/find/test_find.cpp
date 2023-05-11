@@ -57,7 +57,7 @@
 #include "test_find_myers_banded.h"
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 template <typename TAlgorithmSpec>

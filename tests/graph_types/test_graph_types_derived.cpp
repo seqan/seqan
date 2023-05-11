@@ -33,7 +33,7 @@
 #include <seqan/basic.h>
 #include <seqan/graph_types.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_graph_types_derived_oracle)
 {

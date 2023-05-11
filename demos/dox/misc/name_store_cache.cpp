@@ -3,7 +3,7 @@
 #include <seqan/sequence.h>
 #include <seqan/misc/name_store_cache.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

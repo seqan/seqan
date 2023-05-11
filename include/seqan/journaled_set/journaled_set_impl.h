@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
 #define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -275,6 +275,6 @@ _dataHost(StringSet<TString, Owner<JournaledSet> > & set)
  *                          reference sequence.
  */
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_

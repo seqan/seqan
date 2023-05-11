@@ -42,6 +42,6 @@
 #include "test_string_set.h"
 
 int main(int argc, char const ** argv) {
-    seqan::TestSystem::init(argc, argv);
-    return seqan::TestSystem::runAll();
+    seqan2::TestSystem::init(argc, argv);
+    return seqan2::TestSystem::runAll();
 }

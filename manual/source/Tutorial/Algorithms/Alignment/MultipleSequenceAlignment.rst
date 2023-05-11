@@ -24,7 +24,7 @@ As you have learned in the :ref:`pairwise alignment tutorial <tutorial-algorithm
 This tutorial shows how to compute multiple sequence alignments (MSAs) using SeqAn.
 First, some background on MSA will be given and the tutorial will then explain how to create multiple sequence alignments.
 
-Note that this tutorial focuses on the ``<seqan/graph_msa.h>`` module whose purpose is the computation of **global** MSAs, i.e. similar to SeqAn::T-Coffee :cite:`Rausch2008` or ClustalW :cite:`Thompson1994`.
+Note that this tutorial focuses on the ``<seqan/graph_msa.h>`` module whose purpose is the computation of **global** MSAs, i.e. similar to seqan2::T-Coffee :cite:`Rausch2008` or ClustalW :cite:`Thompson1994`.
 If you are interested in computing consensus sequences of multiple overlapping sequences (e.g. NGS reads), similar to assembly after the layouting step, then have a look at the :ref:`tutorial-algorithms-consensus-alignment` tutorial.
 
 While the pairwise alignment of sequences can be computed exactly in quadratic time using dynamic programming, the computation of exact MSAs is harder.
@@ -35,7 +35,7 @@ For an introduction to MSAs, see the `Wikipedia Article on Multiple Sequence Ali
 Computing MSAs with SeqAn
 -------------------------
 
-The SeqAn library gives you access to the engine of SeqAn::T-Coffee :cite:`Rausch2008`, a powerful and efficient MSA algorithm based on the progressive alignment strategy.
+The SeqAn library gives you access to the engine of seqan2::T-Coffee :cite:`Rausch2008`, a powerful and efficient MSA algorithm based on the progressive alignment strategy.
 The easiest way to compute multiple sequence alignments is using the function :dox:`globalMsaAlignment`.
 The following example shows how to compute a global multiple sequence alignment of proteins using the :dox:`Blosum62` scoring matrix with gap open penalty ``-11`` and gap extension penalty ``-1``.
 

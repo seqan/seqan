@@ -42,7 +42,7 @@
 template <typename TScoringScheme>
 void testConsensusConsensusScoreSequenceEntry()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         typedef typename Position<DnaString>::Type TPosition;
@@ -63,7 +63,7 @@ void testConsensusConsensusScoreSequenceEntry()
 template <typename TScoringScheme>
 void testConsensusSequenceEntryForScoreMetafunction()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
 
@@ -74,7 +74,7 @@ void testConsensusSequenceEntryForScoreMetafunction()
 template <typename TScoringScheme>
 void testConsensusSequenceEntryForScore()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
     typedef typename Position<DnaString>::Type TPosition;
@@ -93,7 +93,7 @@ void testConsensusSequenceEntryForScore()
 template <typename TScoringScheme>
 void testConsensusValue()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
     //typedef typename Value<DnaString>::Type TDnaStringValue;
@@ -110,7 +110,7 @@ void testConsensusValue()
 template <typename TScoringScheme>
 void testConsensusPosition()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
     //typedef typename Value<DnaString>::Type TDnaStringValue;
@@ -128,7 +128,7 @@ void testConsensusPosition()
 template <typename TScoringScheme>
 void testConsensusHost()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename SequenceEntryForScore<TScoringScheme, DnaString>::Type TSequenceEntry;
     //typedef typename Value<DnaString>::Type TDnaStringValue;
@@ -141,122 +141,122 @@ void testConsensusHost()
 
 SEQAN_DEFINE_TEST(test_consensus_consensus_score_sequence_entry_consensus_score)
 {
-    typedef seqan::Score<int, seqan::ConsensusScore> TScore;
+    typedef seqan2::Score<int, seqan2::ConsensusScore> TScore;
     testConsensusConsensusScoreSequenceEntry<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_consensus_score_sequence_entry_fractional_score)
 {
-    typedef seqan::Score<int, seqan::FractionalScore> TScore;
+    typedef seqan2::Score<int, seqan2::FractionalScore> TScore;
     testConsensusConsensusScoreSequenceEntry<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_consensus_score_sequence_entry_weightedconsensus_score)
 {
-    typedef seqan::Score<int, seqan::WeightedConsensusScore<seqan::ConsensusScore, seqan::FractionalScore> > TScore;
+    typedef seqan2::Score<int, seqan2::WeightedConsensusScore<seqan2::ConsensusScore, seqan2::FractionalScore> > TScore;
     testConsensusConsensusScoreSequenceEntry<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_sequence_entry_for_score_metafunction_consensus_score)
 {
-    typedef seqan::Score<int, seqan::ConsensusScore> TScore;
+    typedef seqan2::Score<int, seqan2::ConsensusScore> TScore;
     testConsensusSequenceEntryForScoreMetafunction<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_sequence_entry_for_score_metafunction_fractional_score)
 {
-    typedef seqan::Score<int, seqan::FractionalScore> TScore;
+    typedef seqan2::Score<int, seqan2::FractionalScore> TScore;
     testConsensusSequenceEntryForScoreMetafunction<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_sequence_entry_for_score_metafunction_weightedconsensus_score)
 {
-    typedef seqan::Score<int, seqan::WeightedConsensusScore<seqan::ConsensusScore, seqan::FractionalScore> > TScore;
+    typedef seqan2::Score<int, seqan2::WeightedConsensusScore<seqan2::ConsensusScore, seqan2::FractionalScore> > TScore;
     testConsensusSequenceEntryForScoreMetafunction<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_sequence_entry_for_score_consensus_score)
 {
-    typedef seqan::Score<int, seqan::ConsensusScore> TScore;
+    typedef seqan2::Score<int, seqan2::ConsensusScore> TScore;
     testConsensusSequenceEntryForScore<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_sequence_entry_for_score_fractional_score)
 {
-    typedef seqan::Score<int, seqan::FractionalScore> TScore;
+    typedef seqan2::Score<int, seqan2::FractionalScore> TScore;
     testConsensusSequenceEntryForScore<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_sequence_entry_for_score_weightedconsensus_score)
 {
-    typedef seqan::Score<int, seqan::WeightedConsensusScore<seqan::ConsensusScore, seqan::FractionalScore> > TScore;
+    typedef seqan2::Score<int, seqan2::WeightedConsensusScore<seqan2::ConsensusScore, seqan2::FractionalScore> > TScore;
     testConsensusSequenceEntryForScore<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_value_consensus_score)
 {
-    typedef seqan::Score<int, seqan::ConsensusScore> TScore;
+    typedef seqan2::Score<int, seqan2::ConsensusScore> TScore;
     testConsensusValue<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_value_fractional_score)
 {
-    typedef seqan::Score<int, seqan::FractionalScore> TScore;
+    typedef seqan2::Score<int, seqan2::FractionalScore> TScore;
     testConsensusValue<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_value_weightedconsensus_score)
 {
-    typedef seqan::Score<int, seqan::WeightedConsensusScore<seqan::ConsensusScore, seqan::FractionalScore> > TScore;
+    typedef seqan2::Score<int, seqan2::WeightedConsensusScore<seqan2::ConsensusScore, seqan2::FractionalScore> > TScore;
     testConsensusValue<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_position_consensus_score)
 {
-    typedef seqan::Score<int, seqan::ConsensusScore> TScore;
+    typedef seqan2::Score<int, seqan2::ConsensusScore> TScore;
     testConsensusPosition<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_position_fractional_score)
 {
-    typedef seqan::Score<int, seqan::FractionalScore> TScore;
+    typedef seqan2::Score<int, seqan2::FractionalScore> TScore;
     testConsensusPosition<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_position_weightedconsensus_score)
 {
-    typedef seqan::Score<int, seqan::WeightedConsensusScore<seqan::ConsensusScore, seqan::FractionalScore> > TScore;
+    typedef seqan2::Score<int, seqan2::WeightedConsensusScore<seqan2::ConsensusScore, seqan2::FractionalScore> > TScore;
     testConsensusPosition<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_host_consensus_score)
 {
-    typedef seqan::Score<int, seqan::ConsensusScore> TScore;
+    typedef seqan2::Score<int, seqan2::ConsensusScore> TScore;
     testConsensusHost<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_host_fractional_score)
 {
-    typedef seqan::Score<int, seqan::FractionalScore> TScore;
+    typedef seqan2::Score<int, seqan2::FractionalScore> TScore;
     testConsensusHost<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_host_weightedconsensus_score)
 {
-    typedef seqan::Score<int, seqan::WeightedConsensusScore<seqan::ConsensusScore, seqan::FractionalScore> > TScore;
+    typedef seqan2::Score<int, seqan2::WeightedConsensusScore<seqan2::ConsensusScore, seqan2::FractionalScore> > TScore;
     testConsensusHost<TScore>();
 }
 
 SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = seqan::getAbsolutePath("/tests/consensus/toy.sam");
+    seqan2::CharString inPathSam = seqan2::getAbsolutePath("/tests/consensus/toy.sam");
     // Get path to temporary file.
-    seqan::CharString outPathCgb = SEQAN_TEMP_FILENAME();
+    seqan2::CharString outPathCgb = SEQAN_TEMP_FILENAME();
 
     // Read in SAM and FASTA.
-    seqan::FragmentStore<> store;
-    seqan::BamFileIn fSamIn(toCString(inPathSam));
+    seqan2::FragmentStore<> store;
+    seqan2::BamFileIn fSamIn(toCString(inPathSam));
     readRecords(store, fSamIn);
 
     // Write out CGB file.
@@ -265,20 +265,20 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
     fCgbOut.close();
 
     // Compare result.
-    seqan::CharString goldPathCgb = seqan::getAbsolutePath("/tests/consensus/sam_to_cgb_result.cgb");
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathCgb), toCString(goldPathCgb)));
+    seqan2::CharString goldPathCgb = seqan2::getAbsolutePath("/tests/consensus/sam_to_cgb_result.cgb");
+    SEQAN_ASSERT(seqan2::_compareTextFilesAlt(toCString(outPathCgb), toCString(goldPathCgb)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = seqan::getAbsolutePath("/tests/consensus/toy.sam");
+    seqan2::CharString inPathSam = seqan2::getAbsolutePath("/tests/consensus/toy.sam");
     // Get path to temporary file.
-    seqan::CharString outPathFrg = SEQAN_TEMP_FILENAME();
+    seqan2::CharString outPathFrg = SEQAN_TEMP_FILENAME();
 
     // Read in SAM and FASTA.
-    seqan::FragmentStore<> store;
-    seqan::BamFileIn fSamIn(toCString(inPathSam));
+    seqan2::FragmentStore<> store;
+    seqan2::BamFileIn fSamIn(toCString(inPathSam));
     readRecords(store, fSamIn);
 
     // Write out FRG file.
@@ -287,56 +287,56 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
     fFrgOut.close();
 
     // Compare result.
-    seqan::CharString goldPathFrg = seqan::getAbsolutePath("/tests/consensus/sam_to_frg_result.frg");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFrg), toCString(goldPathFrg)));
+    seqan2::CharString goldPathFrg = seqan2::getAbsolutePath("/tests/consensus/sam_to_frg_result.frg");
+    SEQAN_ASSERT(seqan2::_compareTextFiles(toCString(outPathFrg), toCString(goldPathFrg)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = seqan::getAbsolutePath("/tests/consensus/toy.sam");
-    seqan::CharString inPathFasta = seqan::getAbsolutePath( "/tests/consensus/toy.fa");
+    seqan2::CharString inPathSam = seqan2::getAbsolutePath("/tests/consensus/toy.sam");
+    seqan2::CharString inPathFasta = seqan2::getAbsolutePath( "/tests/consensus/toy.fa");
     // Get path to temporary file.
-    seqan::CharString outPathFasta = SEQAN_TEMP_FILENAME();
+    seqan2::CharString outPathFasta = SEQAN_TEMP_FILENAME();
 
     // Read in SAM and FASTA.
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
     SEQAN_ASSERT(loadContigs(store, toCString(inPathFasta)));
-    seqan::BamFileIn fSamIn(toCString(inPathSam));
+    seqan2::BamFileIn fSamIn(toCString(inPathSam));
     readRecords(store, fSamIn);
 
     // Write out FASTA file.
     std::fstream fFastaOut(toCString(outPathFasta), std::ios::binary | std::ios::out);
-    write(fFastaOut, store, seqan::FastaReadFormat());
+    write(fFastaOut, store, seqan2::FastaReadFormat());
     fFastaOut.close();
 
     // Compare result.
-    seqan::CharString goldPathFasta = seqan::getAbsolutePath("/tests/consensus/sam_to_fasta_read_result.fa");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
+    seqan2::CharString goldPathFasta = seqan2::getAbsolutePath("/tests/consensus/sam_to_fasta_read_result.fa");
+    SEQAN_ASSERT(seqan2::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
 }
 
 SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
 {
     // Get path to input files.
-    seqan::CharString inPathFasta = seqan::getAbsolutePath("/tests/consensus/simulated_reads.fasta");
+    seqan2::CharString inPathFasta = seqan2::getAbsolutePath("/tests/consensus/simulated_reads.fasta");
     std::string filePath(toCString(inPathFasta));
     // Get path to temporary file.
     std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
 
     // Read in FASTA file.
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
     std::fstream fFastaIn(toCString(inPathFasta), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(fFastaIn.good());
     _convertSimpleReadFile(fFastaIn, store, filePath, false);
 
     // Write out as SAM.
-    seqan::BamFileOut fSamOut(outPathSam.c_str());
+    seqan2::BamFileOut fSamOut(outPathSam.c_str());
     writeRecords(fSamOut, store);
     close(fSamOut);
 
     // Compare result.
-    seqan::CharString goldPathSam = seqan::getAbsolutePath("/tests/consensus/reads_to_sam_read_result.sam");
-    SEQAN_ASSERT(seqan::_compareTextFiles(outPathSam.c_str(), toCString(goldPathSam)));
+    seqan2::CharString goldPathSam = seqan2::getAbsolutePath("/tests/consensus/reads_to_sam_read_result.sam");
+    SEQAN_ASSERT(seqan2::_compareTextFiles(outPathSam.c_str(), toCString(goldPathSam)));
 }
 
 #endif  // #ifndef TESTS_CONSENSUS_TEST_CONSENSUS_H_

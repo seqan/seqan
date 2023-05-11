@@ -76,7 +76,7 @@ This is best explained in an example.
 
 .. includefrags:: demos/tutorial/background_and_motivation/example.cpp
 
-``seqan::String<char>`` is a class (actually an instantiation of the class template :dox:`String`) that allows to store strings of ``char`` values, similar to ``std::vector<char>`` or ``std::string``.
+``seqan2::String<char>`` is a class (actually an instantiation of the class template :dox:`String`) that allows to store strings of ``char`` values, similar to ``std::vector<char>`` or ``std::string``.
 
 When the variable ``programName`` is allocated, the constructor of the ``String<char>`` class is called.
 It allocates sufficient memory to store the value of ``argv[0]`` and then copies over the values from this string.

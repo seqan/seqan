@@ -41,7 +41,7 @@
 
 SEQAN_DEFINE_TEST(test_parse_lm_local_match_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef LocalMatch<unsigned, unsigned> TLocalMatch;
 
@@ -74,7 +74,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_local_match_constructor)
 
 SEQAN_DEFINE_TEST(test_parse_lm_local_match_store_constructor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Default constructor.
     LocalMatchStore<> store;
@@ -82,7 +82,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_local_match_store_constructor)
 
 SEQAN_DEFINE_TEST(test_parse_lm_local_match_store_append_local_match)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     LocalMatchStore<> store;
 
@@ -125,7 +125,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_local_match_store_append_local_match)
 
 SEQAN_DEFINE_TEST(test_parse_lm_parse_lastz_general)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Write out lastz result file to temporary file.
     String<char> content =
@@ -139,7 +139,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_parse_lastz_general)
     readRecord(store, iter, LastzGeneral());
     readRecord(store, iter, LastzGeneral());
     SEQAN_TEST_EXCEPTION(ParseError,
-                         seqan::readRecord(store, iter, LastzGeneral()));
+                         seqan2::readRecord(store, iter, LastzGeneral()));
 
 
     SEQAN_ASSERT_EQ(length(store.matchStore), 2u);
@@ -157,7 +157,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_parse_lastz_general)
 
 SEQAN_DEFINE_TEST(test_parse_lm_parse_blastn_tabular)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Write out lastz result file to temporary file.
     String<char> content =
@@ -175,7 +175,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_parse_blastn_tabular)
     DirectionIterator<String<char>, Input>::Type iter = begin(content);
     readRecord(store, iter, BlastnTabular());
     SEQAN_TEST_EXCEPTION(ParseError,
-                         seqan::readRecord(store, iter, BlastnTabular()));
+                         seqan2::readRecord(store, iter, BlastnTabular()));
 
     SEQAN_ASSERT_EQ(length(store.matchStore), 1u);
     SEQAN_ASSERT_EQ(length(store.sequenceNameStore), 2u);
@@ -190,7 +190,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_parse_blastn_tabular)
 
 SEQAN_DEFINE_TEST(test_parse_lm_parse_stellar_gff)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Write out lastz result file to temporary file.
     String<char> content =
@@ -203,7 +203,7 @@ SEQAN_DEFINE_TEST(test_parse_lm_parse_stellar_gff)
     readRecord(store, iter, StellarGff());
     readRecord(store, iter, StellarGff());
     SEQAN_TEST_EXCEPTION(ParseError,
-                         seqan::readRecord(store, iter, StellarGff()));
+                         seqan2::readRecord(store, iter, StellarGff()));
 
     SEQAN_ASSERT_EQ(length(store.matchStore), 2u);
     SEQAN_ASSERT_EQ(length(store.sequenceNameStore), 2u);

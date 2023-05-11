@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_ALIGNMENT_RECORD_UTIL_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_ALIGNMENT_RECORD_UTIL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions
@@ -248,6 +248,6 @@ bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, Bam
     cigarToGapAnchorRead(row(result, 1), record.cigar);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_ALIGNMENT_RECORD_UTIL_H_

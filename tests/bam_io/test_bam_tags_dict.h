@@ -42,7 +42,7 @@
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type_size)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(1, getBamTypeSize('A'));
     SEQAN_ASSERT_EQ(1, getBamTypeSize('c'));
@@ -56,7 +56,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type_size)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         CharString str("XXAa");
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_length)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Empty string.
     {
@@ -104,7 +104,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_length)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_A)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXAa");
     BamTagsDict bamTags(str);
@@ -115,7 +115,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_A)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_c)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXc\xff");
     BamTagsDict bamTags(str);
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_c)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_C)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXC\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_C)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_s)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXs\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
@@ -148,7 +148,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_s)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_S)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXs\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
@@ -159,7 +159,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_S)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_i)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXi\xff\xff\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
@@ -170,7 +170,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_i)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_I)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXI\xff\xff\xff\xff");
     BamTagsDict bamTags(str);
     SEQAN_ASSERT_EQ(length(bamTags), 1u);
@@ -181,7 +181,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_extract_value_type_I)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_A)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXAa");
     BamTagsDict bamTags(str);
@@ -190,7 +190,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_A)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_c)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXc\xffXAAa");
     BamTagsDict bamTags(str);
@@ -199,7 +199,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_c)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_C)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXC\xffXAAa");
     BamTagsDict bamTags(str);
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_C)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_s)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXs\xff\xffXAAa");
     BamTagsDict bamTags(str);
@@ -217,7 +217,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_s)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_S)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXS\xff\xffXAAa");
     BamTagsDict bamTags(str);
@@ -226,7 +226,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_S)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_i)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXi\xff\xff\xff\xffXAAa");
     BamTagsDict bamTags(str);
@@ -235,7 +235,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_i)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_I)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXI\xff\xff\xff\xffXAAa");
     BamTagsDict bamTags(str);
@@ -244,7 +244,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_I)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_f)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXf\xff\xff\xff\xffXAAa");
     BamTagsDict bamTags(str);
@@ -253,7 +253,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_f)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Z)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXZthis is a test");
     appendValue(str, '\0');
@@ -267,7 +267,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Z)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_H)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString str("XXZFFFF");
     appendValue(str, '\0');
@@ -280,7 +280,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_H)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bc)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBc\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -298,7 +298,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bc)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BC)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBC\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -316,7 +316,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BC)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bs)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBs\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -334,7 +334,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bs)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BS)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBS\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -352,7 +352,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BS)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bi)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBi\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -370,7 +370,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bi)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BI)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBI\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -388,7 +388,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_BI)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bf)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString str("XXBf\x02");
     appendValue(str, '\0');
     appendValue(str, '\0');
@@ -406,7 +406,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_value_type_Bf)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_set_tag_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // No tag.
     {
@@ -493,7 +493,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_set_tag_value)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_append_tag_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // No tag.
     {
@@ -529,7 +529,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_append_tag_value)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Single tag.
     {
@@ -575,7 +575,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
 
 SEQAN_DEFINE_TEST(test_bam_tags_dict_const_bam_tags_sequence)
 {
-    using namespace seqan;
+    using namespace seqan2;
     CharString bamStr, samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
     assignTagsSamToBam(bamStr, samStr);
 

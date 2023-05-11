@@ -47,7 +47,7 @@
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 
@@ -128,7 +128,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 
@@ -201,7 +201,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Graph<Alignment<StringSet<DnaString, Dependent<> > > > TAlignmentGraph;
     typedef StringSet<DnaString> TStringSet;
     AlignConfig<> alignConfig;
@@ -301,7 +301,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -377,7 +377,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
     Score<int, Simple> scoringScheme(2, -1, -1, -3);
@@ -454,7 +454,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
     Score<int, Simple> scoringScheme(2, -1, -1, -3);
@@ -522,7 +522,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Graph<Alignment<StringSet<DnaString, Dependent<> > > > TAlignmentGraph;
     typedef StringSet<DnaString> TStringSet;
     AlignConfig<> alignConfig;
@@ -617,7 +617,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -684,7 +684,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -866,7 +866,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_overlap_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -939,7 +939,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_overlap_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_overlap_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -1035,7 +1035,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_overlap_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_overlap_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -1111,7 +1111,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_overlap_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -1189,7 +1189,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_overlap_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_overlap_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -1263,7 +1263,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_overlap_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_overlap_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -1360,7 +1360,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_overlap_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_overlap_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -1435,7 +1435,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_overlap_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1467,7 +1467,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1496,7 +1496,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_semi_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1537,7 +1537,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_semi_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_semi_global_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1571,7 +1571,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_semi_global_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1601,7 +1601,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_semi_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1632,7 +1632,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_semi_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_semi_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1673,7 +1673,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_semi_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_semi_global_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -1712,7 +1712,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_semi_global_affine_banded)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 
@@ -1836,7 +1836,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_linear)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 
@@ -1960,7 +1960,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_global_banded_different_container)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Global alignment with Segment and DnaString
     {

@@ -3,7 +3,7 @@
 #include <seqan/sequence.h>
 #include <seqan/score.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TText, typename TPattern>
 int computeLocalScore(TText const & subText, TPattern const & pattern)
@@ -18,11 +18,11 @@ int computeLocalScore(TText const & subText, TPattern const & pattern)
 
 //![subclassing]
 template <typename TText>
-int computeLocalScore(TText const & subText, seqan::String<seqan::AminoAcid> const & pattern)
+int computeLocalScore(TText const & subText, seqan2::String<seqan2::AminoAcid> const & pattern)
 {
     int localScore = 0;
-    for (unsigned i = 0; i < seqan::length(pattern); ++i)
-        localScore += seqan::score(seqan::Blosum62(), subText[i], pattern[i]);
+    for (unsigned i = 0; i < seqan2::length(pattern); ++i)
+        localScore += seqan2::score(seqan2::Blosum62(), subText[i], pattern[i]);
 
     return localScore;
 }

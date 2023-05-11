@@ -44,7 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_class)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Nothing interesting, just instantiating.
 
@@ -53,21 +53,21 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_class)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_typedefs)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef BamIOContext<>::TLengthStore TLengthStore SEQAN_UNUSED_TYPEDEF;
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_class)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamHeaderRecord record;
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_typedefs)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef BamHeaderRecord::TTagName  TTagName  SEQAN_UNUSED_TYPEDEF;
     typedef BamHeaderRecord::TTagValue TTagValue SEQAN_UNUSED_TYPEDEF;
@@ -77,7 +77,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_typedefs)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_find_tag_key)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef BamHeaderRecord::TTag      TTag;
 
@@ -98,7 +98,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_find_tag_key)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_get_tag_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef BamHeaderRecord::TTag      TTag;
 

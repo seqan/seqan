@@ -37,7 +37,7 @@
 
 #include <seqan/basic/basic_metaprogramming.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -207,6 +207,6 @@ memset(void* ptr)
     MemsetConstValueWorker<SIZE, SIZE <= 32, c>::run((unsigned char*)ptr);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_MISC_MEMSET_H_

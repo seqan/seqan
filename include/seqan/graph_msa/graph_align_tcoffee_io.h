@@ -39,7 +39,7 @@
 
 #include <seqan/stream.h>
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -1135,6 +1135,6 @@ writeRecords(TTarget & target,
     write(target, guideTree, names, false, NewickFormat());
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

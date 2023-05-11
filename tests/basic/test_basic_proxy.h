@@ -42,7 +42,7 @@
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int i1[] = {10, 20, 30};
     int * pi1 = i1;
@@ -85,7 +85,7 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator)
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Proxy<IteratorProxy<char *> > TProxy;
 
@@ -104,7 +104,7 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator_assign)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Proxy<IteratorProxy<int *> > TProxy;
 
@@ -124,7 +124,7 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator_assign)
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator_getValue)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Proxy<IteratorProxy<int *> > TProxy;
 
@@ -138,7 +138,7 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator_getValue)
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator_comparators)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Proxy<IteratorProxy<int *> > TProxy;
 
@@ -174,7 +174,7 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator_comparators)
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator_stream_read)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::stringstream ss;
     ss << 33;
@@ -192,7 +192,7 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator_stream_read)
 
 SEQAN_DEFINE_TEST(test_basic_proxy_iterator_stream_write)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::stringstream ss;
     int x = 33;

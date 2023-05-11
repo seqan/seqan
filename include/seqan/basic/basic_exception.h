@@ -49,7 +49,7 @@
 #include <cxxabi.h>
 #endif
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -373,6 +373,6 @@ static const std::terminate_handler _globalExceptionHandler SEQAN_UNUSED = std::
 
 #endif  // #if defined(SEQAN_EXCEPTIONS) && defined(SEQAN_GLOBAL_EXCEPTION_HANDLER)
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_BASIC_EXCEPTION_H_

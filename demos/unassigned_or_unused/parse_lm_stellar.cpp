@@ -39,7 +39,7 @@
 #include <seqan/stream.h>
 #include <seqan/parse_lm.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, char const ** argv)
 {

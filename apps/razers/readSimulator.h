@@ -32,7 +32,7 @@
 #include <seqan/modifier.h>
 
 
-namespace seqan
+namespace seqan2
 {
 
 #define TEMP_RAND_MAX (RAND_MAX + 1.0)

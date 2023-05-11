@@ -46,7 +46,7 @@ struct LongStruct_
     int64_t a, b;
 };
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct ValueSize<LongStruct_>
@@ -59,7 +59,7 @@ struct ValueSize<LongStruct_>
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_storage_bits_per_value_metafunction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef BitsPerValue<int> TBitsPerValue SEQAN_UNUSED_TYPEDEF;  // Check existance.
 
@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_bits_per_value_metafunction)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_storage_value_size_metafunction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef ValueSize<int> TValueSize SEQAN_UNUSED_TYPEDEF;  // Check existance.
 
@@ -77,7 +77,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_value_size_metafunction)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_storage_value_size_function)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(valueSize<LongStruct_>(), 42u);
 }
@@ -88,7 +88,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_integral_for_value_metafunction)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_storage_bytes_per_value_metafunction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef BytesPerValue<int> TBitsPerValue SEQAN_UNUSED_TYPEDEF;  // Check existance.
 

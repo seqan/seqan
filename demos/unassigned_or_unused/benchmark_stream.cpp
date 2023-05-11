@@ -54,7 +54,7 @@
 #include <seqan/sequence.h>
 #include <seqan/arg_parse.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Setting buffer size to 4MB, such that the overhead for jumping buffers and
 // such only occurs every 4M chars.

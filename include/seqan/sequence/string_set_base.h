@@ -36,7 +36,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_SET_BASE_H_
 #define SEQAN_SEQUENCE_STRING_SET_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1840,6 +1840,6 @@ append(TSequences1 & me, TSequences2 const & obj, Tag<TExpand>)
         assignValue(me, oldLength++, *it);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_BASE_H_

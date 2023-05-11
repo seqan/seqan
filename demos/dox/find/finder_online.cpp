@@ -1,6 +1,6 @@
 #include <seqan/find.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

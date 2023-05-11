@@ -46,15 +46,15 @@
 template <typename T>
 void atomicIncTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     T const ITERATIONS = 4 * 1024;
 
     T volatile x = 0;
-    
+
     SEQAN_OMP_PRAGMA(parallel for schedule(static, 1))
     for (int i = 0; i < static_cast<int>(ITERATIONS); ++i)
-        seqan::atomicInc(x);
+        seqan2::atomicInc(x);
 
     SEQAN_ASSERT_EQ(x, ITERATIONS);
 }
@@ -62,7 +62,7 @@ void atomicIncTestImpl(T const &)
 template <typename T>
 void atomicDecTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     T const ITERATIONS = 4 * 1024;
 
@@ -77,7 +77,7 @@ void atomicDecTestImpl(T const &)
 template <typename T>
 void atomicAddTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     T const ITERATIONS = 4 * 1024;
 
@@ -92,7 +92,7 @@ void atomicAddTestImpl(T const &)
 template <typename T>
 void atomicOrTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int const ITERATIONS = 4 * 1024;
 
@@ -111,7 +111,7 @@ void atomicOrTestImpl(T const &)
 template <typename T>
 void atomicXorTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int const ITERATIONS = 4 * 1024;
 
@@ -130,7 +130,7 @@ void atomicXorTestImpl(T const &)
 template <typename T>
 void atomicCasTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Re-implementation of a parallel max with test.
 
@@ -162,14 +162,14 @@ void atomicCasTestImpl(T const &)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_inc)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned long SEQAN_ulong;
 
     // Tests are limited to the types where MSVC allows atomic
     // Compare-And-Swap, also 64 bit CAS is not available on 32 bit Intel.
     atomicIncTestImpl(long());
     atomicIncTestImpl(SEQAN_ulong());
-    
+
 #if SEQAN_IS_64_BIT
     atomicIncTestImpl(int64_t());
     atomicIncTestImpl(uint64_t());
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_inc)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_dec)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned long SEQAN_ulong;
 
     // Tests are limited to the types where MSVC allows atomic
@@ -193,7 +193,7 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_dec)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_add)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned long SEQAN_ulong;
 
     // Tests are limited to the types where MSVC allows atomic
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_add)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_or)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned char SEQAN_uchar;
     typedef unsigned short SEQAN_ushort;
     typedef unsigned long SEQAN_ulong;
@@ -228,7 +228,7 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_or)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_xor)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned char SEQAN_uchar;
     typedef unsigned short SEQAN_ushort;
     typedef unsigned long SEQAN_ulong;
@@ -248,7 +248,7 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_xor)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_cas)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned short SEQAN_ushort;
     typedef unsigned long SEQAN_ulong;
 

@@ -42,7 +42,7 @@
 // Test specific construtors.
 SEQAN_DEFINE_TEST(test_seeds_seed_simple_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     { // Construct with begin/end in both dimensions.
         // Define Seed type and declare a variable.
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_simple_constructors)
 // Test setters that are specific to Simple Seeds.
 SEQAN_DEFINE_TEST(test_seeds_seed_simple_setters)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Define Seed type and declare a variable.
     typedef Seed<Simple> TSeed;

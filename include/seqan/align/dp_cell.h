@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -373,6 +373,6 @@ inline TStream& operator<<(TStream & stream,
     return stream;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_H_

@@ -42,7 +42,7 @@
 #include <intrin.h>
 #endif  // #if defined(STDLIB_VS)
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -456,6 +456,6 @@ template <typename T>   inline T atomicCas(std::atomic<T>        & x, T cmp, T y
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T    , T y, Serial)   { x = y; return true;                          }
 template <typename T>   inline bool atomicCasBool(std::atomic<T> & x, T cmp, T y, Parallel) { return x.compare_exchange_weak(cmp, y);      }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // #if defined(STDLIB_VS)

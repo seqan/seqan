@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -566,6 +566,6 @@ inline bool operator>(Fragment<TSize, ExactFragment<TSpec> > const & lhs,
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_

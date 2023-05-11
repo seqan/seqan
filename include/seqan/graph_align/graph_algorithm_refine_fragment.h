@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
 #define SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

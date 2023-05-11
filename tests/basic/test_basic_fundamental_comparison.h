@@ -39,7 +39,7 @@
 
 // Test for the CompareType default implementation.
 
-namespace seqan {
+namespace seqan2 {
 
 // Extend CompareTypeImpl for int and unsigned.
 template <>
@@ -54,24 +54,24 @@ struct CompareTypeImpl<unsigned, int>
     typedef long Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_comparison_compare_type)
 {
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int, int>::Type, int>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int, int const>::Type, int>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int const, int>::Type, int>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int const, int const>::Type, int>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int, int>::Type, int>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int, int const>::Type, int>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int const, int>::Type, int>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int const, int const>::Type, int>::VALUE));
 
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<unsigned, int>::Type, long>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<unsigned, int const>::Type, long>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<unsigned const, int>::Type, long>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<unsigned const, int const>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<unsigned, int>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<unsigned, int const>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<unsigned const, int>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<unsigned const, int const>::Type, long>::VALUE));
 
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int, unsigned>::Type, long>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int, unsigned const>::Type, long>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int const, unsigned>::Type, long>::VALUE));
-    SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int const, unsigned const>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int, unsigned>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int, unsigned const>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int const, unsigned>::Type, long>::VALUE));
+    SEQAN_ASSERT((+SameType_<typename seqan2::CompareType<int const, unsigned const>::Type, long>::VALUE));
 }
 
 #endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_

@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
 #define SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -125,6 +125,6 @@ simdCache(WavefrontAlignmentThreadLocalStorage<TConfig> & me,
     return std::get<typename TConfig::TSimdCache>(me._multiAlignmentThreadLocal[alignId]);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_ALIGN_PARALLEL_DP_THREAD_LOCAL_STORAGE_H_

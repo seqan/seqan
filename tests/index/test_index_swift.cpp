@@ -5,7 +5,7 @@
 // Test SWIFT finder with empty pattern.
 SEQAN_DEFINE_TEST(test_index_swift_find_empty_pattern)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Finder<Dna5String, Swift<SwiftSemiGlobal> > TSwiftFinder;
 

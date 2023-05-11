@@ -35,7 +35,7 @@
 #ifndef SEQAN_FIND_INDEX_LAMBDA_H
 #define SEQAN_FIND_INDEX_LAMBDA_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Metafunction

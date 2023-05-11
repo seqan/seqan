@@ -39,7 +39,7 @@
 
 #include "umesimd/UMESimd.h"
 
-namespace seqan
+namespace seqan2
 {
 
 template <typename TSimdVector>
@@ -317,7 +317,7 @@ assignValue(UME::SIMD::SIMDVec_f<TValue, LENGTH> &vector, TPosition const pos, T
     vector[pos] = value;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 namespace UME
 {
@@ -334,7 +334,7 @@ namespace SIMD
 }
 }
 
-namespace seqan
+namespace seqan2
 {
 
 // --------------------------------------------------------------------------

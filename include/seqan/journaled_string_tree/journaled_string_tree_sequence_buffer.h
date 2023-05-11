@@ -37,7 +37,7 @@
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_SEQUENCE_BUFFER_H_
 #define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_SEQUENCE_BUFFER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -265,7 +265,7 @@ journalDelta(TTarget & target,
     target._length -= sv.i1;
     TEntryPos virtPos = entryIt->virtualPosition + (refPos - entryIt->physicalOriginPosition);
     _doRecordErase(target._journalEntries, entryIt, virtPos, virtPos + sv.i1);
-    
+
     entryIt = end(target._journalEntries, Standard()) - 1;
     target._length += length(sv.i2);
     TEntryPos physPos = length(target._insertionBuffer);
@@ -556,6 +556,6 @@ init(JstBuffer_<TJst, TSpec> & me,
     create(me);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_SEQUENCE_BUFFER_H_

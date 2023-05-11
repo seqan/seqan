@@ -66,10 +66,10 @@ struct Options
     // -----------------------------------------------------------------------
 
     // Paths to input read files.
-    seqan::CharString inputFileName;
+    seqan2::CharString inputFileName;
 
     // Paths to output read files of accepted reads.
-    seqan::CharString outputFileName;
+    seqan2::CharString outputFileName;
 
     // -----------------------------------------------------------------------
     // ROI Creation Options
@@ -124,11 +124,11 @@ void print(std::ostream & out, Options const & options)
 
 // Parse command line with ArgumentParser class.
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("bam2roi");
+    seqan2::ArgumentParser parser("bam2roi");
     setCategory(parser, "NGS ROI Analysis");
 
     // Set short description, version, and date.
@@ -155,8 +155,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "General Options");
 
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Verbose mode."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Very verbose mode."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Verbose mode."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Very verbose mode."));
 
     // -----------------------------------------------------------------------
     // Input / Output Options
@@ -164,14 +164,14 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output Parameters");
 
-    addOption(parser, seqan::ArgParseOption("if", "input-file", "SAM/BAM formatted file.  Must be sorted by coordinate.",
-                                            seqan::ArgParseOption::INPUT_FILE));
-    setValidValues(parser, "input-file", seqan::BamFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("if", "input-file", "SAM/BAM formatted file.  Must be sorted by coordinate.",
+                                            seqan2::ArgParseOption::INPUT_FILE));
+    setValidValues(parser, "input-file", seqan2::BamFileIn::getFileExtensions());
     setRequired(parser, "input-file");
 
-    addOption(parser, seqan::ArgParseOption("of", "output-file", "Output file with regions of interest.",
-                                            seqan::ArgParseOption::OUTPUT_FILE));
-    setValidValues(parser, "output-file", seqan::RoiFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("of", "output-file", "Output file with regions of interest.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE));
+    setValidValues(parser, "output-file", seqan2::RoiFileIn::getFileExtensions());
     setRequired(parser, "output-file");
 
     // -----------------------------------------------------------------------
@@ -180,13 +180,13 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "ROI Construction Options");
 
-	addOption(parser, seqan::ArgParseOption("ss", "strand-specific",
+	addOption(parser, seqan2::ArgParseOption("ss", "strand-specific",
                                             "Calculate strand-specific ROIs (see section Strand Specificness below."));
 
-	addOption(parser, seqan::ArgParseOption("ip", "ignore-pairing",
+	addOption(parser, seqan2::ArgParseOption("ip", "ignore-pairing",
                                             "Ignore paired information.  Also see Section ROI Creation Details."));
 
-	addOption(parser, seqan::ArgParseOption("ls", "link-over-skipped", "Link over skipped bases in the read alignment."));
+	addOption(parser, seqan2::ArgParseOption("ls", "link-over-skipped", "Link over skipped bases in the read alignment."));
 
     // -----------------------------------------------------------------------
     // Documentation of ROI Creation Details.
@@ -244,10 +244,10 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -265,7 +265,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     options.usePairing = !isSet(parser, "ignore-pairing");
     options.linkOverSkipped = isSet(parser, "link-over-skipped");
 
-	return seqan::ArgumentParser::PARSE_OK;
+	return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -276,12 +276,12 @@ int main(int argc, char const ** argv)
 {
 	// Parse the command line.
     Options options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If parsing was not successful then exit with code 1 if there were errors.  Otherwise, exit with code 0 (e.g. help
     // was printed).
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Print program name and options.
 
@@ -303,7 +303,7 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.inputFileName << " ...";
-	seqan::BamFileIn bamFileIn;
+	seqan2::BamFileIn bamFileIn;
     if (!open(bamFileIn, toCString(options.inputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.inputFileName << "\n";
@@ -314,7 +314,7 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.outputFileName << " ...";
-    seqan::RoiFileOut roiFileOut;
+    seqan2::RoiFileOut roiFileOut;
     if (!open(roiFileOut, toCString(options.outputFileName)))
 	{
 		std::cerr << "ERROR: Could not open " << options.outputFileName << "\n";
@@ -341,7 +341,7 @@ int main(int argc, char const ** argv)
     roiBuilderF.writeHeader();  // only once
     RoiBuilder roiBuilderR(roiFileOut, roiBuilderOptions);
     // Set the reference sequence names.
-    seqan::BamHeader header;
+    seqan2::BamHeader header;
     readHeader(header, bamFileIn);
     for (unsigned i = 0; i < length(contigNames(context(bamFileIn))); ++i)
     {
@@ -352,7 +352,7 @@ int main(int argc, char const ** argv)
     // TODO(holtgrew): This is only suited for the Illumina mate pair protocol at the moment (--> <--).
     int oldRId = 0;
     int oldPos = 0;
-    seqan::BamAlignmentRecord record;
+    seqan2::BamAlignmentRecord record;
     while (!atEnd(bamFileIn))
     {
         readRecord(record, bamFileIn);

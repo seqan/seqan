@@ -35,7 +35,7 @@
 
 size_t const MAX_ELEMENT = 1000;
 struct SivaLab_;
-typedef seqan::Tag<SivaLab_> SivaLab;
+typedef seqan2::Tag<SivaLab_> SivaLab;
 
 // ============================================================================
 // Functions
@@ -60,12 +60,12 @@ inline unsigned short _readWord(std::ifstream & in)
 
 // Create graph form various data format, e.g. SivaLab.
 template <typename TFilename, typename TSpec, typename TTag>
-inline bool _createGraph(seqan::Graph<TSpec> &, seqan::Tag<TTag> const &, TFilename &);
+inline bool _createGraph(seqan2::Graph<TSpec> &, seqan2::Tag<TTag> const &, TFilename &);
 
 template <typename TSpec>
-inline bool _createGraph(seqan::Graph<TSpec> & graph, SivaLab const, char const * filename)
+inline bool _createGraph(seqan2::Graph<TSpec> & graph, SivaLab const, char const * filename)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Graph<TSpec> TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;

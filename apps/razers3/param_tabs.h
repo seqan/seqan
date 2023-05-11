@@ -49,7 +49,7 @@ struct GappedParamsRecord
     unsigned measure;
 };
 
-bool getGappedParamsRecords(seqan::String<GappedParamsRecord> & records,
+bool getGappedParamsRecords(seqan2::String<GappedParamsRecord> & records,
                             unsigned n,
                             char errorModel);
 

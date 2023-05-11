@@ -46,7 +46,7 @@
 
 //#define SEQAN_DEBUG_FILESTREAM
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1156,7 +1156,7 @@ public:
 
     ~FileStream()
     {
-        seqan::close(*this);
+        seqan2::close(*this);
     }
 
     bool is_open()
@@ -1166,7 +1166,7 @@ public:
 
     void close()
     {
-        seqan::close(*this);
+        seqan2::close(*this);
     }
 };
 
@@ -1304,6 +1304,6 @@ close(FileStream<TValue, TDirection, TSpec> & stream)
     return true;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // #ifndef SEQAN_FILE_FILE_STREAM_H_

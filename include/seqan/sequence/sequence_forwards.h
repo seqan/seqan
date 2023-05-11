@@ -44,7 +44,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================
@@ -194,7 +194,7 @@ template <typename TValue, typename TSize, typename TExpand> inline size_t resiz
 template <typename TValue, typename TPos> inline TValue & value(TValue * me, TPos pos);
 template <typename TValue, typename TPos> inline TValue const & value(TValue const * me, TPos pos);
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #if !defined(_MSC_VER) || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703)
 

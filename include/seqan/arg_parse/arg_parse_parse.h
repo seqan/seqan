@@ -40,7 +40,7 @@
 #include <seqan/arg_parse/arg_parse_ctd_support.h>
 #include <seqan/arg_parse/arg_parse_version_check.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ----------------------------------------------------------------------------
 // Function parse()
@@ -390,6 +390,6 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
     return parse(me, argc, argv, std::cout, std::cerr);
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_

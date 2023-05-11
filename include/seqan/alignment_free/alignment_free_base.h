@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class AFScore
@@ -335,6 +335,6 @@ struct AFScore<D2z>
     {}
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_BASE_H_

@@ -38,7 +38,7 @@
 #ifndef INDEX_FM_RIGHT_ARRAY_BINARY_TREE_H
 #define INDEX_FM_RIGHT_ARRAY_BINARY_TREE_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

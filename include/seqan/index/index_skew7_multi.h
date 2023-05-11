@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_SKEW7_MULTI_H
 #define SEQAN_HEADER_INDEX_SKEW7_MULTI_H
 
-namespace seqan
+namespace seqan2
 {
 
     //////////////////////////////////////////////////////////////////////////////

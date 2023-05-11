@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_PIPE_TUPLER_H
 #define SEQAN_HEADER_PIPE_TUPLER_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////

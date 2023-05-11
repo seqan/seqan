@@ -43,7 +43,7 @@
 // Tests the return types and existence of the metafunctions for STL vectors.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_vector)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef int TElement;
     typedef std::vector<TElement> TVector;
@@ -129,7 +129,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_vector)
 // Test iterators for STL strings.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_vector)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test const iterator.
     {
@@ -164,7 +164,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_vector)
 // e.g. value(), front(), back().
 SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_vector)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::vector<int> vec(2,100);
 
@@ -186,7 +186,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_vector)
 // for STL strings.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_vector)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test resize function -- resize down.
     {
@@ -273,7 +273,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_vector)
 // Tests the return types and existence of the metafunctions for STL strings.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef int TElement;
     typedef std::basic_string<TElement> TString;
@@ -359,7 +359,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
 // Test iterators for STL strings.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_string)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test const iterator.
     {
@@ -391,7 +391,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_string)
 // e.g. value(), front(), back().
 SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_string)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::string str = "Hello World!";
 
@@ -416,7 +416,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_string)
 // for STL strings.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_string)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test resize function -- resize down.
     {
@@ -459,7 +459,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_string)
 // Tests the return types and existence of the metafunctions for STL lists.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_list)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef int TElement;
     typedef std::list<TElement> TList;
@@ -545,7 +545,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_list)
 // Test iterators for STL lists.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef int TElement;
 
@@ -561,13 +561,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
 
         // The command sequence in the following is a bit arbitrary
         // but should robustly test that the iterators work correctly.
-        TIterator it = seqan::begin(list);
+        TIterator it = seqan2::begin(list);
         SEQAN_ASSERT_EQ(1, *it);
         ++it;
         SEQAN_ASSERT_EQ(2, *it);
         --it;
         SEQAN_ASSERT_EQ(1, *it);
-        TIterator itEnd = seqan::end(list);
+        TIterator itEnd = seqan2::end(list);
         SEQAN_ASSERT_NOT(it == itEnd);
         ++it;
         ++it;
@@ -575,8 +575,8 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
         SEQAN_ASSERT(it == itEnd);
 
         // The following does not apply to const iterators.
-        it = seqan::begin(list);
-        *seqan::begin(list) = 4;
+        it = seqan2::begin(list);
+        *seqan2::begin(list) = 4;
         SEQAN_ASSERT_EQ(4, *it);
     }
     // Test Standard, const iterators.
@@ -593,13 +593,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
 
         // The command sequence in the following is a bit arbitrary
         // but should robustly test that the iterators work correctly.
-        TIterator it = seqan::begin(list);
+        TIterator it = seqan2::begin(list);
         SEQAN_ASSERT_EQ(1, *it);
         ++it;
         SEQAN_ASSERT_EQ(2, *it);
         --it;
         SEQAN_ASSERT_EQ(1, *it);
-        TIterator itEnd = seqan::end(list);
+        TIterator itEnd = seqan2::end(list);
         SEQAN_ASSERT_NOT(it == itEnd);
         ++it;
         ++it;
@@ -618,13 +618,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
 
         // The command sequence in the following is a bit arbitrary
         // but should robustly test that the iterators work correctly.
-        TIterator it = seqan::begin(list);
+        TIterator it = seqan2::begin(list);
         SEQAN_ASSERT_EQ(1, *it);
         ++it;
         SEQAN_ASSERT_EQ(2, *it);
         --it;
         SEQAN_ASSERT_EQ(1, *it);
-        TIterator itEnd = seqan::end(list);
+        TIterator itEnd = seqan2::end(list);
         SEQAN_ASSERT_NOT(it == itEnd);
         ++it;
         ++it;
@@ -632,8 +632,8 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
         SEQAN_ASSERT(it == itEnd);
 
         // The following does not apply to const iterators.
-        it = seqan::begin(list);
-        *seqan::begin(list) = 4;
+        it = seqan2::begin(list);
+        *seqan2::begin(list) = 4;
         SEQAN_ASSERT_EQ(4, *it);
     }
     // Test Rooted, const iterators.
@@ -650,13 +650,13 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
 
         // The command sequence in the following is a bit arbitrary
         // but should robustly test that the iterators work correctly.
-        TIterator it = seqan::begin(list);
+        TIterator it = seqan2::begin(list);
         SEQAN_ASSERT_EQ(1, *it);
         ++it;
         SEQAN_ASSERT_EQ(2, *it);
         --it;
         SEQAN_ASSERT_EQ(1, *it);
-        TIterator itEnd = seqan::end(list);
+        TIterator itEnd = seqan2::end(list);
         SEQAN_ASSERT_NOT(it == itEnd);
         ++it;
         ++it;
@@ -669,7 +669,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_list)
 // Test the basic sequence interface implemented for STL list, e.g. front() and back().
 SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_list)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef int TElement;
 
@@ -692,7 +692,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_list)
         front(list) = -1;
         back(list) = -3;
 
-        TIterator it = seqan::begin(list);
+        TIterator it = seqan2::begin(list);
         SEQAN_ASSERT_EQ(-1, *it);
         ++it;
         SEQAN_ASSERT_EQ(2, *it);
@@ -748,7 +748,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_list)
 // Tests the return types and existence of the metafunctions for STL arrays.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_array)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef int TElement;
     typedef std::array<TElement, 1> TArray;
@@ -834,7 +834,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_array)
 // Test iterators for STL strings.
 SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_array)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test const iterator.
     {
@@ -867,7 +867,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_iterators_std_array)
 // e.g. value(), front(), back().
 SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_interface_std_array)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::array<int, 2> vec = { {100, 101} };
 

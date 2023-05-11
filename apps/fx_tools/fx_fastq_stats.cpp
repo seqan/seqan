@@ -57,10 +57,10 @@ struct AppOptions
     int verbosity;
 
     // The input file name is a string.
-    seqan::CharString inFilename;
+    seqan2::CharString inFilename;
 
     // The out file name is an out file.
-    seqan::CharString outFilename;
+    seqan2::CharString outFilename;
 
     AppOptions() :
         verbosity(1)
@@ -78,38 +78,38 @@ struct FastqStats
     // -----------------------------------------------------------------------
 
     unsigned maxLength;
-    
+
     // Number of bases in column i.
-    seqan::String<int64_t> numBases;
+    seqan2::String<int64_t> numBases;
     // Smallest score in column i.
-    seqan::String<int32_t> minScores;
+    seqan2::String<int32_t> minScores;
     // Largest score in column i.
-    seqan::String<int32_t> maxScores;
+    seqan2::String<int32_t> maxScores;
     // Sum of scores in column i.
-    seqan::String<int64_t> sumScores;
+    seqan2::String<int64_t> sumScores;
     // Mean of scores in column i.
-    seqan::String<double> meanScores;
+    seqan2::String<double> meanScores;
     // First quartile quality score (Q1) for column i.
-    seqan::String<double> firstQuartiles;
+    seqan2::String<double> firstQuartiles;
     // Median quality score for column i.
-    seqan::String<double> medianScores;
+    seqan2::String<double> medianScores;
     // Third quartile quality score (Q3) for column i.
-    seqan::String<double> thirdQuartiles;
+    seqan2::String<double> thirdQuartiles;
     // Inter-quartile range  (Q3-Q1) for column i.
-    seqan::String<double> interQuartileRanges;
+    seqan2::String<double> interQuartileRanges;
     // Left-whisker value for boxplotting for column i.
-    seqan::String<int32_t> leftWhiskers;
+    seqan2::String<int32_t> leftWhiskers;
     // Right-whisker value for boxplotting for column i.
-    seqan::String<int32_t> rightWhiskers;
+    seqan2::String<int32_t> rightWhiskers;
     // Number of nucleotides A, C, G, T, N for column i.
-    seqan::String<seqan::String<int64_t> > nucleotideCounts;
+    seqan2::String<seqan2::String<int64_t> > nucleotideCounts;
 
     // -----------------------------------------------------------------------
     // Histogram Members
     // -----------------------------------------------------------------------
 
     // Quality histogram.
-    seqan::String<std::map<int32_t, int32_t> > qualHistos;
+    seqan2::String<std::map<int32_t, int32_t> > qualHistos;
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -148,7 +148,7 @@ struct FastqStats
     }
 
     // Update histogram and statistics for the given read.
-    void registerRead(seqan::Dna5String const & seq, seqan::CharString const & quals)
+    void registerRead(seqan2::Dna5String const & seq, seqan2::CharString const & quals)
     {
         resizeToReadLength(length(seq));
 
@@ -231,11 +231,11 @@ struct FastqStats
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(AppOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("fx_fastq_stats");
+    seqan2::ArgumentParser parser("fx_fastq_stats");
     // Set short description, version, and date.
     setShortDescription(parser, "Compute FASTQ statistics.");
     setCategory(parser, "NGS Quality Control");
@@ -249,24 +249,24 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
                    "each column/position with statistics on the nucleotides and qualities.");
 
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("i", "input", "Input FASTQ file.", seqan::ArgParseOption::INPUT_FILE, "INPUT"));
+    addOption(parser, seqan2::ArgParseOption("i", "input", "Input FASTQ file.", seqan2::ArgParseOption::INPUT_FILE, "INPUT"));
     setValidValues(parser, "input", "fastq fq");
     setRequired(parser, "input");
-    addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUT_FILE, "OUTPUT"));
+    addOption(parser, seqan2::ArgParseOption("o", "output", "Output TSV file.", seqan2::ArgParseOption::OUTPUT_FILE, "OUTPUT"));
     setRequired(parser, "output");
     setValidValues(parser, "output", "fq_stats_tsv");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
-    seqan::getOptionValue(options.inFilename, parser, "input");
-    seqan::getOptionValue(options.outFilename, parser, "output");
+    seqan2::getOptionValue(options.inFilename, parser, "input");
+    seqan2::getOptionValue(options.outFilename, parser, "output");
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -276,17 +276,17 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 int main(int argc, char const ** argv)
 {
     // Parse the command line.
-    seqan::ArgumentParser parser;
+    seqan2::ArgumentParser parser;
     AppOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Open input file.
-    seqan::SeqFileIn seqFile;
+    seqan2::SeqFileIn seqFile;
     if (!open(seqFile, toCString(options.inFilename)))
     {
         std::cerr << "ERROR: Could not open file " << options.inFilename << " for reading.\n";
@@ -295,9 +295,9 @@ int main(int argc, char const ** argv)
 
     // Read sequences and build result.
     FastqStats stats;
-    seqan::CharString id;
-    seqan::Dna5String seq;
-    seqan::CharString quals;
+    seqan2::CharString id;
+    seqan2::Dna5String seq;
+    seqan2::CharString quals;
     while (!atEnd(seqFile))
     {
         readRecord(id, seq, quals, seqFile);

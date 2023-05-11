@@ -40,7 +40,7 @@
 
 #include "consensus_alignment_options.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -145,6 +145,6 @@ void consensusAlignment(FragmentStore<TSpec, TConfig> & store,
             reAlignment(store, contigID, /*method=*/1, /*bandwidth=*/10, /*includeReference=*/false);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_

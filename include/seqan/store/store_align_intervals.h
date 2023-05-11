@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_ALIGN_INTERVALS_H
 #define SEQAN_HEADER_STORE_ALIGN_INTERVALS_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -354,6 +354,6 @@ mergeIntervals(TIntervals & intervals, const unsigned & thresholdGaps)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

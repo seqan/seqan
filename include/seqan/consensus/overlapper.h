@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
 #define INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -244,7 +244,7 @@ Overlap_ Overlapper_<TFragments, TSequence>::overlapFromAlignment(
     // TODO(holtgrew): overlap length should actually be the length of the alignment
 
     TFragments frags = fragments;
-    std::sort(begin(frags, seqan::Standard()), end(frags, seqan::Standard()));
+    std::sort(begin(frags, seqan2::Standard()), end(frags, seqan2::Standard()));
 
     typename Value<TFragments>::Type frag0 = front(frags);  // first
     unsigned id0 = sequenceId(frag0, 0);
@@ -257,7 +257,7 @@ Overlap_ Overlapper_<TFragments, TSequence>::overlapFromAlignment(
     std::pair<TPos, TPos> range1 = range0;
     int errors = 0;
     typedef typename Iterator<TFragments, Standard>::Type TFragmentsIter;
-    for (TFragmentsIter itF = begin(frags, seqan::Standard()); itF != end(frags, seqan::Standard()); ++itF)
+    for (TFragmentsIter itF = begin(frags, seqan2::Standard()); itF != end(frags, seqan2::Standard()); ++itF)
     {
         // Get some shortcuts.
         TPos fLen = fragmentLength(*itF);
@@ -265,7 +265,7 @@ Overlap_ Overlapper_<TFragments, TSequence>::overlapFromAlignment(
         TPos begin1 = fragmentBegin(*itF, id1);
 
         // Count indels.
-        if (itF != begin(frags, seqan::Standard()))
+        if (itF != begin(frags, seqan2::Standard()))
         {
             SEQAN_ASSERT_LEQ(range0.second, begin0);
             SEQAN_ASSERT_LEQ(range1.second, begin1);
@@ -285,11 +285,11 @@ Overlap_ Overlapper_<TFragments, TSequence>::overlapFromAlignment(
         typedef typename Iterator<TInfix, Standard>::Type TInfixIter;
         TInfix label0 = label(*itF, stringsNC, id0);
         TInfix label1 = label(*itF, stringsNC, id1);
-        for (TInfixIter it0 = begin(label0, seqan::Standard()), it1 = begin(label1, seqan::Standard());
-             it0 != end(label0, seqan::Standard()); ++it0, ++it1)
-            errors += ((seqan::Dna5)*it0 == 'N' ||
-                       (seqan::Dna5)*it1 == 'N' ||
-                       (seqan::Dna5)*it0 != (seqan::Dna5)*it1);
+        for (TInfixIter it0 = begin(label0, seqan2::Standard()), it1 = begin(label1, seqan2::Standard());
+             it0 != end(label0, seqan2::Standard()); ++it0, ++it1)
+            errors += ((seqan2::Dna5)*it0 == 'N' ||
+                       (seqan2::Dna5)*it1 == 'N' ||
+                       (seqan2::Dna5)*it0 != (seqan2::Dna5)*it1);
     }
 
     // In case that the alignment to the right aligns to a gap, flush left.
@@ -390,6 +390,6 @@ inline bool Overlapper_<TFragments, TSequence>::computeOverlap(Overlap_ & overla
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_

@@ -40,7 +40,7 @@
 #include <seqan/index/shape_base.h>
 #include <seqan/index/shape_gapped.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Forwards

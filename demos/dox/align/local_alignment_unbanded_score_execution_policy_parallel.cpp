@@ -5,17 +5,17 @@
 
 int main()
 {
-    using TSequence = seqan::String<seqan::Dna>;
-    using TThreadModel = seqan::Parallel;
-    using TVectorSpec = seqan::Vectorial;
-    using TExecPolicy = seqan::ExecutionPolicy<TThreadModel, TVectorSpec>;
+    using TSequence = seqan2::String<seqan2::Dna>;
+    using TThreadModel = seqan2::Parallel;
+    using TVectorSpec = seqan2::Vectorial;
+    using TExecPolicy = seqan2::ExecutionPolicy<TThreadModel, TVectorSpec>;
 
     // dummy sequences
     TSequence seqH = "CGATT";
     TSequence seqV = "CGAAATT";
 
-    seqan::StringSet<TSequence> seqs1;
-    seqan::StringSet<TSequence> seqs2;
+    seqan2::StringSet<TSequence> seqs1;
+    seqan2::StringSet<TSequence> seqs2;
 
     for (size_t i = 0; i < 100; ++i)
     {
@@ -26,9 +26,9 @@ int main()
     TExecPolicy execPolicy;
     setNumThreads(execPolicy, 4);
 
-    seqan::Score<int16_t, seqan::Simple> scoreAffine(2, -2, -1, -4);
+    seqan2::Score<int16_t, seqan2::Simple> scoreAffine(2, -2, -1, -4);
 
-    seqan::String<int16_t> scores = seqan::localAlignmentScore(execPolicy, seqs1, seqs2, scoreAffine);
+    seqan2::String<int16_t> scores = seqan2::localAlignmentScore(execPolicy, seqs1, seqs2, scoreAffine);
 
     for (int16_t score : scores)
         std::cout << "Score: " << score << "\n";

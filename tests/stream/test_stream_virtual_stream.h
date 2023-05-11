@@ -43,7 +43,7 @@
 
 #include <sstream>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TStream>
 class VStreamTest : public Test

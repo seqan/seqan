@@ -38,7 +38,7 @@
 
 //SEQAN_NO_DDDOC:do not generate documentation for this file
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -176,6 +176,6 @@ inline void moveValueI2(Pair<T1, T2, BitPacked<BITSIZE1, BITSIZE2> > & pair, T &
     pair.i2 = _i;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_

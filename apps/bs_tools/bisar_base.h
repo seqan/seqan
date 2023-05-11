@@ -11,13 +11,13 @@
 #include <seqan/score.h>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 template <typename TFSSpec, typename TFSConfig, typename TFileName>
 bool loadReadsCroppedId(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fileName)
 {
-    seqan::SeqFileIn seqFileIn;
+    seqan2::SeqFileIn seqFileIn;
     if (!open(seqFileIn, toCString(fileName)))
 		return false;
 
@@ -39,7 +39,7 @@ template <typename TFSSpec, typename TFSConfig, typename TFileName>
 bool loadReadsCroppedId(FragmentStore<TFSSpec, TFSConfig> & store,
                         TFileName & fileNameL, TFileName & fileNameR)
 {
-    seqan::SeqFileIn seqFileInL, seqFileInR;
+    seqan2::SeqFileIn seqFileInL, seqFileInR;
 	if (!open(seqFileInL, toCString(fileNameL)) ||
 	    !open(seqFileInR, toCString(fileNameR)))
 		return false;

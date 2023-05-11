@@ -37,7 +37,7 @@
 #ifndef SEQAN_REDUCED_AMINOACID_CLUSTER_RED_TABLES_22_to_n_B62_H_
 #define SEQAN_REDUCED_AMINOACID_CLUSTER_RED_TABLES_22_to_n_B62_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

@@ -44,7 +44,7 @@
 
 #define SEQAN_DEBUG
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Database Type Definitions
@@ -76,7 +76,7 @@ typedef StringSet<TDbGeoString, TDbSSetSpec>    TDbGeo;
 // Database Basic Metafunctions
 // ----------------------------------------------------------------------------
 
-namespace seqan
+namespace seqan2
 {
 //template <>
 //struct Size<TDbDnaString>
@@ -125,7 +125,7 @@ typedef Index<TDbGeo, IndexSa<SmallDb> >            TDbGeoSaSmall;
 typedef Index<TDbDna, IndexSa<HugeDb> >             TDbDnaSaHuge;
 typedef Index<TDbGeo, IndexSa<HugeDb> >             TDbGeoSaHuge;
 
-namespace seqan
+namespace seqan2
 {
 template <>
 struct Fibre<TDbDnaSaSmall, FibreSA>
@@ -187,7 +187,7 @@ struct Fibre<TDbGeoSaHuge, FibreSA>
 //typedef Index<TDbDna, TDbDnaQGramSpec>                  TDbDnaQGram;
 //typedef Index<TDbGeo, TDbGeoQGramSpec>                  TDbGeoQGram;
 
-//namespace seqan
+//namespace seqan2
 //{
 //template <>
 //struct Fibre<TDbDnaQGram, FibreDir>
@@ -346,7 +346,7 @@ struct DbIndex<TIndex, Query>
 // Metafunction Size<Db>::Type                                             [Db]
 // ----------------------------------------------------------------------------
 
-namespace seqan
+namespace seqan2
 {
 template <typename TText, typename TSpec>
 struct Size<Db<TText, TSpec> >
@@ -365,7 +365,7 @@ struct Size<DbIndex<TIndex, TSpec> >
 // Metafunction Host<Db>::Type                                             [Db]
 // ----------------------------------------------------------------------------
 
-namespace seqan
+namespace seqan2
 {
 template <typename TText, typename TSpec>
 struct Host<Db<TText, TSpec> >

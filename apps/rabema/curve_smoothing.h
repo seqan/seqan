@@ -31,7 +31,7 @@
 #include <seqan/modifier.h>
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Enums, Tags, Classes, Typedefs.

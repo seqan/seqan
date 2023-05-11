@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_MODIFIER_ITERATOR_H
 #define SEQAN_HEADER_MODIFIER_ITERATOR_H
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================
@@ -628,15 +628,15 @@ atEnd(ModifiedIterator<Iter<TContainer1, AdaptorIterator<TIterator, TSpec1> >, T
 namespace std
 {
     template<typename THost, typename TSpec>
-    struct iterator_traits<seqan::ModifiedIterator<THost, TSpec> >
+    struct iterator_traits<seqan2::ModifiedIterator<THost, TSpec> >
     {
-        typedef seqan::ModifiedIterator<THost, TSpec> TIter;
+        typedef seqan2::ModifiedIterator<THost, TSpec> TIter;
 
         typedef random_access_iterator_tag iterator_category;
-        typedef typename seqan::Value<TIter>::Type value_type;
-        typedef typename seqan::Difference<TIter>::Type difference_type;
-        typedef typename seqan::Value<TIter>::Type * pointer;
-        typedef typename seqan::Reference<TIter>::Type reference;
+        typedef typename seqan2::Value<TIter>::Type value_type;
+        typedef typename seqan2::Difference<TIter>::Type difference_type;
+        typedef typename seqan2::Value<TIter>::Type * pointer;
+        typedef typename seqan2::Reference<TIter>::Type reference;
     };
 }
 

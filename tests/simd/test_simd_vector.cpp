@@ -50,6 +50,6 @@ SEQAN_BEGIN_TESTSUITE(test_simd_vector)
     SEQAN_CALL_TEST(test_simd_transpose_32x32);
 #endif  // defined(SEQAN_SEQANSIMD_ENABLED) && defined(__AVX2__)
 
-    return seqan::TestSystem::runAll();
+    return seqan2::TestSystem::runAll();
 }
 SEQAN_END_TESTSUITE

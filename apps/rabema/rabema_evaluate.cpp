@@ -825,18 +825,18 @@ int benchmarkReadResult(RabemaStats & result,
 // Function clearPairedFlags()
 // ----------------------------------------------------------------------------
 
-void clearPairedFlags(seqan::BamAlignmentRecord & record)
+void clearPairedFlags(seqan2::BamAlignmentRecord & record)
 {
     if (hasFlagMultiple(record))
-        record.flag = record.flag ^ seqan::BAM_FLAG_MULTIPLE;
+        record.flag = record.flag ^ seqan2::BAM_FLAG_MULTIPLE;
     if (hasFlagFirst(record))
-        record.flag = record.flag ^ seqan::BAM_FLAG_FIRST;
+        record.flag = record.flag ^ seqan2::BAM_FLAG_FIRST;
     if (hasFlagLast(record))
-        record.flag = record.flag ^ seqan::BAM_FLAG_LAST;
+        record.flag = record.flag ^ seqan2::BAM_FLAG_LAST;
     if (hasFlagNextRC(record))
-        record.flag = record.flag ^ seqan::BAM_FLAG_NEXT_RC;
+        record.flag = record.flag ^ seqan2::BAM_FLAG_NEXT_RC;
     if (hasFlagNextUnmapped(record))
-        record.flag = record.flag ^ seqan::BAM_FLAG_NEXT_UNMAPPED;
+        record.flag = record.flag ^ seqan2::BAM_FLAG_NEXT_UNMAPPED;
 }
 
 // ----------------------------------------------------------------------------
@@ -870,7 +870,7 @@ compareAlignedReadsToReference(RabemaStats & result,
         {
             readRecord(samRecord, bamFileIn);
         }
-        catch (seqan::ParseError const & ioErr)
+        catch (seqan2::ParseError const & ioErr)
         {
             std::cerr << "ERROR: Could not read first SAM/BAM record.\n";
             return 1;
@@ -883,7 +883,7 @@ compareAlignedReadsToReference(RabemaStats & result,
         {
             readRecord(gsiRecord, gsiIter, Gsi());
         }
-        catch (seqan::ParseError const & ioErr)
+        catch (seqan2::ParseError const & ioErr)
         {
             std::cerr << "ERROR: Could not read first GSI record.\n";
             return 1;
@@ -944,7 +944,7 @@ compareAlignedReadsToReference(RabemaStats & result,
             {
                 readRecord(samRecord, bamFileIn);
             }
-            catch (seqan::ParseError const & ioErr)
+            catch (seqan2::ParseError const & ioErr)
             {
                 std::cerr << "ERROR: Could not read SAM/BAM record.\n";
                 return 1;
@@ -981,7 +981,7 @@ compareAlignedReadsToReference(RabemaStats & result,
             {
                 readRecord(gsiRecord, gsiIter, Gsi());
             }
-            catch (seqan::ParseError const & ioErr)
+            catch (seqan2::ParseError const & ioErr)
             {
                 std::cerr << "ERROR: Could not read GSI record.\n";
                 return 1;
@@ -1030,14 +1030,14 @@ compareAlignedReadsToReference(RabemaStats & result,
 // Function parseCommandLine()
 // ---------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv)
 {
     // -----------------------------------------------------------------------
     // Parse Command Line Using ArgumentParser
     // -----------------------------------------------------------------------
 
-    seqan::ArgumentParser parser("rabema_evaluate");
+    seqan2::ArgumentParser parser("rabema_evaluate");
     setShortDescription(parser, "RABEMA Evaluation");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
@@ -1055,79 +1055,79 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
                    "The input SAM/BAM file must be \\fIsorted by queryname\\fP.  The program will create a "
                    "FASTA index file \\fIREF.fa.fai\\fP for fast random access to the reference.");
 
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable even more verbose output."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable even more verbose output."));
 
     addSection(parser, "Input / Output");
-    // addOption(parser, seqan::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
-    //                                         seqan::ArgParseArgument::STRING, false, "GSI"));
+    // addOption(parser, seqan2::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
+    //                                         seqan2::ArgParseArgument::STRING, false, "GSI"));
     // setRequired(parser, "out-gsi", true);
-    addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
-    setValidValues(parser, "reference", seqan::SeqFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
+                                            seqan2::ArgParseArgument::INPUT_FILE, "FASTA"));
+    setValidValues(parser, "reference", seqan2::SeqFileIn::getFileExtensions());
     setRequired(parser, "reference", true);
-    addOption(parser, seqan::ArgParseOption("g", "in-gsi",
+    addOption(parser, seqan2::ArgParseOption("g", "in-gsi",
                                             "Path to load gold standard intervals from. If compressed using gzip, "
                                             "the file will be decompressed on the fly.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "GSI"));
+                                            seqan2::ArgParseArgument::INPUT_FILE, "GSI"));
     setRequired(parser, "in-gsi", true);
     setValidValues(parser, "in-gsi", "gsi gsi.gz");  // GSI (Gold Standard Intervals) Format only.
 
-    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper SAM or BAM output from.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "BAM"));
+    addOption(parser, seqan2::ArgParseOption("b", "in-bam", "Path to load the read mapper SAM or BAM output from.",
+                                            seqan2::ArgParseArgument::INPUT_FILE, "BAM"));
     setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());
     setRequired(parser, "in-bam");
-    addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
-                                            seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
+    addOption(parser, seqan2::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
+                                            seqan2::ArgParseArgument::OUTPUT_FILE, "TSV"));
     setValidValues(parser, "out-tsv", "rabema_report_tsv");
 
-    addOption(parser, seqan::ArgParseOption("", "dont-check-sorting",
+    addOption(parser, seqan2::ArgParseOption("", "dont-check-sorting",
                                             "Do not check sortedness (by name) of input SAM/BAM files.  This is "
                                             "required if the reads are not sorted by name in the original FASTQ "
                                             "files.  Files from the SRA and ENA generally are sorted."));
 
     addSection(parser, "Benchmark Parameters");
-    addOption(parser, seqan::ArgParseOption("", "oracle-mode",
+    addOption(parser, seqan2::ArgParseOption("", "oracle-mode",
                                             "Enable oracle mode.  This is used for simulated data when the input "
                                             "GSI file gives exactly one position that is considered as the true "
                                             "sample position.  For simulated data."));
-    addOption(parser, seqan::ArgParseOption("", "only-unique-reads",
+    addOption(parser, seqan2::ArgParseOption("", "only-unique-reads",
                                             "Consider only reads that a single alignment in the mapping result file. "
                                             "Useful for precision computation."));
-    addOption(parser, seqan::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
-    addOption(parser, seqan::ArgParseOption("", "distance-metric",
+    addOption(parser, seqan2::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
+    addOption(parser, seqan2::ArgParseOption("", "distance-metric",
                                             "Set distance metric.  Valid values: hamming, edit.  Default: edit.",
-                                            seqan::ArgParseOption::STRING, "METRIC"));
+                                            seqan2::ArgParseOption::STRING, "METRIC"));
     setValidValues(parser, "distance-metric", "hamming edit");
     setDefaultValue(parser, "distance-metric", "edit");
 
-    addOption(parser, seqan::ArgParseOption("e", "max-error",
+    addOption(parser, seqan2::ArgParseOption("e", "max-error",
                                             "Maximal error rate to build gold standard for in percent.  This "
                                             "parameter is an integer and relative to the read length.  "
                                             "The error rate is ignored in oracle mode, here the distance "
                                             "of the read at the sample position is taken, individually "
                                             "for each read.  Default: 0",
-                                            seqan::ArgParseArgument::INTEGER, "RATE"));
+                                            seqan2::ArgParseArgument::INTEGER, "RATE"));
     setDefaultValue(parser, "max-error", 0);
 
-    addOption(parser, seqan::ArgParseOption("c", "benchmark-category",
+    addOption(parser, seqan2::ArgParseOption("c", "benchmark-category",
                                             "Set benchmark category.  One of {all, all-best, any-best.  Default: all",
-                                            seqan::ArgParseOption::STRING, "CAT"));
+                                            seqan2::ArgParseOption::STRING, "CAT"));
     setValidValues(parser, "benchmark-category", "all all-best any-best");
     setDefaultValue(parser, "benchmark-category", "all");
 
-    addOption(parser, seqan::ArgParseOption("", "trust-NM",
+    addOption(parser, seqan2::ArgParseOption("", "trust-NM",
                                             "When set, we trust the alignment and distance from SAM/BAM file and no "
                                             "realignment is performed.  Off by default."));
-    addOption(parser, seqan::ArgParseOption("", "extra-pos-tag",
+    addOption(parser, seqan2::ArgParseOption("", "extra-pos-tag",
                                             "If the CIGAR string is absent, the missing alignment end position can be "
                                             "provided by this BAM tag.",
-                                            seqan::ArgParseOption::STRING));
+                                            seqan2::ArgParseOption::STRING));
 
-    addOption(parser, seqan::ArgParseOption("", "ignore-paired-flags",
+    addOption(parser, seqan2::ArgParseOption("", "ignore-paired-flags",
                                             "When set, we ignore all SAM/BAM flags related to pairing.  This is "
                                             "necessary when analyzing SAM from SOAP's soap2sam.pl script."));
-    addOption(parser, seqan::ArgParseOption("", "DONT-PANIC",
+    addOption(parser, seqan2::ArgParseOption("", "DONT-PANIC",
                                             "Do not stop program execution if an additional hit was found that "
                                             "indicates that the gold standard is incorrect."));
 
@@ -1136,15 +1136,15 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     addText(parser,
             "The occurrence of \"invalid\" hits in the read mapper's output is not an error.  If there are "
             "additional hits, however, this shows an error in the gold standard.");
-    addOption(parser, seqan::ArgParseOption("", "show-missed-intervals",
+    addOption(parser, seqan2::ArgParseOption("", "show-missed-intervals",
                                             "Show details for each missed interval from the GSI."));
-    addOption(parser, seqan::ArgParseOption("", "show-invalid-hits",
+    addOption(parser, seqan2::ArgParseOption("", "show-invalid-hits",
                                             "Show details for invalid hits (with too high error rate)."));
-    addOption(parser, seqan::ArgParseOption("", "show-additional-hits",
+    addOption(parser, seqan2::ArgParseOption("", "show-additional-hits",
                                             "Show details for additional hits (low enough error rate but not in "
                                             "gold standard."));
-    addOption(parser, seqan::ArgParseOption("", "show-hits", "Show details for hit intervals."));
-    addOption(parser, seqan::ArgParseOption("", "show-try-hit", "Show details for each alignment in SAM/BAM input."));
+    addOption(parser, seqan2::ArgParseOption("", "show-hits", "Show details for hit intervals."));
+    addOption(parser, seqan2::ArgParseOption("", "show-try-hit", "Show details for each alignment in SAM/BAM input."));
 
     addTextSection(parser, "Return Values");
     addText(parser, "A return value of 0 indicates success, any other value indicates an error.");
@@ -1182,8 +1182,8 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
     addListItem(parser, "\\fIhttp://www.seqan.de/mason\\fP", "Mason Homepage");
 
     // Actually do the parsing and exit on error, help display etc.
-    seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    seqan2::ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // -----------------------------------------------------------------------
@@ -1247,9 +1247,9 @@ int main(int argc, char const ** argv)
 {
     // Parse command line and store results in options.
     RabemaEvaluationOptions options;
-    seqan::ArgumentParser::ParseResult parseRes = parseCommandLine(options, argc, argv);
-    if (parseRes != seqan::ArgumentParser::PARSE_OK)
-        return parseRes == seqan::ArgumentParser::PARSE_ERROR;
+    seqan2::ArgumentParser::ParseResult parseRes = parseCommandLine(options, argc, argv);
+    if (parseRes != seqan2::ArgumentParser::PARSE_OK)
+        return parseRes == seqan2::ArgumentParser::PARSE_ERROR;
 
     double startTime = 0;  // For measuring time below.
 
@@ -1302,7 +1302,7 @@ int main(int argc, char const ** argv)
             return 1;
         }
         std::cerr << " OK\n";
-        seqan::CharString faiPath = options.referencePath;
+        seqan2::CharString faiPath = options.referencePath;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
         try
@@ -1328,7 +1328,7 @@ int main(int argc, char const ** argv)
         {
             readSequence(refSeqs[i], faiIndex, i);
         }
-        catch (seqan::ParseError const & ioErr)
+        catch (seqan2::ParseError const & ioErr)
         {
             std::cerr << "ERROR: Could not read sequence " << faiIndex.seqNameStore[i] << ".\n";
             return 0;
@@ -1353,7 +1353,7 @@ int main(int argc, char const ** argv)
         readHeader(gsiHeader, inGsiIter, Gsi());
         std::cerr << " OK\n";
     }
-    catch (seqan::ParseError const & ioErr)
+    catch (seqan2::ParseError const & ioErr)
     {
         std::cerr << "Could not read GSI header(" << ioErr.what() << ").\n";
         return 1;
@@ -1373,7 +1373,7 @@ int main(int argc, char const ** argv)
         readHeader(bamHeader, bamFileIn);
         std::cerr << " OK\n";
     }
-    catch (seqan::ParseError const & ioErr)
+    catch (seqan2::ParseError const & ioErr)
     {
         std::cerr << "Could not read SAM header (" << ioErr.what() << ").\n";
         return 1;

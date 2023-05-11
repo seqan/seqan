@@ -58,8 +58,8 @@
 // Forwards
 // ============================================================================
 
-inline bool ltBamAlignmentRecord(seqan::BamAlignmentRecord const & lhs,
-                                 seqan::BamAlignmentRecord const & rhs);
+inline bool ltBamAlignmentRecord(seqan2::BamAlignmentRecord const & lhs,
+                                 seqan2::BamAlignmentRecord const & rhs);
 inline int strnum_cmp(const char *a, const char *b);
 
 // ============================================================================
@@ -162,14 +162,14 @@ class FastxJoiner
 {
 public:
     // The type of the input iterator to use.
-    typedef typename seqan::DirectionIterator<std::fstream, seqan::Input>::Type TInputIterator;
+    typedef typename seqan2::DirectionIterator<std::fstream, seqan2::Input>::Type TInputIterator;
 
     // The IdSplitter to use.
     IdSplitter * splitter;
     // Number of active files.
     unsigned numActive;
     // Buffer for id and sequence for each input file.
-    seqan::StringSet<seqan::CharString> ids, seqs, quals;
+    seqan2::StringSet<seqan2::CharString> ids, seqs, quals;
     // Maps files for activeness.
     std::vector<bool> active;
     // Input iterators, one for each input file.
@@ -193,7 +193,7 @@ public:
         return (numActive == 0);
     }
 
-    int get(seqan::CharString & id, seqan::CharString & seq, seqan::CharString & qual);
+    int get(seqan2::CharString & id, seqan2::CharString & seq, seqan2::CharString & qual);
 };
 
 // ----------------------------------------------------------------------------
@@ -216,19 +216,19 @@ public:
     // Number of active files.
     unsigned numActive;
     // Buffer for id and sequence for each input file.
-    seqan::String<seqan::BamAlignmentRecord> records;
+    seqan2::String<seqan2::BamAlignmentRecord> records;
     // Maps files for activeness.
     std::vector<bool> active;
     // Input BAM files, one for each input file.
-    std::vector<seqan::BamFileIn *> bamFileIns;
+    std::vector<seqan2::BamFileIn *> bamFileIns;
 
     // One of the identical BAM headers.
-    seqan::BamHeader header;
+    seqan2::BamHeader header;
 
     SamJoiner() : splitter(), numActive(0)
     {}
 
-    SamJoiner(IdSplitter & splitter, seqan::BamFileOut * outPtr) :
+    SamJoiner(IdSplitter & splitter, seqan2::BamFileOut * outPtr) :
             splitter(&splitter), numActive(0)
     {
         init(outPtr);
@@ -240,9 +240,9 @@ public:
             delete bamFileIns[i];
     }
 
-    void init(seqan::BamFileOut * outPtr);
+    void init(seqan2::BamFileOut * outPtr);
 
-    bool _loadNext(seqan::BamAlignmentRecord & record, unsigned idx);
+    bool _loadNext(seqan2::BamAlignmentRecord & record, unsigned idx);
 
     bool atEnd() const
     {
@@ -250,7 +250,7 @@ public:
     }
 
     // Get next BAM alignment record to lhs.  If it is paired-end, load the second mate as well.
-    int get(seqan::BamAlignmentRecord & record);
+    int get(seqan2::BamAlignmentRecord & record);
 };
 
 // ============================================================================
@@ -275,7 +275,7 @@ void FastxJoiner<TTag>::_init()
 
     for (unsigned i = 0; i < splitter->files.size(); ++i)
     {
-        inputIterators.push_back(directionIterator(*splitter->files[i], seqan::Input()));
+        inputIterators.push_back(directionIterator(*splitter->files[i], seqan2::Input()));
         active[i] = _loadNext(ids[i], seqs[i], quals[i], i);
         numActive += (active[i] != false);
     }
@@ -289,7 +289,7 @@ template <typename TTag>
 template <typename TSeq>
 bool FastxJoiner<TTag>::_loadNext(TSeq & id, TSeq & seq, TSeq & qual, unsigned idx)
 {
-    if (seqan::atEnd(inputIterators[idx]))
+    if (seqan2::atEnd(inputIterators[idx]))
         return false;
     readRecord(id, seq, qual, inputIterators[idx], TTag());
     return true;
@@ -300,7 +300,7 @@ bool FastxJoiner<TTag>::_loadNext(TSeq & id, TSeq & seq, TSeq & qual, unsigned i
 // ----------------------------------------------------------------------------
 
 template <typename TTag>
-int FastxJoiner<TTag>::get(seqan::CharString & id, seqan::CharString & seq, seqan::CharString & qual)
+int FastxJoiner<TTag>::get(seqan2::CharString & id, seqan2::CharString & seq, seqan2::CharString & qual)
 {
     unsigned idx = std::numeric_limits<unsigned>::max();
     for (unsigned i = 0; i < length(ids); ++i)
@@ -374,8 +374,8 @@ inline int strnum_cmp(const char *a, const char *b)
     return *pa<*pb? -1 : *pa>*pb? 1 : 0;
 }
 
-inline bool ltBamAlignmentRecord(seqan::BamAlignmentRecord const & lhs,
-                                 seqan::BamAlignmentRecord const & rhs)
+inline bool ltBamAlignmentRecord(seqan2::BamAlignmentRecord const & lhs,
+                                 seqan2::BamAlignmentRecord const & rhs)
 {
     int res = strnum_cmp(toCString(lhs.qName), toCString(rhs.qName));
     return (res < 0) || (res == 0 && hasFlagFirst(lhs));

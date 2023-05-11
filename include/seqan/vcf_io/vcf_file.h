@@ -38,7 +38,7 @@
 #ifndef SEQAN_VCF_IO_VCF_FILE_H_
 #define SEQAN_VCF_IO_VCF_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -231,6 +231,6 @@ writeRecord(FormattedFile<Vcf, Output, TSpec> & file, VcfRecord & record)
     writeRecord(file.iter, record, context(file), file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_VCF_IO_VCF_FILE_H_

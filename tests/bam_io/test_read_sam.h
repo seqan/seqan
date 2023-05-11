@@ -42,7 +42,7 @@
 
 SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // -----------------------------------------------------------------------
     // Define constant data and input.
@@ -98,7 +98,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_read_header)
 
 SEQAN_DEFINE_TEST(test_bam_io_sam_read_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // -----------------------------------------------------------------------
     // Define constant data and input.

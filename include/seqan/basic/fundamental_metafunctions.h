@@ -42,7 +42,7 @@
 
 #include <seqan/basic/basic_metaprogramming.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -321,6 +321,6 @@ struct MinLength
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_

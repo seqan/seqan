@@ -43,7 +43,7 @@
 
 // TODO(holtgrew): Move actual implementations to alphabet_adapt_builtins. IF POSSIBLE
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -289,6 +289,6 @@ isNegative(T t)
     return isNegative(t, typename IsSameType<T, typename MakeSigned_<T>::Type>::Type());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_ALPHABET_MATH_H_

@@ -40,7 +40,7 @@
 #include <cstdio>
 #include <fstream>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -238,6 +238,6 @@ _compareTextFilesAlt(const char * file1, const char * file2)
     return true;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_

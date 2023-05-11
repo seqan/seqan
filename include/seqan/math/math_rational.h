@@ -38,7 +38,7 @@
 #ifndef SEQAN_MATH_RATIONAL_H_
 #define SEQAN_MATH_RATIONAL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -579,6 +579,6 @@ inline TInt ceil(const Rational<TInt>& r)
 }
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_MATH_RATIONAL_H_

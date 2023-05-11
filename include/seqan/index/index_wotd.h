@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_WOTD_H
 #define SEQAN_HEADER_INDEX_WOTD_H
 
-namespace seqan
+namespace seqan2
 {
 
 

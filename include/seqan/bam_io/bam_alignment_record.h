@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -638,6 +638,6 @@ appendRawPod(TTarget & target, BamAlignmentRecordCore r)
 }
 #endif
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_

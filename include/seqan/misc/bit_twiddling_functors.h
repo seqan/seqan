@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_MISC_BIT_TWIDDLING_FUNCTORS_H_
 #define INCLUDE_SEQAN_MISC_BIT_TWIDDLING_FUNCTORS_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

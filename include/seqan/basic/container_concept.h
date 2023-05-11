@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_CONTAINER_CONCEPT_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_CONTAINER_CONCEPT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -377,7 +377,7 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
 // template <typename TContainer>
 // struct StlContainerConcept :
 //     ContainerConcept<TContainer>
-    
+
 
 SEQAN_CONCEPT_REFINE(StlContainerConcept, (TContainer), (ContainerConcept))
 {
@@ -628,6 +628,6 @@ struct HasSubscriptOperator :
  * @param[in,out] seq The sequence to remove the last element from.
  */
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_CONTAINER_CONCEPT_H_

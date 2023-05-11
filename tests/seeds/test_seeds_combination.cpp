@@ -40,13 +40,13 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/stream.h>  // for printing seqan::String<>
+#include <seqan/stream.h>  // for printing seqan2::String<>
 
 #include <seqan/seeds.h>
 
 SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_merge_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     //typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
@@ -98,7 +98,7 @@ SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_merge_chained)
 
 SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_simple_chaining_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     //typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_simple_chaining_chain
 
 SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_simple_chaos_chaining_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<ChainedSeed> TSeed;
     //typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
 
@@ -153,7 +153,7 @@ SEQAN_DEFINE_TEST(test_seeds_combination_seeds_combineable_simple_chaos_chaining
 SEQAN_DEFINE_TEST(test_seeds_combination_combine_seeds_merge_chained)
 {
     // TODO(holtgrew): Add scoring to the tests.
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
@@ -221,11 +221,11 @@ SEQAN_DEFINE_TEST(test_seeds_combination_combine_seeds_merge_chained)
 SEQAN_DEFINE_TEST(test_seeds_combination_combine_seeds_simple_chaining_chained)
 {
     // TODO(holtgrew): Also test score updates...
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
-    
+
     // Simple chaining is easy, the diagonals are simply copied over.
     TSeed left;
     appendDiagonal(left, TDiagonal(1, 2, 3));
@@ -246,12 +246,12 @@ SEQAN_DEFINE_TEST(test_seeds_combination_combine_seeds_simple_chaining_chained)
 SEQAN_DEFINE_TEST(test_seeds_combination_combine_seeds_simple_chaos_chaining_chained)
 {
     // TODO(holtgrew): Also test score updates...
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<Seed<ChainedSeed> >::Type TDiagonal;
 
-    // Simple case: Both seeds have one diagonal.    
+    // Simple case: Both seeds have one diagonal.
     {
         DnaString sequence0 = "ACAAAC";
         DnaString sequence1 = "ACACCAAC";

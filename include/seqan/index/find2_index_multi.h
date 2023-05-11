@@ -35,7 +35,7 @@
 #ifndef SEQAN_INDEX_FIND_INDEX_MULTIPLE_H
 #define SEQAN_INDEX_FIND_INDEX_MULTIPLE_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags

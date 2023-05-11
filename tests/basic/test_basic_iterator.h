@@ -77,7 +77,7 @@ struct CDStruct
         copyConstructions += 1;
     }
 
-    CDStruct(CDStruct & other, seqan::Move const & /*tag*/)
+    CDStruct(CDStruct & other, seqan2::Move const & /*tag*/)
             : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
     {
         lastOther = &other;
@@ -180,7 +180,7 @@ assignValue(TValue * me,
             TPos pos,
             TValue2 const & _value)
 {
-    seqan::assign(value(me, pos), _value);
+    seqan2::assign(value(me, pos), _value);
 }
 
 template <typename TValue, typename TValue2, typename TPos>
@@ -198,7 +198,7 @@ moveValue(TValue * me,
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Pointers.
     {
@@ -241,7 +241,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // assign()
     {
@@ -268,7 +268,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // assignValue()
     {
@@ -341,7 +341,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // goNext/operator++
     {
@@ -399,7 +399,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_arithmetics)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -421,7 +421,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_arithmetics)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Iterator.
     {
@@ -470,7 +470,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
 
@@ -489,7 +489,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
 
@@ -508,7 +508,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport)
     // set()
     {
         TIterator it2;
-        seqan::set(it2, it);
+        seqan2::set(it2, it);
         SEQAN_ASSERT(it == it2);
     }
     // move()
@@ -521,7 +521,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<std::vector<CDStruct>, StdIteratorAdaptor> TIterator;
 
@@ -575,7 +575,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
 
@@ -633,7 +633,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_arithmetics)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
 
@@ -659,7 +659,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_arithmetics)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Pointers.
     {
@@ -708,7 +708,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
 
@@ -728,7 +728,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
 
@@ -746,14 +746,14 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport)
     // set()
     {
         TIterator it2;
-        seqan::set(it2, it);
+        seqan2::set(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_iterator, it2.data_iterator);
     }
     // move()
     {
         TIterator it2;
-        seqan::move(it2, it);
+        seqan2::move(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_iterator, it2.data_iterator);
     }
@@ -761,7 +761,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<CDStruct *, AdaptorIterator<CDStruct *> > TIterator;
 
@@ -813,7 +813,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_movement)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
 
@@ -876,7 +876,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_movement)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_arithmetics)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -896,7 +896,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_arithmetics)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_rooted_functions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -913,7 +913,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_rooted_functions)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Pointers.
     {
@@ -962,7 +962,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<int *, PositionIterator> TIterator;
     //typedef Iter<int *, AdaptorIterator<int *> > TIterator2;
@@ -986,7 +986,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<int *, PositionIterator> TIterator;
 
@@ -1004,14 +1004,14 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport)
     // set()
     {
         TIterator it2;
-        seqan::set(it2, it);
+        seqan2::set(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_position, it2.data_position);
     }
     // move()
     {
         TIterator it2;
-        seqan::move(it2, it);
+        seqan2::move(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_position, it2.data_position);
     }
@@ -1019,7 +1019,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<CDStruct *, PositionIterator> TIterator;
 
@@ -1029,7 +1029,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
         resetCDStructStatics();
 
         TIterator it(&values[0], 0);
-        
+
         assignValue(it, values[2]);
 
         SEQAN_ASSERT_EQ(it->copiedFrom, -1);
@@ -1072,7 +1072,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_movement)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Iter<int *, PositionIterator> TIterator;
 
@@ -1135,7 +1135,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_movement)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_arithmetics)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -1155,7 +1155,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_arithmetics)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_position_rooted_functions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 

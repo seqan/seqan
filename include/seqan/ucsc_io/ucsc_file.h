@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
 #define SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Typedefs
@@ -177,6 +177,6 @@ writeRecord(FormattedFile<Ucsc, Output, TSpec> & file, UcscRecord const & record
     writeRecord(file.iter, record, file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_

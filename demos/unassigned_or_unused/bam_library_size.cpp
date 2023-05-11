@@ -46,7 +46,7 @@
 
 #if SEQAN_HAS_ZLIB
 
-using namespace seqan;
+using namespace seqan2;
 
 // Stores information about a library.
 

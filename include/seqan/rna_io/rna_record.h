@@ -38,7 +38,7 @@
 
 #include <cstdint>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Typedefs
@@ -125,8 +125,8 @@ private:
 public:
     // NOTE(marehr): Explicitly define a default constructor, to fix a msvc 2017
     // (msvc versions before did not have this bug) compiler bug:
-    //     error C2248: 'seqan::RnaRecord::_undef': cannot access private member
-    //     declared in class 'seqan::RnaRecord'
+    //     error C2248: 'seqan2::RnaRecord::_undef': cannot access private member
+    //     declared in class 'seqan2::RnaRecord'
     RnaRecord() : recordID{_undef}
     {}
 
@@ -281,6 +281,6 @@ inline void clear(RnaRecord & record)
     clear(record.reactError);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_RNA_IO_RNA_RECORD_H_

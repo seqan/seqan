@@ -48,7 +48,7 @@
 #ifndef SEQAN_SEEDS_SEEDS_EXTENSION_H_
 #define SEQAN_SEEDS_SEEDS_EXTENSION_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -868,6 +868,6 @@ extendSeed(Seed<ChainedSeed, TConfig> & /*seed*/,
     // TODO(holtgrew): Update seed's score?!
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_EXTENSION_H_

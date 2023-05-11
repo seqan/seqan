@@ -37,7 +37,7 @@
 #ifndef SEQAN_STREAM_STREAM_BASE_
 #define SEQAN_STREAM_STREAM_BASE_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -236,6 +236,6 @@ guessFormatFromStream(TStream &istream, Tag<TFormat_>)
     return match;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_STREAM_STREAM_BASE_

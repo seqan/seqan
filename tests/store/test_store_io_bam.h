@@ -37,7 +37,7 @@
 #include <seqan/basic.h>  // For test functionality.
 #include <seqan/store.h>  // Header under test.
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_store_io_bam_read)
 {

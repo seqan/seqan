@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_CSTYLE_H_
 #define SEQAN_SEQUENCE_STRING_CSTYLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -847,6 +847,6 @@ toCString(String<TValue, TSpec> const & me)
     return toCString(const_cast<String<TValue, TSpec> &>(me));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_CSTYLE_H_

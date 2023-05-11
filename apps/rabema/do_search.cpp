@@ -13,7 +13,7 @@
 #include "curve_smoothing.h"
 #include "find_myers_ukkonen_reads.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, char ** argv)
 {

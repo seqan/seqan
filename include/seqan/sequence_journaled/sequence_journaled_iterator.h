@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_JOURNAL_SEQUENCE_JOURNAL_ITERATOR_H_
 #define SEQAN_SEQUENCE_JOURNAL_SEQUENCE_JOURNAL_ITERATOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes
@@ -1231,6 +1231,6 @@ operator>=(Iter<TJournaledString, JournaledStringIterSpec<TJournalSpec> > const 
     return position(a) >= position(b);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEQUENCE_JOURNAL_SEQUENCE_JOURNAL_ITERATOR_H_

@@ -36,7 +36,7 @@
 #ifndef SEQAN_STREAM_GUESS_FORMAT_
 #define SEQAN_STREAM_GUESS_FORMAT_
 
-namespace seqan {
+namespace seqan2 {
 
 // --------------------------------------------------------------------------
 // Class FileExtensions
@@ -219,6 +219,6 @@ inline void _getFileExtensions(TStringSet &stringSet, TagSelector<TTagList> cons
     _getFileExtensions(stringSet, TTagList(), primaryExtensionOnly);
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // #ifndef SEQAN_STREAM_GUESS_FORMAT_

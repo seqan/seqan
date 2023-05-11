@@ -79,7 +79,7 @@ COMMENTLINES always ends after the "Fields" line and NCBI Blast+ COMMENTLINES en
 the "number of hits"-line.
 */
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -979,7 +979,7 @@ readFooter(BlastIOContext<TScore, p, h> & context,
             SEQAN_FAIL("ERROR: Tried to read footer, but was not on footer.");
         }
         clear(context._stringBuffer);
-        auto it = seqan::begin(context._lineBuffer);
+        auto it = seqan2::begin(context._lineBuffer);
         it += 18; // skip "BLAST processed "
         readUntil(context._stringBuffer, it,  IsBlank());
 
@@ -1005,6 +1005,6 @@ readFooter(BlastTabularFileIn<TContext> & formattedFile)
     readFooter(context(formattedFile), formattedFile.iter, BlastTabular());
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_BLAST_READ_BLAST_TABULAR_H_

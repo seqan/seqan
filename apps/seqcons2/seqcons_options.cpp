@@ -99,8 +99,8 @@ void SeqConsOptions::checkConsistency()
 {
     // Position information is only available when input is in SAM format and is required for
     // position-/contig-based consensus and realignment.
-    seqan::CharString inFileLowerCase = inputFile;
-    seqan::toLower(inFileLowerCase);
+    seqan2::CharString inFileLowerCase = inputFile;
+    seqan2::toLower(inFileLowerCase);
     if ((operation == POS_CONSENSUS || operation == CTG_CONSENSUS || operation == REALIGN) &&
         (!endsWith(inFileLowerCase, ".sam")))
         throw std::runtime_error("SAM input required for coordinates.  Either specify SAM file for the "
@@ -132,11 +132,11 @@ void SeqConsOptions::print(std::ostream & out) const
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("seqcons2");
+    seqan2::ArgumentParser parser("seqcons2");
     // Set short description, version, and date.
     setShortDescription(parser, "Compute consensus from sequences.");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
@@ -150,81 +150,81 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
                    "Compute consensus from sequences with and without approximate alignment information.");
 
     // Overall Program Options
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
 
-    addOption(parser, seqan::ArgParseOption("m", "method", "Method to perform.  See section \\fIMethods\\fP "
-                                            "below for details.", seqan::ArgParseOption::STRING, "METHOD"));
+    addOption(parser, seqan2::ArgParseOption("m", "method", "Method to perform.  See section \\fIMethods\\fP "
+                                            "below for details.", seqan2::ArgParseOption::STRING, "METHOD"));
     setValidValues(parser, "method", "nop realign align_consensus overlap_consensus contig_consensus pos_consensus");
     setDefaultValue(parser, "method", "pos_consensus");
 
     // I/O Options
     addSection(parser, "I/O Options");
 
-    addOption(parser, seqan::ArgParseOption("i", "input-file", "Input file.", seqan::ArgParseOption::INPUT_FILE,
+    addOption(parser, seqan2::ArgParseOption("i", "input-file", "Input file.", seqan2::ArgParseOption::INPUT_FILE,
                                             "INPUT"));
     setRequired(parser, "input-file", true);
     setValidValues(parser, "input-file", "sam fa fasta");
 
-    addOption(parser, seqan::ArgParseOption("oa", "output-alignment-file", "Output file with alignment.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT_ALIGNMENT"));
+    addOption(parser, seqan2::ArgParseOption("oa", "output-alignment-file", "Output file with alignment.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT_ALIGNMENT"));
     setRequired(parser, "output-alignment-file", false);
     setValidValues(parser, "output-alignment-file", "sam txt");
 
-    addOption(parser, seqan::ArgParseOption("oc", "output-consensus-file", "Output file with consensus sequence.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT_CONSENSUS"));
+    addOption(parser, seqan2::ArgParseOption("oc", "output-consensus-file", "Output file with consensus sequence.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT_CONSENSUS"));
     setRequired(parser, "output-consensus-file", false);
     setValidValues(parser, "output-consensus-file", "fa fasta");
 
     // Alignment Quality Filter Options
     addSection(parser, "Alignment Quality Filter Options");
 
-    addOption(parser, seqan::ArgParseOption("", "overlap-min-length", "Minimal overlap length.",
-                                            seqan::ArgParseOption::INTEGER, "LENGTH"));
+    addOption(parser, seqan2::ArgParseOption("", "overlap-min-length", "Minimal overlap length.",
+                                            seqan2::ArgParseOption::INTEGER, "LENGTH"));
     setMinValue(parser, "overlap-min-length", "0");
     setDefaultValue(parser, "overlap-min-length", "20");
 
-    addOption(parser, seqan::ArgParseOption("", "overlap-max-error", "Maximal error rate in overlap as percentage.",
-                                            seqan::ArgParseOption::DOUBLE, "RATE"));
+    addOption(parser, seqan2::ArgParseOption("", "overlap-max-error", "Maximal error rate in overlap as percentage.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATE"));
     setMinValue(parser, "overlap-max-error", "0.0");
     setDefaultValue(parser, "overlap-max-error", "5.0");
 
-    addOption(parser, seqan::ArgParseOption("", "overlap-min-count", "Minimal overlap count.",
-                                            seqan::ArgParseOption::INTEGER, "COUNT"));
+    addOption(parser, seqan2::ArgParseOption("", "overlap-min-count", "Minimal overlap count.",
+                                            seqan2::ArgParseOption::INTEGER, "COUNT"));
     setMinValue(parser, "overlap-min-count", "0");
     setDefaultValue(parser, "overlap-min-count", "3");
 
-    addOption(parser, seqan::ArgParseOption("", "overlap-window-size", "Window size to look for alignments.",
-                                            seqan::ArgParseOption::INTEGER, "SIZE"));
+    addOption(parser, seqan2::ArgParseOption("", "overlap-window-size", "Window size to look for alignments.",
+                                            seqan2::ArgParseOption::INTEGER, "SIZE"));
     setMinValue(parser, "overlap-window-size", "0");
     setDefaultValue(parser, "overlap-window-size", "20");
 
     // K-mer Filter Options
     addSection(parser, "K-Mer Filter Options");
 
-    addOption(parser, seqan::ArgParseOption("", "k-mer-size", "The k-mer size to use.",
-                                            seqan::ArgParseOption::INTEGER, "LENGTH"));
+    addOption(parser, seqan2::ArgParseOption("", "k-mer-size", "The k-mer size to use.",
+                                            seqan2::ArgParseOption::INTEGER, "LENGTH"));
     setMinValue(parser, "k-mer-size", "5");
     setDefaultValue(parser, "k-mer-size", "20");
 
-    addOption(parser, seqan::ArgParseOption("", "k-mer-max-occ", "Ignore k-mer with higher occurrence count, 0 to disable.",
-                                            seqan::ArgParseOption::INTEGER, "COUNT"));
+    addOption(parser, seqan2::ArgParseOption("", "k-mer-max-occ", "Ignore k-mer with higher occurrence count, 0 to disable.",
+                                            seqan2::ArgParseOption::INTEGER, "COUNT"));
     setMinValue(parser, "k-mer-max-occ", "0");
     setDefaultValue(parser, "k-mer-max-occ", "200");
 
     // Realignment Options
     addSection(parser, "Realignment Options");
 
-    addOption(parser, seqan::ArgParseOption("", "realign-bandwidth",
+    addOption(parser, seqan2::ArgParseOption("", "realign-bandwidth",
                                             "Bandwidth to use for pairwise alignments in realignment.",
-                                            seqan::ArgParseOption::INTEGER, "LENGTH"));
+                                            seqan2::ArgParseOption::INTEGER, "LENGTH"));
     setMinValue(parser, "realign-bandwidth", "5");
     setDefaultValue(parser, "realign-bandwidth", "10");
 
-    addOption(parser, seqan::ArgParseOption("", "realign-environment",
+    addOption(parser, seqan2::ArgParseOption("", "realign-environment",
                                             "Environment for extraction in realignment.",
-                                            seqan::ArgParseOption::INTEGER, "COUNT"));
+                                            seqan2::ArgParseOption::INTEGER, "COUNT"));
     setMinValue(parser, "realign-environment", "5");
     setDefaultValue(parser, "realign-environment", "20");
 
@@ -244,7 +244,7 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
                 "Perform MSA with global alignments of the input ignoring any given coordinates, then realign. "
                 "This will computed unbanded global ends-gap free pairwise alignments.  This is also suitable "
                 "when aligning different sequences, e.g. clustered transcripts.  Using this method, seqcons "
-                "will be similar to calling SeqAn::T-Coffee, followed by realignment and consensus computation.");
+                "will be similar to calling seqan2::T-Coffee, followed by realignment and consensus computation.");
     addListItem(parser, "\\fBcontig_consensus\\fP",
                 "Perform MSA of the input, contig by contig, requires contig information, then realign. Input "
                 "must be SAM.");
@@ -273,10 +273,10 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
                 "write out the refined alignment to \\fIout.sam\\fP");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -306,5 +306,5 @@ parseCommandLine(SeqConsOptions & options, int argc, char const ** argv)
     getOptionValue(options.reAlignmentBandwidth, parser, "realign-bandwidth");
     getOptionValue(options.reAlignmentEnvironment, parser, "realign-environment");
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }

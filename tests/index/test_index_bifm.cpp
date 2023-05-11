@@ -37,7 +37,7 @@
 
 #include "test_index_helpers.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfigLevelsPrefix

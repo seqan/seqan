@@ -40,7 +40,7 @@
 
 SEQAN_DEFINE_TEST(test_align2_traceback_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -139,7 +139,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_affine)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -193,7 +193,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_unbanded_alignment)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -249,7 +249,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_normal_banded_alignment)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -339,7 +339,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_wide_banded_alignment)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -378,7 +378,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_linear_small_banded_alignment)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_linear_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -426,7 +426,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_linear_gaps)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -474,7 +474,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_linear_gaps)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<> > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;
@@ -574,7 +574,7 @@ SEQAN_DEFINE_TEST(test_align2_traceback_gaps_left_affine_gaps)
 
 SEQAN_DEFINE_TEST(test_align2_traceback_gaps_right_affine_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<CompleteTrace, GapsRight> > > TDPProfile;
     typedef TraceSegment_<unsigned, unsigned> TTraceSegment;

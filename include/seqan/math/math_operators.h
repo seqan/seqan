@@ -39,7 +39,7 @@
 #ifndef SEQAN_MATH_OPERATORS_H_
 #define SEQAN_MATH_OPERATORS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -906,6 +906,6 @@ struct random_access_iterator_helper
 
 */
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_MATH_OPERATORS_H_

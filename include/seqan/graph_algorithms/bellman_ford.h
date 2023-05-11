@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_BELLMAN_FORD_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_BELLMAN_FORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -131,6 +131,6 @@ bool bellmanFordAlgorithm(TPredecessorMap & predecessor,
     return true;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_BELLMAN_FORD_H_

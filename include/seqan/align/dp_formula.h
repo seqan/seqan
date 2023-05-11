@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -308,6 +308,6 @@ _computeScore(DPCell_<TScoreValue, TGapCosts> & current,
     return TraceBitMap_<TScoreValue>::NONE;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_

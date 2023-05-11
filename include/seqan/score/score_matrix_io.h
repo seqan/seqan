@@ -41,7 +41,7 @@
 
 #include <seqan/stream.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -324,6 +324,6 @@ operator<<(TStream & target,
     return target;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_

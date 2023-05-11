@@ -119,7 +119,7 @@ testEnumerateConst(TEtl const & etl)
 
 SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_construct)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT(std::is_default_constructible<EnumerableThreadLocal<int>>::value);
     SEQAN_ASSERT(!std::is_copy_constructible<EnumerableThreadLocal<int>>::value);
@@ -140,7 +140,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_construct)
 
 SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_local)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
@@ -162,7 +162,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_local)
 
 SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_enumerate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_enumerate)
 
 SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_unary)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};
@@ -198,7 +198,7 @@ SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_unary)
 
 SEQAN_DEFINE_TEST(test_parallel_enumerable_thread_local_combine_binary)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TPair = std::pair<std::string, unsigned>;
     EnumerableThreadLocal<TPair> tls{TPair{"master", 1000}};

@@ -6,7 +6,7 @@
 #include <seqan/arg_parse.h>
 #include <seqan/misc/svg.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Struct for storing command line options.
 struct Options

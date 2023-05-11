@@ -43,7 +43,7 @@
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Test difference operator: operator-()
 template <typename THostSpec, typename TStringJournalSpec, typename TBuffSpec>

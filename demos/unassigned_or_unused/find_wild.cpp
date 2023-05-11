@@ -2,7 +2,7 @@
 #include <iostream>
 #include <seqan/find.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 ///This program uses the algorithm @Spec.WildShiftAnd@ to perform a wildcard search.
 int main()

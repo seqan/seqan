@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_MODIFIER_SHORTCUTS_H
 #define SEQAN_HEADER_MODIFIER_SHORTCUTS_H
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================

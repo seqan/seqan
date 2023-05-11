@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_EDGESTUMP_H
 #define SEQAN_HEADER_GRAPH_EDGESTUMP_H
 
-namespace seqan
+namespace seqan2
 {
 //////////////////////////////////////////////////////////////////////////////
 //    Graph - EdgeStump
@@ -1026,6 +1026,6 @@ _getId(EdgeStump<TCargo, TList, TSource, false, TSpec>*)
 
 
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

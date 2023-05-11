@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Functions
@@ -149,7 +149,7 @@ getPairId(TReadSeqs const & readSeqs, TReadSeqId readSeqId)
         pairId -= getPairsCount(readSeqs);
 
     SEQAN_ASSERT_LT(pairId, getPairsCount(readSeqs));
-    
+
     return pairId;
 }
 

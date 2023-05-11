@@ -2,7 +2,7 @@
 #include <seqan/graph_algorithms.h>
 #include <seqan/graph_align.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

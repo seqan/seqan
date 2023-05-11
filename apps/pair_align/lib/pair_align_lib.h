@@ -44,7 +44,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -58,18 +58,18 @@ struct Options
 {
     static int const INVALID_DIAGONAL;
 
-    seqan::CharString inputFile;
-    seqan::CharString outputFile;
-    seqan::CharString alphabet;
-    seqan::CharString method;
+    seqan2::CharString inputFile;
+    seqan2::CharString outputFile;
+    seqan2::CharString alphabet;
+    seqan2::CharString method;
     int gop;
     int gex;
-    seqan::CharString matrix;
+    seqan2::CharString matrix;
     int msc;
     int mmsc;
     int low;
     int high;
-    seqan::CharString config;
+    seqan2::CharString config;
 
     Options() : gop(0), gex(0), msc(0), mmsc(0), low(INVALID_DIAGONAL), high(INVALID_DIAGONAL)
     {}
@@ -93,7 +93,7 @@ bool _loadSequences(TSeqSet& sequences,
     {
         readRecords(fastaIDs, sequences, inFile);
     }
-    catch (seqan::ParseError const & e)
+    catch (seqan2::ParseError const & e)
     {
         std::cerr << "ERROR: Problem parsing input file: " << e.what() << "\n";
         return false;

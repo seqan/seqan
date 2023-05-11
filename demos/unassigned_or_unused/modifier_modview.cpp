@@ -3,7 +3,7 @@
 #include <seqan/stream.h>
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 ///A user-defined modifier that transforms all characters to upper case.
 struct MyFunctor :

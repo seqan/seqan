@@ -1,6 +1,6 @@
 #include <seqan/bam_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {
@@ -11,7 +11,7 @@ int main()
 
     // Open output file, BamFileOut accepts also an ostream and a format tag.
     BamFileOut bamFileOut(context(bamFileIn), std::cout, Sam());
-    
+
     // Copy header.
     BamHeader header;
     readHeader(header, bamFileIn);

@@ -36,7 +36,7 @@
 #ifndef APP_YARA_BITS_HITS_H_
 #define APP_YARA_BITS_HITS_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes
@@ -64,7 +64,7 @@ struct Hit<TSize, HammingDistance>
     unsigned char                   errors;
 };
 
-namespace seqan
+namespace seqan2
 {
 
 // ----------------------------------------------------------------------------

@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUS_H_
 #define SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -327,6 +327,6 @@ idToPosition(StringSet<TString, Dependent<Generous> > const& me,
     return _countNonZeroValues(me.strings,id);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_DEPENDENT_GENEROUS_H_

@@ -80,7 +80,7 @@ Stockholm FORMAT:
 
 */
 
-namespace seqan{
+namespace seqan2{
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -228,7 +228,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Stockholm const & /*tag*/)
                 else
                 {
                     appendValue(gapPos[idx], static_cast<TSizeRna5String>(pos) + offset);
-                    seqan::erase(buffer, pos);
+                    seqan2::erase(buffer, pos);
                 }
             }
 
@@ -334,6 +334,6 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context
     writeRecord(target, record, Stockholm());
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_RNA_IO_STOCKHOLM_READ_WRITE_H_

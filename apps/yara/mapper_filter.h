@@ -36,7 +36,7 @@
 #ifndef APP_YARA_MAPPER_FILTER_H_
 #define APP_YARA_MAPPER_FILTER_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes

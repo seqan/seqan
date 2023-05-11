@@ -54,11 +54,11 @@
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonMethylationOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_methylation");
+    seqan2::ArgumentParser parser("mason_methylation");
     // Set short description, version, and date.
     setShortDescription(parser, "Methylation Level Simulation");
     setDateAndVersion(parser);
@@ -71,16 +71,16 @@ parseCommandLine(MasonMethylationOptions & options, int argc, char const ** argv
     options.addOptions(parser);
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     options.getOptionValues(parser);
     options.methOptions.simulateMethylationLevels = true;
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -93,13 +93,13 @@ int main(int argc, char const ** argv)
 {
     // Parse the command line.
     MasonMethylationOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     std::cerr << "MASON METHYLATION SIMULATION\n"
               << "============================\n\n";
@@ -112,7 +112,7 @@ int main(int argc, char const ** argv)
               << "\n";
 
     std::cerr << "Loading Reference Index " << options.fastaInFile << " ...";
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     if (!open(faiIndex, toCString(options.fastaInFile)))
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
@@ -123,7 +123,7 @@ int main(int argc, char const ** argv)
             return 1;
         }
         std::cerr << " OK\n";
-        seqan::CharString faiPath = options.fastaInFile;
+        seqan2::CharString faiPath = options.fastaInFile;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
         if (!save(faiIndex, toCString(faiPath)))
@@ -139,7 +139,7 @@ int main(int argc, char const ** argv)
     }
 
     std::cerr << "Opening output File " << options.methFastaOutFile << " ...";
-    seqan::SeqFileOut outStream;
+    seqan2::SeqFileOut outStream;
     if (!open(outStream, toCString(options.methFastaOutFile)))
     {
         std::cerr << "\nERROR: Could not open output file.\n";
@@ -155,7 +155,7 @@ int main(int argc, char const ** argv)
 
     MethylationLevels levels;
 
-    seqan::Dna5String contig;
+    seqan2::Dna5String contig;
     for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
     {
         levels.clear();

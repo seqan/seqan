@@ -45,15 +45,15 @@
 namespace std
 {
     template<typename TContainer, typename TSpec>
-    struct iterator_traits<seqan::Iter<TContainer, TSpec> > // nolint
+    struct iterator_traits<seqan2::Iter<TContainer, TSpec> > // nolint
     {
-        typedef seqan::Iter<TContainer, TSpec> TIter; // nolint
+        typedef seqan2::Iter<TContainer, TSpec> TIter; // nolint
 
         typedef random_access_iterator_tag iterator_category; // nolint
-        typedef typename seqan::Value<TIter>::Type value_type; // nolint
-        typedef typename seqan::Difference<TIter>::Type difference_type; // nolint
-        typedef typename seqan::Value<TIter>::Type * pointer; // nolint
-        typedef typename seqan::Reference<TIter>::Type reference; // nolint
+        typedef typename seqan2::Value<TIter>::Type value_type; // nolint
+        typedef typename seqan2::Difference<TIter>::Type difference_type; // nolint
+        typedef typename seqan2::Value<TIter>::Type * pointer; // nolint
+        typedef typename seqan2::Reference<TIter>::Type reference; // nolint
     };
 
 // there is a bug in vc2015 stl, it doesnt check the iterator_traits correctly
@@ -66,14 +66,14 @@ namespace std
 // has.
 #if (_MSC_VER == 1900) && (_MSC_FULL_VER < 190023918) && !defined(COMPILER_CLANG)
 template<class _Ty, class Tag>
-struct _Is_iterator<typename seqan::Iter<_Ty, Tag> >
+struct _Is_iterator<typename seqan2::Iter<_Ty, Tag> >
     : true_type
 {
 };
 #endif
 }
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -596,6 +596,6 @@ assign(Iter<TTargetContainer, StdIteratorAdaptor> & target,
     target.data_iterator = begin(container(source)) + position(source);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_

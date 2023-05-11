@@ -8,7 +8,7 @@
 #include <seqan/misc/misc_cmdparser.h>
 #include "razers.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, const char * argv[])
 {

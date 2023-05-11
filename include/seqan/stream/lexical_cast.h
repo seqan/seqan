@@ -38,7 +38,7 @@
 #ifndef SEQAN_STREAM_LEXICAL_CAST_H
 #define SEQAN_STREAM_LEXICAL_CAST_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Exceptions

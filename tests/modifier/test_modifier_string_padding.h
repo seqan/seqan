@@ -37,7 +37,7 @@
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_construction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -50,7 +50,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_construction)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_expand)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -68,7 +68,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_expand)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_length)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_length)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_begin)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -99,7 +99,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_begin)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_end)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -118,7 +118,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_end)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_difference)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -135,7 +135,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_difference)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_iterator)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     ModifiedString<DnaString, ModPadding> modString(seq);
@@ -183,7 +183,7 @@ SEQAN_DEFINE_TEST(test_modified_string_padding_iterator)
 
 SEQAN_DEFINE_TEST(test_modified_string_padding_defect_2190)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seq = "ACGTGGATAGCATCG";
     auto seqInf = infix(seq, 0, length(seq));

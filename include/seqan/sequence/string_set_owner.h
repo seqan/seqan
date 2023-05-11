@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_SET_OWNER_H_
 #define SEQAN_SEQUENCE_STRING_SET_OWNER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -438,6 +438,6 @@ void swap(StringSet<TString, Owner<TSpec> > & lhs,
     swap(lhs.concat, rhs.concat);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_OWNER_H_

@@ -4,7 +4,7 @@
 
 //![assignment1]
 
-namespace seqan{
+namespace seqan2{
 //![SAValue]
 template<>
 struct SAValue<String<Dna> >
@@ -25,7 +25,7 @@ typedef Pair<unsigned char, unsigned> Type;
 }
 
 //![assignment1]
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

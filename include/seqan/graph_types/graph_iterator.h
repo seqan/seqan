@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -90,6 +90,6 @@ struct Host<Iter<TGraph const, GraphIterator<TIteratorSpec> > >
 };
 
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

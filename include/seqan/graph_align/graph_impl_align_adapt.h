@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_ADAPT_H_
 #define SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_ADAPT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 //////////////////////////////////////////////////////////////////////////////
 // Adaptations so that the alignment graph works like any other graph
@@ -402,6 +402,6 @@ _writeEdgeType(TTarget & iter,
     write(iter, " -- ");
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_ALIGN_ADAPT_H_

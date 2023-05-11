@@ -40,7 +40,7 @@
 #ifndef SEQAN_STREAM_VIRTUAL_STREAM_
 #define SEQAN_STREAM_VIRTUAL_STREAM_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -688,6 +688,6 @@ format(VirtualStream<TValue, TDirection, TTraits> &stream)
     return stream.format;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_STREAM_VIRTUAL_STREAM_

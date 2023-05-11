@@ -59,7 +59,7 @@ void compare(T1 &t1, T2 &t2)
 
 SEQAN_DEFINE_TEST(test_parallel_sum)
 {
-    seqan::String<int> ints;
+    seqan2::String<int> ints;
     appendValue(ints, 4);
     appendValue(ints, 1);
     appendValue(ints, 5); // 10
@@ -73,13 +73,13 @@ SEQAN_DEFINE_TEST(test_parallel_sum)
     appendValue(ints, 2);
     appendValue(ints, 9); // 47
 
-    SEQAN_ASSERT_EQ(sum(ints, seqan::Serial()), 47);
-    SEQAN_ASSERT_EQ(sum(ints, seqan::Parallel()), 47);
+    SEQAN_ASSERT_EQ(sum(ints, seqan2::Serial()), 47);
+    SEQAN_ASSERT_EQ(sum(ints, seqan2::Parallel()), 47);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_partial_sum)
 {
-    seqan::String<int> ints;
+    seqan2::String<int> ints;
     appendValue(ints, 4);
     appendValue(ints, 1);
     appendValue(ints, 5); // 10
@@ -93,9 +93,9 @@ SEQAN_DEFINE_TEST(test_parallel_partial_sum)
     appendValue(ints, 2);
     appendValue(ints, 9); // 47
 
-    seqan::String<int> sum1, sum2;
-    SEQAN_ASSERT_EQ(partialSum(sum1, ints, seqan::Serial()), 47);
-    SEQAN_ASSERT_EQ(partialSum(sum2, ints, seqan::Parallel()), 47);
+    seqan2::String<int> sum1, sum2;
+    SEQAN_ASSERT_EQ(partialSum(sum1, ints, seqan2::Serial()), 47);
+    SEQAN_ASSERT_EQ(partialSum(sum2, ints, seqan2::Parallel()), 47);
 
     SEQAN_ASSERT_EQ(sum1[0], 4);
     SEQAN_ASSERT_EQ(sum1[1], 5);
@@ -113,7 +113,7 @@ SEQAN_DEFINE_TEST(test_parallel_partial_sum)
     compare(sum1, sum2);
     SEQAN_ASSERT_EQ(sum1, sum2);
 
-    SEQAN_ASSERT_EQ(partialSum(ints, ints, seqan::Parallel()), 47);
+    SEQAN_ASSERT_EQ(partialSum(ints, ints, seqan2::Parallel()), 47);
 
     compare(sum1, ints);
     SEQAN_ASSERT_EQ(sum1, ints);

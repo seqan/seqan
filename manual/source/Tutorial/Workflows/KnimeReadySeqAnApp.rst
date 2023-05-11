@@ -8,9 +8,9 @@ Make Your SeqAn App KNIME Ready
 ===============================
 
 Learning Objective
-  You will learn how to use the the seqan:::dox:`ArgumentParser` and the SeqAn build system 
-  so that, at the end, a new SeqAn application can be integrated in KNIME easily. 
-  After completing this tutorial, you will be able write a new SeqAn application 
+  You will learn how to use the the seqan2:::dox:`ArgumentParser` and the SeqAn build system
+  so that, at the end, a new SeqAn application can be integrated in KNIME easily.
+  After completing this tutorial, you will be able write a new SeqAn application
   that can be imported into a KNIME Eclipse plugin with a couple of commands.
 
 Difficulty
@@ -26,13 +26,13 @@ In this tutorial you will learn how to write a SeqAn app, which can be, easily c
 
 The first part consists of preparing a dummy app such that it can be used in a KNIME workflow and in the second part you are asked to adapt the app such that it becomes a simple quality control tool.
 
-Using the seqan::ArgumentParser
--------------------------------
+Using the seqan2::ArgumentParser
+--------------------------------
 
-When we add options to the parser using :dox:`ArgumentParser#addOption`, 
+When we add options to the parser using :dox:`ArgumentParser#addOption`,
 we pass an :dox:`ArgParseOption` object together with the parser. The :dox:`ArgParseArgument::ArgumentType` of this :dox:`ArgParseOption` object is highly correlated to how the node generated from our application will look like.
 
-The ArgumentType can be one of the following 
+The ArgumentType can be one of the following
 
 ::
 
@@ -61,7 +61,7 @@ While adding an :dox:`ArgParseOption` to your :dox:`ArgumentParser` you should c
 
 - There are special types of input/output ports which are prefixes to a list of files. Such ports are specified using ``ArgParseArgument::INPUT_PREFIX`` or ``ArgParseArgument::OUTPUT_PREFIX``. You can only connect an output prefix port to an input prefix port and vise-versa.
 
-Using the SeqAn build system to generate KNIME nodes 
+Using the SeqAn build system to generate KNIME nodes
 ----------------------------------------------------
 
 If you are using the SeqAn build system you can generate a workflow plugin directory for all the SeqAn apps including your new one using the target ``prepare_workflow_plugin``.
@@ -76,12 +76,12 @@ to the end of the *CMakeList.txt* file of your application. All applications wit
 
 .. tip::
 
-  *If You are not using the SeqAn build system for some reason*, but you used the seqan::ArgumentParser as recommended above, you still can generate a CTD file of your application.
+  *If You are not using the SeqAn build system for some reason*, but you used the seqan2::ArgumentParser as recommended above, you still can generate a CTD file of your application.
   After building your application and go to the directory containing the executable of your application and run the following.
-  
+
   .. code-block:: console
 
     ./seqan_app_name -write-ctd seqan_app_name.ctd
 
-  This will give you the CTD file of your command-line tool. Then you can follow :ref:`tutorial-workflows-generating-knime-nodes-overview` section of the tutorial Generating KNIME Nodes to prepare a plugin directory of your application. 
+  This will give you the CTD file of your command-line tool. Then you can follow :ref:`tutorial-workflows-generating-knime-nodes-overview` section of the tutorial Generating KNIME Nodes to prepare a plugin directory of your application.
 

@@ -62,7 +62,7 @@ void ProjectSplicedRoi::beginContig()
         purgeGffAndRoiRecords();
         currentGroup += 1;
     }
-    
+
     // Remove pending ROI records.
     roiRecords.clear();
 
@@ -91,14 +91,14 @@ void ProjectSplicedRoi::beginSecondPass()
             std::cerr << groupNames[i] << "\t" << ranges[i].i1 << "\t" << ranges[i].i2 << "\n";
 
     // Sort the group names by begin position of the group (ties are broken by endPosition).
-    seqan::String<seqan::Pair<TIntPair, seqan::CharString> > buffer;
-    resize(buffer, length(groupNames), seqan::Exact());
+    seqan2::String<seqan2::Pair<TIntPair, seqan2::CharString> > buffer;
+    resize(buffer, length(groupNames), seqan2::Exact());
     for (unsigned i = 0; i < length(groupNames); ++i)
     {
         buffer[i].i1 = ranges[i];
         buffer[i].i2 = groupNames[i];
     }
-    std::sort(begin(buffer, seqan::Standard()), end(buffer, seqan::Standard()));
+    std::sort(begin(buffer, seqan2::Standard()), end(buffer, seqan2::Standard()));
     // Write back in correct order and refresh group names cache.
     for (unsigned i = 0; i < length(buffer); ++i)
     {
@@ -115,8 +115,8 @@ void ProjectSplicedRoi::beginSecondPass()
 // Member Function ProjectSplicedRoi::_updateRanges()
 // ---------------------------------------------------------------------------
 
-void ProjectSplicedRoi::_updateRanges(seqan::GffRecord const & record,
-                                      seqan::Segment<seqan::CharString, seqan::InfixSegment> const & name)
+void ProjectSplicedRoi::_updateRanges(seqan2::GffRecord const & record,
+                                      seqan2::Segment<seqan2::CharString, seqan2::InfixSegment> const & name)
 {
     if (verbosity >= 3)
         std::cerr << "Updating " << name << "\t" << record.beginPos << "\t" << record.endPos << "\n";
@@ -139,10 +139,10 @@ void ProjectSplicedRoi::_updateRanges(seqan::GffRecord const & record,
 // Member Function ProjectSplicedRoi::updateRanges()
 // ---------------------------------------------------------------------------
 
-void ProjectSplicedRoi::updateRanges(seqan::GffRecord const & record)
+void ProjectSplicedRoi::updateRanges(seqan2::GffRecord const & record)
 {
     // Get group name (possibly comma separated list).
-    seqan::CharString groupNames;
+    seqan2::CharString groupNames;
     for (unsigned i = 0; i < length(record.tagNames); ++i)
         if (record.tagNames[i] == groupBy)
             groupNames = record.tagValues[i];
@@ -171,21 +171,21 @@ void ProjectSplicedRoi::updateRanges(seqan::GffRecord const & record)
 // Member Function ProjectSplicedRoi::pushGff()
 // ---------------------------------------------------------------------------
 
-void ProjectSplicedRoi::pushGff(seqan::GffRecord const & record)
+void ProjectSplicedRoi::pushGff(seqan2::GffRecord const & record)
 {
     if (verbosity >= 3)
     {
         std::cerr << "Pushing GFF record.\n  ";
-        writeRecord(std::cerr, const_cast<seqan::GffRecord &>(record), seqan::Gff());
+        writeRecord(std::cerr, const_cast<seqan2::GffRecord &>(record), seqan2::Gff());
     }
 
     gffRecords.push_back(record);
     // Get string set of group names for the record.
-    seqan::StringSet<seqan::CharString> groups;
+    seqan2::StringSet<seqan2::CharString> groups;
     for (unsigned i = 0; i < length(record.tagNames); ++i)
         if (record.tagNames[i] == groupBy)
         {
-            strSplit(groups, record.tagValues[i], seqan::EqualsChar<','>());
+            strSplit(groups, record.tagValues[i], seqan2::EqualsChar<','>());
             break;
         }
     gffGroups.push_back(groups);
@@ -202,13 +202,13 @@ void ProjectSplicedRoi::pushGff(seqan::GffRecord const & record)
 // Member Function ProjectSplicedRoi::pushRoi()
 // ---------------------------------------------------------------------------
 
-void ProjectSplicedRoi::pushRoi(seqan::RoiRecord const & record)
+void ProjectSplicedRoi::pushRoi(seqan2::RoiRecord const & record)
 {
     if (verbosity >= 3)
     {
         std::cerr << "Pushing ROI record.\n";
         std::cerr << "  ";
-        writeRecord(std::cerr, record, seqan::Roi());
+        writeRecord(std::cerr, record, seqan2::Roi());
     }
 
     roiRecords.push_back(record);
@@ -240,16 +240,16 @@ void ProjectSplicedRoi::writeCurrentGroup()
         std::cerr << "Writing current group (" << currentGroup << ": " << groupNames[currentGroup] << ")\n";
 
     // Collect all begin/end position pairs for GFF records with the grouping key set to currentName.
-    seqan::Reference<TNameStore>::Type currentName = groupNames[currentGroup];
-    seqan::String<seqan::Pair<int, int> > pairs;
-    typedef std::list<seqan::StringSet<seqan::CharString> >::iterator TGroupsIter;
+    seqan2::Reference<TNameStore>::Type currentName = groupNames[currentGroup];
+    seqan2::String<seqan2::Pair<int, int> > pairs;
+    typedef std::list<seqan2::StringSet<seqan2::CharString> >::iterator TGroupsIter;
     TGroupsIter itG = gffGroups.begin();
-    typedef std::list<seqan::GffRecord>::iterator TGffIter;
+    typedef std::list<seqan2::GffRecord>::iterator TGffIter;
     for (TGffIter it = gffRecords.begin(); it != gffRecords.end(); ++it, ++itG)
     {
-        if (std::find(begin(*itG, seqan::Standard()), end(*itG, seqan::Standard()), currentName) == end(*itG))
+        if (std::find(begin(*itG, seqan2::Standard()), end(*itG, seqan2::Standard()), currentName) == end(*itG))
             continue;  // No match.
-        appendValue(pairs, seqan::Pair<int, int>(it->beginPos, it->endPos));
+        appendValue(pairs, seqan2::Pair<int, int>(it->beginPos, it->endPos));
     }
 
     if (verbosity >= 3)
@@ -263,9 +263,9 @@ void ProjectSplicedRoi::writeCurrentGroup()
         return;  // Nothing to do.
 
     // Sort the begin/end positions by begin position.
-    std::sort(begin(pairs, seqan::Standard()), end(pairs, seqan::Standard()));
+    std::sort(begin(pairs, seqan2::Standard()), end(pairs, seqan2::Standard()));
     // Compute prefix sums of positions in result.
-    seqan::String<int> beginPositions;
+    seqan2::String<int> beginPositions;
     appendValue(beginPositions, 0);
     for (unsigned i = 0; i < length(pairs); ++i)
         appendValue(beginPositions, back(beginPositions) + (pairs[i].i2 - pairs[i].i1));
@@ -281,7 +281,7 @@ void ProjectSplicedRoi::writeCurrentGroup()
     // TODO(holtgrew): Check that the intervals in pairs don't overlap?
 
     // Create resulting ROI.
-    seqan::RoiRecord record;
+    seqan2::RoiRecord record;
     record.ref = gffRecords.front().ref;
     record.beginPos = front(pairs).i1;
     record.endPos = back(pairs).i2;
@@ -292,7 +292,7 @@ void ProjectSplicedRoi::writeCurrentGroup()
     resize(record.count, record.len, 0);
 
     // Project the ROI counts on the GFF intervals.
-    typedef std::list<seqan::RoiRecord>::iterator TRoiIter;
+    typedef std::list<seqan2::RoiRecord>::iterator TRoiIter;
     for (TRoiIter it = roiRecords.begin(); it != roiRecords.end(); ++it)
     {
         for (unsigned i = 0; i < length(pairs); ++i)
@@ -300,7 +300,7 @@ void ProjectSplicedRoi::writeCurrentGroup()
             if (verbosity >= 3)
             {
                 std::cerr << "ROI record\n  ";
-                writeRecord(std::cerr, *it, seqan::Roi());
+                writeRecord(std::cerr, *it, seqan2::Roi());
             }
             if (!(pairs[i].i1 < it->endPos && it->beginPos < pairs[i].i2))
                 continue;
@@ -358,8 +358,8 @@ void ProjectSplicedRoi::purgeGffAndRoiRecords()
         std::cerr << "Purging GFF and ROI records.\n"
                   << "  current group: " << ranges[currentGroup].i1 << ", " << ranges[currentGroup].i2 << "\n";
 
-    typedef std::list<seqan::GffRecord>::iterator TGffIter;
-    typedef std::list<seqan::StringSet<seqan::CharString> >::iterator TGroupsIter;
+    typedef std::list<seqan2::GffRecord>::iterator TGffIter;
+    typedef std::list<seqan2::StringSet<seqan2::CharString> >::iterator TGroupsIter;
     TGroupsIter itG = gffGroups.begin();
     for (TGffIter it = gffRecords.begin(); it != gffRecords.end();)
         if ((int)it->endPos <= ranges[currentGroup].i1)
@@ -367,7 +367,7 @@ void ProjectSplicedRoi::purgeGffAndRoiRecords()
             if (verbosity >= 3)
             {
                 std::cerr << "Purging\t";
-                writeRecord(std::cerr, *it, seqan::Gff());
+                writeRecord(std::cerr, *it, seqan2::Gff());
             }
             TGffIter itE = it++;
             gffRecords.erase(itE);
@@ -382,14 +382,14 @@ void ProjectSplicedRoi::purgeGffAndRoiRecords()
     for (TGffIter it = gffRecords.begin(); it != gffRecords.end(); ++it)
         SEQAN_ASSERT_GT((int)it->endPos, ranges[currentGroup].i1);
 
-    typedef std::list<seqan::RoiRecord>::iterator TRoiIter;
+    typedef std::list<seqan2::RoiRecord>::iterator TRoiIter;
     for (TRoiIter it = roiRecords.begin(); it != roiRecords.end();)
         if (it->endPos <= ranges[currentGroup].i1)
         {
             if (verbosity >= 3)
             {
                 std::cerr << "Purging\t";
-                writeRecord(std::cerr, *it, seqan::Roi());
+                writeRecord(std::cerr, *it, seqan2::Roi());
             }
             TRoiIter itE = it++;
             roiRecords.erase(itE);

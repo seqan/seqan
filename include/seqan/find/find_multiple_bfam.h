@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MULTIPLE_BFAM_H
 #define SEQAN_HEADER_FIND_MULTIPLE_BFAM_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -361,6 +361,6 @@ VERIFY_NEXT:
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

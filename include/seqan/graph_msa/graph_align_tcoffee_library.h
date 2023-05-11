@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_LIBRARY_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_LIBRARY_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1081,6 +1081,6 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     appendSegmentMatches(str, pList, score_type, matches, scores, dist, AlignConfig<>(), bandWidth, GlobalPairwiseLibrary(), Banded());
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

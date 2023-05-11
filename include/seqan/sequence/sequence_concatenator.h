@@ -40,7 +40,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_SET_CONCATENATOR_H_
 #define SEQAN_SEQUENCE_STRING_SET_CONCATENATOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -283,6 +283,6 @@ end(ConcatenatorManyToOne<TStringSet> concat, Tag<TSpec> const &)
     return TIter(*concat.set, length(*concat.set), 0);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_CONCATENATOR_H_

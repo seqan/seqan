@@ -38,9 +38,9 @@
 #include <seqan/graph_align.h>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////

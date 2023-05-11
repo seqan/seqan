@@ -41,7 +41,7 @@
 #include <seqan/parse_lm.h>
 #include "../stellar/stellar.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ----------------------------------------------------------------------------
 // Function _getShortId()
@@ -81,7 +81,7 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
     typedef typename Iterator<TMatchStore, Standard>::Type TMatchStoreIterator;
 
     omp_set_num_threads(numThreads);
-    Splitter<TMatchStoreIterator> setSplitter(begin(lmStore.matchStore, Standard()), end(lmStore.matchStore, Standard())); 
+    Splitter<TMatchStoreIterator> setSplitter(begin(lmStore.matchStore, Standard()), end(lmStore.matchStore, Standard()));
 
     SEQAN_OMP_PRAGMA(parallel for shared(stQueryMatches))
     for (int jobId = 0; jobId < static_cast<int>(length(setSplitter)); ++jobId)
@@ -243,7 +243,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
         return 1;
     }
     // Read local matches in GFF Stellar format.
-    seqan::DirectionIterator<std::fstream, seqan::Input>::Type iter(inStreamMatches);
+    seqan2::DirectionIterator<std::fstream, seqan2::Input>::Type iter(inStreamMatches);
     LocalMatchStore<> lmStore;
     unsigned i = 0;
     while (!atEnd(iter))
@@ -252,7 +252,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
         {
             readRecord(lmStore, iter, StellarGff());
         }
-        catch (seqan::IOError const & ioErr)
+        catch (seqan2::IOError const & ioErr)
         {
             std::cerr << "Invalid Stellar GFF record #" << i << "(" << ioErr.what() << ")\n";
         }
@@ -260,7 +260,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
     }
     // Creating Stellar Matches from input
     resize(stQueryMatches, length(queries));
-    
+
     if (!_createStellarMatches(queries, sQueryIds, databases, databaseIDs, lmStore, stQueryMatches, numThreads))
         return 1;
 

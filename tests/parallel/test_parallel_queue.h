@@ -47,7 +47,7 @@
 
 SEQAN_DEFINE_TEST(test_parallel_queue_simple)
 {
-    seqan::ConcurrentQueue<int> queue;
+    seqan2::ConcurrentQueue<int> queue;
     int x = -1;
     SEQAN_ASSERT_NOT(tryPopFront(x, queue));
 
@@ -62,7 +62,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_simple)
 
     for (unsigned i = 0; i < 10; ++i)
     {
-        seqan::ConcurrentQueue<int> queue(i);
+        seqan2::ConcurrentQueue<int> queue(i);
         int x = -1;
         SEQAN_ASSERT_NOT(tryPopFront(x, queue));
         SEQAN_ASSERT(empty(queue));
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_parallel_queue_resize)
     // in a queue of capacity 3 try all 3 states of being empty
     for (int ofs = 0; ofs < 3; ++ofs)
     {
-        seqan::ConcurrentQueue<int> queue(2);
+        seqan2::ConcurrentQueue<int> queue(2);
 
         for (int i = 0; i < ofs; ++i)
         {
@@ -123,12 +123,12 @@ SEQAN_DEFINE_TEST(test_parallel_queue_resize)
 SEQAN_DEFINE_TEST(test_parallel_queue_non_pod)
 {
 //    typedef std::string TValue;
-    typedef seqan::CharString TValue;
+    typedef seqan2::CharString TValue;
 
     // in a queue of capacity 3 try all 3 states of being empty
     for (int ofs = 1; ofs < 10; ++ofs)
     {
-        seqan::ConcurrentQueue<TValue> queue(10);
+        seqan2::ConcurrentQueue<TValue> queue(10);
 
         for (int i = 0; i < ofs; ++i)
         {
@@ -153,10 +153,10 @@ SEQAN_DEFINE_TEST(test_parallel_queue_non_pod)
 template <typename TResizeTag, typename TParallelPop, typename TParallelPush>
 void testMPMCQueue(size_t initialCapacity)
 {
-    typedef seqan::ConcurrentQueue<unsigned> TQueue;
+    typedef seqan2::ConcurrentQueue<unsigned> TQueue;
 
     TQueue queue(initialCapacity);
-    seqan::String<unsigned> random;
+    seqan2::String<unsigned> random;
     std::mt19937 rng(0);
 
     unsigned chkSum = 0;
@@ -178,17 +178,17 @@ void testMPMCQueue(size_t initialCapacity)
         threadCount = 4;
 
     size_t writerCount = threadCount / 2;
-    if (seqan::IsSameType<TParallelPush, seqan::Serial>::VALUE)
+    if (seqan2::IsSameType<TParallelPush, seqan2::Serial>::VALUE)
         writerCount = 1;
 
-    if (seqan::IsSameType<TParallelPop, seqan::Serial>::VALUE)
+    if (seqan2::IsSameType<TParallelPop, seqan2::Serial>::VALUE)
         threadCount = writerCount + 1;
 
     std::cout << "threads: " << threadCount << std::endl;
     std::cout << "writers: " << writerCount << std::endl;
 
     SEQAN_ASSERT_GEQ(threadCount, 2u);
-    seqan::Splitter<unsigned> splitter(0, length(random), writerCount);
+    seqan2::Splitter<unsigned> splitter(0, length(random), writerCount);
 
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
@@ -199,7 +199,7 @@ void testMPMCQueue(size_t initialCapacity)
         {
             if (tid < writerCount)
             {
-                seqan::ScopedWriteLock<TQueue> writeLock(queue);
+                seqan2::ScopedWriteLock<TQueue> writeLock(queue);
                 // barrier for all writers to set up
                 waitForWriters(queue, writerCount);
 
@@ -213,7 +213,7 @@ void testMPMCQueue(size_t initialCapacity)
 
             if (tid >= writerCount)
             {
-                seqan::ScopedReadLock<TQueue> readLock(queue);
+                seqan2::ScopedReadLock<TQueue> readLock(queue);
                 // barrier for all writers to set up
                 waitForFirstValue(queue);
 
@@ -226,7 +226,7 @@ void testMPMCQueue(size_t initialCapacity)
     //                if ((cnt & 0xff) == 0)
     //                    printf("%ld ", tid);
                 }
-                seqan::atomicXor(chkSum2, chkSumLocal);
+                seqan2::atomicXor(chkSum2, chkSumLocal);
                 printf("stop reader #%lu %d\n", (long unsigned)tid, cnt);
             }
         }));
@@ -249,42 +249,42 @@ void testMPMCQueue(size_t initialCapacity)
 
 SEQAN_DEFINE_TEST(test_parallel_queue_spsc_dynamicsize)
 {
-    testMPMCQueue<seqan::Generous, seqan::Serial, seqan::Serial>(0u);
+    testMPMCQueue<seqan2::Generous, seqan2::Serial, seqan2::Serial>(0u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_spsc_fixedsize)
 {
-    testMPMCQueue<seqan::Limit, seqan::Serial, seqan::Serial>(30u);
+    testMPMCQueue<seqan2::Limit, seqan2::Serial, seqan2::Serial>(30u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_spmc_dynamicsize)
 {
-    testMPMCQueue<seqan::Generous, seqan::Parallel, seqan::Serial>(0u);
+    testMPMCQueue<seqan2::Generous, seqan2::Parallel, seqan2::Serial>(0u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_spmc_fixedsize)
 {
-    testMPMCQueue<seqan::Limit, seqan::Parallel, seqan::Serial>(30u);
+    testMPMCQueue<seqan2::Limit, seqan2::Parallel, seqan2::Serial>(30u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_mpsc_dynamicsize)
 {
-    testMPMCQueue<seqan::Generous, seqan::Serial, seqan::Parallel>(0u);
+    testMPMCQueue<seqan2::Generous, seqan2::Serial, seqan2::Parallel>(0u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_mpsc_fixedsize)
 {
-    testMPMCQueue<seqan::Limit, seqan::Serial, seqan::Parallel>(30u);
+    testMPMCQueue<seqan2::Limit, seqan2::Serial, seqan2::Parallel>(30u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_dynamicsize)
 {
-    testMPMCQueue<seqan::Generous, seqan::Parallel, seqan::Parallel>(0u);
+    testMPMCQueue<seqan2::Generous, seqan2::Parallel, seqan2::Parallel>(0u);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_queue_mpmc_fixedsize)
 {
-    testMPMCQueue<seqan::Limit, seqan::Parallel, seqan::Parallel>(30u);
+    testMPMCQueue<seqan2::Limit, seqan2::Parallel, seqan2::Parallel>(30u);
 }
 
 #endif  // TEST_PARALLEL_TEST_PARALLEL_QUEUE_H_

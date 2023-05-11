@@ -48,7 +48,7 @@
 
 // Common test class instance, which stores the types to be accessed.
 template <typename TTuple>
-class SimdAlignTest : public seqan::Test
+class SimdAlignTest : public seqan2::Test
 {
 public:
     using TAlignConfig = std::tuple_element_t<0, TTuple>;
@@ -68,7 +68,7 @@ struct LocalAlignTester_
               typename TConfig>
     static auto
     run(TAlign & align,
-        seqan::Score<TScoreValue, TScoreSpec> const & score,
+        seqan2::Score<TScoreValue, TScoreSpec> const & score,
         TConfig const &,
         int const lDiag,
         int const uDiag)
@@ -87,7 +87,7 @@ struct GlobalAlignTester_
               typename TConfig>
     static auto
     run(TAlign & align,
-        seqan::Score<TScoreValue, TScoreSpec> const & score,
+        seqan2::Score<TScoreValue, TScoreSpec> const & score,
         TConfig const & config,
         int const lDiag,
         int const uDiag)
@@ -108,7 +108,7 @@ struct GlobalAlignScoreTester_
     static auto
     run(TStringsH const & strH,
         TStringsV const & strV,
-        seqan::Score<TScoreValue, TScoreSpec> const & score,
+        seqan2::Score<TScoreValue, TScoreSpec> const & score,
         TConfig const & config,
         int const lDiag,
         int const uDiag)
@@ -129,12 +129,12 @@ struct LocalScoreTester_
     static auto
     run(TStringsH const & strH,
         TStringsV const & strV,
-        seqan::Score<TScoreValue, TScoreSpec> const & score,
+        seqan2::Score<TScoreValue, TScoreSpec> const & score,
         TConfig const & /*config*/,
         int const lDiag,
         int const uDiag)
     {
-        if (lDiag == seqan::MinValue<int>::VALUE && uDiag == seqan::MaxValue<int>::VALUE)
+        if (lDiag == seqan2::MinValue<int>::VALUE && uDiag == seqan2::MaxValue<int>::VALUE)
             return localAlignmentScore(strH, strV, score);
         else
             return localAlignmentScore(strH, strV, score, lDiag, uDiag);
@@ -153,7 +153,7 @@ template <typename TAlphabet,
           typename TAlignConfig,
           typename TSimdLength>
 void testAlignSimd(TFunctor const &,
-                   seqan::Score<TScoreValue, TScoreSpec> const & score,
+                   seqan2::Score<TScoreValue, TScoreSpec> const & score,
                    TAlignConfig const & config,
                    TSimdLength const & /*tag*/,
                    int const lDiag = std::numeric_limits<int>::min(),
@@ -162,7 +162,7 @@ void testAlignSimd(TFunctor const &,
     auto sets = impl::test_align_mock::TestSequences_<TAlphabet, TSimdLength>::getSequences();
 
     // Prepare an align object with the sequences.
-    seqan::StringSet<seqan::Align<seqan::String<TAlphabet> > > alignments;
+    seqan2::StringSet<seqan2::Align<seqan2::String<TAlphabet> > > alignments;
     resize(alignments, length(std::get<0>(sets)));
     auto zipCont = makeZipView(alignments, std::get<0>(sets), std::get<1>(sets));
 
@@ -174,14 +174,14 @@ void testAlignSimd(TFunctor const &,
     }
 
     // Run the SIMD accelerated alignment.
-    seqan::String<TScoreValue> scores = TFunctor::run(alignments, score, config, lDiag, uDiag);
+    seqan2::String<TScoreValue> scores = TFunctor::run(alignments, score, config, lDiag, uDiag);
     SEQAN_ASSERT_EQ(length(scores), length(alignments));
 
     // Check correctness of alignments using sequential alignment.
     // NOTE(rrahn): There seems to be a bug with the intel compiler and the zipView.
     // The following works without running into the problem, but we need to investigate the issue at some point.
-    auto itBeg = makeZipIterator(begin(scores, seqan::Standard()), begin(alignments, seqan::Standard()));
-    auto itEnd = makeZipIterator(end(scores, seqan::Standard()), end(alignments, seqan::Standard()));
+    auto itBeg = makeZipIterator(begin(scores, seqan2::Standard()), begin(alignments, seqan2::Standard()));
+    auto itEnd = makeZipIterator(end(scores, seqan2::Standard()), end(alignments, seqan2::Standard()));
 
     for (auto it = itBeg; it != itEnd; ++it)
     {
@@ -207,12 +207,12 @@ template <typename TAlphabet,
           typename TSimdLength,
           typename TBandFlag>
 void testAlignSimd(TFunctor const &,
-                   seqan::Score<TScoreValue, TScoreSpec> const & score,
+                   seqan2::Score<TScoreValue, TScoreSpec> const & score,
                    TAlignConfig const & config,
                    TSimdLength const & /*tag*/,
                    TBandFlag const &)
 {
-    if (seqan::IsSameType<TBandFlag, seqan::BandOff>::VALUE)
+    if (seqan2::IsSameType<TBandFlag, seqan2::BandOff>::VALUE)
         testAlignSimd<TAlphabet>(TFunctor(), score, config, TSimdLength());
     else
         testAlignSimd<TAlphabet>(TFunctor(), score, config, TSimdLength(), -4, 6);
@@ -228,7 +228,7 @@ template <typename TAlphabet,
           typename TAlignConfig,
           typename TSimdLength>
 void testAlignSimdScore(TTester const &,
-                        seqan::Score<TScoreValue, TScoreSpec> const & score,
+                        seqan2::Score<TScoreValue, TScoreSpec> const & score,
                         TAlignConfig const & config,
                         TSimdLength const & /*tag*/,
                         int const lDiag = std::numeric_limits<int>::min(),
@@ -236,7 +236,7 @@ void testAlignSimdScore(TTester const &,
 {
     auto sets = impl::test_align_mock::TestSequences_<TAlphabet, TSimdLength>::getSequences();
 
-    seqan::String<TScoreValue> scores = TTester::run(std::get<0>(sets), std::get<1>(sets), score, config, lDiag, uDiag);
+    seqan2::String<TScoreValue> scores = TTester::run(std::get<0>(sets), std::get<1>(sets), score, config, lDiag, uDiag);
 
     SEQAN_ASSERT_EQ(length(scores), length(std::get<0>(sets)));
 
@@ -256,12 +256,12 @@ template <typename TAlphabet,
           typename TSimdLength,
           typename TBandFlag>
 void testAlignSimdScore(TFunctor const &,
-                        seqan::Score<TScoreValue, TScoreSpec> const & score,
+                        seqan2::Score<TScoreValue, TScoreSpec> const & score,
                         TAlignConfig const & config,
                         TSimdLength const & /*tag*/,
                         TBandFlag const &)
 {
-    if (seqan::IsSameType<TBandFlag, seqan::BandOff>::VALUE)
+    if (seqan2::IsSameType<TBandFlag, seqan2::BandOff>::VALUE)
         testAlignSimdScore<TAlphabet>(TFunctor(), score, config, TSimdLength());
     else
         testAlignSimdScore<TAlphabet>(TFunctor(), score, config, TSimdLength(), -4, 6);

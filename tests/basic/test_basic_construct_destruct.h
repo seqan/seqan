@@ -79,7 +79,7 @@ struct CDStruct
         copyConstructions += 1;
     }
 
-    CDStruct(CDStruct & other, seqan::Move const & /*tag*/)
+    CDStruct(CDStruct & other, seqan2::Move const & /*tag*/)
             : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
     {
         lastOther = &other;
@@ -223,7 +223,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_construct_value_pointer)
         resetCDStructStatics();
 
         CDStruct * ptr = reinterpret_cast<CDStruct * >(&space[0]);
-        valueConstruct(ptr, other, seqan::Move());
+        valueConstruct(ptr, other, seqan2::Move());
 
         SEQAN_ASSERT_EQ(ptr->copiedFrom, -1);
         SEQAN_ASSERT_EQ(ptr->movedFrom, other.id);

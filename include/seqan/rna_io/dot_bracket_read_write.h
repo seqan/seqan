@@ -56,7 +56,7 @@ GCGGAUUUAGCUCAGUUGGGAGAGCGCCAGACUGAAGAUUUGGAGGUCCUGUGUUCGAUCCACAGAAUUCGCA
 -Dot-Bracket notation for knots or pseudoknots | Energy of rna strand
 */
 
-namespace seqan{
+namespace seqan2{
 
 // ==========================================================================
 // Tags, Classes, Enums

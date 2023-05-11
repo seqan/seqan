@@ -39,7 +39,7 @@
 #include <seqan/sequence.h>
 #include <seqan/gff_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 
 SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
@@ -499,7 +499,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
 SEQAN_DEFINE_TEST(test_gff_io_isOpen_fileIn)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/tests/gff_io/example.gff");
 
     // Create SequenceStream object.
@@ -518,7 +518,7 @@ SEQAN_DEFINE_TEST(test_gff_io_isOpen_fileIn)
 SEQAN_DEFINE_TEST(test_gff_io_isOpen_fileOut)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".gff");
 
     // Create SequenceStream object.

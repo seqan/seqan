@@ -42,7 +42,7 @@
 
 //#define SEQAN_DEBUG
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -377,6 +377,6 @@ _goUp(Iter<Index<TText, IndexQGram<TShapeSpec, TIndexSpec> >, VSTree<TopDown<Par
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INDEX_QGRAM_STREE_H_

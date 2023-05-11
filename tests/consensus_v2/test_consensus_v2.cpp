@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_coordinates)
     // -----------------------------------------------------------------------
 
     // Build a FragmentStore with simulated reads from a reference sequence.
-    seqan::Dna5String ref = 
+    seqan2::Dna5String ref =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTT"
             "CAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
 
@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_coordinates)
     int const STEP = 5;
 
     // Compute reads and append to FragmentStore.
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
     for (unsigned pos = 0, i = 0; pos + READ_LENGTH < length(ref); pos += STEP, ++i)
     {
         // Append a new read sequence.
@@ -74,7 +74,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_coordinates)
     // -----------------------------------------------------------------------
 
     // Compute consensus alignment.
-    seqan::ConsensusAlignmentOptions options;
+    seqan2::ConsensusAlignmentOptions options;
     consensusAlignment(store, options);
 
     // -----------------------------------------------------------------------
@@ -84,11 +84,11 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_coordinates)
     SEQAN_ASSERT_EQ(length(store.contigStore), 1u);
 
     // Print final consensus alignment into buffer.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
-    
+
     char const * EXPECTED =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGT-----\n"
             "..................................................     ..................................................\n"
@@ -114,7 +114,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
     // -----------------------------------------------------------------------
 
     // Build a FragmentStore with simulated reads from a reference sequence.  We will assign them to two contigs, however.
-    seqan::Dna5String ref = 
+    seqan2::Dna5String ref =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTT"
             "CAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
 
@@ -123,7 +123,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
     int const STEP = 5;
 
     // Compute reads and append to FragmentStore.
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
     for (unsigned pos = 0, i = 0; pos + READ_LENGTH < length(ref); pos += STEP, ++i)
     {
         // Append a new read sequence.
@@ -141,7 +141,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
     // -----------------------------------------------------------------------
 
     // Compute consensus alignment.
-    seqan::ConsensusAlignmentOptions options;
+    seqan2::ConsensusAlignmentOptions options;
     options.usePositions = false;
     consensusAlignment(store, options);
 
@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
 
     SEQAN_ASSERT_EQ(length(store.contigStore), 2u);
 
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
 
     // Check first contig.
     {
@@ -159,7 +159,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
         std::stringstream ss;
         printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
 
-        char const * EXPECTED = 
+        char const * EXPECTED =
                 "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATAT----------\n"
                 "..................................................          ..................................................\n"
                 "          ..................................................          ..................................................\n"
@@ -176,7 +176,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
         printAlignment(ss, layout, store, /*contigID=*/1, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
 
 
-        char const * EXPECTED = 
+        char const * EXPECTED =
                 "ATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGT----------\n"
                 "..................................................          ..................................................\n"
                 "          ..................................................          ..................................................\n"
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_no_contig_ids)
     // -----------------------------------------------------------------------
 
     // Build a FragmentStore with simulated reads from a reference sequence.
-    seqan::Dna5String ref = 
+    seqan2::Dna5String ref =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTT"
             "CAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
 
@@ -206,7 +206,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_no_contig_ids)
     int const STEP = 5;
 
     // Compute reads and append to FragmentStore.
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
     for (unsigned pos = 0, i = 0; pos + READ_LENGTH < length(ref); pos += STEP, ++i)
         appendRead(store, infix(ref, pos, pos + READ_LENGTH));
 
@@ -215,7 +215,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_no_contig_ids)
     // -----------------------------------------------------------------------
 
     // Compute consensus alignment.
-    seqan::ConsensusAlignmentOptions options;
+    seqan2::ConsensusAlignmentOptions options;
     options.useContigID = false;
     consensusAlignment(store, options);
 
@@ -226,11 +226,11 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_no_contig_ids)
     SEQAN_ASSERT_EQ(length(store.contigStore), 1u);
 
     // Print final consensus alignment into buffer.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
-    
+
     char const * EXPECTED =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGT-----\n"
             "..................................................     ..................................................\n"
@@ -256,10 +256,10 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_global_alignment)
     // -----------------------------------------------------------------------
 
     // Build a FragmentStore with infixes from a reference sequence.
-    seqan::Dna5String ref = 
+    seqan2::Dna5String ref =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
 
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
     appendRead(store, "GAATACATCTCTAAAGAGCTTGATGCTAATTTGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTT");
     appendRead(store, "TCTAAAGAGCTTGGATGCTAAAATAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAA");
     appendRead(store, "ACATCTCTAAAGAGCTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCT");
@@ -269,7 +269,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_global_alignment)
     // -----------------------------------------------------------------------
 
     // Compute consensus alignment.
-    seqan::ConsensusAlignmentOptions options;
+    seqan2::ConsensusAlignmentOptions options;
     options.useGlobalAlignment = true;
     consensusAlignment(store, options);
 
@@ -280,11 +280,11 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_global_alignment)
     SEQAN_ASSERT_EQ(length(store.contigStore), 1u);
 
     // Print final consensus alignment into buffer.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
-    
+
     char const * EXPECTED =
             "GAATACATCTCTAAAGAGCTT-GATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCT---------------------------------------------\n"
             ".....................*...........*...........................................................\n"

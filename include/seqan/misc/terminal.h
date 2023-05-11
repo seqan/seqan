@@ -49,7 +49,7 @@
 #include <sys/ioctl.h>
 #endif  // defined(STDLIB_VS)
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -209,6 +209,6 @@ inline bool getTerminalSize(unsigned & cols, unsigned & rows)
 
 #endif  // #if !defined(STDLIB_VS)
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // #ifndef SEQAN_MISC_TERMINAL_H_

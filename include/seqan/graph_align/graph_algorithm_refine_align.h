@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ALIGN_H_
 #define SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ALIGN_H_
 
-namespace seqan {
+namespace seqan2 {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,6 +190,6 @@ _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
 //    return ret_score;
 //}
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ALIGN_H_

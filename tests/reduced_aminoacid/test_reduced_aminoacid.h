@@ -45,7 +45,7 @@
 #include <seqan/modifier.h>
 #include <seqan/index.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 #if 0
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)

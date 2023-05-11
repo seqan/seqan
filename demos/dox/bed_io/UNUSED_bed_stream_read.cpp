@@ -1,7 +1,7 @@
 #include <seqan/basic.h>
 #include <seqan/bed_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // USAGE: bed_stream_read IN.bed
 //

@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -384,6 +384,6 @@ inline void begin(Iter<T, TSpec> &) = delete;
 template <typename T, typename TSpec>
 inline void begin(Iter<T, TSpec> const &) = delete;
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_

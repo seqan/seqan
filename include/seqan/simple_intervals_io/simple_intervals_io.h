@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_IO_H_
 #define INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_IO_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -156,6 +156,6 @@ void writeRecord(TTarget & target,
     write(target, "\n");
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_IO_H_

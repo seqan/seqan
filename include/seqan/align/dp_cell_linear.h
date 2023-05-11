@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_LINEAR_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_LINEAR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -63,17 +63,17 @@ public:
     TScoreValue _score = DPCellDefaultInfinity<DPCell_>::VALUE;
 
     DPCell_() = default;
-    
+
     // Copy c'tor.
     DPCell_(DPCell_ const & other) : _score(other._score)
     {}
-    
+
     // Move c'tor.
     DPCell_(DPCell_ && other) : DPCell_()
     {
         swap(*this, other);
     }
-    
+
     // Assignment & move operator
     DPCell_& operator=(DPCell_ other)
     {
@@ -113,13 +113,13 @@ inline bool operator<(DPCell_<TScoreValueLeft, LinearGaps> const & left,
 }
 
 template <typename TScoreValue>
-inline void 
-swap(DPCell_<TScoreValue, LinearGaps> & lhs, 
+inline void
+swap(DPCell_<TScoreValue, LinearGaps> & lhs,
      DPCell_<TScoreValue, LinearGaps> & rhs)
 {
     std::swap(lhs._score, rhs._score);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_LINEAR_H_

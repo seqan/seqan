@@ -44,7 +44,7 @@
 #include "test_argument_parser.h"
 #include "test_arg_parse_ctd_support.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_BEGIN_TESTSUITE(test_arg_parse)
 {

@@ -43,8 +43,8 @@
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_metafunctions)
 {
-    typedef seqan::MaxValue<int> TMaxValue SEQAN_UNUSED_TYPEDEF;
-    typedef seqan::MinValue<int> TMinValue SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::MaxValue<int> TMaxValue SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::MinValue<int> TMinValue SEQAN_UNUSED_TYPEDEF;
 }
 
 // Now, test that the forwards for minValue() and maxValue() work correctly.
@@ -61,7 +61,7 @@ struct MyNumber_
     {}
 };
 
-namespace seqan
+namespace seqan2
 {
 template <>
 struct MinValue<MyNumber_>
@@ -82,14 +82,14 @@ const MyNumber_ MaxValue<MyNumber_>::VALUE = MyNumber_(1);
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_min_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(MinValue<MyNumber_>::VALUE.value, -1);
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_max_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(MaxValue<MyNumber_>::VALUE.value, 1);
 }

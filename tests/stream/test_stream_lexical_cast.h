@@ -38,7 +38,7 @@
 
 #ifndef TEST_STREAM_TEST_LEXICAL_CAST_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Types

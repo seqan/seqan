@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
 #define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -84,6 +84,6 @@ public:
     {}
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_EXCEPTIONS_H_

@@ -37,7 +37,7 @@
 #ifndef SEQAN_INDEX_FIND2_INDEX_APPROX_H_
 #define SEQAN_INDEX_FIND2_INDEX_APPROX_H_
 
-namespace seqan {
+namespace seqan2 {
 
 template <size_t N>
 struct OptimalSearch

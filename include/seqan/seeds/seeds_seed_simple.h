@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEEDS_SEEDS_SEED_SIMPLE_H_
 #define SEQAN_SEEDS_SEEDS_SEED_SIMPLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -273,6 +273,6 @@ __write(TStream & stream, Seed<Simple, TConfig> const & seed, Tikz_ const &)
     stream << "\\draw[seed] (" << getBeginDim1(seed) << ", -" << getBeginDim0(seed) << ") -- (" << (getEndDim1(seed) - 1) << ", -" << (getEndDim0(seed) - 1) << ");" << std::endl;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_SEED_SIMPLE_H_

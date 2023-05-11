@@ -38,7 +38,7 @@
 
 //#define SEQAN_TEST_INDEX
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

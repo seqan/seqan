@@ -42,7 +42,7 @@
 void testAlignmentDPProfileIsFreeEndGap()
 {
 
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
@@ -172,7 +172,7 @@ void testAlignmentDPProfileIsFreeEndGap()
 
 void testAlignmentDPProfileIsGlobal()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
@@ -217,7 +217,7 @@ void testAlignmentDPProfileIsGlobal()
 
 void testAlignmentDPProfileIsLocal()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
@@ -262,7 +262,7 @@ void testAlignmentDPProfileIsLocal()
 
 void testAlignmetnDPProfileIsTracebackEnabled()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;

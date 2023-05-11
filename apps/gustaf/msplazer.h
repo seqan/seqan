@@ -43,7 +43,7 @@
 
 #include "create_stellarmatches_from_file.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Forwards

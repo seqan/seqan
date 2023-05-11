@@ -95,7 +95,7 @@ SEQAN_DEFINE_TEST(mason_tests_append_orientation_combination)
     {
         TCigarString cigar;
 
-        appendValue(cigar, seqan::CigarElement<>('M', 1));
+        appendValue(cigar, seqan2::CigarElement<>('M', 1));
         std::pair<int, int> v = appendOperation(cigar, 'M');
 
         SEQAN_ASSERT_EQ(v.first, 1);
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(mason_tests_append_orientation_combination)
     {
         TCigarString cigar;
 
-        appendValue(cigar, seqan::CigarElement<>('X', 1));
+        appendValue(cigar, seqan2::CigarElement<>('X', 1));
         std::pair<int, int> v = appendOperation(cigar, 'X');
 
         SEQAN_ASSERT_EQ(v.first, 1);
@@ -119,7 +119,7 @@ SEQAN_DEFINE_TEST(mason_tests_append_orientation_combination)
     {
         TCigarString cigar;
 
-        appendValue(cigar, seqan::CigarElement<>('I', 1));
+        appendValue(cigar, seqan2::CigarElement<>('I', 1));
         std::pair<int, int> v = appendOperation(cigar, 'I');
 
         SEQAN_ASSERT_EQ(v.first, 1);
@@ -131,7 +131,7 @@ SEQAN_DEFINE_TEST(mason_tests_append_orientation_combination)
     {
         TCigarString cigar;
 
-        appendValue(cigar, seqan::CigarElement<>('D', 1));
+        appendValue(cigar, seqan2::CigarElement<>('D', 1));
         std::pair<int, int> v = appendOperation(cigar, 'D');
 
         SEQAN_ASSERT_EQ(v.first, 0);
@@ -148,7 +148,7 @@ SEQAN_DEFINE_TEST(mason_tests_append_orientation_canceling_out)
     {
         TCigarString cigar;
 
-        appendValue(cigar, seqan::CigarElement<>('I', 1));
+        appendValue(cigar, seqan2::CigarElement<>('I', 1));
         std::pair<int, int> v = appendOperation(cigar, 'D');
 
         SEQAN_ASSERT_EQ(v.first, -1);
@@ -158,7 +158,7 @@ SEQAN_DEFINE_TEST(mason_tests_append_orientation_canceling_out)
     {
         TCigarString cigar;
 
-        appendValue(cigar, seqan::CigarElement<>('D', 1));
+        appendValue(cigar, seqan2::CigarElement<>('D', 1));
         std::pair<int, int> v = appendOperation(cigar, 'I');
 
         SEQAN_ASSERT_EQ(v.first, 0);
@@ -179,7 +179,7 @@ SEQAN_DEFINE_TEST(mason_tests_position_map_inversion)
     GenomicInterval gi3(2000, 3000, 2000, 3000, '+', GenomicInterval::NORMAL);
 
     // Build interval tree.
-    seqan::String<TInterval> intervals;
+    seqan2::String<TInterval> intervals;
     appendValue(intervals, TInterval(gi1.svBeginPos, gi1.svEndPos, gi1));
     appendValue(intervals, TInterval(gi2.svBeginPos, gi2.svEndPos, gi2));
     appendValue(intervals, TInterval(gi3.svBeginPos, gi3.svEndPos, gi3));
@@ -248,7 +248,7 @@ SEQAN_DEFINE_TEST(mason_tests_position_map_translocation)
     GenomicInterval gi2(1000, 2000,    0, 1000, '-', GenomicInterval::NORMAL);
 
     // Build interval tree.
-    seqan::String<TInterval> intervals;
+    seqan2::String<TInterval> intervals;
     appendValue(intervals, TInterval(gi1.svBeginPos, gi1.svEndPos, gi1));
     appendValue(intervals, TInterval(gi2.svBeginPos, gi2.svEndPos, gi2));
     createIntervalTree(positionMap.svIntervalTree, intervals);

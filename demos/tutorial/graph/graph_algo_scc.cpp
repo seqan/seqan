@@ -1,7 +1,7 @@
 //![includes]
 #include <iostream>
 #include <seqan/graph_algorithms.h>
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![typedefs]

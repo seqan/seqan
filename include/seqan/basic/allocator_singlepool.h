@@ -40,7 +40,7 @@
 
 #include <seqan/basic/allocator_interface.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -245,6 +245,6 @@ deallocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
     me.data_recycled_blocks = reinterpret_cast<char *>(data);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_BASIC_ALLOCATOR_SINGLE_POOL_H_

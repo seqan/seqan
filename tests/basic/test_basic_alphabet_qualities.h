@@ -41,7 +41,7 @@
 // Test Metafunctions.  Test the default implementations where possible.
 // ---------------------------------------------------------------------------
 
-namespace seqan {
+namespace seqan2 {
 
 struct MyType_;
 
@@ -52,11 +52,11 @@ struct QualityValueSize<MyType_>
     enum { VALUE = 3 };
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_quality_value_size_metafunction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Make sure the symbol exist.
     typedef QualityValueSize<int> TQualityValueSize SEQAN_UNUSED_TYPEDEF;
@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_quality_value_size_metafunction)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_quality_has_qualities_metafunction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_NOT(+HasQualities<int>::VALUE);
     SEQAN_ASSERT(+HasQualities<Dna5Q>::VALUE);
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_quality_has_qualities_metafuncti
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_convert_quality)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     char c1 = '\0';
     convertQuality(c1, 33);

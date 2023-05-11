@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_JOURNALED_JOURNAL_ENTRY_H_
 #define SEQAN_SEQUENCE_JOURNALED_JOURNAL_ENTRY_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Enums, Classes
@@ -155,7 +155,7 @@ TStream & operator<<(TStream & stream, JournalEntry<TPos, TSize> const & entry)
                   << "}";
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEQUENCE_JOURNALED_JOURNAL_ENTRY_H_
 

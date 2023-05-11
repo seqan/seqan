@@ -4,7 +4,7 @@
 #include <seqan/align.h>
 #include <seqan/stream.h>  // for printint strings
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

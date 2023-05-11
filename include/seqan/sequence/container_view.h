@@ -36,7 +36,7 @@
 #ifndef SEQAN_SEQUENCE_CONTAINER_VIEW_H
 #define SEQAN_SEQUENCE_CONTAINER_VIEW_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -66,10 +66,10 @@ struct Resizable;
  * @tparam TContainer The container type to create the view for.
  * @tparam TSpec The specialization type. Defaults to void.
  *
- * A @link ContainerView @endlink is a lightweight data structure storing only a begin and end 
- * pointer to an underlying container. The view can represent any range between the 
+ * A @link ContainerView @endlink is a lightweight data structure storing only a begin and end
+ * pointer to an underlying container. The view can represent any range between the
  * global begin and end of the contaniner. The view itself implements the @link ContainerConcept @endlink.
- * The default implementation however is not resizable. The @link ResizableContainerView @endlink supports 
+ * The default implementation however is not resizable. The @link ResizableContainerView @endlink supports
  * resizing of the view, but must not change the capacity of the underlying container.
  */
 
@@ -89,7 +89,7 @@ public:
     /*!
      * @fn ContainerView#ContainerView
      * @brief The constructor.
-     * 
+     *
      * @signature ContainerView();
      *            ContainerView(TOtherContainer & cont);
      *            ContainerView(TOtherContainer const & cont);
@@ -719,6 +719,6 @@ operator<<(TStream & target, ContainerView<TContainer, TSpec> const & source)
 //    assign(dest, src);
 //}
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_CONTAINER_VIEW_H

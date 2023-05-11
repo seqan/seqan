@@ -42,7 +42,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -236,7 +236,7 @@ struct DisableIf2
 template <typename T>
 struct DisableIf2<true, T> {};
 
-}  // namespace seqan
+}  // namespace seqan2
 
 // ============================================================================
 // Macros
@@ -268,7 +268,7 @@ struct DisableIf2<true, T> {};
  * @snippet demos/dox/basic/enable_if.cpp enable if example constructor
  */
 
-#define SEQAN_CTOR_ENABLE_IF(...) typename seqan::EnableIf<__VA_ARGS__>::Type * dummy = 0
+#define SEQAN_CTOR_ENABLE_IF(...) typename seqan2::EnableIf<__VA_ARGS__>::Type * dummy = 0
 
 /*!
  * @macro EnableIfFunctionality#SEQAN_CTOR_DISABLE_IF
@@ -296,7 +296,7 @@ struct DisableIf2<true, T> {};
  * @snippet demos/dox/basic/enable_if.cpp disable if example constructor
  */
 
-#define SEQAN_CTOR_DISABLE_IF(...) typename seqan::DisableIf<__VA_ARGS__>::Type * dummy = 0
+#define SEQAN_CTOR_DISABLE_IF(...) typename seqan2::DisableIf<__VA_ARGS__>::Type * dummy = 0
 
 /*!
  * @macro EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
@@ -325,7 +325,7 @@ struct DisableIf2<true, T> {};
  * @snippet demos/dox/basic/enable_if.cpp enable if example function
  */
 
-#define SEQAN_FUNC_ENABLE_IF(...) typename seqan::EnableIf<__VA_ARGS__>::Type
+#define SEQAN_FUNC_ENABLE_IF(...) typename seqan2::EnableIf<__VA_ARGS__>::Type
 
 /*!
  * @macro EnableIfFunctionality#SEQAN_FUNC_DISABLE_IF
@@ -354,7 +354,7 @@ struct DisableIf2<true, T> {};
  * @snippet demos/dox/basic/enable_if.cpp disable if example function
  */
 
-#define SEQAN_FUNC_DISABLE_IF(...) typename seqan::DisableIf<__VA_ARGS__>::Type
+#define SEQAN_FUNC_DISABLE_IF(...) typename seqan2::DisableIf<__VA_ARGS__>::Type
 
 // ============================================================================
 // Functions

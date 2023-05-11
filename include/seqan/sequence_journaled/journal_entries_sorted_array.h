@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_JOURNALED_JOURNAL_ENTRIES_SORTED_ARRAY_H_
 #define SEQAN_SEQUENCE_JOURNALED_JOURNAL_ENTRIES_SORTED_ARRAY_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes
@@ -745,6 +745,6 @@ empty(JournalEntries<TNode, SortedArray> const & journalEntries)
     return empty(journalEntries._journalNodes);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEQUENCE_JOURNALED_JOURNAL_ENTRIES_SORTED_ARRAY_H_

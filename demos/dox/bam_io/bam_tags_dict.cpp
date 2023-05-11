@@ -2,7 +2,7 @@
 #include <seqan/stream.h>
 #include <seqan/bam_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

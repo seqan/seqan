@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TSnp, typename TDel>
 impl::DeltaStore<TSnp, TDel> createMock()
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_delta_map_delta_store_add_delta_value)
 }
 
 SEQAN_DEFINE_TEST(test_delta_map_delta_store_erase_delta_value)
-{   
+{
     { // Erase from empty store.
         impl::DeltaStore<Dna, unsigned> store;
         SEQAN_ASSERT_EQ(eraseDeltaValue(store, 0, DeltaTypeSnp()), 0u);

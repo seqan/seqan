@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -329,6 +329,6 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & current,
     return traceDir;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_AFFINE_H_

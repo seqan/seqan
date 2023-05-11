@@ -24,7 +24,7 @@
 
 #include <seqan/misc/dequeue.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // We require mate-pairs to be stored together in one read string.
 // Pair i has mates at positions 2*i and 2*i+1 in the read string.
@@ -139,7 +139,7 @@ bool loadReads(
 	while (!atEnd(leftMates) && !atEnd(rightMates))
     {
         ++seqCount;
-        
+
         readRecord(seqId[0], seq[0], qual[0], leftMates);
         readRecord(seqId[1], seq[1], qual[1], rightMates);
 

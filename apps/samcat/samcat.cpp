@@ -42,7 +42,7 @@
 #include <string>
 #include <vector>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Classes

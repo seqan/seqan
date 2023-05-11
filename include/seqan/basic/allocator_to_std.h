@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_TO_STD_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_TO_STD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -105,20 +105,20 @@ struct ToStdAllocator
     pointer allocate(size_type count)
     {
         value_type * ptr;
-        seqan::allocate(*m_host, ptr, count);
+        seqan2::allocate(*m_host, ptr, count);
         return pointer(ptr);
     }
 
     pointer allocate(size_type count, const void *)
     {
         value_type * ptr;
-        seqan::allocate(*m_host, ptr, count);
+        seqan2::allocate(*m_host, ptr, count);
         return pointer(ptr);
     }
 
     void deallocate(pointer data, size_type count)
     {
-        seqan::deallocate(*m_host, data, count);
+        seqan2::deallocate(*m_host, data, count);
     }
 
     void construct(pointer ptr, const_reference data)
@@ -201,6 +201,6 @@ host(ToStdAllocator<THost, TValue> & me)
    return *me.m_host;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_TO_STD_H_

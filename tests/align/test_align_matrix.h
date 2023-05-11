@@ -36,7 +36,7 @@
 SEQAN_DEFINE_TEST(test_align_matrix)
 {
     using namespace std;
-    using namespace seqan;
+    using namespace seqan2;
 
     // Resize the matrix.
     Matrix<double,2> matrix1;

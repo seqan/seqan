@@ -45,7 +45,7 @@
 
 #include "test_arg_parse_version_check.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_BEGIN_TESTSUITE(test_arg_parse)
 {
@@ -71,7 +71,7 @@ SEQAN_BEGIN_TESTSUITE(test_arg_parse)
     SEQAN_CALL_TEST(test_delete_version_files);
     SEQAN_CALL_TEST(test_time_out);
 
-    // clean up 
+    // clean up
     _removeFilesFromPath();
 }
 SEQAN_END_TESTSUITE

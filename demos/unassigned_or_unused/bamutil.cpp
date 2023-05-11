@@ -47,7 +47,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 struct Options
 {

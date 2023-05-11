@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_CONVERSION_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_CONVERSION_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -149,6 +149,6 @@ convert(TSource const & source)
     return convertImpl(Convert<TTarget, TSource>(), source);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_CONVERSION_H_

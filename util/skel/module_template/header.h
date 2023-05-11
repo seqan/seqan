@@ -35,7 +35,7 @@
 #ifndef %(HEADER_GUARD)s
 #define %(HEADER_GUARD)s
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -80,7 +80,7 @@ namespace seqan {
 ..summary:This is the "our" specialization of my class!
 ..signature:MyClass<Our>
 ..include:seqan/%(NAME)s.h
- 
+
 .Memfunc.Our MyClass#MyClass
 ..cat:My Classes
 ..class:Spec.Our MyClass
@@ -91,7 +91,7 @@ namespace seqan {
 ..param.barBaz:Another parameter.
 ...type:nolink:$int$
  */
-	
+
 // template <>
 // class MyClass<Our>
 // {
@@ -146,6 +146,6 @@ namespace seqan {
 //     return;
 // }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // %(HEADER_GUARD)s

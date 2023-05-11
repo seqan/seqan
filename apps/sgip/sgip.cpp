@@ -33,7 +33,7 @@
 #include "sgip_base.h"
 #include "sgip_output.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Forwards
@@ -169,7 +169,7 @@ void _setupParser(TParser & parser)
 {
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setShortDescription(parser, "Solution of Graph Isomorphism Problem");
-    addUsageLine(parser, "-o <original graph> [Option]");    
+    addUsageLine(parser, "-o <original graph> [Option]");
     addSection(parser, "Mandatory Options");
     addOption(parser, ArgParseOption("o", "original", "File containing original graph", ArgParseArgument::INPUT_FILE,"IN"));
     setRequired(parser, "o");
@@ -210,7 +210,7 @@ ArgumentParser::ParseResult _parseOptions(TOption & options,
     // Only extract options if the program will continue after parse().
     if(res != ArgumentParser::PARSE_OK)
         return res;
-        
+
     // Extract option value.
     getOptionValue(options.originalFile, parser, "o");
     if (isSet(parser, "i"))

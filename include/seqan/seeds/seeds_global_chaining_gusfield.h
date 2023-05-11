@@ -41,8 +41,8 @@
 #ifndef SEQAN_SEEDS_SEEDS_GLOBAL_CHAINING_BASE_H_
 #define SEQAN_SEEDS_SEEDS_GLOBAL_CHAINING_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_GLOBAL_CHAINING_BASE_H_

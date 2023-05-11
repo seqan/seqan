@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
 #define INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

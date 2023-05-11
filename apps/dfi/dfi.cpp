@@ -32,7 +32,7 @@
 #include <fstream>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 //#define DEBUG_ENTROPY
 
@@ -49,7 +49,7 @@ typedef double TFloat;
 	{
         typedef unsigned TFreq;
         typedef String<TFreq> TFreqString;
-        
+
         // main options
         int         alphabet;   // 0..char, 1..protein, 2..dna
         int         predicate;  // 0..minmax, 1..growth, 2..entropy
@@ -76,14 +76,14 @@ typedef double TFloat;
 // predicates for the Frequent Pattern Mining Problem
 
 	// minimal frequency predicate
-	struct PredMinFreq 
-	{	
+	struct PredMinFreq
+	{
 		String<unsigned> minFreq;
 
 		template <typename TDataSet>
 		PredMinFreq(String<unsigned> _minFreq, TDataSet const &):
 			minFreq(_minFreq) {}
-			
+
 		inline bool operator()(DfiEntry_ const &entry) const {
 			for (unsigned i = 0; i < length(entry.freq); ++i)
 				if (entry.freq[i] < minFreq[i])
@@ -93,14 +93,14 @@ typedef double TFloat;
 	};
 
 	// maximal frequency predicate
-	struct PredMaxFreq 
-	{	
+	struct PredMaxFreq
+	{
 		String<unsigned> maxFreq;
 
 		template <typename TDataSet>
 		PredMaxFreq(String<unsigned> _maxFreq, TDataSet const &):
 			maxFreq(_maxFreq) {}
-			
+
 		inline bool operator()(DfiEntry_ const &entry) const {
 			for (unsigned i = 0; i < length(entry.freq); ++i)
 				if (entry.freq[i] > maxFreq[i])
@@ -115,14 +115,14 @@ typedef double TFloat;
 
 	// minimal support predicate for D0
 	struct PredMinSupp
-	{	
+	{
 		unsigned minFreq;
 
 		template <typename TDataSet>
 		PredMinSupp(TFloat _minSupp, TDataSet const &ds)
 		{
 			// emerging substring mode
-			
+
 			if ((_minSupp * (TFloat)ds[1]) < (TFloat)1) {
 				cerr << "Support must be at least 1/|db_1|... exit!" << endl;
 				exit(1);
@@ -130,7 +130,7 @@ typedef double TFloat;
 			// adapt parameters from support to frequency
 			minFreq = (unsigned) ceil(_minSupp * (TFloat)ds[1] DFI_MINUS_EPSILON);
 		}
-			
+
 		inline bool operator()(DfiEntry_ const &entry) const {
 			return entry.freq[0] >= minFreq;
 		}
@@ -145,7 +145,7 @@ typedef double TFloat;
 		PredEmerging(TFloat _growthRate, TDataSet const &ds) {
 			growthRate = _growthRate * ((TFloat) ds[1] / (TFloat) (ds[2] - ds[1]) DFI_MINUS_EPSILON);
 		}
-			
+
 		// HINT: here growthRate is frequency-related, not support-related
 		inline bool operator()(DfiEntry_ const &entry) const {
 			return (TFloat)entry.freq[0] >= (TFloat)entry.freq[1] * growthRate;
@@ -158,7 +158,7 @@ typedef double TFloat;
 
 	// minimal support predicate for at least one dataset
 	struct PredMinAllSupp
-	{	
+	{
 		String<unsigned> minFreq;
 
 		template <typename TDataSet>
@@ -169,7 +169,7 @@ typedef double TFloat;
 			for (unsigned i = 1; i < length(ds); ++i)
 				minFreq[i - 1] = (unsigned) ceil(_minSupp * (TFloat)(ds[i] - ds[i - 1]) DFI_MINUS_EPSILON);
 		}
-			
+
 		inline bool operator()(DfiEntry_ const &entry) const {
 			for (unsigned i = 0; i < length(entry.freq); ++i)
 				if (entry.freq[i] >= minFreq[i])
@@ -202,9 +202,9 @@ typedef double TFloat;
 
 			for (unsigned i = 0; i < length(entry.freq); ++i)
 				sum += (TFloat)entry.freq[i] / (TFloat)dsLengths[i];
-			
+
 			double lSum = log((double)sum);					// sum cannot be zero
-				
+
 			for (unsigned i = 0; i < length(entry.freq); ++i)
 				if (entry.freq[i])
 				{
@@ -214,8 +214,8 @@ typedef double TFloat;
 			H /= (double)-sum * log((double)length(dsLengths));		// normalize by datasets (divide by log m)
 			return H;
 		}
-			
-		inline bool operator()(DfiEntry_ const &entry) const 
+
+		inline bool operator()(DfiEntry_ const &entry) const
 		{
 			return getEntropy(entry) <= maxEntropy;
 		}
@@ -234,8 +234,8 @@ typedef double TFloat;
 //
 template <typename TSequences, typename TFileNames, typename TDatasets>
 bool loadDatasets(
-	TSequences		&seqs, 
-	TFileNames		const &fileNames, 
+	TSequences		&seqs,
+	TFileNames		const &fileNames,
 	TDatasets		&ds)
 {
 	resize(ds, length(fileNames) + 1);
@@ -267,7 +267,7 @@ struct SubstringEntry
 template <typename TSubstringEntry>
 struct LessSubstringEnd : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 {
-	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const 
+	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const
 	{
 		// sequence number
 		if (a.lPos.i1 < b.lPos.i1) return true;
@@ -275,15 +275,15 @@ struct LessSubstringEnd : public std::function<bool (TSubstringEntry, TSubstring
 
 		// end position
 		unsigned x = a.lPos.i2 + a.len;
-		unsigned y = b.lPos.i2 + b.len;		
+		unsigned y = b.lPos.i2 + b.len;
 		if (x < y) return true;
 		if (x > y) return false;
-		
+
 		x = a.range.i2 - a.range.i1;
 		y = b.range.i2 - b.range.i1;
 		if (x < y) return true;
 		if (x > y) return false;
-		
+
 		return a.len > b.len;
 	}
 };
@@ -291,7 +291,7 @@ struct LessSubstringEnd : public std::function<bool (TSubstringEntry, TSubstring
 template <typename TSubstringEntry>
 struct LessRange : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 {
-	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const 
+	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const
 	{
 		// left border
 		if (a.range.i1 < b.range.i1) return true;
@@ -308,7 +308,7 @@ struct LessRange : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 template <typename TSubstringEntry>
 struct LessLex : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 {
-	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const 
+	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const
 	{
 		if (a.range.i1 < b.range.i1) return true;
 		if (a.range.i1 > b.range.i1) return false;
@@ -323,11 +323,11 @@ inline void compactMatches(TMatchString &matches)
 	TIter src = begin(matches, Standard());
 	TIter dst = src;
 	TIter srcEnd = end(matches, Standard());
-	
+
 	unsigned lastSeq = ~0;
 	unsigned lastPos = 0;
 	unsigned lastRange = 0;
-	
+
 	if (src == srcEnd) return;
 	for (; src != srcEnd; ++src)
 	{
@@ -355,10 +355,10 @@ inline void compactSameParentFreqMatches(TMatchString &matches)
 	TIter src = begin(matches, Standard());
 	TIter dst = src;
 	TIter srcEnd = end(matches, Standard());
-	
+
 	unsigned r1 = ~0;
 	unsigned r2 = ~0;
-	
+
 	if (src == srcEnd) return;
 	for (; src != srcEnd; ++src)
 	{
@@ -388,7 +388,7 @@ inline void compactSameSuffLinkFreqMatches(TMatchString &matches, TIndex const &
 	unsigned lastSeq = ~0;
 	unsigned lastPos = 0;
 	unsigned lastFreqSum = ~0;
-	
+
 	for (; src != srcEnd; ++src)
 	{
 		// count frequencies (debug)
@@ -418,13 +418,13 @@ inline void compactSameSuffLinkFreqMatches(TMatchString &matches, TIndex const &
 	resize(matches, dst - begin(matches, Standard()));
 }
 
-//namespace seqan {
+//namespace seqan2 {
 ///*
 //	template < typename TObject, typename TPredHull, typename TPred >
-//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreSA> 
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreSA>
 //	{
 //		typedef Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
-//		typedef String< 
+//		typedef String<
 //			typename SAValue<TIndex>::Type,
 //			MMap<>
 //		> Type;
@@ -435,16 +435,16 @@ inline void compactSameSuffLinkFreqMatches(TMatchString &matches, TIndex const &
 //*/
 //
 ///*	template < typename TObject, typename TPredHull, typename TPred >
-//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir> 
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir>
 //	{
 //		typedef Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > TIndex;
-//		typedef String< 
+//		typedef String<
 //			typename Size<TIndex>::Type,
 //			MMap<>
 //		> Type;
 //	};
 //	template < typename TObject, typename TPredHull, typename TPred >
-//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > const, FibreDir>: 
+//	struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > > const, FibreDir>:
 //		public struct Fibre< Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >, FibreDir> {};
 //*/
 //
@@ -471,8 +471,8 @@ inline void compactSameSuffLinkFreqMatches(TMatchString &matches, TIndex const &
 // paramPredHull .. parameter for the monotonic hull
 //
 template <
-	typename TPredHull, 
-	typename TPred, 
+	typename TPredHull,
+	typename TPred,
 	typename TAlphabet,
 	typename TParamPredHull,
 	typename TParamPred,
@@ -513,7 +513,7 @@ int runDFI(
 	String<unsigned>	dbLookup;
 	String<bool>		seen;
 	DfiEntry_			entry;
-	
+
 	resize(dbLookup, length(mySet));
 	resize(seen, length(mySet));
 	resize(entry.freq, length(ds) - 1);
@@ -522,7 +522,7 @@ int runDFI(
 		while (ds[d + 1] == i) ++d;
 		dbLookup[i] = d;
 	}
-#ifdef DEBUG_ENTROPY	
+#ifdef DEBUG_ENTROPY
 	PredEntropy			entrp(0, ds);
 	unsigned			freqSumLast = ~0;
 #endif
@@ -540,7 +540,7 @@ int runDFI(
     else
         buf = cout.rdbuf();
     std::ostream out(buf);
-	
+
 	if (maximal)
 	{
 		for (unsigned m = 0; !atEnd(it); goNext(it), ++m)
@@ -559,7 +559,7 @@ int runDFI(
 				matches[m].len = ~0u;
 			}
 		}
-		
+
 		sort(begin(matches, Standard()), end(matches, Standard()), LessSubstringEnd<TSubstringEntry>());
 		compactMatches(matches);
 		sort(begin(matches, Standard()), end(matches, Standard()), LessRange<TSubstringEntry>());
@@ -567,11 +567,11 @@ int runDFI(
 		sort(begin(matches, Standard()), end(matches, Standard()), LessSubstringEnd<TSubstringEntry>());
 		compactSameSuffLinkFreqMatches(matches, index, dbLookup, seen, entry);
 		sort(begin(matches, Standard()), end(matches, Standard()), LessLex<TSubstringEntry>());
-		
+
 		typedef typename Iterator<String<TSubstringEntry>, Standard>::Type TMatchIter;
 		TMatchIter mit = begin(matches, Standard());
 		TMatchIter mitEnd = end(matches, Standard());
-		
+
 		for (; mit != mitEnd; ++mit)
 		{
 #ifdef DEBUG_ENTROPY
@@ -593,7 +593,7 @@ int runDFI(
 					++freqSum;
 				}
 			}
-				
+
 			double H = entrp.getEntropy(entry);
 			if (H <= 0.0) H = 0.0;
 //			if (freqSum != freqSumLast)
@@ -606,7 +606,7 @@ int runDFI(
 				out << "]      \"";
 #endif
 				out << infix(
-					mySet[getSeqNo((*mit).lPos)], 
+					mySet[getSeqNo((*mit).lPos)],
 					getSeqOffset((*mit).lPos),
 					getSeqOffset((*mit).lPos) + (*mit).len);
 #ifdef DEBUG_ENTROPY
@@ -616,7 +616,7 @@ int runDFI(
 				out << endl;
 			}
 		}
-	} 
+	}
 	else
 	{
 		for (; !atEnd(it); goNext(it))
@@ -642,7 +642,7 @@ int runDFI(
 						++entry.freq[dbLookup[seqNo]];
 					}
 				}
-					
+
 				double H = entrp.getEntropy(entry);
 				if (H <= 0.0) H = 0.0;
 				out << left << setw(14) << H << "[";
@@ -661,7 +661,7 @@ int runDFI(
 			}
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -723,7 +723,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
 	addUsageLine(parser, "[OPTION]... --minmax  <min_1> <max_1> <database 1> ... --minmax <min_m> <max_m> <database m>");
 	addUsageLine(parser, "[OPTION]... --growth  <rho_g> --support <rho_s> <database 1> <database 2>");
 	addUsageLine(parser, "[OPTION]... --entropy <alpha> --support <rho_s> <database 1> <database 2> ... <database m>");
-	
+
 	addOption(parser, CommandLineOption("f",  "minmax",  2, "solve Frequent Pattern Mining Problem", OptionType::Int | OptionType::Label | OptionType::List));
 	addOption(parser, CommandLineOption("g",  "growth",  2, "solve Emerging Substring Mining Problem", OptionType::Double | OptionType::Label));
 	addOption(parser, CommandLineOption("e",  "entropy", 2, "solve Entropy Mining Problem", OptionType::Double | OptionType::Label));
@@ -805,7 +805,7 @@ extractOptions(
 
 int main(int argc, const char *argv[])
 {
-    DFIOptions options;    
+    DFIOptions options;
 
     // Set up command line parser.
     ArgumentParser parser;
@@ -826,7 +826,7 @@ int main(int argc, const char *argv[])
         cerr << "Exiting ..." << endl;
         return 1;
     }
-	
+
 	switch (options.predicate)
 	{
 		case 0:

@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/journaled_set.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_journaled_set_constructor)
 {

@@ -63,12 +63,12 @@ inline MyBioType_ unknownValueImpl(MyBioType_ * /*tag*/)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_bio_gap_value_function)
 {
-    SEQAN_ASSERT_EQ(seqan::gapValue<MyBioType_>().value, -1);
+    SEQAN_ASSERT_EQ(seqan2::gapValue<MyBioType_>().value, -1);
 }
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_bio_unknown_value_function)
 {
-    SEQAN_ASSERT_EQ(seqan::unknownValue<MyBioType_>().value, -2);
+    SEQAN_ASSERT_EQ(seqan2::unknownValue<MyBioType_>().value, -2);
 }
 
 #endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_

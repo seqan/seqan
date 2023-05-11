@@ -55,8 +55,8 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
 {
     clear(read);
 
-    typedef typename seqan::Iterator<TFrag>::Type TFragIter;
-    TFragIter it = begin(frag, seqan::Standard());
+    typedef typename seqan2::Iterator<TFrag>::Type TFragIter;
+    TFragIter it = begin(frag, seqan2::Standard());
 
     for (unsigned i = 0; i < length(cigar); ++i)
     {
@@ -86,9 +86,9 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
             // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
 
             if (cigar[i].operation == 'I')
-                appendValue(read, seqan::Dna5(num));
+                appendValue(read, seqan2::Dna5(num));
             else
-                appendValue(read, seqan::Dna5(num + (num == ordValue(*it))));
+                appendValue(read, seqan2::Dna5(num + (num == ordValue(*it))));
         }
     }
 }
@@ -142,14 +142,14 @@ void SangerSequencingSimulator::simulateRead(
     this->_simulateCigar(cigar, sampleLength);
 
     // Simulate sequence (materialize mismatches and insertions).
-    typedef seqan::ModifiedString<seqan::ModifiedString<TFragment, seqan::ModView<seqan::FunctorComplement<seqan::Dna5> > >, seqan::ModReverse> TRevCompFrag;
+    typedef seqan2::ModifiedString<seqan2::ModifiedString<TFragment, seqan2::ModView<seqan2::FunctorComplement<seqan2::Dna5> > >, seqan2::ModReverse> TRevCompFrag;
     if ((dir == LEFT) && (strand == FORWARD))
     {
         _simulateSequence(seq, rng, prefix(frag, sampleLength), cigar);
     }
     else if ((dir == LEFT) && (strand == REVERSE))
     {
-        seqan::Prefix<TFragment>::Type holder(prefix(frag, sampleLength));
+        seqan2::Prefix<TFragment>::Type holder(prefix(frag, sampleLength));
         _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
     }
     else if ((dir == RIGHT) && (strand == FORWARD))
@@ -158,7 +158,7 @@ void SangerSequencingSimulator::simulateRead(
     }
     else  // ((dir == RIGHT) && (strand == REVERSE))
     {
-        seqan::Suffix<TFragment>::Type holder(suffix(frag, length(frag) - sampleLength));
+        seqan2::Suffix<TFragment>::Type holder(suffix(frag, length(frag) - sampleLength));
         _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
     }
 

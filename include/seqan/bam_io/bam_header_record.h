@@ -38,7 +38,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_HEADER_RECORD_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_HEADER_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -478,6 +478,6 @@ setSortOrder(BamHeader & header, BamSortOrder sortOrder)
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_HEADER_RECORD_H_

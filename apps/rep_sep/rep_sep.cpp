@@ -33,7 +33,7 @@
 #include "column_scanner.h"
 #include "rgraph.h"
 
-using namespace seqan;
+using namespace seqan2;
 using namespace std;
 
 struct RepSepOptions
@@ -65,7 +65,7 @@ struct RepSepOptions
     {}
 };
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(RepSepOptions & options, int argc, char const ** argv)
 {
     ArgumentParser parser;
@@ -104,10 +104,10 @@ parseCommandLine(RepSepOptions & options, int argc, char const ** argv)
     addOption(parser, ArgParseOption("", "hsce", "Solve the problem with the single-component-expansion (sce) heuristic."));
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // extract option values
@@ -128,7 +128,7 @@ parseCommandLine(RepSepOptions & options, int argc, char const ** argv)
     options.hmce = isSet(parser, "hmce");
     options.hsce = isSet(parser, "hsce") && !options.hmce; // we prefer hmce
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 int main(int argc, const char * argv[])
@@ -136,8 +136,8 @@ int main(int argc, const char * argv[])
     RepSepOptions options;
     ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // run starts
     SEQAN_PROTIMESTART(profileTime);

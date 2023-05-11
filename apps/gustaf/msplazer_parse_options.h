@@ -39,7 +39,7 @@
 #include <seqan/sequence.h>
 #include "msplazer.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // /////////////////////////////////////////////////////////////////////////////
 // Parses options from command line parser and writes them into options object
@@ -88,7 +88,7 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
     getOptionValue(msplazerOptions.breakendThresh, parser, "bth");
     getOptionValue(msplazerOptions.tandemThresh, parser, "tth");
     getOptionValue(msplazerOptions.breakpointPosRange, parser, "pth");
-    if (isSet(parser, "cbp"))    
+    if (isSet(parser, "cbp"))
         msplazerOptions.inferComplexBP = false;
     getOptionValue(msplazerOptions.support, parser, "st");
     getOptionValue(msplazerOptions.mateSupport, parser, "mst");

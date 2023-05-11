@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_DP_PARALLEL_DP_PARALLEL_SCOUT_H_
 #define INCLUDE_SEQAN_DP_PARALLEL_DP_PARALLEL_SCOUT_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -260,6 +260,6 @@ _incVerticalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, TSpec> > & sc
     ++scout.verticalPos;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_DP_PARALLEL_DP_PARALLEL_SCOUT_H_

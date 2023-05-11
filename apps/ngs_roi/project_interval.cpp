@@ -45,7 +45,7 @@ void IntersectBed::pushBed(TBedRecord const & bedRecord)
     {
         std::cerr << "pushBed()\n"
                   << "  ";
-        writeRecord(std::cerr, bedRecord, seqan::Bed());
+        writeRecord(std::cerr, bedRecord, seqan2::Bed());
     }
 
     // Handle contig transition, we can unconditionally update rId.
@@ -61,9 +61,9 @@ void IntersectBed::pushBed(TBedRecord const & bedRecord)
 // Member Function IntersectBed::writeEmptyBed()
 // ----------------------------------------------------------------------------
 
-void IntersectBed::writeEmptyBed(seqan::BedRecord<seqan::Bed6> const & bedRecord)
+void IntersectBed::writeEmptyBed(seqan2::BedRecord<seqan2::Bed6> const & bedRecord)
 {
-    seqan::RoiRecord roiRecord;
+    seqan2::RoiRecord roiRecord;
     roiRecord.ref = bedRecord.ref;
     roiRecord.beginPos = bedRecord.beginPos;
     roiRecord.endPos = bedRecord.endPos;
@@ -96,7 +96,7 @@ void IntersectBed::processFirstBedRecord()
         if (!bedRecords.empty())
         {
             std::cerr << "  ";
-            writeRecord(std::cerr, bedRecords.front(), seqan::Bed());
+            writeRecord(std::cerr, bedRecords.front(), seqan2::Bed());
         }
     }
 
@@ -131,7 +131,7 @@ void IntersectBed::processFirstBedRecord()
         if (options.verbosity >= 2)
         {
             std::cerr << "ROI RECORD\t";
-            writeRecord(std::cerr, *rangeEnd, seqan::Roi());
+            writeRecord(std::cerr, *rangeEnd, seqan2::Roi());
         }
         continue;
     }
@@ -157,12 +157,12 @@ void IntersectBed::processFirstBedRecord()
     }
 
     // Create bitmap marking positions as connected/covered.
-    seqan::String<bool> connected;
+    seqan2::String<bool> connected;
     resize(connected, endPos - beginPos, false);
     updateConnectivity(connected, beginPos, bedRecord, rangeBegin, rangeEnd);
 
     // Create array with counts.
-    seqan::String<int> counts;
+    seqan2::String<int> counts;
     resize(counts, endPos - beginPos, 0);
     for (TRoiIter it = rangeBegin; it != rangeEnd; ++it)
         for (unsigned j = it->beginPos - beginPos, i = 0; i < length(it->count); ++i, ++j)
@@ -205,7 +205,7 @@ void IntersectBed::pushRoi(TRoiRecord const & roiRecord)
     {
         std::cerr << "pushRoi()\n"
                   << "  ";
-        writeRecord(std::cerr, roiRecord, seqan::Roi());
+        writeRecord(std::cerr, roiRecord, seqan2::Roi());
     }
 
     // Handle contig transition, we can unconditionally update ref.
@@ -250,9 +250,9 @@ void IntersectBed::finishContig()
 // Member Functions IntersectBed::updateConnectivity()
 // ----------------------------------------------------------------------------
 
-void IntersectBed::updateConnectivity(seqan::String<bool> & bitmap,
+void IntersectBed::updateConnectivity(seqan2::String<bool> & bitmap,
                                       int beginPos,  // position of bitmap[0]
-                                      seqan::BedRecord<seqan::Bed6> const & bedRecord,
+                                      seqan2::BedRecord<seqan2::Bed6> const & bedRecord,
                                       std::list<TRoiRecord>::const_iterator const & rangeBegin,
                                       std::list<TRoiRecord>::const_iterator const & rangeEnd)
 {
@@ -292,17 +292,17 @@ void IntersectBed::updateConnectivity(seqan::String<bool> & bitmap,
 // Member Functions IntersectBed::writeRois()
 // ----------------------------------------------------------------------------
 
-void IntersectBed::writeRois(seqan::String<bool> const & bitmap,
-                             seqan::String<int> const & counts,
+void IntersectBed::writeRois(seqan2::String<bool> const & bitmap,
+                             seqan2::String<int> const & counts,
                              int beginPos,  // position of bitmap[0] and counts[0]
-                             seqan::BedRecord<seqan::Bed6> const & bedRecord)
+                             seqan2::BedRecord<seqan2::Bed6> const & bedRecord)
 {
     // We will build a string of ranges in bitmap/counts for writing out.  The bitmap is used depending on the
     // combination mode.
-    typedef seqan::Pair<int, int> TIntPair;
-    seqan::String<TIntPair> pairs;
+    typedef seqan2::Pair<int, int> TIntPair;
+    seqan2::String<TIntPair> pairs;
     // We also generate the names of the new regions.
-    seqan::StringSet<seqan::CharString> names;
+    seqan2::StringSet<seqan2::CharString> names;
 
     switch (options.mode)
     {
@@ -360,7 +360,7 @@ void IntersectBed::writeRois(seqan::String<bool> const & bitmap,
         appendValue(names, ss.str());
     }
 
-    seqan::RoiRecord record;
+    seqan2::RoiRecord record;
     for (unsigned i = 0; i < length(pairs); ++i)
     {
         clear(record);

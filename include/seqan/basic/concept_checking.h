@@ -44,7 +44,7 @@
 #ifndef INCLUDE_SEQAN_BASIC_CONCEPT_CHECKING_H_
 #define INCLUDE_SEQAN_BASIC_CONCEPT_CHECKING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ---------------------------------------------------------------------------
 // ==> boost/static_assert.hpp <==
@@ -125,8 +125,8 @@ struct concept_check_<void(*)(Model)>
 {};
 
 #  define SEQAN_CONCEPT_ASSERT_FN( ModelFnPtr )             \
-    typedef seqan::detail::instantiate<          \
-    &seqan::requirement_<ModelFnPtr>::failed>    \
+    typedef seqan2::detail::instantiate<          \
+    &seqan2::requirement_<ModelFnPtr>::failed>    \
       SEQAN_PP_CAT(seqan_concept_check,__LINE__) SEQAN_UNUSED
 
 // ---------------------------------------------------------------------------
@@ -233,7 +233,7 @@ struct usage_requirements
  */
 
 #define SEQAN_CONCEPT_USAGE(model)                                      \
-    SEQAN_CONCEPT_ASSERT((seqan::usage_requirements<model>));           \
+    SEQAN_CONCEPT_ASSERT((seqan2::usage_requirements<model>));           \
     ~model()
 
 // ---------------------------------------------------------------------------
@@ -322,8 +322,8 @@ struct requirement_<void(*)(Model)>
 {};
 
 #  define SEQAN_CONCEPT_ASSERT_FN( ModelFnPtr )             \
-    typedef seqan::detail::instantiate<          \
-    &seqan::requirement_<ModelFnPtr>::failed>    \
+    typedef seqan2::detail::instantiate<          \
+    &seqan2::requirement_<ModelFnPtr>::failed>    \
       SEQAN_PP_CAT(seqan_concept_check,__LINE__) SEQAN_UNUSED
 
 // ---------------------------------------------------------------------------
@@ -356,7 +356,7 @@ template <int check, class Result>
 struct Requires_ : unaryfunptr_arg_type<Result>
 {};
 
-#  define SEQAN_CONCEPT_REQUIRES_(r,data,t) + (seqan::_requires_<void(*)t>::value)
+#  define SEQAN_CONCEPT_REQUIRES_(r,data,t) + (seqan2::_requires_<void(*)t>::value)
 
 #if defined(NDEBUG)
 
@@ -366,7 +366,7 @@ struct Requires_ : unaryfunptr_arg_type<Result>
 #else  // #if defined(NDEBUG)
 
 # define SEQAN_CONCEPT_REQUIRES(models, result)                                        \
-    typename seqan::Requires_<                                                       \
+    typename seqan2::Requires_<                                                       \
       (0 SEQAN_PP_SEQ_FOR_EACH(SEQAN_CONCEPT_REQUIRES_, ~, models)),                   \
       void(*)result                                                                 \
     >::type
@@ -726,6 +726,6 @@ struct Is< TConcept<TModel> >:
     IsRecurse_<TConcept<TModel>, typename Implements<TModel>::Type> {};
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BASIC_CONCEPT_CHECKING_H_

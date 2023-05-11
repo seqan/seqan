@@ -65,35 +65,35 @@ public:
     // The sequencing simulation information to use.
     SequencingSimulationInfo & info;
     // The read sequence; state, restored after call
-    seqan::Dna5String & seq;
+    seqan2::Dna5String & seq;
     // State for integer to string conversion and such.
     std::stringstream & ss;
-    seqan::CharString & buffer;
+    seqan2::CharString & buffer;
     // Quality string of our class.
-    seqan::CharString const & qual;
+    seqan2::CharString const & qual;
     // Position map to use.
     PositionMap const & posMap;
     // Reference name and sequence.
-    seqan::CharString const & refName;
-    seqan::Dna5String /*const*/ & refSeq;
+    seqan2::CharString const & refName;
+    seqan2::Dna5String /*const*/ & refSeq;
     // ID of reference, haplotype, and fragment.
     int rID, hID, fID;
 
     SingleEndRecordBuilder(SequencingSimulationInfo & info,
-                           seqan::Dna5String & seq,
+                           seqan2::Dna5String & seq,
                            std::stringstream & ss,
-                           seqan::CharString & buffer,
-                           seqan::CharString const & qual,
+                           seqan2::CharString & buffer,
+                           seqan2::CharString const & qual,
                            PositionMap const & posMap,
-                           seqan::CharString const & refName,
-                           seqan::Dna5String /*const*/ & refSeq,
+                           seqan2::CharString const & refName,
+                           seqan2::Dna5String /*const*/ & refSeq,
                            int rID, int hID, int fID) :
             info(info), seq(seq), ss(ss), buffer(buffer), qual(qual), posMap(posMap), refName(refName), refSeq(refSeq),
             rID(rID), hID(hID), fID(fID)
     {}
 
     // Fills all members of record except for qName which uses shared logic in ReadSimulatorThread.
-    void build(seqan::BamAlignmentRecord & record)
+    void build(seqan2::BamAlignmentRecord & record)
     {
         _initialize(record);
 
@@ -117,16 +117,16 @@ public:
     }
 
     // Reset the record to be empty and reset records used for paired-end info.
-    void _initialize(seqan::BamAlignmentRecord & record)
+    void _initialize(seqan2::BamAlignmentRecord & record)
     {
         // Reset record.
         clear(record);
 
         // Mark clear single-end fields.
         record.flag = 0;
-        record.rNextId = seqan::BamAlignmentRecord::INVALID_REFID;
-        record.pNext = seqan::BamAlignmentRecord::INVALID_POS;
-        record.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
+        record.rNextId = seqan2::BamAlignmentRecord::INVALID_REFID;
+        record.pNext = seqan2::BamAlignmentRecord::INVALID_POS;
+        record.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
 
         // Update info and set query name.
         info.rID = rID;
@@ -134,17 +134,17 @@ public:
     }
 
     // Fill the record's members for an unaligned record.
-    void _fillUnaligned(seqan::BamAlignmentRecord & record, bool overlapsWithBreakpoint)
+    void _fillUnaligned(seqan2::BamAlignmentRecord & record, bool overlapsWithBreakpoint)
     {
         // Record for unaligned single-end read.
-        record.flag = seqan::BAM_FLAG_UNMAPPED;
-        record.rID = seqan::BamAlignmentRecord::INVALID_REFID;
-        record.beginPos = seqan::BamAlignmentRecord::INVALID_POS;
+        record.flag = seqan2::BAM_FLAG_UNMAPPED;
+        record.rID = seqan2::BamAlignmentRecord::INVALID_REFID;
+        record.beginPos = seqan2::BamAlignmentRecord::INVALID_POS;
         record.seq = seq;
         record.qual = qual;
 
         // Write out some tags with the information.
-        seqan::BamTagsDict tagsDict(record.tags);
+        seqan2::BamTagsDict tagsDict(record.tags);
         // Set tag with the eason for begin unmapped: Inserted or over breakpoint.  We only reach here if the alignment
         // does not overlap with a breakpoint in the case that the alignment is in an inserted region.
         setTagValue(tagsDict, "uR", overlapsWithBreakpoint ? 'B' : 'I', 'A');
@@ -156,7 +156,7 @@ public:
     }
 
     // Fill the record's members for an aligned record.
-    void _fillAligned(seqan::BamAlignmentRecord & record,
+    void _fillAligned(seqan2::BamAlignmentRecord & record,
                       int len = 0)
     {
         // Convert from coordinate system with SVs to coordinate system with small variants.
@@ -171,7 +171,7 @@ public:
 
         // Set the RC flag in the record.
         if (info.isForward == isRC)
-            record.flag |= seqan::BAM_FLAG_RC;
+            record.flag |= seqan2::BAM_FLAG_RC;
 
         // Perform the alignment to compute the edit distance and the CIGAR string.
         int editDistance = 0;
@@ -201,10 +201,10 @@ public:
     }
 
     // Perform the realignment and set cigar string.
-    void _alignAndSetCigar(seqan::BamAlignmentRecord & record,
+    void _alignAndSetCigar(seqan2::BamAlignmentRecord & record,
                            int & editDistance,
-                           seqan::CharString & mdString,
-                           seqan::Dna5String & seq,
+                           seqan2::CharString & mdString,
+                           seqan2::Dna5String & seq,
                            int & beginPos,
                            int endPos)
     {
@@ -214,12 +214,12 @@ public:
 
         // Realign the read sequence against the original interval.  We add some padding so insertions into the read at
         // the ends can be converted to matches/mismatches as they appear after the mapping.
-        typedef seqan::Infix<seqan::Dna5String>::Type TContigInfix;
+        typedef seqan2::Infix<seqan2::Dna5String>::Type TContigInfix;
         TContigInfix contigInfix(refSeq, beginPos - PADDING_BEGIN, endPos + PADDING_END);
-        seqan::Gaps<TContigInfix> gapsContig(contigInfix);
-        seqan::Gaps<seqan::Dna5String> gapsRead(seq);
-        seqan::Score<int, seqan::Simple> sScheme(0, -1000, -1001, -1002);
-        seqan::AlignConfig<true, false, false, true> alignConfig;
+        seqan2::Gaps<TContigInfix> gapsContig(contigInfix);
+        seqan2::Gaps<seqan2::Dna5String> gapsRead(seq);
+        seqan2::Score<int, seqan2::Simple> sScheme(0, -1000, -1001, -1002);
+        seqan2::AlignConfig<true, false, false, true> alignConfig;
 
         int buffer = 3;  // should be unnecessary
         int uDiag = std::max((int)(length(contigInfix) - length(seq)), 0) + buffer;
@@ -228,26 +228,26 @@ public:
         editDistance = globalAlignment(gapsContig, gapsRead, sScheme, alignConfig, lDiag, uDiag);
         editDistance /= -1000;  // score to edit distance
 
-        beginPos += countGaps(begin(gapsRead, seqan::Standard())) - PADDING_BEGIN;
+        beginPos += countGaps(begin(gapsRead, seqan2::Standard())) - PADDING_BEGIN;
         while (isGap(gapsRead, length(gapsRead) - 1))
         {
             setClippedEndPosition(gapsRead, length(gapsRead) - 1);
             setClippedEndPosition(gapsContig, length(gapsContig) - 1);
         }
-        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
-        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
+        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan2::Standard())));
+        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan2::Standard())));
 
         getCigarString(record.cigar, gapsContig, gapsRead, std::numeric_limits<int>::max());
         getMDString(mdString, gapsContig, gapsRead);
     }
 
     // Fill the tags dict.
-    void _fillTags(seqan::BamAlignmentRecord & record,
+    void _fillTags(seqan2::BamAlignmentRecord & record,
                    SequencingSimulationInfo & infoRecord,
                    int editDistance,
-                   seqan::CharString const & mdString)
+                   seqan2::CharString const & mdString)
     {
-        seqan::BamTagsDict tagsDict(record.tags);
+        seqan2::BamTagsDict tagsDict(record.tags);
         setTagValue(tagsDict, "NM", editDistance);        // edit distance to reference
         setTagValue(tagsDict, "MD", toCString(mdString));
 
@@ -284,41 +284,41 @@ public:
     SequencingSimulationInfo & infoL;
     SequencingSimulationInfo & infoR;
     // The read sequences; state, restored after call.
-    seqan::Dna5String & seqL;
-    seqan::Dna5String & seqR;
+    seqan2::Dna5String & seqL;
+    seqan2::Dna5String & seqR;
     // State for integer to string conversion and such.
     std::stringstream & ss;
-    seqan::CharString & buffer;
+    seqan2::CharString & buffer;
     // Quality strings.
-    seqan::CharString & qualL;
-    seqan::CharString & qualR;
+    seqan2::CharString & qualL;
+    seqan2::CharString & qualR;
     // Position map to use for coordinate conversion.
     PositionMap const & posMap;
     // Reference name and sequence.
-    seqan::CharString const & refName;
-    seqan::Dna5String /*const*/ & refSeq;
+    seqan2::CharString const & refName;
+    seqan2::Dna5String /*const*/ & refSeq;
     // ID of teh reference, haplotype, and fragment.
     int rID, hID, fID;
 
     PairedEndRecordBuilder(SequencingSimulationInfo & infoL,
                            SequencingSimulationInfo & infoR,
-                           seqan::Dna5String & seqL,
-                           seqan::Dna5String & seqR,
+                           seqan2::Dna5String & seqL,
+                           seqan2::Dna5String & seqR,
                            std::stringstream & ss,
-                           seqan::CharString & buffer,
-                           seqan::CharString & qualL,
-                           seqan::CharString & qualR,
+                           seqan2::CharString & buffer,
+                           seqan2::CharString & qualL,
+                           seqan2::CharString & qualR,
                            PositionMap const & posMap,
-                           seqan::CharString const & refName,
-                           seqan::Dna5String /*const*/ & refSeq,
+                           seqan2::CharString const & refName,
+                           seqan2::Dna5String /*const*/ & refSeq,
                            int rID, int hID, int fID) :
             infoL(infoL), infoR(infoR), seqL(seqL), seqR(seqR), ss(ss), buffer(buffer), qualL(qualL), qualR(qualR),
             posMap(posMap), refName(refName), refSeq(refSeq), rID(rID), hID(hID), fID(fID)
     {}
 
     // Fills all record members, excdept for qName which uses shared logic in ReadSimulatorThread.
-    void build(seqan::BamAlignmentRecord & recordL,
-               seqan::BamAlignmentRecord & recordR)
+    void build(seqan2::BamAlignmentRecord & recordL,
+               seqan2::BamAlignmentRecord & recordR)
     {
         _initialize(recordL, recordR);
 
@@ -357,13 +357,13 @@ public:
         // -------------------------------------------------------------------
         //
         // This is surprisingly complex.
-        recordL.flag |= seqan::BAM_FLAG_FIRST | seqan::BAM_FLAG_MULTIPLE;
-        recordR.flag |= seqan::BAM_FLAG_LAST  | seqan::BAM_FLAG_MULTIPLE;
+        recordL.flag |= seqan2::BAM_FLAG_FIRST | seqan2::BAM_FLAG_MULTIPLE;
+        recordR.flag |= seqan2::BAM_FLAG_LAST  | seqan2::BAM_FLAG_MULTIPLE;
 
         if (!unmappedL && !unmappedR)
         {
-            recordL.flag |= seqan::BAM_FLAG_ALL_PROPER;
-            recordR.flag |= seqan::BAM_FLAG_ALL_PROPER;
+            recordL.flag |= seqan2::BAM_FLAG_ALL_PROPER;
+            recordR.flag |= seqan2::BAM_FLAG_ALL_PROPER;
             if (recordL.rID == recordR.rID)
             {
                 if (recordL.beginPos < recordR.beginPos)
@@ -374,8 +374,8 @@ public:
             }
             else
             {
-                recordL.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
-                recordR.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
+                recordL.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
+                recordR.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
             }
 
             recordL.rNextId = recordR.rID;
@@ -384,41 +384,41 @@ public:
             recordR.pNext = recordL.beginPos;
 
             if (hasFlagRC(recordL))
-                recordR.flag |= seqan::BAM_FLAG_NEXT_RC;
+                recordR.flag |= seqan2::BAM_FLAG_NEXT_RC;
             if (hasFlagRC(recordR))
-                recordL.flag |= seqan::BAM_FLAG_NEXT_RC;
+                recordL.flag |= seqan2::BAM_FLAG_NEXT_RC;
         }
         else if (!unmappedL && unmappedR)
         {
             recordR.rID = recordL.rID;
             recordR.beginPos = recordL.beginPos;
-            recordR.flag |= seqan::BAM_FLAG_UNMAPPED;
-            recordL.flag |= seqan::BAM_FLAG_NEXT_UNMAPPED;
+            recordR.flag |= seqan2::BAM_FLAG_UNMAPPED;
+            recordL.flag |= seqan2::BAM_FLAG_NEXT_UNMAPPED;
 
-            recordL.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
-            recordR.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
+            recordL.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
+            recordR.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
         }
         else if (unmappedL && !unmappedR)
         {
             recordL.rID = recordR.rID;
             recordL.beginPos = recordR.beginPos;
-            recordL.flag |= seqan::BAM_FLAG_UNMAPPED;
-            recordR.flag |= seqan::BAM_FLAG_NEXT_UNMAPPED;
+            recordL.flag |= seqan2::BAM_FLAG_UNMAPPED;
+            recordR.flag |= seqan2::BAM_FLAG_NEXT_UNMAPPED;
 
-            recordL.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
-            recordR.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
+            recordL.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
+            recordR.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
         }
         else if (unmappedL && unmappedR)
         {
-            recordL.flag |= seqan::BAM_FLAG_UNMAPPED;
-            recordR.flag |= seqan::BAM_FLAG_NEXT_UNMAPPED;
-            recordL.flag |= seqan::BAM_FLAG_UNMAPPED;
-            recordR.flag |= seqan::BAM_FLAG_NEXT_UNMAPPED;
+            recordL.flag |= seqan2::BAM_FLAG_UNMAPPED;
+            recordR.flag |= seqan2::BAM_FLAG_NEXT_UNMAPPED;
+            recordL.flag |= seqan2::BAM_FLAG_UNMAPPED;
+            recordR.flag |= seqan2::BAM_FLAG_NEXT_UNMAPPED;
         }
     }
 
     // Reset the record to be empty and reset records used for paired-end info.
-    void _initialize(seqan::BamAlignmentRecord & recordL, seqan::BamAlignmentRecord & recordR)
+    void _initialize(seqan2::BamAlignmentRecord & recordL, seqan2::BamAlignmentRecord & recordR)
     {
         // Reset record.
         clear(recordL);
@@ -426,13 +426,13 @@ public:
 
         // Mark clear single-end fields.
         recordL.flag = 0;
-        recordL.rNextId = seqan::BamAlignmentRecord::INVALID_REFID;
-        recordL.pNext = seqan::BamAlignmentRecord::INVALID_POS;
-        recordL.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
+        recordL.rNextId = seqan2::BamAlignmentRecord::INVALID_REFID;
+        recordL.pNext = seqan2::BamAlignmentRecord::INVALID_POS;
+        recordL.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
         recordR.flag = 0;
-        recordR.rNextId = seqan::BamAlignmentRecord::INVALID_REFID;
-        recordR.pNext = seqan::BamAlignmentRecord::INVALID_POS;
-        recordR.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
+        recordR.rNextId = seqan2::BamAlignmentRecord::INVALID_REFID;
+        recordR.pNext = seqan2::BamAlignmentRecord::INVALID_POS;
+        recordR.tLen = seqan2::BamAlignmentRecord::INVALID_LEN;
 
         // Update info and set query name.
         infoL.rID = rID;
@@ -442,21 +442,21 @@ public:
     }
 
     // Fill the record's members for an unaligned record.
-    void _fillUnaligned(seqan::BamAlignmentRecord & record,
+    void _fillUnaligned(seqan2::BamAlignmentRecord & record,
                         SequencingSimulationInfo & infoRecord,
-                        seqan::Dna5String const & seq,
-                        seqan::CharString const & qual,
+                        seqan2::Dna5String const & seq,
+                        seqan2::CharString const & qual,
                         bool overlapsWithBreakpoint)
     {
         // Record for unaligned single-end read.
-        record.flag = seqan::BAM_FLAG_UNMAPPED;
-        record.rID = seqan::BamAlignmentRecord::INVALID_REFID;
-        record.beginPos = seqan::BamAlignmentRecord::INVALID_POS;
+        record.flag = seqan2::BAM_FLAG_UNMAPPED;
+        record.rID = seqan2::BamAlignmentRecord::INVALID_REFID;
+        record.beginPos = seqan2::BamAlignmentRecord::INVALID_POS;
         record.seq = seq;
         record.qual = qual;
 
         // Write out some tags with the information.
-        seqan::BamTagsDict tagsDict(record.tags);
+        seqan2::BamTagsDict tagsDict(record.tags);
 
         // Set tag with the eason for begin unmapped: Inserted or over breakpoint.  We only reach here if the alignment
         // does not overlap with a breakpoint in the case that the alignment is in an inserted region.
@@ -471,8 +471,8 @@ public:
 
     // Flip the sequence and quality in case that the record is reverse complemented.
     void _flipState(SequencingSimulationInfo & infoRecord,
-                    seqan::Dna5String & seq,
-                    seqan::CharString & qual,
+                    seqan2::Dna5String & seq,
+                    seqan2::CharString & qual,
                     bool doFlip)
     {
         if (doFlip)
@@ -484,10 +484,10 @@ public:
     }
 
     // Fill the record's members for an aligned record.
-    void _fillAligned(seqan::BamAlignmentRecord & record,
+    void _fillAligned(seqan2::BamAlignmentRecord & record,
                       SequencingSimulationInfo & infoRecord,
-                      seqan::Dna5String & seq,  // state, restored
-                      seqan::CharString & qual, // state, restored
+                      seqan2::Dna5String & seq,  // state, restored
+                      seqan2::CharString & qual, // state, restored
                       int len = 0)
     {
         // Convert from coordinate system with SVs to coordinate system with small variants.
@@ -503,7 +503,7 @@ public:
 
         // Set the RC flag in the record.
         if (infoRecord.isForward == isRC)
-            record.flag |= seqan::BAM_FLAG_RC;
+            record.flag |= seqan2::BAM_FLAG_RC;
 
         // Perform the alignment to compute the edit distance and the CIGAR string.
         int editDistance = 0;
@@ -522,10 +522,10 @@ public:
     }
 
     // Perform the realignment and set cigar string.
-    void _alignAndSetCigar(seqan::BamAlignmentRecord & record,
+    void _alignAndSetCigar(seqan2::BamAlignmentRecord & record,
                            int & editDistance,
-                           seqan::CharString & mdString,
-                           seqan::Dna5String & seq,
+                           seqan2::CharString & mdString,
+                           seqan2::Dna5String & seq,
                            int & beginPos,
                            int endPos)
     {
@@ -535,12 +535,12 @@ public:
 
         // Realign the read sequence against the original interval.  We add some padding so insertions into the read at
         // the ends can be converted to matches/mismatches as they appear after the mapping.
-        typedef seqan::Infix<seqan::Dna5String>::Type TContigInfix;
+        typedef seqan2::Infix<seqan2::Dna5String>::Type TContigInfix;
         TContigInfix contigInfix(refSeq, beginPos - PADDING_BEGIN, endPos + PADDING_END);
-        seqan::Gaps<TContigInfix> gapsContig(contigInfix);
-        seqan::Gaps<seqan::Dna5String> gapsRead(seq);
-        seqan::Score<int, seqan::Simple> sScheme(0, -1000, -1001, -1002);
-        seqan::AlignConfig<true, false, false, true> alignConfig;
+        seqan2::Gaps<TContigInfix> gapsContig(contigInfix);
+        seqan2::Gaps<seqan2::Dna5String> gapsRead(seq);
+        seqan2::Score<int, seqan2::Simple> sScheme(0, -1000, -1001, -1002);
+        seqan2::AlignConfig<true, false, false, true> alignConfig;
 
         int buffer = 3;  // should be unnecessary
         int uDiag = std::max((int)(length(contigInfix) - length(seq)), 0) + buffer;
@@ -549,26 +549,26 @@ public:
         editDistance = globalAlignment(gapsContig, gapsRead, sScheme, alignConfig, lDiag, uDiag);
         editDistance /= -1000;  // score to edit distance
 
-        beginPos += countGaps(begin(gapsRead, seqan::Standard())) - PADDING_BEGIN;
+        beginPos += countGaps(begin(gapsRead, seqan2::Standard())) - PADDING_BEGIN;
         while (isGap(gapsRead, length(gapsRead) - 1))
         {
             setClippedEndPosition(gapsRead, length(gapsRead) - 1);
             setClippedEndPosition(gapsContig, length(gapsContig) - 1);
         }
-        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan::Standard())));
-        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan::Standard())));
+        setClippedBeginPosition(gapsContig, countGaps(begin(gapsRead, seqan2::Standard())));
+        setClippedBeginPosition(gapsRead, countGaps(begin(gapsRead, seqan2::Standard())));
 
         getCigarString(record.cigar, gapsContig, gapsRead, std::numeric_limits<int>::max());
         getMDString(mdString, gapsContig, gapsRead);
     }
 
     // Fill the tags dict.
-    void _fillTags(seqan::BamAlignmentRecord & record,
+    void _fillTags(seqan2::BamAlignmentRecord & record,
                    SequencingSimulationInfo & infoRecord,
                    int editDistance,
-                   seqan::CharString const & mdString)
+                   seqan2::CharString const & mdString)
     {
-        seqan::BamTagsDict tagsDict(record.tags);
+        seqan2::BamTagsDict tagsDict(record.tags);
         setTagValue(tagsDict, "NM", editDistance);        // edit distance to reference
         setTagValue(tagsDict, "MD", toCString(mdString));
 
@@ -619,13 +619,13 @@ public:
     SequencingSimulator * seqSimulator;
 
     // Buffer with ids and sequence of reads simulated in this thread.
-    seqan::StringSet<seqan::CharString> ids;
-    seqan::StringSet<seqan::Dna5String> seqs;
-    seqan::StringSet<seqan::CharString> quals;
+    seqan2::StringSet<seqan2::CharString> ids;
+    seqan2::StringSet<seqan2::Dna5String> seqs;
+    seqan2::StringSet<seqan2::CharString> quals;
     std::vector<SequencingSimulationInfo> infos;
     // Buffer for the BAM alignment records.
     bool buildAlignments;  // Whether or not compute the BAM alignment records.
-    std::vector<seqan::BamAlignmentRecord> alignmentRecords;
+    std::vector<seqan2::BamAlignmentRecord> alignmentRecords;
 
     ReadSimulatorThread() : options(), fragSampler(), methLevels(), seqSimulator(), buildAlignments(false)
     {}
@@ -653,7 +653,7 @@ public:
         seqSimulator = ptr.release();
     }
 
-    void _setId(seqan::CharString & str, std::stringstream & ss, int fragId, int num,
+    void _setId(seqan2::CharString & str, std::stringstream & ss, int fragId, int num,
                 SequencingSimulationInfo const & info, bool forceNoEmbed = false)
     {
         ss.clear();
@@ -673,15 +673,15 @@ public:
         str = ss.str();
     }
 
-    void _simulatePairedEnd(seqan::Dna5String const & seq,
+    void _simulatePairedEnd(seqan2::Dna5String const & seq,
                             std::vector<SmallVarInfo> const & varInfos,
                             PositionMap const & posMap,
-                            seqan::CharString const & refName,
-                            seqan::Dna5String /*const*/ & refSeq,
+                            seqan2::CharString const & refName,
+                            seqan2::Dna5String /*const*/ & refSeq,
                             int rID, int hID)
     {
         std::stringstream ss;
-        seqan::CharString buffer;
+        seqan2::CharString buffer;
 
         for (unsigned i = 0; i < 2 * fragmentIds.size(); i += 2)
         {
@@ -740,15 +740,15 @@ public:
         return result;
     }
 
-    void _simulateSingleEnd(seqan::Dna5String /*const*/ & seq,
+    void _simulateSingleEnd(seqan2::Dna5String /*const*/ & seq,
                             std::vector<SmallVarInfo> const & varInfos,
                             PositionMap const & posMap,
-                            seqan::CharString const & refName,
-                            seqan::Dna5String /*const*/ & refSeq,
+                            seqan2::CharString const & refName,
+                            seqan2::Dna5String /*const*/ & refSeq,
                             int rID, int hID)
     {
         std::stringstream ss;
-        seqan::CharString buffer;
+        seqan2::CharString buffer;
 
         for (unsigned i = 0; i < fragmentIds.size(); ++i)
         {
@@ -773,12 +773,12 @@ public:
     }
 
     // Simulate next chunk.
-    void run(seqan::Dna5String /*const*/ & seq,
+    void run(seqan2::Dna5String /*const*/ & seq,
              std::vector<std::pair<int, int> > const & gapIntervals,
              std::vector<SmallVarInfo> const & varInfos,
              PositionMap const & posMap,
-             seqan::CharString const & refName,
-             seqan::Dna5String /*const*/ & refSeq,
+             seqan2::CharString const & refName,
+             seqan2::Dna5String /*const*/ & refSeq,
              int rID, int hID)
     {
         // Sample fragments.
@@ -826,7 +826,7 @@ public:
     // Materialization of the contigs from a VCF file.
     VcfMaterializer vcfMat;
     // FAI Index for loading methylation levels.
-    seqan::FaiIndex methFaiIndex;
+    seqan2::FaiIndex methFaiIndex;
 
     // ----------------------------------------------------------------------
     // Sample Source Distribution
@@ -840,26 +840,26 @@ public:
     // alignment information relative to the materialized sequence.
     IdSplitter fragmentSplitter;
     // Helper for joining the FASTQ files.
-    std::unique_ptr<FastxJoiner<seqan::Fastq> > fastxJoiner;
+    std::unique_ptr<FastxJoiner<seqan2::Fastq> > fastxJoiner;
     // Helper for storing SAM records for each contig/haplotype pair.  In the end, we will join this again.
     IdSplitter alignmentSplitter;
     // Helper for joining the SAM files.
     std::unique_ptr<SamJoiner> alignmentJoiner;
 
     // The BamHeader to use.
-    seqan::BamHeader bamHeader;
+    seqan2::BamHeader bamHeader;
     // BamFileOut and SeqFileOut objects for writing to alignmentSplitter and fragmentSplitter files.
-    std::vector<seqan::BamFileOut *> bamFileOuts;
-    std::vector<seqan::SeqFileOut *> seqFileOuts;
+    std::vector<seqan2::BamFileOut *> bamFileOuts;
+    std::vector<seqan2::SeqFileOut *> seqFileOuts;
 
     // ----------------------------------------------------------------------
     // File Output
     // ----------------------------------------------------------------------
 
     // For writing left/right reads.
-    seqan::SeqFileOut outSeqsLeft, outSeqsRight;
+    seqan2::SeqFileOut outSeqsLeft, outSeqsRight;
     // For writing the final SAM/BAM file.
-    std::unique_ptr<seqan::BamFileOut> outBamStream;
+    std::unique_ptr<seqan2::BamFileOut> outBamStream;
 
     MasonSimulatorApp(MasonSimulatorOptions const & options) :
             options(options), rng(options.seed), methRng(options.methSeed),
@@ -909,7 +909,7 @@ public:
     //
     // Used for fragment exclusion downstream.
     void buildGapIntervals(std::vector<std::pair<int, int> > & intervals,
-                           seqan::Dna5String const & contigSeq,
+                           seqan2::Dna5String const & contigSeq,
                            unsigned minNs = 3)
     {
         intervals.clear();
@@ -940,13 +940,13 @@ public:
     {
         std::cerr << "\nSimulating Reads:\n";
         int haplotypeCount = vcfMat.numHaplotypes;
-        seqan::Dna5String contigSeq;  // materialized contig
+        seqan2::Dna5String contigSeq;  // materialized contig
         int rID = 0;  // current reference id
         int hID = 0;  // current haplotype id
         int contigFragmentCount = 0;  // number of reads on the contig
         // Note that all shared variables are correctly synchronized by implicit flushes at the critical sections below.
         MethylationLevels levels;
-        seqan::Dna5String refSeq;  // reference sequence
+        seqan2::Dna5String refSeq;  // reference sequence
         std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
         std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
         while ((options.seqOptions.bsSeqOptions.bsSimEnabled &&
@@ -1015,9 +1015,9 @@ public:
         std::cerr << "\nJoining temporary files ...";
         clearOutFiles();  // clear output files such that they are flushed
         fragmentSplitter.reset();
-        fastxJoiner.reset(new FastxJoiner<seqan::Fastq>(fragmentSplitter));
-        FastxJoiner<seqan::Fastq> & joiner = *fastxJoiner.get();  // Shortcut
-        seqan::CharString id, seq, qual;
+        fastxJoiner.reset(new FastxJoiner<seqan2::Fastq>(fragmentSplitter));
+        FastxJoiner<seqan2::Fastq> & joiner = *fastxJoiner.get();  // Shortcut
+        seqan2::CharString id, seq, qual;
         if (options.seqOptions.simulateMatePairs)
             while (!joiner.atEnd())
             {
@@ -1038,11 +1038,11 @@ public:
             alignmentJoiner.reset(new SamJoiner(alignmentSplitter, outBamStream.get()));
 
             // Write out header.
-            seqan::BamFileOut & bamFileOut = *outBamStream;
+            seqan2::BamFileOut & bamFileOut = *outBamStream;
             writeHeader(bamFileOut, alignmentJoiner->header);
 
             SamJoiner & joiner = *alignmentJoiner.get();  // Shortcut
-            seqan::BamAlignmentRecord record;
+            seqan2::BamAlignmentRecord record;
             while (!joiner.atEnd())
             {
                 joiner.get(record);
@@ -1086,11 +1086,11 @@ public:
         alignmentSplitter.open();
         // Construct output BAM files.
         for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            bamFileOuts.push_back(new seqan::BamFileOut(*alignmentSplitter.files[i], seqan::Sam()));
+            bamFileOuts.push_back(new seqan2::BamFileOut(*alignmentSplitter.files[i], seqan2::Sam()));
         // Build and write out header, fill ref name store.
-        seqan::BamHeaderRecord vnHeaderRecord;
-        vnHeaderRecord.type = seqan::BAM_HEADER_FIRST;
-        appendValue(vnHeaderRecord.tags, seqan::Pair<seqan::CharString>("VN", "1.4"));
+        seqan2::BamHeaderRecord vnHeaderRecord;
+        vnHeaderRecord.type = seqan2::BAM_HEADER_FIRST;
+        appendValue(vnHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("VN", "1.4"));
         appendValue(bamHeader, vnHeaderRecord);
         for (unsigned i = 0; i < numSeqs(vcfMat.faiIndex); ++i)
         {
@@ -1108,12 +1108,12 @@ public:
             }
             for (unsigned j = 0; j < bamFileOuts.size(); ++j)
                 appendValue(contigLengths(context(*bamFileOuts[j])), sequenceLength(vcfMat.faiIndex, idx));
-            seqan::BamHeaderRecord seqHeaderRecord;
-            seqHeaderRecord.type = seqan::BAM_HEADER_REFERENCE;
-            appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("SN", contigNames(context(*bamFileOuts[0]))[i]));
+            seqan2::BamHeaderRecord seqHeaderRecord;
+            seqHeaderRecord.type = seqan2::BAM_HEADER_REFERENCE;
+            appendValue(seqHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("SN", contigNames(context(*bamFileOuts[0]))[i]));
             std::stringstream ss;
             ss << contigLengths(context(*bamFileOuts[0]))[i];
-            appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("LN", ss.str().c_str()));
+            appendValue(seqHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("LN", ss.str().c_str()));
             appendValue(bamHeader, seqHeaderRecord);
         }
         // Write out header to each output BAM file.
@@ -1141,7 +1141,7 @@ public:
         fragmentSplitter.numContigs = fragmentIdSplitter.numContigs;
         fragmentSplitter.open();
         for (unsigned i = 0; i < fragmentSplitter.files.size(); ++i)
-            seqFileOuts.push_back(new seqan::SeqFileOut(*fragmentSplitter.files[i], seqan::Fastq()));
+            seqFileOuts.push_back(new seqan2::SeqFileOut(*fragmentSplitter.files[i], seqan2::Fastq()));
         // Splitter for alignments, only required when writing out SAM/BAM.
         if (!empty(options.outFileNameSam))
             _initAlignmentSplitter();
@@ -1169,7 +1169,7 @@ public:
         if (!empty(options.outFileNameSam))
         {
             std::cerr << "Opening output file " << options.outFileNameSam << "...";
-            outBamStream.reset(new seqan::BamFileOut);
+            outBamStream.reset(new seqan2::BamFileOut);
             if (!open(*outBamStream, toCString(options.outFileNameSam)))
                 throw MasonIOException("Could not open SAM/BAM output file.");
             std::cerr << " OK\n";
@@ -1226,11 +1226,11 @@ public:
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonSimulatorOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_simulator");
+    seqan2::ArgumentParser parser("mason_simulator");
     // Set short description, version, and date.
     setShortDescription(parser, "Read Simulation");
     setDateAndVersion(parser);
@@ -1250,15 +1250,15 @@ parseCommandLine(MasonSimulatorOptions & options, int argc, char const ** argv)
     options.addTextSections(parser);
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     options.getOptionValues(parser);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -1269,9 +1269,9 @@ int main(int argc, char const ** argv)
 {
     // Parse options.
     MasonSimulatorOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Initialize Global State
     //

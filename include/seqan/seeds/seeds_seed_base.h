@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEEDS_SEEDS_SEED_BASE_H_
 #define SEQAN_SEEDS_SEEDS_SEED_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -665,6 +665,6 @@ _updateSeedsScoreChaos(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const &
     setScore(seed, score(seed) + score(other) + scoreDelta);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_SEED_BASE_H_

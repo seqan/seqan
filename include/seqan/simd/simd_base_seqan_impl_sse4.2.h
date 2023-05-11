@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_SSE4_2_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_SSE4_2_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // SimdParams_<8, 8>: 64bit = 8 elements * 8bit
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Char,      char,           8)
@@ -1048,6 +1048,6 @@ _testAllOnes(TSimdVector const & vector, SimdParams_<16>)
     return _mm_test_all_ones(SEQAN_VECTOR_CAST_(const __m128i &, vector));
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_SSE4_2_H_

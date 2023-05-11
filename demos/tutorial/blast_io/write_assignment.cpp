@@ -3,7 +3,7 @@
 #ifndef STDLIB_VS
 #include <seqan/blast.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, char ** argv)
 {

@@ -59,7 +59,7 @@
 //
 // The default is to disable debugging and testing.
 //
-// You can print the current level using the function seqan::printDebugLevel().
+// You can print the current level using the function seqan2::printDebugLevel().
 
 /*!
  * @macro TestSystemMacros#SEQAN_ENABLE_TESTING
@@ -191,7 +191,7 @@
 // Holds the name of a given C++ type T.
 // NOTE(esiragusa): this class could become a subclass of CStyle String...
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename T>
 struct Demangler
@@ -310,9 +310,9 @@ inline const char * toCString(Demangler<T> const & me)
 
 #define SEQAN_FAIL(...)                                                 \
     do {                                                                \
-        ::seqan::ClassTest::forceFail(__FILE__, __LINE__,               \
+        ::seqan2::ClassTest::forceFail(__FILE__, __LINE__,               \
                                       __VA_ARGS__);                     \
-        ::seqan::ClassTest::fail();                                     \
+        ::seqan2::ClassTest::fail();                                     \
     } while (false)
 
 /*!
@@ -364,14 +364,14 @@ inline const char * toCString(Demangler<T> const & me)
 
 #define SEQAN_CHECK(_arg1, ...)                                         \
     do {                                                                \
-        if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
+        if (!::seqan2::ClassTest::testTrue(__FILE__, __LINE__,           \
                                           (_arg1), # _arg1,              \
                                           __VA_ARGS__)) {               \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
-namespace seqan {
+namespace seqan2 {
 
 // SEQAN_CXX_FLAGS_ contains the compiler flags, SEQAN_CXX_FLAGS is a string
 // literal with this value.
@@ -1655,7 +1655,7 @@ inline void fail()
 #define SEQAN_BEGIN_TESTSUITE(suite_name)                       \
     int main(int argc, char ** argv) {                           \
         (void) argc;                                                \
-        ::seqan::ClassTest::beginTestSuite(# suite_name, argv[0]);
+        ::seqan2::ClassTest::beginTestSuite(# suite_name, argv[0]);
 
 /*!
  * @macro TestSystemMacros#SEQAN_END_TESTSUITE
@@ -1681,7 +1681,7 @@ inline void fail()
 
 // This macro expands to shutdown code for a test file.
 #define SEQAN_END_TESTSUITE                     \
-    return ::seqan::ClassTest::endTestSuite();  \
+    return ::seqan2::ClassTest::endTestSuite();  \
     }
 
 /*!
@@ -1705,24 +1705,24 @@ inline void fail()
 // This macro expands to code to call a given test.
 #define SEQAN_CALL_TEST(test_name)                                      \
     do {                                                                \
-        seqan::ClassTest::beginTest(# test_name);                       \
+        seqan2::ClassTest::beginTest(# test_name);                       \
         try {                                                           \
             SEQAN_TEST_ ## test_name<true>();                           \
-        } catch (seqan::ClassTest::AssertionFailedException e) {        \
+        } catch (seqan2::ClassTest::AssertionFailedException e) {        \
             /* Swallow exception, go on with next test. */              \
             (void) e;  /* Get rid of unused variable warning. */        \
         } catch (std::exception const & e) {                            \
             std::cerr << "Unexpected exception of type "                \
-                      << toCString(seqan::Demangler<std::exception>(e)) \
+                      << toCString(seqan2::Demangler<std::exception>(e)) \
                       << "; message: " << e.what() << "\n";             \
-            seqan::ClassTest::StaticData::thisTestOk() = false;         \
-            seqan::ClassTest::StaticData::errorCount() += 1;            \
+            seqan2::ClassTest::StaticData::thisTestOk() = false;         \
+            seqan2::ClassTest::StaticData::errorCount() += 1;            \
         } catch (...) {                                                 \
             std::cerr << "Unexpected exception of unknown type\n";      \
-            seqan::ClassTest::StaticData::thisTestOk() = false;         \
-            seqan::ClassTest::StaticData::errorCount() += 1;            \
+            seqan2::ClassTest::StaticData::thisTestOk() = false;         \
+            seqan2::ClassTest::StaticData::errorCount() += 1;            \
         }                                                               \
-        seqan::ClassTest::endTest();                                    \
+        seqan2::ClassTest::endTest();                                    \
     } while (false)
 
 /*!
@@ -1746,8 +1746,8 @@ inline void fail()
 // event for the current test.
 #define SEQAN_SKIP_TEST                                       \
     do {                                                      \
-        ::seqan::ClassTest::skipCurrentTest();                \
-        throw ::seqan::ClassTest::AssertionFailedException(); \
+        ::seqan2::ClassTest::skipCurrentTest();                \
+        throw ::seqan2::ClassTest::AssertionFailedException(); \
     } while (false)
 #endif  // #if SEQAN_ENABLE_TESTING
 
@@ -2042,9 +2042,9 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_FAIL("Failed at position %d", pos);
 #define SEQAN_ASSERT_FAIL(...)                                          \
     do {                                                                \
-        ::seqan::ClassTest::forceFail(__FILE__, __LINE__,               \
+        ::seqan2::ClassTest::forceFail(__FILE__, __LINE__,               \
                                       __VA_ARGS__);                     \
-        ::seqan::ClassTest::fail();                                     \
+        ::seqan2::ClassTest::fail();                                     \
     } while (false)
 
 
@@ -2053,10 +2053,10 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_EQ(4, 4);
 #define SEQAN_ASSERT_EQ(_arg1, _arg2)                                   \
     do {                                                                \
-        if (!::seqan::ClassTest::testEqual(__FILE__, __LINE__,          \
+        if (!::seqan2::ClassTest::testEqual(__FILE__, __LINE__,          \
                                            (_arg1), # _arg1,             \
                                            (_arg2), # _arg2)) {          \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2066,11 +2066,11 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_EQ(4, 4);
 #define SEQAN_ASSERT_EQ_MSG(_arg1, _arg2, ...)                          \
     do {                                                                \
-        if (!::seqan::ClassTest::testEqual(__FILE__, __LINE__,          \
+        if (!::seqan2::ClassTest::testEqual(__FILE__, __LINE__,          \
                                            (_arg1), # _arg1,             \
                                            (_arg2), # _arg2,             \
                                            __VA_ARGS__)) {              \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2080,11 +2080,11 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_IN_DELTA(4.1, 4, 0.1);
 #define SEQAN_ASSERT_IN_DELTA(_arg1, _arg2, _arg3)                      \
     do {                                                                \
-        if (!::seqan::ClassTest::testInDelta(__FILE__, __LINE__,        \
+        if (!::seqan2::ClassTest::testInDelta(__FILE__, __LINE__,        \
                                              (_arg1), # _arg1,           \
                                              (_arg2), # _arg2,           \
                                              (_arg3), # _arg3)) {        \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2094,12 +2094,12 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_IN_DELTA_MSG(4.1, 4, 0.1, "3.9 <= 4.1 <= 4.1");
 #define SEQAN_ASSERT_IN_DELTA_MSG(_arg1, _arg2, _arg3, ...)             \
     do {                                                                \
-        if (!::seqan::ClassTest::testInDelta(__FILE__, __LINE__,        \
+        if (!::seqan2::ClassTest::testInDelta(__FILE__, __LINE__,        \
                                              (_arg1), # _arg1,           \
                                              (_arg2), # _arg2,           \
                                              (_arg3), # _arg3,           \
                                              __VA_ARGS__)) {            \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2109,10 +2109,10 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_NEQ(4, 5);
 #define SEQAN_ASSERT_NEQ(_arg1, _arg2)                                  \
     do {                                                                \
-        if (!::seqan::ClassTest::testNotEqual(__FILE__, __LINE__,       \
+        if (!::seqan2::ClassTest::testNotEqual(__FILE__, __LINE__,       \
                                               (_arg1), # _arg1,          \
                                               (_arg2), # _arg2)) {       \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2122,11 +2122,11 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_NEQ(4, 5);
 #define SEQAN_ASSERT_NEQ_MSG(_arg1, _arg2, ...)                         \
     do {                                                                \
-        if (!::seqan::ClassTest::testNotEqual(__FILE__, __LINE__,       \
+        if (!::seqan2::ClassTest::testNotEqual(__FILE__, __LINE__,       \
                                               (_arg1), # _arg1,          \
                                               (_arg2), # _arg2,          \
                                               __VA_ARGS__)) {           \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2134,10 +2134,10 @@ inline void fail()
 // Less-than-or-equal assertion without a comment.
 #define SEQAN_ASSERT_LEQ(_arg1, _arg2)                                  \
     do {                                                                \
-        if (!::seqan::ClassTest::testLeq(__FILE__, __LINE__,            \
+        if (!::seqan2::ClassTest::testLeq(__FILE__, __LINE__,            \
                                          (_arg1), # _arg1,               \
                                          (_arg2), # _arg2)) {            \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2145,11 +2145,11 @@ inline void fail()
 // Less-than-or-equal assertion with a comment.
 #define SEQAN_ASSERT_LEQ_MSG(_arg1, _arg2, ...)                         \
     do {                                                                \
-        if (!::seqan::ClassTest::testLeq(__FILE__, __LINE__,            \
+        if (!::seqan2::ClassTest::testLeq(__FILE__, __LINE__,            \
                                          (_arg1), # _arg1,               \
                                          (_arg2), # _arg2,               \
                                          __VA_ARGS__)) {                \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2157,10 +2157,10 @@ inline void fail()
 // Less-than assertion without a comment.
 #define SEQAN_ASSERT_LT(_arg1, _arg2)                                   \
     do {                                                                \
-        if (!::seqan::ClassTest::testLt(__FILE__, __LINE__,             \
+        if (!::seqan2::ClassTest::testLt(__FILE__, __LINE__,             \
                                         (_arg1), # _arg1,                \
                                         (_arg2), # _arg2)) {             \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2168,11 +2168,11 @@ inline void fail()
 // Less-than assertion with a comment.
 #define SEQAN_ASSERT_LT_MSG(_arg1, _arg2, ...)                          \
     do {                                                                \
-        if (!::seqan::ClassTest::testLt(__FILE__, __LINE__,             \
+        if (!::seqan2::ClassTest::testLt(__FILE__, __LINE__,             \
                                         (_arg1), # _arg1,                \
                                         (_arg2), # _arg2,                \
                                         __VA_ARGS__)) {                 \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2180,10 +2180,10 @@ inline void fail()
 // Greater-than-or-equal assertion without a comment.
 #define SEQAN_ASSERT_GEQ(_arg1, _arg2)                                  \
     do {                                                                \
-        if (!::seqan::ClassTest::testGeq(__FILE__, __LINE__,            \
+        if (!::seqan2::ClassTest::testGeq(__FILE__, __LINE__,            \
                                          (_arg1), # _arg1,               \
                                          (_arg2), # _arg2)) {            \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2191,11 +2191,11 @@ inline void fail()
 // Greater-than-or-equal assertion with a comment.
 #define SEQAN_ASSERT_GEQ_MSG(_arg1, _arg2, ...)                         \
     do {                                                                \
-        if (!::seqan::ClassTest::testGeq(__FILE__, __LINE__,            \
+        if (!::seqan2::ClassTest::testGeq(__FILE__, __LINE__,            \
                                          (_arg1), # _arg1,               \
                                          (_arg2), # _arg2,               \
                                          __VA_ARGS__)) {                \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2203,10 +2203,10 @@ inline void fail()
 // Greater-than assertion without a comment.
 #define SEQAN_ASSERT_GT(_arg1, _arg2)                                   \
     do {                                                                \
-        if (!::seqan::ClassTest::testGt(__FILE__, __LINE__,             \
+        if (!::seqan2::ClassTest::testGt(__FILE__, __LINE__,             \
                                         (_arg1), # _arg1,                \
                                         (_arg2), # _arg2)) {             \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2214,11 +2214,11 @@ inline void fail()
 // Greater-than assertion with a comment.
 #define SEQAN_ASSERT_GT_MSG(_arg1, _arg2, ...)                          \
     do {                                                                \
-        if (!::seqan::ClassTest::testGt(__FILE__, __LINE__,             \
+        if (!::seqan2::ClassTest::testGt(__FILE__, __LINE__,             \
                                         (_arg1), # _arg1,                \
                                         (_arg2), # _arg2,                \
                                         __VA_ARGS__)) {                 \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2229,9 +2229,9 @@ inline void fail()
 // Usage:  SEQAN_ASSERT(false);
 #define SEQAN_ASSERT(_arg1)                                        \
     do {                                                                \
-        if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
+        if (!::seqan2::ClassTest::testTrue(__FILE__, __LINE__,           \
                                           (_arg1), # _arg1)) {           \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2240,10 +2240,10 @@ inline void fail()
 // Trueness assertion with a comment.
 #define SEQAN_ASSERT_MSG(_arg1, ...)                               \
     do {                                                                \
-        if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
+        if (!::seqan2::ClassTest::testTrue(__FILE__, __LINE__,           \
                                           (_arg1), # _arg1,              \
                                           __VA_ARGS__)) {             \
-            ::seqan::ClassTest::fail();                                 \
+            ::seqan2::ClassTest::fail();                                 \
         }                                                               \
     } while (false)
 
@@ -2253,9 +2253,9 @@ inline void fail()
 // Usage:  SEQAN_ASSERT_NOT(false);
 #define SEQAN_ASSERT_NOT(_arg1)                                       \
     do {                                                              \
-        if (!::seqan::ClassTest::testFalse(__FILE__, __LINE__,        \
+        if (!::seqan2::ClassTest::testFalse(__FILE__, __LINE__,        \
                                            (_arg1), # _arg1)) {        \
-            ::seqan::ClassTest::fail();                               \
+            ::seqan2::ClassTest::fail();                               \
         }                                                             \
     } while (false)
 
@@ -2263,10 +2263,10 @@ inline void fail()
 // Falseness assertion with a comment.
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...)                              \
     do {                                                              \
-        if (!::seqan::ClassTest::testFalse(__FILE__, __LINE__,        \
+        if (!::seqan2::ClassTest::testFalse(__FILE__, __LINE__,        \
                                            (_arg1), # _arg1,           \
                                            __VA_ARGS__)) {          \
-            ::seqan::ClassTest::fail();                               \
+            ::seqan2::ClassTest::fail();                               \
         }                                                             \
     } while (false)
 
@@ -2296,7 +2296,7 @@ inline void fail()
 //
 // Use this to locate files relative to the test binary.
 #define SEQAN_PROGRAM_PATH                      \
-    ::seqan::ClassTest::StaticData::basePath()
+    ::seqan2::ClassTest::StaticData::basePath()
 
 /*!
  * @macro SEQAN_PATH_TO_ROOT
@@ -2327,11 +2327,11 @@ inline void fail()
 // TODO(holtgrew): Subject to change wiht restructuring.
 // Returns a const char * string with the path to the projects directory.
 #define SEQAN_PATH_TO_ROOT()                      \
-    ::seqan::ClassTest::StaticData::pathToRoot()
+    ::seqan2::ClassTest::StaticData::pathToRoot()
 
 // Returns the POSIX int file handle to an open file.
 // TODO(holtgrewe): Uncomment if openTempFile has been implemented.
-// #define SEQAN_OPEN_TEMP_FILE() (::seqan::ClassTest::openTempFile())
+// #define SEQAN_OPEN_TEMP_FILE() (::seqan2::ClassTest::openTempFile())
 
 /*!
  * @macro SEQAN_TEMP_FILENAME
@@ -2361,7 +2361,7 @@ inline void fail()
  */
 
 // Returns a temporary filename.
-#define SEQAN_TEMP_FILENAME() (::seqan::ClassTest::tempFileName())
+#define SEQAN_TEMP_FILENAME() (::seqan2::ClassTest::tempFileName())
 
 
 #if !SEQAN_ENABLE_TESTING
@@ -2396,9 +2396,9 @@ inline void fail()
 
 inline std::string getAbsolutePath(const char * path)
 {
-    return std::string(::seqan::ClassTest::StaticData::pathToRoot()) + "/" + path;
+    return std::string(::seqan2::ClassTest::StaticData::pathToRoot()) + "/" + path;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_

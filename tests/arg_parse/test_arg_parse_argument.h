@@ -42,7 +42,7 @@
 #include "test_extensions.h"
 #include <seqan/arg_parse/arg_parse_argument.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_argument_string_type)
 {

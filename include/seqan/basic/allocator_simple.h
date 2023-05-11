@@ -39,7 +39,7 @@
 
 #include <seqan/basic/allocator_interface.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -234,6 +234,6 @@ deallocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
     deallocate(parentAllocator(me), ptr, header.size);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_

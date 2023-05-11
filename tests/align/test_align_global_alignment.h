@@ -55,7 +55,7 @@
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bot
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -169,7 +169,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_top_left_right_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -242,7 +242,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_top_left_right_bott
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_notop_left_noright_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -273,7 +273,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_notop_left_noright_
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_top_left_right_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -369,7 +369,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_top_left_right_bot
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_notop_left_noright_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -408,7 +408,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_notop_left_noright
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_top_left_right_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -484,7 +484,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_top_left_right
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_noright_bottom_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -518,7 +518,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_nor
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -600,7 +600,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bot
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -632,7 +632,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_top_left_right_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -705,7 +705,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_top_left_right_bott
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_notop_left_noright_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -734,7 +734,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_gaps_gaps_free_notop_left_noright_
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_top_left_right_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -831,7 +831,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_top_left_right_bot
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_notop_left_noright_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -870,7 +870,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_graph_gaps_free_notop_left_noright
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_top_left_right_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -945,7 +945,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_top_left_right
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_noright_bottom_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<false, true, false, true> alignConfig;
 
@@ -984,7 +984,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_nor
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 
@@ -1108,7 +1108,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_nw)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 

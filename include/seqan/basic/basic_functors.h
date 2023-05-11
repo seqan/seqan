@@ -36,7 +36,7 @@
 #ifndef SEQAN_BASIC_FUNCTORS_H_
 #define SEQAN_BASIC_FUNCTORS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functors
@@ -209,6 +209,6 @@ inline uint64_t & value(CountFunctor<TFunctor> &func)
     return func.count;
 }
 
-}   // namespace seqan
+}   // namespace seqan2
 
 #endif // SEQAN_BASIC_FUNCTORS_H_

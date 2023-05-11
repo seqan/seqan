@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_PROFILE_SPROFILE_SEQ_H_
 #define SEQAN_INCLUDE_PROFILE_SPROFILE_SEQ_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -531,6 +531,6 @@ score(Score<TValue, ProfileSeqFracScore> const & me,
         return ((TValue) (((int)value(entry1).count[ordValue(value(entry2))] - me.sum[position(entry1)]) * SEQAN_CONSENSUS_UNITY) / me.sum[position(entry1)]);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_PROFILE_SPROFILE_SEQ_H_

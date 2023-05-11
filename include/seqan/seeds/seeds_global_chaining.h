@@ -37,7 +37,7 @@
 
 #include <map>
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -321,6 +321,6 @@ chainSeedsGlobally(
     #endif  // #if SEQAN_ENABLE_DEBUG
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEEDS_SEEDS_GLOBAL_CHAINING_H_

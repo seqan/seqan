@@ -54,14 +54,14 @@ bool endsWithIgnoreCase(std::string str, std::string suffix)
 {
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     std::transform(suffix.begin(), suffix.end(), suffix.begin(), ::tolower);
-    return seqan::endsWith(str, suffix);
+    return seqan2::endsWith(str, suffix);
 }
 
 // ---------------------------------------------------------------------------
 // Function trimAfterSpace()
 // ---------------------------------------------------------------------------
 
-void trimAfterSpace(seqan::CharString & s)
+void trimAfterSpace(seqan2::CharString & s)
 {
     unsigned i = 0;
     for (; i < length(s); ++i)
@@ -102,7 +102,7 @@ private:
     void writeAlignments();
 
     // The fragment store for the data.
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     // Configuration.
     SeqConsOptions options;
@@ -112,7 +112,7 @@ void SeqConsAppImpl::writeConsensus()
 {
     if (options.verbosity >= 1)
         std::cerr << "Writing consensus to " << options.outputFileConsensus << " ...";
-    seqan::SeqFileOut seqFileOut;
+    seqan2::SeqFileOut seqFileOut;
     if (!open(seqFileOut, options.outputFileConsensus.c_str()))
         throw std::runtime_error("Could not open consensus output file for writing.");
     for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
@@ -133,7 +133,7 @@ void SeqConsAppImpl::writeAlignments()
     if (endsWithIgnoreCase(options.outputFileAlignment, ".txt"))
     {
         std::fstream out(options.outputFileAlignment.c_str(), std::ios::binary | std::ios::out);
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
         {
@@ -147,7 +147,7 @@ void SeqConsAppImpl::writeAlignments()
     }
     else  // ends in .sam
     {
-        seqan::BamFileOut out;
+        seqan2::BamFileOut out;
         if (!open(out, options.outputFileAlignment.c_str()))
             throw std::runtime_error("Could not open output file.");
         writeRecords(out, store);
@@ -217,21 +217,21 @@ void SeqConsAppImpl::loadReads(char const * fileName)
     ns << "consensus_1";
     appendValue(store.contigNameStore, ns.str());
     // Load reads from sequence file.
-    seqan::SeqFileIn seqFileIn;
+    seqan2::SeqFileIn seqFileIn;
     if (options.verbosity >= 1)
         std::cerr << "Loading reads from " << fileName << "...";
     if (!open(seqFileIn, fileName))
         throw std::runtime_error("Problem opening input sequence file for reading.");
 
     int maxPos = 0;
-    seqan::CharString id, seq;
+    seqan2::CharString id, seq;
     while (!atEnd(seqFileIn))
     {
         try
         {
             readRecord(id, seq, seqFileIn);
         }
-        catch (seqan::ParseError const & e)
+        catch (seqan2::ParseError const & e)
         {
             throw std::runtime_error(std::string("Problem reading from input sequence file: ") +
                                      e.what());
@@ -253,14 +253,14 @@ void SeqConsAppImpl::loadAlignments(char const * fileName)
 {
     if (options.verbosity >= 1)
         std::cerr << "  Loading alignments from " << fileName << "...";
-    seqan::BamFileIn bamFileIn;
+    seqan2::BamFileIn bamFileIn;
     if (!open(bamFileIn, fileName))
         throw std::runtime_error("Problem opening input alignment file for reading.");
     try
     {
         readRecords(store, bamFileIn);
     }
-    catch (seqan::ParseError const & e)
+    catch (seqan2::ParseError const & e)
     {
         throw std::runtime_error(e.what());
     }
@@ -271,7 +271,7 @@ void SeqConsAppImpl::loadAlignments(char const * fileName)
 void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositions, bool useGlobalAlignment)
 {
     // Setup the consensus alignment options.
-    seqan::ConsensusAlignmentOptions caOptions;
+    seqan2::ConsensusAlignmentOptions caOptions;
     caOptions.useContigID = useContigID;
     caOptions.usePositions = usePositions;
     caOptions.useGlobalAlignment = useGlobalAlignment;
@@ -288,7 +288,7 @@ void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositio
     caOptions.kMerMaxOcc = options.kMerMaxOcc;
 
     // Perform the consensus alignment.
-    double startTime = seqan::sysTime();
+    double startTime = seqan2::sysTime();
     if (options.verbosity >= 1)
         std::cerr << "Performing consensus computation...";
     if (options.verbosity >= 3)
@@ -297,7 +297,7 @@ void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositio
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
     if (options.verbosity >= 2)
-        std::cerr << "\t=> consensus step took " << seqan::sysTime() - startTime << "s\n";
+        std::cerr << "\t=> consensus step took " << seqan2::sysTime() - startTime << "s\n";
 
     // Finally, compute realignment of the resulting multi-read alignment.
     performRealignment();
@@ -305,7 +305,7 @@ void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositio
 
 void SeqConsAppImpl::performRealignment()
 {
-    double startTime = seqan::sysTime();
+    double startTime = seqan2::sysTime();
     if (options.verbosity >= 1)
         std::cerr << "Performing realignment...";
     if (options.verbosity >= 3)
@@ -315,7 +315,7 @@ void SeqConsAppImpl::performRealignment()
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
     if (options.verbosity >= 2)
-        std::cerr << "\t=> realignment took " << seqan::sysTime() - startTime << "s\n";
+        std::cerr << "\t=> realignment took " << seqan2::sysTime() - startTime << "s\n";
 }
 
 // ----------------------------------------------------------------------------

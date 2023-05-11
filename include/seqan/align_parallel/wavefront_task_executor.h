@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EXECUTOR_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EXECUTOR_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -141,6 +141,6 @@ struct WavefrontTaskExecutionPolicy<WavefrontTaskQueue<TValue, VECTOR_SIZE>>
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EXECUTOR_H_

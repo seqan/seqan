@@ -79,7 +79,7 @@ validateLocal(TSets const & sets,
 
 // Common test class instance, which stores the types to be accessed.
 template <typename TTuple>
-class ParallelAlignInterfaceTest : public seqan::Test
+class ParallelAlignInterfaceTest : public seqan2::Test
 {
 public:
     using TExecPolicy = std::tuple_element_t<0, TTuple>;
@@ -94,16 +94,16 @@ class ParallelAlignInterfaceTestCommon : public ParallelAlignInterfaceTest<T>
 {};
 
 typedef
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Serial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Serial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<>,                               seqan::Serial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<seqan::BlockOffsetOptimization>, seqan::Serial>>
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::Serial,                                             seqan2::Serial>>,
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::Parallel,                                           seqan2::Serial>>,
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::WavefrontAlignment<>,                               seqan2::Serial>>,
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::WavefrontAlignment<seqan2::BlockOffsetOptimization>, seqan2::Serial>>
 #ifdef SEQAN_SIMD_ENABLED
         ,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Serial,                                             seqan::Vectorial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::Parallel,                                           seqan::Vectorial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<>,                               seqan::Vectorial>>,
-        seqan::TagList<std::tuple<seqan::ExecutionPolicy<seqan::WavefrontAlignment<seqan::BlockOffsetOptimization>, seqan::Vectorial>>
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::Serial,                                             seqan2::Vectorial>>,
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::Parallel,                                           seqan2::Vectorial>>,
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::WavefrontAlignment<>,                               seqan2::Vectorial>>,
+        seqan2::TagList<std::tuple<seqan2::ExecutionPolicy<seqan2::WavefrontAlignment<seqan2::BlockOffsetOptimization>, seqan2::Vectorial>>
         > > > >
 #endif // SEQAN_SIMD_ENABLED
         > > > > ParallelAlignInterfaceTestCommonTypes;
@@ -112,7 +112,7 @@ SEQAN_TYPED_TEST_CASE(ParallelAlignInterfaceTestCommon, ParallelAlignInterfaceTe
 
 SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Global_Score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TExecPolicy = typename TestFixture::TExecPolicy;
 
     auto sets = ::impl::test_align_mock::TestSequences_<Dna, ::impl::test_align_mock::EqualLengthSimd>::getSequences();
@@ -131,7 +131,7 @@ SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Global_Score)
 
 SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Semi_Global_Score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TExecPolicy = typename TestFixture::TExecPolicy;
 
     auto sets = ::impl::test_align_mock::TestSequences_<Dna, ::impl::test_align_mock::EqualLengthSimd>::getSequences();
@@ -150,7 +150,7 @@ SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Semi_Global_Score)
 
 SEQAN_TYPED_TEST(ParallelAlignInterfaceTestCommon, Local_Score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     using TExecPolicy = typename TestFixture::TExecPolicy;
 
     auto sets = ::impl::test_align_mock::TestSequences_<Dna, ::impl::test_align_mock::EqualLengthSimd>::getSequences();

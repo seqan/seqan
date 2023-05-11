@@ -52,7 +52,7 @@
 template <typename TGapsSpec>
 void testAlignGapsMetafunctions(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String               TString;
     typedef Gaps<TString, TGapsSpec> TGaps;
@@ -85,7 +85,7 @@ void testAlignGapsMetafunctions(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsConstructorAndSource(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Check with non-const string.
     {
@@ -117,7 +117,7 @@ void testAlignGapsConstructorAndSource(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSetSource(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Check with non-const string.
     {
@@ -153,7 +153,7 @@ void testAlignGapsSetSource(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsAssignSource(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Check with non-const string.
     {
@@ -182,7 +182,7 @@ void testAlignGapsAssignSource(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsGapOperationsGapCenter(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String               TString;
     typedef Gaps<TString, TGapsSpec> TGaps;
@@ -384,7 +384,7 @@ void testAlignGapsGapOperationsGapCenter(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsGapOperationsGapsLeading(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String               TString;
     typedef Gaps<TString, TGapsSpec> TGaps;
@@ -568,7 +568,7 @@ void testAlignGapsGapOperationsGapsTrailing(TGapsSpec const & /*spec*/)
     // Note: Not testing isCharacter and counting here because the case is similar
     // to the gaps in the center.
 
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String               TString;
     typedef Gaps<TString, TGapsSpec> TGaps;
@@ -685,7 +685,7 @@ void testAlignGapsGapOperationsGapsTrailing(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSequenceInterfaceUngapped(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                              TString;
     typedef Gaps<TString, TGapsSpec>                TGaps;
@@ -717,7 +717,7 @@ void testAlignGapsSequenceInterfaceUngapped(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSequenceInterfaceGapsCenter(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                              TString;
     typedef Gaps<TString, TGapsSpec>                TGaps;
@@ -752,7 +752,7 @@ void testAlignGapsSequenceInterfaceGapsCenter(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSequenceInterfaceGapsLeading(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                              TString;
     typedef Gaps<TString, TGapsSpec>                TGaps;
@@ -787,7 +787,7 @@ void testAlignGapsSequenceInterfaceGapsLeading(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSequenceInterfaceGapsTrailing(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -821,7 +821,7 @@ void testAlignGapsSequenceInterfaceGapsTrailing(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsIteratorInterfaceBegin(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
@@ -842,7 +842,7 @@ void testAlignGapsIteratorInterfaceBegin(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsIteratorInterfaceEnd(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
@@ -865,7 +865,7 @@ void testAlignGapsIteratorInterfaceEnd(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsIteratorInterfaceIter(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
@@ -891,7 +891,7 @@ void testAlignGapsIteratorInterfaceIter(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSourceViewPositionUngapped(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -922,7 +922,7 @@ void testAlignGapsSourceViewPositionUngapped(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSourceViewPositionGapsCenter(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -957,7 +957,7 @@ void testAlignGapsSourceViewPositionGapsCenter(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSourceViewPositionGapsLeading(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -992,7 +992,7 @@ void testAlignGapsSourceViewPositionGapsLeading(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSourceViewPositionGapsTrailing(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -1036,7 +1036,7 @@ void testAlignGapsSourceViewPositionGapsTrailing(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsClippingUngapped(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -1075,7 +1075,7 @@ void testAlignGapsClippingUngapped(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsClippingGapsCenter(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -1117,7 +1117,7 @@ void testAlignGapsClippingGapsCenter(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsClippingGapsLeading(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -1163,7 +1163,7 @@ void testAlignGapsClippingGapsLeading(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsClippingGapsTrailing(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                     TString;
     typedef Gaps<TString, TGapsSpec>       TGaps;
@@ -1204,7 +1204,7 @@ void testAlignGapsClippingGapsTrailing(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
@@ -1251,7 +1251,7 @@ void testAlignGapsClearClipping(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsCopyGaps(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
@@ -1294,7 +1294,7 @@ void testAlignGapsCopyGaps(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsCopyClipping(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Dna5String                               TString;
     typedef Gaps<TString, TGapsSpec>                 TGaps;
@@ -1340,7 +1340,7 @@ void testAlignGapsCopyClipping(TGapsSpec const & /*spec*/)
 template <typename TGapsSpec>
 void testAlignGapsSourceIsNothing(TGapsSpec const & /*spec*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Gaps<Nothing, TGapsSpec> TGaps;
 
@@ -1382,189 +1382,189 @@ void testAlignGapsSourceIsNothing(TGapsSpec const & /*spec*/)
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsMetafunctions(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_constructor_and_source)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsConstructorAndSource(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_set_source)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSetSource(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_assign_source)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsAssignSource(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_gap_operations_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsGapOperationsGapCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_gap_operations_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsGapOperationsGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_gap_operations_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsGapOperationsGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_sequence_interface_ungapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSequenceInterfaceUngapped(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_sequence_interface_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSequenceInterfaceGapsCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_sequence_interface_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSequenceInterfaceGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_sequence_interface_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSequenceInterfaceGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_iterator_interface_begin)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsIteratorInterfaceBegin(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_iterator_interface_end)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsIteratorInterfaceEnd(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_iterator_interface_iter)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsIteratorInterfaceIter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_view_position_ungapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSourceViewPositionUngapped(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_view_position_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSourceViewPositionGapsCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_view_position_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSourceViewPositionGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_view_position_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSourceViewPositionGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clipping_ungapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsClippingUngapped(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clipping_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsClippingGapsCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clipping_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsClippingGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clipping_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsClippingGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear_clipping)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsClearClipping(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_copy_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsCopyGaps(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_copy_clipping)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsCopyClipping(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_source_is_nothing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef ArrayGaps TTag;
     testAlignGapsSourceIsNothing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Gaps<CharString, ArrayGaps> TGaps;
     typedef typename Size<TGaps>::Type TSize;
@@ -1600,175 +1600,175 @@ SEQAN_DEFINE_TEST(test_align_gaps_array_gaps_clear)
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsMetafunctions(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_constructor_and_source)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsConstructorAndSource(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_set_source)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSetSource(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_assign_source)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsAssignSource(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_gap_operations_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsGapOperationsGapCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_gap_operations_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsGapOperationsGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_gap_operations_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsGapOperationsGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_sequence_interface_ungapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSequenceInterfaceUngapped(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_sequence_interface_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSequenceInterfaceGapsCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_sequence_interface_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSequenceInterfaceGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_sequence_interface_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSequenceInterfaceGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_iterator_interface_begin)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsIteratorInterfaceBegin(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_iterator_interface_end)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsIteratorInterfaceEnd(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_iterator_interface_iter)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsIteratorInterfaceIter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_source_view_position_ungapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSourceViewPositionUngapped(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_source_view_position_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSourceViewPositionGapsCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_source_view_position_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSourceViewPositionGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_source_view_position_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsSourceViewPositionGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clipping_ungapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsClippingUngapped(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clipping_gaps_center)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsClippingGapsCenter(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clipping_gaps_leading)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsClippingGapsLeading(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clipping_gaps_trailing)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsClippingGapsTrailing(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clear_clipping)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsClearClipping(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsCopyGaps(TTag());
 }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_clipping)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef AnchorGaps<> TTag;
     testAlignGapsCopyClipping(TTag());
 }
@@ -1777,14 +1777,14 @@ SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_copy_clipping)
 
 // SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_source_is_nothing)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     typedef AnchorGaps<> TTag;
 //     testAlignGapsSourceIsNothing(TTag());
 // }
 
 SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Gaps<CharString, AnchorGaps<> > gaps;
 

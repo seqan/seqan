@@ -40,7 +40,7 @@
 #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
 #define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Test Fundamental Concepts
@@ -49,7 +49,7 @@ using namespace seqan;
 template <typename T>
 inline void testInteger()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((IntegerConcept<T>));
     SEQAN_STATIC_ASSERT_MSG(Is< IntegerConcept<T> >::VALUE, "Type is not marked to be an integer");
@@ -58,7 +58,7 @@ inline void testInteger()
 template <typename T>
 inline void testSignedInteger()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<T>));
     SEQAN_STATIC_ASSERT_MSG(Is< SignedIntegerConcept<T> >::VALUE, "Type is not marked to be a signed integer");
@@ -68,7 +68,7 @@ inline void testSignedInteger()
 template <typename T>
 inline void testUnsignedInteger()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((UnsignedIntegerConcept<T>));
     SEQAN_STATIC_ASSERT_MSG(Is< UnsignedIntegerConcept<T> >::VALUE, "Type is not marked to be an unsigned integer");
@@ -77,7 +77,7 @@ inline void testUnsignedInteger()
 
 inline void testIntegers()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     testInteger<char>();
     testSignedInteger<signed char>();
@@ -93,7 +93,7 @@ inline void testIntegers()
 //  testSignedInteger<unsigned long>();   // <== this should fail
 }
 
-namespace seqan
+namespace seqan2
 {
 
     SEQAN_CONCEPT(TestConceptA_, (T)){};
@@ -138,7 +138,7 @@ namespace seqan
 
 SEQAN_DEFINE_TEST(test_basic_concepts_concept_impl)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef TestConceptModelA_ TModelA;
     typedef TestConceptModelB_<int, TestConceptModelBSpec_<void, void> > TModelB;
@@ -157,28 +157,28 @@ SEQAN_DEFINE_TEST(test_basic_concepts_concept_impl)
 
 }
 
-void myAssert(seqan::False)
+void myAssert(seqan2::False)
 {
     SEQAN_FAIL("failed.");
 }
 
-void myAssert(seqan::True) {}
+void myAssert(seqan2::True) {}
 
 SEQAN_DEFINE_TEST(test_basic_concepts_concept_refine)
 {
-    SEQAN_CONCEPT_ASSERT((seqan::TestConceptC_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > >));
-    SEQAN_CONCEPT_ASSERT((seqan::TestConceptA_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > >));
+    SEQAN_CONCEPT_ASSERT((seqan2::TestConceptC_<seqan2::TestConceptModelC_<double, seqan2::TestConceptModelBSpec_<int, bool> > >));
+    SEQAN_CONCEPT_ASSERT((seqan2::TestConceptA_<seqan2::TestConceptModelC_<double, seqan2::TestConceptModelBSpec_<int, bool> > >));
 
-    typedef seqan::Is<seqan::TestConceptC_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > > >::Type TBool1;
-    typedef seqan::Is<seqan::TestConceptA_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > > >::Type TBool2;
+    typedef seqan2::Is<seqan2::TestConceptC_<seqan2::TestConceptModelC_<double, seqan2::TestConceptModelBSpec_<int, bool> > > >::Type TBool1;
+    typedef seqan2::Is<seqan2::TestConceptA_<seqan2::TestConceptModelC_<double, seqan2::TestConceptModelBSpec_<int, bool> > > >::Type TBool2;
 
     myAssert(TBool1());
     myAssert(TBool2());
 
-    SEQAN_CONCEPT_ASSERT((seqan::ContainerConcept<seqan::String<double> >));
-    SEQAN_CONCEPT_ASSERT((seqan::ContainerConcept<seqan::Segment<CharString, InfixSegment> >));
-    SEQAN_CONCEPT_ASSERT((seqan::StringConcept<seqan::String<double> >));
-    myAssert(Not<Is<      seqan::StringConcept<seqan::Segment<CharString, InfixSegment> > > >::Type());   // should fail
+    SEQAN_CONCEPT_ASSERT((seqan2::ContainerConcept<seqan2::String<double> >));
+    SEQAN_CONCEPT_ASSERT((seqan2::ContainerConcept<seqan2::Segment<CharString, InfixSegment> >));
+    SEQAN_CONCEPT_ASSERT((seqan2::StringConcept<seqan2::String<double> >));
+    myAssert(Not<Is<      seqan2::StringConcept<seqan2::Segment<CharString, InfixSegment> > > >::Type());   // should fail
 }
 
 #endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_

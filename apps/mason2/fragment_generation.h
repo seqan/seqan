@@ -60,7 +60,7 @@
 
 typedef std::mt19937 TRng;
 
-inline void trimAfterSpace(seqan::CharString & s);
+inline void trimAfterSpace(seqan2::CharString & s);
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -298,7 +298,7 @@ inline bool overlapsWithInterval(std::vector<std::pair<int, int> > const & inter
 
 // Trim after the first whitespace.
 inline
-void trimAfterSpace(seqan::CharString & s)
+void trimAfterSpace(seqan2::CharString & s)
 {
     unsigned i = 0;
     for (; i < length(s); ++i)

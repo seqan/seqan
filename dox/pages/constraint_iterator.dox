@@ -9,7 +9,7 @@
  * suffix tree (see IndexWotd). The following example demonstrates how to iterate over all suffix tree nodes fulfilling the
  * constraints and output them.
  *
- * We start by including the necessary headers and use the namespace seqan;
+ * We start by including the necessary headers and use the namespace seqan2;
  *
  * @snippet demos/dox/index/node_predicate.cpp includes
  *
@@ -26,12 +26,12 @@
  * @snippet demos/dox/index/node_predicate.cpp main
  *
  * Then we create our customized index which is a specialization of the deferred @Class.Index.wotd-Index@
- * 
+ *
  * @snippet demos/dox/index/node_predicate.cpp specialisation
  *
  * And finaly we search by traversing a string tree.  To find all strings that fulfill our constraints, we simply do a
  * dfs-traversal via @Function.goBegin@ and @Function.goNext@.
- * 
+ *
  * @snippet demos/dox/index/node_predicate.cpp traversal
  *
  * @code{.console}

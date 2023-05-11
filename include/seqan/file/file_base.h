@@ -49,7 +49,7 @@
  * SEQAN_DIRECTIO Macro mentioned here but not documented or tested
  */
 
-namespace seqan {
+namespace seqan2 {
 
 // Manual Forward.
 template < typename TSpec, typename TPos >
@@ -641,6 +641,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
         else
             return (_size / (T1)_aligning) * (T1)_aligning;
     }
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_FILE_BASE_H_

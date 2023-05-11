@@ -40,7 +40,7 @@
 
 #include "../stellar/stellar.h"
 #include "create_stellarmatches_from_file.h"
-using namespace seqan;
+using namespace seqan2;
 
 // Compare StellarMatches using in order of priority (1) read begin, (2) read end position,
 // (3) chromosome begin, (4) chromosome end pos
@@ -304,7 +304,7 @@ void _getMatchDistanceScore(
                 // Compute edit distance score
                 _getScore(*itStellarMatches, alignDistance);
                 matchDistanceScores[matchIndex] = alignDistance;
-                
+
                 ++matchIndex;
             }
         }
@@ -618,7 +618,7 @@ _importSequences(CharString const & fileName,
 {
     typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
 
-    seqan::SeqFileIn seqFileIn;
+    seqan2::SeqFileIn seqFileIn;
     if (!open(seqFileIn, toCString(fileName)))
     {
         std::cerr << "Failed to open " << name << " file.\n";

@@ -39,9 +39,9 @@
 
 #include <fstream>
 
-std::fstream* createFastAFile(seqan::CharString &tempFilename)
+std::fstream* createFastAFile(seqan2::CharString &tempFilename)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];
@@ -66,9 +66,9 @@ ACGTNNNNNNNCGTACTTGCTAGCTAGCTAGCTAGCTAGCATCGTACGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     return file;
 }
 
-std::fstream* createFastAFileProtein(seqan::CharString &tempFilename)
+std::fstream* createFastAFileProtein(seqan2::CharString &tempFilename)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];
@@ -93,9 +93,9 @@ GLMPFLHTSKHRSMMLRPLSQALFWTLTMDLLTLTWIGSQPVEYPYTIIGQMASILYFSIILAFLPIAGX";
     return file;
 }
 
-std::fstream* createFastAFileAnnotatedProtein(seqan::CharString &tempFilename)
+std::fstream* createFastAFileAnnotatedProtein(seqan2::CharString &tempFilename)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];
@@ -120,9 +120,9 @@ GLMPFLHTSKHRSMMLRPLSQALFW[CTD(5)->gogogo]TLTMDLLTLTWIGSQPVEYPYTIIGQMASILYFSIILAF
     return file;
 }
 
-std::fstream* createFastQFile(seqan::CharString &tempFilename)
+std::fstream* createFastQFile(seqan2::CharString &tempFilename)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];
@@ -154,9 +154,9 @@ GTTCAACTCACAGTTT\n\
 }
 
 // something that is definitely not a sequence format
-std::fstream* createBogusFile(seqan::CharString &tempFilename)
+std::fstream* createBogusFile(seqan2::CharString &tempFilename)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];

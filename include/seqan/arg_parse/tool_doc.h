@@ -41,7 +41,7 @@
 #include <seqan/arg_parse/xml_support.h>
 #include <seqan/version.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Forwards
@@ -1632,6 +1632,6 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_MISC_TOOL_DOC_H_

@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 // TODO(holtgrew): Comprehensive tests. Currently, there are *some* tests in the tests for graph_algorithm.
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -386,6 +386,6 @@ joinSets(UnionFind<TValue> & unionFind,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // #ifndef SEQAN_MISC_UNION_FIND_H_

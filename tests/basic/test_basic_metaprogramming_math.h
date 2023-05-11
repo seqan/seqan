@@ -43,7 +43,7 @@
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_math_log2)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(+Log2<1>::VALUE, 0u);
     SEQAN_ASSERT_EQ(+Log2<2>::VALUE, 1u);
@@ -61,7 +61,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_math_log2)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_math_log2_floor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ(+Log2Floor<1>::VALUE, 0u);
     SEQAN_ASSERT_EQ(+Log2Floor<2>::VALUE, 1u);
@@ -79,7 +79,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_math_log2_floor)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_math_log2_power)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT_EQ((+Power<0, 0>::VALUE), 1u);
     SEQAN_ASSERT_EQ((+Power<0, 1>::VALUE), 0u);

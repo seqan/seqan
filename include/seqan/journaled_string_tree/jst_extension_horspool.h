@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
 #define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -100,6 +100,6 @@ run(JstExtension<Pattern<TNeedle, Horspool> > const & me,
                                    hstkIt == hystkBegin && getValue(ndlIt) == getValue(hstkIt));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_HORSPOOL_H_

@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_MISC_SVG_H
 #define SEQAN_HEADER_MISC_SVG_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -507,6 +507,6 @@ _alignTracePrint(SVGFile& svg,
 
 
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -39,7 +39,7 @@
 
 #include <seqan/basic.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_true)
 {
@@ -215,7 +215,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_memset)
 template <typename T>
 bool testForEnableIf(
     T const & /*x*/,
-    typename seqan::EnableIf<typename IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
+    typename seqan2::EnableIf<typename IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
 {
     return true;
 }
@@ -223,7 +223,7 @@ bool testForEnableIf(
 template <typename T>
 bool testForEnableIf(
     T const & /*x*/,
-    typename seqan::DisableIf<typename IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
+    typename seqan2::DisableIf<typename IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
 {
     return false;
 }
@@ -231,7 +231,7 @@ bool testForEnableIf(
 template <typename T>
 bool testForEnableIf2(
     T const & /*x*/,
-    typename seqan::EnableIf2<IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
+    typename seqan2::EnableIf2<IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
 {
     return true;
 }
@@ -239,7 +239,7 @@ bool testForEnableIf2(
 template <typename T>
 bool testForEnableIf2(
     T const & /*x*/,
-    typename seqan::DisableIf2<IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
+    typename seqan2::DisableIf2<IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
 {
     return false;
 }

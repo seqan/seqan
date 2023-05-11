@@ -43,7 +43,7 @@
 
 SEQAN_DEFINE_TEST(test_align_stream_gaps_write)
 {
-    seqan::Gaps<seqan::Dna5String> gaps;
+    seqan2::Gaps<seqan2::Dna5String> gaps;
     assignSource(gaps, "CGATTTAT");
     insertGaps(gaps, 8, 2);
     insertGaps(gaps, 5, 1);
@@ -61,7 +61,7 @@ SEQAN_DEFINE_TEST(test_align_stream_gaps_write)
 
 SEQAN_DEFINE_TEST(test_align_stream_gaps_stream)
 {
-    seqan::Gaps<seqan::Dna5String> gaps;
+    seqan2::Gaps<seqan2::Dna5String> gaps;
     assignSource(gaps, "CGATTTAT");
     insertGaps(gaps, 8, 2);
     insertGaps(gaps, 5, 1);
@@ -79,11 +79,11 @@ SEQAN_DEFINE_TEST(test_align_stream_gaps_stream)
 
 SEQAN_DEFINE_TEST(test_align_stream_align_write)
 {
-    seqan::Align<seqan::Dna5String> align;
+    seqan2::Align<seqan2::Dna5String> align;
     resize(rows(align), 2);
     assignSource(row(align, 0), "CGATTAGTG");
     assignSource(row(align, 1), "ATTAGTA");
-    globalAlignment(align, seqan::EditDistanceScore());
+    globalAlignment(align, seqan2::EditDistanceScore());
 
     std::stringstream ss;
     ss << align;
@@ -100,11 +100,11 @@ SEQAN_DEFINE_TEST(test_align_stream_align_write)
 
 SEQAN_DEFINE_TEST(test_align_stream_align_stream)
 {
-    seqan::Align<seqan::Dna5String> align;
+    seqan2::Align<seqan2::Dna5String> align;
     resize(rows(align), 2);
     assignSource(row(align, 0), "CGATTAGTG");
     assignSource(row(align, 1), "ATTAGTA");
-    globalAlignment(align, seqan::EditDistanceScore());
+    globalAlignment(align, seqan2::EditDistanceScore());
 
     std::stringstream ss;
     ss << align;

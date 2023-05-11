@@ -42,7 +42,7 @@
 #define SEQAN_ENABLE_POINTER_HOLDER 0
 #endif  //#ifndef SEQAN_ENABLE_POINTER_HOLDER
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -438,6 +438,6 @@ getValue(Holder<TValue, TSpec> & holder)
     return value(holder);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_HOLDER_BASE_H_

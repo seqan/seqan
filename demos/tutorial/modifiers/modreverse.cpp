@@ -3,7 +3,7 @@
 #include <seqan/stream.h>
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
     replace(myString, 9, 9, "master ");
     std::cout << myString << std::endl;
     std::cout << myModifier << std::endl;
-    
+
 //![output2]
     std::cout << "//![output2]\n";
 //![output2]

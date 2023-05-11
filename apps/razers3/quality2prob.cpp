@@ -6,7 +6,7 @@
 #include <seqan/store.h>
 #include "razers.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 
 int main(int argc, const char * argv[])

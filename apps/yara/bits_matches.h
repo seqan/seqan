@@ -37,7 +37,7 @@
 #ifndef APP_YARA_BITS_MATCHES_H_
 #define APP_YARA_BITS_MATCHES_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functors
@@ -81,7 +81,7 @@ struct MemberLimits
 }
 
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags
@@ -134,7 +134,7 @@ struct Match
 // Member Types
 // ----------------------------------------------------------------------------
 
-namespace seqan {
+namespace seqan2 {
 template <typename TSpec>
 struct Member<Match<TSpec>, ReadId>
 {
@@ -876,7 +876,7 @@ inline void forAllMatchesPairs(TMatchesSet const & matchesSet, TReadSeqs const &
     typedef typename Size<TReadSeqs>::Type             TReadId;
     typedef typename Value<TMatchesSet const>::Type    TMatches;
 
-    forEach(seqan::Range<TReadId>(0, getPairsCount(readSeqs)), [&](TReadId pairId)
+    forEach(seqan2::Range<TReadId>(0, getPairsCount(readSeqs)), [&](TReadId pairId)
     {
         TReadId firstId = getFirstMateFwdSeqId(readSeqs, pairId);
         TReadId secondId = getSecondMateFwdSeqId(readSeqs, pairId);

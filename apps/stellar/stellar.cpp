@@ -28,7 +28,7 @@
 #include "stellar.h"
 #include "stellar_output.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Initializes a Finder object for a database sequence,
@@ -79,7 +79,7 @@ _stellarOnOne(TSequence & database,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-namespace seqan {
+namespace seqan2 {
 
 template <typename TStringSet, typename TShape, typename TSpec>
 struct Cargo<Index<TStringSet, IndexQGram<TShape, TSpec> > >
@@ -569,7 +569,7 @@ void _setParser(ArgumentParser & parser)
     setDefaultValue(parser, "o", "stellar.gff");
     addOption(parser, ArgParseOption("od", "outDisabled",
                                      "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUT_FILE));
-    setValidValues(parser, "outDisabled", seqan::SeqFileOut::getFileExtensions());
+    setValidValues(parser, "outDisabled", seqan2::SeqFileOut::getFileExtensions());
     setDefaultValue(parser, "od", "stellar.disabled.fasta");
     addOption(parser, ArgParseOption("t", "no-rt", "Suppress printing running time."));
     hideOption(parser, "t");

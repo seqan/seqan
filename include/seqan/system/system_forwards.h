@@ -41,7 +41,7 @@
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan {
+namespace seqan2 {
 
 //____________________________________________________________________________
 // Event
@@ -74,7 +74,7 @@ inline bool signal(Event &e);           // "include/seqan/system/system_event.h"
 inline bool waitFor(Event &e);           // "include/seqan/system/system_event.h"(113)
 template <typename TTime > inline bool waitFor(Event &e, TTime timeoutMilliSec, bool &inProgress);           // "include/seqan/system/system_event.h"(118)
 
-} //namespace seqan
+} //namespace seqan2
 
 
 #endif

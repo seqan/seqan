@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -230,6 +230,6 @@ swap(DPCell_<TScoreValue, AffineGaps> & lhs,
     std::swap(lhs._verticalScore, rhs._verticalScore);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_CELL_AFFINE_H_

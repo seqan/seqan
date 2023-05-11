@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEEDS_SEEDS_SEED_DIAGONAL_H_
 #define SEQAN_SEEDS_SEEDS_SEED_DIAGONAL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -182,6 +182,6 @@ operator==(SeedDiagonal<TPosition, TSize> const & a, SeedDiagonal<TPosition, TSi
             a.length == b.length;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_SEED_DIAGONAL_H_

@@ -36,7 +36,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
 #define INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -222,6 +222,6 @@ getProperty(InternalPropertyMap<TValue> const &, TEdgeDescriptor const e)
     return getCargo(e);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_

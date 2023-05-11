@@ -37,7 +37,7 @@
 
 #include <seqan/stream.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -117,6 +117,6 @@ void writeRecord(TTarget & target, RoiRecord const & record, Roi const & /*tag*/
     writeValue(target, '\n');
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ROI_IO_WRITE_ROI_H_

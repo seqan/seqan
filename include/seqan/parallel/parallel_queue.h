@@ -41,7 +41,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_
 #define SEQAN_PARALLEL_PARALLEL_QUEUE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Classes
@@ -798,6 +798,6 @@ appendValue(ConcurrentQueue<TValue, TSpec> & me,
     appendValue(me, std::forward<TValue2>(val), expandTag, typename DefaultParallelSpec<ConcurrentQueue<TValue, TSpec> >::Type());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_H_

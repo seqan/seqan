@@ -40,12 +40,12 @@
 #include <seqan/roi_io.h>
 #include <seqan/gff_io.h>
 
-class MyRoiRecord : public seqan::RoiRecord
+class MyRoiRecord : public seqan2::RoiRecord
 {
 public:
     int rID;
 
-    MyRoiRecord() : seqan::RoiRecord(), rID(-1)
+    MyRoiRecord() : seqan2::RoiRecord(), rID(-1)
     {}
 };
 

@@ -11,7 +11,7 @@
 
 #include <seqan/parallel.h>
 
-namespace seqan {
+namespace seqan2 {
 
 #if defined(COMPILER_GCC) && defined(_OPENMP)
 

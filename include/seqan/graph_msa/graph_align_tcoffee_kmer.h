@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_KMER_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_KMER_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -148,6 +148,6 @@ getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
 
 
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

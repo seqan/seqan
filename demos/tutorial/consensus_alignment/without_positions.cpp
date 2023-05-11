@@ -3,7 +3,7 @@
 #include <seqan/store.h>
 #include <seqan/consensus.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

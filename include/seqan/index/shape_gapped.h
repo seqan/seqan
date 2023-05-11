@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SHAPE_GAPPED_H
 #define SEQAN_HEADER_SHAPE_GAPPED_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -307,7 +307,7 @@ namespace seqan
         operator=(Shape<TValue, UngappedShape<q> > const &other)
         {
             span = length(other);
-            weight = seqan::weight(other);
+            weight = seqan2::weight(other);
             if (weight > 0)
             {
                 resize(diffs, weight - 1);
@@ -691,6 +691,6 @@ namespace seqan
         reverse(me.diffs);
     }
 
-}    // namespace seqan
+}    // namespace seqan2
 
 #endif

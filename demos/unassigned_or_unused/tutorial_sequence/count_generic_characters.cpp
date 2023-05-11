@@ -2,7 +2,7 @@
 #include <iostream>
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![count-one-mers-define-function]

@@ -2,7 +2,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

@@ -36,7 +36,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
 #define INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -227,6 +227,6 @@ getProperty(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const &
     return (getCargo(e)).*MEMBER_POINTER;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_

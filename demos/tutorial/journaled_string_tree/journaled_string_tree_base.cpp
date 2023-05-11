@@ -26,7 +26,7 @@ struct MatchPrinter
 //![match_printer]
 
 //![typedef]
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

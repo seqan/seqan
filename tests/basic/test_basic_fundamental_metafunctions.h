@@ -40,40 +40,40 @@
 // Test availability of the symbol Value<T, I>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_value)
 {
-    typedef seqan::Value<int> TIntValue     SEQAN_UNUSED_TYPEDEF;
-    typedef seqan::Value<int, 0> TIntValue0 SEQAN_UNUSED_TYPEDEF;
-    typedef seqan::Value<int, 1> TIntValue1 SEQAN_UNUSED_TYPEDEF;
-    typedef seqan::Value<int, 2> TIntValue2 SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Value<int> TIntValue     SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Value<int, 0> TIntValue0 SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Value<int, 1> TIntValue1 SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Value<int, 2> TIntValue2 SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test availability of the symbol GetValue<T>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_get_value)
 {
-    typedef seqan::GetValue<int> TIntGetValue SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::GetValue<int> TIntGetValue SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test availability of the symbol Reference<T>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_reference)
 {
-    typedef seqan::Reference<int> TIntReference SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Reference<int> TIntReference SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test availability of the symbol Size<T>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_size)
 {
-    typedef seqan::Size<int> TIntSize SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Size<int> TIntSize SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test availability of the symbol Difference<T>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_difference)
 {
-    typedef seqan::Difference<int> TIntDifference SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Difference<int> TIntDifference SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test availability of the symbol Position<T>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_position)
 {
-    typedef seqan::Position<int> TIntPosition SEQAN_UNUSED_TYPEDEF;
+    typedef seqan2::Position<int> TIntPosition SEQAN_UNUSED_TYPEDEF;
 }
 
 // Test the Spec<> metafunction.
@@ -84,7 +84,7 @@ struct ClassName;
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_spec)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT((+SameType_<typename Spec<int>::Type, void>::VALUE));
     SEQAN_ASSERT((+SameType_<typename Spec<int const>::Type, void>::VALUE));
@@ -102,7 +102,7 @@ class Nothing_ {};
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_deepest_spec)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // No nesting.
     // TODO(holtgrew): Should the result for int not be void?

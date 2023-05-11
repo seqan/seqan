@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -375,6 +375,6 @@ upperBoundGapAnchor(TGapAnchors & gaps,
         _LessGapAnchor<typename Value<TGapAnchors>::Type, SortGapPos const>() );
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_

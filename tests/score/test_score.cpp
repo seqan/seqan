@@ -52,7 +52,7 @@
 #include <seqan/align.h>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 // Helper function that compares two amino acid matrices for equality.
 // TODO(holtgrew): If used somewhere else, put into some place to share.
@@ -320,7 +320,7 @@ SEQAN_DEFINE_TEST(test_score_edit) {
     // We will only test with int scores, the most common case.
     typedef int TValue;
     typedef Score<TValue, EditDistance> TScore;
-    
+
     // Test the default constructor.
     {
         TScore editDistanceScore;
@@ -369,7 +369,7 @@ SEQAN_DEFINE_TEST(test_score_simple) {
     // We will only test with int scores, the most common case.
     typedef int TValue;
     typedef Score<TValue, Simple> TScore;
-    
+
     // Test the default constructor.
     {
         TScore simpleScore;
@@ -417,7 +417,7 @@ SEQAN_DEFINE_TEST(test_score_simple) {
         SEQAN_ASSERT_EQ(kGapExtension, scoreGapExtend(simpleScore));
         SEQAN_ASSERT_EQ(kGapOpen, scoreGapOpen(simpleScore));
     }
- 
+
     // Test the constructor with match, mismatch, gap arguments.
     {
         // Define constant test data.

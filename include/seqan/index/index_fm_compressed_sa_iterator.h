@@ -38,7 +38,7 @@
 #ifndef INDEX_FM_COMPRESSED_SA_ITERATOR_H_
 #define INDEX_FM_COMPRESSED_SA_ITERATOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Metafunctions

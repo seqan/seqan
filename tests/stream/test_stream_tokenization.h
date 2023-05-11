@@ -42,7 +42,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 char const * EXAMPLE_STR1 = "This is a string ....foobar AAAACCCGGGTTT\n\
  TCG > foo.. SJAUDOF78456kapLP345LPL AAAAAAAAAAAAA\n\

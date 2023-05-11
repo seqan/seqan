@@ -55,16 +55,16 @@ struct SakOptions
     int verbosity;
 
     // Path to FASTA/FASTQ file.
-    seqan::CharString inFastxPath;
+    seqan2::CharString inFastxPath;
 
     // Path to output file.
-    seqan::CharString outPath;
+    seqan2::CharString outPath;
 
     // Set if one sequence is to be retrieved.
-    seqan::String<uint64_t> seqIndices;
+    seqan2::String<uint64_t> seqIndices;
 
     // Set if multiple sequences are to be retrieved.
-    seqan::String<seqan::Pair<uint64_t> > seqIndexRanges;
+    seqan2::String<seqan2::Pair<uint64_t> > seqIndexRanges;
 
     // Set if output is to be limited to an infix.
     uint64_t seqInfixBegin;
@@ -77,10 +77,10 @@ struct SakOptions
     uint64_t maxLength;
 
     // Prefix of read names to output if not empty.
-    seqan::CharString readPattern;
+    seqan2::CharString readPattern;
 
     // Line length configuration etc.
-    seqan::SequenceOutputOptions seqOutOptions;
+    seqan2::SequenceOutputOptions seqOutOptions;
 
     SakOptions() :
         verbosity(1),
@@ -97,13 +97,13 @@ struct SakOptions
 // --------------------------------------------------------------------------
 
 template <typename TNum>
-bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeStr)
+bool parseRange(TNum & beginPos, TNum & endPos, seqan2::CharString const & rangeStr)
 {
-    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type reader = directionIterator(rangeStr, seqan::Input());
+    seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type reader = directionIterator(rangeStr, seqan2::Input());
 
     // Parse out begin position.
-    seqan::CharString buffer;
-    readUntil(buffer, reader, seqan::EqualsChar<'-'>(), seqan::EqualsChar<','>());
+    seqan2::CharString buffer;
+    readUntil(buffer, reader, seqan2::EqualsChar<'-'>(), seqan2::EqualsChar<','>());
     if (!lexicalCast(beginPos, buffer))
         return false;
 
@@ -114,7 +114,7 @@ bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeS
 
     // Parse out end position.
     clear(buffer);
-    readUntil(buffer, reader, seqan::False(), seqan::EqualsChar<','>());
+    readUntil(buffer, reader, seqan2::False(), seqan2::EqualsChar<','>());
 
     if (empty(buffer))
     {
@@ -132,12 +132,12 @@ bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeS
 // Function parseArgs()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseArgs(SakOptions & options,
           int argc,
           char ** argv)
 {
-    seqan::ArgumentParser parser("sak");
+    seqan2::ArgumentParser parser("sak");
     setShortDescription(parser, "Slicing and dicing of FASTA/FASTQ files..");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
@@ -148,44 +148,44 @@ parseArgs(SakOptions & options,
     addDescription(parser, "Original SAK tool by David Weese. Rewrite by Manuel Holtgrewe.");
 
     // The only argument is the input file.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "IN"));
 
     // Only FASTA and FASTQ files are allowed as input.
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, 0, seqan2::SeqFileIn::getFileExtensions());
 
     // TODO(holtgrew): I want a custom help text!
-    // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Verbose, log to STDERR."));
+    // addOption(parser, seqan2::ArgParseOption("h", "help", "This helpful screen."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Verbose, log to STDERR."));
     hideOption(parser, "verbose");
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Very verbose, log to STDERR."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Very verbose, log to STDERR."));
     hideOption(parser, "very-verbose");
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-path",
+    addOption(parser, seqan2::ArgParseOption("o", "out-path",
                                             "Path to the resulting file.  If omitted, result is printed to stdout in FastQ format.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "FASTX"));
-    setValidValues(parser, "out-path", seqan::SeqFileOut::getFileExtensions());
-    addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
-    addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
-                                            seqan::ArgParseOption::INTEGER, "LEN"));
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "FASTX"));
+    setValidValues(parser, "out-path", seqan2::SeqFileOut::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
+    addOption(parser, seqan2::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
+                                            seqan2::ArgParseOption::INTEGER, "LEN"));
 
     addSection(parser, "Filter Options");
-    addOption(parser, seqan::ArgParseOption("s", "sequence", "Select the given sequence for extraction by 0-based index.",
-                                            seqan::ArgParseOption::INTEGER, "NUM", true));
-    addOption(parser, seqan::ArgParseOption("sn", "sequence-name", "Select sequence with name prefix being \\fINAME\\fP.",
-                                            seqan::ArgParseOption::STRING, "NAME", true));
-    addOption(parser, seqan::ArgParseOption("ss", "sequences",
+    addOption(parser, seqan2::ArgParseOption("s", "sequence", "Select the given sequence for extraction by 0-based index.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM", true));
+    addOption(parser, seqan2::ArgParseOption("sn", "sequence-name", "Select sequence with name prefix being \\fINAME\\fP.",
+                                            seqan2::ArgParseOption::STRING, "NAME", true));
+    addOption(parser, seqan2::ArgParseOption("ss", "sequences",
                                             "Select sequences \\fIfrom\\fP-\\fIto\\fP where \\fIfrom\\fP and \\fIto\\fP "
                                             "are 0-based indices.",
-                                            seqan::ArgParseArgument::STRING, "RANGE", true));
-    addOption(parser, seqan::ArgParseOption("i", "infix",
+                                            seqan2::ArgParseArgument::STRING, "RANGE", true));
+    addOption(parser, seqan2::ArgParseOption("i", "infix",
                                             "Select characters \\fIfrom\\fP-\\fIto\\fP where \\fIfrom\\fP and \\fIto\\fP "
                                             "are 0-based indices.",
-                                            seqan::ArgParseArgument::STRING, "RANGE", true));
+                                            seqan2::ArgParseArgument::STRING, "RANGE", true));
 
-    addOption(parser, seqan::ArgParseOption("ll", "line-length",
+    addOption(parser, seqan2::ArgParseOption("ll", "line-length",
                                             "Set line length in output file.  See section \\fILine Length\\fP for details.",
-                                            seqan::ArgParseArgument::INTEGER, "LEN", false));
+                                            seqan2::ArgParseArgument::INTEGER, "LEN", false));
     setMinValue(parser, "line-length", "-1");
 
     addTextSection(parser, "Line Length");
@@ -205,14 +205,14 @@ parseArgs(SakOptions & options,
                 "Cut out 11th up to and including 12th and 101th up to and including 199th sequence from \\fIIN.fq\\fP "
                 "and write to stdout as FASTA.");
 
-    seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     getArgumentValue(options.inFastxPath, parser, 0);
 
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
     getOptionValue(tmp, parser, "out-path");
 
     if (isSet(parser, "out-path"))
@@ -226,13 +226,13 @@ parseArgs(SakOptions & options,
     if (isSet(parser, "sequence"))
     {
         std::vector<std::string> sequenceIds = getOptionValues(parser, "sequence");
-        for (unsigned i = 0; i < seqan::length(sequenceIds); ++i)
+        for (unsigned i = 0; i < seqan2::length(sequenceIds); ++i)
         {
             unsigned idx = 0;
-            if (!seqan::lexicalCast(idx, sequenceIds[i]))
+            if (!seqan2::lexicalCast(idx, sequenceIds[i]))
             {
                 std::cerr << "ERROR: Invalid sequence index " << sequenceIds[i] << "\n";
-                return seqan::ArgumentParser::PARSE_ERROR;
+                return seqan2::ArgumentParser::PARSE_ERROR;
             }
             appendValue(options.seqIndices, idx);
         }
@@ -241,14 +241,14 @@ parseArgs(SakOptions & options,
     if (isSet(parser, "sequences"))
     {
         std::vector<std::string> sequenceRanges = getOptionValues(parser, "sequences");
-        seqan::CharString buffer;
-        for (unsigned i = 0; i < seqan::length(sequenceRanges); ++i)
+        seqan2::CharString buffer;
+        for (unsigned i = 0; i < seqan2::length(sequenceRanges); ++i)
         {
-            seqan::Pair<uint64_t> range;
+            seqan2::Pair<uint64_t> range;
             if (!parseRange(range.i1, range.i2, sequenceRanges[i]))
             {
                 std::cerr << "ERROR: Invalid range " << sequenceRanges[i] << "\n";
-                return seqan::ArgumentParser::PARSE_ERROR;
+                return seqan2::ArgumentParser::PARSE_ERROR;
             }
             appendValue(options.seqIndexRanges, range);
         }
@@ -256,12 +256,12 @@ parseArgs(SakOptions & options,
 
     if (isSet(parser, "infix"))
     {
-        seqan::CharString buffer;
+        seqan2::CharString buffer;
         getOptionValue(buffer, parser, "infix");
         if (!parseRange(options.seqInfixBegin, options.seqInfixEnd, buffer))
         {
             std::cerr << "ERROR: Invalid range " << buffer << "\n";
-            return seqan::ArgumentParser::PARSE_ERROR;
+            return seqan2::ArgumentParser::PARSE_ERROR;
         }
     }
 
@@ -300,9 +300,9 @@ int main(int argc, char ** argv)
 
     // Parse command line.
     SakOptions options;
-    seqan::ArgumentParser::ParseResult res = parseArgs(options, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;  // 1 on errors, 0 otherwise
+    seqan2::ArgumentParser::ParseResult res = parseArgs(options, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;  // 1 on errors, 0 otherwise
 
     // -----------------------------------------------------------------------
     // Show options.
@@ -329,8 +329,8 @@ int main(int argc, char ** argv)
     // -----------------------------------------------------------------------
     // Open Files.
     // -----------------------------------------------------------------------
-    seqan::SeqFileIn inFile;
-    seqan::SeqFileOut outFile;
+    seqan2::SeqFileIn inFile;
+    seqan2::SeqFileOut outFile;
 
     bool openRes = false;
     if (!empty(options.inFastxPath))
@@ -346,7 +346,7 @@ int main(int argc, char ** argv)
     if (!empty(options.outPath))
         openRes = open(outFile, toCString(options.outPath));
     else
-        openRes = open(outFile, std::cout, seqan::Fastq());
+        openRes = open(outFile, std::cout, seqan2::Fastq());
     if (!openRes)
     {
         std::cerr << "ERROR: Problem opening output file.\n";
@@ -367,18 +367,18 @@ int main(int argc, char ** argv)
     // -----------------------------------------------------------------------
     // Read and Write Filtered.
     // -----------------------------------------------------------------------
-    startTime = seqan::sysTime();
+    startTime = seqan2::sysTime();
 
 
     uint64_t charsWritten = 0;
-    seqan::CharString id;
-    seqan::CharString seq;
-    seqan::CharString quals;
+    seqan2::CharString id;
+    seqan2::CharString seq;
+    seqan2::CharString quals;
 
-    auto seqIndicesBeg = begin(options.seqIndices, seqan::Standard());
-    auto seqIndicesEnd = end(options.seqIndices, seqan::Standard());
-    auto seqIndexRangesBeg = begin(options.seqIndexRanges, seqan::Standard());
-    auto seqIndexRangesEnd = end(options.seqIndexRanges, seqan::Standard());
+    auto seqIndicesBeg = begin(options.seqIndices, seqan2::Standard());
+    auto seqIndicesEnd = end(options.seqIndices, seqan2::Standard());
+    auto seqIndexRangesBeg = begin(options.seqIndexRanges, seqan2::Standard());
+    auto seqIndexRangesEnd = end(options.seqIndexRanges, seqan2::Standard());
 
     for (unsigned idx = 0; !atEnd(inFile) && charsWritten < options.maxLength && idx < endIdx; ++idx)
     {
@@ -386,7 +386,7 @@ int main(int argc, char ** argv)
         {
             readRecord(id, seq, quals, inFile);
         }
-        catch (seqan::ParseError const & e)
+        catch (seqan2::ParseError const & e)
         {
             std::cerr << "ERROR: Problem reading file: " << e.what() << "\n";
             return 1;
@@ -398,7 +398,7 @@ int main(int argc, char ** argv)
 
         // One of options.seqIndexRanges.
         if (!empty(options.seqIndexRanges) && std::none_of(seqIndexRangesBeg, seqIndexRangesEnd,
-                        [idx](seqan::Pair<uint64_t> rng) { return idx >= rng.i1 && idx < rng.i2; } ))
+                        [idx](seqan2::Pair<uint64_t> rng) { return idx >= rng.i1 && idx < rng.i2; } ))
             continue;
 
         // Name pattern matches.
@@ -406,15 +406,15 @@ int main(int argc, char ** argv)
             continue;
 
         // Get begin and end index of infix to write out.
-        uint64_t infixBegin = seqan::_min(options.seqInfixBegin, length(seq));
-        uint64_t infixEnd = seqan::_max(seqan::_min(options.seqInfixEnd, length(seq)), infixBegin);
+        uint64_t infixBegin = seqan2::_min(options.seqInfixBegin, length(seq));
+        uint64_t infixEnd = seqan2::_max(seqan2::_min(options.seqInfixEnd, length(seq)), infixBegin);
 
         if (options.verbosity >= 3)
             std::cerr << "INFIX\tbegin:" << infixBegin << "\tend:" << infixEnd << "\n";
 
         if (options.reverseComplement)
         {
-            seqan::Dna5String seqCopy = seq;
+            seqan2::Dna5String seqCopy = seq;
             reverseComplement(seqCopy);
             reverse(quals);
             infixEnd = length(seq) - infixEnd;
@@ -428,7 +428,7 @@ int main(int argc, char ** argv)
     }
 
     if (options.verbosity >= 2)
-        std::cerr << "Took " << (seqan::sysTime() - startTime) << " s\n";
+        std::cerr << "Took " << (seqan2::sysTime() - startTime) << " s\n";
 
     return 0;
 }

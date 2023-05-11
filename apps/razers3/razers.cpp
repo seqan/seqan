@@ -95,7 +95,7 @@
 #endif  // #ifdef RAZERS_PROFILE
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 struct MyFragStoreConfig :
     public FragmentStoreConfig<>
@@ -307,10 +307,10 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 
     // Need genome and reads (hg18.fa reads.fq)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, 0, seqan2::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    setValidValues(parser, 1, seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, 1, seqan2::SeqFileIn::getFileExtensions());
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");

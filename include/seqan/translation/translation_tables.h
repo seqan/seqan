@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
 #define INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

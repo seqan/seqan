@@ -44,7 +44,7 @@
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetContainerFunctions(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Define SeedSet type and declare a variable.
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
@@ -95,7 +95,7 @@ void testSeedsSeedSetContainerFunctions(TSeedSpec const &, TSeedSetSpec const &)
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSingleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -116,7 +116,7 @@ void testSeedsSeedSetAddSeedSingleNoThreshold(TSeedSpec const &, TSeedSetSpec co
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSingleThresholdReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -138,7 +138,7 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedLength(TSeedSpec const &, TSee
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSingleThresholdNotReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -160,7 +160,7 @@ void testSeedsSeedSetAddSeedSingleThresholdNotReachedLength(TSeedSpec const &, T
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSingleThresholdReachedScore(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -184,7 +184,7 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedScore(TSeedSpec const &, TSeed
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSingleThresholdNotReachedScore(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -206,7 +206,7 @@ void testSeedsSeedSetAddSeedSingleThresholdNotReachedScore(TSeedSpec const &, TS
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeLeftMergingPossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -232,7 +232,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleNoThreshold(TSeedSpec const 
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeRightMergingPossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -257,7 +257,7 @@ void testSeedsSeedSetAddSeedMergeRightMergingPossibleNoThreshold(TSeedSpec const
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeLeftMergingImpossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -293,7 +293,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingImpossibleNoThreshold(TSeedSpec cons
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -322,7 +322,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedLength(TS
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -355,7 +355,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(TSeed
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -386,7 +386,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(TS
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -422,7 +422,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(TSeed
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -447,7 +447,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleNoThreshold(TSeedSpec
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainRightChainingPossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -472,7 +472,7 @@ void testSeedsSeedSetAddSeedSimpleChainRightChainingPossibleNoThreshold(TSeedSpe
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainLeftChainingImpossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -508,7 +508,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingImpossibleNoThreshold(TSeedSp
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -537,7 +537,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedLe
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -570,7 +570,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLengt
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedScored(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -602,7 +602,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedSc
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScored(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -639,7 +639,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScore
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosLeftChainingPossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -667,7 +667,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleNoThreshold(TSeedSpec const
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosRightChainingPossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -695,7 +695,7 @@ void testSeedsSeedSetAddSeedChaosRightChainingPossibleNoThreshold(TSeedSpec cons
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosLeftChainingImpossibleNoThreshold(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -737,7 +737,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingImpossibleNoThreshold(TSeedSpec con
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -769,7 +769,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(T
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -805,7 +805,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(TSee
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -840,7 +840,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(T
 template <typename TSeedSpec, typename TSeedSetSpec>
 void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(TSeedSpec const &, TSeedSetSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
@@ -877,7 +877,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(TSee
 // Unordered SeedSet.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_container_functions_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetContainerFunctions(Simple(), Unordered());
 }
 
@@ -887,7 +887,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_container_functions_simple_unordered)
 // Case: No threshold.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleNoThreshold(Simple(), Unordered());
 }
 
@@ -897,7 +897,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_no_threshold_simple_u
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdReachedLength(Simple(), Unordered());
 }
 
@@ -907,7 +907,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_len
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdNotReachedLength(Simple(), Unordered());
 }
 
@@ -918,7 +918,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_score_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdReachedScore(Simple(), Unordered());
 }
 
@@ -929,7 +929,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_sco
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached_score_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdNotReachedScore(Simple(), Unordered());
 }
 
@@ -940,7 +940,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached
 // Case: Seed in set is left of added;  Merging is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -951,7 +951,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is right of added;  Merging is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_right_merging_possible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeRightMergingPossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -962,7 +962,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_right_merging_possible
 // Case: Seed in set is left of added;  Merging is not possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_impossible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingImpossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -973,7 +973,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_impossibl
 // Case: Seed in set is left of added;  Merging not possible;  Length quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_not_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedLength(Simple(), Unordered());
 }
 
@@ -984,7 +984,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Merging not possible;  Length quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(Simple(), Unordered());
 }
 
@@ -995,7 +995,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Merging is possible;  Quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_not_reached_scored_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(Simple(), Unordered());
 }
 
@@ -1006,7 +1006,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Merging is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_reached_scored_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(Simple(), Unordered());
 }
 
@@ -1016,7 +1016,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_possible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -1027,7 +1027,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_p
 // Case: Seed in set is right of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_right_chaining_possible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainRightChainingPossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -1038,7 +1038,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_right_chaining_
 // Case: Seed in set is left of added;  Chaining is not possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_impossible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingImpossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -1049,7 +1049,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_i
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_possible_threshold_not_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedLength(Simple(), Unordered());
 }
 
@@ -1060,7 +1060,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_p
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_possible_threshold_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLength(Simple(), Unordered());
 }
 
@@ -1071,7 +1071,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_p
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_possible_threshold_not_reached_scored_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedScored(Simple(), Unordered());
 }
 
@@ -1082,7 +1082,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_p
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_possible_threshold_reached_scored_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScored(Simple(), Unordered());
 }
 
@@ -1093,7 +1093,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_simple_chain_left_chaining_p
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -1104,7 +1104,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is right of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_right_chaining_possible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosRightChainingPossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -1115,7 +1115,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_right_chaining_possibl
 // Case: Seed in set is left of added;  Chaining is not possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_impossible_no_threshold_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingImpossibleNoThreshold(Simple(), Unordered());
 }
 
@@ -1126,7 +1126,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_impossib
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_not_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(Simple(), Unordered());
 }
 
@@ -1137,7 +1137,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_reached_length_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(Simple(), Unordered());
 }
 
@@ -1148,7 +1148,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_not_reached_scored_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(Simple(), Unordered());
 }
 
@@ -1159,7 +1159,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_reached_scored_simple_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(Simple(), Unordered());
 }
 
@@ -1168,7 +1168,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Unordered SeedSet.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_container_functions_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetContainerFunctions(ChainedSeed(), Unordered());
 }
 
@@ -1179,7 +1179,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_container_functions_chained_unordered
 // Case: No threshold.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1190,7 +1190,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_no_threshold_chained_
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1201,7 +1201,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_len
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdNotReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1212,7 +1212,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_score_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdReachedScore(ChainedSeed(), Unordered());
 }
 
@@ -1223,7 +1223,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_reached_sco
 // Case: Size threshold, threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached_score_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSingleThresholdNotReachedScore(ChainedSeed(), Unordered());
 }
 
@@ -1234,7 +1234,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_single_threshold_not_reached
 // Case: Seed in set is left of added;  Merging is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1245,7 +1245,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is right of added;  Merging is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_right_merging_possible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeRightMergingPossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1256,7 +1256,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_right_merging_possible
 // Case: Seed in set is left of added;  Merging is not possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_impossible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingImpossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1267,7 +1267,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_impossibl
 // Case: Seed in set is left of added;  Merging not possible;  Length quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_not_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1278,7 +1278,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Merging not possible;  Length quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1289,7 +1289,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Merging is possible;  Quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_not_reached_scored_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(ChainedSeed(), Unordered());
 }
 
@@ -1300,7 +1300,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Merging is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_threshold_reached_scored_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(ChainedSeed(), Unordered());
 }
 
@@ -1310,7 +1310,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_merge_left_merging_possible_
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_possible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1321,7 +1321,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_
 // Case: Seed in set is right of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_right_chaining_possible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainRightChainingPossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1332,7 +1332,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_right_chaining
 // Case: Seed in set is left of added;  Chaining is not possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_impossible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingImpossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1343,7 +1343,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_possible_threshold_not_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1354,7 +1354,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_possible_threshold_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1365,7 +1365,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_possible_threshold_not_reached_scored_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedScored(ChainedSeed(), Unordered());
 }
 
@@ -1376,7 +1376,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_possible_threshold_reached_scored_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScored(ChainedSeed(), Unordered());
 }
 
@@ -1387,7 +1387,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chained_chain_left_chaining_
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1398,7 +1398,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is right of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_right_chaining_possible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosRightChainingPossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1409,7 +1409,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_right_chaining_possibl
 // Case: Seed in set is left of added;  Chaining is not possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_impossible_no_threshold_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingImpossibleNoThreshold(ChainedSeed(), Unordered());
 }
 
@@ -1420,7 +1420,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_impossib
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_not_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1431,7 +1431,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is left of added;  Chaining not possible;  Length quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_reached_length_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(ChainedSeed(), Unordered());
 }
 
@@ -1442,7 +1442,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold not reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_not_reached_scored_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(ChainedSeed(), Unordered());
 }
 
@@ -1453,14 +1453,14 @@ SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible
 // Case: Seed in set is left of added;  Chaining is possible;  Quality threshold reached.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_add_seed_chaos_left_chaining_possible_threshold_reached_scored_chained_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(ChainedSeed(), Unordered());
 }
 
 template <typename TSeed, typename TSeedSet>
 void testSeedsSeedSetBaseClear()
 {
-    using namespace seqan;
+    using namespace seqan2;
     TSeedSet seedSet;
 
     addSeed(seedSet, TSeed(0, 0, 4), Single());
@@ -1473,13 +1473,13 @@ void testSeedsSeedSetBaseClear()
 
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_clear_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetBaseClear<Seed<Simple>, SeedSet<Seed<Simple> > >();
 }
 
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_clear_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsSeedSetBaseClear<Seed<ChainedSeed, DefaultSeedConfig>, SeedSet<Seed<ChainedSeed, DefaultSeedConfig> > >();
 }
 

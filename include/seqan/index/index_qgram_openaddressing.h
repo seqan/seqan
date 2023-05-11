@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_QGRAM_OPENADRESSING_H
 #define SEQAN_HEADER_INDEX_QGRAM_OPENADRESSING_H
 
-namespace seqan
+namespace seqan2
 {
 
     struct OpenAddressing_;
@@ -335,13 +335,13 @@ template < typename TText, typename TShapeSpec>
 inline bool open(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName, int openMode)
 {
     String<char> name;
-    
+
     name = fileName;    append(name, ".txt");
     if (!open(getFibre(index, QGramText()), toCString(name), openMode)) return false;
-    
+
     name = fileName;    append(name, ".sa");
     if (!open(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
-    
+
     name = fileName;    append(name, ".dir");
     if (!open(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
 
@@ -365,13 +365,13 @@ template <typename TText, typename TShapeSpec>
 inline bool save(Index<TText, IndexQGram<TShapeSpec, OpenAddressing> > &index, const char *fileName, int openMode)
 {
     String<char> name;
-    
+
     name = fileName;    append(name, ".txt");
     if (!save(getFibre(index, QGramText()), toCString(name), openMode)) return false;
-    
+
     name = fileName;    append(name, ".sa");
     if (!save(getFibre(index, QGramSA()), toCString(name), openMode)) return false;
-    
+
     name = fileName;    append(name, ".dir");
     if (!save(getFibre(index, QGramDir()), toCString(name), openMode)) return false;
 

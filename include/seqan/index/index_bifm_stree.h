@@ -37,7 +37,7 @@
 #ifndef INDEX_BIFM_STREE_H_
 #define INDEX_BIFM_STREE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions

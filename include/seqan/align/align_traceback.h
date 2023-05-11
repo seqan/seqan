@@ -42,7 +42,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -156,6 +156,6 @@ _alignTracePrint(AlignTraceback<TSize> & tb,
     appendValue(tb.tvs, tv);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_

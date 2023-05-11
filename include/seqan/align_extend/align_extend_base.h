@@ -38,7 +38,7 @@
 #ifndef INCLUDE_ALIGN_ALIGN_EXTEND_BASE_H
 #define INCLUDE_ALIGN_ALIGN_EXTEND_BASE_H
 
-namespace seqan {
+namespace seqan2 {
 
 
 // ============================================================================

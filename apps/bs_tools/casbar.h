@@ -9,7 +9,7 @@
 #include <seqan/misc/svg.h>
 #include <seqan/stream.h>
 
-namespace seqan {
+namespace seqan2 {
 
 class Times
 {
@@ -65,7 +65,7 @@ struct FragmentStoreConfig<SnpStoreGroupSpec_> :
 };
 }
 
-using namespace seqan;
+using namespace seqan2;
 
 
 template <typename TGPos_>
@@ -465,7 +465,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
             while (x < length(clipLeftRight) && isdigit(clipLeftRight[x]))
                 ++x;
             // Extract left and right clipping count.
-            seqan::CharString buffer = infix(clipLeftRight, 0, x);
+            seqan2::CharString buffer = infix(clipLeftRight, 0, x);
             lexicalCastWithException(clipLeft, buffer);
             if (x + 1 <= length(clipLeftRight))
                 buffer = infix(clipLeftRight, x + 1, length(clipLeftRight));

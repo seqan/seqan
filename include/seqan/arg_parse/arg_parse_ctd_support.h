@@ -44,7 +44,7 @@
 
 #include <fstream>
 
-namespace seqan {
+namespace seqan2 {
 
 // ----------------------------------------------------------------------------
 // Function _toText()
@@ -589,6 +589,6 @@ writeCTD(ArgumentParser const & me)
     return true;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_

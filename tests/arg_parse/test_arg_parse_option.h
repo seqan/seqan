@@ -41,7 +41,7 @@
 
 #include <seqan/arg_parse/arg_parse_option.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // TODO(aiche): extend tests if needed
 

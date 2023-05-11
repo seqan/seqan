@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRAITS_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRAITS_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -115,6 +115,6 @@ struct DPTraits
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_TRAITS_H_

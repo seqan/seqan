@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_WAVEFRONT_TASK_QUEUE_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_WAVEFRONT_TASK_QUEUE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -134,6 +134,6 @@ notify(WavefrontTaskQueue<TValue, VECTOR_SIZE> & me)
     unlockWriting(me.queue);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_WAVEFRONT_TASK_QUEUE_H_

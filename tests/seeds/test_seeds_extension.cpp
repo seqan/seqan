@@ -35,7 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/stream.h>  // for printing seqan::String<>
+#include <seqan/stream.h>  // for printing seqan2::String<>
 
 #include <seqan/seeds.h>
 
@@ -43,7 +43,7 @@ template <typename TSeedSpec>
 void
 testSeedsExtensionMatchExtension(TSeedSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<TSeedSpec> TSeed;
 
@@ -118,7 +118,7 @@ template <typename TSeedSpec>
 void
 testSeedsExtensionUnGappedXDropExtension(TSeedSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<TSeedSpec> TSeed;
 
@@ -193,14 +193,14 @@ template <typename TSeedSpec>
 void
 testSeedsExtensionGappedXDropExtension(TSeedSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<TSeedSpec> TSeed;
 	typedef Score<int, Simple> TScoringScheme;
 
     // Each of the following blocks contains a test case for the gapped X-drop
     // seed extension.
-    
+
     { // Test 1
         DnaString database = "AACCCCTTTGGTGAAAAA";
         DnaString query =    "AAACCCTTTGGGTTTTT";
@@ -457,42 +457,42 @@ testSeedsExtensionGappedXDropExtension(TSeedSpec const &)
 // Test the seed extension algorithm with match extension for simple seeds.
 SEQAN_DEFINE_TEST(test_seeds_extension_match_extension_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsExtensionMatchExtension(Simple());
 }
 
 // Test the seed extension algorithm with ungapped x-drop extension for simple seeds.
 SEQAN_DEFINE_TEST(test_seeds_extension_ungapped_xdrop_extension_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsExtensionUnGappedXDropExtension(Simple());
 }
 
 // Test the seed extension algorithm with gapped x-drop extension for simple seeds.
 SEQAN_DEFINE_TEST(test_seeds_extension_gapped_xdrop_extension_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsExtensionGappedXDropExtension(Simple());
 }
 
 // Test the seed extension algorithm with ungapped x-drp extension for chained seeds.
 SEQAN_DEFINE_TEST(test_seeds_extension_match_extension_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsExtensionMatchExtension(ChainedSeed());
 }
 
 // Test the seed extension algorithm with ungapped x-drop extension for simple seeds.
 SEQAN_DEFINE_TEST(test_seeds_extension_ungapped_xdrop_extension_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsExtensionUnGappedXDropExtension(ChainedSeed());
 }
 
 // Test the seed extension algorithm with gapped x-drop extension for simple seeds.
 SEQAN_DEFINE_TEST(test_seeds_extension_gapped_xdrop_extension_chained)
 {
-    using namespace seqan;
+    using namespace seqan2;
     testSeedsExtensionGappedXDropExtension(ChainedSeed());
 }
 
@@ -508,9 +508,9 @@ SEQAN_BEGIN_TESTSUITE(test_seeds_extension)
     // Disabled the test for now.  Extension function contains a
     // force-failure assertion and instruction show to implement this.
     // See http://trac.mi.fu-berlin.de/seqan/ticket/344 for details.
-    // 
+    //
     // TODO(holtgrew): Implement this.
-    // 
+    //
     // SEQAN_CALL_TEST(test_seeds_extension_gapped_xdrop_extension_chained);
 }
 SEQAN_END_TESTSUITE

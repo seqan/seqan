@@ -40,7 +40,7 @@
 
 #include <algorithm>
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class HammingSimplePattern
@@ -254,6 +254,6 @@ inline bool find(TFinder &finder,
 {
     return find(finder, me, -me.maxDistance);
 }
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_FIND_FIND_SIMPLE_H_

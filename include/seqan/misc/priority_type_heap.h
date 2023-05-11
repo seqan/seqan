@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_PRIORITY_TYPE_TREE_H
 #define SEQAN_HEADER_PRIORITY_TYPE_TREE_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -366,6 +366,6 @@ struct Value<PriorityType<TValue, TLess, PriorityHeap> >
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_OUTEDGE_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_OUTEDGE_H
 
-namespace seqan
+namespace seqan2
 {
 //////////////////////////////////////////////////////////////////////////////
 // Graph OutEdgeIterator
@@ -1148,6 +1148,6 @@ targetVertex(Iter<Graph<Automaton<TAlphabet, TCargo, TGraphSpec> >, GraphIterato
     return it.data_host->data_vertex[it.data_source].data_edge[it.data_pos].data_target;
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

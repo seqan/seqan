@@ -38,7 +38,7 @@
 #ifndef APP_YARA_MISC_TYPES_H_
 #define APP_YARA_MISC_TYPES_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags
@@ -55,7 +55,7 @@ struct Limits {};
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-namespace seqan
+namespace seqan2
 {
 template <typename T1, typename T2, typename T3>
 struct Value<Limits<T1, T2, T3>, 1>
@@ -117,7 +117,7 @@ struct YaraContigsConfig
 // FormattedFile Context
 // ----------------------------------------------------------------------------
 
-namespace seqan {
+namespace seqan2 {
 template <typename TString, typename TSpec, typename TStorageSpec>
 struct FormattedFileContext<FormattedFile<Bam, Output, StringSet<TString, Owner<ConcatDirect<TSpec> > > >, TStorageSpec>
 {
@@ -180,7 +180,7 @@ struct YaraFMConfig
 // FMIndex SAValue
 // ----------------------------------------------------------------------------
 
-namespace seqan {
+namespace seqan2 {
 template <typename TValue, typename TSpec, typename TSize, typename TLen, typename TSum, typename TAlloc>
 struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<TSize, TLen, TSum, TAlloc> > > > >
 {

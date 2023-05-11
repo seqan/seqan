@@ -5,7 +5,7 @@
 template <typename TText, typename TSpec>
 void print(TText const & text, TSpec const & /*tag*/)
 {
-    for (unsigned i = 0; i < seqan::length(text); ++i)
+    for (unsigned i = 0; i < seqan2::length(text); ++i)
         std::cout << text[i] << " ";
     std::cout << std::endl;
 }
@@ -16,9 +16,9 @@ template <typename TText>
 void print(TText const & score, MaxOnly const & /*tag*/)
 {
     int maxScore = score[0];
-    seqan::String<int> output;
+    seqan2::String<int> output;
     appendValue(output, 0);
-    for (unsigned i = 1; i < seqan::length(score); ++i)
+    for (unsigned i = 1; i < seqan2::length(score); ++i)
     {
         if (score[i] > maxScore)
         {
@@ -32,7 +32,7 @@ void print(TText const & score, MaxOnly const & /*tag*/)
         }
     }
 
-    for (unsigned i = 0; i < seqan::length(output); ++i)
+    for (unsigned i = 0; i < seqan2::length(output); ++i)
         std::cout << output[i] << " ";
     std::cout << std::endl;
 }

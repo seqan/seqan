@@ -2,7 +2,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 char block1[512] = "This a test string";
 char block2[512];

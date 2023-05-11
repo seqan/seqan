@@ -41,7 +41,7 @@
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan {
+namespace seqan2 {
 
     struct FibreText_;        // Original text. Can be a String or a StringSet
     struct FibreRawText_;    // Concatenation of the strings above

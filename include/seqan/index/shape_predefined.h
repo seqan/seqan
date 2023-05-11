@@ -37,7 +37,7 @@
 
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
-namespace seqan
+namespace seqan2
 {
 
     //////////////////////////////////////////////////////////////////////////////
@@ -123,6 +123,6 @@ namespace seqan
     > ShapeIlieB3;
 
 
-}    // namespace seqan
+}    // namespace seqan2
 
 #endif

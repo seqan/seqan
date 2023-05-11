@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SHAPE_ONEGAPPED_H
 #define SEQAN_HEADER_SHAPE_ONEGAPPED_H
 
-namespace seqan
+namespace seqan2
 {
 
 
@@ -386,6 +386,6 @@ namespace seqan
         me.factor2 = _intPow((THValue)ValueSize<TValue>::VALUE, me.blockLen2);
     }
 
-}    // namespace seqan
+}    // namespace seqan2
 
 #endif

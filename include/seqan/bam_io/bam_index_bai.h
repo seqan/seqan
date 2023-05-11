@@ -61,7 +61,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -922,6 +922,6 @@ inline bool build(BamIndex<Bai> & index, char const * bamFilename)
 }
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_

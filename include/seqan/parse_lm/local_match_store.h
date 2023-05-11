@@ -43,7 +43,7 @@
 #ifndef INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
 #define INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -413,6 +413,6 @@ appendLocalMatch(TLocalMatchStore & store,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_

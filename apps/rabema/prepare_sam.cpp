@@ -38,17 +38,17 @@ struct Options
     bool dontCheckSorting;
 
     // Input SAM file.
-    seqan::CharString inputFile;
+    seqan2::CharString inputFile;
     // Output SAM file.
-    seqan::CharString outputFile;
+    seqan2::CharString outputFile;
 
     Options() : dontCheckSorting(false)
     {}
 };
 
-int fixRecords(seqan::String<seqan::BamAlignmentRecord> & records)
+int fixRecords(seqan2::String<seqan2::BamAlignmentRecord> & records)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     if (empty(records))
         return 0;  // OK to be empty.
@@ -149,11 +149,11 @@ int fixRecords(seqan::String<seqan::BamAlignmentRecord> & records)
     return 0;
 }
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("rabema_prepare_sam");
+    seqan2::ArgumentParser parser("rabema_prepare_sam");
 
     // Set short description, version, and date.
     setShortDescription(parser, "Prepare SAM For Rabema");
@@ -166,25 +166,25 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addDescription(parser, "Prepare SAM file for usage with RABEMA.");
 
     // Define Options.
-    addOption(parser, seqan::ArgParseOption(
+    addOption(parser, seqan2::ArgParseOption(
             "i", "in-file", "Path to the input file.",
-            seqan::ArgParseArgument::INPUT_FILE, "IN.sam"));
+            seqan2::ArgParseArgument::INPUT_FILE, "IN.sam"));
     setValidValues(parser, "in-file", "sam");
     setRequired(parser, "in-file");
 
-    addOption(parser, seqan::ArgParseOption(
+    addOption(parser, seqan2::ArgParseOption(
             "o", "out-file", "Path to the output file.",
-            seqan::ArgParseArgument::OUTPUT_FILE, "OUT.sam"));
+            seqan2::ArgParseArgument::OUTPUT_FILE, "OUT.sam"));
     setValidValues(parser, "out-file", "sam");
     setRequired(parser, "out-file");
 
-    addOption(parser, seqan::ArgParseOption("", "dont-check-sorting", "Do not check sortedness."));
+    addOption(parser, seqan2::ArgParseOption("", "dont-check-sorting", "Do not check sortedness."));
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -192,18 +192,18 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     getOptionValue(options.outputFile, parser, "out-file");
     options.dontCheckSorting = isSet(parser, "dont-check-sorting");
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Parse command line.
     Options options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Open SAM file for reading.
     BamFileIn bamFileIn;

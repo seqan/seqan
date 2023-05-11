@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_IO_GFF_H
 #define SEQAN_HEADER_STORE_IO_GFF_H
 
-namespace seqan {
+namespace seqan2 {
 
 //////////////////////////////////////////////////////////////////////////////
 // Read Gff
@@ -591,6 +591,6 @@ writeRecords(FormattedFile<Gff, Output, TSpec> & gffFile,
     _writeGffGtf(gffFile, store, format(gffFile));
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

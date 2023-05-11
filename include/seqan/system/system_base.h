@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_SYSTEM_BASE_H
 #define SEQAN_HEADER_SYSTEM_BASE_H
 
-namespace seqan
+namespace seqan2
 {
 
 #if SEQAN_ENABLE_DEBUG  // Note the new-style for macros, is always defined and 0/1

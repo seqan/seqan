@@ -56,7 +56,7 @@
  */
 
 
-namespace seqan
+namespace seqan2
 {
 
 

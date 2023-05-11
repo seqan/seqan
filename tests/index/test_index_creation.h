@@ -46,7 +46,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan
+namespace seqan2
 {
 
 SEQAN_DEFINE_TEST(testIndexModifiedStringReverseEsa)
@@ -261,6 +261,6 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

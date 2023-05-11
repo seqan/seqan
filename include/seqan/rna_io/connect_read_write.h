@@ -65,7 +65,7 @@ record
 
 */
 
-namespace seqan{
+namespace seqan2{
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -297,6 +297,6 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context
     writeRecord(target, record, Connect());
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_RNA_IO_CONNECT_READ_WRITE_H_

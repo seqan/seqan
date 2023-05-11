@@ -8,7 +8,7 @@
 #include <seqan/file.h>
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 Dna getRevCompl(Dna const & nucleotide)
 {

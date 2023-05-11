@@ -48,21 +48,21 @@
 
 SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_prb_file)
 {
-    seqan::ParamChooserOptions pmOptions;
+    seqan2::ParamChooserOptions pmOptions;
     pmOptions.totalN = 4;         // Read length.
     pmOptions.verbose = false;
     pmOptions.qualityCutoff = 10;  // Ignore reads with smaller average quality than threshold.
-    
-    seqan::String<double> qualDist;
-    
+
+    seqan2::String<double> qualDist;
+
     std::stringstream ss;
     ss << "40 -40 -40 -40    10 20 30 40    30 30 20 10    10 20 10 10\n"
        << "10 -40 -40 -40    10 10 0 10      9  0  0  0     5  5  5 10\n"
        << "40 -40 -40 -40    10 20 30 40    30 30 20 10    10 20 10 10";
     ss.seekg(0);
-    
+
     qualityDistributionFromPrbFile(ss, qualDist, pmOptions);
-    
+
     SEQAN_ASSERT_EQ(length(qualDist), 4u);
     SEQAN_ASSERT_IN_DELTA(qualDist[0], 9.999e-05, 1.0e-07);
     SEQAN_ASSERT_IN_DELTA(qualDist[1], 9.999e-05, 1.0e-07);
@@ -72,13 +72,13 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_prb_file)
 
 SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_file)
 {
-    seqan::ParamChooserOptions pmOptions;
+    seqan2::ParamChooserOptions pmOptions;
     pmOptions.totalN = 4;         // Read length.
     pmOptions.verbose = false;
     pmOptions.qualityCutoff = 10;  // Ignore reads with smaller average quality than threshold.
-    
-    seqan::String<double> qualDist;
-    
+
+    seqan2::String<double> qualDist;
+
     std::stringstream ss;
     ss << "@1\n"
        << "CGAT\n"
@@ -93,9 +93,9 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_file)
        << "+\n"
        << "II?5";
     ss.seekg(0);
-    
+
     qualityDistributionFromFastQFile(ss, qualDist, pmOptions);
-    
+
     SEQAN_ASSERT_EQ(length(qualDist), 4u);
     SEQAN_ASSERT_IN_DELTA(qualDist[0], 9.999e-05, 1.0e-07);
     SEQAN_ASSERT_IN_DELTA(qualDist[1], 9.999e-05, 1.0e-07);
@@ -106,15 +106,15 @@ SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_fastq_file)
 
 SEQAN_DEFINE_TEST(test_param_chooser_parse_gapped_params)
 {
-    seqan::ParamChooserOptions pmOptions;
+    seqan2::ParamChooserOptions pmOptions;
     pmOptions.totalN = 4;         // Read length.
     pmOptions.verbose = false;
     pmOptions.chooseOneGappedOnly = false;
     pmOptions.chooseUngappedOnly = false;
     pmOptions.minThreshold = 3;
     pmOptions.optionLossRate = 0.01;
-    
-    seqan::RazerSOptions<> rOptions;
+
+    seqan2::RazerSOptions<> rOptions;
 
     std::stringstream ss;
     ss << "errors    shape               t        lossrate   PM\n"
@@ -149,7 +149,7 @@ SEQAN_DEFINE_TEST(test_param_chooser_parse_gapped_params)
 
 SEQAN_DEFINE_TEST(test_param_parse_shapes_from_file)
 {
-    seqan::ParamChooserOptions pmOptions;
+    seqan2::ParamChooserOptions pmOptions;
 
     std::stringstream ss;
     ss << "    11000000100100101        \n"
@@ -157,7 +157,7 @@ SEQAN_DEFINE_TEST(test_param_parse_shapes_from_file)
        << "1111100001";
     ss.seekg(0);
 
-    seqan::String<seqan::CharString> shapes;
+    seqan2::String<seqan2::CharString> shapes;
     SEQAN_ASSERT_EQ(parseShapesFromFile(shapes, ss, pmOptions), 3);
 
     SEQAN_ASSERT_EQ(length(shapes), 3u);
