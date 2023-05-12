@@ -22,7 +22,7 @@
 
 | **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**  |
 |:----------------------------------------------------------------------------------------------------:|
-| We recommend using SeqAn3 for new applications                                                       |
+| We recommend using SeqAn3 for new applications.                                                      |
 
 ## What Is SeqAn?
 
@@ -40,7 +40,7 @@ The licenses for the applications themselves can be found in the LICENSE files.
 Older compiler versions might work but are not supported.
 
 ### Linux, macOS, FreeBSD
-  * GCC ≥ 11
+  * GCC ≥ 10
   * Clang/LLVM ≥ 11
   * Intel Compiler ≥ 2022.1.0 (Intel OneAPI)
 
