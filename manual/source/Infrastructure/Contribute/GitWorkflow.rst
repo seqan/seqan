@@ -29,23 +29,23 @@ Documentation
 Clone the SeqAn repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-SeqAn is hosted on `GitHub <http://github.com/seqan/>`_. 
+SeqAn is hosted on `GitHub <http://github.com/seqan/>`_.
 Execute the following command to get the last sources:
 
 .. code-block:: console
-    
+
     ~ # git clone https://github.com/seqan/seqan.git seqan
 
 
 SeqAn Workflow
 --------------
 
-The SeqAn workflow is based on the `Gitflow <https://www.atlassian.com/git/tutorials/comparing-workflows>`_ workflow by `Atlassian`__. 
-The workflow is based on two persistent branches: `master <https://github.com/seqan/seqan/tree/master>`_ and `develop <https://github.com/seqan/seqan/tree/develop>`_. 
+The SeqAn workflow is based on the `Gitflow <https://www.atlassian.com/git/tutorials/comparing-workflows>`_ workflow by `Atlassian`__.
+The workflow is based on two persistent branches: `main <https://github.com/seqan/seqan/tree/main>`_ and `develop <https://github.com/seqan/seqan/tree/develop>`_.
 Almost all development occurs in develop.
 
-The master branch is only updated before a new release, either by merging from develop which will create a new minor release [2.x+1.0] or through an emergency fix which will result in a patch level release [2.x.y+1].
-Thus, the master branch is always stable and usually identical to the latest release, and the develop branch contains the latest development but might occasionally have breaking changes. 
+The main branch is only updated before a new release, either by merging from develop which will create a new minor release [2.x+1.0] or through an emergency fix which will result in a patch level release [2.x.y+1].
+Thus, the main branch is always stable and usually identical to the latest release, and the develop branch contains the latest development but might occasionally have breaking changes.
 
 .. __: https://www.atlassian.com
 
@@ -81,7 +81,7 @@ An example of a good git log:
   [INTERNAL] remove empty lines
   [FIX] repair apps that depended on broken behaviour
   [TEST] add test that triggers #666
- 
+
 An example of a bad git log:
 
 .. code-block:: console

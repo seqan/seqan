@@ -173,14 +173,14 @@ Follow these instructions to set up a local sphinx environment and build the man
 Note that you have to first build the dox documentation since plugins for generating the ``:dox:`` links rely on the generated search index for checks.
 In order to get correct dox-links within the generated manuals, you have to specify the correct branch version.
 If you are working on the develop branch there is nothing to do, since ``'develop'`` is set by default.
-But if you are working on another branch, for example ``master``, you can set the correct branch by calling
+But if you are working on another branch, for example ``main``, you can set the correct branch by calling
 
 .. code-block:: console
 
-    (seqan-manual-env) $ export READTHEDOCS_VERSION='master'
+    (seqan-manual-env) $ export READTHEDOCS_VERSION='main'
 
 before you call ``make html`` as described in the previous step.
-This will generate the correct links to the master's version of the dox, i.e., ``http://docs.seqan.de/seqan/master/``
+This will generate the correct links to the main version of the dox, i.e., ``http://docs.seqan.de/seqan/main/``
 
 tests
 -----

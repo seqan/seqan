@@ -231,7 +231,7 @@ Library Features
         - up to three level rank dictionaries
         - size of blocks on the lowest level (referred to as ``WORDS_PER_BLOCK``)
     - Bidirectional FM index with constant running time using EPR-dictionaries
-    - Please see the `manual <seqan.readthedocs.io/en/master/Tutorial/DataStructures/Indices/FMIndex.html>`_ for more information
+    - Please see the `manual <seqan.readthedocs.io/en/main/Tutorial/DataStructures/Indices/FMIndex.html>`_ for more information
 
 - Alignment:
     - Vectorized DP-Alignment algorithms using SSE3/AVX2. Allows for inter-parallel alignment computation in a many-vs-many or one-vs-many mode.
@@ -271,7 +271,7 @@ Infrastructure Updates
 - Build System:
     - The Intel Compiler is now fully supported on Linux and Windows, both 32bit and 64bit; it builds faster binaries and supports some functionality not available in MSVC.
     - On Windows there is now experimental support for Clang/C2, the Microsoft version of the clang compiler.
-    - Please see the `manual <http://seqan.readthedocs.io/en/master/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
+    - Please see the `manual <http://seqan.readthedocs.io/en/main/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
     - support deb/rpm/exe/dmg packages and SSE4+POPCNT binaries
 
 - Platforms:
