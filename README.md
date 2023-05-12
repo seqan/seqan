@@ -7,7 +7,7 @@
 [![start][9]][10]
 [![twitter][11]][12]
 
-[1]: https://img.shields.io/github/workflow/status/seqan/seqan/CI%20on%20Linux/develop?style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
+[1]: https://img.shields.io/github/actions/workflow/status/seqan/seqan/ci_linux.yml?branch=develop&style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
 [2]: https://github.com/seqan/seqan/actions?query=branch%3Adevelop
 [3]: https://img.shields.io/badge/license-BSD-green.svg "Open license file"
 [4]: https://github.com/seqan/seqan/blob/develop/LICENSE
