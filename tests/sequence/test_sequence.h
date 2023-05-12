@@ -66,7 +66,7 @@ struct CountingChar
         numConstruct += 1;
     }
 
-#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
 #    pragma GCC diagnostic push
 #    pragma GCC diagnostic ignored "-Wstringop-overflow="
 #endif
@@ -74,7 +74,7 @@ struct CountingChar
     {
         numConstruct += 1;
     }
-#if defined(__GNUC__) && (__GNUC__ == 12 && __GNUC_MINOR__ < 3)
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
 #    pragma GCC diagnostic pop
 #endif
 
