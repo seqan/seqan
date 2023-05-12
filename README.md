@@ -7,7 +7,7 @@
 [![start][9]][10]
 [![twitter][11]][12]
 
-[1]: https://img.shields.io/github/workflow/status/seqan/seqan/CI%20on%20Linux/develop?style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
+[1]: https://img.shields.io/github/actions/workflow/status/seqan/seqan/ci_linux.yml?branch=develop&style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
 [2]: https://github.com/seqan/seqan/actions?query=branch%3Adevelop
 [3]: https://img.shields.io/badge/license-BSD-green.svg "Open license file"
 [4]: https://github.com/seqan/seqan/blob/develop/LICENSE
@@ -20,9 +20,9 @@
 [11]: https://img.shields.io/twitter/follow/SeqAnLib.svg?label=follow&style=social "Follow us on Twitter"
 [12]: https://twitter.com/seqanlib
 
-| **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**                        |
-|:--------------------------------------------------------------------------------------------------------------------------:|
-| All new applications will be based on SeqAn3. <br> Existing applications that receive updates will successively be ported. |
+| **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**  |
+|:----------------------------------------------------------------------------------------------------:|
+| We recommend using SeqAn3 for new applications.                                                      |
 
 ## What Is SeqAn?
 
@@ -40,12 +40,12 @@ The licenses for the applications themselves can be found in the LICENSE files.
 Older compiler versions might work but are not supported.
 
 ### Linux, macOS, FreeBSD
-  * GCC ≥ 7
-  * Clang/LLVM ≥ 9
-  * Intel Compiler ≥ 2021.3.0 (Intel OneAPI)
+  * GCC ≥ 10
+  * Clang/LLVM ≥ 11
+  * Intel Compiler ≥ 2022.1.0 (Intel OneAPI)
 
 ### Windows
-  * Visual C++ ≥ 16.0 / Visual Studio ≥ 2019
+  * Visual C++ ≥ 17.0 / Visual Studio ≥ 2022
 
 ### Architecture support
   * Intel/AMD platforms, including optimisations for modern instruction sets (`POPCNT`, `SSE4`, `AVX2`, `AVX512`)
