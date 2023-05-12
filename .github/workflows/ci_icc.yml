@@ -3,8 +3,8 @@ name: CI ICC
 on:
   push:
     branches:
-      # Push events to branches matching refs/heads/master
-      - 'master'
+      # Push events to branches matching refs/heads/main
+      - 'main'
       # Push events to branches matching refs/heads/develop
       - 'develop'
   pull_request:

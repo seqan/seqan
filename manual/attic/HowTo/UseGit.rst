@@ -47,11 +47,11 @@ The SeqAn workflow is based on the
 `Gitflow <https://www.atlassian.com/git/workflows#workflow-gitflow>`__
 workflow by `Atlassian <https://www.atlassian.com>`__. The workflow is
 based on two persistent branches:
-`master <https://github.com/seqan/seqan/tree/master>`__ and
+`main <https://github.com/seqan/seqan/tree/main>`__ and
 `develop <https://github.com/seqan/seqan/tree/develop>`__. Development
-of new library and app features usually occurs on develop. The master
+of new library and app features usually occurs on develop. The main
 branch receives only new library and app releases, in addition to
-hot-fixes to previous releases. Thus, the master branch is always stable
+hot-fixes to previous releases. Thus, the main branch is always stable
 and safe to use, and the develop branch contains the last development
 but might occasionally break overnight. The most frequent development
 use cases are documented below.
@@ -90,7 +90,7 @@ Follow the
 
    -  Create a new hotfix
       `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`__
-      based on `master <https://github.com/seqan/seqan/tree/master>`__.
+      based on `main <https://github.com/seqan/seqan/tree/main>`__.
    -  Perform your changes and
       `commit <https://www.atlassian.com/git/tutorial/git-basics#commit>`__
       them onto your hotfix branch.
@@ -100,8 +100,8 @@ Follow the
 #.
 
    #. `Create a GitHub pull
-      request <https://github.com/seqan/seqan/compare/master>`__ to
-      `master <https://github.com/seqan/seqan/tree/master>`__.
+      request <https://github.com/seqan/seqan/compare/main>`__ to
+      `main <https://github.com/seqan/seqan/tree/main>`__.
 
 | ``    2. ``\ ```Create`` ``a`` ``GitHub`` ``pull``
 ``request`` <https://github.com/seqan/seqan/compare/develop>`__\ `` to ``\ ```develop`` <https://github.com/seqan/seqan/tree/develop>`__\ ``.``
@@ -118,12 +118,12 @@ Develop new modules and apps
 Create a new module or app
 `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`__
 where to develop your new module or application. The branch should be
-based on master if your module or application doesn’t rely on any
+based on main if your module or application doesn’t rely on any
 recently developed features. If a new feature becomes necessary later
 on, the branch can be
 `rebased <https://www.atlassian.com/git/tutorial/rewriting-git-history#rebase>`__
 onto develop. When the development is complete, the branch can be merged
-back into the corresponding base branch - either master or develop.
+back into the corresponding base branch - either main or develop.
 
 Rules
 ~~~~~
