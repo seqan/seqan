@@ -20,9 +20,9 @@
 [11]: https://img.shields.io/twitter/follow/SeqAnLib.svg?label=follow&style=social "Follow us on Twitter"
 [12]: https://twitter.com/seqanlib
 
-| **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**                        |
-|:--------------------------------------------------------------------------------------------------------------------------:|
-| All new applications will be based on SeqAn3. <br> Existing applications that receive updates will successively be ported. |
+| **NOTE <br> [SeqAn3 is out and hosted in a different repository](https://github.com/seqan/seqan3)**  |
+|:----------------------------------------------------------------------------------------------------:|
+| We recommend using SeqAn3 for new applications                                                       |
 
 ## What Is SeqAn?
 
