@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,7 @@ readRecord(RnaRecord & record, TForwardIter & iter, Connect const & /*tag*/)
         skipUntil(iter, NotFunctor<IsWhitespace>());
 
         // paired position: add undirected edge (weight=1.0) if connected
-        unsigned pairPos;
+        unsigned pairPos{};
         readUntil(buffer, iter, IsWhitespace());
         if (!lexicalCast(pairPos, buffer))
             SEQAN_THROW(BadLexicalCast(pairPos, buffer));

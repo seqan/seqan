@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2021, Enrico Siragusa, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -145,12 +145,19 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                      ArgParseOption::STRING));
     setDefaultValue(parser, "read-group", options.readGroup);
 
-    addOption(parser, ArgParseOption("sa", "secondary-alignments", "Specify whether to output secondary alignments in \
+    addOption(parser, ArgParseOption("sm", "secondary-matches", "Specify whether to output secondary matches in \
                                                                     the XA tag of the primary alignment, as separate \
                                                                     secondary records, or to omit them.",
                                                                 ArgParseOption::STRING));
-    setValidValues(parser, "secondary-alignments", options.secondaryAlignmentsList);
-    setDefaultValue(parser, "secondary-alignments", options.secondaryAlignmentsList[options.secondaryAlignments]);
+    setValidValues(parser, "secondary-matches", options.secondaryMatchesList);
+    setDefaultValue(parser, "secondary-matches", options.secondaryMatchesList[options.secondaryMatches]);
+    // Keep legacy option to display an error
+    addOption(parser, ArgParseOption("sa", "secondary-alignments", "This option has been renamed to 'secondary-matches'.",
+                ArgParseOption::STRING));
+    hideOption(parser, "sa");
+
+    addOption(parser, ArgParseOption("as", "align-secondary", "Compute and output co- and suboptimal \
+                                                               match alignments. Ignored if '-sa omit' is set."));
 
     addOption(parser, ArgParseOption("ra", "rabema-alignments", "Output alignments compatible with the \
                                                                  Read Alignment BEnchMArk (RABEMA)."));
@@ -172,11 +179,13 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-rate", "0");
     setMaxValue(parser, "strata-rate", "10");
-    setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Consider all alignments within --error-rate. Default: consider only \
-                                                  alignments within --strata-rate."));
-    hideOption(getOption(parser, "all"));
+    addOption(parser, ArgParseOption("sc", "strata-count", "Consider suboptimal alignments within this absolute number \
+                                      of errors from the optimal alignment. Increase this threshold to increase \
+                                      the number of alternative alignments at the expense of runtime.",
+                                                          ArgParseOption::INTEGER));
+    setMinValue(parser, "strata-count", "0");
+    setMaxValue(parser, "strata-count", "127");
 
     addOption(parser, ArgParseOption("y", "sensitivity", "Sensitivity with respect to edit distance. \
                                                           Full sensitivity guarantees to find all considered alignments \
@@ -283,23 +292,37 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output options.
     getOptionValue(options.readGroup, parser, "read-group");
-    getOptionValue(options.secondaryAlignments, parser, "secondary-alignments", options.secondaryAlignmentsList);
+    getOptionValue(options.secondaryMatches, parser, "secondary-matches", options.secondaryMatchesList);
     getOptionValue(options.rabema, parser, "rabema-alignments");
+    getOptionValue(options.alignSecondary, parser, "align-secondary");
+    if (isSet(parser, "secondary-alignments"))
+    {
+        std::cerr << getAppName(parser) << ": The 'secondary-alignments' option has been renamed to 'secondary-matches'!" << std::endl;
+        return ArgumentParser::PARSE_ERROR;
+    }
+    if (options.alignSecondary && options.secondaryMatches == OMIT)
+    {
+        options.alignSecondary = false;
+        std::cerr << getAppName(parser) << ": WARNING, ignoring '-as' as '-sa omit' is set." << std::endl;
+    }
 
     // Parse mapping options.
     unsigned errorRate;
     if (getOptionValue(errorRate, parser, "error-rate"))
         options.errorRate = errorRate / 100.0;
 
+    if (isSet(parser, "strata-rate") && isSet(parser, "strata-count"))
+    {
+        std::cerr << getAppName(parser) << ": 'strata-rate' and 'strata-count' cannot be specified at the same time." << std::endl;
+        return ArgumentParser::PARSE_ERROR;
+    }
+
     unsigned strataRate;
     if (getOptionValue(strataRate, parser, "strata-rate"))
         options.strataRate = strataRate / 100.0;
 
-    if (isSet(parser, "all"))
-    {
-        options.mappingMode = ALL;
-        options.strataRate = options.errorRate;
-    }
+    if (isSet(parser, "strata-count"))
+            getOptionValue(options.strataCount, parser, "strata-count");
 
     getOptionValue(options.sensitivity, parser, "sensitivity", options.sensitivityList);
 
@@ -339,51 +362,51 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 // Function configureMapper()
 // ----------------------------------------------------------------------------
 
-template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TSeedsDistance>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TSeedsDistance const & distance)
 {
     if (options.contigsSum <= std::numeric_limits<uint32_t>::max())
     {
-        spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint32_t>(options, threading, sequencing, distance);
     }
     else
     {
-        spawnMapper<TContigsSize, TContigsLen, uint64_t>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, uint64_t>(options, threading, sequencing, distance);
     }
 }
 
-template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+template <typename TContigsSize, typename TThreading, typename TSequencing, typename TSeedsDistance>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TSeedsDistance const & distance)
 {
     if (options.contigsMaxLength <= std::numeric_limits<uint32_t>::max())
     {
-        configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint32_t>(options, threading, sequencing, distance);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<TContigsSize, uint64_t>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, uint64_t>(options, threading, sequencing, distance);
 #else
         throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
     }
 }
 
-template <typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+template <typename TThreading, typename TSequencing, typename TSeedsDistance>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TSeedsDistance const & distance)
 {
     if (options.contigsSize <= std::numeric_limits<uint8_t>::max())
     {
-        configureMapper<uint8_t>(options, threading, sequencing, strategy);
+        configureMapper<uint8_t>(options, threading, sequencing, distance);
     }
     else if (options.contigsSize <= std::numeric_limits<uint16_t>::max())
     {
-        configureMapper<uint16_t>(options, threading, sequencing, strategy);
+        configureMapper<uint16_t>(options, threading, sequencing, distance);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<uint32_t>(options, threading, sequencing, strategy);
+        configureMapper<uint32_t>(options, threading, sequencing, distance);
 #else
         throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
@@ -393,17 +416,10 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TThreading, typename TSequencing>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
 {
-    switch (options.mappingMode)
-    {
-    case STRATA:
-        return configureMapper(options, threading, sequencing, Strata());
-
-    case ALL:
-        return configureMapper(options, threading, sequencing, All());
-
-    default:
-        return;
-    }
+    if (options.sensitivity == FULL)
+        return configureMapper(options, threading, sequencing, EditDistance());
+    else
+        return configureMapper(options, threading, sequencing, HammingDistance());
 }
 
 template <typename TThreading>

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -74,9 +74,9 @@ public:
     unsigned                                    _alignCounter{0};
     unsigned                                    _blockSize{};
 
-    template <typename TSpec>
+    template <typename TSpec, typename TIgnoreVectorSpec>
     AsyncWaveAlignExecutor(TSettings settings,
-                           ExecutionPolicy<WavefrontAlignment<TSpec>, Serial> const & execPolicy) :
+                           ExecutionPolicy<WavefrontAlignment<TSpec>, TIgnoreVectorSpec> const & execPolicy) :
         _settings(std::move(settings)),
         _alignScheduler(parallelAlignments(execPolicy), numThreads(execPolicy)),
         _threadLocalStorage(TThreadLocal{parallelAlignments(execPolicy)}),

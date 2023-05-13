@@ -5,35 +5,31 @@
 #
 # CMakeLists.txt file for Python stuff.
 # ===========================================================================
-# Kicks off tests using Python nosetests.
+# Kicks off tests using Python nose2.
 # ===========================================================================
 
 # Look for Python and stop if it could not be found.
-# require python 2.7, not python3
-set(PythonInterp_FIND_VERSION 2.7)
-set(PythonInterp_FIND_VERSION_MAJOR 2)
-set(PythonInterp_FIND_VERSION_MINOR 7)
-set(PythonInterp_FIND_VERSION_COUNT 2)
-find_package (PythonInterp)
+find_package (Python3)
 
-if (NOT PYTHONINTERP_FOUND)
-  message (STATUS "  Python not found, cannot test py_lib.")
+if (NOT Python3_Interpreter_FOUND)
+  message (STATUS "  Skipping py_lib tests")
   return ()
-endif (NOT PYTHONINTERP_FOUND)
+endif (NOT Python3_Interpreter_FOUND)
 
-# Look for nosetests and stop if it cannot be found
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -m "nose"
-                RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND
+# Look for nose2 and stop if it cannot be found
+execute_process(COMMAND ${Python3_EXECUTABLE} -c "import nose2"
+                RESULT_VARIABLE PYTHON_NOSE2_NOT_FOUND
                 OUTPUT_VARIABLE _IGNORED
                 ERROR_VARIABLE _IGNORED)
 
-if (PYTHON_NOSETESTS_NOT_FOUND)
-  message (STATUS "  Python nosetests ('import nose' failed), cannot add tests for seqan.dox")
+if (PYTHON_NOSE2_NOT_FOUND)
+  message (STATUS "Could NOT find Python3 module nose2")
+  message (STATUS "  Skipping py_lib tests")
   return ()
-endif (PYTHON_NOSETESTS_NOT_FOUND)
+endif (PYTHON_NOSE2_NOT_FOUND)
 
 # Adding test for dox.
-message (STATUS "  adding nosetests for seqan.dox")
+message (STATUS "Found Python3 module nose2")
 add_test (NAME test_py_lib_dox
-          COMMAND nosetests
+          COMMAND nose2
           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/seqan/dox)

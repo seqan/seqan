@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ namespace seqan
 
     template <typename TValue, typename TResult = int>
     struct _skew7NComp :
-        public std::binary_function<TValue, TValue, TResult>
+        public std::function<TResult(TValue, TValue)>
     {
         inline TResult operator() (const TValue &a, const TValue &b) const
         {
@@ -96,10 +96,8 @@ namespace seqan
     // optimized for bitvectors
     template <typename T1, typename TValue, typename TResult>
     struct _skew7NComp< Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >, TResult > :
-        public std::binary_function<
-            Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
-            Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
-            TResult>
+        public std::function<TResult(Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
+                             Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >)>
     {
         inline TResult operator() (
             const Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack > &a,
@@ -115,7 +113,7 @@ namespace seqan
 
     template <typename TValue, typename TResult = typename Value<TValue, 1>::Type>
     struct _skew7NMapLinear :
-        public std::unary_function<TValue, TResult>
+        public std::function<TResult(TValue)>
     {
         TResult BN4, BN;
 
@@ -129,7 +127,7 @@ namespace seqan
 
     template <typename TValue, typename TResult = typename Value<TValue, 1>::Type>
     struct _skew7NMapSliced :
-        public std::unary_function<TValue, TResult>
+        public std::function<TResult(TValue)>
     {
         TResult off[5];
 
@@ -151,7 +149,7 @@ namespace seqan
 
     template <typename TValue, typename TResult = TValue>
     struct _skew7UnslicerFunc :
-        public std::unary_function<TValue, TResult>
+        public std::function<TResult(TValue)>
     {
         TResult o1, o2, o4, n4, n24;
 
@@ -172,7 +170,7 @@ namespace seqan
 
     template <typename TValue, typename TResult = typename Value<typename Value<TValue, 2>::Type>::Type>
     struct _skew7NMapExtended :
-        public std::unary_function<TValue, TResult>
+        public std::function<TResult(TValue)>
     {
         inline TResult operator() (const TValue& x) const
         {
@@ -182,7 +180,7 @@ namespace seqan
 
     template <typename TValue, unsigned EXT_LENGTH, typename TResult = int>
     struct _skew7ExtendComp :
-        public std::binary_function<TValue, TValue, TResult>
+        public std::function<TResult(TValue, TValue)>
     {
         inline TResult operator() (const TValue &a, const TValue &b) const
         {
@@ -199,10 +197,8 @@ namespace seqan
     /*
     template <typename T1, typename T2, typename T, const int _size, const int EXT_LENGTH, typename TResult>
     struct _skew7ExtendComp< Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>, EXT_LENGTH, TResult> :
-        public std::binary_function<
-            Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>,
-            Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>,
-            TResult>
+        public std::function<TResult(Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>,
+                                     Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>)>
     {
         inline TResult operator() (
             const Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack> &a,

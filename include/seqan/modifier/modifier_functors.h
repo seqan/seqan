@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -76,7 +76,7 @@ namespace seqan
  */
 
 template <typename InType, typename Result = InType>
-struct FunctorUpcase : public std::unary_function<InType, Result>
+struct FunctorUpcase : public std::function<Result(InType)>
 {
     inline Result operator()(InType x) const
     {
@@ -110,7 +110,7 @@ struct FunctorUpcase : public std::unary_function<InType, Result>
  */
 
 template <typename InType, typename Result = InType>
-struct FunctorLowcase : public std::unary_function<InType, Result>
+struct FunctorLowcase : public std::function<Result(InType)>
 {
     inline Result operator()(InType x) const
     {
@@ -144,7 +144,7 @@ struct FunctorLowcase : public std::unary_function<InType, Result>
  */
 
 template <typename InType, typename OutType>
-struct FunctorConvert : public std::unary_function<InType,OutType>
+struct FunctorConvert : public std::function<OutType(InType)>
 {
     inline OutType operator()(InType x) const
     {
@@ -216,7 +216,7 @@ signed char const TranslateTableIupacToIupacComplement_<T>::VALUE[16] = {0, 8, 4
  */
 
 template <>
-struct FunctorComplement<char> : public std::unary_function<Dna5,Dna5>
+struct FunctorComplement<char> : public std::function<Dna5(Dna5)>
 {
     inline Dna5 operator()(Dna5 x) const
     {
@@ -225,7 +225,7 @@ struct FunctorComplement<char> : public std::unary_function<Dna5,Dna5>
 };
 
 template <>
-struct FunctorComplement<Dna> : public std::unary_function<Dna,Dna>
+struct FunctorComplement<Dna> : public std::function<Dna(Dna)>
 {
     inline Dna operator()(Dna x) const
     {
@@ -234,7 +234,7 @@ struct FunctorComplement<Dna> : public std::unary_function<Dna,Dna>
 };
 
 template <>
-struct FunctorComplement<Dna5> : public std::unary_function<Dna5,Dna5>
+struct FunctorComplement<Dna5> : public std::function<Dna5(Dna5)>
 {
     inline Dna5 operator()(Dna5 x) const
     {
@@ -243,7 +243,7 @@ struct FunctorComplement<Dna5> : public std::unary_function<Dna5,Dna5>
 };
 
 template <>
-struct FunctorComplement<Rna> : public std::unary_function<Rna,Rna>
+struct FunctorComplement<Rna> : public std::function<Rna(Rna)>
 {
     inline Rna operator()(Rna x) const
     {
@@ -252,7 +252,7 @@ struct FunctorComplement<Rna> : public std::unary_function<Rna,Rna>
 };
 
 template <>
-struct FunctorComplement<Rna5> : public std::unary_function<Rna5,Rna5>
+struct FunctorComplement<Rna5> : public std::function<Rna5(Rna5)>
 {
     inline Dna5 operator()(Rna5 x) const
     {
@@ -261,7 +261,7 @@ struct FunctorComplement<Rna5> : public std::unary_function<Rna5,Rna5>
 };
 
 template <>
-struct FunctorComplement<DnaQ> : public std::unary_function<DnaQ,DnaQ>
+struct FunctorComplement<DnaQ> : public std::function<DnaQ(DnaQ)>
 {
     inline DnaQ operator()(DnaQ x) const
     {
@@ -273,7 +273,7 @@ struct FunctorComplement<DnaQ> : public std::unary_function<DnaQ,DnaQ>
 };
 
 template <>
-struct FunctorComplement<Dna5Q> : public std::unary_function<Dna5Q,Dna5Q>
+struct FunctorComplement<Dna5Q> : public std::function<Dna5Q(Dna5Q)>
 {
     inline Dna5Q operator()(Dna5Q x) const {
         int qual = getQualityValue(x);
@@ -284,7 +284,7 @@ struct FunctorComplement<Dna5Q> : public std::unary_function<Dna5Q,Dna5Q>
 };
 
 template <>
-struct FunctorComplement<Iupac> : public std::unary_function<Iupac,Iupac>
+struct FunctorComplement<Iupac> : public std::function<Iupac(Iupac)>
 {
     inline Iupac operator()(Iupac x) const
     {

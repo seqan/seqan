@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -184,10 +184,12 @@ inline SEQAN_FUNC_ENABLE_IF(Not<Is<SimdVectorConcept<TScoreValue> > >,bool)
 isGapExtension(DPCell_<TScoreValue, DynamicGaps> const & cell,
                TSpec const & /*spec*/)
 {
+    bool result;
     SEQAN_IF_CONSTEXPR (IsSameType<TSpec, DynamicGapExtensionHorizontal>::VALUE)
-        return cell._flagMask & MASK_HORIZONTAL_GAP;
+        result = cell._flagMask & MASK_HORIZONTAL_GAP;
     else
-        return cell._flagMask & MASK_VERTICAL_GAP;
+        result = cell._flagMask & MASK_VERTICAL_GAP;
+    return result;
 }
 
 template <typename TScoreValue, typename TSpec>

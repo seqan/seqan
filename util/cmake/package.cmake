@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -76,7 +76,7 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
     SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "SeqAn - The C++ library for sequence analysis.")
     SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "SeqAn Team <seqan-team@lists.fu-berlin.de>")
     SET(CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
-    SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
+    SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
     SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
     set(CPACK_WIX_LICENSE_RTF "${CPACK_RESOURCE_FILE_LICENSE}")
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the include manager."""
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
@@ -19,8 +19,8 @@ class TestIncludeManager(unittest.TestCase):
 
     def testIncludeFile(self):
         txt = self.mgr.loadFile('example.cpp')
-        self.assert_(txt.splitlines()[0].startswith('#include <iostream>'))
-        self.assert_(txt.splitlines()[-1].endswith('}'))
+        self.assertTrue(txt.splitlines()[0].startswith('#include <iostream>'))
+        self.assertTrue(txt.splitlines()[-1].endswith('}'))
 
     def testIncludeSnippet(self):
         txt = self.mgr.loadSnippet('example.cpp', 'Print to stdout')

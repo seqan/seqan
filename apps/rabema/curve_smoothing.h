@@ -102,7 +102,7 @@ typedef String<WeightedMatch> TWeightedMatches;
 // ----------------------------------------------------------------------------
 
 struct WeightedMatchBeginPosNeqOrContigIdNeq :
-    std::binary_function<WeightedMatch, WeightedMatch, bool>
+    std::function<bool(WeightedMatch, WeightedMatch)>
 {
     bool operator()(WeightedMatch const & arg1, WeightedMatch const & arg2)
     {

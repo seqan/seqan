@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -454,12 +454,13 @@ _computeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tvMax = _maxScore(_scoreOfCell(activeCell),
                           TraceBitMap_<TScoreValue>::NONE,
                           _scoreOfCell(activeCell),
                           TraceBitMap_<TScoreValue>::NONE,
                           tvMax,
-                          TTracebackConfig{});
+                          TMaxScorePolicy{});
     }
     previousVertical = activeCell;
     return tvMax;
@@ -500,12 +501,13 @@ _computeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tv = _maxScore(_scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        _scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        tv,
-                       TTracebackConfig{});
+                       TMaxScorePolicy{});
     }
     previousVertical = activeCell;
     return tv;
@@ -540,12 +542,13 @@ _computeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
                                  TTracebackConfig(), RecursionDirectionDiagonal());
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tv = _maxScore(_scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        _scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        tv,
-                       TTracebackConfig{});
+                       TMaxScorePolicy{});
     }
     return tv;
 }
@@ -601,12 +604,13 @@ _computeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     previousVertical = activeCell;
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tv = _maxScore(_scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        _scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        tv,
-                       TTracebackConfig{});
+                       TMaxScorePolicy{});
     }
     return tv;
 }
@@ -635,12 +639,13 @@ _computeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
     previousVertical = activeCell;
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tv = _maxScore(_scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        _scoreOfCell(activeCell),
                        TraceBitMap_<TScoreValue>::NONE,
                        tv,
-                       TTracebackConfig{});
+                       TMaxScorePolicy{});
     }
     return tv;
 }

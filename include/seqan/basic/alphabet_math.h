@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 // ==========================================================================
 
 #include <climits>
-#include <float.h>
+#include <limits>
 
 #ifndef SEQAN_BASIC_ALPHABET_MATH_H_
 #define SEQAN_BASIC_ALPHABET_MATH_H_
@@ -77,9 +77,9 @@ struct MaximumValueDouble_ { static const double VALUE; };
 template <typename T>
 const T MaximumValueSigned_<T>::VALUE = ((((T)1 << (BitsPerValue<T>::VALUE - 2)) - 1) << 1) + 1;
 template <typename T>
-const float MaximumValueFloat_<T>::VALUE = FLT_MAX;
+const float MaximumValueFloat_<T>::VALUE = std::numeric_limits<float>::max();
 template <typename T>
-const double MaximumValueDouble_<T>::VALUE = DBL_MAX;
+const double MaximumValueDouble_<T>::VALUE = std::numeric_limits<double>::max();
 
 template <>
 struct MaximumValueSigned_<bool>
@@ -135,9 +135,9 @@ const T MinimumValueUnsigned_<T>::VALUE = T(0);
 template <typename T>
 const T MinimumValueSigned_<T>::VALUE = ~(T)MaximumValueSigned_<T>::VALUE;
 template <typename T>
-const float MinimumValueFloat_<T>::VALUE = -FLT_MAX;
+const float MinimumValueFloat_<T>::VALUE = std::numeric_limits<float>::lowest();
 template <typename T>
-const double MinimumValueDouble_<T>::VALUE = -DBL_MAX;
+const double MinimumValueDouble_<T>::VALUE = std::numeric_limits<double>::lowest();
 
 template <>
 struct MinimumValueSigned_<bool>

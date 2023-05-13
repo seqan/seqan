@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -277,8 +277,8 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
         if (!isGap(it0) && !isGap(it1))
         {
             // Compute the alignment score and register in stats.
-            TAlphabet c0 = *it0;
-            TAlphabet c1 = static_cast<TAlphabet>(*it1);
+            TAlphabet c0 = convert<TAlphabet>(*it0);
+            TAlphabet c1 = convert<TAlphabet>(*it1);
             TScoreVal scoreVal = score(scoringScheme, c0, c1);
             stats.alignmentScore += scoreVal;
             // Register other statistics.

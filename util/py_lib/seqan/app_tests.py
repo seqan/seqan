@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Helper code for app tests.
 
 This module contains helper functions and classes for making app tests easy.
@@ -18,7 +18,7 @@ Classes/Functions:
                                directory.
 """
 
-from __future__ import with_statement
+
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 
@@ -166,7 +166,7 @@ class TestPathHelper(object):
 
     def deleteTempDir(self):
         """Remove the temporary directory created earlier and all files below."""
-        print >>sys.stderr, 'DELETING TEMP DIR', self.temp_dir
+        print('DELETING TEMP DIR', self.temp_dir, file=sys.stderr)
         if self.temp_dir:
             shutil.rmtree(self.temp_dir)
 
@@ -238,57 +238,46 @@ def runTest(test_conf):
         stderr_file = open(test_conf.redir_stderr, 'w+')
     try:
         process = subprocess.Popen(test_conf.commandLineArgs(), stdout=stdout_file,
-                                   stderr=stderr_file)
+                                   stderr=stderr_file, text=True)
         retcode = process.wait()
         logging.debug('  return code is %d', retcode)
         if retcode != 0:
             fmt = 'Return code of command "%s" was %d.'
-            print >>sys.stderr, '--- stdout begin --'
-            print >>sys.stderr, fmt % (' '.join(test_conf.commandLineArgs()), retcode)
-            print >>sys.stderr, stdout_file.read()
-            print >>sys.stderr, '--- stdout end --'
-            stdout_file.close()
-            if process.stderr:
-                stderr_contents = process.stderr.read()
-            else:
-                stderr_contents = ''
-            print >>sys.stderr, '-- stderr begin --'
-            print >>sys.stderr, stderr_contents
-            print >>sys.stderr, '-- stderr end --'
+
+            if stdout_file == subprocess.PIPE:
+                stdout_file = process.stdout
+            if stderr_file == subprocess.PIPE:
+                stderr_file = process.stderr
+
+            print('--- stdout begin --', file=sys.stderr)
+            print(fmt % (' '.join(test_conf.commandLineArgs()), retcode), file=sys.stderr)
+            if len(stdout_file.read()) != 0:
+                print(stdout_file.read(), file=sys.stderr)
+            print('--- stdout end --', file=sys.stderr)
+
+            print('-- stderr begin --', file=sys.stderr)
+            if len(stderr_file.read()) != 0:
+                print(stderr_file.read(), file=sys.stderr)
+            print('-- stderr end --', file=sys.stderr)
             return False
-    except Exception, e:
+    except Exception as e:
         # Print traceback.
         import traceback
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_exception(exc_type, exc_value, exc_traceback)
         fmt = 'ERROR (when executing "%s"): %s'
-        if stdout_file is not subprocess.PIPE:
-            stdout_file.close()
-        print >>sys.stderr, fmt % (' '.join(test_conf.commandLineArgs()), e)
+        print(fmt % (' '.join(test_conf.commandLineArgs()), e), file=sys.stderr)
         return False
-    # Handle error of program, indicated by return code != 0.
-    if retcode != 0:
-        print >>sys.stderr, 'Error when executing "%s".' % ' '.join(test_conf.commandLineArgs())
-        print >>sys.stderr, 'Return code is %d' % retcode
-        if stdout_file is not subprocess.PIPE:
-            stdout_file.seek(0)
-        stdout_contents = process.stdout.read()
-        if stdout_contents:
-            print >>sys.stderr, '-- stdout begin --'
-            print >>sys.stderr, stdout_contents
-            print >>sys.stderr, '-- stdout end --'
-        else:
-            print >>sys.stderr, '-- stdout is empty --'
-        stderr_contents = process.stderr.read()
-        if stderr_contents:
-            print >>sys.stderr, '-- stderr begin --'
-            print >>sys.stderr, stderr_contents
-            print >>sys.stderr, '-- stderr end --'
-        else:
-            print >>sys.stderr, '-- stderr is empty --'
-    # Close standard out file if necessary.
-    if stdout_file is not subprocess.PIPE:
-        stdout_file.close()
+    finally:
+        try:
+            stdout_file.close()
+        except Exception:
+            pass
+        try:
+            stderr_file.close()
+        except Exception:
+            pass
+
     # Compare results with expected results, if the expected and actual result
     # are not equal then print diffs.
     result = True
@@ -317,7 +306,7 @@ def runTest(test_conf):
                     continue
                 else:
                     tpl = (expected_path, expected_md5, result_md5, result_path)
-                    print >>sys.stderr, 'md5(gunzip(%s)) == %s != %s == md5(gunzip(%s))' % tpl
+                    print('md5(gunzip(%s)) == %s != %s == md5(gunzip(%s))' % tpl, file=sys.stderr)
                     result = False
             if binary:
                 with open(expected_path, 'rb') as f:
@@ -328,39 +317,39 @@ def runTest(test_conf):
                     continue
                 else:
                     tpl = (expected_path, expected_md5, result_md5, result_path)
-                    print >>sys.stderr, 'md5(%s) == %s != %s == md5(%s)' % tpl
+                    print('md5(%s) == %s != %s == md5(%s)' % tpl, file=sys.stderr)
                     result = False
             else:
                 with open(expected_path, 'rb') as f:
-                    expected_str = f.read()
+                    expected_str = f.read().decode()
                 for t in transforms:
                     expected_str = t.apply(expected_str, True)
                 with open(result_path, 'rb') as f:
-                    result_str = f.read()
+                    result_str = f.read().decode()
                 for t in transforms:
                     result_str = t.apply(result_str, False)
                 if expected_str == result_str:
                     continue
                 fmt = 'Comparing %s against %s'
-                print >>sys.stderr, fmt % (expected_path, result_path)
+                print(fmt % (expected_path, result_path), file=sys.stderr)
                 diff = difflib.unified_diff(expected_str.splitlines(),
                                             result_str.splitlines())
                 for line in diff:
-                    print >>sys.stderr, line
+                    print(line, file=sys.stderr)
                 result = False
-        except Exception, e:
+        except Exception as e:
             fmt = 'Error when trying to compare %s to %s: %s ' + str(type(e))
-            print >>sys.stderr, fmt % (expected_path, result_path, e)
+            print(fmt % (expected_path, result_path, e), file=sys.stderr)
             result = False
     # Call check callable.
     if test_conf.check_callback:
         try:
             test_conf.check_callback()
-        except BadResultException, e:
-            print >>sys.stderr, 'Bad result: ' + str(e)
+        except BadResultException as e:
+            print('Bad result: ' + str(e), file=sys.stderr)
             result = False
-        except Exception, e:
-            print >>sys.stderr, 'Error in checker: ' + str(type(e)) + ' ' + str(e)
+        except Exception as e:
+            print('Error in checker: ' + str(type(e)) + ' ' + str(e), file=sys.stderr)
             result = False
     return result
 

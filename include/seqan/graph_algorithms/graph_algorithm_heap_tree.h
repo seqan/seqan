@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -322,7 +322,7 @@ heapSort(TITBegin itBeg,
 
 template<typename TKey, typename TValue, typename TPredicate>
 struct LessPairI2WithFunctor :
-    public std::unary_function<Pair<TKey, TValue>, bool>
+    public std::function<bool(Pair<TKey, TValue>)>
 {
     inline bool
     operator() (Pair<TKey, TValue> const& a1, Pair<TKey, TValue> const& a2) {

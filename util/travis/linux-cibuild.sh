@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # get some infos from git to embed it in the build name
 export SOURCE_DIRECTORY=`pwd`
@@ -26,7 +26,7 @@ fi
 # Switch version check default to OFF to prevent checks during app tests
 CXXFLAGS="${CXXFLAGS} -DSEQAN_VERSION_CHECK_OPT_IN=YES"
 
-ctest -V -S util/travis/linux-cibuild.cmake
+ctest -V --output-on-failure -S util/travis/linux-cibuild.cmake
 
 # we indicate build failures if ctest experienced any errors
 if [ -f ${SOURCE_DIRECTORY}/failed ]; then

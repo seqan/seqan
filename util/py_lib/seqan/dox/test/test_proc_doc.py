@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the proc_doc module."""
 
 import sys
@@ -103,7 +103,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@include example.cpp')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h1>Example</h1><dox:code source="include" type=".cpp" path="example.cpp">#include <iostream>\n'
+        txt = ('<div><h1>Example</h1><dox:code path="example.cpp" source="include" type=".cpp">#include <iostream>\n'
                '\n'
                'int main(int arg, char const ** argv)\n'
                '{\n'
@@ -121,7 +121,7 @@ class TestConvertPageWithIncludes(TestConverterBase):
                '@snippet example.cpp Print to stdout')
         raw_page = self.parseText(txt).entries[0]
         proc_page = self.conv.process(raw_page)
-        txt = ('<div><h1>Example</h1><dox:code source="snippet" type=".cpp" path="example.cpp">'
+        txt = ('<div><h1>Example</h1><dox:code path="example.cpp" source="snippet" type=".cpp">'
                '    std::cout << "This is an example.\\n";'
                '</dox:code></div>')
         self.assertMultiLineEqual(proc_page.body.toHtmlLike(), txt)

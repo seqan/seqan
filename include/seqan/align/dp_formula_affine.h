@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -112,12 +112,13 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & current,
                     TTracebackConfig{});
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tmp = _maxScore(_scoreOfCell(current),
                         TraceBitMap_<TScoreValue>::NONE,
                         _scoreOfCell(current),
                         TraceBitMap_<TScoreValue>::NONE,
                         tmp,
-                        TTracebackConfig{});
+                        TMaxScorePolicy{});
     }
     // Cache score for previous vertical.
     _scoreOfCell(previousVertical) = _scoreOfCell(current);
@@ -172,12 +173,13 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & current,
                    TTracebackConfig());
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tv = _maxScore(_scoreOfCell(current),
                        TraceBitMap_<TScoreValue>::NONE,
                        _scoreOfCell(current),
                        TraceBitMap_<TScoreValue>::NONE,
                        tv,
-                       TTracebackConfig{});
+                       TMaxScorePolicy{});
     }
     _scoreOfCell(previousVertical) = _scoreOfCell(current);
     return tv;
@@ -224,12 +226,13 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & current,
                    TTracebackConfig());
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         tv = _maxScore(_scoreOfCell(current),
                        TraceBitMap_<TScoreValue>::NONE,
                        _scoreOfCell(current),
                        TraceBitMap_<TScoreValue>::NONE,
                        tv,
-                       TTracebackConfig{});
+                       TMaxScorePolicy{});
     }
     return tv;
 }
@@ -269,12 +272,13 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & current,
 
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         traceDir = _maxScore(_scoreOfCell(current),
                              TraceBitMap_<TScoreValue>::NONE,
                              _scoreOfCell(current),
                              TraceBitMap_<TScoreValue>::NONE,
                              traceDir,
-                             TTracebackConfig{});
+                             TMaxScorePolicy{});
     }
     _scoreOfCell(previousVertical) = _scoreOfCell(current);
     return traceDir;
@@ -313,12 +317,13 @@ _computeScore(DPCell_<TScoreValue, AffineGaps> & current,
 
     if (IsLocalAlignment_<TAlgorithm>::VALUE)
     {
+        using TMaxScorePolicy = typename TraceConfigForLocalAlignment_<TTracebackConfig>::Type;
         traceDir = _maxScore(_scoreOfCell(current),
                              TraceBitMap_<TScoreValue>::NONE,
                              _scoreOfCell(current),
                              TraceBitMap_<TScoreValue>::NONE,
                              traceDir,
-                             TTracebackConfig{});
+                             TMaxScorePolicy{});
     }
     _scoreOfCell(previousVertical) = _scoreOfCell(current);
     return traceDir;

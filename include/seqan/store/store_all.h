@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -2152,10 +2152,8 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 
 template <typename TFragmentStore>
 struct LessConvertPairWiseToGlobalAlignment:
-    public std::binary_function<
-        typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
-        typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
-        bool>
+    public std::function<bool(typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
+                              typename Value<typename TFragmentStore::TAlignedReadStore>::Type)>
 {
     typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type         TAlignedRead;

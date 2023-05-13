@@ -1,7 +1,7 @@
 // ==========================================================================
 //                               basic_tangle.h
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,9 +38,6 @@
 #define INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
 
 namespace seqan {
-
-// TODO(holtgrew): Remove this define.
-#define seqan seqan
 
 // ============================================================================
 // Forwards

@@ -45,7 +45,7 @@ GNU/Linux, macOS & BSD
 ^^^^^^^^^^^^^^^^^^^^^^
 
 * The binary packages should be built on the **oldest supported kernel** and with the **oldest supported GCC** compiler.
-* The CMake version on the building system should be at least 3.1.
+* The CMake version on the building system should be at least 3.12.
 * Builds should be static (``-DSEQAN_STATIC_APPS=1``).
 * There should be a 32Bit package, built on a 32Bit system or cross-compiled (``-DCMAKE_CXX_FLAGS="-m32"``).
 * There should be a 64Bit package.
@@ -75,5 +75,5 @@ They have the advantage of not requiring any build steps, simply copy the ``incl
 Application Package(s)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Beyond that package maintainers have the choice to create either a single package called **seqan-apps** that contains all the applications *or* a seperate package per application (with the respective name of that app). Based on the above instructions this should be fairly easy to accomplish.
+Beyond that package maintainers have the choice to create either a single package called **seqan-apps** that contains all the applications *or* a separate package per application (with the respective name of that app). Based on the above instructions this should be fairly easy to accomplish.
 

@@ -20,14 +20,14 @@ Prerequisites
   :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-datastructures-alignment`
 
 Alignments are at the core of biological sequence analysis and part of the "bread and butter" tasks in this area.
-As you have learned in the :ref:`pairwise alignment tutorial <tutorial-algorithms-alignment-pairwise-sequence-alignment>`, SeqAn offers powerful and flexible functionality for coputing such pairwise alignments.
+As you have learned in the :ref:`pairwise alignment tutorial <tutorial-algorithms-alignment-pairwise-sequence-alignment>`, SeqAn offers powerful and flexible functionality for computing such pairwise alignments.
 This tutorial shows how to compute multiple sequence alignments (MSAs) using SeqAn.
 First, some background on MSA will be given and the tutorial will then explain how to create multiple sequence alignments.
 
-Note that this tutorial focuses on the ``<seqan/graph_msa.h>`` module whose purpose is the computation of **global** MSAs, i.e. similar to SeqAn::T-Coffe :cite:`Rausch2008` or ClustalW :cite:`Thompson1994`.
+Note that this tutorial focuses on the ``<seqan/graph_msa.h>`` module whose purpose is the computation of **global** MSAs, i.e. similar to SeqAn::T-Coffee :cite:`Rausch2008` or ClustalW :cite:`Thompson1994`.
 If you are interested in computing consensus sequences of multiple overlapping sequences (e.g. NGS reads), similar to assembly after the layouting step, then have a look at the :ref:`tutorial-algorithms-consensus-alignment` tutorial.
 
-While the pairwise alignment of sequences can be computed exactly in quadratic time usind dynamic programming, the computation of exact MSAs is harder.
+While the pairwise alignment of sequences can be computed exactly in quadratic time using dynamic programming, the computation of exact MSAs is harder.
 Given :math:`n` sequences of length :math:`\ell`, the exact computation of an MSA is only feasible in time :math:`\mathcal{O}(\ell^n)`.
 Thus, global MSAs are usually computed using a heuristic called **progressive alignment**.
 For an introduction to MSAs, see the `Wikipedia Article on Multiple Sequence Aligment <http://en.wikipedia.org/wiki/Multiple_sequence_alignment>`_.
@@ -37,14 +37,14 @@ Computing MSAs with SeqAn
 
 The SeqAn library gives you access to the engine of SeqAn::T-Coffee :cite:`Rausch2008`, a powerful and efficient MSA algorithm based on the progressive alignment strategy.
 The easiest way to compute multiple sequence alignments is using the function :dox:`globalMsaAlignment`.
-The following example shows how to compute a global multiple sequence alignment of proteins using the :dox:`Blosum62` scoring matrix with gap extension penalty ``-11`` and gap open penalty ``-1``.
+The following example shows how to compute a global multiple sequence alignment of proteins using the :dox:`Blosum62` scoring matrix with gap open penalty ``-11`` and gap extension penalty ``-1``.
 
 First, we include the necessary headers and begin the ``main`` function by declaring our strings as a char array.
 
 .. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp
    :fragment: main
 
-Next, we build a :dox:`Align` object with underling :dox:`String SeqAn Strings` over the :dox:`AminoAcid` alphabet.
+Next, we build a :dox:`Align` object with underlying :dox:`String SeqAn Strings` over the :dox:`AminoAcid` alphabet.
 We create four rows and assign the previously defined amino acid strings into the rows.
 
 .. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp
@@ -56,7 +56,7 @@ We use the :dox:`Blosum62` score matrix with the penalties from above.
 .. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp
    :fragment: alignment
 
-The output of the program look as follows.
+The output of the program looks as follows.
 
 .. includefrags:: demos/tutorial/multiple_sequence_alignment/msa.cpp.stdout
 
@@ -73,7 +73,7 @@ Assignment 1
      Review
 
    Objective
-     Compute a multiple sequence alignments between the four protein sequences from above using a :dox:`Align` object and the :dox:`Blosum80` score matrix.
+     Compute a multiple sequence alignment between the four protein sequences from above using a :dox:`Align` object and the :dox:`Blosum80` score matrix.
 
    Solution
      .. container:: foldable
@@ -107,7 +107,7 @@ We then count the number of characters (and gap pseudo-characters which have an 
 
 Finally, we compute the consensus and print it to the standard output.
 At each position, the consensus is called as the character with the highest count.
-Note that ``getMaxIndex`` breaks ties by the ordinal value of the caracters, i.e. ``A`` would be preferred over ``C``, ``C`` over ``G`` and so on.
+Note that ``getMaxIndex`` breaks ties by the ordinal value of the characters, i.e. ``A`` would be preferred over ``C``, ``C`` over ``G`` and so on.
 
 .. includefrags:: demos/tutorial/multiple_sequence_alignment/consensus.cpp
    :fragment: consensus-calling

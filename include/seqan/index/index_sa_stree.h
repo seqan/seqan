@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
@@ -78,17 +78,11 @@ public:
     typename Fibre<Index, FibreSA>::Type            sa;
     typename Cargo<Index>::Type                     cargo;
 
-    Index() {}
-
-    Index(Index & other) :
-        text(other.text),
-        sa(other.sa)
-    {}
-
-    Index(Index const & other) :
-        text(other.text),
-        sa(other.sa)
-    {}
+    Index() = default;
+    Index(Index const & other) = default;
+    Index & operator=(Index const &) = default;
+    Index(Index && other) = default;
+    Index & operator=(Index &&) = default;
 
     template <typename TText_>
     Index(TText_ & _text) :
@@ -136,6 +130,8 @@ struct VertexSA : public VertexEsa<TSize>
         repLen(other.repLen),
         lastChar(other.lastChar)
     {}
+
+    VertexSA & operator=(VertexSA const &) = default;
 };
 
 template <typename TSize, typename TAlphabet>

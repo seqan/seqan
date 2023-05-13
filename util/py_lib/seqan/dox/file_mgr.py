@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 Code for parsing comments from C++ files.
 """
@@ -41,7 +41,7 @@ class Comment(object):
                 self.offset_line == other.offset_line and
                 self.text == other.text and
                 self.raw_text == other.raw_text)
-        
+
     def __str__(self):
         return 'Comment(%d, %d, %d, %d, %d, %d, %d, %d, %s, %s)' % (
             self.line, self.col, self.pos, self.end_line, self.end_col,
@@ -50,7 +50,7 @@ class Comment(object):
 
     def __repr__(self):
         return str(self)
-        
+
 
 class File(object):
     """Represents one C++ files with simplified access to comments.
@@ -78,23 +78,24 @@ class File(object):
         @param text The text to parse.
         @returns List of Comment objects.
         """
+        text_as_string = text.decode('utf8')
         comments = []
         # Search for comments using regular expressions.
         def callback(match):
             if not any([match.group(0).startswith('/%s' % s) for s in self.start_markers]):
                 return match.group(0)
             start, end = match.start(), match.end()
-            start_line = string.count(text, '\n', 0, start)
-            start_col = start - string.rfind(text, '\n', 0, start) - 1
+            start_line = text_as_string.count('\n', 0, start)
+            start_col = start - text_as_string.rfind('\n', 0, start) - 1
             if start_col < 0:
                 start_col = 0
-            end_line = string.count(text, '\n', 0, end)
-            end_col = end - string.rfind(text, '\n', 0, end) - 1
+            end_line = text_as_string.count('\n', 0, end)
+            end_col = end - text_as_string.rfind( '\n', 0, end) - 1
             offset_line = start_line + 1
             raw_text = match.group(0)
             # Compute offset column.
             idx = raw_text.find('\n') + 1
-            for offset_col in xrange(idx, len(raw_text)):
+            for offset_col in range(idx, len(raw_text)):
                 if raw_text[offset_col] not in [' ', '\t']:
                     break
             if raw_text[offset_col] == '*':
@@ -110,7 +111,7 @@ class File(object):
         pattern = re.compile(
             r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
             re.DOTALL | re.MULTILINE)
-        re.sub(pattern, callback, text)
+        re.sub(pattern, callback, text_as_string)
         return comments
 
     def _stripText(self, text, offset_col):
@@ -124,7 +125,7 @@ class File(object):
 class FileManager(object):
     """Handles loading of comments from files
     """
-    
+
     def __init__(self, enable_cache=False, start_markers=['*!']):
         self.enable_cache = enable_cache
         self.start_markers = start_markers

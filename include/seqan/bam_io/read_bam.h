@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -167,6 +167,11 @@ _readBamRecordWithoutSize(TBuffer & rawRecord, TForwardIter & iter)
     // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
     if (recordLen == 0x014D4142)
         SEQAN_THROW(ParseError("Unexpected BAM header encountered."));
+
+    // The recordLen after readRawPod() was -1 for a corrupted BAM file (EOF marker absent)
+    // which made the following write(rawRecord, iter, (size_t)recordLen) function call
+    // throw a std::bad_alloc exception.
+    SEQAN_ASSERT_MSG(recordLen >= 0, "Cannot read BAM record of length < 0. Possibly corrupted BAM file!");
 
     clear(rawRecord);
     write(rawRecord, iter, (size_t)recordLen);

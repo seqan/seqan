@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2021, Enrico Siragusa, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -45,11 +45,6 @@ using namespace seqan;
 // Enums
 // ============================================================================
 
-enum MappingMode
-{
-    STRATA, ALL
-};
-
 enum LibraryOrientation
 {
     FWD_REV, FWD_FWD, REV_REV, ANY
@@ -68,16 +63,6 @@ enum Sensitivity
 // ============================================================================
 // Tags
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Mapping Strategy Tags
-// ----------------------------------------------------------------------------
-
-struct Strata_;
-struct All_;
-
-typedef Tag<Strata_>    Strata;
-typedef Tag<All_>       All;
 
 // ----------------------------------------------------------------------------
 // Pairing Strategy Tags

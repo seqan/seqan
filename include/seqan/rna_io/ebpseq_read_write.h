@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -279,7 +279,7 @@ readRecord(RnaRecord & record, RnaIOContext & context, TForwardIter & iter, Ebps
         unsigned bppID = 0;
         forEach(columnLabels, [&](std::string const & label)
         {
-            unsigned pairPos;
+            unsigned pairPos{};
             typename Size<String<std::size_t> >::Type tID;
             readUntil(buffer, iter, IsWhitespace());
 

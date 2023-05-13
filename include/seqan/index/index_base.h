@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -337,7 +337,7 @@ template <
     };
 
     // less function to search in sorted list for fibre id
-    struct FibreLess: public std::binary_function<FibreRecord, unsigned, bool>
+    struct FibreLess: public std::function<bool(FibreRecord, unsigned)>
     {    // functor for operator>
         inline bool operator()(FibreRecord const & _Left, unsigned const Right_) const
         {    // apply operator> to operands
@@ -643,7 +643,7 @@ template <
 // globalize functor
 
     template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
-    struct FunctorGlobalize : public std::unary_function<InType,Result>
+    struct FunctorGlobalize : public std::function<Result(InType)>
     {
         TLimitsString const * limits;
 
@@ -657,7 +657,7 @@ template <
     };
 
     template <typename InType, typename Result>
-    struct FunctorGlobalize<InType, Nothing, Result> : public std::unary_function<InType,InType>
+    struct FunctorGlobalize<InType, Nothing, Result> : public std::function<InType(InType)>
     {
         FunctorGlobalize() {}
         FunctorGlobalize(Nothing const &) {}

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -499,7 +499,7 @@ _referenceCast(typename RemovePointer<T>::Type & ptr)
 template <typename T>
 struct LENGTH
 {
-    enum { VALUE = 1 };
+    static const unsigned VALUE = 1;
 };
 
 template <typename T>

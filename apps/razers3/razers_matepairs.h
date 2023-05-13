@@ -262,10 +262,8 @@ bool loadReads(
 
 template <typename TFragmentStore>
 struct LessPairScore :
-    public std::binary_function<
-        typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
-        typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
-        bool>
+    public std::function<bool(typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
+                              typename Value<typename TFragmentStore::TAlignedReadStore>::Type)>
 {
     TFragmentStore & mainStore;
     TFragmentStore & threadStore;
@@ -318,7 +316,7 @@ struct LessPairScore :
 
 template <typename TFragmentStore, typename TReadMatch>
 struct LessPairErrors :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     typedef typename TFragmentStore::TReadStore         TReadStore;
     typedef typename Value<TReadStore>::Type            TRead;
@@ -363,7 +361,7 @@ struct LessPairErrors :
 
 template <typename TFragmentStore, typename TReadMatch>
 struct LessPairErrors3Way :
-    public std::binary_function<TReadMatch, TReadMatch, bool>
+    public std::function<bool(TReadMatch, TReadMatch)>
 {
     typedef typename TFragmentStore::TReadStore         TReadStore;
     typedef typename Value<TReadStore>::Type            TRead;

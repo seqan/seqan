@@ -319,7 +319,7 @@ A annotation file can be read from an open :dox:`GffFileIn` or  :dox:`UcscFileIn
 Similarly, it can be written to an open :dox:`GffFileOut` with :dox:`FragmentStore#writeRecords`.
 
 The :dox:`GffFileIn` is also able to detect and read GTF files in addition to GFF files.
-As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#readRecords` (first knownGene.txt then knownIsoforms.txt).
+As the knownGene.txt and knownIsoforms.txt files are two separate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#readRecords` (first knownGene.txt then knownIsoforms.txt).
 An annotation can be loaded without loading the corresponding contigs.
 In that case empty contigs are created in the contigStore with names given in the annonation.
 A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.

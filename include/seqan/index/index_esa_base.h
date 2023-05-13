@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -218,10 +218,10 @@ namespace seqan
             range(otherRange),
             parentRight(otherParentRight) {}
 
-       
-        VertexEsa(VertexEsa const &other):
-            range(other.range),
-            parentRight(other.parentRight) {}
+
+        VertexEsa(VertexEsa const &other) = default;
+
+        VertexEsa & operator=(VertexEsa const &) = default;
     };
 
     template <typename TSize>
@@ -416,25 +416,9 @@ namespace seqan
 
         Index() {}
 
-        Index(Index &other):
-            text(other.text),
-            sa(other.sa),
-            isa(other.isa),
-            lcp(other.lcp),
-            lcpe(other.lcpe),
-            childtab(other.childtab),
-            bwt(other.bwt),
-            cargo(other.cargo) {}
+        Index(Index const &other) = default;
 
-        Index(Index const &other):
-            text(other.text),
-            sa(other.sa),
-            isa(other.isa),
-            lcp(other.lcp),
-            lcpe(other.lcpe),
-            childtab(other.childtab),
-            bwt(other.bwt),
-            cargo(other.cargo) {}
+        Index & operator=(Index const &) = default;
 
         template <typename TText_>
         Index(TText_ &_text):

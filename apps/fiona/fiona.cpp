@@ -5,8 +5,8 @@
 // Setting options triggers quite complex behaviours that we need to simplify later.
 
 //#define FIONA_NOERROROPTIMIZATION   //enable mode to emulate error correction by random encounter
-#define SEQAN_PROFILE		// enable time measuring
-//#define FIONA_MEMOPT		// small suffix array values (<16mio reads of length <256)
+#define SEQAN_PROFILE        // enable time measuring
+//#define FIONA_MEMOPT        // small suffix array values (<16mio reads of length <256)
 #define FIONA_USE_SA        // use binary search in a suffix array for traversal
 #define FIONA_REDUCE_MEMORY
 //#define FIONA_OVERLAP_WITH_EDIT_DISTANCE  // allow indels in the overlap (instead of only mismatches)
@@ -31,7 +31,7 @@
 
 
 
-#define FIONA_ALLOWINDELS	// allow for indels (chooses a less compact FragmentStore)
+#define FIONA_ALLOWINDELS    // allow for indels (chooses a less compact FragmentStore)
 
 //    // currently, consensus works only without indels
 //    #ifndef FIONA_OVERLAP_WITH_EDIT_DISTANCE
@@ -75,7 +75,7 @@
 #if defined(_OPENMP)
     #include <omp.h>
     #define SEQAN_PARALLEL      // Only enable parallelism in fiona if OpenMP is enabled.
-    #define FIONA_PARALLEL		// divide suffix tree into subtrees for each possible 3-gram
+    #define FIONA_PARALLEL        // divide suffix tree into subtrees for each possible 3-gram
 
     #if defined(STDLIB_GNU)
         #include <parallel/algorithm>
@@ -106,7 +106,7 @@ const char * PROGRAM_VERSION = "0.2";
 #include <sstream>
 //#include <sys/resource.h>
 
-// TODO (hugues) 
+// TODO (hugues)
 // 1_ Update all formulas of mixed poisson and binomial to use
 // boost library
 // 2_ Use the boost functions for all computations involving binomial/poisson
@@ -150,34 +150,34 @@ using namespace seqan;
 
 #ifdef FIONA_ALLOWINDELS
 
-	// NOTE:
-	// Currently we have to change the StringSet spec of the readSeqStore
-	// to Owner as ConcatDirect<> (default) is not able to notice if a read
-	// changes its size (after correction).
-	struct FionaStoreConfig:
-		public FragmentStoreConfig<>
-	{
+    // NOTE:
+    // Currently we have to change the StringSet spec of the readSeqStore
+    // to Owner as ConcatDirect<> (default) is not able to notice if a read
+    // changes its size (after correction).
+    struct FionaStoreConfig:
+        public FragmentStoreConfig<>
+    {
         //typedef String<Dna5, Packed<> > TReadSeq;
         typedef String<Dna5> TReadSeq;
-		typedef Owner<>	TReadSeqStoreSpec;
+        typedef Owner<>    TReadSeqStoreSpec;
         typedef Owner<> TReadNameStoreSpec;
-	};
+    };
 
-	typedef FragmentStore<void, FionaStoreConfig> TFionaFragStore;
+    typedef FragmentStore<void, FionaStoreConfig> TFionaFragStore;
     typedef Value<TFionaFragStore::TReadSeqStore>::Type TRead;
     typedef Infix<TRead>::Type TReadPrefix;
 
 #else
 
-	struct FionaStoreConfig:
-		public FragmentStoreConfig<>
-	{
+    struct FionaStoreConfig:
+        public FragmentStoreConfig<>
+    {
         //typedef String<Dna5, Packed<> > TReadSeq;
         typedef String<Dna5> TReadSeq;
         typedef Owner<> TReadNameStoreSpec;
-	};
+    };
 
-	typedef FragmentStore<void, FionaStoreConfig> TFionaFragStore;
+    typedef FragmentStore<void, FionaStoreConfig> TFionaFragStore;
     typedef Value<TFionaFragStore::TReadSeqStore>::Type TReadPrefix;
 
 #endif
@@ -207,13 +207,13 @@ typedef Tag<FionaPoissonClassif_> const FionaPoissonClassif;
 
 struct FionaCorrectedError
 {
-	unsigned int   correctReadId;
-//	unsigned int   occurrences;
-	unsigned short errorPos;
-	unsigned short correctPos;
-	unsigned short overlap;
-	signed   char  indelLength;		// 0..mismatch, <0..deletion, >0..insertion
-//	unsigned char  mismatches;
+    unsigned int   correctReadId;
+//    unsigned int   occurrences;
+    unsigned short errorPos;
+    unsigned short correctPos;
+    unsigned short overlap;
+    signed   char  indelLength;        // 0..mismatch, <0..deletion, >0..insertion
+//    unsigned char  mismatches;
 };
 
 // Enum for representing the Fiona method.
@@ -268,19 +268,19 @@ struct FionaOptions
     // Verbosity:  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
     int verbosity;
 
-	int64_t genomeLength;
-	double strictness;
-	unsigned acceptedMismatches;
-	int maxIndelLength;
-	bool autolevel;
-	int fromLevel;
-	int toLevel;
-	unsigned cycles;
+    int64_t genomeLength;
+    double strictness;
+    unsigned acceptedMismatches;
+    int maxIndelLength;
+    bool autolevel;
+    int fromLevel;
+    int toLevel;
+    unsigned cycles;
     unsigned cycle;
-	double errorrate;
-	double overlap_errorrate;
-	double oddserrorreads;
-	double wovsum;
+    double errorrate;
+    double overlap_errorrate;
+    double oddserrorreads;
+    double wovsum;
     int debugRead, corrRead;
     unsigned packagesPerThread;
     int loopLevel;
@@ -302,43 +302,43 @@ struct FionaOptions
 
 // internal parameters
 
-	String<double> expectedTheoretical;
+    String<double> expectedTheoretical;
     String<int> errorCutoffs;
     String<unsigned> repeatCutoffs;
-	matrix<double> overlapSumCutoffs;
-	//create new String with allowed errors per Read that is used to skip further corrections on reads
-	String<unsigned char> allowedCorrectionsPerRead;
+    matrix<double> overlapSumCutoffs;
+    //create new String with allowed errors per Read that is used to skip further corrections on reads
+    String<unsigned char> allowedCorrectionsPerRead;
 
-	bool limitCorrPerRound;
-	bool trimNsOnOutput;
+    bool limitCorrPerRound;
+    bool trimNsOnOutput;
     unsigned numSuperPackages;
 
-	FionaOptions()
-	{
+    FionaOptions()
+    {
         verbosity = 0;
         method = CLASSIFIER;
         numThreads = 1;
         limitCorrPerRound = true;
         trimNsOnOutput = true;
-		genomeLength = 0;
-		strictness = 0.0001;
-		acceptedMismatches = 1;
-		maxIndelLength = 1;
-		cycles = 6;
+        genomeLength = 0;
+        strictness = 0.0001;
+        acceptedMismatches = 1;
+        maxIndelLength = 1;
+        cycles = 6;
         cycle = 1;
-		autolevel = false;
-		fromLevel = 0;
-		toLevel = 0;
+        autolevel = false;
+        fromLevel = 0;
+        toLevel = 0;
 #ifdef FIONA_ILLUMINA
-		errorrate = 0.01;
+        errorrate = 0.01;
         kmerAbundanceCutoff = 0.01;
 #else
-		errorrate = 0.05;
+        errorrate = 0.05;
         kmerAbundanceCutoff = 0.05;
 #endif
-		overlap_errorrate = 0;
-		oddserrorreads = 0;
-		wovsum = 0.3;
+        overlap_errorrate = 0;
+        oddserrorreads = 0;
+        wovsum = 0.3;
         debugRead = -1;
         corrRead = -1;
         packagesPerThread = 100;
@@ -349,7 +349,7 @@ struct FionaOptions
         loopLevel = -1;
         appendCorrectionInfo = false;
         numSuperPackages = 10;
-	}
+    }
 };
 
 // Return C-style string "YES"/"NO" depending on the value of b.  Useful for printing options.
@@ -454,13 +454,13 @@ unsigned int nfamilies = 0;
 /*
 new struct for Fiona to record several errors and their corrections per read
 with support for different indels and both strands.
-The struct is saved in a String<Correction> that essentially is a save efficient 
-linked list of these structs. Therefore the first variable nextCorrection points to the 
+The struct is saved in a String<Correction> that essentially is a save efficient
+linked list of these structs. Therefore the first variable nextCorrection points to the
 position in the String where the next correction for that read position can be found.
 The last linked list item for a read position holds the maxValue for int.
 The array overlap records the maximum overlap sum observed for the forward and the reverse strand.
 Note that for indel events special care must be taken if both strands are considered
-as the indel position may differ relative to orientation. 
+as the indel position may differ relative to orientation.
 Note that the maximum recordable overlapsum is bounded by 65.535.
 
 */
@@ -484,87 +484,87 @@ struct CorrectionIndelPos
 namespace seqan
 {
 
-	struct CargoQgramIndex
-	{ 
+    struct CargoQgramIndex
+    {
         FionaOptions* optionsPtr;
-	};
+    };
 
 /*restriction for certain levels - between max and min, also table with frequency may be to use eventually TODO*/
-	struct FionaNodeConstraints
-	{ 
-        unsigned replen_max; 
-        unsigned replen_min;
-//        String<unsigned> *repeatCutoffs;  
-//        std::map<unsigned,double> frequency;
-	};
-
-	template <>
-	struct Cargo<TFionaQgramIndex>
+    struct FionaNodeConstraints
     {
-		typedef CargoQgramIndex Type;
-	}; 
+        unsigned replen_max;
+        unsigned replen_min;
+//        String<unsigned> *repeatCutoffs;
+//        std::map<unsigned,double> frequency;
+    };
 
-	template <>
-	struct Cargo<TFionaIndex> { 
-		typedef FionaNodeConstraints Type; 
-	}; 
+    template <>
+    struct Cargo<TFionaQgramIndex>
+    {
+        typedef CargoQgramIndex Type;
+    };
+
+    template <>
+    struct Cargo<TFionaIndex> {
+        typedef FionaNodeConstraints Type;
+    };
 
 #ifdef FIONA_MEMOPT
 
-	typedef Pair<
-		unsigned,
-		unsigned,
-		BitCompressed<24, 8>	// max. 16M reads of length < 256
-	> TSAValue;
+    typedef Pair<
+        unsigned,
+        unsigned,
+        BitCompressed<24, 8>    // max. 16M reads of length < 256
+    > TSAValue;
 
 #else
 
-	typedef Pair<
-		unsigned,				// many reads
-		unsigned short,			// of arbitrary length
-		Pack
-	> TSAValue;
+    typedef Pair<
+        unsigned,                // many reads
+        unsigned short,            // of arbitrary length
+        Pack
+    > TSAValue;
 
 #endif
 
-	template <>
-	struct SAValue< TFionaIndex > 
-	{
-		typedef TSAValue Type;
-	};
+    template <>
+    struct SAValue< TFionaIndex >
+    {
+        typedef TSAValue Type;
+    };
 
-	template <>
-	struct SAValue< TFionaQgramIndex > 
-	{
-		typedef TSAValue Type;
-	};
+    template <>
+    struct SAValue< TFionaQgramIndex >
+    {
+        typedef TSAValue Type;
+    };
 
 #ifndef FIONA_INTERNAL_MEMORY
-	// use a mmap string for storing the q-grams
-	template <>
-	struct Fibre< TFionaQgramIndex, FibreSA > 
-	{
+    // use a mmap string for storing the q-grams
+    template <>
+    struct Fibre< TFionaQgramIndex, FibreSA >
+    {
 #ifdef FIONA_REDUCE_MEMORY
-		typedef String<TSAValue, External<ExternalConfigLarge<> > > Type;
+        typedef String<TSAValue, External<ExternalConfigLarge<> > > Type;
 #else
-		typedef String<TSAValue, MMap<> > Type;
+        typedef String<TSAValue, MMap<> > Type;
 #endif
-	};
+    };
 #endif
 
 #ifdef FIONA_PARALLEL
 
-	template <>
-	struct Fibre< TFionaIndex, FibreSA >
-	{
-		typedef Fibre< TFionaQgramIndex, QGramSA >::Type TSA;
+    template <>
+    struct Fibre< TFionaIndex, FibreSA >
+    {
+        typedef Fibre< TFionaQgramIndex, QGramSA >::Type TSA;
 #ifdef FIONA_REDUCE_MEMORY
         typedef Value<TSA>::Type TValue;
         typedef Range<TValue*> Type;
 #else
-		typedef Infix<TSA>::Type Type;
+        typedef Infix<TSA>::Type Type;
 #endif
-	};
+    };
 
 #endif
 
@@ -616,9 +616,9 @@ namespace seqan
     struct GreaterBucketSize
     {
         TDir const &dir;
-        
+
         GreaterBucketSize(TDir const &dir_): dir(dir_) {}
-        
+
         inline bool
         operator () (unsigned a, unsigned b)
         {
@@ -651,11 +651,11 @@ namespace seqan
 //                SEQAN_OMP_PRAGMA(critical)
                 appendValue(bktIdx, i);
             }
-        
+
         // sort them descendingly by bucket size
         sort(bktIdx, GreaterBucketSize<TDir>(dir), Parallel());
-        
-        // mask for removal of the largest buckets that 
+
+        // mask for removal of the largest buckets that
         // contain overall at most 2% of all suffixes
         if (options.verbosity >= 1)
             std::cerr << " suffixes: " << suffixCount << std::endl;
@@ -705,7 +705,7 @@ namespace seqan
 //                SEQAN_OMP_PRAGMA(critical)
                 appendValue(bktIdx, i);
             }
-        
+
         // sort them descendingly by bucket size
         sort(bktIdx, GreaterBucketSize<TDir>(dir), Parallel());
 
@@ -737,7 +737,7 @@ namespace seqan
             double diff = (double)dir[*it] - (double)median;
             stdDev += diff * diff;
         }
-        
+
         // compute k-mer standard deviation
         stdDev = std::sqrt(stdDev / (n - 1));
         TDirValue cutOff = median + stdDev * options.kmerStdDevCutOff;
@@ -814,7 +814,7 @@ namespace seqan
         typedef typename Iterator<TString const, Standard>::Type TIterator;
         TIterator itBegin = begin(str, Standard());
         TIterator itEnd = end(str, Standard());
-        
+
         unsigned maxOverlap = _min(6, (itEnd - itBegin) / 2);
         for (unsigned ofs = 1; ofs <= maxOverlap; ++ofs)
         {
@@ -832,36 +832,36 @@ namespace seqan
     }
 
 
-	/*TODO THIS FONCTION CAN BE CHANGED FOR THE FREQUENCY - here just one experience*/
-	/*by the use also the frequency for A,T,G,C*/
-	/*higher frequency - high level as min in which we will begin the searching*/
+    /*TODO THIS FONCTION CAN BE CHANGED FOR THE FREQUENCY - here just one experience*/
+    /*by the use also the frequency for A,T,G,C*/
+    /*higher frequency - high level as min in which we will begin the searching*/
 
-	/*hide the node between certain level*/
-	template <typename TSpec>
-	inline bool nodeHullPredicate(Iter<TFionaIndex, VSTree<TopDown<TSpec> > > &it)
-	{	
-		//Hugues: to parse all the node levels, I would use nodeDepth, e.g.
-		//return nodeDepth(it) < cargo(container(it)).replen_max;
-		return parentRepLength(it) <= cargo(container(it)).replen_max;
+    /*hide the node between certain level*/
+    template <typename TSpec>
+    inline bool nodeHullPredicate(Iter<TFionaIndex, VSTree<TopDown<TSpec> > > &it)
+    {
+        //Hugues: to parse all the node levels, I would use nodeDepth, e.g.
+        //return nodeDepth(it) < cargo(container(it)).replen_max;
+        return parentRepLength(it) <= cargo(container(it)).replen_max;
     }
 
-	template <typename TSpec>
-	inline bool nodePredicate(Iter<TFionaIndex, VSTree<TopDown<TSpec> > > &it)
-	{
-//		return true;
-		FionaNodeConstraints &cons = cargo(container(it));
-		unsigned repLen = parentRepLength(it);
-		//the same here why isn't it nodeDepth ?
-		//unsigned repLen = nodeDepth(it);
-		/*TODO may utilise >=*/
-		return cons.replen_min <= repLen && repLen <= cons.replen_max;
-	}
+    template <typename TSpec>
+    inline bool nodePredicate(Iter<TFionaIndex, VSTree<TopDown<TSpec> > > &it)
+    {
+//        return true;
+        FionaNodeConstraints &cons = cargo(container(it));
+        unsigned repLen = parentRepLength(it);
+        //the same here why isn't it nodeDepth ?
+        //unsigned repLen = nodeDepth(it);
+        /*TODO may utilise >=*/
+        return cons.replen_min <= repLen && repLen <= cons.replen_max;
+    }
 
 }  // namespace seqan
 
 
 // fill an array of type alphabet with the correction string
-// of the correct read, in case the reverse sequence is seeked the 
+// of the correct read, in case the reverse sequence is seeked the
 // readID is changed accordingly.
 template <typename TAlphabet, typename TValue,typename TValue2,typename TFragmentStore>
 inline void getCorrectionString(TAlphabet array[], //the array has to be at least of length abs(indelLength)
@@ -890,7 +890,7 @@ inline void getCorrectionString(TAlphabet array[], //the array has to be at leas
         // mirror positions
         correctPos = length(store.readSeqStore[correctReadId]) - correctPos;
 
-		// for insertions the position is correct already
+        // for insertions the position is correct already
         if (indelLength == 0)
             --correctPos;
     }
@@ -906,17 +906,17 @@ inline void getCorrectionString(TAlphabet array[], //the array has to be at leas
 /*
 update a Correction entry with a higher overlap sum if necessary
 */
-	
+
 template <typename TCorrection,typename TValue,typename TValueShort,typename TValue2,typename TAlphabet>
 inline void updateCorrectionEntry(String<TCorrection> &correctionList,
                                   TValue posInCorrectionList,
-                                  //			TValue2 correctReadId,
-                                  //			TValue3 correctPos,
+                                  //            TValue2 correctReadId,
+                                  //            TValue3 correctPos,
                                   TValueShort overlap,
                                   bool strand,
                                   TValue correctReadId,
-				  TValue2 indelLength,
-				  TAlphabet &correctSeq,
+                  TValue2 indelLength,
+                  TAlphabet &correctSeq,
                                   TValue2 previousIndelLength)
 {
     TValue pos = (strand)? 1: 0;
@@ -924,7 +924,7 @@ inline void updateCorrectionEntry(String<TCorrection> &correctionList,
      pos=0;
      bool change = false;
 #else
-	(void) previousIndelLength;
+    (void) previousIndelLength;
         (void) correctSeq;
         (void) indelLength;
 #endif
@@ -938,8 +938,8 @@ inline void updateCorrectionEntry(String<TCorrection> &correctionList,
 #else
         (void)correctReadId;
 #endif
-        //			correctionList[posInCorrectionList].correctPos= correctPos;
-#ifdef FIONA_NO_SEPARATE_OVERLAPSUM     
+        //            correctionList[posInCorrectionList].correctPos= correctPos;
+#ifdef FIONA_NO_SEPARATE_OVERLAPSUM
        change = true;
 #endif
         correctionList[posInCorrectionList].overlap[pos] = overlap;
@@ -947,22 +947,22 @@ inline void updateCorrectionEntry(String<TCorrection> &correctionList,
 #ifdef FIONA_NO_SEPARATE_OVERLAPSUM
          //check if the overlap sum is the same put the type of correction preferred
         else if(correctionList[posInCorrectionList].overlap[pos] == overlap){
-	   if(previousIndelLength ==0)
+       if(previousIndelLength ==0)
                   return;
            if(indelLength ==0)
-		change =true;
-	   else if(indelLength > previousIndelLength)
-		change= true;
-	}
+        change =true;
+       else if(indelLength > previousIndelLength)
+        change= true;
+    }
       if(change){
         //update the indeLength and string as well
-	correctionList[posInCorrectionList].indelLength = indelLength;
+    correctionList[posInCorrectionList].indelLength = indelLength;
          // add seq to array in the struct
      correctionList[posInCorrectionList].correctSeq[0] = correctSeq[0];    // we always copy the first char (even for deletions, which are rare)
      for(int i = 1; i < -indelLength; ++i)           // copy insertion string (indelLength < 0)
         correctionList[posInCorrectionList].correctSeq[i] = correctSeq[i];
         }
-#endif 
+#endif
 
     return;
 }
@@ -982,7 +982,7 @@ template <
     typename TSize,
     typename TId >
 inline void fillCorrection(TCorrection &newCorrection,
-                           //	TValue correctReadId,
+                           //    TValue correctReadId,
                            TPos1 correctPos,
                            TPos2 errorPos,
                            TAlphabet correctSeq[],  //this should always be in forward direction
@@ -1010,13 +1010,13 @@ inline void fillCorrection(TCorrection &newCorrection,
         newCorrection.errorPos = errorPos;
         newCorrection.overlap[0] = overlap;      // 0..forward, 1..reverse
         newCorrection.overlap[1] = 0;
-	newCorrection.onReverse = 0;
+    newCorrection.onReverse = 0;
     }
     else
     {
         // mirror positions
         newCorrection.errorPos = readLength - errorPos;
-	newCorrection.onReverse = 1;
+    newCorrection.onReverse = 1;
         // for insertions the position is correct already
         if (indelLength == 0)
             --newCorrection.errorPos;
@@ -1040,35 +1040,35 @@ inline void fillCorrection(TCorrection &newCorrection,
 
 
 /*
-	existsCorrectionAtPos computes given the error type and length
-	if it corresponds to the same position.  
-	The position has to be converted
-	depending if on a different strand. 
-	Example (forward sequence):
-	A C G T A C G 
-	0 1 2 3 4 5 6
-	
-	mismatch at forward position 2 
-	Pos(reverse) = readLength - Pos(forward) -1 = 7-2-1=4
+    existsCorrectionAtPos computes given the error type and length
+    if it corresponds to the same position.
+    The position has to be converted
+    depending if on a different strand.
+    Example (forward sequence):
+    A C G T A C G
+    0 1 2 3 4 5 6
 
-	insertion at forward position 2
-	Pos(reverse) = readlength - Pos(forward) = 7-2 = 5 
-	
-	deletion of size del at position 2
-	Pos(reverse) = readlength - Pos(forward) - del = 7-2-2 = 3
-	
-	We assume that the strand of the previousError that is given to the function
-	is forward and as such that previousErrorPos is on the forward strand of the read
-	If the position is the same the character(s) for the correction are compared with the entry 
+    mismatch at forward position 2
+    Pos(reverse) = readLength - Pos(forward) -1 = 7-2-1=4
+
+    insertion at forward position 2
+    Pos(reverse) = readlength - Pos(forward) = 7-2 = 5
+
+    deletion of size del at position 2
+    Pos(reverse) = readlength - Pos(forward) - del = 7-2-2 = 3
+
+    We assume that the strand of the previousError that is given to the function
+    is forward and as such that previousErrorPos is on the forward strand of the read
+    If the position is the same the character(s) for the correction are compared with the entry
 
 */
 template <typename TValueShort, typename TValueShort2, typename TValueLength,typename TAlphabet, typename TAlphabet2>
 inline bool existsCorrectionAtPos(TValueShort previousErrorPos,
-                                  //	TValue2 previousCorrectReadId,
+                                  //    TValue2 previousCorrectReadId,
                                   signed char previousIndelLength,
                                   TAlphabet2 previousCorrectSeq[],
                                   TValueShort2 errorPos,
-                                  //	TValue3 correctReadId,
+                                  //    TValue3 correctReadId,
                                   bool strand,
                                   signed char indelLength,
                                   TValueLength readLength,
@@ -1079,8 +1079,8 @@ inline bool existsCorrectionAtPos(TValueShort previousErrorPos,
     //std::cerr << "in existsCorrectionAtPos, previousindelLength, indelLength"<<(int)previousIndelLength<<","<<(int)indelLength<<std::endl;
 
 #ifdef FIONA_NO_SEPARATE_OVERLAPSUM
-        //make extra part for new mode to avoid clash with FIONA_NOERROROPTIMIZATION  
-	//here change strand pos already
+        //make extra part for new mode to avoid clash with FIONA_NOERROROPTIMIZATION
+    //here change strand pos already
         if (strand)
         {
             // mirror positions
@@ -1095,7 +1095,7 @@ inline bool existsCorrectionAtPos(TValueShort previousErrorPos,
 
         if (errorPos == previousErrorPos)
             return true;
-	else
+    else
             return false;
 
 #endif
@@ -1222,7 +1222,7 @@ unlockWriting(StringLock &lock)
 
 /*
 new function that returns the number of corrections already entered for a read position
-	
+
 */
 template <typename TCorrection,typename TValue, typename TId1, typename TPos,typename TReadStore>
 inline unsigned
@@ -1237,11 +1237,11 @@ getFoundCorrections(
 
     // project errorPos on forward strand
     if (erroneousReadId >= numReads)
-	{
+    {
         erroneousReadId -= numReads;
         // mirror positions
         errorPos = length(store.readSeqStore[erroneousReadId]) - errorPos;
-	}
+    }
 
     unsigned numCorrections = 0;
 
@@ -1259,8 +1259,8 @@ getFoundCorrections(
 }
 
 /*
-the add new linked list item append a new entry to the correctionList and 
-takes care that the corresponding entries in firstCorrectionForRead are updated	
+the add new linked list item append a new entry to the correctionList and
+takes care that the corresponding entries in firstCorrectionForRead are updated
 */
 template <typename TCorrection,typename TValue, typename TId1, typename TId2, typename TPos1,typename TPos2,typename TOverlap, typename TReadStore, typename TAlphabet>
 inline void addCorrectionEntry(String<TCorrection> &correctionList,
@@ -1272,7 +1272,7 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
                                TOverlap overlap,
                                bool strand,
                                signed char indelLength,
-                               //	TValueLength readLength,
+                               //    TValueLength readLength,
                                TReadStore & store,
                                TAlphabet & correctSeq)
 {
@@ -1281,8 +1281,8 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
     //std::cerr <<abs( (int)indelLength) << " lll " << MAX_INDEL_LENGTH<<std::endl;
     // get the correction sequence
     //if(indelLength <= 0) //only get string if insertion in read or mismatch
-    //	getCorrectionString(correctSeq,indelLength,correctReadId,correctPos,strand,store);
-    /*	//DEBUG
+    //    getCorrectionString(correctSeq,indelLength,correctReadId,correctPos,strand,store);
+    /*    //DEBUG
      unsigned length2=abs((int)indelLength);
      if(indelLength ==0){
      length2=1;
@@ -1333,7 +1333,7 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
         insertLinkAt = currentPos;
         currentPos = correctionList[currentPos].nextCorrection;
     }
-    
+
     TCorrection newCorrection;
     fillCorrection(
         newCorrection,
@@ -1361,7 +1361,7 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
 
 /*
     if(firstCorrectionForRead[dummyErroneousReadId] == maxValue<TValue>())
-    {	//we are going to add the first Correction element for the read at the end later
+    {    //we are going to add the first Correction element for the read at the end later
         firstCorrectionForRead[dummyErroneousReadId] = (TValue) length(correctionList);
     }
     else
@@ -1370,29 +1370,29 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
         bool nextElem =true;
         while(nextElem)
         {
-			if(existsCorrectionAtPos(correctionList[currentPos].errorPos,correctionList[currentPos].indelLength,correctionList[currentPos].correctSeq, errorPos, strand, indelLength, length(store.readSeqStore[erroneousReadId]),correctSeq) )
+            if(existsCorrectionAtPos(correctionList[currentPos].errorPos,correctionList[currentPos].indelLength,correctionList[currentPos].correctSeq, errorPos, strand, indelLength, length(store.readSeqStore[erroneousReadId]),correctSeq) )
             {
-				// add the new information if the overlap sum is bigger decided by addCorrectionInfo
+                // add the new information if the overlap sum is bigger decided by addCorrectionInfo
 
 
 
 
 #ifndef FIONA_NOERROROPTIMIZATION
-				updateCorrectionEntry(correctionList,currentPos,overlap,strand,correctReadId,indelLength,correctSeq,correctionList[currentPos].indelLength);
+                updateCorrectionEntry(correctionList,currentPos,overlap,strand,correctReadId,indelLength,correctSeq,correctionList[currentPos].indelLength);
 #endif
-				return;
-			}
-			if (correctionList[currentPos].nextCorrection != maxValue<TValue>())
+                return;
+            }
+            if (correctionList[currentPos].nextCorrection != maxValue<TValue>())
             {
-				currentPos = correctionList[currentPos].nextCorrection;
-			}
+                currentPos = correctionList[currentPos].nextCorrection;
+            }
             else
             {
-				nextElem =false;
-				//we have not found any similar correction item so we extend the last elem
-				// in the linked list
+                nextElem =false;
+                //we have not found any similar correction item so we extend the last elem
+                // in the linked list
                 correctionList[currentPos].nextCorrection = (TValue) length(correctionList);
-			}
+            }
         }
     }
 
@@ -1413,7 +1413,7 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
         indelLength,
         length(store.readSeqStore[erroneousReadId]),
         correctReadId);
-    
+
     appendValue(correctionList,newCorrection);
 */
     return;
@@ -1421,156 +1421,156 @@ inline void addCorrectionEntry(String<TCorrection> &correctionList,
 
    template <typename TCorrection,typename TValue,typename TReadStore>
         inline void  _testCorrectionStruct(String<TCorrection> &correctionList, String<TValue> &firstCorrectionForRead,TReadStore &store)
-	{
-		// we assume we work with three reads here
-		TValue empty = std::numeric_limits<TValue>::max();
-		appendValue(firstCorrectionForRead,empty);
-		appendValue(firstCorrectionForRead,empty);
-		appendValue(firstCorrectionForRead,empty);
-		signed char indelLength = 0;
-		unsigned short  correctPos=12;
-		unsigned short errorPos =24;
-		unsigned short overlap =5;
-		bool strand = false;
-		unsigned int correctReadId=4;
-		unsigned int erroneousReadId=0;
-		unsigned int readLength =36; 
-		TCorrection tester;
-		Dna5 correctSeq[MAX_INDEL_LENGTH];
-		correctSeq[0]='A';
-		correctSeq[1]='T';
-		String <int> Ovsumcutoffs;
-		clear(Ovsumcutoffs);
-		resize(Ovsumcutoffs, readLength+1, 0);
-		// test to fill a Corrections we will work with all the time
-		fillCorrection(tester,correctPos,errorPos,correctSeq,overlap,strand,indelLength,readLength,correctReadId); //mismatch
-		// add correction to the overall list
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
-		
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		// create same entry with higher overlap sum
-		tester.overlap[0]=12;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
-		
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//test adding same correction on different strand
-		strand = true;
-		erroneousReadId = 6; //because of reverse strand
-		tester.errorPos=readLength-24-1;
-		correctPos = readLength-12-1;
-		tester.overlap[1]=8;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
-		
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//test adding new correction with indel at same position
-		strand = false;
-		erroneousReadId = 0; //because of forward strand
-		correctPos=12;
-		tester.errorPos=24;
-		tester.overlap[0]=11;
-		tester.indelLength=-2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
-		
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//test adding new correction with indel at same position but on opposite strand
-		strand = true;
-		erroneousReadId = 6; //because of reverse strand
-		correctPos= readLength - 12 -2;
-		tester.errorPos = readLength - tester.errorPos - 2;
-		tester.overlap[1]=13;
-		tester.indelLength=-2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+    {
+        // we assume we work with three reads here
+        TValue empty = std::numeric_limits<TValue>::max();
+        appendValue(firstCorrectionForRead,empty);
+        appendValue(firstCorrectionForRead,empty);
+        appendValue(firstCorrectionForRead,empty);
+        signed char indelLength = 0;
+        unsigned short  correctPos=12;
+        unsigned short errorPos =24;
+        unsigned short overlap =5;
+        bool strand = false;
+        unsigned int correctReadId=4;
+        unsigned int erroneousReadId=0;
+        unsigned int readLength =36;
+        TCorrection tester;
+        Dna5 correctSeq[MAX_INDEL_LENGTH];
+        correctSeq[0]='A';
+        correctSeq[1]='T';
+        String <int> Ovsumcutoffs;
+        clear(Ovsumcutoffs);
+        resize(Ovsumcutoffs, readLength+1, 0);
+        // test to fill a Corrections we will work with all the time
+        fillCorrection(tester,correctPos,errorPos,correctSeq,overlap,strand,indelLength,readLength,correctReadId); //mismatch
+        // add correction to the overall list
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
 
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//test adding new correction with insertion at same position
-		strand = false;
-		erroneousReadId = 0; //because of forward strand
-		correctPos = 12;
-		tester.errorPos = 24;
-		tester.overlap[0]=3;
-		tester.indelLength=2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        // create same entry with higher overlap sum
+        tester.overlap[0]=12;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
 
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//test adding new correction with insertion at different position but on opposite strand
-		strand = true;
-		erroneousReadId = 6; //because of reverse strand
-		correctPos = readLength - correctPos;
-		tester.errorPos = readLength - tester.errorPos;
-		tester.overlap[1]=7;
-		tester.indelLength=2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //test adding same correction on different strand
+        strand = true;
+        erroneousReadId = 6; //because of reverse strand
+        tester.errorPos=readLength-24-1;
+        correctPos = readLength-12-1;
+        tester.overlap[1]=8;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
 
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//test adding new correction with insertion at same position but different correction sequence
-		strand = false;
-		erroneousReadId = 0; //because of forward strand
-		correctPos = 2;
-		tester.errorPos = 24;
-		tester.overlap[1]=10;
-		tester.indelLength=2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //test adding new correction with indel at same position
+        strand = false;
+        erroneousReadId = 0; //because of forward strand
+        correctPos=12;
+        tester.errorPos=24;
+        tester.overlap[0]=11;
+        tester.indelLength=-2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
 
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //test adding new correction with indel at same position but on opposite strand
+        strand = true;
+        erroneousReadId = 6; //because of reverse strand
+        correctPos= readLength - 12 -2;
+        tester.errorPos = readLength - tester.errorPos - 2;
+        tester.overlap[1]=13;
+        tester.indelLength=-2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
 
-		//add insertion Correction on reverse strand for new readID
-		erroneousReadId=2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //test adding new correction with insertion at same position
+        strand = false;
+        erroneousReadId = 0; //because of forward strand
+        correctPos = 12;
+        tester.errorPos = 24;
+        tester.overlap[0]=3;
+        tester.indelLength=2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[0],strand,tester.indelLength,store,correctSeq);
 
-		//_dumpCorrectionList(correctionList, firstCorrectionForRead);	
-		//add deletion Correction on reverse strand for new readID
-		tester.errorPos = readLength - 24 - 2;
-		tester.indelLength=-2;
-		tester.overlap[1]=15;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //test adding new correction with insertion at different position but on opposite strand
+        strand = true;
+        erroneousReadId = 6; //because of reverse strand
+        correctPos = readLength - correctPos;
+        tester.errorPos = readLength - tester.errorPos;
+        tester.overlap[1]=7;
+        tester.indelLength=2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //test adding new correction with insertion at same position but different correction sequence
+        strand = false;
+        erroneousReadId = 0; //because of forward strand
+        correctPos = 2;
+        tester.errorPos = 24;
+        tester.overlap[1]=10;
+        tester.indelLength=2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+
+        //add insertion Correction on reverse strand for new readID
+        erroneousReadId=2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+
+        //_dumpCorrectionList(correctionList, firstCorrectionForRead);
+        //add deletion Correction on reverse strand for new readID
+        tester.errorPos = readLength - 24 - 2;
+        tester.indelLength=-2;
+        tester.overlap[1]=15;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
 
 
-		//adding another mismatch for non-conficting indel correction
-		erroneousReadId =0;
-		strand = false;
-		correctPos = 13;
-		tester.errorPos = 13;
-		tester.overlap[1]=97;
-		tester.indelLength=0;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+        //adding another mismatch for non-conficting indel correction
+        erroneousReadId =0;
+        strand = false;
+        correctPos = 13;
+        tester.errorPos = 13;
+        tester.overlap[1]=97;
+        tester.indelLength=0;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
 
-		//adding yet another mismatch to test if several corrections are done for non-conficting indel correction
-		erroneousReadId =0;
-		strand = false;
-		correctPos = 5;
-		tester.errorPos = 7;
-		tester.overlap[1]=90;
-		tester.indelLength=0;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
-		
-		//adding another deletion for testing of output
-		erroneousReadId =1;
-		strand = false;
-		correctPos = 12;
-		tester.errorPos = 11;
-		tester.overlap[1]=20;
-		tester.indelLength=2;
-		addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
-        _dumpCorrectionList(correctionList, firstCorrectionForRead,store);	
+        //adding yet another mismatch to test if several corrections are done for non-conficting indel correction
+        erroneousReadId =0;
+        strand = false;
+        correctPos = 5;
+        tester.errorPos = 7;
+        tester.overlap[1]=90;
+        tester.indelLength=0;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
 
-		//test non Conflicitng Correction selection
-		//add several other corrections 
-		FionaOptions options;
+        //adding another deletion for testing of output
+        erroneousReadId =1;
+        strand = false;
+        correctPos = 12;
+        tester.errorPos = 11;
+        tester.overlap[1]=20;
+        tester.indelLength=2;
+        addCorrectionEntry(correctionList,firstCorrectionForRead,erroneousReadId,correctReadId,correctPos,tester.errorPos,tester.overlap[1],strand,tester.indelLength,store,correctSeq);
+        _dumpCorrectionList(correctionList, firstCorrectionForRead,store);
+
+        //test non Conflicitng Correction selection
+        //add several other corrections
+        FionaOptions options;
 
 //unsigned numberCorrections = applyReadErrorCorrections(correctionList,firstCorrectionForRead,store, Ovsumcutoffs,options);
-//		std::cout << "did "<< numberCorrections << " many corrections."<<std::endl;
-		return;
-	}
+//        std::cout << "did "<< numberCorrections << " many corrections."<<std::endl;
+        return;
+    }
 /*
-	function that goes through all reads and prints there Corrections listed 
+    function that goes through all reads and prints there Corrections listed
 */
 template <typename  TCorrection,typename TValue, typename TStore>
 inline void _dumpCorrectionList(
-	String<TCorrection> const &correctionList,
-	String<TValue> const &firstCorrectionForRead,
-	TStore & store)
+    String<TCorrection> const &correctionList,
+    String<TValue> const &firstCorrectionForRead,
+    TStore & store)
 {
-	// go through all reads and show which Corrections are listed
+    // go through all reads and show which Corrections are listed
     for (unsigned int i =0;i< length(firstCorrectionForRead);i++)
     {
         std::cerr << "Found "<<length(correctionList)<<" corrections. Look at readID: " <<i<<std::endl;
@@ -1585,33 +1585,33 @@ inline void _dumpCorrectionList(
                 _dumpCorrectionIndelPos(correctionList[next],i,store);
                 next = correctionList[next].nextCorrection;
             }
-        }	
+        }
     }
 }
 template <typename TCorrection, typename TStore>
 inline void _dumpCorrectionIndelPos(
-	TCorrection const &correction,
-	unsigned errorReadId,
-	TStore& store)
+    TCorrection const &correction,
+    unsigned errorReadId,
+    TStore& store)
 {
-	std::cerr << "error___read_id\t" << errorReadId << std::endl;
-	std::cerr << "error_pos      \t" << correction.errorPos << std::endl;
-	std::cerr << "next correction\t" << correction.nextCorrection << std::endl;
+    std::cerr << "error___read_id\t" << errorReadId << std::endl;
+    std::cerr << "error_pos      \t" << correction.errorPos << std::endl;
+    std::cerr << "next correction\t" << correction.nextCorrection << std::endl;
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
-	std::cerr << "correct_read_id\t" << correction.correctReadId << std::endl;
-	std::cerr << "correct_pos    \t" << correction.correctPos << std::endl;
+    std::cerr << "correct_read_id\t" << correction.correctReadId << std::endl;
+    std::cerr << "correct_pos    \t" << correction.correctPos << std::endl;
 #endif
-	std::cerr << "overlap        \t F:" << correction.overlap[0] << " R: " << correction.overlap[1] << std::endl;
-	std::cerr << "indel_len      \t" << (int)correction.indelLength << std::endl;
-	unsigned length=abs((int)correction.indelLength);
-	if(correction.indelLength ==0){
-		length=1;
-	}
-	std::cerr << "CorrectionSequence:";
-	for(unsigned i =0;i<length;++i)
-		std::cerr << correction.correctSeq[i];
-	std::cerr << std::endl;
-	std::cerr << "error___read   \t" << store.readSeqStore[errorReadId][correction.errorPos] << '\t';
+    std::cerr << "overlap        \t F:" << correction.overlap[0] << " R: " << correction.overlap[1] << std::endl;
+    std::cerr << "indel_len      \t" << (int)correction.indelLength << std::endl;
+    unsigned length=abs((int)correction.indelLength);
+    if(correction.indelLength ==0){
+        length=1;
+    }
+    std::cerr << "CorrectionSequence:";
+    for(unsigned i =0;i<length;++i)
+        std::cerr << correction.correctSeq[i];
+    std::cerr << std::endl;
+    std::cerr << "error___read   \t" << store.readSeqStore[errorReadId][correction.errorPos] << '\t';
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
          for (unsigned i = 0; i < correction.correctPos; ++i)
                  std::cerr << ' ';
@@ -1628,12 +1628,12 @@ inline void _dumpCorrectionIndelPos(
 /*matching string*/
 inline bool strContains(std::string const & inputStr, std::string const & searchStr)
 {
-	return inputStr.find(searchStr) != std::string::npos;
+    return inputStr.find(searchStr) != std::string::npos;
 }
 
 
 template <typename TCorrection>
-struct LessOverlap : public std::binary_function<TCorrection, TCorrection, bool >
+struct LessOverlap : public std::function<bool (TCorrection, TCorrection)>
 {
     inline bool operator() (TCorrection const &a, TCorrection const &b) const
     {
@@ -1651,7 +1651,7 @@ struct LessOverlap : public std::binary_function<TCorrection, TCorrection, bool 
 };
 
 template <typename TCorrection>
-struct LessPositionOverlap : public std::binary_function<TCorrection, TCorrection, bool >
+struct LessPositionOverlap : public std::function<bool (TCorrection, TCorrection)>
 {
     inline bool operator() (TCorrection const &a, TCorrection const &b) const
     {
@@ -1725,7 +1725,7 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         sort(possibleCorrections, LessPositionOverlap<CorrectionIndelPos>(), Parallel());
 
 #ifndef FIONA_NO_SEPARATE_OVERLAPSUM
-	//only remove if several corrections per position are saved
+    //only remove if several corrections per position are saved
 
         if (readId == options.debugRead)
         {
@@ -1788,8 +1788,8 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 #ifndef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
         // if indel use just the first correction except there are Ns
         bool notFoundCorrectionLimit = (possibleCorrections[0].indelLength == 0);
-	
-	if(notFoundCorrectionLimit){  //if indel dont do anything more
+
+    if(notFoundCorrectionLimit){  //if indel dont do anything more
         for (unsigned j = 1; j < length(possibleCorrections); ++j)
         {
             if (possibleCorrections[j].indelLength != 0)
@@ -1816,10 +1816,10 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         }
         }//endif
 
-#else //new mode that uses distances between corrections 
+#else //new mode that uses distances between corrections
     unsigned int next = 1;
-	while (next < length(possibleCorrections))
-	{
+    while (next < length(possibleCorrections))
+    {
         if (possibleCorrections[next].overlap[0] <= options.overlapSumCutoffs(errorReadLength, possibleCorrections[next].errorPos))
         {
             ++next;  // skip this correction
@@ -1827,22 +1827,22 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         }
 
         bool add = true;
-		for(unsigned int i = 0; i < length(correctionsToSave); i++){
-			//check if the distance between correction positions is apart min_k to each correction accepted
-			if(abs(possibleCorrections[correctionsToSave[i]].errorPos-possibleCorrections[next].errorPos) <= options.fromLevel){
-				add=false;
-				break;
-			}
-		}
-		if (add)
-			appendValue(correctionsToSave, next);
+        for(unsigned int i = 0; i < length(correctionsToSave); i++){
+            //check if the distance between correction positions is apart min_k to each correction accepted
+            if(abs(possibleCorrections[correctionsToSave[i]].errorPos-possibleCorrections[next].errorPos) <= options.fromLevel){
+                add=false;
+                break;
+            }
+        }
+        if (add)
+            appendValue(correctionsToSave, next);
 
         next++;  //check the next possible correction in the list
-	}
+    }
 #endif
 
 
-#else 
+#else
         //do all corrections if no global mode
         resize(correctionsToSave, length(possibleCorrections));
         for (unsigned j = 0; j < length(possibleCorrections); ++j)
@@ -1862,10 +1862,10 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
         for (unsigned count = 0; count < length(correctionsToSave); ++count)
         {
             correction = correctionsToSave[count]; //set the position in the CorrectionString we are executing now
-//	    SEQAN_OMP_PRAGMA(critical) {	
-//	    std::cout << "found " << (unsigned ) getFoundCorrections(correctionList,firstCorrectionForRead,
+//        SEQAN_OMP_PRAGMA(critical) {
+//        std::cout << "found " << (unsigned ) getFoundCorrections(correctionList,firstCorrectionForRead,
 //                                 (unsigned) readId, possibleCorrections[correction].errorPos, false, store)<< "corrections read:" << readId<< " pos:" << possibleCorrections[correction].errorPos << std::endl;
-//	    }
+//        }
 
             if ((unsigned)readId == (unsigned) options.debugRead)
                 //if(readId == 18473)
@@ -1921,15 +1921,15 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 #ifdef FIONA_DISTANCE_BASED_ERROR_OPTIMIZATION
             //correct offset of subsequent error positions downstream of the current pos after indel corrections
             if(possibleCorrections[correction].indelLength != 0){
-		//SEQAN_OMP_PRAGMA(critical) {     
-		//std::cerr << "Did (read/length) " << readId << "/"<<length(store.readSeqStore[readId])<< " ) e-pos/indel " << possibleCorrections[correction].errorPos << "/" << (int)possibleCorrections[correction].indelLength << std::endl;
-		//}
+        //SEQAN_OMP_PRAGMA(critical) {
+        //std::cerr << "Did (read/length) " << readId << "/"<<length(store.readSeqStore[readId])<< " ) e-pos/indel " << possibleCorrections[correction].errorPos << "/" << (int)possibleCorrections[correction].indelLength << std::endl;
+        //}
                   for(unsigned nextcount = count+1; nextcount < length(correctionsToSave); ++nextcount)
                   {
-             	      unsigned nextcorrection = correctionsToSave[nextcount];
+                       unsigned nextcorrection = correctionsToSave[nextcount];
                       if(possibleCorrections[nextcorrection].errorPos > possibleCorrections[correction].errorPos){
-                          possibleCorrections[nextcorrection].errorPos -= (int) possibleCorrections[correction].indelLength;  
-		//SEQAN_OMP_PRAGMA(critical) {     std::cerr << readId << " changed occurrence " << " ) e-pos/indel " << possibleCorrections[nextcorrection].errorPos << "/" << (int)possibleCorrections[nextcorrection].indelLength << std::endl; }
+                          possibleCorrections[nextcorrection].errorPos -= (int) possibleCorrections[correction].indelLength;
+        //SEQAN_OMP_PRAGMA(critical) {     std::cerr << readId << " changed occurrence " << " ) e-pos/indel " << possibleCorrections[nextcorrection].errorPos << "/" << (int)possibleCorrections[nextcorrection].indelLength << std::endl; }
                         }
                   }
             }
@@ -1952,17 +1952,17 @@ inline unsigned applyReadErrorCorrections(String<TCorrection> const &correctionL
 template <typename TErrorRate, typename TPrefixLen>
 inline double probabilityNoError(TErrorRate perrorrate, TPrefixLen k)
 {
-	return pow(1.0 - perrorrate, (double) k);
+    return pow(1.0 - perrorrate, (double) k);
 }
 
 // factorial
 template <typename TValue>
 inline double factorial(TValue n)
 {
-	double fact = 1.0;
-	for (TValue i = 2; i <= n; ++i)
-		fact *= i;
-	return fact;
+    double fact = 1.0;
+    for (TValue i = 2; i <= n; ++i)
+        fact *= i;
+    return fact;
 }
 
 #ifdef CAN_BE_REMOVED
@@ -1970,17 +1970,17 @@ inline double factorial(TValue n)
 template <typename TExpectedValues, typename TReadSet, typename TGenomeSize>
 void expectedValueEqualReadsLength(TExpectedValues & expected, TReadSet const & readSet, TGenomeSize const genomeLength)
 {
-	//
-	//	E(m) = (read_length - suffix_length + 1) * numberReads / genomeLength
-	//
+    //
+    //    E(m) = (read_length - suffix_length + 1) * numberReads / genomeLength
+    //
 
-	// without reverse complement
-	unsigned readCount = length(readSet) / 2;
-	unsigned readLength = length(readSet[0]);
+    // without reverse complement
+    unsigned readCount = length(readSet) / 2;
+    unsigned readLength = length(readSet[0]);
 
-	clear(expected);
-	for (unsigned suffixLength = 0; suffixLength <= readLength; ++suffixLength)
-		append(expected, (readLength - suffixLength + 1) * readCount / (double)genomeLength);
+    clear(expected);
+    for (unsigned suffixLength = 0; suffixLength <= readLength; ++suffixLength)
+        append(expected, (readLength - suffixLength + 1) * readCount / (double)genomeLength);
 }
 #endif
 
@@ -1991,13 +1991,13 @@ void computeReadLengthHistogram(TReadLengthHist &readLenHist, TReadSet const &re
 {
     clear(readLenHist);
     unsigned numReads = length(readSet) / 2;
-	for (unsigned i = 0; i < numReads; ++i)
-	{
-		unsigned readLength = length(readSet[i]);
-		if (readLength >= length(readLenHist))
-			resize(readLenHist, readLength + 1, 0);
-		++readLenHist[readLength];
-	}    
+    for (unsigned i = 0; i < numReads; ++i)
+    {
+        unsigned readLength = length(readSet[i]);
+        if (readLength >= length(readLenHist))
+            resize(readLenHist, readLength + 1, 0);
+        ++readLenHist[readLength];
+    }
 }
 
 // Expected value for set of reads with different length
@@ -2005,66 +2005,66 @@ void computeReadLengthHistogram(TReadLengthHist &readLenHist, TReadSet const &re
 template <typename TExpectedValues, typename TNumRead, typename TGenomeSize, typename TErrorrate>
 double expectedValueTheoretical(TExpectedValues & expected, String<TNumRead> const &readLenHist, TGenomeSize const genomeLength, TErrorrate const errorrate)
 {
-	//
-	//	E(m) = (8 - suffix_length + 1) * numberReads / genomeLength
-	//
-    	
-	double nerrreads = 0.0;
+    //
+    //    E(m) = (8 - suffix_length + 1) * numberReads / genomeLength
+    //
 
-	// a = read_length - suffix_length + 1
-	clear(expected);
-	resize(expected, length(readLenHist), 0.0);
-	for (unsigned readLen = 1; readLen < length(readLenHist); ++readLen)
-	{
+    double nerrreads = 0.0;
+
+    // a = read_length - suffix_length + 1
+    clear(expected);
+    resize(expected, length(readLenHist), 0.0);
+    for (unsigned readLen = 1; readLen < length(readLenHist); ++readLen)
+    {
         TNumRead numReads = readLenHist[readLen];
         if (numReads == 0)
             continue;
 
-		if (errorrate != 0.0)
-			nerrreads += numReads * (1 - probabilityNoError(errorrate, readLen));
+        if (errorrate != 0.0)
+            nerrreads += numReads * (1 - probabilityNoError(errorrate, readLen));
 
-		for (unsigned suffixLength = 0; suffixLength <= readLen; ++suffixLength)
-		{
-			double a = readLen - suffixLength + 1;
-			expected[suffixLength] += a * (double)numReads / (double)genomeLength;
-		}
-	}
-	return nerrreads;
+        for (unsigned suffixLength = 0; suffixLength <= readLen; ++suffixLength)
+        {
+            double a = readLen - suffixLength + 1;
+            expected[suffixLength] += a * (double)numReads / (double)genomeLength;
+        }
+    }
+    return nerrreads;
 }
 
 /* Standard Deviation */
 template <typename TDeviationValues, typename TReadSet, typename TGenomeSize>
 void standardDeviation(TDeviationValues & deviation, TReadSet const & readSet, TGenomeSize const genomeLength)
 {
-	// without reverse complement
-	unsigned readCount = length(readSet) / 2;
-	unsigned readLength = length(readSet[0]);
+    // without reverse complement
+    unsigned readCount = length(readSet) / 2;
+    unsigned readLength = length(readSet[0]);
 
-	//
-	//	SD(m)= numberReads*((read_length - suffix_length + 1)/genomeLength 
-	//			- (read_length - suffix_length + 1)^2/genomeLength ^2)
-	//
+    //
+    //    SD(m)= numberReads*((read_length - suffix_length + 1)/genomeLength
+    //            - (read_length - suffix_length + 1)^2/genomeLength ^2)
+    //
 
-	double valueFirst;
-	double valueSecond;
-	resize(deviation, readLength + 1);
-	for (unsigned suffixLength = 0; suffixLength <= readLength; ++suffixLength)
-	{
-		valueFirst  = (readLength - suffixLength + 1) / (double)genomeLength;
-		valueSecond = valueFirst * valueFirst;
-		deviation[suffixLength] = sqrt((valueFirst - valueSecond) * readCount);	
-	}
+    double valueFirst;
+    double valueSecond;
+    resize(deviation, readLength + 1);
+    for (unsigned suffixLength = 0; suffixLength <= readLength; ++suffixLength)
+    {
+        valueFirst  = (readLength - suffixLength + 1) / (double)genomeLength;
+        valueSecond = valueFirst * valueFirst;
+        deviation[suffixLength] = sqrt((valueFirst - valueSecond) * readCount);
+    }
 }
 
 
 //P(X = k) for X ~ Poisson
-////  WARNING These computation of poisson values are not accurate 
-////  for low probabilities !!! 
+////  WARNING These computation of poisson values are not accurate
+////  for low probabilities !!!
 ////  around 50% relative error at 1e-5 proba
 template <typename TValue, typename TMean>
 inline double dpois(TValue k, TMean mean)
 {
-	return pow(mean, (double)k) * exp(-mean) / factorial(k);
+    return pow(mean, (double)k) * exp(-mean) / factorial(k);
 }
 
 // cumulative poisson distribution
@@ -2072,34 +2072,34 @@ inline double dpois(TValue k, TMean mean)
 template <typename TValue, typename TMean>
 inline double ppois(TValue k, TMean mean)
 {
-	// return gsl_cdf_poisson_P(k,mean);
-	double negExp = exp(-mean);
-	double pValue = 0.0;
-	double pow = 1.0;
-	double fact = 1.0;
-	for (TValue i = 0; i <= k; ++i, fact *= i){
-		pValue += pow * negExp / fact;
-		pow *= mean;
-	}
-	return pValue;
+    // return gsl_cdf_poisson_P(k,mean);
+    double negExp = exp(-mean);
+    double pValue = 0.0;
+    double pow = 1.0;
+    double fact = 1.0;
+    for (TValue i = 0; i <= k; ++i, fact *= i){
+        pValue += pow * negExp / fact;
+        pow *= mean;
+    }
+    return pValue;
 }
 
 // give the highest k such that P(X < c) <= alpha with X ~ Poisson(lambda)
 // carefull it's exclusive (for compatibility with the cutoff mode)
 template <typename TPValue, typename TMean>
 inline unsigned qpois(TPValue alpha, TMean lambda){
-	double negExp = exp(-lambda);
-	double pValue = 0.0;
-	double pow = 1.0;
-	double fact = 1.0;
-	unsigned k = 0;
-	while (pValue <= alpha){
-		pValue += pow * negExp / fact;
-		k++;
-		pow *= lambda;
-		fact *= k;
-	}
-	return k;
+    double negExp = exp(-lambda);
+    double pValue = 0.0;
+    double pow = 1.0;
+    double fact = 1.0;
+    unsigned k = 0;
+    while (pValue <= alpha){
+        pValue += pow * negExp / fact;
+        k++;
+        pow *= lambda;
+        fact *= k;
+    }
+    return k;
 }
 
 //Estimate the two first terms of the error part into the mixture
@@ -2108,247 +2108,247 @@ inline unsigned qpois(TPValue alpha, TMean lambda){
 template <typename TValue, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline double dpoismixerror(TValue k, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen)
 {
-	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
-	double noerrlm1 = noerrlm2 * (1-errorrate);
-	double errexp1err = lambda * noerrlm1 * (errorrate/3);
-	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
-//	double perr1 = ((double) prefixlen) * noerrlm1* errorrate ;
-//	double perr2 = ((double) prefixlen * (prefixlen -1.0) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
-	double perr1 =  noerrlm1 ;
-	double perr2 =  ((prefixlen -1.0) / 2 )* noerrlm2 * errorrate;
-	double sc = perr1 + perr2;
-	perr1 /= sc; 
-	perr2 /= sc; 
-	double proba;
-	proba = perr1 * dpois(k, errexp1err) + perr2 * dpois(k, errexp2err);
-	return(proba);
+    double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
+    double noerrlm1 = noerrlm2 * (1-errorrate);
+    double errexp1err = lambda * noerrlm1 * (errorrate/3);
+    double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
+//    double perr1 = ((double) prefixlen) * noerrlm1* errorrate ;
+//    double perr2 = ((double) prefixlen * (prefixlen -1.0) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
+    double perr1 =  noerrlm1 ;
+    double perr2 =  ((prefixlen -1.0) / 2 )* noerrlm2 * errorrate;
+    double sc = perr1 + perr2;
+    perr1 /= sc;
+    perr2 /= sc;
+    double proba;
+    proba = perr1 * dpois(k, errexp1err) + perr2 * dpois(k, errexp2err);
+    return(proba);
 }
-			 
-// cdf for a poisson mixture of errors, given the 
+
+// cdf for a poisson mixture of errors, given the
 // expected value on the real reads before sequencing
-//// WARNING THIS IS extremely sensitive  !! 
+//// WARNING THIS IS extremely sensitive  !!
 ///
 template <typename TValue, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline double ppoismixerror(TValue k, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen)
 {
-	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
-	double noerrlm1 = noerrlm2 * (1-errorrate);
-	double errexp1err = lambda * noerrlm1 * (errorrate/3);
-	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
-	double perr1 = prefixlen * noerrlm1* (errorrate) ;
-	double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
-	double sc = perr1 + perr2;
-	perr1 /= (sc); 
-	perr2 /= (sc); 
-	double negExp1err = exp(-errexp1err); //
-	double negExp2err = exp(-errexp2err);
-	double pow1err = 1.0;
-	double pow2err = 1.0;
-	double fact = 1.0;
-	double pValue = 0.0;
-//	std::cerr << "Level " << prefixlen << " and params for correc\n";
-//	std::cerr << "Expected and comp: " << lambda << " - " << errexp1err << " - " << errexp2err << "\n";
-//	std::cerr << "the observed count: " << k << ", perr is " << perr1 << " - " << perr2  << "\n";
-	TValue i = 0;
+    double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
+    double noerrlm1 = noerrlm2 * (1-errorrate);
+    double errexp1err = lambda * noerrlm1 * (errorrate/3);
+    double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
+    double perr1 = prefixlen * noerrlm1* (errorrate) ;
+    double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
+    double sc = perr1 + perr2;
+    perr1 /= (sc);
+    perr2 /= (sc);
+    double negExp1err = exp(-errexp1err); //
+    double negExp2err = exp(-errexp2err);
+    double pow1err = 1.0;
+    double pow2err = 1.0;
+    double fact = 1.0;
+    double pValue = 0.0;
+//    std::cerr << "Level " << prefixlen << " and params for correc\n";
+//    std::cerr << "Expected and comp: " << lambda << " - " << errexp1err << " - " << errexp2err << "\n";
+//    std::cerr << "the observed count: " << k << ", perr is " << perr1 << " - " << perr2  << "\n";
+    TValue i = 0;
     for (i = 0; i <= k; ++i, fact *= i){
         pValue += perr1 * pow1err * negExp1err / fact;
-		pValue += perr2 * pow2err * negExp2err / fact;
-		pow1err *= errexp1err; 
-		pow2err *= errexp2err;
-//		std::cerr << "alpha =" << pValue << std::endl;
-	}
-	return pValue;
+        pValue += perr2 * pow2err * negExp2err / fact;
+        pow1err *= errexp1err;
+        pow2err *= errexp2err;
+//        std::cerr << "alpha =" << pValue << std::endl;
+    }
+    return pValue;
 }
 
 ///Similar to qpois for the mixture of poisson distributions with error proportions
 template <typename TPValue, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline unsigned qpoismixerror(TPValue alpha, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen)
 {
-	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
-	double noerrlm1 = noerrlm2 * (1-errorrate);
-	double errexp1err = lambda * noerrlm1 * (errorrate/3);
-	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
-	double perr1 = prefixlen * noerrlm1* (errorrate) ;
-	double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
-	double sc = perr1 + perr2;
-	perr1 /= (sc); 
-	perr2 /= (sc); 
-	double negExp1err = exp(-errexp1err); //
-	double negExp2err = exp(-errexp2err);
-	double pow1err = 1.0;
-	double pow2err = 1.0;
-	double fact = 1.0;
-	double pValue = 0.0;
-	unsigned k = 0;
-	//std::cerr << "Level " << prefixlen << " and params for correc\n";
-	//std::cerr << "Expected and comp: " << lambda << " - " << errexp1err << " - " << errexp2err << "\n";
-	//std::cerr << "the observed count: " << k << ", perr is " << perr1 << " - " << perr2  << "\n";
-	while (pValue <= alpha){
+    double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
+    double noerrlm1 = noerrlm2 * (1-errorrate);
+    double errexp1err = lambda * noerrlm1 * (errorrate/3);
+    double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
+    double perr1 = prefixlen * noerrlm1* (errorrate) ;
+    double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
+    double sc = perr1 + perr2;
+    perr1 /= (sc);
+    perr2 /= (sc);
+    double negExp1err = exp(-errexp1err); //
+    double negExp2err = exp(-errexp2err);
+    double pow1err = 1.0;
+    double pow2err = 1.0;
+    double fact = 1.0;
+    double pValue = 0.0;
+    unsigned k = 0;
+    //std::cerr << "Level " << prefixlen << " and params for correc\n";
+    //std::cerr << "Expected and comp: " << lambda << " - " << errexp1err << " - " << errexp2err << "\n";
+    //std::cerr << "the observed count: " << k << ", perr is " << perr1 << " - " << perr2  << "\n";
+    while (pValue <= alpha){
         pValue += perr1 * pow1err * negExp1err / fact;
-		pValue += perr2 * pow2err * negExp2err / fact;
-		k++;
-		pow1err *= errexp1err; 
-		pow2err *= errexp2err;
-		//std::cerr << "alpha =" << pValue << std::endl;
-		fact *= k;
-	}
-	return k;
+        pValue += perr2 * pow2err * negExp2err / fact;
+        k++;
+        pow1err *= errexp1err;
+        pow2err *= errexp2err;
+        //std::cerr << "alpha =" << pValue << std::endl;
+        fact *= k;
+    }
+    return k;
 }
 
 //
-//Cutoff value under a classification scheme according to sign( log {P(X = c| error) / P(X = c |no error)} + log(prior)) 
+//Cutoff value under a classification scheme according to sign( log {P(X = c| error) / P(X = c |no error)} + log(prior))
 //prior = 0 does automatic adjustment of priors according to the number of expected errors
 template <typename TOddsRatio, typename TMean, typename TErrorrates, typename TPrefixLen>
 inline unsigned PoisClassifCutoff(TOddsRatio prior, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen){
-	double noerr = probabilityNoError(errorrate, prefixlen);	
-	double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
-	double noerrlm1 = noerrlm2 * (1-errorrate);
-	double errexpnoerr = lambda * noerr;
-	double errexp1err = lambda * noerrlm1 * (errorrate/3);
-	double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
-	double perr1 = prefixlen * noerrlm1* (errorrate) ;
-	double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
-	double sc = perr1 + perr2;
-	perr1 /= (sc); 
-	perr2 /= (sc); 
-	double negExpnoerr = exp(-errexpnoerr);
-	double negExp1err = exp(-errexp1err); //
-	double negExp2err = exp(-errexp2err);
-	double pow1err = 1.0;
-	double pow2err = 1.0;
-	double pownoerr = 1.0;
-	double fact = 1.0;
-	double Ppostnoerr = 1.0;
-	double Pposterr = 0.0;
-	if (prior == 0){
-		prior = (1-noerr) / noerr;
-	}else {
-		prior = prior * (1-noerr) / noerr; 
-	}
+    double noerr = probabilityNoError(errorrate, prefixlen);
+    double noerrlm2 = pow(1.0 - errorrate, prefixlen - 2.0);
+    double noerrlm1 = noerrlm2 * (1-errorrate);
+    double errexpnoerr = lambda * noerr;
+    double errexp1err = lambda * noerrlm1 * (errorrate/3);
+    double errexp2err = lambda * noerrlm2 * (errorrate/3) * (errorrate/3);
+    double perr1 = prefixlen * noerrlm1* (errorrate) ;
+    double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
+    double sc = perr1 + perr2;
+    perr1 /= (sc);
+    perr2 /= (sc);
+    double negExpnoerr = exp(-errexpnoerr);
+    double negExp1err = exp(-errexp1err); //
+    double negExp2err = exp(-errexp2err);
+    double pow1err = 1.0;
+    double pow2err = 1.0;
+    double pownoerr = 1.0;
+    double fact = 1.0;
+    double Ppostnoerr = 1.0;
+    double Pposterr = 0.0;
+    if (prior == 0){
+        prior = (1-noerr) / noerr;
+    }else {
+        prior = prior * (1-noerr) / noerr;
+    }
 
-	unsigned k = 0;
-	//std::cerr << "prefix of len " << prefixlen << " expected " << lambda << " prior " << prior << " error-rate " <<errorrate << std::endl;
-	//we impose that k shall not be higher than the expected count for correct reads.
-	unsigned kquart = (unsigned)round(errexpnoerr);
-	
-	//while ((log((Pposterr / (Ppostnoerr)) * prior) > 0) || k == 0){
-	while ((k < kquart && log(Pposterr / Ppostnoerr * prior) > 0) || k == 0){
-		//not as efficient
-		//Ppostnoerr = dpois(k, lambda*noerr);
-		//Pposterr = dpoismixerror( k, lambda, errorrate, prefixlen);
-		//std::cerr << "(" << k << " , "  << Ppostnoerr << " , " << Pposterr << ")" << std::endl;
-		Ppostnoerr = pownoerr * negExpnoerr / fact;
+    unsigned k = 0;
+    //std::cerr << "prefix of len " << prefixlen << " expected " << lambda << " prior " << prior << " error-rate " <<errorrate << std::endl;
+    //we impose that k shall not be higher than the expected count for correct reads.
+    unsigned kquart = (unsigned)round(errexpnoerr);
+
+    //while ((log((Pposterr / (Ppostnoerr)) * prior) > 0) || k == 0){
+    while ((k < kquart && log(Pposterr / Ppostnoerr * prior) > 0) || k == 0){
+        //not as efficient
+        //Ppostnoerr = dpois(k, lambda*noerr);
+        //Pposterr = dpoismixerror( k, lambda, errorrate, prefixlen);
+        //std::cerr << "(" << k << " , "  << Ppostnoerr << " , " << Pposterr << ")" << std::endl;
+        Ppostnoerr = pownoerr * negExpnoerr / fact;
         Pposterr = (perr1 * pow1err * negExp1err + perr2 * pow2err * negExp2err) / fact;
-		pownoerr *= errexpnoerr;
-		pow1err *= errexp1err; 
-		pow2err *= errexp2err;
-		k++;
-		fact *= k;
-	}
-	//std::cerr << "(" << k << " , "  << Ppostnoerr << " , " << Pposterr << ")" << std::endl;
-	return k;
-	
+        pownoerr *= errexpnoerr;
+        pow1err *= errexp1err;
+        pow2err *= errexp2err;
+        k++;
+        fact *= k;
+    }
+    //std::cerr << "(" << k << " , "  << Ppostnoerr << " , " << Pposterr << ")" << std::endl;
+    return k;
+
 }
 
 // The probability distribution of a repeat, given the probability of the word
 // !!! We assume simply non overlapping word and do a poisson approximation
 inline double drepeat(int nrep, double pword, long genomelength){
-	return dpois(nrep, pword * genomelength);
+    return dpois(nrep, pword * genomelength);
 }
 
 
-//Compute the odds of having a repeat for all counts from kmin to kmax 
+//Compute the odds of having a repeat for all counts from kmin to kmax
 //given an (iid M00) genome, a prefix length, the errorrate and the expected coverage
 template <typename TPosterior, typename TCount, typename TMean, typename TErrorrates , typename TPrefixLen, typename TGenomeLen>
 void OddsRepeat(TPosterior & post1occ, TCount cmin, TCount cmax, TMean lambda, TErrorrates errorrate, TPrefixLen prefixlen, TGenomeLen genomelength){
-	double pword = 1.0 / pow(4.0, (double)prefixlen);
-	int nrmax = 10;
-	//prior on having a repeat for a random genome, not used now.
-	String <double> prepeats ;
-	resize(prepeats, nrmax+1, 0.0);
-	double pnoerr = probabilityNoError(errorrate, prefixlen);
-	for (int i = 0; i <= nrmax; i++) {
-		prepeats[i] = drepeat(i, pword, genomelength);
-	}
-	String <double> posteriors;
-	clear(post1occ);
-	resize(post1occ, cmax, 0.0);
-	for (int c = cmin; c < cmax; c++) {
-		clear(posteriors);
-		resize( posteriors, nrmax+1, 0.0);
-		double sum = 0.0;
-		posteriors[0] = 0.0;
-		for (int nr=1; nr <= nrmax; nr++) {
-			posteriors[nr] = ((pnoerr) * ppois(c, lambda*nr*pnoerr) + (1-pnoerr)*ppoismixerror(c, lambda*nr, errorrate, prefixlen)) * prepeats[nr];
-			sum += posteriors[nr]; 
-		}
-		//rescale
-		for (int nr=1; nr <= nrmax; nr++){
-			posteriors[nr] /= sum;
-		}
-		post1occ[c] = (1-posteriors[1])/ posteriors[1] ;
-	}
-	
+    double pword = 1.0 / pow(4.0, (double)prefixlen);
+    int nrmax = 10;
+    //prior on having a repeat for a random genome, not used now.
+    String <double> prepeats ;
+    resize(prepeats, nrmax+1, 0.0);
+    double pnoerr = probabilityNoError(errorrate, prefixlen);
+    for (int i = 0; i <= nrmax; i++) {
+        prepeats[i] = drepeat(i, pword, genomelength);
+    }
+    String <double> posteriors;
+    clear(post1occ);
+    resize(post1occ, cmax, 0.0);
+    for (int c = cmin; c < cmax; c++) {
+        clear(posteriors);
+        resize( posteriors, nrmax+1, 0.0);
+        double sum = 0.0;
+        posteriors[0] = 0.0;
+        for (int nr=1; nr <= nrmax; nr++) {
+            posteriors[nr] = ((pnoerr) * ppois(c, lambda*nr*pnoerr) + (1-pnoerr)*ppoismixerror(c, lambda*nr, errorrate, prefixlen)) * prepeats[nr];
+            sum += posteriors[nr];
+        }
+        //rescale
+        for (int nr=1; nr <= nrmax; nr++){
+            posteriors[nr] /= sum;
+        }
+        post1occ[c] = (1-posteriors[1])/ posteriors[1] ;
+    }
+
 }
 
 //The same methods, but computes the cutoff k where the odds of repeat over non repeat is > odds
 template <typename TOdds, typename TMean, typename TErrorrate , typename TPrefixLen, typename TGenomeLen>
 inline int OddsRepeatCutoff(
-		TOdds  odds, 
-		TMean lambda, 
-		TErrorrate errorrate,
-		TPrefixLen prefixlen, 
-		TGenomeLen genomelength){
-	double pword = 1.0 / pow(4.0, (double)prefixlen);
-	int nrmax = 10;
-	String <double> posteriors;
-	clear(posteriors);
-	resize( posteriors, nrmax+1, 0.0);
-	//prior on having a repeat for a random genome, not used for now.
-	String <double> prepeats ;
-	resize(prepeats, nrmax+1, 0.0);
-	double pnoerr = probabilityNoError(errorrate, prefixlen);
-	for (int i = 0; i <= nrmax; i++) {
-		prepeats[i] = drepeat(i, pword, genomelength);
-	}
-	//
-	double post1occ = 0.0;
-	int c = (odds < 1) ? 0 : (int)(lambda * pnoerr);
-	int cmax = (int)(100.0 * lambda * pnoerr);
-	while(post1occ < odds && c <cmax){
-		clear(posteriors);
-		resize( posteriors, nrmax+1, 0.0);
-		double sum = 0.0;
-		posteriors[0] = 0.0;
-		for (int nr=1; nr <= nrmax; nr++) {
-			posteriors[nr] = ((pnoerr) * ppois(c, lambda*nr*pnoerr) + (1-pnoerr)*ppoismixerror(c, lambda*nr, errorrate, prefixlen)) * prepeats[nr];
-			sum += posteriors[nr]; 
-		}
-	//rescale
-		for (int nr=1; nr <= nrmax; nr++){
-			posteriors[nr] /= sum;
-		}
-		post1occ = (1-posteriors[1])/ posteriors[1] ;
-		c++;
-	}
-	if (c == cmax) return 0;
-	return c;
+        TOdds  odds,
+        TMean lambda,
+        TErrorrate errorrate,
+        TPrefixLen prefixlen,
+        TGenomeLen genomelength){
+    double pword = 1.0 / pow(4.0, (double)prefixlen);
+    int nrmax = 10;
+    String <double> posteriors;
+    clear(posteriors);
+    resize( posteriors, nrmax+1, 0.0);
+    //prior on having a repeat for a random genome, not used for now.
+    String <double> prepeats ;
+    resize(prepeats, nrmax+1, 0.0);
+    double pnoerr = probabilityNoError(errorrate, prefixlen);
+    for (int i = 0; i <= nrmax; i++) {
+        prepeats[i] = drepeat(i, pword, genomelength);
+    }
+    //
+    double post1occ = 0.0;
+    int c = (odds < 1) ? 0 : (int)(lambda * pnoerr);
+    int cmax = (int)(100.0 * lambda * pnoerr);
+    while(post1occ < odds && c <cmax){
+        clear(posteriors);
+        resize( posteriors, nrmax+1, 0.0);
+        double sum = 0.0;
+        posteriors[0] = 0.0;
+        for (int nr=1; nr <= nrmax; nr++) {
+            posteriors[nr] = ((pnoerr) * ppois(c, lambda*nr*pnoerr) + (1-pnoerr)*ppoismixerror(c, lambda*nr, errorrate, prefixlen)) * prepeats[nr];
+            sum += posteriors[nr];
+        }
+    //rescale
+        for (int nr=1; nr <= nrmax; nr++){
+            posteriors[nr] /= sum;
+        }
+        post1occ = (1-posteriors[1])/ posteriors[1] ;
+        c++;
+    }
+    if (c == cmax) return 0;
+    return c;
 }
-	
+
 template <typename TCuttoffs, typename TOdds, typename TExpectedValues, typename TErrorrate , typename TPrefixLen, typename TGenomeLen>
 void computeCutoffRepeats(
-	TCuttoffs & thresholds,
-	TOdds const odds,
-	TExpectedValues const & expected,
-	TErrorrate errorrate,
-	TPrefixLen kmin,
-	TPrefixLen kmax,
-	TGenomeLen genomelength)
+    TCuttoffs & thresholds,
+    TOdds const odds,
+    TExpectedValues const & expected,
+    TErrorrate errorrate,
+    TPrefixLen kmin,
+    TPrefixLen kmax,
+    TGenomeLen genomelength)
 {
-	clear(thresholds);
-	resize(thresholds, kmax + 1, std::numeric_limits<typename Value<TCuttoffs>::Type>::max());
-	for (int i = kmin; i <= kmax; i++)
-		thresholds[i] = OddsRepeatCutoff(odds, expected[i], errorrate, i, genomelength); // Dave: I added "/ 3", otherwise this cutoff seems to have no effect
+    clear(thresholds);
+    resize(thresholds, kmax + 1, std::numeric_limits<typename Value<TCuttoffs>::Type>::max());
+    for (int i = kmin; i <= kmax; i++)
+        thresholds[i] = OddsRepeatCutoff(odds, expected[i], errorrate, i, genomelength); // Dave: I added "/ 3", otherwise this cutoff seems to have no effect
 }
 
 
@@ -2361,60 +2361,60 @@ precomputeOverlapCombinatorics(
     String<double> &expectedFPOverlapSum,
     int maxNonSeedOverlap,
     int k,
-	FionaOptions & options)
+    FionaOptions & options)
 {
     clear(expectedCorrectOverlapSum);
     clear(expectedFPOverlapSum);
-	resize(expectedCorrectOverlapSum, maxNonSeedOverlap + 1);
-	resize(expectedFPOverlapSum, maxNonSeedOverlap + 1);
+    resize(expectedCorrectOverlapSum, maxNonSeedOverlap + 1);
+    resize(expectedFPOverlapSum, maxNonSeedOverlap + 1);
 
-	SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1))
+    SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1))
     for (int nonSeedOverlap = maxNonSeedOverlap; nonSeedOverlap >= 0; --nonSeedOverlap)
     {
         binomial Zerr(nonSeedOverlap, options.errorrate);
         binomial Zotherov(nonSeedOverlap, (1 + options.errorrate) / 4);
 
-		unsigned maxErrors = (unsigned)(options.overlap_errorrate * (nonSeedOverlap + k + 1));
+        unsigned maxErrors = (unsigned)(options.overlap_errorrate * (nonSeedOverlap + k + 1));
 
         double expovsumT1 = 0;
         double expovsumT2 = 0;
-        
+
         for (unsigned numError = 0; numError < maxErrors; ++numError)
         {
             expovsumT1 += (k + 1 + nonSeedOverlap - numError) * pdf(Zerr, numError);
             expovsumT2 += (k + 1 + numError)                  * pdf(Zotherov, numError);
         }
-        
+
         expectedCorrectOverlapSum[nonSeedOverlap] = expovsumT1;
         expectedFPOverlapSum[nonSeedOverlap] = expovsumT2;
     }
 }
 
 //
-// Model for putting a threshold on the OverlapSum 
+// Model for putting a threshold on the OverlapSum
 // We compute the expected overlapsum count for the real and the erroneous reads
 //
 template <typename TMean, typename TErrorrate, typename TWeight, typename TReadLengthHist>
 inline int OddsOverlapSumCutoff(
-	int i,          // position of the error
-	TMean lambda,   // expected coverage per position
-	int lenError,   // error read length
-	int k,          // seed length
-	TErrorrate errorrate,
-	TWeight w,
+    int i,          // position of the error
+    TMean lambda,   // expected coverage per position
+    int lenError,   // error read length
+    int k,          // seed length
+    TErrorrate errorrate,
+    TWeight w,
     String<double> & expectedCorrectOverlapSum,
     String<double> & expectedFPOverlapSum,
     TReadLengthHist & readLenHist,
-	FionaOptions & /*options*/)
+    FionaOptions & /*options*/)
 {
-	double pnoerr = probabilityNoError(errorrate, k+1); 
-	double potherpos = probabilityNoError(errorrate, k) * (3./4); 
-	double pword = 1.0 / pow(4.0, (double)k);
-    
-	double totalExpectedCorrectOverlapSum = 0.0;    // expected value for bona fide reads
-	double totalExpectedFPOverlapSum = 0.0;         // expected value for reads with errors
-	//double varovsum = 0; //we would like also to compute the variance (later).
-	//count the forward strand overlaps
+    double pnoerr = probabilityNoError(errorrate, k+1);
+    double potherpos = probabilityNoError(errorrate, k) * (3./4);
+    double pword = 1.0 / pow(4.0, (double)k);
+
+    double totalExpectedCorrectOverlapSum = 0.0;    // expected value for bona fide reads
+    double totalExpectedFPOverlapSum = 0.0;         // expected value for reads with errors
+    //double varovsum = 0; //we would like also to compute the variance (later).
+    //count the forward strand overlaps
 
     for (int lenCorrect = 1; lenCorrect < (int)length(readLenHist); ++lenCorrect)
     {
@@ -2448,7 +2448,7 @@ inline int OddsOverlapSumCutoff(
             {
                 //                   |left overlap|   |========== right overlap ===========================|
                 int nonSeedOverlap = _min(i, j)     + _min(lenError - (i + k + 1), lenCorrect - (j + k + 1));
-                
+
                 localExpectedCorrectOverlapSum += stepSize * expectedCorrectOverlapSum[nonSeedOverlap];
                 localExpectedFPOverlapSum += stepSize * expectedFPOverlapSum[nonSeedOverlap];
             }
@@ -2471,43 +2471,43 @@ inline int OddsOverlapSumCutoff(
 //        }
 //    }
 
-	int cutoff = (int)((1 - w) * totalExpectedCorrectOverlapSum + w * totalExpectedFPOverlapSum);
-	return _max(cutoff, 5);
+    int cutoff = (int)((1 - w) * totalExpectedCorrectOverlapSum + w * totalExpectedFPOverlapSum);
+    return _max(cutoff, 5);
 
 
-//	SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1) reduction(+:expovsumT1) reduction(+:expovsumT2))
-//	for (int j = 1; j <= i - k; ++j)
+//    SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1) reduction(+:expovsumT1) reduction(+:expovsumT2))
+//    for (int j = 1; j <= i - k; ++j)
 //    {
-//		int mnov = l - j - k ; //max n. overlapping bases with the read
-//		for (int nerr = 0; nerr < mnov; nerr++)
+//        int mnov = l - j - k ; //max n. overlapping bases with the read
+//        for (int nerr = 0; nerr < mnov; nerr++)
 //        {
-//			expovsumT1 += (k + 1 + mnov - nerr) * matZerr(nerr, mnov);
-//			expovsumT2 += (k + 1 + nerr) * matZotherov(nerr, mnov);
-//		}
-//	}
-//	//Now the reverse strand
-//	SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1) reduction(+:expovsumT1) reduction(+:expovsumT2))
-//	for (int j = l; j >= i + k; j--)
+//            expovsumT1 += (k + 1 + mnov - nerr) * matZerr(nerr, mnov);
+//            expovsumT2 += (k + 1 + nerr) * matZotherov(nerr, mnov);
+//        }
+//    }
+//    //Now the reverse strand
+//    SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1) reduction(+:expovsumT1) reduction(+:expovsumT2))
+//    for (int j = l; j >= i + k; j--)
 //    {
-//		int mnov = j - k - 1;
-//		for (int nerr = 0; nerr < mnov; nerr++)
+//        int mnov = j - k - 1;
+//        for (int nerr = 0; nerr < mnov; nerr++)
 //        {
-//			expovsumT1 += (k + 1 + mnov - nerr) * matZerr(nerr, mnov);
-//			expovsumT2 += (k + 1 + nerr) * matZotherov(nerr, mnov);
-//		}
-//	}
-//	expovsumT1 *= lambda * pnoerr;
-//	expovsumT2 *= lambda * potherpos * pword;
+//            expovsumT1 += (k + 1 + mnov - nerr) * matZerr(nerr, mnov);
+//            expovsumT2 += (k + 1 + nerr) * matZotherov(nerr, mnov);
+//        }
+//    }
+//    expovsumT1 *= lambda * pnoerr;
+//    expovsumT2 *= lambda * potherpos * pword;
 //    if (options.verbosity >= 2)
 //        std::cerr << "(pos:" << i << ")(rl:" << l << "-" << k << ")"
 //                  << " -- lambda - OvSum noerror/errors: (" << lambda << " , " << expovsumT1
 //                  << " --" <<  expovsumT2 << ")" << std::endl;
-	//Todo (Hugues) find a more rational way for this parameter, this one could be too stringent
-	//one could hypothesize that the variance is equal to expectation and use a binomial approx
-	//on the T2 values
-//	int cutoff = ceil((1-w)*expovsumT1 + w*expovsumT2);
-//	cutoff = (cutoff < 5) ? 5 : cutoff;
-//	return (cutoff);
+    //Todo (Hugues) find a more rational way for this parameter, this one could be too stringent
+    //one could hypothesize that the variance is equal to expectation and use a binomial approx
+    //on the T2 values
+//    int cutoff = ceil((1-w)*expovsumT1 + w*expovsumT2);
+//    cutoff = (cutoff < 5) ? 5 : cutoff;
+//    return (cutoff);
 }
 //
 //
@@ -2515,10 +2515,10 @@ inline int OddsOverlapSumCutoff(
 //// Compute the overlapsum cutoff for each position in a read
 template <typename TCutOffMatrix, typename TPrefixLen, typename TReadLengthHist, typename TGenomeLen>
 void ComputeCutoffOverlapSum(
-	TCutOffMatrix & thresholds,
-	TPrefixLen k,
+    TCutOffMatrix & thresholds,
+    TPrefixLen k,
     TReadLengthHist &readLenHist,
-	TGenomeLen genomeLength,
+    TGenomeLen genomeLength,
     FionaOptions & options)
 {
     unsigned maxReadLength = length(readLenHist) - 1;
@@ -2533,10 +2533,10 @@ void ComputeCutoffOverlapSum(
         k,
         options);
 
-	thresholds.resize(maxReadLength + 1, maxReadLength);  // readLength, position
-	thresholds.clear();
+    thresholds.resize(maxReadLength + 1, maxReadLength);  // readLength, position
+    thresholds.clear();
 
-	for (unsigned lenError = 1; lenError <= maxReadLength; ++lenError)
+    for (unsigned lenError = 1; lenError <= maxReadLength; ++lenError)
     {
         if (readLenHist[lenError] == 0)
             continue;
@@ -2572,21 +2572,21 @@ void ComputeCutoffOverlapSum(
         }
     }
 
-//	//for (int k = kmin; k <= kmax; k++)
-//	double expected = (double)readcount / genomelength;
-//	unsigned pad = readLen / 150 + 1;
-//	for (unsigned len = 1; len <= readLen; ++len)
+//    //for (int k = kmin; k <= kmax; k++)
+//    double expected = (double)readcount / genomelength;
+//    unsigned pad = readLen / 150 + 1;
+//    for (unsigned len = 1; len <= readLen; ++len)
 //    {
-//		//std::cerr << "Computing for length " << i << "expected is " << expected << std::endl;
-//		if (len >= readLen / 2 + 1)
-//			thresholds[len] = thresholds[readLen - len + 1];
-//		else {
-//			if (len == 1 || len % pad == 0u)
-//				thresholds[len] = OddsOverlapSumCutoff(len, expected, readLen, k, errorrate, w, matZerr, matZotherov, verbosity);
-//			else
-//				thresholds[len] = thresholds[len - 1];
-//		}
-//	}
+//        //std::cerr << "Computing for length " << i << "expected is " << expected << std::endl;
+//        if (len >= readLen / 2 + 1)
+//            thresholds[len] = thresholds[readLen - len + 1];
+//        else {
+//            if (len == 1 || len % pad == 0u)
+//                thresholds[len] = OddsOverlapSumCutoff(len, expected, readLen, k, errorrate, w, matZerr, matZotherov, verbosity);
+//            else
+//                thresholds[len] = thresholds[len - 1];
+//        }
+//    }
 }
 
 
@@ -2596,40 +2596,40 @@ void ComputeCutoffOverlapSum(
 template < typename TIndex, class TSpec >
 double medianLevel(Iter<TIndex, VSTree<TSpec> > iter){
 
-	double totalOccs = 0.0;
-	double sumMedian = 0.0;
-	double median = 0.0;
-	double mediumTotalOccs = 0.0;
+    double totalOccs = 0.0;
+    double sumMedian = 0.0;
+    double median = 0.0;
+    double mediumTotalOccs = 0.0;
 
   std::map<unsigned, unsigned> vectorOccurrences;
 
-	goBegin(iter);
-	for (; !atEnd(iter); ++iter)
-	{
-		unsigned numOccs = countOccurrences(iter);
-		++vectorOccurrences[numOccs];
-		totalOccs += numOccs;
-	}
+    goBegin(iter);
+    for (; !atEnd(iter); ++iter)
+    {
+        unsigned numOccs = countOccurrences(iter);
+        ++vectorOccurrences[numOccs];
+        totalOccs += numOccs;
+    }
 
-	mediumTotalOccs = totalOccs / 2.0;
+    mediumTotalOccs = totalOccs / 2.0;
 
   std::map<unsigned,unsigned>::iterator iterMap;
-	for (iterMap = vectorOccurrences.begin (); iterMap != vectorOccurrences.end (); ++iterMap)
-	{
-		sumMedian += iterMap->second*iterMap->first;
-		if (sumMedian >= mediumTotalOccs)
-		{
-			median = iterMap->first;
-			break;
-		}
-	}
-	return median;
+    for (iterMap = vectorOccurrences.begin (); iterMap != vectorOccurrences.end (); ++iterMap)
+    {
+        sumMedian += iterMap->second*iterMap->first;
+        if (sumMedian >= mediumTotalOccs)
+        {
+            median = iterMap->first;
+            break;
+        }
+    }
+    return median;
 }
 
 template <typename TPercentage, typename TSize>
 inline double probabilityOneError(TPercentage percentageErr, TSize repLen)
 {
-	return 1.0 - pow(1.0 - percentageErr, (double)repLen);
+    return 1.0 - pow(1.0 - percentageErr, (double)repLen);
 }
 
 //Compute the number of ways of placing at most e errors in a read of length l such that
@@ -2637,47 +2637,47 @@ inline double probabilityOneError(TPercentage percentageErr, TSize repLen)
 template <typename TMatrix>
 void CombinatoricsNoSeed(TMatrix &m, int lread, int kmax, int nerrmax)
 {
-	int m1 =  2*kmax-1 < lread ? (2*kmax-1) : lread ;
-	int i,k;
-	//Verify the size
-	//std::cerr << "resizing\n";
-	m.resize(nerrmax + 1, lread + 1);
-	m.clear();
-	for (i = 0; i <= lread; ++i)
-		for (k=0; k<= kmax; ++k)
-			m(k,i) = 0;
-	//std::cerr << "all values to 0\n";	
-	for (i = 0; i <= lread; ++i)
-		m(0,i) = m(1,i) = 0;
-	for (i = 0; i < kmax; ++i)
-		m(1,i) = i;
-	for (i = kmax; i <= m1; ++i)
-		m(1, i) = 2 * kmax - i;
-	for (int ne = 2; ne <= nerrmax; ++ne)
+    int m1 =  2*kmax-1 < lread ? (2*kmax-1) : lread ;
+    int i,k;
+    //Verify the size
+    //std::cerr << "resizing\n";
+    m.resize(nerrmax + 1, lread + 1);
+    m.clear();
+    for (i = 0; i <= lread; ++i)
+        for (k=0; k<= kmax; ++k)
+            m(k,i) = 0;
+    //std::cerr << "all values to 0\n";
+    for (i = 0; i <= lread; ++i)
+        m(0,i) = m(1,i) = 0;
+    for (i = 0; i < kmax; ++i)
+        m(1,i) = i;
+    for (i = kmax; i <= m1; ++i)
+        m(1, i) = 2 * kmax - i;
+    for (int ne = 2; ne <= nerrmax; ++ne)
     {
-		for (k = 0; k < ne; ++k)
-			m(ne, k) = 0;
-		for (k = ne; k <= kmax; ++k)
-			m(ne, k) = (int)boost::math::binomial_coefficient<double>(k, ne);
-		int mpos = (ne + 1) * kmax;
-		for (k = mpos; k <= lread; ++k)
-			m(ne, k) = 0;
-		int mposlread = mpos < (lread +1) ? mpos : (lread+1);
-		for (k = kmax + 1; k < mposlread; ++k)
+        for (k = 0; k < ne; ++k)
+            m(ne, k) = 0;
+        for (k = ne; k <= kmax; ++k)
+            m(ne, k) = (int)boost::math::binomial_coefficient<double>(k, ne);
+        int mpos = (ne + 1) * kmax;
+        for (k = mpos; k <= lread; ++k)
+            m(ne, k) = 0;
+        int mposlread = mpos < (lread +1) ? mpos : (lread+1);
+        for (k = kmax + 1; k < mposlread; ++k)
         {
-			unsigned csum = 0;
-			for (int j = k-kmax; j<k; j++)
-				csum += m(ne-1, j);
-			m(ne,k) = csum;
-		}
-	}
-	//should print here for debug
-//	std::cerr << "Computed the Combinatorial matrix\nk = " << kmax << ", l = " << lread << std::endl;
-//	for (unsigned j = 1; j <= nerrmax; ++j){
-//		for (i = 1; i <= lread; ++i)
-//			std::cerr << "\t" << m(j,i);
-//		std::cerr << std::endl;
-//	}		
+            unsigned csum = 0;
+            for (int j = k-kmax; j<k; j++)
+                csum += m(ne-1, j);
+            m(ne,k) = csum;
+        }
+    }
+    //should print here for debug
+//    std::cerr << "Computed the Combinatorial matrix\nk = " << kmax << ", l = " << lread << std::endl;
+//    for (unsigned j = 1; j <= nerrmax; ++j){
+//        for (i = 1; i <= lread; ++i)
+//            std::cerr << "\t" << m(j,i);
+//        std::cerr << std::endl;
+//    }
 }
 
 
@@ -2687,53 +2687,53 @@ void CombinatoricsNoSeed(TMatrix &m, int lread, int kmax, int nerrmax)
 //Expected number of uncorrectable reads
 template <typename TUExpCounts, typename TPrefixLen, typename TErrorRate, typename TReadLen, typename TNReads>
 void UncorrectableExpected(
-		TUExpCounts & UncorrExp, 
-		TPrefixLen const kmin, 
-		TPrefixLen const kmax,
-		TReadLen const lread, 
-		TNReads const nreads,
-		TErrorRate const perr){
-	clear(UncorrExp);
-	resize(UncorrExp, kmax+1, 0.0);
-	//Proba place exactly i errors
-	String <double> pkerrs;
-	clear(pkerrs);
-	resize( pkerrs, kmax+1, 0.0);
-	for (int i =0; i<=kmax; ++i)
-		pkerrs[i] = pow(perr, (double)i) * pow(1.0 - perr, (double)(lread - i));
-	matrix <unsigned> MatNoSeed (kmax+1, lread+1);
-	for (int k = kmin; k <= kmax; k++){
-		CombinatoricsNoSeed(MatNoSeed, lread, k, k);
-		for (int nerr = 1; nerr < k; ++nerr){
-			UncorrExp[k] += MatNoSeed(nerr,lread) * pkerrs[nerr] * nreads;
-		}
-	}
+        TUExpCounts & UncorrExp,
+        TPrefixLen const kmin,
+        TPrefixLen const kmax,
+        TReadLen const lread,
+        TNReads const nreads,
+        TErrorRate const perr){
+    clear(UncorrExp);
+    resize(UncorrExp, kmax+1, 0.0);
+    //Proba place exactly i errors
+    String <double> pkerrs;
+    clear(pkerrs);
+    resize( pkerrs, kmax+1, 0.0);
+    for (int i =0; i<=kmax; ++i)
+        pkerrs[i] = pow(perr, (double)i) * pow(1.0 - perr, (double)(lread - i));
+    matrix <unsigned> MatNoSeed (kmax+1, lread+1);
+    for (int k = kmin; k <= kmax; k++){
+        CombinatoricsNoSeed(MatNoSeed, lread, k, k);
+        for (int nerr = 1; nerr < k; ++nerr){
+            UncorrExp[k] += MatNoSeed(nerr,lread) * pkerrs[nerr] * nreads;
+        }
+    }
 }
 
 template <typename TUExpCounts, typename TPrefixLen, typename TErrorRate, typename TNumRead>
 void UncorrectableExpectedBases(
-		TUExpCounts & uncorrExp, 
-		TPrefixLen const kmin, 
-		TPrefixLen const kmax,
-		String<TNumRead> readLenHist,
-		TErrorRate const perr)
+        TUExpCounts & uncorrExp,
+        TPrefixLen const kmin,
+        TPrefixLen const kmax,
+        String<TNumRead> readLenHist,
+        TErrorRate const perr)
 {
-	clear(uncorrExp);
-	resize(uncorrExp, kmax + 1, 0.0);
+    clear(uncorrExp);
+    resize(uncorrExp, kmax + 1, 0.0);
 
-	//Proba place exactly i errors
-	matrix<double> pkerrs(kmax + 1, length(readLenHist));
+    //Proba place exactly i errors
+    matrix<double> pkerrs(kmax + 1, length(readLenHist));
 
     // precompute the probabilities to have k errors in a read of length readLen
-	SEQAN_OMP_PRAGMA(parallel for)
-	for (int readLen = 1; readLen < (int)length(readLenHist); ++readLen)
+    SEQAN_OMP_PRAGMA(parallel for)
+    for (int readLen = 1; readLen < (int)length(readLenHist); ++readLen)
         for (TPrefixLen k = 1; k <= kmax; ++k)
             pkerrs(k, readLen) = pow(perr, (double)k) * pow(1.0 - perr, (double)(readLen - k));
 
     // distribute the work (interval [kmin..kmax+1)) over different threads
     Splitter<int> splitter(kmin, kmax + 1);
-	SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)) schedule(static))
-	for (int i = 0; i < (int)length(splitter); ++i)
+    SEQAN_OMP_PRAGMA(parallel for num_threads(length(splitter)) schedule(static))
+    for (int i = 0; i < (int)length(splitter); ++i)
     {
         // add for each anchor k the number of uncorrectable reads
         matrix<unsigned> matNoSeed;
@@ -2750,44 +2750,44 @@ void UncorrectableExpectedBases(
                     uncorrExp[k] += matNoSeed(numErrors, readLen) * pkerrs(numErrors, readLen) * (double) numReads * (double) readLen;
             }
         }
-	}
+    }
 }
 
 
 //Expected number of destructible reads
 template <typename TDestCounts, typename TPrefixLen, typename TErrorRate, typename TReadLen, typename TNReads, typename TGenomeLen>
 void DestructibleExpected(
-		TDestCounts & DestrExp, 
-		TPrefixLen const kmin, 
-		TPrefixLen const kmax,
-		TReadLen const lread, 
-		TNReads const nreads,
-		TErrorRate const perr, 
-		TGenomeLen const genomelen){
-	clear(DestrExp);
-	resize(DestrExp, kmax+1, 0.0);
-	double muw = pow(4.0, kmin - 1.0);
-	for (int k = kmin; k <= kmax; ++k){
-		muw *= 4;
-		double qw = (1- pow(1-perr, (double)k))*(1-perr)*(1-pow(1-1.0/muw, (double)genomelen))* (3.0/4);
-		DestrExp[k] = (1- pow(1-qw, (double)(lread-k)))*pow(1-perr, (double)lread) * nreads;
-	}
+        TDestCounts & DestrExp,
+        TPrefixLen const kmin,
+        TPrefixLen const kmax,
+        TReadLen const lread,
+        TNReads const nreads,
+        TErrorRate const perr,
+        TGenomeLen const genomelen){
+    clear(DestrExp);
+    resize(DestrExp, kmax+1, 0.0);
+    double muw = pow(4.0, kmin - 1.0);
+    for (int k = kmin; k <= kmax; ++k){
+        muw *= 4;
+        double qw = (1- pow(1-perr, (double)k))*(1-perr)*(1-pow(1-1.0/muw, (double)genomelen))* (3.0/4);
+        DestrExp[k] = (1- pow(1-qw, (double)(lread-k)))*pow(1-perr, (double)lread) * nreads;
+    }
 }
 
 //Expected number of destructible reads
 template <typename TDestCounts, typename TPrefixLen, typename TErrorRate, typename TNumRead, typename TGenomeLen>
 void DestructibleExpectedBases(
-		TDestCounts & destrExp, 
-		TPrefixLen const kmin, 
-		TPrefixLen const kmax,
-		String<TNumRead> readLenHist,
-		TErrorRate const perr, 
-		TGenomeLen const genomelen)
+        TDestCounts & destrExp,
+        TPrefixLen const kmin,
+        TPrefixLen const kmax,
+        String<TNumRead> readLenHist,
+        TErrorRate const perr,
+        TGenomeLen const genomelen)
 {
-	clear(destrExp);
-	resize(destrExp, kmax + 1, 0.0);
+    clear(destrExp);
+    resize(destrExp, kmax + 1, 0.0);
 
-	SEQAN_OMP_PRAGMA(parallel for)
+    SEQAN_OMP_PRAGMA(parallel for)
     for (int k = kmin; k <= kmax; ++k)
     {
         double muw = pow(4.0, (double)k);
@@ -2806,19 +2806,19 @@ void DestructibleExpectedBases(
 
 template <typename TDestCounts, typename TPrefixLen, typename TErrorRate, typename TReadLen, typename TNReads, typename TGenomeLen>
 void DestructibleExpectedFiona(
-						  TDestCounts & DestrExp, 
-						  TPrefixLen const kmin, 
-						  TPrefixLen const kmax,
-						  TReadLen const /*lread*/, 
-						  TNReads const /*nreads*/,
-						  TErrorRate const /*perr*/, 
-						  TGenomeLen const /*genomelen*/){
-	clear(DestrExp);
-	resize(DestrExp, kmax+1, 0.0);
-//	double muw = pow(4.0, kmin -1);
-	for (unsigned k = kmin; k <= kmax; ++k){
-		//This version should account for the fact that Fiona gets the best correction over the range of Ks
-	}
+                          TDestCounts & DestrExp,
+                          TPrefixLen const kmin,
+                          TPrefixLen const kmax,
+                          TReadLen const /*lread*/,
+                          TNReads const /*nreads*/,
+                          TErrorRate const /*perr*/,
+                          TGenomeLen const /*genomelen*/){
+    clear(DestrExp);
+    resize(DestrExp, kmax+1, 0.0);
+//    double muw = pow(4.0, kmin -1);
+    for (unsigned k = kmin; k <= kmax; ++k){
+        //This version should account for the fact that Fiona gets the best correction over the range of Ks
+    }
 }
 
 
@@ -2826,103 +2826,103 @@ void DestructibleExpectedFiona(
 /*precomputation of thresholds for varying k*/
 template <typename TThresholds, typename TExpectedValues, typename TStrictness, typename TErrorRate, typename TOddsError, typename TPrefixLen>
 void ComputeCutoffErroneous(
-		TThresholds & thresholds,
-		TExpectedValues & ,
-		TStrictness const cutoff,
-		TErrorRate  const,
-		TOddsError  const,
-		TPrefixLen  const kmin,
-		TPrefixLen  const kmax,
-		FionaCount  const)
+        TThresholds & thresholds,
+        TExpectedValues & ,
+        TStrictness const cutoff,
+        TErrorRate  const,
+        TOddsError  const,
+        TPrefixLen  const kmin,
+        TPrefixLen  const kmax,
+        FionaCount  const)
 {
-	clear(thresholds);
-	resize(thresholds, kmax+1, 0);
-	for (int k = kmin; k <= kmax; k++){
-		thresholds[k] = (int)cutoff;
-	}
+    clear(thresholds);
+    resize(thresholds, kmax+1, 0);
+    for (int k = kmin; k <= kmax; k++){
+        thresholds[k] = (int)cutoff;
+    }
 }
 
 
 //Fixed count mode
 template <typename TThresholds, typename TExpectedValues, typename TStrictness, typename TErrorRate, typename TOddsError, typename TPrefixLen>
 void ComputeCutoffErroneous(
-	TThresholds & thresholds,
-	TExpectedValues & expected,
-	TStrictness const,
-	TErrorRate const,
-	TOddsError const,
-	TPrefixLen const kmin,
-	TPrefixLen const kmax,
-	FionaExpected const)
+    TThresholds & thresholds,
+    TExpectedValues & expected,
+    TStrictness const,
+    TErrorRate const,
+    TOddsError const,
+    TPrefixLen const kmin,
+    TPrefixLen const kmax,
+    FionaExpected const)
 {
-		clear(thresholds);
-		resize(thresholds, kmax+1, 0);
-	for (int k = kmin; k <= kmax; k++){
-		thresholds[k] = (int)expected[k];
-	}
+        clear(thresholds);
+        resize(thresholds, kmax+1, 0);
+    for (int k = kmin; k <= kmax; k++){
+        thresholds[k] = (int)expected[k];
+    }
 }
 
 //Poisson pvalue mode
 template <typename TThresholds, typename TExpectedValues, typename TStrictness, typename TErrorRate, typename TOddsError, typename TPrefixLen>
 void ComputeCutoffErroneous(
-	TThresholds & thresholds,
-	TExpectedValues & expected,
-	TStrictness const strictness,
-	TErrorRate  const,
-	TOddsError  const,
-	TPrefixLen  const kmin,
-	TPrefixLen  const kmax, 
-	FionaPoisson const)
-	{
-		clear(thresholds);
-		resize(thresholds, kmax+1, 0);
-		for (int k = kmin; k <= kmax; k++){
-			thresholds[k] = qpois(strictness, expected[k]);
-		}
-	}
+    TThresholds & thresholds,
+    TExpectedValues & expected,
+    TStrictness const strictness,
+    TErrorRate  const,
+    TOddsError  const,
+    TPrefixLen  const kmin,
+    TPrefixLen  const kmax,
+    FionaPoisson const)
+    {
+        clear(thresholds);
+        resize(thresholds, kmax+1, 0);
+        for (int k = kmin; k <= kmax; k++){
+            thresholds[k] = qpois(strictness, expected[k]);
+        }
+    }
 
 
 //Poisson sensitivity mode
 template <typename TThresholds, typename TExpectedValues, typename TStrictness, typename TErrorRate, typename TOddsError, typename TPrefixLen>
 void ComputeCutoffErroneous(
-	TThresholds & thresholds,
-	TExpectedValues & expected,
-	TStrictness const falsenegrate,
-	TErrorRate const errorrate,
-	TOddsError const,
-	TPrefixLen const kmin,
-	TPrefixLen const kmax,
-	FionaPoissonSens const)
+    TThresholds & thresholds,
+    TExpectedValues & expected,
+    TStrictness const falsenegrate,
+    TErrorRate const errorrate,
+    TOddsError const,
+    TPrefixLen const kmin,
+    TPrefixLen const kmax,
+    FionaPoissonSens const)
 {
-	clear(thresholds);
-	resize(thresholds, kmax+1, 0);
-	for (int k = kmin; k<= kmax; k++){
-		thresholds[k] = 1 + qpoismixerror(1-falsenegrate, expected[k], errorrate, k); 
-	}
+    clear(thresholds);
+    resize(thresholds, kmax+1, 0);
+    for (int k = kmin; k<= kmax; k++){
+        thresholds[k] = 1 + qpoismixerror(1-falsenegrate, expected[k], errorrate, k);
+    }
 }
 
 // Poisson Classification mode
-// priorerror is the parameter for more stringent (>1) more loose (<1) error detection. 
+// priorerror is the parameter for more stringent (>1) more loose (<1) error detection.
 // oddserrorreads is the computed ratio of erroneous over correct reads
 // value of 0 turns automatic prior computation of the amount of erroneous reads.
 template <typename TThresholds, typename TExpectedValues, typename TStrictness, typename TErrorRate, typename TOddsError, typename TPrefixLen>
 void ComputeCutoffErroneous(
-	TThresholds & thresholds,
-	TExpectedValues & expected,
-	TStrictness const priorerror, 
-	TErrorRate const errorrate,
-	TOddsError const oddserrorreads, 
-	TPrefixLen const kmin,
-	TPrefixLen const kmax,
-	FionaPoissonClassif const)
+    TThresholds & thresholds,
+    TExpectedValues & expected,
+    TStrictness const priorerror,
+    TErrorRate const errorrate,
+    TOddsError const oddserrorreads,
+    TPrefixLen const kmin,
+    TPrefixLen const kmax,
+    FionaPoissonClassif const)
 {
-	clear(thresholds);
-	resize(thresholds, kmax+1, 0);
-	for (int k = kmin; k<= kmax; k++){
-		thresholds[k] = PoisClassifCutoff(priorerror*oddserrorreads, expected[k], errorrate, k); 
-		//(hugues) should we always add 1 just in case ?
-		//thresholds[k]++;
-	}
+    clear(thresholds);
+    resize(thresholds, kmax+1, 0);
+    for (int k = kmin; k<= kmax; k++){
+        thresholds[k] = PoisClassifCutoff(priorerror*oddserrorreads, expected[k], errorrate, k);
+        //(hugues) should we always add 1 just in case ?
+        //thresholds[k]++;
+    }
 }
 
 
@@ -2932,10 +2932,10 @@ void ComputeCutoffErroneous(
 */
 struct LinearModel
 {
-	double		intercept;
-	double 		slope;
-	unsigned int	numberObservations;
-	unsigned int	numberPredictors;
+    double        intercept;
+    double         slope;
+    unsigned int    numberObservations;
+    unsigned int    numberPredictors;
 };
 
 
@@ -2943,49 +2943,49 @@ struct LinearModel
 template <typename LinearModel, typename TValue>
 inline TValue fittedValue(
         LinearModel const &linearModel,
-	TValue  x) 
+    TValue  x)
 {
-	return((TValue)(linearModel.intercept + (linearModel.slope * (double)x)));
+    return((TValue)(linearModel.intercept + (linearModel.slope * (double)x)));
 }
 
-	/* use the standard maximum likelihood estimator for linear regression 
-	 * for datapoints x=(x_1, ..., x_n) and y=(y_1, .., y_n)  */
+    /* use the standard maximum likelihood estimator for linear regression
+     * for datapoints x=(x_1, ..., x_n) and y=(y_1, .., y_n)  */
 template <typename LinearModel, typename TValue>
 inline void linearRegression(
         LinearModel &linearModel,
         String<TValue> const  &x,
         String<TValue> const &y)
 {
-	/* get the means first  */
-	TValue meanX=0;
-	TValue meanY=0;
-	for(unsigned int i=0;i<length(x);i++)
-	{
-		meanX += x[i];
-		meanY += y[i];
-	}
-	meanX = meanX/(TValue)length(x);
-	meanY = meanY/(TValue)length(y);
+    /* get the means first  */
+    TValue meanX=0;
+    TValue meanY=0;
+    for(unsigned int i=0;i<length(x);i++)
+    {
+        meanX += x[i];
+        meanY += y[i];
+    }
+    meanX = meanX/(TValue)length(x);
+    meanY = meanY/(TValue)length(y);
 
-	/* use the standard maximum likelihood estimator for linear regression  
-	 * and compute first the slope than the intercept of the linear function */
-	TValue covarianceXY = 0;
-	TValue varianceX = 0;
+    /* use the standard maximum likelihood estimator for linear regression
+     * and compute first the slope than the intercept of the linear function */
+    TValue covarianceXY = 0;
+    TValue varianceX = 0;
     for(unsigned int i=0;i<length(x);i++)
     {
         covarianceXY += (x[i] - meanX) * (y[i] - meanY);
         varianceX    += (x[i] - meanX) * (x[i] - meanX);
     }
 
-	/* save the parameters in the model */
-	linearModel.slope     = (double) covarianceXY/varianceX;
-	linearModel.intercept = (double) (meanY - ((TValue)linearModel.slope * meanX) );
-	linearModel.numberObservations = (unsigned int) length(x);
+    /* save the parameters in the model */
+    linearModel.slope     = (double) covarianceXY/varianceX;
+    linearModel.intercept = (double) (meanY - ((TValue)linearModel.slope * meanX) );
+    linearModel.numberObservations = (unsigned int) length(x);
     linearModel.numberPredictors  = (unsigned int) 1;
 }
 
        /* compute R-Square (or Coefficient of Determination) for a set of values that
-	* have been fit using a linear regression model */ 
+    * have been fit using a linear regression model */
 template <typename LinearModel, typename TValue>
 inline TValue RSquare(
         LinearModel const &linearModel,
@@ -2999,95 +2999,95 @@ inline TValue RSquare(
                 meanY += y[i];
         }
         meanY = meanY/(TValue)length(y);
-	/* R-Square is defined as  1 - SSerror/SStotal, where SSerror is the sum of residual errors
-	 * and SStotal is the variance of the y values	*/
-	TValue SSerror = 0;
-	TValue SStotal =0;
+    /* R-Square is defined as  1 - SSerror/SStotal, where SSerror is the sum of residual errors
+     * and SStotal is the variance of the y values    */
+    TValue SSerror = 0;
+    TValue SStotal =0;
     for(unsigned int i=0;i<length(x);i++)
     {
         SStotal  += (y[i] - meanY) * (y[i] - meanY);
         SSerror  += pow((y[i] - fittedValue(linearModel,x[i])), 2.0);
     }
-	return((TValue) ( 1- (SSerror/SStotal)));
+    return((TValue) ( 1- (SSerror/SStotal)));
 }
 
        /* compute the adjusted R-Square for a set of values that
-	* have been fit using a linear regression model */ 
+    * have been fit using a linear regression model */
 template <typename LinearModel, typename TValue>
 inline TValue adjustedRSquare(
         LinearModel const &linearModel,
         String<TValue> const &x,
         String<TValue> const &y)
 {
-	/* The adjusted R-Square value is nothing but the R-Square value corrected by the number
-	 * of observed variables n and the number of predictors k
-	 * AdjRSquare = 1 - (1-RSquare)*(n-1)/(n-k-1) */
+    /* The adjusted R-Square value is nothing but the R-Square value corrected by the number
+     * of observed variables n and the number of predictors k
+     * AdjRSquare = 1 - (1-RSquare)*(n-1)/(n-k-1) */
 
-	TValue R_2 = RSquare(linearModel,x,y);
-	return( (TValue) (1 - (TValue)(1-R_2) * (TValue)(linearModel.numberObservations -1)/(TValue)(linearModel.numberObservations - linearModel.numberPredictors -1)));
+    TValue R_2 = RSquare(linearModel,x,y);
+    return( (TValue) (1 - (TValue)(1-R_2) * (TValue)(linearModel.numberObservations -1)/(TValue)(linearModel.numberObservations - linearModel.numberPredictors -1)));
 }
 
 template <typename TFragmentStore, typename TCorrection>
 inline void _dumpCorrection(
-	TFragmentStore &store,
-	TCorrection const &correction,
-	unsigned errorReadId)
+    TFragmentStore &store,
+    TCorrection const &correction,
+    unsigned errorReadId)
 {
-	std::cerr << std::endl;
-	std::cerr << "error___read_id\t" << errorReadId << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "error___read_id\t" << errorReadId << std::endl;
     std::cerr << "error_pos      \t" << correction.errorPos << std::endl;
     std::cerr << "error_read length \t"<<length(store.readSeqStore[errorReadId])<<std::endl;
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
     std::cerr << "correct_read_id\t" << correction.correctReadId << std::endl;
-	std::cerr << "correct_pos    \t" << correction.correctPos << std::endl;
+    std::cerr << "correct_pos    \t" << correction.correctPos << std::endl;
     std::cerr << "correct_read length \t"<<length(store.readSeqStore[correction.correctReadId])<<std::endl;
 #endif
-	std::cerr << "overlap        \t" << correction.overlap << std::endl;
-	std::cerr << "indel_len      \t" << (int)correction.indelLength << std::endl;
-	std::cerr << "error___read   \t" << store.readSeqStore[errorReadId][correction.errorPos] << '\t';
+    std::cerr << "overlap        \t" << correction.overlap << std::endl;
+    std::cerr << "indel_len      \t" << (int)correction.indelLength << std::endl;
+    std::cerr << "error___read   \t" << store.readSeqStore[errorReadId][correction.errorPos] << '\t';
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
-	for (unsigned i = 0; i < correction.correctPos; ++i)
-		std::cerr << ' ';
+    for (unsigned i = 0; i < correction.correctPos; ++i)
+        std::cerr << ' ';
 #endif
     std::cerr << store.readSeqStore[errorReadId] << std::endl;
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
-	std::cerr << "correct_read   \t" << store.readSeqStore[correction.correctReadId][correction.correctPos] << '\t';
-	for (unsigned i = 0; i < correction.errorPos; ++i)
-		std::cerr << ' ';
+    std::cerr << "correct_read   \t" << store.readSeqStore[correction.correctReadId][correction.correctPos] << '\t';
+    for (unsigned i = 0; i < correction.errorPos; ++i)
+        std::cerr << ' ';
     std::cerr << store.readSeqStore[correction.correctReadId] << std::endl;
 #endif
-}	
+}
 
 /*change the erroneous nucleotide in all reads identify with errors*/
 template <typename TFragmentStore, typename TCorrections>
 void applyReadErrorCorrections(
-	TFragmentStore &store,
-	TCorrections const &corrections,
+    TFragmentStore &store,
+    TCorrections const &corrections,
     FionaOptions const & options)
 {
-	typedef typename Value<TCorrections>::Type TCorrection;
-	int readCount = length(corrections);
+    typedef typename Value<TCorrections>::Type TCorrection;
+    int readCount = length(corrections);
 
-	// we have to make a temp-copy in order to use original (not corrected) reads for correction
-	StringSet<typename TFragmentStore::TReadSeq> originalReads;
-	resize(originalReads, length(store.readSeqStore), Exact());
+    // we have to make a temp-copy in order to use original (not corrected) reads for correction
+    StringSet<typename TFragmentStore::TReadSeq> originalReads;
+    resize(originalReads, length(store.readSeqStore), Exact());
 
-	SEQAN_OMP_PRAGMA(parallel for schedule(guided))
-	for (int readId = 0; readId < readCount; ++readId)
-	{
-		TCorrection const &corr = corrections[readId];
-		if (corr.overlap != 0 && corr.indelLength <= 0)
-			originalReads[corr.correctReadId] = store.readSeqStore[corr.correctReadId];
-	}
+    SEQAN_OMP_PRAGMA(parallel for schedule(guided))
+    for (int readId = 0; readId < readCount; ++readId)
+    {
+        TCorrection const &corr = corrections[readId];
+        if (corr.overlap != 0 && corr.indelLength <= 0)
+            originalReads[corr.correctReadId] = store.readSeqStore[corr.correctReadId];
+    }
 
-	SEQAN_OMP_PRAGMA(parallel for)
-	for (int readId = 0; readId < readCount; ++readId)
-	{
+    SEQAN_OMP_PRAGMA(parallel for)
+    for (int readId = 0; readId < readCount; ++readId)
+    {
 #ifdef SEQAN_VERBOSE
-		std::cerr << "at readID: "<<readId<<std::endl;
+        std::cerr << "at readID: "<<readId<<std::endl;
 #endif
-		TCorrection const &corr = corrections[readId];
-		if (corr.overlap == 0) continue;
+        TCorrection const &corr = corrections[readId];
+        if (corr.overlap == 0) continue;
 
         if (readId == options.debugRead)
         {
@@ -3096,201 +3096,201 @@ void applyReadErrorCorrections(
         }
 
     std::ostringstream m;
-		if (strContains(toCString(store.readNameStore[readId]), "corrected"))
-			m << "\t";
-		else
-			m << " corrected:\t";
+        if (strContains(toCString(store.readNameStore[readId]), "corrected"))
+            m << "\t";
+        else
+            m << " corrected:\t";
 
 #ifdef SEQAN_VERBOSE
-		_dumpCorrection(store, corr, readId);
+        _dumpCorrection(store, corr, readId);
 #endif
 
-		if (corr.indelLength == 0)
-		{	
+        if (corr.indelLength == 0)
+        {
 
-			m << corr.errorPos <<  "(" << options.cycle <<',' <<corr.overlap << ","<< corr.correctReadId<<"):" << store.readSeqStore[readId][corr.errorPos] << "->" << originalReads[corr.correctReadId][corr.correctPos];
-			store.readSeqStore[readId][corr.errorPos] = originalReads[corr.correctReadId][corr.correctPos];
-		}
+            m << corr.errorPos <<  "(" << options.cycle <<',' <<corr.overlap << ","<< corr.correctReadId<<"):" << store.readSeqStore[readId][corr.errorPos] << "->" << originalReads[corr.correctReadId][corr.correctPos];
+            store.readSeqStore[readId][corr.errorPos] = originalReads[corr.correctReadId][corr.correctPos];
+        }
 #ifdef FIONA_ALLOWINDELS
-		else if (corr.indelLength > 0)
-		{
-			m << corr.errorPos << "(" << options.cycle <<',' <<corr.overlap << ","<< corr.correctReadId<<"):-" << infix(store.readSeqStore[readId], corr.errorPos, corr.errorPos + corr.indelLength);
+        else if (corr.indelLength > 0)
+        {
+            m << corr.errorPos << "(" << options.cycle <<',' <<corr.overlap << ","<< corr.correctReadId<<"):-" << infix(store.readSeqStore[readId], corr.errorPos, corr.errorPos + corr.indelLength);
             erase(store.readSeqStore[readId], corr.errorPos, corr.errorPos + corr.indelLength);
-		} else {
-			m << corr.errorPos << "(" << options.cycle <<',' <<corr.overlap << ","<< corr.correctReadId<<"):+" << infix(originalReads[corr.correctReadId], corr.correctPos, corr.correctPos + -corr.indelLength);
-			insert(store.readSeqStore[readId], corr.errorPos, infix(originalReads[corr.correctReadId], corr.correctPos, corr.correctPos + -corr.indelLength));
-		}
+        } else {
+            m << corr.errorPos << "(" << options.cycle <<',' <<corr.overlap << ","<< corr.correctReadId<<"):+" << infix(originalReads[corr.correctReadId], corr.correctPos, corr.correctPos + -corr.indelLength);
+            insert(store.readSeqStore[readId], corr.errorPos, infix(originalReads[corr.correctReadId], corr.correctPos, corr.correctPos + -corr.indelLength));
+        }
 #endif
-		append(store.readNameStore[readId], m.str());
+        append(store.readNameStore[readId], m.str());
         if (readId == options.debugRead)
         {
             std::cerr << "AFTER:" << std::endl;
             _dumpCorrection(store, corr, readId);
         }
 #ifdef SEQAN_VERBOSE
-		std::cerr << "corrected:";
-		for (unsigned i = 0; i < corr.correctPos; ++i)
-			std::cerr << ' ';
-		std::cerr << store.readSeqStore[readId] << std::endl;
+        std::cerr << "corrected:";
+        for (unsigned i = 0; i < corr.correctPos; ++i)
+            std::cerr << ' ';
+        std::cerr << store.readSeqStore[readId] << std::endl;
 #endif
-	}
+    }
 }
 
 template <typename TObservedCount, typename TCutoffCount>
 inline bool
 potentiallyErroneousNode(TObservedCount observed, TCutoffCount cutoff)
 {
-	return (long)observed < cutoff;
+    return (long)observed < cutoff;
 }
 
 
 //template <typename TObserved, typename TExpected, typename TStrictness, typename TErrorRate, typename TPrefixLen>
 //inline bool potentiallyErroneousNode(
-//	TObserved observed,
-//	TExpected expected,
-//	TStrictness strictness,
-//	TErrorRate,
-//	TPrefixLen,
-//	FionaPoisson const)
+//    TObserved observed,
+//    TExpected expected,
+//    TStrictness strictness,
+//    TErrorRate,
+//    TPrefixLen,
+//    FionaPoisson const)
 //{
-//	// compare the cumulative poisson distribution with the p-value (strictness)
+//    // compare the cumulative poisson distribution with the p-value (strictness)
 //    double negExp = exp(-expected);
 //    double pValue = 0.0;
-//	double pow = 1.0;
-//	double fact = 1.0;
+//    double pow = 1.0;
+//    double fact = 1.0;
 //
 //    for (TObserved i = 0; i <= observed && pValue <= strictness; ++i, fact *= i){
 //        pValue += pow * negExp / fact;
-//		pow *= expected;
-//	}
-//	return pValue <= strictness;
+//        pow *= expected;
+//    }
+//    return pValue <= strictness;
 //}
 //
 //template <typename TObserved, typename TExpected, typename TStrictness, typename TErrorRate, typename TPrefixLen>
 //inline bool potentiallyErroneousNode(
-//	TObserved observed,
-//	TExpected expected,
-//	TStrictness,
-//	TErrorRate,
-//	TPrefixLen,
-//	FionaExpected const)
+//    TObserved observed,
+//    TExpected expected,
+//    TStrictness,
+//    TErrorRate,
+//    TPrefixLen,
+//    FionaExpected const)
 //{
-//	// compare the weight for a node with a cutoff given by the strictness param.
-//	return observed < expected;
+//    // compare the weight for a node with a cutoff given by the strictness param.
+//    return observed < expected;
 //}
 //
 //template <typename TObserved, typename TExpected, typename TStrictness, typename TErrorRate, typename TPrefixLen>
 //inline bool potentiallyErroneousNode(
-//	TObserved observed,
-//	TExpected,
-//	TStrictness cutoff,
-//	TErrorRate,
-//	TPrefixLen,
-//	FionaCount const)
+//    TObserved observed,
+//    TExpected,
+//    TStrictness cutoff,
+//    TErrorRate,
+//    TPrefixLen,
+//    FionaCount const)
 //{
-//	// compare the weight for a node with a fixed cutoff
-//	return observed < cutoff;
+//    // compare the weight for a node with a fixed cutoff
+//    return observed < cutoff;
 //}
 //
 //
 //
 //template <typename TObserved, typename TExpected, typename TStrictness, typename TErrorRate, typename TPrefixLen>
 //inline bool potentiallyErroneousNode(
-//	TObserved observed,
-//	TExpected expected,
-//	TStrictness falsenegrate,
-//	TErrorRate errorrate,
+//    TObserved observed,
+//    TExpected expected,
+//    TStrictness falsenegrate,
+//    TErrorRate errorrate,
 //    TPrefixLen prefixlen,
-//	FionaPoissonSens const)
+//    FionaPoissonSens const)
 //{
-//	// Poisson based threshold, given a fixed percentage of missed errors (1 - min sensitivity)
-//	// consider only the cases with one and two errors
-//	// the average error rate and the expected value allow to compute the expected count for an error.
-//	
-//	//special case when current node count ==1, we always consider that as an error
-//	if(observed == (TObserved) 1) return true;
+//    // Poisson based threshold, given a fixed percentage of missed errors (1 - min sensitivity)
+//    // consider only the cases with one and two errors
+//    // the average error rate and the expected value allow to compute the expected count for an error.
 //
-//	double sensitivity = 1 - falsenegrate;
-//	double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
-//	double noerrlm1 = noerrlm2 * (1-errorrate);
-//	double errexp1err = expected * noerrlm1 * errorrate/3;
-//	double errexp2err = expected * noerrlm2 * (errorrate/3) *(errorrate/3);
-//	double perr1 = prefixlen * noerrlm1* errorrate ;
-//	double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * errorrate * errorrate;
-//	double sc = perr1 + perr2;
-//	perr1 /= (sc); 
-//	perr2 /= (sc); 
-//	double negExp1err = exp(-errexp1err); //
-//	double negExp2err = exp(-errexp2err);
+//    //special case when current node count ==1, we always consider that as an error
+//    if(observed == (TObserved) 1) return true;
+//
+//    double sensitivity = 1 - falsenegrate;
+//    double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
+//    double noerrlm1 = noerrlm2 * (1-errorrate);
+//    double errexp1err = expected * noerrlm1 * errorrate/3;
+//    double errexp2err = expected * noerrlm2 * (errorrate/3) *(errorrate/3);
+//    double perr1 = prefixlen * noerrlm1* errorrate ;
+//    double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * errorrate * errorrate;
+//    double sc = perr1 + perr2;
+//    perr1 /= (sc);
+//    perr2 /= (sc);
+//    double negExp1err = exp(-errexp1err); //
+//    double negExp2err = exp(-errexp2err);
 //    double probaerror = 0.0;
-//	double pow1err = 1.0;
-//	double pow2err = 1.0;
-//	double fact = 1.0;
-//	//std::cerr << "Level " << prefixlen << " and params for correc\n";
-//	//std::cerr << "Expected and comp: " << expected << " - " << errexp1err << " - " << errexp2err << "\n";
-//	//std::cerr << "the basic observed count: " << observed << ", perr is " << perr1 << " - " << perr2  << "\n";
-//	TObserved i = 0;
+//    double pow1err = 1.0;
+//    double pow2err = 1.0;
+//    double fact = 1.0;
+//    //std::cerr << "Level " << prefixlen << " and params for correc\n";
+//    //std::cerr << "Expected and comp: " << expected << " - " << errexp1err << " - " << errexp2err << "\n";
+//    //std::cerr << "the basic observed count: " << observed << ", perr is " << perr1 << " - " << perr2  << "\n";
+//    TObserved i = 0;
 //    for (i = 0; i <= observed && probaerror <= sensitivity; ++i, fact *= i){
 //        probaerror += perr1 * pow1err * negExp1err / fact;
-//		probaerror += perr2 * pow2err * negExp2err / fact;
-//		pow1err *= errexp1err; 
-//		pow2err *= errexp2err;
-//	}
-//	//std::cerr << "Stopped at observed value **" << i-1 << "** for a sens. of " << probaerror << "and a thr at " << sensitivity << "\n";
-//	return probaerror <= sensitivity;
+//        probaerror += perr2 * pow2err * negExp2err / fact;
+//        pow1err *= errexp1err;
+//        pow2err *= errexp2err;
+//    }
+//    //std::cerr << "Stopped at observed value **" << i-1 << "** for a sens. of " << probaerror << "and a thr at " << sensitivity << "\n";
+//    return probaerror <= sensitivity;
 //}
 //
 //template <typename TObserved, typename TExpected, typename TStrictness, typename TErrorRate, typename TPrefixLen>
 //inline bool potentiallyErroneousNode(
-//	TObserved observed,
-//	TExpected expected,
-//	TStrictness priorerror,//the a priori odds of errors pi_err/(1-pi_err) (default should be 1)
-//	TErrorRate errorrate,
-//	TPrefixLen prefixlen,
-//	FionaPoissonClassif const)
+//    TObserved observed,
+//    TExpected expected,
+//    TStrictness priorerror,//the a priori odds of errors pi_err/(1-pi_err) (default should be 1)
+//    TErrorRate errorrate,
+//    TPrefixLen prefixlen,
+//    FionaPoissonClassif const)
 //{
-//	// Poisson based threshold, we compute the logodds of being an error vs a genuine read
-//	// consider only the cases with one and two errors
-//	// the average error rate and the expected value allow to compute the expected count for an error.
-//	
-//	//special case when current node count ==1, we always consider that as an error
-//	if(observed == (TObserved) 1) return true;
-//	
-//	double noerr = pow(1-errorrate, prefixlen);
-//	double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
-//	double noerrlm1 = noerrlm2 * (1-errorrate);
-////	double errexpnoerr = expected * noerr;
-////	double errexp1err = expected * noerrlm1 * (errorrate/3);
-////	double errexp2err = expected * noerrlm2 * (errorrate/3) *(errorrate/3);
-//	double perr1 = prefixlen * noerrlm1* (errorrate) ;
-//	double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
-//	double sc = perr1 + perr2;
-//	perr1 /= (sc); 
-//	perr2 /= (sc); 
-////	double negExpnoerr = exp(-errexpnoerr);
-////	double negExp1err = exp(-errexp1err); //
-////	double negExp2err = exp(-errexp2err);
-////	double pow1err = 1.0;
-////	double pow2err = 1.0;
-////	double pownoerr = 1.0;
-////	double fact = 1.0;
+//    // Poisson based threshold, we compute the logodds of being an error vs a genuine read
+//    // consider only the cases with one and two errors
+//    // the average error rate and the expected value allow to compute the expected count for an error.
+//
+//    //special case when current node count ==1, we always consider that as an error
+//    if(observed == (TObserved) 1) return true;
+//
+//    double noerr = pow(1-errorrate, prefixlen);
+//    double noerrlm2 = pow(1-errorrate, prefixlen - 2.0);
+//    double noerrlm1 = noerrlm2 * (1-errorrate);
+////    double errexpnoerr = expected * noerr;
+////    double errexp1err = expected * noerrlm1 * (errorrate/3);
+////    double errexp2err = expected * noerrlm2 * (errorrate/3) *(errorrate/3);
+//    double perr1 = prefixlen * noerrlm1* (errorrate) ;
+//    double perr2 = (prefixlen * (prefixlen -1) / 2 ) * noerrlm2 * (errorrate) *(errorrate);
+//    double sc = perr1 + perr2;
+//    perr1 /= (sc);
+//    perr2 /= (sc);
+////    double negExpnoerr = exp(-errexpnoerr);
+////    double negExp1err = exp(-errexp1err); //
+////    double negExp2err = exp(-errexp2err);
+////    double pow1err = 1.0;
+////    double pow2err = 1.0;
+////    double pownoerr = 1.0;
+////    double fact = 1.0;
 //    double probaerror = 0.0;
-//	double probanoerror = 0.0;
-//	//std::cerr << "Level " << prefixlen << " and params for correc\n";
-//	//std::cerr << "Expected and comp: " << errexpnoerr << " - " << errexp1err << " - " << errexp2err << "\n";
-//	//std::cerr << "the basic observed count: " << observed << ", perr is " << perr1 << " - " << perr2  << "\n";
-//	//TObserved i = 0;
-//	probaerror = dpoismixerror( observed, expected, errorrate, prefixlen);
-//	probanoerror = dpois(observed, expected*noerr);
+//    double probanoerror = 0.0;
+//    //std::cerr << "Level " << prefixlen << " and params for correc\n";
+//    //std::cerr << "Expected and comp: " << errexpnoerr << " - " << errexp1err << " - " << errexp2err << "\n";
+//    //std::cerr << "the basic observed count: " << observed << ", perr is " << perr1 << " - " << perr2  << "\n";
+//    //TObserved i = 0;
+//    probaerror = dpoismixerror( observed, expected, errorrate, prefixlen);
+//    probanoerror = dpois(observed, expected*noerr);
 ////    for (i = 0; i <= observed; ++i, fact *= i){
 ////        probaerror += perr1 * pow1err * negExp1err / fact;
-////		probaerror += perr2 * pow2err * negExp2err / fact;
-////		pow1err *= errexp1err; 
-////		pow2err *= errexp2err;
-////		probanoerror += pownoerr * negExpnoerr / fact;
-////	}
-//	//std::cerr << "Stopped at observed value **" << i-1 << "with proba of err " << probaerror << "and probanoerr " << probanoerr << "\n";
-//	return (log((probaerror)/ (probanoerror) * priorerror) > 0);
+////        probaerror += perr2 * pow2err * negExp2err / fact;
+////        pow1err *= errexp1err;
+////        pow2err *= errexp2err;
+////        probanoerror += pownoerr * negExpnoerr / fact;
+////    }
+//    //std::cerr << "Stopped at observed value **" << i-1 << "with proba of err " << probaerror << "and probanoerr " << probanoerr << "\n";
+//    return (log((probaerror)/ (probanoerror) * priorerror) > 0);
 //}
 
 
@@ -3307,7 +3307,7 @@ struct Overlap  // for each operation (substitution/deletion/insert) there is on
 #ifdef FIONA_CONSENSUS
     typedef ProfileChar<Dna5, unsigned short>   TProfileValue;
     typedef String<TProfileValue>               TConsensus;
-    
+
     TConsensus consensus;
 #endif
 };
@@ -3316,9 +3316,9 @@ struct Overlap  // for each operation (substitution/deletion/insert) there is on
 template <typename TIter>
 inline unsigned
 _comparePrefixesWithEditDistance(
-	Range<TIter> seq1,
-	Range<TIter> seq2,
-	unsigned maxErrors)
+    Range<TIter> seq1,
+    Range<TIter> seq2,
+    unsigned maxErrors)
 {
     typedef Range<TIter> TSeq;
     typename Size<TSeq>::Type len1 = length(seq1);
@@ -3336,7 +3336,7 @@ _comparePrefixesWithEditDistance(
     {
         if (len1 == 0)
             return 0;
-        
+
         seq2.end = seq2.begin + _min(len2, len1 + state.leftClip);
         iter = begin(seq2, Rooted());
         if (_patternInitSmallStateBanded(iter, seq1, state))
@@ -3359,9 +3359,9 @@ _comparePrefixesWithEditDistance(
 template <typename TIter>
 inline unsigned
 _comparePrefixesWithEditDistanceReverse(
-	Range<TIter> seq1,
-	Range<TIter> seq2,
-	unsigned maxErrors)
+    Range<TIter> seq1,
+    Range<TIter> seq2,
+    unsigned maxErrors)
 {
     typedef Range<TIter> TSeq;
     typename Size<TSeq>::Type len1 = length(seq1);
@@ -3380,7 +3380,7 @@ _comparePrefixesWithEditDistanceReverse(
     {
         if (len1 == 0)
             return 0;
-        
+
         seq2.begin = seq2.end - _min(len2, len1 + state.leftClip);
 
         TRev rseq1(seq1);
@@ -3415,48 +3415,48 @@ template <
     typename TValueId,
     typename TAlgorithm >
 void traverseAndSearchCorrections(
-	TTreeIterator iter,
-	TFragmentStore &store,
-	String<TCorrections> & correctionList,
-	String<TValueId> &firstCorrectionForRead,
-	FionaOptions & options,
-	Tag<TAlgorithm> const,
-	unsigned readLength,
+    TTreeIterator iter,
+    TFragmentStore &store,
+    String<TCorrections> & correctionList,
+    String<TValueId> &firstCorrectionForRead,
+    FionaOptions & options,
+    Tag<TAlgorithm> const,
+    unsigned readLength,
     FionaResources &resources)
 {
-	typedef typename Container<TTreeIterator>::Type TFionaIndex;
-	typedef typename Fibre<TFionaIndex, FibreText>::Type TReadSet;
-	typedef typename Fibre<TFionaIndex, FibreSA>::Type TSA;
-	typedef typename Infix<TSA const>::Type TOccs;
-	typedef typename Iterator<TOccs, Standard>::Type TOccsIterator;
-	typedef typename Value<TReadSet>::Type TRead;
-	typedef typename Value<TRead>::Type TValue;
-	typedef typename Iterator<TRead, Standard>::Type TReadIterator;
+    typedef typename Container<TTreeIterator>::Type TFionaIndex;
+    typedef typename Fibre<TFionaIndex, FibreText>::Type TReadSet;
+    typedef typename Fibre<TFionaIndex, FibreSA>::Type TSA;
+    typedef typename Infix<TSA const>::Type TOccs;
+    typedef typename Iterator<TOccs, Standard>::Type TOccsIterator;
+    typedef typename Value<TReadSet>::Type TRead;
+    typedef typename Value<TRead>::Type TValue;
+    typedef typename Iterator<TRead, Standard>::Type TReadIterator;
 
     double start = omp_get_wtime();
     TFionaIndex &index = container(static_cast<TTreeIterator&>(iter));
-	unsigned readCount = length(store.readSeqStore) / 2;
-	//for debugging of read data
-	String<TOccs, Array<4> > correctCandidates;     // there are at most 4 correcting branches
+    unsigned readCount = length(store.readSeqStore) / 2;
+    //for debugging of read data
+    String<TOccs, Array<4> > correctCandidates;     // there are at most 4 correcting branches
     Overlap bestCorrection[1+2*MAX_INDEL_LENGTH];   // for a given branch store for every indel-size the best correction
     Dna5 correctSeq[MAX_INDEL_LENGTH];
-	const TValue unknownChar = unknownValue<TValue>();
+    const TValue unknownChar = unknownValue<TValue>();
 
-	//compute maximum allowed mismatches per read
-	//We allow up to maxAcceptedMismatches between two reads. The threshold is decided 
-	//by controlling the proportion pNeig of the reads that are expected with that many mismatches (given the error rate)
+    //compute maximum allowed mismatches per read
+    //We allow up to maxAcceptedMismatches between two reads. The threshold is decided
+    //by controlling the proportion pNeig of the reads that are expected with that many mismatches (given the error rate)
     unsigned replen_min = cargo(index).replen_min;
     unsigned cycle = options.cycle;
-	float pNeig = 0.95f;
-	binomial Nmismatch(readLength, options.errorrate);
-	unsigned maxAcceptedMismatches = _max((unsigned) ceil(quantile(Nmismatch, pNeig)), 2u);   //unlikely that 2 reads share the same error         (weese:) don't understand the comment
-//	double oldAcceptedMismatches = (options.errorrate * readLength);
+    float pNeig = 0.95f;
+    binomial Nmismatch(readLength, options.errorrate);
+    unsigned maxAcceptedMismatches = _max((unsigned) ceil(quantile(Nmismatch, pNeig)), 2u);   //unlikely that 2 reads share the same error         (weese:) don't understand the comment
+//    double oldAcceptedMismatches = (options.errorrate * readLength);
 
-//	std::cout << std::endl << "acceptedMismatches: "  << maxAcceptedMismatches << " readLength " << readLength << "  error " << options.errorrate << std::endl;
-//	std::cout << std::endl << "Old acceptedMismatches value: "  << oldAcceptedMismatches << std::endl;
+//    std::cout << std::endl << "acceptedMismatches: "  << maxAcceptedMismatches << " readLength " << readLength << "  error " << options.errorrate << std::endl;
+//    std::cout << std::endl << "Old acceptedMismatches value: "  << oldAcceptedMismatches << std::endl;
 
-//	for (goBegin(iter); !atEnd(iter); )                     // do a DFS walk
-	while (!atEnd(iter))                                        // do a DFS walk
+//    for (goBegin(iter); !atEnd(iter); )                     // do a DFS walk
+    while (!atEnd(iter))                                        // do a DFS walk
     {
 //        if (value(iter).range.i1==1798 && value(iter).range.i2==1811 && value(iter).repLen==23)
 //        {
@@ -3466,7 +3466,7 @@ void traverseAndSearchCorrections(
 //                std::cerr << getOccurrences(iter)[i] << '\t';
 //            std::cerr<<"END"<<std::endl;
 //        }
-		unsigned commonPrefix = parentRepLength(iter);			// length of parent label
+        unsigned commonPrefix = parentRepLength(iter);            // length of parent label
 //        if (seqan::range(iter).i1==127 && prefix(representative(iter),commonPrefix) == "AAAAACAAAAACA")
 //        std::cout<<"HERE"<<std::endl;
 
@@ -3481,11 +3481,11 @@ void traverseAndSearchCorrections(
             SEQAN_FAIL("how can that be?");
 #endif
 
-		SEQAN_ASSERT_LT(commonPrefix + 1, length(options.expectedTheoretical));
-//		SEQAN_ASSERT_LEQ(options.fromLevel, (int)commonPrefix); // doesn't hold for the first node (=root node)
+        SEQAN_ASSERT_LT(commonPrefix + 1, length(options.expectedTheoretical));
+//        SEQAN_ASSERT_LEQ(options.fromLevel, (int)commonPrefix); // doesn't hold for the first node (=root node)
 
         // only examine branches where the string depth is a multiple of depthSampleRate
-		TValue firstEdgeChar = parentEdgeFirstChar(iter);
+        TValue firstEdgeChar = parentEdgeFirstChar(iter);
         bool skipNode = ((commonPrefix + cycle - replen_min) % options.depthSampleRate != 0);
         bool leaveNodeRight = (int)commonPrefix >= options.toLevel || countOccurrences(iter) < 3 || firstEdgeChar == unknownChar;
 
@@ -3494,12 +3494,12 @@ void traverseAndSearchCorrections(
             skipNode = true;
 #endif
 
-		if (!skipNode && firstEdgeChar != unknownChar &&   // N is always an error
-			!potentiallyErroneousNode(countOccurrences(iter), options.errorCutoffs[commonPrefix+1])) //New test is easier
-			//!potentiallyErroneousNode(countOccurrences(iter), options.expectedTheoretical[commonPrefix+1], options.strictness, options.errorrate, commonPrefix + 1 ,alg))
-		{
+        if (!skipNode && firstEdgeChar != unknownChar &&   // N is always an error
+            !potentiallyErroneousNode(countOccurrences(iter), options.errorCutoffs[commonPrefix+1])) //New test is easier
+            //!potentiallyErroneousNode(countOccurrences(iter), options.expectedTheoretical[commonPrefix+1], options.strictness, options.errorrate, commonPrefix + 1 ,alg))
+        {
             skipNode = true;
-		}
+        }
 
         // don't descent over repeats
         if (!skipNode)
@@ -3525,37 +3525,37 @@ void traverseAndSearchCorrections(
 
 
         ++resources.investigatedNodes;
-		//
-		//	get the id and position (suffix begin) for suspected nodes
-		//	for which we can find a more optimal correction
-		//
-		TOccs errorCandidates = getOccurrences(iter);
+        //
+        //    get the id and position (suffix begin) for suspected nodes
+        //    for which we can find a more optimal correction
+        //
+        TOccs errorCandidates = getOccurrences(iter);
 
-		/*copy the iterator for iterate over the siblings*/
-//		typename Iterator<TFionaIndex, TopDown<> >::Type iterSibling(index, nodeUp(iter));
-		TTreeIterator iterSibling(iter);
-		goUp(iterSibling);
+        /*copy the iterator for iterate over the siblings*/
+//        typename Iterator<TFionaIndex, TopDown<> >::Type iterSibling(index, nodeUp(iter));
+        TTreeIterator iterSibling(iter);
+        goUp(iterSibling);
 
-		//
-		//	potential reads for make the correction,
-		//	because at the same level, with the same prefix
-		//
+        //
+        //    potential reads for make the correction,
+        //    because at the same level, with the same prefix
+        //
 
-		clear(correctCandidates);
-		if (!goDown(iterSibling))
-			SEQAN_ASSERT_FAIL("going up and down failed!?");
+        clear(correctCandidates);
+        if (!goDown(iterSibling))
+            SEQAN_ASSERT_FAIL("going up and down failed!?");
 
 
 if (LOOP_LEVEL != 0)
 {
-        
-		// pick potentially correct reads
+
+        // pick potentially correct reads
         unsigned long thickestBranchCount = length(errorCandidates);
         TOccs thickestBranchOccs;
-		do
-		{
+        do
+        {
             TValue siblingFirstEdgeChar = parentEdgeFirstChar(iterSibling);
-			if (siblingFirstEdgeChar != firstEdgeChar && siblingFirstEdgeChar != unknownChar)
+            if (siblingFirstEdgeChar != firstEdgeChar && siblingFirstEdgeChar != unknownChar)
             {
                 unsigned long siblingOccCount = countOccurrences(iterSibling);
                 // record the thickest branch
@@ -3564,7 +3564,7 @@ if (LOOP_LEVEL != 0)
                     thickestBranchCount = siblingOccCount;
                     thickestBranchOccs = getOccurrences(iterSibling);
                 }
-                
+
                 if (!potentiallyErroneousNode(siblingOccCount, options.errorCutoffs[commonPrefix + 1]) &&
                     siblingOccCount < options.repeatCutoffs[commonPrefix+1])
                     //!potentiallyErroneousNode(countOccurrences(iterSibling), options.expectedTheoretical[commonPrefix + 1], options.strictness, options.errorrate,commonPrefix +1, alg))
@@ -3575,15 +3575,15 @@ if (LOOP_LEVEL != 0)
                 }
             }
             if (ordValue(siblingFirstEdgeChar) == 3) break; // we ignore the N-node right of the T
-		} while (goRight(iterSibling));
+        } while (goRight(iterSibling));
 
         // if there aren't any, try the thickest branch
         if (empty(correctCandidates)  &&  thickestBranchCount > length(errorCandidates))
             appendValue(correctCandidates, thickestBranchOccs);
 }
 
-		// continue only if we have found a correct read
-		if (!empty(correctCandidates))
+        // continue only if we have found a correct read
+        if (!empty(correctCandidates))
         {
 //std::cout << seqan::range(iter) << '\t' << parentEdgeFirstChar(iter) << '\t' << prefix(representative(iter),commonPrefix) << '\t';
 //for (unsigned j = 0; j < length(correctCandidates); ++j)
@@ -3603,7 +3603,7 @@ if (LOOP_LEVEL != 0)
                 if (fwdReadId >= readCount)
                       fwdReadId -= readCount;
 
-                //check here if the max number of corrections was made already 
+                //check here if the max number of corrections was made already
                 if (options.allowedCorrectionsPerRead[fwdReadId] == 0)
                     continue;
 
@@ -3628,7 +3628,7 @@ if (LOOP_LEVEL != 0)
                 {
                     TOccsIterator corrRead = begin(correctCandidates[c], Standard());
                     TOccsIterator corrReadEnd = end(correctCandidates[c], Standard());
-                    
+
                 /*
                 Here should go the new Branch and Bound algorithm that
                 looks if the current error pos has already a higher overlaps sum
@@ -3652,7 +3652,7 @@ if (LOOP_LEVEL != 0)
                         resize(ov.consensus, (itEEnd - itEPrefixBegin) - commonPrefix + options.maxIndelLength + 1);
                     #endif
                     }
-                    
+
     if (LOOP_LEVEL == 2)
         continue;
 
@@ -3663,7 +3663,7 @@ if (LOOP_LEVEL != 0)
 //               }
 
                     for (; corrRead != corrReadEnd; ++corrRead)
-                    {					
+                    {
                         /////////////////////////////////////////////////////////////////////////////////
                         // compare overlap left of the common prefix
                         //this part can be done without considering the type of indel
@@ -3745,7 +3745,7 @@ if (LOOP_LEVEL != 0)
                             if (*itE != *itCLeft)
                                 if (--acceptedMismatchesLeft == std::numeric_limits<unsigned>::max()) break;
                         }
-                        
+
                         // too many mismatches left of the common prefix?
                         if (acceptedMismatchesLeft == std::numeric_limits<unsigned>::max())
                             continue;
@@ -3793,7 +3793,7 @@ if (LOOP_LEVEL != 0)
                                 itC += -indel;
                                 if (itC + -indel >= itCEnd || itC + -indel >= itCEnd) continue;
                             }
-                            
+
     if (LOOP_LEVEL == 4)
         continue;
 
@@ -3897,7 +3897,7 @@ if (LOOP_LEVEL != 0)
                                     ++itCEnd;
                                 else if (indel < 0)
                                     itCEnd += -indel;
-                                
+
                                 for (; itC < itCEnd; ++itC, ++itCons)
                                     ++(*itCons).count[ordValue(*itC)];
                                 SEQAN_ASSERT_LEQ(itCons, end(overlap.consensus, Standard()));
@@ -4032,8 +4032,8 @@ if (LOOP_LEVEL != 0)
                                          continue;
                                   //totalCount(*itCons /*front(consensus)*/));
                                     unsigned consOverlapSum = (unsigned)((frequency * overlapSum) / totalCounts);
-				   if(consOverlapSum >1) //penalize consensus correction by one to always to major correction first
-					--consOverlapSum; 
+                   if(consOverlapSum >1) //penalize consensus correction by one to always to major correction first
+                    --consOverlapSum;
                                     //unsigned testOverlapSum = (unsigned)((frequency * overlapSum) / totalCount(front(itCons)));
                                   /*  SEQAN_OMP_PRAGMA(critical(TestConsensusOverlapsum))
                                     {
@@ -4086,7 +4086,7 @@ if (LOOP_LEVEL != 0)
                             std::cout << std::endl;
                         }
 */
-                       
+
 #else // FIONA_CONSENSUS
                         if (indel <= 0) //only get string if insertion in read or mismatch
                             getCorrectionString(correctSeq,indel,bestCorrection[i].readId,bestCorrection[i].correctPos,strand,store);
@@ -4113,11 +4113,11 @@ myfile.close();*/
             goNextRight(iter);
         else
             goNext(iter);
-	}
+    }
     resources.cpuTime = omp_get_wtime() - start;
 }
 
-// CorrectionIndelPos  
+// CorrectionIndelPos
 
 
 /*GC-content*/
@@ -4149,21 +4149,21 @@ determineFrequency(Iter< TFionaIndex, VSTree<TSpec> > iter)
 /*construction Suffix Array */
 template <typename TFragmentStore, typename TAlgorithm>
 unsigned correctReads(
-	TFragmentStore & store,
-	FionaOptions & options,
-	Tag<TAlgorithm> const alg)
+    TFragmentStore & store,
+    FionaOptions & options,
+    Tag<TAlgorithm> const alg)
 {
-	/*iterator with restrictions*/
-	typedef Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type TConstrainedIterator;
+    /*iterator with restrictions*/
+    typedef Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type TConstrainedIterator;
 
-	// append their reverse complements
-	unsigned readCount = length(store.readSeqStore);
+    // append their reverse complements
+    unsigned readCount = length(store.readSeqStore);
     if (options.verbosity >= 2)
         std::cerr << "Add reverse complements: " << std::flush;
 
     Dna5String tmp;
     //if (options.genomeLength != 1)
-    //(Hugues) we need to get the reads and their reverse complements 
+    //(Hugues) we need to get the reads and their reverse complements
     //when estimating the error rates (but the letter substitutions should be reversed).
     SEQAN_PROTIMESTART(timeRevComp);
     for (unsigned i = 0; i < readCount; ++i)
@@ -4233,7 +4233,7 @@ unsigned correctReads(
 
     /*
     //copy Hugues code to get the allowed errors
-	binomial Nmismatch(maxReadLength, options.errorrate);
+    binomial Nmismatch(maxReadLength, options.errorrate);
     unsigned maxAcceptedMismatches = (unsigned) ceil(quantile(Nmismatch, 0.95));
     if (maxAcceptedMismatches < 2)
         maxAcceptedMismatches = 2; //unlikely that 2 reads share the same error
@@ -4243,12 +4243,12 @@ unsigned correctReads(
         clear(options.allowedCorrectionsPerRead);
     resize(options.allowedCorrectionsPerRead, readCount, maxAcceptedMismatches, Exact());
     */
-	
+
     if (options.verbosity >= 2)
     {
         if (IsSameType<TAlgorithm, FionaExpected_>::VALUE)
             std::cerr << std::endl << "Method with expected value for each level" << std::endl;
-        if (IsSameType<TAlgorithm, FionaPoisson_>::VALUE) 
+        if (IsSameType<TAlgorithm, FionaPoisson_>::VALUE)
             std::cerr << std::endl << "Method with p-value and Poisson distribution" << std::endl;
         if (IsSameType<TAlgorithm, FionaPoissonSens_>::VALUE)
             std::cerr << std::endl << "Method with sensitivity and Poisson distribution" << std::endl;
@@ -4257,82 +4257,82 @@ unsigned correctReads(
         if (IsSameType<TAlgorithm, FionaPoissonClassif_>::VALUE)
             std::cerr << std::endl << "Log-odds method assuming a Poisson coverage distribution" << std::endl;
     }
-	
-	///Give the set of cut-off for the various methods
-	double oddserrreads = (experrreads /  (readCount - experrreads));
-	options.oddserrorreads = oddserrreads;
-	if (options.verbosity >= 2 && experrreads != 0)
+
+    ///Give the set of cut-off for the various methods
+    double oddserrreads = (experrreads /  (readCount - experrreads));
+    options.oddserrorreads = oddserrreads;
+    if (options.verbosity >= 2 && experrreads != 0)
     {
-		std::cerr << "Error rate provided: " << options.errorrate << std::endl;
-		std::cerr << "Expected number of erroneous reads (percent): " << floor(experrreads) << " ("  << floor(experrreads/readCount *100) << ")" << std::endl;
-		std::cerr << "Odds of erroneous/correct reads: " << oddserrreads << std::endl;
-	}
-	
-	if (options.autolevel){
+        std::cerr << "Error rate provided: " << options.errorrate << std::endl;
+        std::cerr << "Expected number of erroneous reads (percent): " << floor(experrreads) << " ("  << floor(experrreads/readCount *100) << ")" << std::endl;
+        std::cerr << "Odds of erroneous/correct reads: " << oddserrreads << std::endl;
+    }
+
+    if (options.autolevel){
         if (options.verbosity >= 2)
             std::cerr << "Setting automatic from/to level with number of Correctables/Uncorrectables reads" << std::endl;
-		//std::cerr << "Computing the expected number of uncorrectable (Uk) and Destructible (Dk) reads" << std::endl;
-		//
+        //std::cerr << "Computing the expected number of uncorrectable (Uk) and Destructible (Dk) reads" << std::endl;
+        //
         // TODO(holtgrew): This logic is broken.
-//		float errrate = options.errorrate;
-		if (options.verbosity >= 2 && options.errorrate == 0)
+//        float errrate = options.errorrate;
+        if (options.verbosity >= 2 && options.errorrate == 0)
         {
-			std::cerr << "Error rate not given, set to default value of 1%" << std::endl;
-//			errrate = 0.01;
-		}
-		float minexpcov = 5.; //ask for mincov of 5, we could just do + 10
-		int toplevel = (int) (maxReadLength - minexpcov * options.genomeLength / readCount) - 1;
-		int mink = 5;
-		int maxk = std::min((int)maxReadLength - 2, 50);
-		toplevel = (toplevel > (int)maxReadLength) ? (int)maxReadLength : toplevel;
+            std::cerr << "Error rate not given, set to default value of 1%" << std::endl;
+//            errrate = 0.01;
+        }
+        float minexpcov = 5.; //ask for mincov of 5, we could just do + 10
+        int toplevel = (int) (maxReadLength - minexpcov * options.genomeLength / readCount) - 1;
+        int mink = 5;
+        int maxk = std::min((int)maxReadLength - 2, 50);
+        toplevel = (toplevel > (int)maxReadLength) ? (int)maxReadLength : toplevel;
 
         String<double> uncorrectables;
         String<double> destructibles;
 
-		UncorrectableExpectedBases(uncorrectables, mink, maxk, readLengthHist, options.errorrate);
-		DestructibleExpectedBases(destructibles, mink, maxk, readLengthHist, options.errorrate, options.genomeLength);
+        UncorrectableExpectedBases(uncorrectables, mink, maxk, readLengthHist, options.errorrate);
+        DestructibleExpectedBases(destructibles, mink, maxk, readLengthHist, options.errorrate, options.genomeLength);
 
         if (options.verbosity >= 2)
         {
             std::cerr << "max. read length: " << maxReadLength << std::endl;
             std::cerr << "k\tUncorrectable\tDestructible\tUc+Dc" << std::endl;
         }
-		float TmpExp = uncorrectables[mink] + destructibles[mink];
-		unsigned HiTEC_mink = mink;
-		for (int i = mink + 1; i <= maxk; i++)
+        float TmpExp = uncorrectables[mink] + destructibles[mink];
+        unsigned HiTEC_mink = mink;
+        for (int i = mink + 1; i <= maxk; i++)
         {
-			double tmp = uncorrectables[i] + destructibles[i];
-            
+            double tmp = uncorrectables[i] + destructibles[i];
+
             if (options.verbosity >= 2)
                 std::cerr << i << "\t" << uncorrectables[i] << "\t" << destructibles[i] << "\t" << tmp << std::endl;
-            
-			if (tmp < TmpExp)
+
+            if (tmp < TmpExp)
             {
-				HiTEC_mink = i;
-				TmpExp = tmp; 
-			}
-		}
+                HiTEC_mink = i;
+                TmpExp = tmp;
+            }
+        }
         if (options.verbosity >= 1)
             std::cerr << "Determination of minimum tree level according to HiTEC strategy." << std::endl;
         double mink_genome = log(200.0 * options.genomeLength) / log(4.0);
-		options.fromLevel = (HiTEC_mink < mink_genome) ? HiTEC_mink : (int)mink_genome;
-        
-		int upl = (options.fromLevel + 10) < (int)maxReadLength ? (options.fromLevel + 10) : (int)maxReadLength;
-		options.toLevel = upl; // OLD let to high toplevels: toplevel < upl ? upl : toplevel;
+        options.fromLevel = (HiTEC_mink < mink_genome) ? HiTEC_mink : (int)mink_genome;
+
+        int upl = (options.fromLevel + 10) < (int)maxReadLength ? (options.fromLevel + 10) : (int)maxReadLength;
+        options.toLevel = upl; // OLD let to high toplevels: toplevel < upl ? upl : toplevel;
         if (options.verbosity >= 1)
             std::cerr << "The estimated top level is " << options.fromLevel << " and the down level is " << options.toLevel << std::endl;
-	}
-	
+    }
+
     if (options.verbosity >= 2)
     {
         std::cerr << "Expected coverage of k-mers before sequencing (k, coverage):" << std::endl;
         for (int i = options.fromLevel; i<= options.toLevel; i++){
-            std::cerr << "(" <<  i << " , " << options.expectedTheoretical[i] << ")  ";	
+            std::cerr << "(" <<  i << " , " << options.expectedTheoretical[i] << ")  ";
         }
         std::cerr << std::endl;
     }
-	
-	ComputeCutoffErroneous(options.errorCutoffs, options.expectedTheoretical, options.strictness, options.errorrate, options.oddserrorreads, options.fromLevel, options.toLevel + 1, alg);
+
+    ComputeCutoffErroneous(options.errorCutoffs, options.expectedTheoretical, options.strictness, options.errorrate, options.oddserrorreads, options.fromLevel, options.toLevel + 1, alg);
     if (options.verbosity >= 2)
     {
         std::cerr << "Computed cutoffs for errors (level, cutoff):" << std::endl;
@@ -4340,11 +4340,11 @@ unsigned correctReads(
             std::cerr << "(" <<  i << " , " << options.errorCutoffs[i] << ")  ";
         std::cerr << std::endl;
     }
-	//(Hugues) shouldn't we increment all automatics cutoffs by 1 for errors of one value (sensitivity + oddsratio ?) 
-	
-	if (options.errorrate != 0)
+    //(Hugues) shouldn't we increment all automatics cutoffs by 1 for errors of one value (sensitivity + oddsratio ?)
+
+    if (options.errorrate != 0)
     {
-		computeCutoffRepeats(options.repeatCutoffs, 1, options.expectedTheoretical, options.errorrate, options.fromLevel, options.toLevel + 1, options.genomeLength);
+        computeCutoffRepeats(options.repeatCutoffs, 1, options.expectedTheoretical, options.errorrate, options.fromLevel, options.toLevel + 1, options.genomeLength);
         if (options.verbosity >= 2)
         {
             std::cerr << "Computed cutoffs for repeats (level, cutoff):" << std::endl;
@@ -4353,7 +4353,7 @@ unsigned correctReads(
             }
             std::cerr << std::endl;
         }
-	}
+    }
     else
     {
         resize(options.repeatCutoffs, options.toLevel + 2, std::numeric_limits<unsigned>::max());
@@ -4379,7 +4379,7 @@ unsigned correctReads(
             std::cerr << std::endl;
             std::cerr << "Time required for cutoffs computation: " << SEQAN_PROTIMEDIFF(timeCutoffComp) << " seconds." << std::endl;
         }
-	}
+    }
     else
     {
         options.overlapSumCutoffs.resize(length(readLengthHist), length(readLengthHist) - 1);  // readLength, position
@@ -4387,235 +4387,235 @@ unsigned correctReads(
             for (unsigned pos = 0; pos < readLen; ++pos)
                 options.overlapSumCutoffs(readLen, pos) = 3; //default parameter is 3, that is 3 bp are needed to correct.
     }
-	
-//	std::ofstream pdist("proba_dist.txt");
-	
-//	pdist << "count";
-//	for (int i = options.fromLevel ; i<= options.toLevel; i++) 
-//			pdist << "\t" << i << ".expected.cov\t" <<  i << ".dpois\t" <<  i << ".dpoismix\t" << i << ".ppoismix\t";
-//	pdist << std::endl;
-//	for (int k = 0; k <= 50; k++){
-//		pdist << k ;
-//		for (int i = options.fromLevel; i<= options.toLevel; i++){
-//			double noerr = probabilityNoError(options.errorrate, i);
-//			pdist << "\t" << options.expectedTheoretical[i] << "\t" << dpois(k, options.expectedTheoretical[i] * noerr) << "\t" << dpoismixerror(k, options.expectedTheoretical[i], options.errorrate, i) << "\t" << 1-ppoismixerror(k, options.expectedTheoretical[i], options.errorrate, i) ;
-//		}
-//		pdist << std::endl;
-//	}
-//	pdist.close();
 
-	//exit(0);
+//    std::ofstream pdist("proba_dist.txt");
+
+//    pdist << "count";
+//    for (int i = options.fromLevel ; i<= options.toLevel; i++)
+//            pdist << "\t" << i << ".expected.cov\t" <<  i << ".dpois\t" <<  i << ".dpoismix\t" << i << ".ppoismix\t";
+//    pdist << std::endl;
+//    for (int k = 0; k <= 50; k++){
+//        pdist << k ;
+//        for (int i = options.fromLevel; i<= options.toLevel; i++){
+//            double noerr = probabilityNoError(options.errorrate, i);
+//            pdist << "\t" << options.expectedTheoretical[i] << "\t" << dpois(k, options.expectedTheoretical[i] * noerr) << "\t" << dpoismixerror(k, options.expectedTheoretical[i], options.errorrate, i) << "\t" << 1-ppoismixerror(k, options.expectedTheoretical[i], options.errorrate, i) ;
+//        }
+//        pdist << std::endl;
+//    }
+//    pdist.close();
+
+    //exit(0);
 
     options.timeComputeOverlapSum = 0;
     if (options.verbosity >= 1)
         std::cerr << "Searching..." << std::endl;
-	SEQAN_PROTIMESTART(search);
+    SEQAN_PROTIMESTART(search);
 
 #ifndef FIONA_PARALLEL
-	// FIONA NON-PARALLEL SEARCH
-		
-	// construct suffix array of the set of reads
+    // FIONA NON-PARALLEL SEARCH
+
+    // construct suffix array of the set of reads
     if (options.verbosity >= 1)
         std::cerr << "Construct suffix array" << std::endl;
-	SEQAN_PROTIMESTART(construct);
-	TFionaIndex myIndex(store.readSeqStore);
-	TConstrainedIterator myConstrainedIterator(myIndex);
+    SEQAN_PROTIMESTART(construct);
+    TFionaIndex myIndex(store.readSeqStore);
+    TConstrainedIterator myConstrainedIterator(myIndex);
 
-	/*calculate the frequency for each nucleotide, didn't use for the moment*/
-	/*'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3*/
-//	String<double, Array<5> > frequency = determineFrequency(myConstrainedIterator);
+    /*calculate the frequency for each nucleotide, didn't use for the moment*/
+    /*'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3*/
+//    String<double, Array<5> > frequency = determineFrequency(myConstrainedIterator);
 
     if (options.verbosity >= 1)
         std::cerr << "Time required for suffix array construction : " << SEQAN_PROTIMEDIFF(construct) << " seconds." << std::endl;
 
-	/*restrictions just for estimating the genome length if there is no data*/
+    /*restrictions just for estimating the genome length if there is no data*/
 
 #ifdef MEDIAN
-	unsigned level = fromLevel;
-	ofstream out("medianLevels.txt"); 
-	ofstream median("medianForEachLevel.txt");
+    unsigned level = fromLevel;
+    ofstream out("medianLevels.txt");
+    ofstream median("medianForEachLevel.txt");
 #endif // #ifdef MEDIAN
 
-	if (options.genomeLength == 1)
-	{
+    if (options.genomeLength == 1)
+    {
         if (options.verbosity >= 1)
         {
             std::cerr << "Generating Hugues' stats file." << std::endl;
             std::cerr << "Between levels " << options.fromLevel << " and " << options.toLevel << std::endl;
         }
         std::ofstream stats("stats.txt");
-		Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type it(myIndex);
-		//change the iterator definition here
-		cargo(myIndex).replen_min = options.fromLevel;
-		cargo(myIndex).replen_max = options.toLevel; 	
-		//cargo(myIndex).frequency = frequency;
-		TConstrainedIterator myItStat(myIndex);
-		goBegin(myItStat);
-		CharString tmp;
-		//get the length of the reads.
-		unsigned readMaxLength = 0;
-		for (unsigned i = 0; i < readCount; ++i)
-		{
-			unsigned readLength = length(store.readSeqStore[i]);
-			readMaxLength = (readMaxLength < readLength) ? readLength : readMaxLength;
-		}
+        Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type it(myIndex);
+        //change the iterator definition here
+        cargo(myIndex).replen_min = options.fromLevel;
+        cargo(myIndex).replen_max = options.toLevel;
+        //cargo(myIndex).frequency = frequency;
+        TConstrainedIterator myItStat(myIndex);
+        goBegin(myItStat);
+        CharString tmp;
+        //get the length of the reads.
+        unsigned readMaxLength = 0;
+        for (unsigned i = 0; i < readCount; ++i)
+        {
+            unsigned readLength = length(store.readSeqStore[i]);
+            readMaxLength = (readMaxLength < readLength) ? readLength : readMaxLength;
+        }
         if (options.verbosity >= 1)
             std::cerr << "Max observed read length : " << readMaxLength << std::endl;
-		//String<int> freq;
-		std::map < unsigned, std::vector <int> > freqpos; //
-		for (unsigned i = 0; i < 6; i++) freqpos[i].assign(readMaxLength, 0);
-		std::vector <int> freqmarginal(5, 0 );
-		
-		
-		//stats << "branch\tlength\ttreeDep\tletter\treadPos\tfreq" << std::endl;
-		stats << "prefix\ttreeDepth\treadPos\tna\tnc\tng\tnt\tnn\tntot\tnfather" << std::endl;
-		
-		while (!atEnd(myItStat))
-		{
-			//unsigned ofs = parentRepLength(myItStat);
-			//tmp = parentEdgeLabel(myItStat);
-			CharString tmp2 = representative(myItStat);
-			unsigned cfather = countOccurrences(myItStat);
-			if (parentRepLength(myItStat) == 0) { 
-				goNext(myItStat);
-				continue;} 
-			//std::cerr << "******* Now in prefix : " << toCString(tmp) << " of the string: " << tmp2 << std::endl; 
-			if (isLeaf(myItStat)){ 
-				//	std::cerr << "which is a leaf, next one" << std::endl;
-				goNext(myItStat);
-				continue;
-			}
-			//copy the iterator to get all siblings
-			Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type it2(myItStat);
-			goDown(it2);
-			//goDown(it2);
-			unsigned let = 0;
-			//count each position and read.
-			do {
-				//Get count per letter per pos
-				/*'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3 and 'N'= 4*/
-				//WE NEED TO GET THE VALUE OF LET HERE
-				for (unsigned j = 0; j < countOccurrences(it2); ++j)
-				{
-					unsigned readID = getOccurrences(it2)[j].i1 ; 
-					unsigned rl = length(store.readSeqStore[readID]);
-					unsigned thei2 = getOccurrences(it2)[j].i2; //check i2
-					unsigned posInRead = (readID < readCount) ? thei2 : rl - thei2 - 1; 
-					//unsigned posInRead =  0;  //  ofs + length(tmp); //changer ici, que vaut i2 ?
-					//std::cerr << "Looking at sequence repres: " << representative(it2) << std::endl ; 
-					//std::cerr << "we have length=" << rl << " for read number " << readID << std::endl;
-					//std::cerr << " i2=" << thei2 << " or with dir access " << getOccurrences(it2)[j].i2 << std::endl;
-					//std::cerr <<"letter:" << let << " and with ofs "	<< ofs << " and length(tmp): " << length(tmp) << std::endl;
-					//if (length(freqpos[let]) <= posInRead)
-					//	freqpos[let][posInRead + 1] = 0;
-					++freqpos[let][posInRead];
-					
-					//cl = cl < posInRead ? posInRead : cl;
-				}
-				//we should check the letter here  
-				++let;
-			}  while( goRight(it2));
-			
-			freqmarginal.assign(6,0);
-			for (unsigned i= 0; i < readMaxLength; ++i)
-				for (int cl=0; cl < 5; ++cl){
-					freqpos[5][i] += freqpos[cl][i]; 
-					freqmarginal[cl] += freqpos[cl][i];
-				}
-			for (int cl=0; cl < 5; ++cl)
-				freqmarginal[5] += freqmarginal[cl]; 
-			//also log the marginal, easier
-			stats << tmp2 << '\t' << nodeDepth(myItStat) << '\t' << -1 << '\t';
-			stats << freqmarginal[0] << '\t' << freqmarginal[1] << '\t'; 
-			stats << freqmarginal[2] << '\t' << freqmarginal[3] << '\t' << freqmarginal[4] << '\t' ;
-			stats << freqmarginal[5] << '\t' << cfather <<  std::endl;	
-			
-			
-			for (unsigned cpos = 0; cpos < readMaxLength; ++cpos){
-				
-				if (freqpos[5][cpos] > 0) {
-					stats << tmp2 << '\t' << nodeDepth(myItStat) << '\t' << cpos << '\t';
-					stats << freqpos[0][cpos] << '\t' << freqpos[1][cpos] << '\t'; 
-					stats << freqpos[2][cpos] << '\t' << freqpos[3][cpos] << '\t' << freqpos[4][cpos] << '\t' ;
-					stats << freqpos[5][cpos] << '\t' << cfather <<  std::endl;	
-				}
-			}
-			
-			for (unsigned i = 0; i < 6; i++) freqpos[i].assign(readMaxLength, 0);
-			
-			goNext(myItStat);		
-		}
-		stats.close();
+        //String<int> freq;
+        std::map < unsigned, std::vector <int> > freqpos; //
+        for (unsigned i = 0; i < 6; i++) freqpos[i].assign(readMaxLength, 0);
+        std::vector <int> freqmarginal(5, 0 );
+
+
+        //stats << "branch\tlength\ttreeDep\tletter\treadPos\tfreq" << std::endl;
+        stats << "prefix\ttreeDepth\treadPos\tna\tnc\tng\tnt\tnn\tntot\tnfather" << std::endl;
+
+        while (!atEnd(myItStat))
+        {
+            //unsigned ofs = parentRepLength(myItStat);
+            //tmp = parentEdgeLabel(myItStat);
+            CharString tmp2 = representative(myItStat);
+            unsigned cfather = countOccurrences(myItStat);
+            if (parentRepLength(myItStat) == 0) {
+                goNext(myItStat);
+                continue;}
+            //std::cerr << "******* Now in prefix : " << toCString(tmp) << " of the string: " << tmp2 << std::endl;
+            if (isLeaf(myItStat)){
+                //    std::cerr << "which is a leaf, next one" << std::endl;
+                goNext(myItStat);
+                continue;
+            }
+            //copy the iterator to get all siblings
+            Iterator<TFionaIndex, TopDown<ParentLinks<Preorder> > >::Type it2(myItStat);
+            goDown(it2);
+            //goDown(it2);
+            unsigned let = 0;
+            //count each position and read.
+            do {
+                //Get count per letter per pos
+                /*'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3 and 'N'= 4*/
+                //WE NEED TO GET THE VALUE OF LET HERE
+                for (unsigned j = 0; j < countOccurrences(it2); ++j)
+                {
+                    unsigned readID = getOccurrences(it2)[j].i1 ;
+                    unsigned rl = length(store.readSeqStore[readID]);
+                    unsigned thei2 = getOccurrences(it2)[j].i2; //check i2
+                    unsigned posInRead = (readID < readCount) ? thei2 : rl - thei2 - 1;
+                    //unsigned posInRead =  0;  //  ofs + length(tmp); //changer ici, que vaut i2 ?
+                    //std::cerr << "Looking at sequence repres: " << representative(it2) << std::endl ;
+                    //std::cerr << "we have length=" << rl << " for read number " << readID << std::endl;
+                    //std::cerr << " i2=" << thei2 << " or with dir access " << getOccurrences(it2)[j].i2 << std::endl;
+                    //std::cerr <<"letter:" << let << " and with ofs "    << ofs << " and length(tmp): " << length(tmp) << std::endl;
+                    //if (length(freqpos[let]) <= posInRead)
+                    //    freqpos[let][posInRead + 1] = 0;
+                    ++freqpos[let][posInRead];
+
+                    //cl = cl < posInRead ? posInRead : cl;
+                }
+                //we should check the letter here
+                ++let;
+            }  while( goRight(it2));
+
+            freqmarginal.assign(6,0);
+            for (unsigned i= 0; i < readMaxLength; ++i)
+                for (int cl=0; cl < 5; ++cl){
+                    freqpos[5][i] += freqpos[cl][i];
+                    freqmarginal[cl] += freqpos[cl][i];
+                }
+            for (int cl=0; cl < 5; ++cl)
+                freqmarginal[5] += freqmarginal[cl];
+            //also log the marginal, easier
+            stats << tmp2 << '\t' << nodeDepth(myItStat) << '\t' << -1 << '\t';
+            stats << freqmarginal[0] << '\t' << freqmarginal[1] << '\t';
+            stats << freqmarginal[2] << '\t' << freqmarginal[3] << '\t' << freqmarginal[4] << '\t' ;
+            stats << freqmarginal[5] << '\t' << cfather <<  std::endl;
+
+
+            for (unsigned cpos = 0; cpos < readMaxLength; ++cpos){
+
+                if (freqpos[5][cpos] > 0) {
+                    stats << tmp2 << '\t' << nodeDepth(myItStat) << '\t' << cpos << '\t';
+                    stats << freqpos[0][cpos] << '\t' << freqpos[1][cpos] << '\t';
+                    stats << freqpos[2][cpos] << '\t' << freqpos[3][cpos] << '\t' << freqpos[4][cpos] << '\t' ;
+                    stats << freqpos[5][cpos] << '\t' << cfather <<  std::endl;
+                }
+            }
+
+            for (unsigned i = 0; i < 6; i++) freqpos[i].assign(readMaxLength, 0);
+
+            goNext(myItStat);
+        }
+        stats.close();
         if (options.verbosity >= 1)
             std::cerr << "  Done." << std::endl;
-		exit(0);
-	}
-			
-	if (options.genomeLength == 0)
-	{
-#ifdef MEDIAN		
-		for (; level < toLevel; ++level)
-		{
-			//int logRation = (log10(static_cast<double>(length(setReads)/2))/(log10(4.0)));
-			//int l = logRation + 1;
-			//std::cerr << l << std::endl;
-			
-			cargo(myIndex).replen_min = level;
-			cargo(myIndex).replen_max = level+2; 	
-//			cargo(myIndex).frequency = frequency;
-			double numOccs = 0.0;
-			
-			median << level << " " << medianLevel(myConstrainedIterator) << std::endl;
-			goBegin(myConstrainedIterator);
-			while (!atEnd(myConstrainedIterator))
-			{
-				if (parentRepLength(myConstrainedIterator) > level)
-				{
-					numOccs = countOccurrences(myConstrainedIterator);
-					out << level << " " << numOccs << std::endl; 
-				}
-				++myConstrainedIterator;
-			}
-		}
-#else // #ifdef MEDIAN
-		//int logRation = log10(static_cast<double>(readCount)) / log10(4.0);
-		//int l = logRation + 1;
-		//std::cerr << l << std::endl;
-		cargo(myIndex).replen_min = options.fromLevel;
-		cargo(myIndex).replen_max = options.fromLevel + 2; 	
-//		cargo(myIndex).frequency = frequency;
+        exit(0);
+    }
 
-		double expectedValueGivenLevel = medianLevel(myConstrainedIterator);
+    if (options.genomeLength == 0)
+    {
+#ifdef MEDIAN
+        for (; level < toLevel; ++level)
+        {
+            //int logRation = (log10(static_cast<double>(length(setReads)/2))/(log10(4.0)));
+            //int l = logRation + 1;
+            //std::cerr << l << std::endl;
+
+            cargo(myIndex).replen_min = level;
+            cargo(myIndex).replen_max = level+2;
+//            cargo(myIndex).frequency = frequency;
+            double numOccs = 0.0;
+
+            median << level << " " << medianLevel(myConstrainedIterator) << std::endl;
+            goBegin(myConstrainedIterator);
+            while (!atEnd(myConstrainedIterator))
+            {
+                if (parentRepLength(myConstrainedIterator) > level)
+                {
+                    numOccs = countOccurrences(myConstrainedIterator);
+                    out << level << " " << numOccs << std::endl;
+                }
+                ++myConstrainedIterator;
+            }
+        }
+#else // #ifdef MEDIAN
+        //int logRation = log10(static_cast<double>(readCount)) / log10(4.0);
+        //int l = logRation + 1;
+        //std::cerr << l << std::endl;
+        cargo(myIndex).replen_min = options.fromLevel;
+        cargo(myIndex).replen_max = options.fromLevel + 2;
+//        cargo(myIndex).frequency = frequency;
+
+        double expectedValueGivenLevel = medianLevel(myConstrainedIterator);
 
         // Compute mean read length as an estimate.  This will be the read length for Illumina data and for now
         // a good enough value for 454 data.
         // TODO: Think of something more clever in the future.
-		uint64_t readLengthSum = 0;
-		for (unsigned i = 0; i < readCount; ++i)
-		    readLengthSum += length(store.readSeqStore[i]);
-		unsigned readLength = readLengthSum / readCount;
+        uint64_t readLengthSum = 0;
+        for (unsigned i = 0; i < readCount; ++i)
+            readLengthSum += length(store.readSeqStore[i]);
+        unsigned readLength = readLengthSum / readCount;
         if (options.verbosity >= 1)
             std::cerr << "Average read length " << readLength << "\n";
 
-		/* a = readLength - path_label + 1 */
-		/*here plus 1 also because the level is between fromLevel and toLevel*/
-		double a = readLength - options.fromLevel + 2;
-		options.genomeLength = static_cast<int64_t>(readCount * a / expectedValueGivenLevel);
+        /* a = readLength - path_label + 1 */
+        /*here plus 1 also because the level is between fromLevel and toLevel*/
+        double a = readLength - options.fromLevel + 2;
+        options.genomeLength = static_cast<int64_t>(readCount * a / expectedValueGivenLevel);
         if (options.verbosity >= 1)
         {
-            std::cerr << "Expected median coverage :" << expectedValueGivenLevel << " for k-mer of length:" << options.fromLevel << std::endl; 
+            std::cerr << "Expected median coverage :" << expectedValueGivenLevel << " for k-mer of length:" << options.fromLevel << std::endl;
             std::cerr << "The estimated genome length is " << options.genomeLength << std::endl;
         }
 #endif // #ifdef MEDIAN
-	}
+    }
 
-	/*restrictions for the searching levels*/
-	cargo(myIndex).replen_min = options.fromLevel;
-	cargo(myIndex).replen_max = options.toLevel;
+    /*restrictions for the searching levels*/
+    cargo(myIndex).replen_min = options.fromLevel;
+    cargo(myIndex).replen_max = options.toLevel;
 //    cargo(myIndex).frequency = frequency;
 //    cargo(myIndex).repeatCutoffs = options.repeatCutoffs;
 
-	/*the core of the correction method*/
+    /*the core of the correction method*/
     FionaResources resources;
     traverseAndSearchCorrections<-1>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg,maxReadLength, resources);
 
@@ -4624,10 +4624,10 @@ unsigned correctReads(
                   << "Time for compute overlap sums:           "<< options.timeComputeOverlapSum << " seconds." << std::endl;
 
 #else // #ifndef FIONA_PARALLEL
-	// FIONA PARALLEL SEARCH
+    // FIONA PARALLEL SEARCH
 
-	// construct q-gram index
-//	TFionaQgramIndex qgramIndex(store.readSeqStore);
+    // construct q-gram index
+//    TFionaQgramIndex qgramIndex(store.readSeqStore);
     TReadPrefixes prefixes;
     unsigned cutLength = options.fromLevel - 5; // we only need suffixes of length >= fromLevel (and their q-gram anchor)
     for (unsigned i = 0; i < length(store.readSeqStore); ++i)
@@ -4638,7 +4638,7 @@ unsigned correctReads(
     TFionaQgramIndex qgramIndex(prefixes);
     cargo(qgramIndex).optionsPtr = &options;
 
-	String<uint64_t> packages;
+    String<uint64_t> packages;
     SEQAN_PROTIMESTART(constructQgramExt);
     if (options.verbosity >= 1)
         std::cerr << "Construct external q-gram index ... " << std::flush;
@@ -4668,7 +4668,7 @@ unsigned correctReads(
         if (origDir[i] != (TQGramDirValue)-1)
             numSuffixes += origDir[i];
 
-	String<uint64_t> superPackages;
+    String<uint64_t> superPackages;
     uint64_t sumSuffixes = 0;
     uint64_t nextThresh = 0;
     for (unsigned i = 0; i < dirLen; ++i)
@@ -4709,7 +4709,7 @@ unsigned correctReads(
         resize(indexSA(qgramIndex), _qgramCummulativeSum(indexDir(qgramIndex), True(), True(), Unsigned<1>(), Parallel()), Exact());
         _qgramFillSuffixArray(indexSA(qgramIndex), indexText(qgramIndex), indexShape(qgramIndex), indexDir(qgramIndex), qgramIndex.bucketMap, getStepSize(qgramIndex), True(), Parallel());
         _qgramPostprocessBuckets(indexDir(qgramIndex), Parallel());
-        
+
         if (options.verbosity >= 1)
             std::cerr << "done. (" << SEQAN_PROTIMEDIFF(fillQgramSAInt) << " seconds, " << back(indexDir(qgramIndex)) << " kmers, ";
 
@@ -4718,8 +4718,8 @@ unsigned correctReads(
     resize(indexDir(qgramIndex), _fullDirLength(qgramIndex), Exact());
     createQGramIndexExt(qgramIndex);
 
-//	createQGramIndexExtSA(qgramIndex);  // alternative but (unfortunately) slower variant using a Mapper
-	resize(indexSA(qgramIndex), back(indexDir(qgramIndex)), Exact());
+//    createQGramIndexExtSA(qgramIndex);  // alternative but (unfortunately) slower variant using a Mapper
+    resize(indexSA(qgramIndex), back(indexDir(qgramIndex)), Exact());
 #endif
 
 #if defined(FIONA_REDUCE_MEMORY) && !defined(FIONA_INTERNAL_MEMORY)
@@ -4729,12 +4729,12 @@ unsigned correctReads(
     if (options.verbosity >= 1)
         std::cerr << "done. (" << SEQAN_PROTIMEDIFF(constructQgramExt) << " seconds, " << back(indexDir(qgramIndex)) << " kmers, ";
 #ifndef FIONA_INTERNAL_MEMORY
-	clear(indexText(qgramIndex));
+    clear(indexText(qgramIndex));
 #endif
 
 //    unsigned dirLen = length(indexDir(qgramIndex));
-//	SEQAN_PROTIMESTART(purgeNBuckets);
-//	typedef typename Fibre<TFionaIndex, FibreSA>::Type TSA;
+//    SEQAN_PROTIMESTART(purgeNBuckets);
+//    typedef typename Fibre<TFionaIndex, FibreSA>::Type TSA;
 //    typedef typename Iterator<TSA, Standard>::Type TSAIter;
 //    TSAIter beginSA = begin(indexSA(qgramIndex), Standard());
 //    TSAIter srcIt = beginSA;
@@ -4753,14 +4753,14 @@ unsigned correctReads(
 //    maskRepeatBuckets(indexDir(qgramIndex));
 //
 //    // 3. remove all masked k-mers from k-mer index
-//	std::cerr << "Purge repetitive k-mers ........... " << std::flush;
+//    std::cerr << "Purge repetitive k-mers ........... " << std::flush;
 //    for (i = 0; i < dirLen - 1; ++i)
 //    {
 //        uint64_t bucketLen = indexDir(qgramIndex)[i + 1] - indexDir(qgramIndex)[i];
 //        indexDir(qgramIndex)[i] = dstIt - beginSA;
 //        // copy bucket unless it is marked for removal
 //        if (!maskedBuckets[i])
-//        {            
+//        {
 //            if (dstIt != srcIt)
 //                std::copy(srcIt, srcIt + bucketLen, dstIt);
 //            dstIt += bucketLen;
@@ -4769,7 +4769,7 @@ unsigned correctReads(
 //    }
 //    indexDir(qgramIndex)[i] = dstIt - beginSA;
 //    resize(indexSA(qgramIndex), dstIt - beginSA);
-//	std::cerr << "done. (" << SEQAN_PROTIMEDIFF(purgeNBuckets) << " seconds)" << std::endl;
+//    std::cerr << "done. (" << SEQAN_PROTIMEDIFF(purgeNBuckets) << " seconds)" << std::endl;
 
     // distribute q-gram buckets over work packages
 #ifdef FIONA_USE_SA
@@ -4779,7 +4779,7 @@ unsigned correctReads(
     uint64_t numPacks = options.packagesPerThread * omp_get_max_threads();
     uint64_t numSuffixes = back(indexDir(qgramIndex));
     uint64_t nextThresh = numSuffixes / numPacks;
-	appendValue(packages, 0);
+    appendValue(packages, 0);
     for (unsigned i = 1; i < dirLen; ++i)
     {
         if (nextThresh <= indexDir(qgramIndex)[i])
@@ -4824,8 +4824,8 @@ unsigned correctReads(
     _refreshStringSetLimits(store.readSeqStore);
 
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic,1))
-	for (int i = 1; i < (int)length(packages); ++i)
-	{
+    for (int i = 1; i < (int)length(packages); ++i)
+    {
         typedef uint64_t                            TFileSize;
 
         SEQAN_OMP_PRAGMA(atomic)
@@ -4833,10 +4833,10 @@ unsigned correctReads(
 
         TFileSize bktBegin = packages[i-1];
         TFileSize bktEnd = packages[i];
-		if (bktBegin + 3 >= bktEnd)     // we need at least 3 suffixes to distinguish correct from incorrect bases
+        if (bktBegin + 3 >= bktEnd)     // we need at least 3 suffixes to distinguish correct from incorrect bases
             continue;
 
-		TFionaIndex myIndex(store.readSeqStore);
+        TFionaIndex myIndex(store.readSeqStore);
 
 #if defined(FIONA_REDUCE_MEMORY) && !defined(FIONA_INTERNAL_MEMORY)
         typedef Fibre<TFionaIndex, FibreSA>::Type   TSA;
@@ -4850,14 +4850,14 @@ unsigned correctReads(
         indexSA(myIndex).begin = mapPtr + (bktBegin - mapOfs);
         indexSA(myIndex).end   = mapPtr + (bktEnd   - mapOfs);
 #else
-		indexSA(myIndex) = toRange(infix(indexSA(qgramIndex), bktBegin, bktEnd));
+        indexSA(myIndex) = toRange(infix(indexSA(qgramIndex), bktBegin, bktEnd));
 #endif
 
-		cargo(myIndex).replen_min = options.fromLevel;
-		cargo(myIndex).replen_max = options.toLevel;
+        cargo(myIndex).replen_min = options.fromLevel;
+        cargo(myIndex).replen_max = options.toLevel;
 //        cargo(myIndex).repeatCutoffs = options.repeatCutoffs;
 
-		if (inTerm && options.verbosity >= 2)
+        if (inTerm && options.verbosity >= 2)
         {
             SEQAN_OMP_PRAGMA(critical(progressOutput))
             {
@@ -4871,7 +4871,7 @@ unsigned correctReads(
             }
         }
 
-		TConstrainedIterator myConstrainedIterator(myIndex);
+        TConstrainedIterator myConstrainedIterator(myIndex);
 
 #ifdef FIONA_USE_SA
         // extend prefix sorting to the k-max
@@ -4904,8 +4904,8 @@ unsigned correctReads(
     if (options.loopLevel == 5)
                 traverseAndSearchCorrections<5>(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg, maxReadLength, resources);
 */
-//		traverseAndSearchCorrections(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg,readLength, resources);
-//		mmapAdvise(indexSA(qgramIndex), MAP_DONTNEED, bktBegin, bktEnd);
+//        traverseAndSearchCorrections(myConstrainedIterator, store, correctionList, firstCorrectionForRead, options, alg,readLength, resources);
+//        mmapAdvise(indexSA(qgramIndex), MAP_DONTNEED, bktBegin, bktEnd);
 #if defined(FIONA_REDUCE_MEMORY) && !defined(FIONA_INTERNAL_MEMORY)
         unmapFileSegment(mapping, mapPtr, mapSize);
 #endif
@@ -4913,34 +4913,34 @@ unsigned correctReads(
         {
             SEQAN_OMP_PRAGMA(critical(progressOutput))
             {
-				std::cerr << "Parallel suffix tree traversal .... " << std::setw(3) << (100 * finished) / (length(packages) - 1) << '%' << std::flush;
+                std::cerr << "Parallel suffix tree traversal .... " << std::setw(3) << (100 * finished) / (length(packages) - 1) << '%' << std::flush;
 
                 for (int u = 0; u <= omp_get_thread_num(); ++u)
                     std::cerr << '\n';
                 std::cerr << "thread " << omp_get_thread_num() << "\t: done                                 ";
                 std::cerr << (char)27 << '[' << (omp_get_thread_num() + 1) << 'F' << std::flush;
             }
-		}
-		
-		done[omp_get_thread_num()] = sysTime() - startTime;
-	}
-	if (options.verbosity >= 1)
-	{
-	    for (unsigned i = 0; i < length(done); ++i)
-    	    std::cerr << "Thread " << i << " took " << done[i] << " wallclock seconds." << std::endl;
-	}
-	
-	if (inTerm && options.verbosity >= 2)
+        }
+
+        done[omp_get_thread_num()] = sysTime() - startTime;
+    }
+    if (options.verbosity >= 1)
     {
-		std::cerr << "\b\b\b\b";
+        for (unsigned i = 0; i < length(done); ++i)
+            std::cerr << "Thread " << i << " took " << done[i] << " wallclock seconds." << std::endl;
+    }
+
+    if (inTerm && options.verbosity >= 2)
+    {
+        std::cerr << "\b\b\b\b";
         for (int u = 0; u <= omp_get_max_threads() + 1; ++u)
             std::cerr << std::endl;
     }
-	if (inTerm && options.verbosity >= 1)
+    if (inTerm && options.verbosity >= 1)
         std::cerr << "done. (" << SEQAN_PROTIMEDIFF(search) << " seconds)" << std::endl;
 
     sort(resourcesPerPackage, Parallel());
-	if (inTerm && options.verbosity >= 2)
+    if (inTerm && options.verbosity >= 2)
     {
         std::cerr << std::endl;
         std::cerr << "kmerFirst\tkmerLast\ttime\t\tnodes\tcorrections\tsuffixes" << std::endl;
@@ -4962,11 +4962,11 @@ unsigned correctReads(
 #endif // #ifndef FIONA_PARALLEL
 
 
-	unsigned totalCorrections = 0;
-	//get the number of corrections from the next function as more than one correction
-	//per read might occur
-	totalCorrections = applyReadErrorCorrections(correctionList,firstCorrectionForRead,store,options);
-	unsigned readCorrections=0;
+    unsigned totalCorrections = 0;
+    //get the number of corrections from the next function as more than one correction
+    //per read might occur
+    totalCorrections = applyReadErrorCorrections(correctionList,firstCorrectionForRead,store,options);
+    unsigned readCorrections=0;
     for (unsigned a = 0; a < length(firstCorrectionForRead); ++a)
     {
         if (firstCorrectionForRead[a] == std::numeric_limits<unsigned>::max()) continue;
@@ -5371,17 +5371,17 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     getOptionValue(options.fromLevel, parser, "from-level");
     getOptionValue(options.toLevel, parser, "to-level");
     getOptionValue(options.packagesPerThread, parser, "packages-per-thread");
-	getOptionValue(options.wovsum, parser, "overlap-sum");
+    getOptionValue(options.wovsum, parser, "overlap-sum");
     getOptionValue(options.genomeLength, parser, "genome-length");
-	getOptionValue(options.acceptedMismatches, parser, "mismatches");
-	getOptionValue(options.cycles, parser, "iterations");
+    getOptionValue(options.acceptedMismatches, parser, "mismatches");
+    getOptionValue(options.cycles, parser, "iterations");
     getOptionValue(options.loopLevel, parser, "loop-level");
-	getOptionValue(options.kmerAbundanceCutoff, parser, "kmer-repeat-ratio");
-	getOptionValue(options.kmerStdDevCutOff, parser, "kmer-repeat-std-dev");
-	getOptionValue(options.depthSampleRate, parser, "depth-sample-rate");
+    getOptionValue(options.kmerAbundanceCutoff, parser, "kmer-repeat-ratio");
+    getOptionValue(options.kmerStdDevCutOff, parser, "kmer-repeat-std-dev");
+    getOptionValue(options.depthSampleRate, parser, "depth-sample-rate");
 
 #ifdef FIONA_ALLOWINDELS
-	getOptionValue(options.maxIndelLength, parser, "indel-length");
+    getOptionValue(options.maxIndelLength, parser, "indel-length");
 #endif
     getOptionValue(options.numThreads, parser, "num-threads");
 #ifdef FIONA_INTERNAL_MEMORY
@@ -5392,16 +5392,16 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
 
     // Check Arguments.
 
-	if (options.packagesPerThread >= _intPow((unsigned)ValueSize<Dna5>::VALUE, QGRAM_LENGTH))
+    if (options.packagesPerThread >= _intPow((unsigned)ValueSize<Dna5>::VALUE, QGRAM_LENGTH))
     {
-		std::cerr << "warning: packages-per-thread parameter is decreased to " << _intPow((unsigned)ValueSize<Dna5>::VALUE, QGRAM_LENGTH) - 1 << std::endl;
+        std::cerr << "warning: packages-per-thread parameter is decreased to " << _intPow((unsigned)ValueSize<Dna5>::VALUE, QGRAM_LENGTH) - 1 << std::endl;
         // nothing more needs to be done, the parameter is implicitly decreased
     }
 
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-int main(int argc, const char* argv[]) 
+int main(int argc, const char* argv[])
 {
     // Declare options variable and parse command line.
     FionaOptions options;
@@ -5453,21 +5453,21 @@ int main(int argc, const char* argv[])
     if (options.verbosity >= 1)
         std::cerr << "Done loading " << length(store.readSeqStore) << " sequences with a total of " << lengthSum(store.readSeqStore) << " nucleotides.\n";
 
-/*	//DEBUG Corrrection Indel Pos
-	//check the new CorrectionIndelPos struct and the linked list
-	String<CorrectionIndelPos> correctionList;
-	String<unsigned int> firstCorrectionForRead;
- 	// append reverse complements of reads
-	unsigned readCount = length(store.readSeqStore);
-	Dna5String tmp;
-	for (unsigned i = 0; i < readCount; ++i)
-		{
-			tmp = store.readSeqStore[i];
-			reverseComplement(tmp);
-			appendValue(store.readSeqStore, tmp);
-		}
+/*    //DEBUG Corrrection Indel Pos
+    //check the new CorrectionIndelPos struct and the linked list
+    String<CorrectionIndelPos> correctionList;
+    String<unsigned int> firstCorrectionForRead;
+     // append reverse complements of reads
+    unsigned readCount = length(store.readSeqStore);
+    Dna5String tmp;
+    for (unsigned i = 0; i < readCount; ++i)
+        {
+            tmp = store.readSeqStore[i];
+            reverseComplement(tmp);
+            appendValue(store.readSeqStore, tmp);
+        }
 
-	_testCorrectionStruct(correctionList,firstCorrectionForRead,store);
+    _testCorrectionStruct(correctionList,firstCorrectionForRead,store);
 /// for debugging output vorziehen:
  // write in file all input reads with the corrected one
         std::ofstream out(toCString(getArgumentValue(parser, 1)));
@@ -5481,20 +5481,20 @@ int main(int argc, const char* argv[])
                 out << '>' << store.readNameStore[i] << std::endl;
                 out << store.readSeqStore[i] << std::endl;
         }
-///DEBUG END	
-	exit(0);	
+///DEBUG END
+    exit(0);
 */
 
-	// initialise the top and down level by using the log4 from the total number of reads
-	// Done in the CorrectRead function at every round now (in case the error rate would change automatically)
-//	if (options.fromLevel == 0)
-//	{
-//		int logRation = static_cast<int>(log10(static_cast<double>(length(store.readSeqStore))) / log10(4.0));
-//		options.fromLevel = logRation + 2;
-//		options.toLevel   = options.fromLevel + 10;
-//		std::cerr << "The estimated top level is " << options.fromLevel << " and the down level is " << options.toLevel << std::endl;
-//	}
-	
+    // initialise the top and down level by using the log4 from the total number of reads
+    // Done in the CorrectRead function at every round now (in case the error rate would change automatically)
+//    if (options.fromLevel == 0)
+//    {
+//        int logRation = static_cast<int>(log10(static_cast<double>(length(store.readSeqStore))) / log10(4.0));
+//        options.fromLevel = logRation + 2;
+//        options.toLevel   = options.fromLevel + 10;
+//        std::cerr << "The estimated top level is " << options.fromLevel << " and the down level is " << options.toLevel << std::endl;
+//    }
+
 #ifndef FIONA_NOERROROPTIMIZATION
     if (options.verbosity >= 1)
         std::cerr << "Use normal full optimization"<<std::endl;
@@ -5515,17 +5515,17 @@ int main(int argc, const char* argv[])
                      "__RUNNING READ CORRECTION________________________________________\n";
     }
 
-	for (options.cycle = 1; options.cycle <= options.cycles; ++options.cycle)
-	{
+    for (options.cycle = 1; options.cycle <= options.cycles; ++options.cycle)
+    {
         if (options.verbosity >= 1)
         {
             std::cerr << std::endl << "Cycle "<< options.cycle;
             if (!autoCycles) std::cerr << " of " << options.cycles;
             std::cerr << std::endl;
         }
-		unsigned numCorrected = 0;
-		nfamprev = nfamilies;
-		nfamilies = 0;
+        unsigned numCorrected = 0;
+        nfamprev = nfamilies;
+        nfamilies = 0;
         switch (options.method)
         {
             case CONTROL_FP:
@@ -5546,20 +5546,20 @@ int main(int argc, const char* argv[])
                 numCorrected = correctReads(store, options, FionaExpected());
                 break;
         }
-		//Todo (Hugues) adjust error rate estimate between rounds
-		//
+        //Todo (Hugues) adjust error rate estimate between rounds
+        //
         if (options.verbosity >= 1)
             std::cerr << std::endl << "Number of families at nodes:" << nfamilies << std::endl;
-		if (options.verbosity >= 1 && options.cycle > 1)
-			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / (nfamprev == 0u ? 1 : nfamprev) << std::endl;
+        if (options.verbosity >= 1 && options.cycle > 1)
+            std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / (nfamprev == 0u ? 1 : nfamprev) << std::endl;
 
-//		if (options.acceptedMismatches > 0) --options.acceptedMismatches;
+//        if (options.acceptedMismatches > 0) --options.acceptedMismatches;
 
-		// TODO maybe to stop if there is not reads corrected in the cycle before
-		// if so after each iteration must save the ID for the reads which are corrected
-		// thus we can also show the total number of reads that are corrected at the final stage
-		//if (autoCycles)
-		//{
+        // TODO maybe to stop if there is not reads corrected in the cycle before
+        // if so after each iteration must save the ID for the reads which are corrected
+        // thus we can also show the total number of reads that are corrected at the final stage
+        //if (autoCycles)
+        //{
             resize(logCorrections, options.cycle);
             resize(roundsDone, options.cycle);
             logCorrections[options.cycle-1] = (double)log((double)numCorrected);
@@ -5604,7 +5604,7 @@ int main(int argc, const char* argv[])
                 }
             }
         //}
-	}
+    }
 
     // Write out corrected reads.
     unsigned numCorrected = 0;
@@ -5615,14 +5615,14 @@ int main(int argc, const char* argv[])
     if (options.verbosity >= 1 && options.cycles > 1)
         std::cerr << "Total number reads corrected for " << options.cycle-1 << " cycles is " << numCorrected << std::endl;
 
-//	struct rusage usage;
-//	getrusage(RUSAGE_SELF, &usage);
+//    struct rusage usage;
+//    getrusage(RUSAGE_SELF, &usage);
     if (options.verbosity >= 1)
     {
         std::cerr << std::endl;
         std::cerr << "Time required for execution: " << SEQAN_PROTIMEDIFF(correction) << " seconds." << std::endl;
-//	    std::cerr << "Peak resident memory usage:  " << usage.ru_maxrss / (1024*1024) << " Mb." << std::endl;
+//        std::cerr << "Peak resident memory usage:  " << usage.ru_maxrss / (1024*1024) << " Mb." << std::endl;
     }
 
-	return 0;
+    return 0;
 }

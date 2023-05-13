@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -156,7 +156,7 @@ struct AFScore<D2Star>
     bool verbose;
 
 
-    AFScore<D2Star>(unsigned k, unsigned m, bool verbose_ = false) :
+    AFScore(unsigned k, unsigned m, bool verbose_ = false) :
         kmerSize(k), bgModelOrder(m), verbose(verbose_)
     {}
 };
@@ -330,7 +330,7 @@ struct AFScore<D2z>
     unsigned kmerSize;
     unsigned bgModelOrder;
     bool verbose;
-    AFScore<D2z>(unsigned k, unsigned m, bool verbose_ = false) :
+    AFScore(unsigned k, unsigned m, bool verbose_ = false) :
         kmerSize(k), bgModelOrder(m), verbose(verbose_)
     {}
 };

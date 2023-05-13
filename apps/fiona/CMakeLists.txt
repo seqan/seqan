@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_fiona CXX)
 message (STATUS "Configuring apps/fiona")
 
-set (SEQAN_APP_VERSION "0.2.10")
+set (SEQAN_APP_VERSION "0.2.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -24,20 +24,25 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
+# all windows compilers are currently broken with Fiona (in different ways)
+if (MSVC)
+    message (STATUS "  Skipping fiona on Visual Studio")
+    return ()
+endif()
+
 # Stop here if we cannot find Boost or OpenMP.
-if (NOT Boost_FOUND OR NOT OPENMP_FOUND)
-    message (STATUS "  Boost or OpenMP not found, not building fiona.")
+if (NOT Boost_FOUND)
+    message (STATUS "  Skipping fiona, missing Boost")
+    return ()
+endif ()
+
+if (NOT OPENMP_FOUND)
+    message (STATUS "  Skipping fiona, missing OpenMP")
     return ()
 endif ()
 
 if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message (STATUS "  Not building fiona on 32bit architectures.")
-    return ()
-endif()
-
-# all windows compilers are currently broken with Fiona (in different ways)
-if (MSVC)
-    message (STATUS "  Not building fiona under Visual Studio.")
+    message (STATUS "  Skipping fiona on 32-bit architectures")
     return ()
 endif()
 
@@ -64,6 +69,10 @@ add_executable (fiona fiona.cpp)
 add_executable (fiona_illumina fiona.cpp)
 
 set_target_properties (fiona_illumina PROPERTIES COMPILE_DEFINITIONS "FIONA_ILLUMINA")
+
+# Boost 1.74.0 is not compatible with cpp20
+set_property(TARGET fiona PROPERTY CXX_STANDARD 17)
+set_property(TARGET fiona_illumina PROPERTY CXX_STANDARD 17)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (compute_gain ${SEQAN_LIBRARIES})
@@ -105,6 +114,11 @@ seqan_add_app_test (fiona)
 
 # Include executable fiona in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fiona fiona_illumina compute_gain CACHE INTERNAL "")
+
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (fiona)
+seqan_add_ctd_test (fiona_illumina)
+seqan_add_ctd_test (compute_gain)
 
 # ----------------------------------------------------------------------------
 # CPack Install

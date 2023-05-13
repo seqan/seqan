@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -214,15 +214,13 @@ _setSimdLane(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentSco
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TTraits>
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec, typename TPosition>
 inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
+_preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec> > > & scout,
+                        TPosition const offset)
 {
-    using TScoutBase = typename DPScout_<TDPCell,
-                                         DPTiled<TBuffer,
-                                                 TThreadContext,
-                                                 SimdAlignmentScout<SimdAlignVariableLength<TTraits>>>>::TBase;
-    _preInitScoutHorizontal(static_cast<TScoutBase&>(scout));
+    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec>>>::TBase;
+    _preInitScoutHorizontal(static_cast<TScoutBase&>(scout), offset);
     scout.horizontalPos = 0;
 }
 
@@ -230,18 +228,13 @@ _preInitScoutHorizontal(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdA
 // Function _preInitScoutVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TTraits>
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec, typename TPosition>
 inline void
-_preInitScoutVertical(DPScout_<TDPCell,
-                               DPTiled<TBuffer,
-                                       TThreadContext,
-                                       SimdAlignmentScout<SimdAlignVariableLength<TTraits>>>> & scout)
+_preInitScoutVertical(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec>>> & scout,
+                      TPosition const offset)
 {
-    using TScoutBase = typename DPScout_<TDPCell,
-                                         DPTiled<TBuffer,
-                                                 TThreadContext,
-                                                 SimdAlignmentScout<SimdAlignVariableLength<TTraits>>>>::TBase;
-    _preInitScoutVertical(static_cast<TScoutBase&>(scout));
+    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec>>>::TBase;
+    _preInitScoutVertical(static_cast<TScoutBase&>(scout), offset);
     scout.verticalPos = 0;
 }
 
@@ -323,17 +316,11 @@ _nextVerticalEndPos(DPScout_<TDPCell,
 // Function _incHorizontalPos()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TTraits>
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
 inline void
-_incHorizontalPos(DPScout_<TDPCell,
-                           DPTiled<TBuffer,
-                                   TThreadContext,
-                                   SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
+_incHorizontalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec> > > & scout)
 {
-    using TScoutBase = typename DPScout_<TDPCell,
-                                         DPTiled<TBuffer,
-                                                 TThreadContext,
-                                                 SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
+    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec> > >::TBase;
     _incHorizontalPos(static_cast<TScoutBase&>(scout));
     ++scout.horizontalPos;
 }
@@ -342,17 +329,11 @@ _incHorizontalPos(DPScout_<TDPCell,
 // Function _incVerticalPos()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TTraits>
+template <typename TDPCell, typename TBuffer, typename TThreadContext, typename TSpec>
 inline void
-_incVerticalPos(DPScout_<TDPCell,
-                         DPTiled<TBuffer,
-                                 TThreadContext,
-                                 SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > > & scout)
+_incVerticalPos(DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec> > > & scout)
 {
-    using TScoutBase = typename DPScout_<TDPCell,
-                                         DPTiled<TBuffer,
-                                                 TThreadContext,
-                                                 SimdAlignmentScout<SimdAlignVariableLength<TTraits> > > >::TBase;
+    using TScoutBase = typename DPScout_<TDPCell, DPTiled<TBuffer, TThreadContext, SimdAlignmentScout<TSpec> > >::TBase;
     _incVerticalPos(static_cast<TScoutBase&>(scout));
     ++scout.verticalPos;
 }

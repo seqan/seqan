@@ -3,6 +3,55 @@ SeqAn Changelog
 
 This file summarizes the changes to the SeqAn library and apps.
 
+Release 2.5.0
+~~~~~~~~~~~~~
+
+This release aims to add support for interoperability with `SeqAn3 <https://github.com/seqan/seqan3>`_.
+Therefore, this release only supports and tests compilers that work with SeqAn3. Release 2.5.0 might work with older
+compilers, but there is no support.
+
+Library Features
+^^^^^^^^^^^^^^^^
+
+- Sequence I/O:
+   - Accepting files that end in ``.fas``.
+- Indexing:
+   - Improved search schemes for 3 and 4 errors in ``seqan::bi_fm_index``.
+
+Selected Bug Fixes
+^^^^^^^^^^^^^^^^^^
+
+- VCF I/O:
+   - Accessing the const reference of a ``seqan::VcfIOContext`` via ``seqan::context`` now works correctly.
+- Indexing:
+   - horspool: If the text is smaller than the query, abort the search.
+
+App Updates
+^^^^^^^^^^^
+
+- Yara:
+   - Fixed verification of N's for seeds and boundary checking for anchors (restores full-sensitivity)
+   - Removed option --all (was deprecated)
+   - Added option to compute and output alignments for secondary matches
+   - Added option to specify strata threshold as absolute number of errors
+- Mason:
+   - genome: Use larger integers for ``contigLenghts``.
+   - simulator: Now uses the command line parameter for seeding instead of the default.
+
+Build System
+^^^^^^^^^^^^
+
+- The minimum CMake version requirement was raised to 3.12.
+
+Platform Support
+^^^^^^^^^^^^^^^^
+
+- Compiler support:
+   - GCC 7, 8, 9, 10, 11
+   - clang 9, 10, 11, 12
+   - Intel C++ Compiler Classic 2021.3.0 (part of Intel OneAPI)
+   - Microsoft Visual Studio 16
+
 Release 2.4.0
 ~~~~~~~~~~~~~
 
@@ -182,7 +231,7 @@ Library Features
         - up to three level rank dictionaries
         - size of blocks on the lowest level (referred to as ``WORDS_PER_BLOCK``)
     - Bidirectional FM index with constant running time using EPR-dictionaries
-    - Please see the `manual <seqan.readthedocs.io/en/master/Tutorial/DataStructures/Indices/FMIndex.html>`_ for more information
+    - Please see the `manual <seqan.readthedocs.io/en/main/Tutorial/DataStructures/Indices/FMIndex.html>`_ for more information
 
 - Alignment:
     - Vectorized DP-Alignment algorithms using SSE3/AVX2. Allows for inter-parallel alignment computation in a many-vs-many or one-vs-many mode.
@@ -222,7 +271,7 @@ Infrastructure Updates
 - Build System:
     - The Intel Compiler is now fully supported on Linux and Windows, both 32bit and 64bit; it builds faster binaries and supports some functionality not available in MSVC.
     - On Windows there is now experimental support for Clang/C2, the Microsoft version of the clang compiler.
-    - Please see the `manual <http://seqan.readthedocs.io/en/master/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
+    - Please see the `manual <http://seqan.readthedocs.io/en/main/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
     - support deb/rpm/exe/dmg packages and SSE4+POPCNT binaries
 
 - Platforms:

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_sam2matrix CXX)
 message (STATUS "Configuring apps/sam2matrix")
 
-set (SEQAN_APP_VERSION "0.3.8")
+set (SEQAN_APP_VERSION "0.3.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -80,6 +80,9 @@ seqan_add_app_test (sam2matrix)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} sam2matrix CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (sam2matrix)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
@@ -92,5 +95,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:sam2matrix")
 
   seqan_configure_cpack_app (sam2matrix "sam2matrix")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:sam2matrix")
-
-

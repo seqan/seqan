@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_rabema CXX)
 message (STATUS "Configuring apps/rabema")
 
-set (SEQAN_APP_VERSION "1.2.10")
+set (SEQAN_APP_VERSION "1.2.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -116,6 +116,11 @@ seqan_add_app_test (rabema)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} rabema_prepare_sam rabema_build_gold_standard rabema_evaluate CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (rabema_prepare_sam)
+seqan_add_ctd_test (rabema_build_gold_standard)
+seqan_add_ctd_test (rabema_evaluate)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
@@ -128,4 +133,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:rabema")
 
     seqan_configure_cpack_app (rabema "Rabema")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:rabema")
-

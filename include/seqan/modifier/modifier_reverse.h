@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -589,6 +589,22 @@ reverse(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
     SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
     for (TSPos seqNo = 0; seqNo < seqCount; ++seqNo)
         reverse(stringSet[seqNo], Serial());
+}
+
+// Reversing a Packed ConcatDirect StringSet in parallel is undefined behaviour
+template < typename TAlphabet, typename TAlloc, typename TSpec, typename TParallelTag>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<Tag<TParallelTag>, Parallel>, void)
+reverse(StringSet<String<TAlphabet, Packed<TAlloc> >, Owner<ConcatDirect<TSpec> > > & stringSet, Tag<TParallelTag>)
+{
+    reverse(stringSet, Serial());
+}
+
+// Reversing a Packed ConcatDirect StringSet in parallel is undefined behaviour
+template < typename TAlphabet, typename TAlloc, typename TSpec, typename TParallelTag>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<Tag<TParallelTag>, Parallel>, void)
+reverse(StringSet<String<TAlphabet, Packed<TAlloc> >, Owner<ConcatDirect<TSpec> > > const & stringSet, Tag<TParallelTag>)
+{
+    reverse(stringSet, Serial());
 }
 
 template < typename TText >

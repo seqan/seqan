@@ -16,7 +16,7 @@ There are different ways to install SeqAn, we recommend to try these in the give
 
 If possible, use the first option. If SeqAn is not available for your operating system, or if it is outdated, use the second option.
 
-Use the third option if you want to use the master or develop branch which might contain bug-fixes and new features.
+Use the third option if you want to use the main or develop branch which might contain bug-fixes and new features.
 
 Native package management
 -------------------------
@@ -75,7 +75,7 @@ Make sure that you have git installed. For the operating systems mentioned above
 
 For Windows there is Git client and shell available `here <https://windows.github.com/>`__.
 
-Next create the required folders and clone our master branch:
+Next create the required folders and clone our main branch:
 
 .. code-block:: console
 

@@ -1,22 +1,22 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Implementation of the SeqAn Doxygen dialect.
 """
 
 import argparse
-import ConfigParser
+import configparser
 import logging
 import os
 import re
 import sys
 
-import file_mgr
-import lexer
-import dox_tokens
-import dox_parser
-import proc_doc
-import raw_doc
-import write_html
-import migration
+from . import file_mgr
+from . import lexer
+from . import dox_tokens
+from . import dox_parser
+from . import proc_doc
+from . import raw_doc
+from . import write_html
+from . import migration
 
 
 # The expected HTML tags, useful for differentiating between F<T>::Type and real tags.
@@ -64,13 +64,13 @@ class Config(object):
 
     def load(self, file_name):
         """Load configuration from INI file."""
-        config = ConfigParser.SafeConfigParser()
+        config = configparser.SafeConfigParser()
         config.read(file_name)
         # Get colors.
-        for key in DEFAULT_COLORS.keys():
+        for key in list(DEFAULT_COLORS.keys()):
             try:
                 self.colors[key] = config.get('colors', key)
-            except ConfigParser.Error:
+            except configparser.Error:
                 pass  # swallow
         # Load information about language entities.
         for name in KNOWN_LANGUAGE_ENTITIES:
@@ -78,18 +78,18 @@ class Config(object):
             try:
                 for prop in LANGUAGE_ENTITIES_PROPERTIES:
                     self.lang_entities[name][prop] = config.get(path, prop)
-            except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
+            except (configparser.NoSectionError, configparser.NoOptionError):
                 pass  # swallow
 
 
 class FileNameSource(object):
     """Recursive traversal of directory hierarchy, generating doxumentable files.
-    
+
     Create with list to paths to crawl.  Then generate() creates a generator that
     yields all of these files.
-    
+
     Attributes:
-    
+
       paths -- list of strings of paths to crawl
       extensions -- list of strings with file extensions to yield in generate
       ignore -- list of strings with entry names to ignore
@@ -122,25 +122,13 @@ def doMain(args):
     config = Config()
     config.load('config.ini')
 
-    # Parse all legacy files.
-    import seqan.dddoc.core as core
-    app = core.App()
-    for path in args.legacy_doc_dirs:
-        print 'Scanning %s...' % path
-        app.loadFiles(path)
-    migrated_doc = raw_doc.RawDoc()
-    if args.legacy_doc_dirs:
-        app.loadingComplete()
-        migrated_doc.entries = migration.migrate(app.dddoc_tree)
-        print 'migrated_doc.entries', [e.name.text for e in migrated_doc.entries]
     # Parse all normal input files.
     fmgr = file_mgr.FileManager()
     master_doc = raw_doc.RawDoc()
-    master_doc.merge(migrated_doc)
     fns = FileNameSource(args.inputs)
     for filename in fns.generate():
         if args.debug:
-            print 'Processing %s' % filename
+            print('Processing %s' % filename)
         the_file = fmgr.loadFile(filename)
         lex = lexer.Lexer(dox_tokens.LEXER_TOKENS, skip_whitespace=False)
         for comment in the_file.comments:
@@ -149,7 +137,7 @@ def doMain(args):
             parser = dox_parser.Parser()
             try:
                 parser.parse(lex)
-            except dox_parser.ParserError, e:
+            except dox_parser.ParserError as e:
                 msg_printer.printParserError(e)
             master_doc.merge(parser.documentation, filename)
     # Generate documentation.
@@ -160,12 +148,12 @@ def doMain(args):
                                       msg_printer=msg_printer)
     try:
         doc_proc = processor.run(master_doc)
-    except dox_parser.ParserError, e:
+    except dox_parser.ParserError as e:
         msg_printer.printParserError(e)
         return 1
 
     # Validate documentation.
-        
+
     # Generate resulting HTML
     html_writer = write_html.HtmlWriter(doc_proc, args, config)
     html_writer.generateFor()

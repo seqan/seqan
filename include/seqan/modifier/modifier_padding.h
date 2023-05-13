@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -230,7 +230,8 @@ cargoValue(ModifiedString<THost, ModPadding> & me)
 
 // The default version, where Reference<THost const>::Type gives back a const reference.
 template <typename THost,
-          std::enable_if_t<std::is_same<std::remove_reference_t<
+          std::enable_if_t<!std::is_reference<typename Reference<ModifiedString<THost, ModPadding>>::Type>::value ||
+                           std::is_same<std::remove_reference_t<
                                             typename Reference<ModifiedString<THost, ModPadding>>::Type>,
                                         std::add_const_t<std::remove_reference_t<
                                             typename Reference<ModifiedString<THost, ModPadding>>::Type>>>::value,
@@ -243,10 +244,11 @@ cargoValue(ModifiedString<THost, ModPadding> const & me)
 
 // The version, where Reference<THost const>::Type gives back a non-const reference.
 template <typename THost,
-          std::enable_if_t<!std::is_same<std::remove_reference_t<
-                                            typename Reference<ModifiedString<THost, ModPadding>>::Type>,
+          std::enable_if_t<std::is_reference<typename Reference<ModifiedString<THost, ModPadding>>::Type>::value &&
+                           !std::is_same<std::remove_reference_t<
+                                             typename Reference<ModifiedString<THost, ModPadding>>::Type>,
                                          std::add_const_t<std::remove_reference_t<
-                                            typename Reference<ModifiedString<THost, ModPadding>>::Type>>>::value,
+                                             typename Reference<ModifiedString<THost, ModPadding>>::Type>>>::value,
                            int> = 0>
 inline typename Reference<ModifiedString<THost, ModPadding> >::Type
 cargoValue(ModifiedString<THost, ModPadding> const & me)
@@ -284,7 +286,7 @@ inline typename GetValue<THost>::Type
 getValue(ModifiedString<THost, ModPadding> const & me, TPosition const pos)
 {
     SEQAN_ASSERT_LT(pos, static_cast<TPosition>(length(me)));
-    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? host(me)[pos] : cargo(me)._paddedValue;
+    return (SEQAN_LIKELY(pos < static_cast<TPosition>(length(host(me))))) ? host(me)[pos] : cargoValue(me);
 }
 
 // --------------------------------------------------------------------------

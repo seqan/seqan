@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ using namespace seqan;
 
 struct CountingChar
 {
-    char value;                     // value of the object
+    char value{};                     // value of the object
     static unsigned numConstruct;   // number of constructor calls
     static unsigned numDeconstruct; // number of destructor calls
 
@@ -66,10 +66,19 @@ struct CountingChar
         numConstruct += 1;
     }
 
-    CountingChar(CountingChar const & other) : value(other.value)
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wstringop-overflow="
+#endif
+    CountingChar(CountingChar const & other): value(other.value)
     {
         numConstruct += 1;
     }
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic pop
+#endif
+
+    CountingChar & operator=(CountingChar const &) = default;
 
     ~CountingChar()
     {
@@ -1290,11 +1299,11 @@ void testSequenceErase(TString & /*Tag*/)
     // Test on a non empty string.
     TString string, string0;
     assign(string, "ACGTACGTACGT");
-    erase(string, 1);
+    seqan::erase(string, 1);
     assign(string0, "AGTACGTACGT");
     SEQAN_ASSERT(string == string0);
 
-    erase(string, 2, 5);
+    seqan::erase(string, 2, 5);
     assign(string0, "AGGTACGT");
     SEQAN_ASSERT(string == string0);
 }

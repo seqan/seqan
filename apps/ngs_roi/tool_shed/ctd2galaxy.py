@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Conversion of the CTD format into Galaxy XML.
 
 The CTD parser should be reusable but is not in its own module since it is
@@ -26,7 +26,7 @@ FILE_EXT_SUFFIX = '-file-ext'
 
 class CTDFormatException(Exception):
     """Raised when there is a format error in CTD."""
-    
+
 
 class CLIElement(object):
     """Represents a <clielement> tag.
@@ -72,7 +72,7 @@ class ParametersNode(object):
     :ivar required: Whether or not this parameter is required.
     :type required: bool
     """
-    
+
     def __init__(self, kind='', name='', description='', value='', type_='', tags='',
                  restrictions='', supported_formats='', required=False):
         """Initialize the object."""
@@ -103,15 +103,15 @@ class ParametersNode(object):
             self.path.append(self.name)
         if not self.children:
             return  # nothing to do: early exit.
-        for name, child in self.children.items():
+        for name, child in list(self.children.items()):
             child.computePath(False, self.path)
 
     def applyFunc(self, f):
         """Apply f to self and all children."""
         f(self)
-        for c in self.children.values():
+        for c in list(self.children.values()):
             c.applyFunc(f)
-            
+
     def find(self, path):
         """Return ParametersNode object at the path below the node."""
         if not path:
@@ -188,7 +188,7 @@ class Tool(object):
              self.manual, self.doc_url, self.category)
         return 'Tool(%s, %s, %s, %s, %s, %s, %s)' % tuple(map(repr, list(t)))
 
-        
+
 
 class CTDHandler(xml.sax.handler.ContentHandler):
     def __init__(self):
@@ -315,7 +315,7 @@ class XMLWriter(object):
     def appendTag(self, tag, text='', args={}):
         """Append a tag to self.result with text content only or no content at all."""
         e = xml.sax.saxutils.quoteattr
-        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in args.items() if value is not None)
+        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in list(args.items()) if value is not None)
         if args_str:
             args_str = ' '+ args_str
         vals = {'indent': self.indent(),
@@ -330,7 +330,7 @@ class XMLWriter(object):
     def openTag(self, tag, args={}):
         """Append an opening tag to self.result."""
         e = xml.sax.saxutils.quoteattr
-        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in args.items())
+        args_str = ' '.join('%s=%s' % (key, e(str(value))) for key, value in list(args.items()))
         if args_str:
             args_str = ' ' + args_str
         vals = {'indent': self.indent(),
@@ -345,7 +345,7 @@ class XMLWriter(object):
 
     def handleParameters(self, node):
         """Recursion for appending tags for ParametersNode."""
-        for pn in node.children.values():
+        for pn in list(node.children.values()):
             if pn.kind in ['item', 'itemlist']:
                 args = {'name': pn.name,
                         'value': pn.value,
@@ -514,7 +514,7 @@ class GalaxyWriter(XMLWriter):
                 self.closeTag('param')
             else:
                 self.appendTag('param', args=args)
-            
+
     def addOutputParam(self, param_node):
         """Add a ParametersNode object if it is to go to <inputs>."""
         if param_node.type_ != 'output-file':
@@ -529,7 +529,7 @@ class GalaxyWriter(XMLWriter):
         args['name'] = '_'.join(param_node.path).replace('-', '_').replace('.', '_')
         args['label'] = param_node.description
         self.appendTag('data', args=args)
-            
+
     def addCommandTag(self, tool):
         """Write <command> tag to self.result."""
         file_ext_elements = []
@@ -600,7 +600,7 @@ def main():
         writer.run(tool, f)
 
     return 0
-        
+
 
 if __name__ == '__main__':
     sys.exit(main())

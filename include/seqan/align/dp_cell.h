@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -126,11 +126,11 @@ struct Reference<DPCell_<TScoreValue, TGapCostFunction> const>
 template <typename T>
 struct DPCellDefaultInfinity
 {
-    static const int VALUE;
+    static const typename Value<T>::Type VALUE;
 };
 
 template <typename T>
-const int DPCellDefaultInfinity<T>::VALUE = std::numeric_limits<int>::min();
+const typename Value<T>::Type DPCellDefaultInfinity<T>::VALUE = std::numeric_limits<typename Value<T>::Type>::lowest();
 
 // We use the min value of the score type and shift it one bits to the left.  This way we can use "infinity" without
 // checking for it during the computation.
@@ -142,7 +142,8 @@ struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >
 
 template <typename TScoreValue, typename TGapCostFunction>
     const TScoreValue DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> >::VALUE =
-        createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::min()) / createVector<TScoreValue>(2);
+        createVector<TScoreValue>(std::numeric_limits<typename Value<TScoreValue>::Type>::lowest()) /
+        createVector<TScoreValue>(static_cast<typename Value<TScoreValue>::Type>(2));
 
 template <typename TScoreValue, typename TGapCostFunction>
 struct DPCellDefaultInfinity<DPCell_<TScoreValue, TGapCostFunction> const> :

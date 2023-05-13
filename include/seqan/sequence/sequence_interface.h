@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -369,6 +369,24 @@ begin(T const & me)
     return begin(me, typename DefaultGetIteratorSpec<T>::Type()) ;
 }
 
+#if defined(__cpp_lib_ranges)
+template <typename T>
+    requires (Is<ContainerConcept<T> >::VALUE)
+inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
+begin(T & me)
+{
+    return begin(me, typename DefaultGetIteratorSpec<T>::Type()) ;
+}
+
+template <typename T>
+    requires (Is<ContainerConcept<T> >::VALUE)
+inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type
+begin(T const & me)
+{
+    return begin(me, typename DefaultGetIteratorSpec<T>::Type()) ;
+}
+#endif // defined(__cpp_lib_ranges)
+
 //folgende forward Deklaration wurde wegen Phaenomene bei VC++ 2003 hinzugenommen
 //implemented in string_pointer.h
 // template <typename TValue,
@@ -503,6 +521,24 @@ end(T const & me)
 {
     return end(me, typename DefaultGetIteratorSpec<T>::Type()) ;
 }
+
+#if defined(__cpp_lib_ranges)
+template <typename T>
+    requires (Is<ContainerConcept<T> >::VALUE)
+inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
+end(T & me)
+{
+    return end(me, typename DefaultGetIteratorSpec<T>::Type()) ;
+}
+
+template <typename T>
+    requires (Is<ContainerConcept<T> >::VALUE)
+inline typename Iterator<T const, typename DefaultGetIteratorSpec<T>::Type>::Type
+end(T const & me)
+{
+    return end(me, typename DefaultGetIteratorSpec<T>::Type()) ;
+}
+#endif // defined(__cpp_lib_ranges)
 
 template <typename T, typename TSpec>
 inline typename Iterator<T, Tag<TSpec> const>::Type

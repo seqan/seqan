@@ -265,7 +265,7 @@ struct SubstringEntry
 };
 
 template <typename TSubstringEntry>
-struct LessSubstringEnd : public binary_function<TSubstringEntry, TSubstringEntry, bool >
+struct LessSubstringEnd : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 {
 	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const 
 	{
@@ -289,7 +289,7 @@ struct LessSubstringEnd : public binary_function<TSubstringEntry, TSubstringEntr
 };
 
 template <typename TSubstringEntry>
-struct LessRange : public binary_function<TSubstringEntry, TSubstringEntry, bool >
+struct LessRange : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 {
 	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const 
 	{
@@ -306,7 +306,7 @@ struct LessRange : public binary_function<TSubstringEntry, TSubstringEntry, bool
 };
 
 template <typename TSubstringEntry>
-struct LessLex : public binary_function<TSubstringEntry, TSubstringEntry, bool >
+struct LessLex : public std::function<bool (TSubstringEntry, TSubstringEntry)>
 {
 	inline bool operator() (TSubstringEntry const &a, TSubstringEntry const &b) const 
 	{

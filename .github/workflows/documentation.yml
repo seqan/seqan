@@ -1,0 +1,64 @@
+name: Deploy documentation (https://docs.seqan.de/)
+
+on:
+  push:
+    branches:
+      # Push events to branches matching refs/heads/main
+      - 'main'
+      # Push events to branches matching refs/heads/develop
+      - 'develop'
+  # Enables a manual trigger, may run on any branch
+  workflow_dispatch:
+
+concurrency:
+  group: documentation-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: Europe/Berlin
+
+defaults:
+  run:
+    shell: bash -lex {0}
+
+jobs:
+  my_job:
+    name: Deploy Documentation
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout SeqAn2
+        uses: actions/checkout@v3
+
+      - name: Get cached python environment
+        uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-${{ hashFiles('manual/environment.yml') }}
+
+      - name: Setup python environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: seqan
+          environment-file: manual/environment.yml
+          use-only-tar-bz2: true
+
+      - name: Build documentation
+        run: |
+          cd dox
+          cp dox_only.sh.in dox_only.sh
+          chmod 775 dox_only.sh
+          ./dox_only.sh
+
+      - name: Deploy documentation
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_HOST_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+        with:
+          flags: '-avzr --delete --timeout=60 --omit-dir-times'
+          src: 'dox/html/'
+          dest: '$REMOTE_USER@$REMOTE_HOST:$TARGET/${GITHUB_REF#refs/heads/}'

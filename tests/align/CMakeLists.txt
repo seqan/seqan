@@ -12,7 +12,7 @@ message (STATUS "Configuring tests/align")
 
 set (ALIGN_SIMD_TEST TRUE CACHE INTERNAL "Whether to build test_align_simd.")
 # workaround a bug in llvm35 on FreeBSD
-if ((SEQAN_TRAVIS_BUILD) OR
+if ((SEQAN_GH_ACTIONS_BUILD) OR
     ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
     (COMPILER_CLANG) AND
     (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0)))
@@ -91,11 +91,15 @@ if (ALIGN_SIMD_TEST)
                     test_align_simd_local.h
                     test_mock.h)
 
+    add_executable (test_align_bugs
+                    test_align_bugs.cpp)
+
     # Add dependencies found by find_package (SeqAn).
     target_link_libraries (test_align_simd_global_equal_length ${SEQAN_LIBRARIES})
     target_link_libraries (test_align_simd_global_variable_length ${SEQAN_LIBRARIES})
     target_link_libraries (test_align_simd_local_equal_length ${SEQAN_LIBRARIES})
     target_link_libraries (test_align_simd_local_variable_length ${SEQAN_LIBRARIES})
+    target_link_libraries (test_align_bugs ${SEQAN_LIBRARIES})
     # note(marehr): there is a bug when using <=clang3.8 with gcc4.9's stdlib,
     # where the default -ftemplate-depth=256 of clang is insufficient.
     # test_align_simd_avx2 needs a depth of at least 266.

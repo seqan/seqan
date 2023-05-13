@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the path manager."""
 
 __author__ = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'

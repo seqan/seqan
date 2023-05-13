@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ namespace seqan
  * @headerfile <seqan/graph_types.h>
  * @brief Iterate vertices of a graph in depth-first preorder fashion.
  *
- * @signature Iterator<TGraph, DfsPreorderIterator>::Type;
+ * @signature Iterator<TGraph, DfsPreorder>::Type;
  * @signature template <typename TGraph, typename TSpec>
  *            class Iter<TGraph, GraphIterator<InternalDfsPreorderIterator<TSpec> >;
  *

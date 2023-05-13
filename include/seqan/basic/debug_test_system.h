@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -164,7 +164,16 @@
 #else  // #ifdef STDLIB_VS
 #include <unistd.h>     // unlink()
 #include <sys/stat.h>   // mkdir()
+// c++17/20 has ignored attribute warnings on macOS
+#if defined(__GNUC__) && defined(__APPLE__) && __cplusplus >= 201703L
+#pragma push_macro("__unused")
+#undef __unused
+#define __unused
 #include <dirent.h>     // DIR
+#pragma pop_macro("__unused")
+#else // #if defined(__GNUC__) && defined(__APPLE__) && __cplusplus >= 201703L
+#include <dirent.h>     // DIR
+#endif // #if defined(__GNUC__) && defined(__APPLE__) && __cplusplus >= 201703L
 #if SEQAN_HAS_EXECINFO
 #include <execinfo.h>   // backtrace(), backtrace_symbols()
 #endif  // #if SEQAN_HAS_EXECINFO
@@ -2365,7 +2374,7 @@ inline void fail()
 #define SEQAN_END_TESTSUITE \
     return 0;                                   \
     }
-#define SEQAN_CALL_TEST(test_name) do { SEQAN_TEST_ ## test_name(); } while (false)
+#define SEQAN_CALL_TEST(test_name) do { SEQAN_TEST_ ## test_name<true>(); } while (false)
 #define SEQAN_SKIP_TEST do {} while (false)
 
 #endif  // #if !SEQAN_ENABLE_TESTING

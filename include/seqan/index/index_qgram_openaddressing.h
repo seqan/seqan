@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,7 @@ namespace seqan
         TShape            shape;        // underlying shape
         TCargo            cargo;        // user-defined cargo
         TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
-        TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+        TSize            stepSize{1};   // store every <stepSize>'th q-gram in the index
 
         double            alpha;        // for m entries the hash map has at least size alpha*m
 
@@ -128,7 +128,7 @@ namespace seqan
             stepSize(1),
             alpha(defaultAlpha) {}
 
-        Index(Index &other):
+        Index(Index const & other):
             text(other.text),
             sa(other.sa),
             dir(other.dir),
@@ -140,17 +140,7 @@ namespace seqan
             stepSize(1),
             alpha(defaultAlpha) {}
 
-        Index(Index const &other):
-            text(other.text),
-            sa(other.sa),
-            dir(other.dir),
-            counts(other.counts),
-            countsDir(other.countsDir),
-            shape(other.shape),
-            cargo(other.cargo),
-            bucketMap(other.bucketMap),
-            stepSize(1),
-            alpha(defaultAlpha) {}
+        Index & operator=(Index const &) = default;
 
         template <typename TText_>
         Index(TText_ &_text):

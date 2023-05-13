@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@
 struct MasonSimulateGenomeOptions
 {
     // A list of the lengths of the contigs to simulate.
-    seqan::String<int> contigLengths;
+    seqan::String<int64_t> contigLengths;
     // The seed to use for random number generation.
     int seed;
 

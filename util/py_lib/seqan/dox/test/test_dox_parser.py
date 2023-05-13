@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tests for the dox_parser module.
 
 The parser results are very complex.  We rely on parsing Doxygen-style
@@ -291,7 +291,7 @@ class TestFunctionParsing(TestDoxParserBase):
         self.assertEqual(fn.throws[0].name.text, 'Exception')
         txt = 'The thrown exception'
         self.assertEqual(fn.throws[0].text.text, txt)
-        
+
     def testDataRace(self):
         txt = ('@fn funktion\n'
                '@datarace This function is thread safe.')
@@ -856,7 +856,7 @@ class TestPageParsingWithInclude(TestDoxParserBase):
                '@snippet example.cpp Snippet Name\n\n')
         self.assertMultiLineEqual(doc.getFormatted(), txt)
 
-        
+
 class TestPageParsing(TestDoxParserBase):
     def testMinimal(self):
         txt = '@page Page Title'
@@ -906,7 +906,7 @@ class TestPageParsing(TestDoxParserBase):
                     '\n')
         self.assertMultiLineEqual(doc.getFormatted(50), expected)
 
-        
+
 class TestPageParsing(TestDoxParserBase):
     def testMinimal(self):
         txt = '@defgroup GroupName Group Title'
@@ -968,7 +968,7 @@ class TestLinkParsing(TestDoxParserBase):
                     '\n'
                     '@link PageTitle the page title @endlink.\n\n')
         self.assertMultiLineEqual(doc.getFormatted(), expected)
-        
+
 
 if __name__ == '__main__':
     unittest.main()

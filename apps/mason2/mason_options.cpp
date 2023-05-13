@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -333,7 +333,12 @@ void MaterializerOptions::addOptions(seqan::ArgumentParser & parser) const
 {
     addSection(parser, "Apply VCF Variants to Reference");
 
-    addOption(parser, seqan::ArgParseOption("ir", "input-reference", "Path to FASTA file to read the reference from.",
+    addOption(parser, seqan::ArgParseOption("ir", "input-reference",
+                                            "Path to FASTA file to read the reference from. Many contigs in a "
+                                            "reference might be a problem due to many file handles that need to be "
+                                            "openened. Check the hard limit of file handles with 'ulimit -Hn' and "
+                                            "increase the soft limit to the hard limit with 'ulimit -Sn <number>' if "
+                                            "necessary.",
                                             seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
     setValidValues(parser, "input-reference", seqan::SeqFileIn::getFileExtensions());
     setRequired(parser, "input-reference");

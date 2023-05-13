@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -119,6 +119,31 @@ SEQAN_DEFINE_TEST(goDownOnEmptyString)
     SEQAN_ASSERT_EQ(representative(it), DnaString("GC"));
     goRight(it);
     SEQAN_ASSERT_EQ(representative(it), DnaString("TC"));
+}
+
+SEQAN_DEFINE_TEST(bidirectionalGoDownStringHistory)
+{
+    typedef Index<DnaString, BidirectionalIndex<FMIndex<> > > TIndex;
+    typedef Iter<TIndex, VSTree<TopDown<ParentLinks<> > > > TIter;
+
+    DnaString text("GCTAAAA");
+    TIndex index(text);
+    TIter it(index);
+
+    SEQAN_ASSERT_EQ(goDown(it, "AAAT"), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "TAAA");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "AAAT");
+    SEQAN_ASSERT_EQ(goDown(it, "CG"), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "GCTAAA");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "AAATCG");
+    SEQAN_ASSERT_EQ(goUp(it), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "TAAA");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "AAAT");
+    SEQAN_ASSERT_EQ(goUp(it), true);
+    SEQAN_ASSERT_EQ(representative(it, Fwd()), "");
+    SEQAN_ASSERT_EQ(representative(it, Rev()), "");
+    SEQAN_ASSERT_EQ(length(_iter(it, Fwd()).history), 0u);
+    SEQAN_ASSERT_EQ(length(_iter(it, Rev()).history), 0u);
 }
 
 SEQAN_DEFINE_TEST(testBuild)
@@ -439,7 +464,7 @@ SEQAN_DEFINE_TEST(testSTreeIterators_Esa)
 
 template <typename TPair>
 struct PairLess_ :
-        public std::binary_function<TPair, TPair, bool>
+        public std::function<bool(TPair, TPair)>
 {
         inline bool
         operator() (TPair const& a1, TPair const& a2) const

@@ -1,9 +1,9 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """
 Automatic building of SeqAn apps and releases.
 """
 
-from __future__ import print_function
+
 
 import subprocess
 import optparse
@@ -416,7 +416,7 @@ def workTrunk(options):
     for word_size in options.word_sizes.split(','):
         # Create build step for this package name.
         pkg_formats = options.package_formats.split(',')
-        build_step = BuildStep(options.package_db, 'master', name, version, options.os,
+        build_step = BuildStep(options.package_db, 'main', name, version, options.os,
                                word_size, pkg_formats, options.repository_url,
                                options.make_args.split(), options, options.tmp_dir)
         # Check whether we need to build this.

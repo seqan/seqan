@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Tokens for Doxygen-like tokens.
 """
 
@@ -47,12 +47,12 @@ LEXER_TOKENS = (
     ('COMMAND_DEFGROUP',     r'@defgroup'),
     ('COMMAND_TYPEDEF',      r'@typedef'),
     ('COMMAND_ADAPTION',     r'@adaption'),
-    
+
     # Lexer tokens for commands starting different modes.
     ('COMMAND_SIGNATURE',    r'@signature'),
     ('COMMAND_CODE',         r'@code'),
     ('COMMAND_ENDCODE',      r'@endcode'),
-    
+
     # Lexer tokens for commands starting clauses.
     ('COMMAND_HEADERFILE',   r'@headerfile'),
     ('COMMAND_EXTENDS',      r'@extends'),
@@ -73,7 +73,7 @@ LEXER_TOKENS = (
     ('COMMAND_WARNING',      r'@warning'),
     ('COMMAND_INTERNAL',     r'@internal'),
     ('COMMAND_AKA',          r'@aka'),
-    
+
     # Lexer tokens for commands for inline use.
     ('COMMAND_LINK',         r'@link'),
     ('COMMAND_ENDLINK',      r'@endlink'),
@@ -81,7 +81,7 @@ LEXER_TOKENS = (
     # Lexer tokens for HTML-only blocks.
     ('COMMAND_HTMLONLY',     r'@htmlonly'),
     ('COMMAND_ENDHTMLONLY',  r'@endhtmlonly'),
-    
+
     # Space.
     ('SPACE',                r'[ \t]+'),
     ('EMPTYLINE',            r'\n\s*\n\s*'),
@@ -96,11 +96,11 @@ LEXER_TOKENS = (
     ('WORD',                 r'\w+'),
     ('HTML_TAG',             HTML_TAG),
     ('PUNCTUATION',          r'\S'),
-    
+
     # Lexing punctuation.
     ('HASH',                 r'\#'),
     ('NS_SEP',               r'::'),
-    
+
     # Literals.
     ('LITERAL',              escapeLiterals(LITERALS)),
     )

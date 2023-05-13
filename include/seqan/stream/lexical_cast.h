@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -233,7 +233,7 @@ lexicalCast(TInteger & target, TSource const & source)
 template <typename TSource>
 inline bool lexicalCast(float & target, TSource const & source)
 {
-    int offset;
+    int offset{};
     return (sscanf(toCString(source), "%g%n", &target, &offset) == 1) &&
            (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
@@ -242,7 +242,7 @@ inline bool lexicalCast(float & target, TSource const & source)
 template <typename TSource>
 inline bool lexicalCast(double & target, TSource const & source)
 {
-    int offset;
+    int offset{};
     return (sscanf(toCString(source), "%lg%n", &target, &offset) == 1) &&
            (static_cast<typename Size<TSource>::Type>(offset) == length(source));
 }
@@ -250,7 +250,7 @@ inline bool lexicalCast(double & target, TSource const & source)
 template <typename TTarget, typename TSource>
 inline TTarget lexicalCast(TSource const & source)
 {
-    TTarget target;
+    TTarget target{};
     if (!lexicalCast(target, source))
         throw BadLexicalCast(target, source);
     return target;

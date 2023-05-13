@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@
 int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
 {
     // Initialize std generator and distribution
-    std::mt19937 generator(42); // seed 100
+    std::mt19937 generator(options.seed);
     std::uniform_real_distribution<double> distribution(0, 1);
     auto randomNumber = std::bind ( distribution, generator );
 
@@ -64,7 +64,7 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
 
         std::cerr << "contig " << id << " ...";
 
-        for (int j = 0; j < options.contigLengths[i];)
+        for (int64_t j = 0; j < options.contigLengths[i];)
         {
             double x = randomNumber();
             if (x < 0.25)

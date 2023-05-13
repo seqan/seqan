@@ -779,7 +779,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     /////////////////////////////////////////////////////////////////////////////
     // helper variables
     Pair<int,int> zeroPair(0,0);
-    int sumreads = 0;
     int sumwindows = 0;
 
     bool positionStatsOnly = (options.outputSNP == "" && options.outputPosition != "");
@@ -846,7 +845,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
             // add the matches that were overlapping with this and the last window (copied in order to avoid 2 x makeGlobal)
             if(!empty(tmpMatches))
             {
-                sumreads -=  length(tmpReads);  // count these reads only once
                 resize(fragmentStore.alignQualityStore,length(tmpMatches));
                 resize(fragmentStore.alignedReadStore,length(tmpMatches));
                 resize(fragmentStore.readSeqStore,length(tmpMatches));
@@ -911,7 +909,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 
             if (options._debugLevel > 1)  // number of reads currently in memory
                 ::std::cerr << lengthSum(fragmentStore.readSeqStore) << " bps of " << length(fragmentStore.readSeqStore) << " reads in memory." << ::std::endl;
-            sumreads +=  length(fragmentStore.readSeqStore);  // total count of reads
 
             // do merged pile up correction
             if(options.maxPile != 0 && !options.laneSpecificMaxPile)

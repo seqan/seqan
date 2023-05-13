@@ -124,7 +124,7 @@ inline bool _qgramDisableBuckets(Index<TStringSet, IndexQGram<TShape, TSpec> > &
 
 template <>
 struct FunctorComplement<AminoAcid>:
-    public::std::unary_function<AminoAcid, AminoAcid>
+    public::std::function<AminoAcid(AminoAcid)>
 {
     inline AminoAcid operator()(AminoAcid x) const
     {

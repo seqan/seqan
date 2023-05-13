@@ -47,6 +47,9 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
 
+# bibliography file for sphinxcontrib.bibtex
+bibtex_bibfiles = ['seqan.bib']
+
 # The master toctree document.
 master_doc = 'index'
 
@@ -60,7 +63,7 @@ copyright = u'2015, The SeqAn Team'
 # If it is not set, e.g., if you build it manually for testing you can export
 # this variable before calling make html in the manual directory to match your
 # checked out branch.
-seqan_branch = os.environ.get('READTHEDOCS_VERSION', 'master')
+seqan_branch = os.environ.get('READTHEDOCS_VERSION', 'main')
 
 # -- SeqAn: Determine current branch ---------------------------------------------->
 

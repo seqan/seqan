@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,7 @@ _getAlignmentStatistics(Graph<Undirected<TCargo, TSpec> >& dist,
 
 template<typename TSize>
 struct LessPair_ :
-    public std::unary_function<Pair<TSize, TSize>, bool>
+    public std::function<bool(Pair<TSize, TSize>)>
 {
     inline bool
     operator() (Pair<TSize, TSize> const& a1, Pair<TSize, TSize> const& a2) const {
@@ -96,7 +96,7 @@ struct LessPair_ :
 
 template<typename TSize>
 struct _LessTripel :
-    public std::unary_function<Pair<TSize, Triple<TSize, TSize, TSize> >, bool>
+    public std::function<bool(Pair<TSize, Triple<TSize, TSize, TSize> >)>
 {
     inline bool
     operator() (Pair<TSize, Triple<TSize, TSize, TSize> > const& a1, Pair<TSize, Triple<TSize, TSize, TSize> > const& a2) {

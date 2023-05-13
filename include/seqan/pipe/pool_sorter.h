@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,9 +39,7 @@ namespace seqan
 {
 
     template < typename TValue, typename Compare >
-    struct MergeStreamComparer : public std::binary_function < PageBucket<TValue>,
-                                                               PageBucket<TValue>,
-                                                               bool>
+    struct MergeStreamComparer : public std::function<bool(PageBucket<TValue>, PageBucket<TValue>)>
     {
         Compare C;
         MergeStreamComparer(Compare &tmpC): C(tmpC) { }
@@ -53,17 +51,12 @@ namespace seqan
     };
 
     template < typename TCompare >
-    struct AdaptorCompare2Less :
-        public std::binary_function <
-            typename TCompare::first_argument_type,
-            typename TCompare::second_argument_type,
-            bool >
+    struct AdaptorCompare2Less
     {
         TCompare const & C;
         AdaptorCompare2Less(TCompare const & tmpC): C(tmpC) { }
-        inline bool operator() (
-            typename TCompare::first_argument_type const &a,
-            typename TCompare::second_argument_type const &b) const
+        template <typename t>
+        inline bool operator() (t const &a, t const &b) const
         {
             return C(a, b) < 0;
         }
@@ -79,7 +72,7 @@ namespace seqan
  * @signature template <typename TCompare, typename TSize[, typename TFile>
  *            struct SorterConfigSize;
  *
- * @tparam TCompare The compare function (see STL's <tt>binary_function</tt>).
+ * @tparam TCompare The compare function (see STL's <tt>function</tt>).
  * @tparam TSize    The Sorter's size type.
  * @tparam TFile    The underlying File type.  <tt>File&lt;&gt;</tt>
  *
@@ -108,7 +101,7 @@ namespace seqan
  * @signature template <typename TCompare[, typename TFile]>
  *            struct SorterConfig;
  *
- * @tparam TCompare The compare function (see STL's <tt>binary_function</tt>).
+ * @tparam TCompare The compare function (see STL's <tt>function</tt>).
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
  *
  * The requirement on TCompare are as follows: let <tt>comp</tt> be an object of type <tt>TCompare</tt>.  <tt>comp(a,
@@ -203,7 +196,7 @@ namespace seqan
             cancel();
         }
 
-        struct insertBucket : public std::unary_function<TPageBucket,void>
+        struct insertBucket : public std::function<void(TPageBucket)>
         {
             Handler &me;
             insertBucket(Handler &_me): me(_me) {}
@@ -318,7 +311,7 @@ namespace seqan
             cancel();
         }
 
-        struct insertBucket : public std::unary_function<TPageBucket, void> {
+        struct insertBucket : public std::function<void(TPageBucket)> {
             BufferHandler &me;
             insertBucket(BufferHandler &_me): me(_me) {}
 

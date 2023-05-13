@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -141,7 +141,7 @@ namespace seqan
     };
 
     template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
-    struct _filterGlobalizer : public std::unary_function<InType,Result> {
+    struct _filterGlobalizer : public std::function<Result(InType)> {
         TLimitsString const &limits;
         _filterGlobalizer(TLimitsString const &_limits) : limits(_limits) {}
         inline Result operator()(const InType& x) const

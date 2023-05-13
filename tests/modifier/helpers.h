@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,13 +39,13 @@
 
 // Cesar Chiffre as a test functor.
 template <typename TArgChar, typename TResultChar = TArgChar>
-struct CaesarChiffre : public std::unary_function<TArgChar, TResultChar>
+struct CaesarChiffre : public std::function<TResultChar(TArgChar)>
 {
     TArgChar _delta;
 
     CaesarChiffre() : _delta(0) {}
-    CaesarChiffre(CaesarChiffre &other) : _delta(other._delta) {}
-    CaesarChiffre(CaesarChiffre const &other) : _delta(other._delta) {}
+    CaesarChiffre(CaesarChiffre const &other) = default;
+    CaesarChiffre & operator=(CaesarChiffre const &) = default;
 
     CaesarChiffre(TArgChar delta) {
         if (delta < 0)

@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_snp_store CXX)
 message (STATUS "Configuring apps/snp_store")
 
-set (SEQAN_APP_VERSION "1.3.8")
+set (SEQAN_APP_VERSION "1.3.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -23,8 +23,13 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
-if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
-    message (STATUS "  Boost or zlib not found: Not building snp_store.")
+if (NOT Boost_FOUND)
+    message (STATUS "  Skipping snp_store, missing Boost")
+    return ()
+endif ()
+
+if (NOT ZLIB_FOUND)
+    message (STATUS "  Skipping snp_store, missing zlib")
     return ()
 endif ()
 
@@ -59,6 +64,9 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Include executable snp_store in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} snp_store CACHE INTERNAL "")
+
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (snp_store)
 
 # ----------------------------------------------------------------------------
 # Installation

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -221,7 +221,7 @@ struct _LessGapAnchor;
 
 template <typename TGapAnchor>
 struct _LessGapAnchor<TGapAnchor, SortSeqPos> :
-    public std::binary_function<TGapAnchor, TGapAnchor, bool>
+    public std::function<bool(TGapAnchor, TGapAnchor)>
 {
     inline bool
     operator() (TGapAnchor const& a1, TGapAnchor const& a2) const {
@@ -231,7 +231,7 @@ struct _LessGapAnchor<TGapAnchor, SortSeqPos> :
 
 template <typename TGapAnchor>
 struct _LessGapAnchor<TGapAnchor, SortGapPos> :
-    public std::binary_function<TGapAnchor, TGapAnchor, bool>
+    public std::function<bool(TGapAnchor, TGapAnchor)>
 {
     inline bool
     operator() (TGapAnchor const& a1, TGapAnchor const& a2) const {

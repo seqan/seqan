@@ -9,21 +9,26 @@
 cmake_minimum_required (VERSION 3.0.0)
 project (seqan_dox CXX)
 
-# require python 2.7, not python3
-set(PythonInterp_FIND_VERSION 2.7)
-set(PythonInterp_FIND_VERSION_MAJOR 2)
-set(PythonInterp_FIND_VERSION_MINOR 7)
-set(PythonInterp_FIND_VERSION_COUNT 2)
-
-find_package (PythonInterp)
-if (NOT PYTHONINTERP_FOUND OR NOT(${PYTHON_VERSION_MAJOR} MATCHES "2"))
-    message (STATUS "  You need Python 2.x for building dox. (skip the tests)")
+find_package (Python3)
+if (NOT Python3_Interpreter_FOUND)
+    message (STATUS "  You need Python for building dox. (skipping)")
     return ()
 endif ()
 
+# require jinja2 python package
+execute_process(COMMAND ${Python3_EXECUTABLE} -c "import jinja2"
+                RESULT_VARIABLE PYTHON_JINJA2_NOT_FOUND
+                OUTPUT_VARIABLE _IGNORED
+                ERROR_VARIABLE _IGNORED)
+
+if (PYTHON_JINJA2_NOT_FOUND)
+  message (STATUS "  The Python package jinja2 is required for building dox ('import jinja2' failed). (skipping)")
+  return ()
+endif (PYTHON_JINJA2_NOT_FOUND)
+
 # Add building the documentation as a test.
 add_test (build_dox
-  ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
+  ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
   -b ${CMAKE_CURRENT_SOURCE_DIR}/..
   -i ${CMAKE_CURRENT_SOURCE_DIR}/../include/seqan
   -i ${CMAKE_CURRENT_SOURCE_DIR}/pages
@@ -31,7 +36,7 @@ add_test (build_dox
 
 if (${SEQAN_BUILD_SYSTEM} MATCHES "SEQAN_RELEASE_LIBRARY") # includes SEQAN_RELEASE_LIBRARY
     add_custom_target (dox ALL
-        cd ${CMAKE_CURRENT_SOURCE_DIR} && ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
+        cd ${CMAKE_CURRENT_SOURCE_DIR} && ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
         -b ${CMAKE_CURRENT_SOURCE_DIR}/..
         -i ${CMAKE_CURRENT_SOURCE_DIR}/../include/seqan
         -i ${CMAKE_CURRENT_SOURCE_DIR}/pages

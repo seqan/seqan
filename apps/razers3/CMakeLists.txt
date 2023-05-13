@@ -10,15 +10,15 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_razers3 CXX)
 message (STATUS "Configuring apps/razers3")
 
-set (SEQAN_APP_VERSION "3.5.8")
+set (SEQAN_APP_VERSION "3.5.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
 
-# Disable RazerS3 on Travis CI because of computational resource limits.
-if (SEQAN_TRAVIS_BUILD)
-    message (STATUS "  RazerS 3 is not built on Travis CI.")
+# Disable RazerS3 on GitHub Actions because of computational resource limits.
+if (SEQAN_GH_ACTIONS_BUILD)
+    message (STATUS "  Skipping razers3 on GitHub Actions")
     return ()
 endif ()
 
@@ -119,6 +119,9 @@ seqan_add_app_test (razers3 _sequential)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} razers3 CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (razers3)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
@@ -131,4 +134,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:razers3")
 
   seqan_configure_cpack_app (razers3 "razers3")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:razers3")
-

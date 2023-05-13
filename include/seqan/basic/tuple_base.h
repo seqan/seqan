@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -200,7 +200,7 @@ struct Tuple<TValue, SIZE, Pack>
 template <typename TValue, unsigned SIZE, typename TSpec>
 struct LENGTH<Tuple<TValue, SIZE, TSpec> >
 {
-    enum { VALUE = SIZE };
+    static const unsigned VALUE = SIZE;
 };
 
 // -----------------------------------------------------------------------

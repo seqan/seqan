@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_micro_razers CXX)
 message (STATUS "Configuring apps/micro_razers")
 
-set (SEQAN_APP_VERSION "1.0.11")
+set (SEQAN_APP_VERSION "1.0.12")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -92,4 +92,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:micro_razers")
 
   seqan_configure_cpack_app (micro_razers "MicroRazerS")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:micro_razers")
-

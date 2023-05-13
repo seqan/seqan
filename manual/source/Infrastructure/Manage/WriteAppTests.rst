@@ -126,11 +126,11 @@ As suggested by the output of *skel.py*, add the following to your *apps/upcase/
 .. code-block:: cmake
 
    # Add app tests if Python interpreter could be found.
-   if(PYTHONINTERP_FOUND)
-     add_test(NAME app_test_upcase COMMAND ${PYTHON_EXECUTABLE}
+   if(Python3_Interpreter_FOUND)
+     add_test(NAME app_test_upcase COMMAND ${Python3_EXECUTABLE}
        ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests.py ${CMAKE_SOURCE_DIR}
        ${CMAKE_BINARY_DIR})
-   endif(PYTHONINTERP_FOUND)
+   endif(Python3_Interpreter_FOUND)
 
 Now, open the file *apps/upcase/tests/generate_outputs.sh* and modify it as follows.
 
@@ -198,9 +198,9 @@ It should look like the following:
    def main(source_base, binary_base):
        """Main entry point of the script."""
 
-       print 'Executing test for upcase'
-       print '========================='
-       print
+       print ('Executing test for upcase')
+       print ('=========================')
+       print ()
 
        ph = app_tests.TestPathHelper(
            source_base, binary_base,
@@ -253,11 +253,11 @@ It should look like the following:
                failures += 1
                print 'FAILED'
 
-       print '=============================='
-       print '     total tests: %d' % len(conf_list)
-       print '    failed tests: %d' % failures
-       print 'successful tests: %d' % (len(conf_list) - failures)
-       print '=============================='
+       print ('==============================')
+       print ('     total tests: %d' % len(conf_list))
+       print ('    failed tests: %d' % failures)
+       print ('successful tests: %d' % (len(conf_list) - failures))
+       print ('==============================')
 
        # Compute and return return code.
        return failures != 0

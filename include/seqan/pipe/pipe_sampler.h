@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -179,7 +179,14 @@ namespace seqan
                 {
                     do
                     {
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wstringop-overflow="
+#endif
                         outRef->i2.i[skipped++] = *in;
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic pop
+#endif
                         ++in;
                         if (idxMod == 0) idxMod = m;
                         --idxMod; --idx;
@@ -200,7 +207,11 @@ namespace seqan
                 {
                     do
                     {
-                        outRef->i2.i[skipped++] = 0;
+                        // Do not go out of bounds
+                        if (skipped < LENGTH<TInput>::VALUE)
+                            outRef->i2.i[skipped] = 0;
+                        // But always increment skipped
+                        skipped += 1;
                         if (idxMod == 0) idxMod = m;
                         --idxMod; --idx;
                     }
@@ -467,7 +478,11 @@ namespace seqan
                 {
                     do
                     {
-                        outRef->i2.i[skipped++] = 0;
+                        // Do not go out of bounds
+                        if (skipped < LENGTH<TInput>::VALUE)
+                            outRef->i2.i[skipped] = 0;
+                        // But always increment skipped
+                        skipped += 1;
                         --localPos;
                     }
                     while (!filter[localPos.residue]);

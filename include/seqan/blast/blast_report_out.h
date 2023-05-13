@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -440,6 +440,8 @@ template <typename TStream,
           typename TQId,
           typename TSId,
           typename TPos,
+          typename TSAccs,
+          typename TSTaxIDs,
           typename TAlignRow0,
           typename TAlignRow1,
           BlastProgram p,
@@ -447,7 +449,8 @@ template <typename TStream,
 inline void
 _writeAlignmentBlock(TStream & stream,
                      BlastIOContext<TScore, p, h> & context,
-                     BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
+                     BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId, TSAccs, TSTaxIDs> const & m,
+                     TPos const qLength,
                      BlastReport const & /*tag*/)
 {
     TPos const   windowSize  = 60;
@@ -464,7 +467,7 @@ _writeAlignmentBlock(TStream & stream,
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.blastProgram);
+    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, qLength, context.blastProgram);
     _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.blastProgram);
 
     int8_t const  qStepOne = (m.qFrameShift < 0) ?  -1 : 1;
@@ -524,17 +527,15 @@ _writeAlignmentBlock(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
           typename TPos,
-          typename TAlignRow0,
-          typename TAlignRow1,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeFullMatch(TStream & stream,
                 BlastIOContext<TScore, p, h> & context,
-                BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
+                BlastMatch<TSpecs...> const & m,
+                TPos const qLength,
                 BlastReport const & /*tag*/)
 {
     write(stream, "> ");
@@ -559,7 +560,7 @@ _writeFullMatch(TStream & stream,
 
     _writeStatsBlock(stream, context, m, BlastReport());
 
-    _writeAlignmentBlock(stream, context, m, BlastReport());
+    _writeAlignmentBlock(stream, context, m, qLength, BlastReport());
 }
 
 // ----------------------------------------------------------------------------
@@ -568,17 +569,13 @@ _writeFullMatch(TStream & stream,
 
 template <typename TStream,
           typename TScore,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlignRow0,
-          typename TAlignRow1,
+          typename ... TSpecs,
           BlastProgram p,
           BlastTabularSpec h>
 inline void
 _writeMatchOneLiner(TStream & stream,
                     BlastIOContext<TScore, p, h> &,
-                    BlastMatch<TAlignRow0, TAlignRow1, TPos, TQId, TSId> const & m,
+                    BlastMatch<TSpecs...> const & m,
                     BlastReport const & /*tag*/)
 {
     if (length(m.sId) == 66) // it fits
@@ -717,7 +714,13 @@ writeRecord(TStream & stream,
         write(stream, "\nALIGNMENTS\n");
         // full matches
         for (auto const & m : record.matches)
-            _writeFullMatch(stream, context, m, BlastReport());
+        {
+            _writeFullMatch(stream,
+                            context,
+                            m,
+                            record.qLength ? record.qLength : m.qLength,
+                            BlastReport());
+        }
     }
     else
     {

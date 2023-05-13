@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -128,9 +128,9 @@ class VcfRecord
 {
 public:
     // Constant for invalid reference id.
-    static const int32_t INVALID_REFID = -1;
+    inline static const int32_t INVALID_REFID = -1;
     // Constant for invalid position.
-    static const int32_t INVALID_POS = -1;
+    inline static const int32_t INVALID_POS = -1;
 
     // Numeric id of the reference sequence.
     int32_t rID;

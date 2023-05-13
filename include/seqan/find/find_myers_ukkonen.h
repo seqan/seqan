@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -213,7 +213,7 @@ struct MyersSmallState_<TNeedle, AlignTextBanded<TSpec, TFinderCSP, TPatternCSP>
 #endif
     typedef typename Value<TNeedle>::Type TValue;
 
-    TWord bitMasks[ValueSize<TValue>::VALUE];
+    TWord bitMasks[ValueSize<TValue>::VALUE + 1];
     TWord VP0;                    // VP[0] (saves one dereferentiation)
     TWord VN0;                    // VN[0]
     unsigned short errors;      // the current number of errors
@@ -856,7 +856,7 @@ finline void
 _myersPreInit(PatternState_<TNeedle, TSpec> &state, False)
 {
     typedef typename Value<TNeedle>::Type TValue;
-    memset(state.bitMasks, 0, (ValueSize<TValue>::VALUE + 1) * sizeof(state.bitMasks[0]));
+    memset(state.bitMasks, 0, ValueSize<TValue>::VALUE * sizeof(state.bitMasks[0]));
     memset(state.shift, 0, ValueSize<TValue>::VALUE * sizeof(state.shift[0]));
 }
 

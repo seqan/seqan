@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_samcat CXX)
 message (STATUS "Configuring apps/samcat")
 
-set (SEQAN_APP_VERSION "0.3.8")
+set (SEQAN_APP_VERSION "0.3.9")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -87,6 +87,9 @@ seqan_add_app_test (samcat)
 # Include executable razers in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} samcat CACHE INTERNAL "")
 
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (samcat)
+
 # ----------------------------------------------------------------------------
 # CPack Install
 # ----------------------------------------------------------------------------
@@ -99,4 +102,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
 
   seqan_configure_cpack_app (samcat "samcat")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
-

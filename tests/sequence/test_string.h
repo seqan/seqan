@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1293,7 +1293,14 @@ SEQAN_DEFINE_TEST(ticket1108)
 //            std::cerr << i << ", " << std::endl;
             TArray elem;
             resize(elem, ARRAY_SIZE);
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
             appendValue(str, elem);
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic pop
+#endif
             SEQAN_ASSERT_LEQ(length(elem), ARRAY_SIZE);
             SEQAN_ASSERT_LEQ(length(str[0u]), ARRAY_SIZE); // Is violated as soon as i reaches 48.
             if (length(str) > 32u) SEQAN_ASSERT_LEQ(length(str[32u]), ARRAY_SIZE);

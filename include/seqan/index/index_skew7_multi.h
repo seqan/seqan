@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ namespace seqan
     // *** COMPARATORS & MAPS ***
 
     template <typename TValue, typename TResult = int>
-    struct _skew7NCompMulti : public std::binary_function<TValue, TValue, TResult> {
+    struct _skew7NCompMulti : public std::function<TResult(TValue, TValue)> {
         inline TResult operator() (const TValue &a, const TValue &b) const
         {
             typedef typename Value<TValue, 1>::Type                 TPos;
@@ -94,10 +94,9 @@ namespace seqan
     // optimized for bitvectors
     template <typename T1, typename TValue, typename TResult>
     struct _skew7NCompMulti< Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >, TResult > :
-        public std::binary_function<
-            Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
-            Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
-            TResult> {
+        public std::function<TResult(Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
+                             Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >)>
+    {
         inline TResult operator() (
             const Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack > &a,
             const Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack > &b) const
@@ -138,7 +137,7 @@ namespace seqan
         typename TResult = Pair<TResultSize, typename Value<TValue,2>::Type, typename Spec<TValue>::Type>
     >
     struct _skew7GlobalSlicedMulti :
-        public std::unary_function<TValue, TResult>
+        public std::function<TResult(TValue)>
     {
 
         typedef TResultSize TSize;

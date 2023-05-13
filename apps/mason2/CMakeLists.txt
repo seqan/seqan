@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_mason2 CXX)
 message (STATUS "Configuring apps/mason2")
 
-set (SEQAN_APP_VERSION "2.0.9")
+set (SEQAN_APP_VERSION "2.0.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -103,14 +103,14 @@ add_executable (mason_splicing mason_splicing.cpp)
 add_executable (mason_tests mason_tests.cpp)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (mason_frag_sequencing ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_genome ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_materializer ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_methylation ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_simulator ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_splicing ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_tests ${SEQAN_LIBRARIES} mason_sim)
-target_link_libraries (mason_variator ${SEQAN_LIBRARIES} mason_sim)
+target_link_libraries (mason_frag_sequencing mason_sim)
+target_link_libraries (mason_genome mason_sim)
+target_link_libraries (mason_materializer mason_sim)
+target_link_libraries (mason_methylation mason_sim)
+target_link_libraries (mason_simulator mason_sim)
+target_link_libraries (mason_splicing mason_sim)
+target_link_libraries (mason_tests mason_sim)
+target_link_libraries (mason_variator mason_sim)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
@@ -125,6 +125,13 @@ set (SEQAN_CTD_EXECUTABLES
     mason_materializer
     mason_simulator
     CACHE INTERNAL "")
+
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (mason_genome)
+seqan_add_ctd_test (mason_frag_sequencing)
+seqan_add_ctd_test (mason_variator)
+seqan_add_ctd_test (mason_materializer)
+seqan_add_ctd_test (mason_simulator)
 
 # ----------------------------------------------------------------------------
 # Installation
@@ -164,7 +171,13 @@ install (FILES example/adeno_virus.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-seqan_add_app_test (mason2)
+# Presumably due to https://github.com/gcc-mirror/gcc/commit/98c37d3bacbb2f8bbbe56ed53a9547d3be01b66b
+if (CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+                                            CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 10))
+  seqan_add_app_test (mason2)
+else ()
+  message (STATUS "Skipping mason2 tests on Unix GCC!=10")
+endif ()
 
 # ----------------------------------------------------------------------------
 # CPack Install

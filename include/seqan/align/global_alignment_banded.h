@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -655,13 +655,17 @@ String<TScoreValue> globalAlignmentScore(TString const & stringH,
 // Function globalAlignment()              [banded, SIMD version, GapsH, GapsV]
 // ----------------------------------------------------------------------------
 
-template <typename TGapSequenceH, typename TSetSpecH,
-typename TGapSequenceV, typename TSetSpecV,
-typename TScoreValue, typename TScoreSpec,
-bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec, typename TAlgoTag>
-inline auto
-globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
-                StringSet<TGapSequenceV, TSetSpecV> & gapSeqSetV,
+template <typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec,
+          typename TAlgoTag>
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
                 Score<TScoreValue, TScoreSpec> const & scoringScheme,
                 AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & /*alignConfig*/,
                 int const lowerDiag,
@@ -674,6 +678,71 @@ globalAlignment(StringSet<TGapSequenceH, TSetSpecH> & gapSeqSetH,
     typedef typename SubstituteAlgoTag_<TAlgoTag>::Type                 TGapModel;
 
     return _alignWrapper(gapSeqSetH, gapSeqSetV, scoringScheme, TAlignConfig2(lowerDiag, upperDiag), TGapModel());
+}
+
+// Interface without AlignConfig<>.
+template <typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec,
+          typename TAlgoTag>
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
+                Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                int const lowerDiag,
+                int const upperDiag,
+                TAlgoTag const & algoTag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, lowerDiag, upperDiag, algoTag);
+}
+
+// Interface without algorithm tag.
+template <typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec,
+          bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, typename TACSpec>
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
+                Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                AlignConfig<TOP, LEFT, RIGHT, BOTTOM, TACSpec> const & alignConfig,
+                int const lowerDiag,
+                int const upperDiag)
+{
+    if (scoreGapOpen(scoringScheme) == scoreGapExtend(scoringScheme))
+    {
+        return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, lowerDiag, upperDiag,
+                               NeedlemanWunsch());
+    }
+    else
+    {
+        return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, lowerDiag, upperDiag, Gotoh());
+    }
+}
+
+// Interface without AlignConfig<> and algorithm tag.
+template <typename TSeqH,
+          typename TSeqV,
+          typename TScoreValue, typename TScoreSpec>
+SEQAN_FUNC_ENABLE_IF(And<And<Is<ContainerConcept<TSeqH>>, Is<ContainerConcept<typename Value<TSeqH>::Type>>>,
+                         And<Is<ContainerConcept<TSeqV>>, Is<ContainerConcept<typename Value<TSeqV>::Type>>>
+                        >,
+                     String<TScoreValue>)
+globalAlignment(TSeqH & gapSeqSetH,
+                TSeqV & gapSeqSetV,
+                Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                int const lowerDiag,
+                int const upperDiag)
+{
+    AlignConfig<> alignConfig;
+    return globalAlignment(gapSeqSetH, gapSeqSetV, scoringScheme, alignConfig, lowerDiag, upperDiag);
 }
 
 // ----------------------------------------------------------------------------

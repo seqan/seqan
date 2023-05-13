@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -456,10 +456,10 @@ _writeEdgeType(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn Graph#write
- * @brief The graph to write out.
+ * @fn Graph#writeRecords
+ * @brief Write out a graph record.
  *
- * @signature void write(file, graph[, nodeMap[, edgeMap]], tag);
+ * @signature void writeRecords(file, graph[, nodeMap[, edgeMap]], tag);
  *
  * @param[in,out] file    The @link StreamConcept @endlink to write to.
  * @param[in]     graph   The @link Graph @endlink to write out.

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -104,14 +104,9 @@ namespace seqan
             factor2 = _intPow((THValue)ValueSize<TValue>::VALUE, blockLen2);
         }
 
-        Shape(Shape const &other):
-            blockLen1(other.blockLen1),
-            gapLen(other.gapLen),
-            blockLen2(other.blockLen2),
-            hValue(other.hValue),
-            leftChar(other.leftChar),
-            factor1(other.factor1),
-            factor2(other.factor2) {}
+        Shape(Shape const &other) = default;
+
+        Shape & operator=(Shape const &) = default;
 
         template <typename TSpec>
         Shape(Shape<TValue, TSpec> const &other) :

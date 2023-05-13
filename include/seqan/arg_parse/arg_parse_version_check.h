@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -145,22 +145,28 @@ struct VersionCheck
 #if defined(STDLIB_VS)
     void _getProgram()
     {
-        _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -erroraction 'silentlycontinue' -OutFile";
+        _program = "powershell.exe -NoLogo -NonInteractive -Command \"& {Invoke-WebRequest -TimeoutSec 10 -ErrorAction 'silentlycontinue' -OutFile";
     }
 #else  // Unix based platforms.
     void _getProgram()
     {
         // ask if system call for version or help is successfull
-        if (!system("wget --version > /dev/null 2>&1"))
-            _program = "wget -q -O";
-        else if (!system("curl --version > /dev/null 2>&1"))
-            _program =  "curl -o";
-#ifndef __linux  // ftp call does not work on linux
-        else if (!system("which ftp > /dev/null 2>&1"))
-            _program =  "ftp -Vo";
-#endif
+        if (!system("/usr/bin/env -i wget --version > /dev/null 2>&1"))
+            _program = "/usr/bin/env -i wget --timeout=10 --tries=1 -q -O";
+        else if (!system("/usr/bin/env -i curl --version > /dev/null 2>&1"))
+            _program = "/usr/bin/env -i curl --connect-timeout 10 -o";
+// In case neither wget nor curl is available try ftp/fetch if system is OpenBSD/FreeBSD.
+// Note, both systems have ftp/fetch command installed by default so we do not guard against it.
+#if defined(__OpenBSD__)
+        else
+            _program =  "/usr/bin/env -i ftp -w10 -Vo";
+#elif defined(__FreeBSD__)
+        else
+            _program =  "/usr/bin/env -i fetch --timeout=10 -o";
+#else
         else
             _program.clear();
+#endif // __OpenBSD__
     }
 #endif  // defined(STDLIB_VS)
 
@@ -451,7 +457,7 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
         me.errorStream << VersionControlTags_<>::MESSAGE_UNREGISTERED_APP;
 #endif
 
-    if (!str_server_versions[0].empty() & !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
+    if (!str_server_versions[0].empty() && !(str_server_versions[0] == VersionControlTags_<>::UNREGISTERED_APP)) // app version
     {
         Lexical<> version_comp(_getNumbersFromString(me._version), _getNumbersFromString(str_server_versions[0]));
 

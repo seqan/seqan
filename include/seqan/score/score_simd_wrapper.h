@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -74,11 +74,6 @@ class Score<TScoreVec, ScoreSimdWrapper<TScore> >
 public:
     using TVecValue = typename Value<TScoreVec>::Type;
     using TBaseScoreSpec = typename Spec<TScore>::Type;
-    using TBaseScore = Score<typename IfC<sizeof(TVecValue) <= 2,
-                                          int32_t,
-                                          typename IfC<sizeof(TVecValue) == 8, int64_t, TVecValue>::Type
-                                         >::Type,
-                             TBaseScoreSpec>;
 
     // We can be either a SimpleScore or a ScoreMatrix.
     TScoreVec data_match        = createVector<TScoreVec>(0);
@@ -86,7 +81,7 @@ public:
     TScoreVec data_gap_extend   = createVector<TScoreVec>(-1);
     TScoreVec data_gap_open     = createVector<TScoreVec>(-1);
 
-    TBaseScore _baseScore;   // Only needed for the ScoreMatrix data table.
+    TScore _baseScore;   // Only needed for the ScoreMatrix data table.
 
     // Default Constructor.
     Score()

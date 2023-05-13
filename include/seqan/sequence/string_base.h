@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -469,7 +469,15 @@ template <typename TValue, typename TSpec>
 inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
 {
+// Bogus warning related to calling begin() after reallocating.
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wuse-after-free"
+#endif
     return end(me, Standard()) - begin(me, Standard());
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 12)
+#    pragma GCC diagnostic pop
+#endif
 }
 
 // ----------------------------------------------------------------------------

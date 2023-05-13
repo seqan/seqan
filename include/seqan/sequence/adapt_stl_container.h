@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -764,21 +764,24 @@ template <typename TChar, typename TAlloc>
 inline TChar &
 back(std::forward_list<TChar, TAlloc> & me)
 {
-    return *(std::next(me.before_begin(), length(me)));
+    SEQAN_ASSERT(!me.empty());
+    return *(std::next(me.begin(), length(me) - 1));
 }
 
 template <typename TChar, typename TAlloc>
 inline TChar const &
 back(std::forward_list<TChar, TAlloc> const & me)
 {
-    return *(std::next(me.before_begin(), length(me)));
+    SEQAN_ASSERT(!me.empty());
+    return *(std::next(me.begin(), length(me) - 1));
 }
 
 template <typename TChar, typename TAlloc>
 inline TChar
 back(std::forward_list<TChar, TAlloc> && me)
 {
-    return *(std::next(me.before_begin(), length(me)));
+    SEQAN_ASSERT(!me.empty());
+    return *(std::next(me.begin(), length(me) - 1));
 }
 
 // ----------------------------------------------------------------------------

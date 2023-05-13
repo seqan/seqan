@@ -1,7 +1,7 @@
 # ============================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ============================================================================
-# Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -51,12 +51,6 @@ endif()
 # SEQAN_RELEASE_APPS
 # SEQAN_RELEASE_LIBRARY
 # APP:${app_name}
-
-# require python 2.7, not python3
-set(PythonInterp_FIND_VERSION 2.7)
-set(PythonInterp_FIND_VERSION_MAJOR 2)
-set(PythonInterp_FIND_VERSION_MINOR 7)
-set(PythonInterp_FIND_VERSION_COUNT 2)
 
 include (SeqAnUsabilityAnalyzer)
 include (CheckCXXCompilerFlag)
@@ -358,6 +352,27 @@ macro (seqan_build_system_init)
         find_package(BZip2)
         find_package(Boost)
         find_package(SeqAn CONFIG REQUIRED)
+        find_package(LibXml2)
+    endif ()
+
+    option(CTD_TEST_ENABLED "Checks if correct ctd export of a tool can be tested automatically." OFF)
+
+    if (LIBXML2_FOUND)
+        find_program (XMLLINT_EXECUTABLE xmllint DOC "The xmllint tool available in the xmllib package.")
+        if (XMLLINT_EXECUTABLE-NOTFOUND)
+            message (STATUS "Could not find xmllint. Not configuring ctd tests.")
+        else ()
+            set(CTD_SCHEMA_ROOT "${PROJECT_BINARY_DIR}/vendor/ctd_schema")
+            execute_process(COMMAND git clone https://github.com/WorkflowConversion/CTDSchema.git ${CTD_SCHEMA_ROOT}
+                            OUTPUT_QUIET
+                            ERROR_QUIET)
+
+            if (NOT EXISTS "${CTD_SCHEMA_ROOT}/CTD.xsd")
+                message (STATUS "Could not find CTD.xsd in <${CTD_SCHEMA_ROOT}>. Not confoguing ctd tests.")
+            else ()
+                set (CTD_TEST_ENABLED ON)
+            endif ()
+        endif ()
     endif ()
 
 endmacro (seqan_build_system_init)
@@ -377,15 +392,51 @@ macro (seqan_add_app_test APP_NAME)
     else ()
         set (_VALGRIND_FLAG)
     endif ()
-    find_package (PythonInterp)
-    if (PYTHONINTERP_FOUND)
+    find_package (Python3)
+    if (Python3_Interpreter_FOUND)
       add_test (NAME app_test_${APP_NAME}${ARGV1}
-                COMMAND ${PYTHON_EXECUTABLE}
+                COMMAND ${Python3_EXECUTABLE}
                         ${CMAKE_CURRENT_SOURCE_DIR}/tests/run_tests${ARGV1}.py
                         ${_VALGRIND_FLAG}
                         ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
-    endif (PYTHONINTERP_FOUND)
+    endif (Python3_Interpreter_FOUND)
 endmacro (seqan_add_app_test APP_NAME)
+
+# ---------------------------------------------------------------------------
+# Macro seqan_add_ctd_test (APP_NAME SUFFIX)
+#
+# Add ctd test for tools that export a ctd desrciption.
+# ---------------------------------------------------------------------------
+
+# Get path that all binaries are placed in.  With MSVC, we have to extend that
+# path with the configuration name.
+set (SEQAN_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
+if (MSVC)
+  set (SEQAN_BIN_DIR "${SEQAN_BIN_DIR}/$<CONFIG>")
+endif ()
+
+# App tests are run using xmllint.
+# However, we only test this in developer mode, such that searching for the xmllint tool is
+# done globally in the build system setup routine.
+# The variable CTD_TEST_ENABLED indicates if the update was successful.
+
+macro (seqan_add_ctd_test APP_NAME)
+    # Check if we are good to go for testing the file.
+    if (NOT CTD_TEST_ENABLED)
+        message (STATUS "CTD testing was not configured.")
+    else ()
+        # Add a custom command to create the ctd once the binary has been built.
+        add_custom_command(TARGET ${APP_NAME}
+                           POST_BUILD
+                           COMMAND ${SEQAN_BIN_DIR}/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
+
+        # Add the ctd test.
+        add_test (NAME ctd_test_${APP_NAME}
+                COMMAND ${XMLLINT_EXECUTABLE}
+                -schema ${CTD_SCHEMA_ROOT}/CTD.xsd
+                ${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd)
+    endif ()
+endmacro (seqan_add_ctd_test APP_NAME)
 
 # ---------------------------------------------------------------------------
 # Macro seqan_setup_library ()
@@ -399,9 +450,9 @@ macro (seqan_setup_library)
     # or "SEQAN_LIBRARY_ONLY" are chosen.
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
 
-        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
+        # Install SeqAn LICENSE, README.md, CHANGELOG.rst files.
         install (FILES LICENSE
-                       README.rst
+                       README.md
                        CHANGELOG.rst
                  DESTINATION ${CMAKE_INSTALL_DOCDIR})
         # Install pkg-config file, except on Windows.
@@ -690,6 +741,7 @@ endmacro (seqan_get_version)
 
 macro (seqan_get_repository_info)
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
+  message (STATUS "Detected git repository:")
   message (STATUS "  Selected repository dir: ${CMAKE_SOURCE_DIR}")
   # Get Git information.
   if (EXISTS ${_SEQAN_GIT_DIR})
@@ -757,12 +809,12 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         endif()
 
         # Add the test.
-        find_package (PythonInterp)
-        if (PYTHONINTERP_FOUND)
+        find_package (Python3)
+        if (Python3_Interpreter_FOUND)
           add_test (NAME test_${EXECUTABLE}
-                    COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
-          #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${PYTHON_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
-        endif (PYTHONINTERP_FOUND)
+                    COMMAND ${Python3_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
+          #message(STATUS "add_test (NAME test_${EXECUTABLE} COMMAND ${Python3_EXECUTABLE} ${CHECKER_PATH} ${ARGS})")
+        endif (Python3_Interpreter_FOUND)
     endif ()
 endmacro (_seqan_setup_demo_test CPP_FILE)
 
@@ -825,7 +877,7 @@ function (seqan_register_demos PREFIX)
         endif ()
 
         if (SKIP)
-            message(STATUS "${ENTRY} skipped on this platform." )
+            message(STATUS "Skipping ${ENTRY} on this platform" )
         else (SKIP)
             string (REPLACE "/" "_" BIN_NAME "${ENTRY}")
             string (REPLACE "\\" "_" BIN_NAME "${BIN_NAME}")

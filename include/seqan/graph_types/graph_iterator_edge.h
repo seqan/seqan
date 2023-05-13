@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -86,9 +86,13 @@ public:
 
     Iter(TGraph const& _graph) :
         data_vertex_it(_graph),
-        data_edge_it(_graph, getIdLowerBound(_getVertexIdManager(_graph)))  ,
         data_first_slot()
     {
+        if (numVertices(_graph) != 0)
+            data_edge_it = TOutEdgeIterator_(_graph, getIdLowerBound(_getVertexIdManager(_graph)));
+        else
+            data_edge_it = TOutEdgeIterator_();
+
         while((atEnd(data_edge_it)) && (!atEnd(data_vertex_it)))
         {
                 goNext(data_vertex_it);

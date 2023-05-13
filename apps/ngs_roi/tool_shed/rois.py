@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 class RoiRecord(object):
     """Represent one record in a ROI file."""

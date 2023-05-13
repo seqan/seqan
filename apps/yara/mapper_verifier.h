@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2021, Enrico Siragusa, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -226,6 +226,7 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     typedef typename Size<TContig>::Type            TContigSize;
 
     TContigSize contigLength = length(me.contigSeqs[getMember(anchor, ContigId())]);
+    SEQAN_ASSERT_LT(getMember(anchor, ContigEnd()), contigLength);
 
     setValueI1(contigBegin, getMember(anchor, ContigId()));
     setValueI1(contigEnd, getMember(anchor, ContigId()));
@@ -249,6 +250,12 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
                               TMatch const & anchor,
                               LeftMate)
 {
+    typedef typename Traits::TContig                TContig;
+    typedef typename Size<TContig>::Type            TContigSize;
+
+    TContigSize contigLength = length(me.contigSeqs[getMember(anchor, ContigId())]);
+    SEQAN_ASSERT_LT(getMember(anchor, ContigEnd()), contigLength);
+
     setValueI1(contigBegin, getMember(anchor, ContigId()));
     setValueI1(contigEnd, getMember(anchor, ContigId()));
 
@@ -259,6 +266,7 @@ inline void _getMateContigPos(AnchorsVerifier<TSpec, Traits> const & me,
     contigEnd.i2 = 0;
     if (getMember(anchor, ContigEnd()) + me.libraryDev > me.libraryLength)
         contigEnd.i2 = getMember(anchor, ContigEnd()) - me.libraryLength + 3 * me.libraryDev;
+    contigEnd.i2 = _min(contigEnd.i2, contigLength);
 
     SEQAN_ASSERT_LEQ(getValueI2(contigBegin), getValueI2(contigEnd));
     SEQAN_ASSERT_LEQ(getValueI2(contigEnd) - getValueI2(contigBegin), 6 * me.libraryDev);

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -390,7 +390,7 @@ inline void setPosition(ModifiedString<THost, ModPos<TPositions> > const & me, T
 // ----------------------------------------------------------------------------
 
 template <typename THost, typename TPos = typename Position<THost>::Type, typename TPredicate = std::less<TPos> >
-struct PosLess_ : public std::binary_function<TPos, TPos, bool>
+struct PosLess_ : public std::function<bool(TPos, TPos)>
 {
     THost const & _host;
     TPredicate pred;

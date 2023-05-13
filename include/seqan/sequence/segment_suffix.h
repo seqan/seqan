@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -123,6 +123,11 @@ public:
    
     ~ Segment()
     {
+    }
+
+    Segment(Segment const & source)
+    {
+        assign(*this, source);
     }
 
     inline Segment &

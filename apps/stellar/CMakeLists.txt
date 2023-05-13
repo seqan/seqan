@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.0.0)
 project (seqan_apps_stellar CXX)
 message (STATUS "Configuring apps/stellar")
 
-set (SEQAN_APP_VERSION "1.4.11")
+set (SEQAN_APP_VERSION "1.4.12")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -78,12 +78,15 @@ install (FILES example/NC_001474.fasta
 
 seqan_add_app_test (stellar)
 
-# ---------------------------------------------------------------------------- 
-# Setup Common Tool Description for Generic Workflow Nodes 
-# ---------------------------------------------------------------------------- 
+# ----------------------------------------------------------------------------
+# Setup Common Tool Description for Generic Workflow Nodes
+# ----------------------------------------------------------------------------
 
-# Include executable stellar in CTD structure. 
+# Include executable stellar in CTD structure.
 set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} stellar CACHE INTERNAL "")
+
+#Add test to check correct ctd generation.
+seqan_add_ctd_test (stellar)
 
 # ----------------------------------------------------------------------------
 # CPack Install
@@ -97,4 +100,3 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:stellar")
 
   seqan_configure_cpack_app (stellar "Stellar")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:stellar")
-

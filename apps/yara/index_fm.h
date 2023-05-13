@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2021, Enrico Siragusa, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -107,7 +107,7 @@ inline bool open(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & 
 // ----------------------------------------------------------------------------
 // This function is overloaded for Dna5 and Dna5Q to let Ns always mismatch.
 
-template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize>
+template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize, typename TChar>
 inline bool
 _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >, VSTree<TopDown<TSpec> > > const & it,
                typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type const & vDesc,
@@ -118,7 +118,7 @@ _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, T
     return _getNodeByCharImpl(it, vDesc, _range, smaller, c);
 }
 
-template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize>
+template <typename TText, typename TOccSpec, typename TSize_, typename TLen_, typename TSum_, typename TAlloc_, typename TSpec, typename TSize, typename TChar>
 inline bool
 _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > >, VSTree<TopDown<TSpec> > > const & it,
                typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, YaraFMConfig<TSize_, TLen_, TSum_, TAlloc_> > > >::Type const & vDesc,

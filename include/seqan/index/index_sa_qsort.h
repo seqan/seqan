@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ namespace seqan
     // compare two suffices of a given text
     template < typename TSAValue, typename TText >
     struct SuffixLess_ :
-        public std::binary_function < TSAValue, TSAValue, bool >
+        public std::function<bool ( TSAValue, TSAValue)>
     {
         typedef typename Iterator<TText const, Standard>::Type TIter;
         TIter _begin, _end;
@@ -82,7 +82,7 @@ namespace seqan
     // compare two suffices of a given text
     template < typename TSAValue, typename TString, typename TSetSpec >
     struct SuffixLess_<TSAValue, StringSet<TString, TSetSpec> const > :
-        public std::binary_function < TSAValue, TSAValue, bool >
+        public std::function<bool ( TSAValue, TSAValue)>
     {
         typedef StringSet<TString, TSetSpec> const TText;
 

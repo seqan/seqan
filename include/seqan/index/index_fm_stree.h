@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -65,6 +65,8 @@ struct HistoryStackFM_
         repLen(_repLen),
         lastChar(_lastChar)
     {}
+
+    HistoryStackFM_(HistoryStackFM_ const &) = default;
 
     HistoryStackFM_ const &
     operator=(HistoryStackFM_ const & _origin)
@@ -242,15 +244,7 @@ _isLeaf(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TSpec> > const
 // Function _getNodeByChar()                                         [Iterator]
 // ----------------------------------------------------------------------------
 
-// Index<TText, FMIndex<TSpec,  > >
-
-/*template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TSize, typename TChar>
-inline bool
-_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > >, VSTree<TopDown<TSpec> > > const & it,
-               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > > >::Type const & vDesc,
-               Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > > >::Type> & _range,
-               TSize & smaller,
-               TChar c)*/
+#ifndef YARA_MAPPER
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec, typename TSize, typename TChar>
 inline bool
 _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown<TSpec> > > const & it,
@@ -260,6 +254,18 @@ _getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<TopDown
                TChar c)
 {
     typedef Index<TText, FMIndex<TOccSpec, TIndexSpec/*FMIndexConfig<TOccSpec, TLengthSum> */> >        TIndex;
+#else
+template <typename TText, typename TOccSpec, typename TLengthSum, typename TSpec, typename TSize, typename TChar>
+inline bool
+_getNodeByChar(Iter<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > >, VSTree<TopDown<TSpec> > > const & it,
+               typename VertexDescriptor<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > > >::Type const & vDesc,
+               Pair<typename Size<Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > > >::Type> & _range,
+               TSize & smaller,
+               TChar c)
+{
+    typedef Index<TText, FMIndex<TOccSpec, FMIndexConfig<TOccSpec, TLengthSum> > >        TIndex;
+#endif
+
     typedef typename Fibre<TIndex, FibreLF>::Type               TLF;
 
     TIndex const & index = container(it);

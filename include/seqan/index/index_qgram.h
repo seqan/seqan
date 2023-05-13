@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -247,7 +247,7 @@ public:
     TShape            shape;        // underlying shape
     TCargo            cargo;        // user-defined cargo
     TBucketMap        bucketMap;    // bucketMap table (used by open-addressing index)
-    TSize            stepSize;    // store every <stepSize>'th q-gram in the index
+    TSize            stepSize{1};   // store every <stepSize>'th q-gram in the index
 
     /*!
      * @fn IndexQGram::Index
@@ -265,7 +265,7 @@ public:
     Index():
     stepSize(1) {}
 
-    Index(Index &other):
+    Index(Index const & other):
     text(other.text),
     sa(other.sa),
     dir(other.dir),
@@ -275,15 +275,7 @@ public:
     cargo(other.cargo),
     stepSize(1) {}
 
-    Index(Index const &other):
-    text(other.text),
-    sa(other.sa),
-    dir(other.dir),
-    counts(other.counts),
-    countsDir(other.countsDir),
-    shape(other.shape),
-    cargo(other.cargo),
-    stepSize(1) {}
+    Index & operator=(Index const &) = default;
 
     template <typename TText__>
     Index(TText__ &_text):
@@ -663,7 +655,7 @@ inline int64_t _fullDir2Length(TIndex const &index)
 // compare two q-grams of a given text (q-grams can be smaller than q)
 template < typename TSAValue, typename TText >
 struct QGramLess_ :
-public std::binary_function < TSAValue, TSAValue, bool >
+public std::function<bool ( TSAValue, TSAValue)>
 {
     typedef typename Iterator<TText, Standard>::Type TIter;
     TIter _begin, _end;
@@ -711,7 +703,7 @@ public std::binary_function < TSAValue, TSAValue, bool >
 
 template < typename TSAValue, typename TString, typename TSpec >
 struct QGramLess_<TSAValue, StringSet<TString, TSpec> const> :
-public std::binary_function < TSAValue, TSAValue, bool >
+public std::function<bool ( TSAValue, TSAValue)>
 {
     typedef typename Iterator<TString const, Standard>::Type TIter;
     typedef typename Size<TString>::Type                     TSize;
@@ -779,7 +771,7 @@ QGramLess_<TSAValue, TText>
 
 template < typename TSAValue, typename TString, typename TSpec >
 struct QGramLessOffset_<TSAValue, StringSet<TString, TSpec> const> :
-public std::binary_function < TSAValue, TSAValue, bool >
+public std::function<bool ( TSAValue, TSAValue)>
 {
     typedef typename Iterator<TString const, Standard>::Type TIter;
     typedef typename Size<TString>::Type                     TSize;
@@ -848,7 +840,7 @@ public std::binary_function < TSAValue, TSAValue, bool >
 // compare two q-grams of a given text (no check for q-grams smaller than q)
 template < typename TSAValue, typename TText >
 struct QGramLessNoCheck_ :
-public std::binary_function < TSAValue, TSAValue, bool >
+public std::function<bool ( TSAValue, TSAValue)>
 {
     typedef typename Iterator<TText, Standard>::Type TIter;
     TIter _begin;
@@ -882,7 +874,7 @@ public std::binary_function < TSAValue, TSAValue, bool >
 
 template < typename TSAValue, typename TString, typename TSpec >
 struct QGramLessNoCheck_<TSAValue, StringSet<TString, TSpec> const> :
-public std::binary_function < TSAValue, TSAValue, bool >
+public std::function<bool ( TSAValue, TSAValue)>
 {
     typedef typename Iterator<TString, Standard>::Type  TIter;
     typedef StringSet<TString, TSpec>                   TStringSet;
@@ -930,7 +922,7 @@ struct QGramLessNoCheckOffset_: QGramLessNoCheck_<TSAValue, TText>
 
 template < typename TSAValue, typename TString, typename TSpec >
 struct QGramLessNoCheckOffset_<TSAValue, StringSet<TString, TSpec> const> :
-public std::binary_function < TSAValue, TSAValue, bool >
+public std::function<bool ( TSAValue, TSAValue)>
 {
     typedef typename Iterator<TString, Standard>::Type TIter;
     StringSet<TString, TSpec> const &_stringSet;
@@ -1811,7 +1803,7 @@ void createCountsArray(
 // *** COMPARATORS & MAPS ***
 
 template <typename InType, typename Result = int>
-struct _qgramComp : public std::binary_function<InType,InType,Result> {
+struct _qgramComp : public std::function<Result(InType, InType)> {
     inline Result operator()(InType const &a, InType const &b) const
     {
         typedef typename Value<InType, 2>::Type TQGram;
@@ -1830,10 +1822,9 @@ struct _qgramComp : public std::binary_function<InType,InType,Result> {
 // optimized for bitvectors
 template <typename T1, typename TValue, unsigned _size, typename Result>
 struct _qgramComp< Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >, Result > :
-public std::binary_function<
-Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >,
-Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >,
-Result> {
+public std::function<Result(Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >,
+                            Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >)>
+{
     inline Result operator()(
                              const Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack > &a,
                              const Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack > &b) const

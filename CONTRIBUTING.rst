@@ -15,7 +15,7 @@ Without signing the agreement, you cannot create pull requests.
 Workflow, Code Style et cetera
 ------------------------------
 
-Before you start coding, please read through the `Contributor Guide <http://seqan.readthedocs.io/en/master/Infrastructure/Contribute/index.html>`__ in our manual.
+Before you start coding, please read through the `Contributor Guide <http://seqan.readthedocs.io/en/main/Infrastructure/Contribute/index.html>`__ in our manual.
 
 Before submitting, mentally check of these boxes:
 * [ ] the pull request is against the develop branch

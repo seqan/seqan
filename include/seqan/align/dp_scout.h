@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -250,9 +250,9 @@ terminateScout(DPScout_<TDPCell, Terminator_<TSpec> > & scout)
 // Function _preInitScoutHorizontal()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSpec>
+template <typename TDPCell, typename TSpec, typename TPosition>
 inline void
-_preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/)
+_preInitScoutHorizontal(DPScout_<TDPCell, TSpec> const & /*scout*/, TPosition const /*offset*/)
 {
     // no-op.
 }
@@ -273,9 +273,9 @@ _reachedHorizontalEndPoint(DPScout_<TDPCell, TSpec> const & /*scout*/,
 // Function _preInitScoutVertical()
 // ----------------------------------------------------------------------------
 
-template <typename TDPCell, typename TSpec>
+template <typename TDPCell, typename TSpec, typename TPosition>
 inline void
-_preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/)
+_preInitScoutVertical(DPScout_<TDPCell, TSpec> const & /*scout*/, TPosition const /*offset*/)
 {
     // no-op.
 }

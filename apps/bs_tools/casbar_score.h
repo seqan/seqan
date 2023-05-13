@@ -39,7 +39,7 @@ int const TranslateTableDna5OrdValueToDna5OrdValueComplement_<T>::VALUE[5] = {3,
 template <typename TValue> struct FunctorDna5OrdValueComplement;
 
 template <>
-struct FunctorDna5OrdValueComplement<int> : public std::unary_function<int,int>
+struct FunctorDna5OrdValueComplement<int> : public std::function<int(int)>
 {
     inline int operator()(int x) const
     {

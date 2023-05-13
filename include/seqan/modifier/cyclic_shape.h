@@ -1,7 +1,7 @@
 // ========================================================================== 
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -200,9 +200,9 @@ public:
         appendValue(diffs, 1);
     }
 
-    CyclicShape(CyclicShape const & other) :
-        diffs(other.diffs), loffset(other.loffset), span(other.span)
-    {}
+    CyclicShape(CyclicShape const & other)  = default;
+
+    CyclicShape & operator=(CyclicShape const &) = default;
 };
 
 // --------------------------------------------------------------------------
@@ -285,8 +285,9 @@ public:
     CyclicShape()
     {}
 
-    CyclicShape(CyclicShape const &)
-    {}
+    CyclicShape(CyclicShape const &) = default;
+
+    CyclicShape & operator=(CyclicShape const &) = default;
 };
 
 // --------------------------------------------------------------------------

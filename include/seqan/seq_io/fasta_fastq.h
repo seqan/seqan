@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -104,17 +104,18 @@ struct MagicHeader<Raw, T> :
 template <typename T>
 struct FileExtensions<Fasta, T>
 {
-    static char const * VALUE[6];
+    static char const * VALUE[7];
 };
 template <typename T>
-char const * FileExtensions<Fasta, T>::VALUE[6] =
+char const * FileExtensions<Fasta, T>::VALUE[7] =
 {
     ".fa",      // default output extension
     ".fasta",
     ".faa",     // FASTA Amino Acid file
     ".ffn",     // FASTA nucleotide coding regions file
     ".fna",     // FASTA Nucleic Acid file
-    ".frn"
+    ".frn",
+    ".fas"
 };
 
 
@@ -218,7 +219,7 @@ struct SequenceOutputOptions
 // ----------------------------------------------------------------------------
 
 template <typename TValue>
-struct QualityExtractor : public std::unary_function<TValue, char>
+struct QualityExtractor : public std::function<char(TValue)>
 {
     inline char operator()(TValue const & x) const
     {

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -277,8 +277,6 @@ struct BlastIOContext
     TString _stringBuffer;
     StringSet<TString, Owner<ConcatDirect<>>> _setBuffer1;
     StringSet<TString, Owner<ConcatDirect<>>> _setBuffer2;
-    BlastMatch<> bufMatch;
-    BlastRecord<> bufRecord;
 };
 
 }

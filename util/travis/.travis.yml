@@ -1,0 +1,83 @@
+version: ~> 1.0
+os: linux
+dist: xenial
+language: cpp
+
+cache: ccache
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - george-edison55-precise-backports
+      - llvm-toolchain-precise-3.9
+      - llvm-toolchain-trusty-7
+    packages:
+      - libboost-dev
+      - libbz2-dev
+      - libxml2-utils
+      - zlib1g-dev
+      - cmake
+      - g++-4.9
+      - g++-5
+      - g++-7
+      - clang-3.9
+      - clang-7
+
+jobs:
+  include:
+    - name: "GCC 4.9"
+      env:
+        - CXX=g++-4.9
+        - CC=gcc-4.9
+    - name: "GCC 5"
+      env:
+        - CXX=g++-5
+        - CC=gcc-5
+    - name: "GCC 7"
+      env:
+        - CXX=g++-7
+        - CC=gcc-7
+    - name: "Clang 3.9"
+      env:
+        - CXX=clang++-3.9
+        - CC=clang-3.9
+    - name: "Clang 7"
+      env:
+        - CXX=clang++-7
+        - CC=clang-7
+
+    # - name: "Clang 3.8"
+    #   env:
+    #     - CXX=clang++-3.8
+    #     - CC=clang-3.8
+    # - name: "OSX Clang 3.6" # currently too slow on osx
+    #   os: osx
+    #   before_install:
+    #     - brew update
+    #     - brew tap homebrew/versions
+    #     - brew install llvm36
+    #   env:
+    #     - CXX=clang++-3.6
+    #     - CC=clang-3.6
+    # - name: "OSX Clang 3.7"
+    #   os: osx
+    #   before_install:
+    #     - brew update
+    #     - brew tap homebrew/versions
+    #     - brew install llvm37
+    #   env:
+    #     - CXX=clang++-3.7
+    #     - CC=clang-3.7
+
+install:
+  - pyenv global 3.7.1
+  - pip3 install setuptools wheel
+  - pip3 install -r manual/requirements.txt
+  - ccache -M 10G
+
+script:
+  - bash ./util/travis/linux-cibuild.sh
+
+after_script:
+  - ccache -s

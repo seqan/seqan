@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -233,11 +233,11 @@ namespace seqan
     public:
 //____________________________________________________________________________
 
-        unsigned span;
-        unsigned weight;
-        String<int> diffs;
+        unsigned span{};
+        unsigned weight{};
+        String<int> diffs{};
 
-        typename Value<Shape>::Type    hValue;        // current hash value
+        typename Value<Shape>::Type    hValue{};        // current hash value
 //____________________________________________________________________________
 
 /*!
@@ -278,11 +278,7 @@ namespace seqan
             }
         }
 
-        Shape(Shape const &other):
-            span(other.span),
-            weight(other.weight),
-            diffs(other.diffs),
-            hValue(other.hValue) {}
+        Shape(Shape const &) = default;
 
         template <typename TSpec>
         Shape(Shape<TValue, TSpec> const &other)
@@ -303,6 +299,8 @@ namespace seqan
         }
 
 //____________________________________________________________________________
+
+        inline Shape & operator=(Shape const &) = default;
 
         template <unsigned q>
         inline Shape &

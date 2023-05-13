@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Demo checker script.
 
 Given a demo .cpp file PATH.cpp we can make it a small test if there is a file
@@ -32,7 +32,7 @@ def fuzzyEqual(pattern, text):
         use the literal [VAR] if the part of the output is not expected to be the same all the time.
     """
     if len(pattern) != len(text):
-        print >> sys.stderr, 'Number of lines differ. Expected output has %s lines whereas actual has %s lines.' % (len(pattern), len(text))
+        print('Number of lines differ. Expected output has %s lines whereas actual has %s lines.' % (len(pattern), len(text)), file=sys.stderr)
         return False
     for i in range(len(pattern)):
         T = text[i]
@@ -41,13 +41,13 @@ def fuzzyEqual(pattern, text):
             continue
         else :
             if '[VAR]' not in P:
-                print >> sys.stderr, 'Line %s is different between expected and actual outputs.' % (i)
+                print('Line %s is different between expected and actual outputs.' % (i), file=sys.stderr)
                 return False
             else:
                 P = (re.escape(P)).replace('\\[VAR\\]', "[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?")
                 r = re.compile(P)
                 if re.match(r, T) == None:
-                    print >> sys.stderr, 'Line %s is different (REGEX) between expected and actual outputs.' % (i)
+                    print('Line %s is different (REGEX) between expected and actual outputs.' % (i), file=sys.stderr)
                     return False
     return True
 
@@ -56,10 +56,10 @@ def loadExpected(args):
     out, err = '', ''
     if args.stdout_path:
         with open(args.stdout_path, 'rb') as f:
-            out = f.read()
+            out = f.read().decode()
     if args.stderr_path:
         with open(args.stderr_path, 'rb') as f:
-            err = f.read()
+            err = f.read().decode()
     return t(out.strip()).split('\n'), t(err.strip()).split('\n')
 
 
@@ -67,7 +67,7 @@ def runDemo(args):
     cmd = [args.binary_path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdoutbuff, stderrbuff = p.communicate()
-    return t(stdoutbuff.strip()).split('\n'), t(stderrbuff.strip()).split('\n'), p.returncode
+    return t(stdoutbuff.strip().decode()).split('\n'), t(stderrbuff.strip().decode()).split('\n'), p.returncode
 
 
 def main():
@@ -83,37 +83,37 @@ def main():
                         default=None)
     args = parser.parse_args()
 
-    print >>sys.stderr, 'Running %s.' % args.binary_path
+    print('Running %s.' % args.binary_path, file=sys.stderr)
     actual_out, actual_err, ret = runDemo(args)
 
     if ret != 0:
-        print >>sys.stderr, 'ERROR: Return code of %s was %s.' % (args.binary_path, ret)
+        print('ERROR: Return code of %s was %s.' % (args.binary_path, ret), file=sys.stderr)
         return 1
     else:
-        print >>sys.stderr, 'Return code was %s.' % ret
+        print('Return code was %s.' % ret, file=sys.stderr)
 
-    print >>sys.stderr, 'Loading files "%s", "%s".' % (args.stdout_path, args.stderr_path)
+    print('Loading files "%s", "%s".' % (args.stdout_path, args.stderr_path), file=sys.stderr)
     expected_out, expected_err = loadExpected(args)
     is_stdout_as_expected = fuzzyEqual(expected_out, actual_out)
     is_stderr_as_expected = fuzzyEqual(expected_err, actual_err)
 
     if not is_stdout_as_expected:
-        print >>sys.stderr, 'The standard output was not as expected!'
+        print('The standard output was not as expected!', file=sys.stderr)
         l = difflib.context_diff(expected_out, actual_out,
                                  fromfile='expected', tofile='actual')
-        print >>sys.stderr, '\n'.join(l)
+        print('\n'.join(l), file=sys.stderr)
     else:
-        print >>sys.stderr, 'Standard output was as expected.'
+        print('Standard output was as expected.', file=sys.stderr)
 
     if not is_stderr_as_expected:
-        print >>sys.stderr, 'The standard error was not as expected!'
+        print('The standard error was not as expected!', file=sys.stderr)
         l = difflib.context_diff(expected_err, actual_err,
                                  fromfile='expected', tofile='actual')
-        print >>sys.stderr, '\n'.join(l)
+        print('\n'.join(l), file=sys.stderr)
     else:
-        print >>sys.stderr, 'Standard error was as expected.'
+        print('Standard error was as expected.', file=sys.stderr)
 
-    # here we used not because we need return-code 0 (False) if test is successful 
+    # here we used not because we need return-code 0 (False) if test is successful
     return not (is_stdout_as_expected and is_stderr_as_expected)
 
 

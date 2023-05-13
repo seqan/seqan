@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Create ROI overview report.
 
 This report consists of plots of all metrics (y: metric, x: rank of value).
@@ -8,7 +8,7 @@ that shows all HTML files.
 Plotting is done using the fine matplotlib.
 """
 
-from __future__ import print_function
+
 
 __author__    = 'Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>'
 __copyright__ = 'Copyring 2013, Freie Universitaet Berlin'

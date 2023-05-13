@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -85,15 +85,15 @@ public:
     TVertexDescriptor_ data_source;
     TEdgeDescriptor_ data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_vertex,v))
+        data_edge()
     {
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -103,7 +103,8 @@ public:
     {
     }
 
-    ~Iter() {
+    ~Iter()
+    {
     }
 
     Iter const&    operator = (Iter const & _other) {
@@ -148,15 +149,15 @@ public:
     TVertexDescriptor data_source;
     TEdgeDescriptor data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph const& _graph, TVertexDescriptor const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_vertex,v))
+        data_edge()
     {
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -166,7 +167,8 @@ public:
     {
     }
 
-    ~Iter() {
+    ~Iter()
+    {
     }
 
     Iter const&    operator = (Iter const & _other) {
@@ -211,15 +213,15 @@ public:
     TVertexDescriptor data_source;
     TEdgeDescriptor data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph const& _graph, TVertexDescriptor const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_vertex,v))
+        data_edge()
     {
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :
@@ -229,7 +231,8 @@ public:
     {
     }
 
-    ~Iter() {
+    ~Iter()
+    {
     }
 
     Iter const&    operator = (Iter const & _other) {
@@ -278,9 +281,7 @@ public:
     TSize_ data_begin;
     TSize_ data_end;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
@@ -289,11 +290,11 @@ public:
         TVertexDescriptor_ nilVal = getNil<TVertexDescriptor_>();
         TSize_ table_length = ValueSize<TAlphabet>::VALUE;
         TSize_ pos = 0;
-        while (    (pos < table_length) &&
-                (_graph.data_vertex[v].data_edge[pos].data_target == nilVal))
-        {
-                ++pos;
-        }
+
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_vertex), "Trying to access a vertex that does not exist.");
+        while (pos < table_length && _graph.data_vertex[v].data_edge[pos].data_target == nilVal)
+            ++pos;
+
         data_pos = pos;
         data_begin = pos;
         data_end = table_length;
@@ -358,15 +359,15 @@ public:
     TVertexDescriptor_ data_source;
     TEdgeDescriptor_ data_edge;
 
-    Iter()
-    {
-    }
+    Iter() = default;
 
     Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
         data_source(v),
-        data_edge(getValue(_graph.data_model.data_vertex,v))
+        data_edge()
     {
+        SEQAN_ASSERT_LT_MSG(v, length(_graph.data_model.data_vertex), "Trying to access a vertex that does not exist.");
+        data_edge = getValue(_graph.data_model.data_vertex, v);
     }
 
     Iter(Iter const& _iter) :

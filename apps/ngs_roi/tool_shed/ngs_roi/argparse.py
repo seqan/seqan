@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Helper for ROI tools when using argparse module.
 
 This module contains helper functions for setup of argparse.ArgumentParser
@@ -57,7 +57,7 @@ def addPlotGridArguments(parser, default_plot_height=30, default_plot_width=30):
     group.add_argument('--num-cols', dest='num_cols', metavar='COLS',
                        type=int, default=40,
                        help='Number of columns per grid.')
-    
+
     group.add_argument('--plot-height', dest='plot_height', metavar='HEIGHT',
                        type=int, default=default_plot_height, help='Height of one plot in px.')
     group.add_argument('--plot-width', dest='plot_width', metavar='WIDTH',
@@ -80,12 +80,12 @@ def addLinkArguments(parser):
     group.add_argument('--link-target', dest='link_target', metavar='TARGET',
                        default='_blank', choices=['_blank', '_top'],
                        help='Select the link target to create (_blank or _top).')
-    
+
     group.add_argument('--link-type', dest='link_type', metavar='TARGET',
                        default='local_igv', choices=['local_igv', 'ucsc'],
                        help='Select the type of links to create.  One of '
                        '"local_igv" and "ucsc".')
-    
+
     group.add_argument('--igv-host', dest='igv_host', metavar='HOST',
                        default='localhost', help='Host for IGV link.')
     group.add_argument('--igv-port', dest='igv_port', metavar='PORT',

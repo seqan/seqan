@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """SeqAn path utilities.
 
 Code to get paths within the SeqAn repository; Useful for setting defaults in
@@ -56,10 +56,10 @@ def pathToHeader(location, filename):
     return os.path.join(repositoryRoot(), location, filename)
 
 def main(args):
-    print 'SeqAn paths'
-    print
-    print 'repositoryRoot()   ==', repositoryRoot()
-    print 'pathToSkeletons() ==', pathToSkeletons()
+    print('SeqAn paths')
+    print()
+    print('repositoryRoot()   ==', repositoryRoot())
+    print('pathToSkeletons() ==', pathToSkeletons())
 
 if __name__ == '__main__':
    sys.exit(main(sys.argv))

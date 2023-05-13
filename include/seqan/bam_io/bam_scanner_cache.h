@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ struct BamScannerCacheSearchKey_
 };
 
 struct BamScannerCacheHash_ :
-    std::unary_function<BamScannerCacheKey_, size_t>
+    std::function<size_t(BamScannerCacheKey_)>
 {
     size_t operator()(BamScannerCacheKey_ const &v) const
     {

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """Management for including file and snippets.
 """
 
@@ -63,9 +63,9 @@ class IncludeManager(object):
         try:
             with open(full_path) as f:
                 self.file_cache[path] = f.read()
-        except IOError, e:
+        except IOError as e:
             raise IncludeException('Could not load file %s: %s' % (path, e))
-        
+
     def _loadSnippets(self, path):
         """Load snippet
 
@@ -90,4 +90,4 @@ class IncludeManager(object):
                 current_lines.append(line)
         if current_lines and current_key:
             self.snippet_cache[(path, current_key)] = '\n'.join(current_lines)
-        
+

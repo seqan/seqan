@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ void randomize(TBuffer buf)
 }
 
 template < typename TValue >
-struct IdentityMap : public std::unary_function< TValue, TValue >
+struct IdentityMap : public std::function<TValue ( TValue)>
 {
     inline TValue operator() (TValue const i)
     {
@@ -80,7 +80,7 @@ struct IdentityMap : public std::unary_function< TValue, TValue >
 };
 
 template < typename TValue >
-struct SimpleCompare : public std::binary_function< TValue const, TValue const, int >
+struct SimpleCompare : public std::function<int ( TValue const, TValue const)>
 {
     inline int operator() (TValue const a, TValue const b) const
     {

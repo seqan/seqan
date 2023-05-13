@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -130,21 +130,25 @@ struct Triple
     inline Triple(Triple<T1_, T2_, T3_, TSpec__> const & _p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)), i3(getValueI3(_p)) {}
 
-    // TODO(holtgrew): Move comparison operators to global functions?
-    inline bool
-    operator==(Triple const & other) const
+    Triple & operator=(Triple const&) = default;
+
+    friend bool operator==(Triple const & me, Triple const & other)
     {
-        return i1 == other.i1 && i2 == other.i2 && i3 == other.i3;
+        return me.i1 == other.i1 && me.i2 == other.i2 && me.i3 == other.i3;
     }
 
-    inline bool
-    operator<(Triple const & other) const
+    friend bool operator!=(Triple const & me, Triple const & other)
     {
-        if (i1 < other.i1)
+        return !(me == other);
+    }
+
+    friend bool operator<(Triple const & me, Triple const & other)
+    {
+        if (me.i1 < other.i1)
             return true;
-        if (i1 == other.i1 && i2 < other.i2)
+        if (me.i1 == other.i1 && me.i2 < other.i2)
             return true;
-        if (i1 == other.i1 && i2 == other.i2 && i3 < other.i3)
+        if (me.i1 == other.i1 && me.i2 == other.i2 && me.i3 < other.i3)
                 return true;
         return false;
     }

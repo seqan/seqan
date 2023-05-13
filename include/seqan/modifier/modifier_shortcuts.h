@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -200,13 +200,13 @@ typedef ReverseComplementString<Rna5String>::Type    Rna5StringReverseComplement
  */
 
 template <typename TSequence >
-inline void complement(TSequence & sequence)
+inline SEQAN_FUNC_ENABLE_IF(IsSequence<TSequence>, void) complement(TSequence & sequence)
 {
     convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
 }
 
 template <typename TSequence >
-inline void complement(TSequence const & sequence)
+inline SEQAN_FUNC_ENABLE_IF(IsSequence<TSequence>, void) complement(TSequence const & sequence)
 {
     convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
 }
@@ -306,6 +306,22 @@ inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet, Tag
     SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
     for(int seqNo = 0; seqNo < seqCount; ++seqNo)
         reverseComplement(stringSet[seqNo], Serial());
+}
+
+// Reversing a Packed ConcatDirect StringSet in parallel is undefined behaviour
+template < typename TAlphabet, typename TAlloc, typename TSpec, typename TParallelTag>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<Tag<TParallelTag>, Parallel>, void)
+reverseComplement(StringSet<String<TAlphabet, Packed<TAlloc> >, Owner<ConcatDirect<TSpec> > > & stringSet, Tag<TParallelTag>)
+{
+    reverseComplement(stringSet, Serial());
+}
+
+// Reversing a Packed ConcatDirect StringSet in parallel is undefined behaviour
+template < typename TAlphabet, typename TAlloc, typename TSpec, typename TParallelTag>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<Tag<TParallelTag>, Parallel>, void)
+reverseComplement(StringSet<String<TAlphabet, Packed<TAlloc> >, Owner<ConcatDirect<TSpec> > > const & stringSet, Tag<TParallelTag>)
+{
+    reverseComplement(stringSet, Serial());
 }
 
 template <typename TText>

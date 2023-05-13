@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // Copyright (c) 2013 NVIDIA Corporation
 // All rights reserved.
 //
@@ -1999,7 +1999,9 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 /*!
  * @fn TopDownHistoryIterator#goUp
  * @headerfile <seqan/index.h>
- * @brief Iterates up one edge to the parent in a tree/trie.
+ * @brief Iterates up one or multiple edges to the parent in a tree/trie. E.g., after using goDown(iterator, string [, lcp]) on a suffix or
+ * prefix trie (e.g. IndexSa or FMIndex) and thus going down multiple edges at once, goUp(iterator) will go up as many
+ * edges as the corresponding call of goDown(iterator, string[, lcp]) has moved down.
  *
  * @signature bool goUp(iterator);
  *

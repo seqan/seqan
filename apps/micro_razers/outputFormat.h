@@ -123,7 +123,7 @@ score(Score<TValue, Quality<TQualityString> > const & me,
 
 	// ... to sort matches and remove duplicates with equal gBegin
 	template <typename TReadMatch>
-	struct LessGPosRNo : public ::std::binary_function < TReadMatch, TReadMatch, bool >
+	struct LessGPosRNo : public ::std::function<bool ( TReadMatch, TReadMatch)>
 	{
 		inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
 		{

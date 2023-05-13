@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -286,7 +286,7 @@ void readRecord(UcscRecord & record,
     skipOne(iter, IsTab());
 
     // read column 8: exon count
-    unsigned exons;
+    unsigned exons{};
     clear(buffer);
     readUntil(buffer, iter, nextRecord);
     lexicalCastWithException(exons, buffer);

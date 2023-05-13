@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ struct OptimalSearchSchemes<0, 2, TVoidType>
 {
     static constexpr std::array<OptimalSearch<4>, 3> VALUE
     {{
-        { {{2, 1, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
+        { {{1, 2, 3, 4}}, {{0, 0, 1, 1}}, {{0, 0, 2, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{3, 2, 1, 4}}, {{0, 0, 0, 0}}, {{0, 1, 1, 2}}, {{0, 0, 0, 0}}, 0 },
         { {{4, 3, 2, 1}}, {{0, 0, 0, 2}}, {{0, 1, 2, 2}}, {{0, 0, 0, 0}}, 0 }
     }};
@@ -92,30 +92,33 @@ constexpr std::array<OptimalSearch<4>, 3> OptimalSearchSchemes<0, 2, TVoidType>:
 template <typename TVoidType>
 struct OptimalSearchSchemes<0, 3, TVoidType>
 {
-    static constexpr std::array<OptimalSearch<5>, 3> VALUE
+    static constexpr std::array<OptimalSearch<5>, 4> VALUE
     {{
-        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 2, 2}}, {{0, 0, 3, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{4, 3, 2, 1, 5}}, {{0, 0, 0, 0, 0}}, {{1, 1, 2, 2, 3}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 }
+        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 0, 3}}, {{0, 2, 2, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 },
+        { {{2, 3, 4, 5, 1}}, {{0, 0, 0, 2, 2}}, {{0, 1, 2, 2, 3}}, {{0, 0, 0, 0, 0}}, 0 },
+        { {{3, 4, 5, 2, 1}}, {{0, 0, 1, 1, 1}}, {{0, 1, 1, 2, 3}}, {{0, 0, 0, 0, 0}}, 0 },
+        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 0}}, {{0, 0, 3, 3, 3}}, {{0, 0, 0, 0, 0}}, 0 }
     }};
 };
 
 template <typename TVoidType>
-constexpr std::array<OptimalSearch<5>, 3> OptimalSearchSchemes<0, 3, TVoidType>::VALUE;
+constexpr std::array<OptimalSearch<5>, 4> OptimalSearchSchemes<0, 3, TVoidType>::VALUE;
 
 template <typename TVoidType>
 struct OptimalSearchSchemes<0, 4, TVoidType>
 {
-    static constexpr std::array<OptimalSearch<5>, 3> VALUE
+    static constexpr std::array<OptimalSearch<6>, 5> VALUE
     {{
-        { {{1, 2, 3, 4, 5}}, {{0, 0, 0, 0, 4}}, {{0, 3, 3, 4, 4}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{2, 3, 4, 5, 1}}, {{0, 0, 0, 0, 0}}, {{2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0}}, 0 },
-        { {{5, 4, 3, 2, 1}}, {{0, 0, 0, 3, 3}}, {{0, 0, 4, 4, 4}}, {{0, 0, 0, 0, 0}}, 0 }
+        { {{1, 2, 3, 4, 5, 6}}, {{0, 0, 0, 0, 0, 4}}, {{0, 3, 3, 3, 4, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{2, 3, 4, 5, 6, 1}}, {{0, 0, 0, 0, 0, 0}}, {{0, 2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{3, 2, 4, 5, 6, 1}}, {{0, 1, 1, 1, 1, 1}}, {{0, 2, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{4, 3, 2, 5, 6, 1}}, {{0, 1, 2, 2, 2, 2}}, {{0, 1, 2, 3, 3, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 },
+        { {{6, 5, 4, 3, 2, 1}}, {{0, 0, 0, 0, 3, 3}}, {{0, 0, 4, 4, 4, 4}}, {{0, 0, 0, 0, 0, 0}}, 0 }
     }};
 };
 
 template <typename TVoidType>
-constexpr std::array<OptimalSearch<5>, 3> OptimalSearchSchemes<0, 4, TVoidType>::VALUE;
+constexpr std::array<OptimalSearch<6>, 5> OptimalSearchSchemes<0, 4, TVoidType>::VALUE;
 
 template <typename TVoidType>
 struct OptimalSearchSchemes<1, 1, TVoidType>
@@ -280,7 +283,7 @@ inline void _optimalSearchSchemeInit(std::array<OptimalSearch<nbrBlocks>, N> & s
         s.startPos = 0;
         for (uint8_t i = 0; i < s.pi.size(); ++i)
             if (s.pi[i] < s.pi[0])
-                s.startPos += s.blocklength[i] - ((i > 0) ? s.blocklength[i-1] : 0);
+                s.startPos += s.blocklength[i] - s.blocklength[i - 1];
     }
 }
 
@@ -319,7 +322,7 @@ inline void _optimalSearchSchemeDeletion(TDelegate & delegate,
     if (minErrorsLeftInBlock == 0)
     {
         uint8_t const blockIndex2 = std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1);
-        bool const goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
+        bool const goToRight2 = (blockIndex2 == 0) ? true : (s.pi[blockIndex2] > s.pi[blockIndex2 - 1]);
 
         if (goToRight2)
         {
@@ -392,7 +395,7 @@ inline void _optimalSearchSchemeChildren(TDelegate & delegate,
                 else
                 {
                     uint8_t blockIndex2 = std::min(blockIndex + 1, static_cast<uint8_t>(s.u.size()) - 1);
-                    bool goToRight2 = s.pi[blockIndex2] > s.pi[blockIndex2 - 1];
+                    bool const goToRight2 = (blockIndex2 == 0) ? true : (s.pi[blockIndex2] > s.pi[blockIndex2 - 1]);
                     if (goToRight2)
                     {
                         _optimalSearchScheme(delegate, iter, needle, needleLeftPos2, needleRightPos2, errors + delta, s,

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -106,6 +106,8 @@ public:
         TBase(static_cast<TBase const &>(other_)),
         data_container(other_.data_container)
     {}
+
+    Iter & operator=(Iter const &) = default;
 
     template <typename TContainer2, typename TSpec2>
     Iter(Iter<TContainer2, TSpec2> const & other_) :

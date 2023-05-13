@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -410,7 +410,6 @@ getAlignments(String<TAlign> & alis, StringSet<TSequence, TSeqSpec> & seq, TScor
 
 SEQAN_DEFINE_TEST(RefineAlign)
 {
-    SEQAN_SKIP_TEST;
     typedef String<char> TString;
     typedef StringSet<TString> TStringSet;
     typedef StringSet<TString,Dependent<> > TDepStringSet;

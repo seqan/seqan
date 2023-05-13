@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -112,6 +112,11 @@ public:
         data_host(_toPointer(host(_other))),
         data_end_position(endPosition(_other))
     {}
+
+    Segment(Segment const & source)
+    {
+        assign(*this, source);
+    }
 
     inline Segment &
     operator = (Segment const & source)

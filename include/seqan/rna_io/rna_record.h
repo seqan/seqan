@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,7 @@ class RnaRecord
 {
 private:
     // Constant for an undefined ID.
-    static std::uint32_t const _undef = std::numeric_limits<std::uint32_t>::max();
+    inline static std::uint32_t const _undef = std::numeric_limits<std::uint32_t>::max();
 
 public:
     // NOTE(marehr): Explicitly define a default constructor, to fix a msvc 2017

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -164,7 +164,7 @@ struct RaiiEvent
     {
         {
             std::unique_lock<std::mutex> lck(mutexEvent);
-            event.wait(lck, [&]{ return eventState; });
+            event.wait(lck, [&, this]{ return eventState; });
         }
     }
 
@@ -188,7 +188,6 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
     WavefrontAlignmentScheduler scheduler{8,2};
 
     std::vector<uint16_t>  calledIds{0, 0, 0, 0, 0, 0, 0, 0};
-    bool isRecycled{false};
     std::mutex mutexSetBool;
 
     TTask t = [&] (uint16_t const id)
@@ -202,7 +201,6 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
         {
             {
                 std::lock_guard<std::mutex> lck(mutexSetBool);
-                isRecycled = true;
                 if (std::accumulate(std::begin(calledIds), std::end(calledIds), 0) == 50)
                 {
                     event.notify(id);

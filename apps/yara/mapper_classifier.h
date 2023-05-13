@@ -1,7 +1,7 @@
 // ==========================================================================
 //                      Yara - Yet Another Read Aligner
 // ==========================================================================
-// Copyright (c) 2011-2018, Enrico Siragusa, FU Berlin
+// Copyright (c) 2011-2021, Enrico Siragusa, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,13 +73,13 @@ struct ReadsClassifier
         readSeqs(host(seeds)),
         options(options)
     {
-        _classifyReadsImpl(*this, typename TConfig::TStrategy()); //, typename TConfig::TAnchoring());
+        _classifyReadsImpl(*this);
     }
 
     template <typename TReadSeqsIterator>
     void operator() (TReadSeqsIterator const & it)
     {
-        _classifyReadImpl(*this, it, typename TConfig::TStrategy()); //, typename TConfig::TAnchoring());
+        _classifyReadImpl(*this, it);
     }
 };
 
@@ -88,22 +88,11 @@ struct ReadsClassifier
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _classifyReadsImpl(); Default
+// Function _classifyReadsImpl()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig>
-inline void _classifyReadsImpl(ReadsClassifier<TSpec, TConfig> & me, All)
-{
-    // Iterate over all reads.
-    iterate(me.readSeqs, me, Rooted(), typename TConfig::TThreading());
-}
-
-// ----------------------------------------------------------------------------
-// Function _classifyReadsImpl(); AnchorOne
-// ----------------------------------------------------------------------------
-
-template <typename TSpec, typename TConfig>
-inline void _classifyReadsImpl(ReadsClassifier<TSpec, TConfig> & me, Strata)//AnchorOne)
+inline void _classifyReadsImpl(ReadsClassifier<TSpec, TConfig> & me)
 {
     typedef typename TConfig::TReadSeqs             TReadSeqs;
     typedef Segment<TReadSeqs const, PrefixSegment> TPrefix;
@@ -115,48 +104,11 @@ inline void _classifyReadsImpl(ReadsClassifier<TSpec, TConfig> & me, Strata)//An
 }
 
 // ----------------------------------------------------------------------------
-// Function _classifyReadImpl(); Default
-// ----------------------------------------------------------------------------
-// Raises the seeds errors, mark for reseeding and clears the hits of hard reads.
-
-template <typename TSpec, typename TConfig, typename TReadSeqsIterator>
-inline void _classifyReadImpl(ReadsClassifier<TSpec, TConfig> & me, TReadSeqsIterator const & it, All)
-{
-    typedef typename TConfig::THits                     THits;
-    typedef typename Value<THits>::Type                 THit;
-    typedef typename Id<THit>::Type                     THitId;
-    typedef Pair<THitId>                                THitIds;
-    typedef typename Size<THit>::Type                   THitSize;
-    typedef typename TConfig::TSeeds                    TSeeds;
-    typedef typename Id<TSeeds>::Type                   TSeedId;
-    typedef Pair<TSeedId>                               TSeedIds;
-    typedef typename TConfig::TReadSeqs                 TReadSeqs;
-    typedef typename Size<TReadSeqs>::Type              TReadId;
-
-    TReadId readSeqId = position(it);
-
-    // Count the hits per read.
-    TSeedIds readSeedIds = getSeedIds(me.seeds, readSeqId);
-    THitIds readHitIds = getHitIds(me.hits, readSeedIds);
-    THitSize readHits = countHits<THitSize>(me.hits, readHitIds);
-
-    // Re-seed hard reads.
-    if (readHits > me.options.hitsThreshold)
-    {
-        // Guess a good seeding stragegy.
-        setSeedErrors(me.ctx, readSeqId, (readHits < 200 * me.options.hitsThreshold) ? 1 : 2);
-
-        // Clear the hits of the read.
-        clearHits(me.hits, readHitIds);
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _classifyReadImpl(); Strata
+// Function _classifyReadImpl()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TConfig, typename TReadSeqsIterator>
-inline void _classifyReadImpl(ReadsClassifier<TSpec, TConfig> & me, TReadSeqsIterator const & it, Strata)
+inline void _classifyReadImpl(ReadsClassifier<TSpec, TConfig> & me, TReadSeqsIterator const & it)
 {
     typedef typename TConfig::THits                     THits;
     typedef typename Value<THits>::Type                 THit;
@@ -199,80 +151,6 @@ inline void _classifyReadImpl(ReadsClassifier<TSpec, TConfig> & me, TReadSeqsIte
         // Clear the hits of the read.
         clearHits(me.hits, fwdHitIds);
         clearHits(me.hits, revHitIds);
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function _classifyReadImpl(); AnchorOne
-// ----------------------------------------------------------------------------
-// Selects the mate to anchor; raises the seeds errors, mark for reseeding and clears the hits of hard anchors.
-
-template <typename TSpec, typename TConfig, typename TReadSeqsIterator>
-inline void _classifyReadImpl(ReadsClassifier<TSpec, TConfig> & me, TReadSeqsIterator const & it, All, AnchorOne)
-{
-    typedef typename TConfig::THits                     THits;
-    typedef typename Value<THits>::Type                 THit;
-    typedef typename Id<THit>::Type                     THitId;
-    typedef Pair<THitId>                                THitIds;
-    typedef typename Size<THit>::Type                   THitSize;
-    typedef typename TConfig::TSeeds                    TSeeds;
-    typedef typename Id<TSeeds>::Type                   TSeedId;
-    typedef Pair<TSeedId>                               TSeedIds;
-    typedef typename TConfig::TReadSeqs                 TReadSeqs;
-    typedef typename Size<TReadSeqs>::Type              TReadId;
-
-    // Get readSeqId.
-    TReadId readSeqId = position(it);
-
-    // Get mate id.
-    TReadId mateSeqId = getMateSeqId(me.readSeqs, readSeqId);
-
-    // Get seed ids.
-    TSeedIds readSeedIds = getSeedIds(me.seeds, readSeqId);
-    TSeedIds mateSeedIds = getSeedIds(me.seeds, mateSeqId);
-
-    // Get hit ids.
-    THitIds readHitIds = getHitIds(me.hits, readSeedIds);
-    THitIds mateHitIds = getHitIds(me.hits, mateSeedIds);
-
-    // Count the hits of each read.
-    THitSize readHits = countHits<THitSize>(me.hits, readHitIds);
-    THitSize mateHits = countHits<THitSize>(me.hits, mateHitIds);
-
-    TReadId anchorSeqId;
-    TReadId otherSeqId;
-    THitIds anchorHitIds;
-    THitIds otherHitIds;
-
-    // Choose the easiest read as the anchor.
-    THitSize anchorHits = std::min(readHits, mateHits);
-
-    if (anchorHits == readHits)
-    {
-        anchorSeqId = readSeqId;
-        anchorHitIds = readHitIds;
-        otherSeqId = mateSeqId;
-        otherHitIds = mateHitIds;
-    }
-    else
-    {
-        anchorSeqId = mateSeqId;
-        anchorHitIds = mateHitIds;
-        otherSeqId = readSeqId;
-        otherHitIds = readHitIds;
-    }
-
-    // Clear the hits of the other read.
-    clearHits(me.hits, otherHitIds);
-
-    // Re-seed hard anchors.
-    if (anchorHits > me.options.hitsThreshold)
-    {
-        // Guess a good seeding stragegy.
-        setSeedErrors(me.ctx, anchorSeqId, (anchorHits < 200 * me.options.hitsThreshold) ? 1 : 2);
-
-        // Clear the hits of the anchor.
-        clearHits(me.hits, anchorHitIds);
     }
 }
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """SeqAn Skelleton Creation."""
 
 import os.path

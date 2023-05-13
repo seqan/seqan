@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -262,7 +262,7 @@ operator*(Iter<TContainer, TSpec> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-inline Iter<TContainer, TSpec> const &
+inline Iter<TContainer, TSpec> &
 operator++(Iter<TContainer, TSpec> & me)
 {
     goNext(me);
@@ -283,7 +283,7 @@ operator++(Iter<TContainer, TSpec> & me, int)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec>
-inline Iter<TContainer, TSpec> const &
+inline Iter<TContainer, TSpec> &
 operator--(Iter<TContainer, TSpec> & me)
 {
     goPrevious(me);
@@ -317,7 +317,7 @@ operator+(Iter<TContainer, TSpec> const & me, TSize size)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TSpec, typename TSize>
-inline Iter<TContainer, TSpec> const &
+inline Iter<TContainer, TSpec> &
 operator+=(Iter<TContainer, TSpec> & me, TSize size)
 {
     goFurther(me, size);
@@ -369,6 +369,20 @@ position(Iter<TContainer, TSpec> const & me,
 {
     return position(me);
 }
+
+// ----------------------------------------------------------------------------
+// Function begin()
+// ----------------------------------------------------------------------------
+
+// This makes `begin` SFINAE friendly. Without this `begin` on iterators gives
+// hard errors and std::ranges::Range on seqan iterators will not work.
+template <typename T, typename TSpec>
+inline void begin(Iter<T, TSpec> &) = delete;
+
+// This makes `begin` SFINAE friendly. Without this `begin` on iterators gives
+// hard errors and std::ranges::Range on seqan iterators will not work.
+template <typename T, typename TSpec>
+inline void begin(Iter<T, TSpec> const &) = delete;
 
 }  // namespace seqan
 

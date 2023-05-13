@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 """ROI Table Generator
 
 Generates a HTML page with a table of ROI record details.  Besides showing the
@@ -90,7 +90,7 @@ class RoiTable(object):
 
     def tplFuncs(self):
         def intWithCommas(x):
-            if type(x) not in [type(0), type(0L)]:
+            if type(x) not in [type(0), type(0)]:
                 raise TypeError("Parameter must be an integer.")
             if x < 0:
                 return '-' + intWithCommas(-x)
@@ -138,24 +138,24 @@ class TableApp(ngs_roi.app.App):
 
     def run(self):
         # Load ROI records.
-        print >>sys.stderr, 'Loading ROI'
+        print('Loading ROI', file=sys.stderr)
         records = ngs_roi.io.load(self.args.in_file, self.args.max_rois)
         keys = []
         if records:
             keys = records[0].data_keys
 
         # Create plots.
-        print >>sys.stderr, 'Creating plots...'
+        print('Creating plots...', file=sys.stderr)
         runner = ngs_roi.app.PlotThumbnailsRunner(self.args)
         runner.run()
 
         # Create table.
-        print >>sys.stderr, 'Creating table...'
+        print('Creating table...', file=sys.stderr)
         self.createHtml(self.args.out_file, keys, records)
         return 0
 
     def createHtml(self, file_name, keys, records):
-        print >>sys.stderr, 'Writing %s' % self.args.out_file
+        print('Writing %s' % self.args.out_file, file=sys.stderr)
         vals = {'table': RoiTable(self.args, keys, records, self).render(),
                 'args': self.args}
         t = Cheetah.Template.Template(PAGE_TPL, searchList=vals)

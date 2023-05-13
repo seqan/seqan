@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -285,12 +285,9 @@ public:
     {
     }
 
-    IntervalTreeNode(IntervalTreeNode const & other) :
-        center(other.center),
-        list1(other.list1),
-        list2(other.list2)
-    {
-    }
+    IntervalTreeNode(IntervalTreeNode const & other) = default;
+
+    IntervalTreeNode & operator=(IntervalTreeNode const &) = default;
 
 };
 

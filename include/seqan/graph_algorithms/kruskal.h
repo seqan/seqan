@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TWeight, typename TPair>
-struct LessPairI1_ : public std::unary_function<Pair<TWeight, TPair>, bool>
+struct LessPairI1_ : public std::function<bool(Pair<TWeight, TPair>)>
 {
     bool operator() (Pair<TWeight, TPair> const & a1,
                      Pair<TWeight, TPair> const & a2) const

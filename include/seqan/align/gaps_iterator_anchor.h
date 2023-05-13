@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -109,18 +109,9 @@ public:
     {
     }
 
-    Iter const & operator = (Iter const & other_)
-    {
-        data_container = other_.data_container;
-        seqLength = other_.seqLength;
-        current = other_.current;
-        prevAnchor = other_.prevAnchor;
-        nextAnchor = other_.nextAnchor;
-        anchorIdx = other_.anchorIdx;
-        viewBegin = other_.viewBegin;
-        viewEnd = other_.viewEnd;
-        return *this;
-    }
+    Iter(Iter const &) = default;
+
+    Iter & operator = (Iter const &) = default;
 };
 
 // ============================================================================

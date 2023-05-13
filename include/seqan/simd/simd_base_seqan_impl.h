@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2018, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -143,6 +143,7 @@ struct SimdMatrixParams_
         SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector)                                                            \
         SEQAN_DEFINE_SIMD_VECTOR_VALUE_(TSimdVector const)                                                      \
         SEQAN_DEFINE_SIMD_VECTOR_ASSIGNVALUE_(TSimdVector)                                                      \
+        template <> struct IsSimple_<TSimdVector> { typedef True Type; };                                       \
         template <>                                                                                             \
         SEQAN_CONCEPT_IMPL((TSimdVector),       (SimdVectorConcept));                                           \
         template <>                                                                                             \
