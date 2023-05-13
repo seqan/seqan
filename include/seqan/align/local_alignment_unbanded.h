@@ -185,7 +185,7 @@ namespace seqan {
  *
  * @include demos/dox/align/local_alignment_unbanded_execution_policy.cpp
  *
- * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * https://seqan.readthedocs.io/en/main/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  *
  * @section References
  *
@@ -520,7 +520,7 @@ String<TScoreValue> localAlignment(StringSet<Align<TSequence, TAlignSpec> > & al
  *
  * @include demos/dox/align/local_alignment_unbanded_score_execution_policy_wavefront.cpp
  *
- * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * @see https://seqan.readthedocs.io/en/main/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see localAlignment
  *
  * @datarace thread-safe. No shared state is modified during the execution and concurrent invocations of this function

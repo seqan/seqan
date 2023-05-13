@@ -7,7 +7,7 @@
 Nightly Builds
 ==============
 
-Every night the master and develop branches of SeqAn are fetched and built on a variety of platforms. The results can be seen at the `SeqAn CDash site <http://www.seqan.de/cdash/index.php?project=SeqAn>`__.
+Every night the main branch of SeqAn is fetched and built on a variety of platforms. The results can be seen at the `SeqAn CDash site <http://www.seqan.de/cdash/index.php?project=SeqAn>`__.
 
 The scripts that facilitate this are hosted `here <http://svn.mi.fu-berlin.de/seqan-nightly/trunk/>`__. Please note that the ``linux`` and ``macosx`` directories are outdated, both are now handled by the ``unix`` directory.
 
@@ -19,7 +19,7 @@ Unix Script variables
 +=====================+====================================================================+
 | ``BITS``            | ``32`` or ``64`` (64 by default)                                   |
 +---------------------+--------------------------------------------------------------------+
-| ``GIT_BRANCH``      | ``master``, ``develop`` or a valid branch name (develop by default)|
+| ``GIT_BRANCH``      | ``main``,  or a valid branch name (main by default)                |
 +---------------------+--------------------------------------------------------------------+
 | ``COMPILERS``       | list of compiler-binaries to use                                   |
 +---------------------+--------------------------------------------------------------------+
@@ -65,11 +65,9 @@ And add the jobs that you wish to have executed. It could look like this:
     # PATH variable for cron
     PATH=/usr/local/libexec/ccache:/usr/local/bin:/usr/local/sbin:/sbin:/usr/sbin:/bin:/usr/bin
     #m h d m w
-    5  1 * * * MODEL=Nightly TMPDIR=/tmp TESTROOT=${HOME}/nightly-builds/testroot GIT_BRANCH=master  BITS=32 COMPILERS="clang++35 clang++36 clang++37 clang++38 clang++-devel" THREADS=4 nice -n 10 ${HOME}/nightly-builds/unix/bin/run.sh >/dev/null
-    5  1 * * * MODEL=Nightly TMPDIR=/tmp TESTROOT=${HOME}/nightly-builds/testroot GIT_BRANCH=develop BITS=32 COMPILERS="clang++35 clang++36 clang++37 clang++38 clang++-devel" THREADS=4 nice -n 10 ${HOME}/nightly-builds/unix/bin/run.sh >/dev/null
+    5  1 * * * MODEL=Nightly TMPDIR=/tmp TESTROOT=${HOME}/nightly-builds/testroot GIT_BRANCH=main  BITS=32 COMPILERS="clang++35 clang++36 clang++37 clang++38 clang++-devel" THREADS=4 nice -n 10 ${HOME}/nightly-builds/unix/bin/run.sh >/dev/null
 
-    5  3 * * * MODEL=Nightly TMPDIR=/tmp TESTROOT=${HOME}/nightly-builds/testroot GIT_BRANCH=master  BITS=64 COMPILERS="clang++35 clang++36 clang++37 clang++38 clang++-devel g++49 g++5 g++6" THREADS=4 nice -n 10 ${HOME}/nightly-builds/unix/bin/run.sh >/dev/null
-    5  3 * * * MODEL=Nightly TMPDIR=/tmp TESTROOT=${HOME}/nightly-builds/testroot GIT_BRANCH=develop BITS=64 COMPILERS="clang++35 clang++36 clang++37 clang++38 clang++-devel g++49 g++5 g++6" THREADS=4 nice -n 10 ${HOME}/nightly-builds/unix/bin/run.sh >/dev/null
+    5  3 * * * MODEL=Nightly TMPDIR=/tmp TESTROOT=${HOME}/nightly-builds/testroot GIT_BRANCH=main  BITS=64 COMPILERS="clang++35 clang++36 clang++37 clang++38 clang++-devel g++49 g++5 g++6" THREADS=4 nice -n 10 ${HOME}/nightly-builds/unix/bin/run.sh >/dev/null
 
 
 The first columns mean that on the 5th minute of the 1st/3rd hour (1:05am/3:05am) of every day, of every month and every week the subsequent command is executed. The variables are described above.

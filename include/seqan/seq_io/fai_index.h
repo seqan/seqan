@@ -104,7 +104,7 @@ clear(FaiIndexEntry_ &entry)
  * FAI indices allow the rast random access to sequences or parts of sequences in a FASTA file.  Originally, they were
  * introduced in the <a href="http://samtools.sourceforge.net/samtools.shtml">samtools</a> program.
  *
- * Also see the <a href="http://seqan.readthedocs.io/en/develop/Tutorial/InputOutput/IndexedFastaIO.html">Indexed FASTA I/O
+ * Also see the <a href="https://seqan.readthedocs.io/en/main/Tutorial/InputOutput/IndexedFastaIO.html">Indexed FASTA I/O
  * Tutorial</a>.
  *
  * @section Example
@@ -324,7 +324,7 @@ inline void readRegion(String<TValue, TSpec> & str,
     beginPos = std::min((TEndPos)beginPos, seqLen);
     endPos = std::min(std::max((TEndPos)beginPos, endPos), seqLen);
     TEndPos toRead = endPos - beginPos;
-    
+
     clear(str);
     if (toRead == 0)
         return;
@@ -597,7 +597,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
                             CountFunctor<True>,                             // 1st count functor counts bytes
                             CountFunctor<NotFunctor<IsWhitespace> >         // 2nd count functor counts non-whitespaces
                          > > countCharsPerLine;
-    
+
     while (!atEnd(iter) && !TFastaBegin()(value(iter)))
     {
         // check for consistency

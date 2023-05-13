@@ -41,11 +41,6 @@ SeqAn Workflow
 --------------
 
 The SeqAn workflow is based on the `Gitflow <https://www.atlassian.com/git/tutorials/comparing-workflows>`_ workflow by `Atlassian`__.
-The workflow is based on two persistent branches: `main <https://github.com/seqan/seqan/tree/main>`_ and `develop <https://github.com/seqan/seqan/tree/develop>`_.
-Almost all development occurs in develop.
-
-The main branch is only updated before a new release, either by merging from develop which will create a new minor release [2.x+1.0] or through an emergency fix which will result in a patch level release [2.x.y+1].
-Thus, the main branch is always stable and usually identical to the latest release, and the develop branch contains the latest development but might occasionally have breaking changes.
 
 .. __: https://www.atlassian.com
 
@@ -54,12 +49,12 @@ Develop a feature or fix a bug
 
 Follow the `steps <https://www.atlassian.com/git/workflows#workflow-gitflow>`_ in “Mary and John begin new features” and “Mary finishes her feature”.
 
-* Create a new `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ based on `develop <https://github.com/seqan/seqan/tree/develop>`_.
+* Create a new `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`_ based on `main <https://github.com/seqan/seqan/tree/main>`_.
 * Perform your changes and `commit <https://www.atlassian.com/git/tutorial/git-basics#commit>`_ them onto your feature branch.
 * Keep your commit history concise (see below) and `write proper commit messages <infra-contribute-git-commits>`_.
 * When the development is complete, push the feature branch to your repository on GithHub.
 * Make sure that you have `signed the Contributor License Agreement <https://www.clahub.com/agreements/seqan/seqan>`_
-* `Create a GitHub pull request <https://github.com/seqan/seqan/compare/develop>`_ to `develop <https://github.com/seqan/seqan/tree/develop>`_.
+* `Create a GitHub pull request <https://github.com/seqan/seqan/compare/main>`_ to `main <https://github.com/seqan/seqan/tree/main>`_.
 * Delete your branch once it has been merged.
 
 What to include in a commit

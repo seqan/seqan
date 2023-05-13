@@ -159,7 +159,7 @@ class Fragment;
  *
  * @include demos/dox/align/global_alignment_banded.cpp.stdout
  *
- * https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * https://seqan.readthedocs.io/en/main/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  *
  * @section Execution policies
  *
@@ -586,7 +586,7 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  *
  * @include demos/dox/align/global_alignment_unbanded_score_execution_policy_wavefront.cpp
  *
- * @see https://seqan.readthedocs.io/en/develop/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
+ * @see https://seqan.readthedocs.io/en/main/Tutorial/Algorithms/Alignment/PairwiseSequenceAlignment.html
  * @see globalAlignment
  *
  * @datarace thread-safe. No shared state is modified during the execution and concurrent invocations of this function

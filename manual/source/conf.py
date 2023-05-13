@@ -290,7 +290,7 @@ texinfo_documents = [
 
 # -- Options for SeqAn plugins ----------------------------------------------
 
-# Configure the base URL for dox links.  By default, we point to the develop
+# Configure the base URL for dox links.  By default, we point to the main
 # branch, but if we are on readthedocs then we compute the URL from the
 # RTD_VERSION_SLUG configured by the rtd environment.
 doxlinks_base_url = 'http://docs.seqan.de/seqan/%s/' % version
