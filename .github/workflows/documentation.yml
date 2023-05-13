@@ -52,7 +52,7 @@ jobs:
           ./dox_only.sh
 
       - name: Deploy documentation
-        uses: Pendect/action-rsyncer@v1.1.0
+        uses: Pendect/action-rsyncer@v2.0.0
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_HOST_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
