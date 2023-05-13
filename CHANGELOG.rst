@@ -271,7 +271,7 @@ Infrastructure Updates
 - Build System:
     - The Intel Compiler is now fully supported on Linux and Windows, both 32bit and 64bit; it builds faster binaries and supports some functionality not available in MSVC.
     - On Windows there is now experimental support for Clang/C2, the Microsoft version of the clang compiler.
-    - Please see the `manual <http://seqan.readthedocs.io/en/main/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
+    - Please see the `manual <https://seqan.readthedocs.io/en/main/Infrastructure/Use/CMakeBuildDirs.html#visual-studio>`_ for more information on how to use these compilers.
     - support deb/rpm/exe/dmg packages and SSE4+POPCNT binaries
 
 - Platforms:
@@ -586,7 +586,7 @@ Infrastructure Updates
 
 - The repository has been migrated to GitHub (https://github.com/seqan/seqan).
 - Continuous integration builds happen on TravisCI.
-- The manual has been migrated to sphinx (http://seqan.readthedocs.io).
+- The manual has been migrated to sphinx (https://seqan.readthedocs.io).
 - The ``core`` and ``extras`` subfolders have been removed.
 
 New Apps

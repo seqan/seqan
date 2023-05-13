@@ -3,10 +3,7 @@ name: Deploy documentation (https://docs.seqan.de/)
 on:
   push:
     branches:
-      # Push events to branches matching refs/heads/main
       - 'main'
-      # Push events to branches matching refs/heads/develop
-      - 'develop'
   # Enables a manual trigger, may run on any branch
   workflow_dispatch:
 

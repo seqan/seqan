@@ -12,7 +12,7 @@ Overview
   alignments. Using an exact dynamic programming approach, we refine the alignments
   around possible split positions to determine precise breakpoint locations at
   single- nucleotide level.
-|  
+|
 
 | **Usage note**: Stellar is not a read mapper, and hence, Gustaf is not
   designed to replace any read mapper pipeline with SV detection on top. We
@@ -28,7 +28,7 @@ Installation
 
 ::
 
-    git clone https://github.com/seqan/seqan.git -b develop
+    git clone https://github.com/seqan/seqan.git
     mkdir seqan-build
     cd seqan-build
     cmake ../seqan -DCMAKE_BUILD_TYPE=Release
@@ -36,7 +36,7 @@ Installation
 
 | Precompiled binaries (Linux 64-bit, Windows, Mac OS X) of Gustaf can
   be downloaded from the SeqAn project page: http://www.seqan.de/projects/gustaf/
-  
+
 Usage
 -----
 
@@ -64,7 +64,7 @@ Usage
     gustaf <GENOME FASTA FILE> <MATES1 FASTA FILE> <MATES2 FASTA FILE> -m <GFF MATCH FILE> [Options]
 
 | Given two read pair input files, Gustaf is run in paired-end mode. Note that option ``-m`` is mandatory in this case. Please also use  Gustaf’s helper app ``gustaf_mate_joining`` (see below) to join both read files  before calling Stellar.
-|  
+|
 | Remarks: There are different versions paired-end (or mate pair) data can come in. Gustaf always expect two files, and in default expects the second mates (MATES2) to be reverse complemented in relation to the first mates (MATES1), see option ``-rc`` to turn this behaviour off.
 
 Non-optional arguments
@@ -81,18 +81,18 @@ Non-optional arguments
 are not unique.
 
 | Without any additional parameters, Gustaf would call Stellar and then chain those matches of each read, that have either an overlap of at least 0.5 (50% of each match length), a gap in the read between the matches of at  most 10 bp, and that miss at most 15 bp at the end or beginning of the read. The program calls Stellar with default options (see Stellar Readme).
-|  
+|
 | Two output files will be generated: breakpoint.gff includes all structural variant breakpoints in GFF format, breakpoint.vcf in VCF format.
-|  
+|
 | The default behaviour can be modified by adding options to the command line. See ``gustaf --help`` and ``gustaf_mate_joining --help``
 
 Output Formats
 ^^^^^^^^^^^^^^
 
 | Gustaf currently supports the GFF and the VCF output format for reporting breakpoints. Using option ``-do``, Gustaf creates a Dot file of each(!) read that can be converted to png and show a graph with all alignments used for the read.
-|  
+|
 | The General Feature Format is specified by the Sanger Institute as a tab- delimited text format http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
-|  
+|
 | See  http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41 for information about the VCF file format specifications.
 
 Example

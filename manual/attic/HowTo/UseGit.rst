@@ -45,16 +45,7 @@ SeqAn Workflow
 
 The SeqAn workflow is based on the
 `Gitflow <https://www.atlassian.com/git/workflows#workflow-gitflow>`__
-workflow by `Atlassian <https://www.atlassian.com>`__. The workflow is
-based on two persistent branches:
-`main <https://github.com/seqan/seqan/tree/main>`__ and
-`develop <https://github.com/seqan/seqan/tree/develop>`__. Development
-of new library and app features usually occurs on develop. The main
-branch receives only new library and app releases, in addition to
-hot-fixes to previous releases. Thus, the main branch is always stable
-and safe to use, and the develop branch contains the last development
-but might occasionally break overnight. The most frequent development
-use cases are documented below.
+workflow by `Atlassian <https://www.atlassian.com>`__.
 
 Develop a feature in a core module or app
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -68,15 +59,15 @@ Follow the
    -  Create a new feature
       `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`__
       based on
-      `develop <https://github.com/seqan/seqan/tree/develop>`__.
+      `main <https://github.com/seqan/seqan/tree/main>`__.
    -  Perform your changes and
       `commit <https://www.atlassian.com/git/tutorial/git-basics#commit>`__
       them onto your feature branch.
    -  When the development is complete, push the feature branch to your
       repository on GithHub.
    -  `Create a GitHub pull
-      request <https://github.com/seqan/seqan/compare/develop>`__ to
-      `develop <https://github.com/seqan/seqan/tree/develop>`__.
+      request <https://github.com/seqan/seqan/compare/main>`__ to
+      `main <https://github.com/seqan/seqan/tree/main>`__.
    -  Delete your feature branch once it has been merged.
 
 Fix an existing bug in a core module or app
@@ -104,7 +95,7 @@ Follow the
       `main <https://github.com/seqan/seqan/tree/main>`__.
 
 | ``    2. ``\ ```Create`` ``a`` ``GitHub`` ``pull``
-``request`` <https://github.com/seqan/seqan/compare/develop>`__\ `` to ``\ ```develop`` <https://github.com/seqan/seqan/tree/develop>`__\ ``.``
+``request`` <https://github.com/seqan/seqan/compare/main>`__\ `` to ``\ ```main`` <https://github.com/seqan/seqan/tree/main>`__\ ``.``
 | ``    3. The pull requests should contain only the commits from your hotfix branch.``
 
 -
@@ -118,12 +109,7 @@ Develop new modules and apps
 Create a new module or app
 `branch <https://www.atlassian.com/git/tutorial/git-branches#branch>`__
 where to develop your new module or application. The branch should be
-based on main if your module or application doesn’t rely on any
-recently developed features. If a new feature becomes necessary later
-on, the branch can be
-`rebased <https://www.atlassian.com/git/tutorial/rewriting-git-history#rebase>`__
-onto develop. When the development is complete, the branch can be merged
-back into the corresponding base branch - either main or develop.
+based on main.
 
 Rules
 ~~~~~

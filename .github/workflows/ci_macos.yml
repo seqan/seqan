@@ -3,10 +3,7 @@ name: CI on macOS
 on:
   push:
     branches:
-      # Push events to branches matching refs/heads/main
       - 'main'
-      # Push events to branches matching refs/heads/develop
-      - 'develop'
   pull_request:
   # Enables a manual trigger, may run on any branch
   workflow_dispatch:

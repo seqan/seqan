@@ -7,14 +7,14 @@
 [![start][9]][10]
 [![twitter][11]][12]
 
-[1]: https://img.shields.io/github/actions/workflow/status/seqan/seqan/ci_linux.yml?branch=develop&style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
-[2]: https://github.com/seqan/seqan/actions?query=branch%3Adevelop
+[1]: https://img.shields.io/github/actions/workflow/status/seqan/seqan/ci_linux.yml?branch=main&style=flat&logo=github&label=SeqAn%20CI "Open GitHub actions page"
+[2]: https://github.com/seqan/seqan/actions?query=branch%3Amain
 [3]: https://img.shields.io/badge/license-BSD-green.svg "Open license file"
-[4]: https://github.com/seqan/seqan/blob/develop/LICENSE
+[4]: https://github.com/seqan/seqan/blob/main/LICENSE
 [5]: https://img.shields.io/github/release/seqan/seqan.svg "Get the latest release"
 [6]: https://github.com/seqan/seqan/releases/latest
 [7]: https://img.shields.io/badge/platform-linux%20%7C%20bsd%20%7C%20osx%20%7C%20win-informational.svg "Open our API documentation"
-[8]: https://docs.seqan.de/seqan/develop/
+[8]: https://docs.seqan.de/seqan/main/
 [9]: https://img.shields.io/github/stars/seqan/seqan.svg?style=social "See who starred us"
 [10]: https://github.com/seqan/seqan/stargazers
 [11]: https://img.shields.io/twitter/follow/SeqAnLib.svg?label=follow&style=social "Follow us on Twitter"

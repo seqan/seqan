@@ -172,8 +172,7 @@ Follow these instructions to set up a local sphinx environment and build the man
 
 Note that you have to first build the dox documentation since plugins for generating the ``:dox:`` links rely on the generated search index for checks.
 In order to get correct dox-links within the generated manuals, you have to specify the correct branch version.
-If you are working on the develop branch there is nothing to do, since ``'develop'`` is set by default.
-But if you are working on another branch, for example ``main``, you can set the correct branch by calling
+If you are working on the main branch there is nothing to do, since ``'main'`` is set by default.
 
 .. code-block:: console
 
