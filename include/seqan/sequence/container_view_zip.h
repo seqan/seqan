@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIP_H_
 #define INCLUDE_SEQAN_SEQUENCE_CONTAINER_VIEW_ZIP_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -64,11 +64,11 @@ struct ZipContainer;
  * @tparam TSpec The specialization type.
  *
  * @section Example
- * 
+ *
  * The following example demonstrates the functionality of the @link ZipContainerView @endlink:
  *
  * @include demos/dox/sequence/container_view_zip.cpp
- * 
+ *
  * This outputs the following to the console:
  * @include demos/dox/sequence/container_view_zip.cpp.stdout
  */

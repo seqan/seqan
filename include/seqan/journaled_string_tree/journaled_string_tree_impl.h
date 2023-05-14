@@ -39,7 +39,7 @@
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_IMPL_H_
 #define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_IMPL_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -68,7 +68,7 @@ namespace seqan
  *
  * This data structure stores a virtual set of sequences in a compressed form. The sequences are described in form of a pointer
  * to a common reference sequence and in addition delta events, which are stored in a @link DeltaMap @endlink.
- * The interface is a hybrid between a container interface and a associative container interface. So it uses typical 
+ * The interface is a hybrid between a container interface and a associative container interface. So it uses typical
  * string set intrefaces to access the virtual strings. On the other hand it implements an associative container to
  * store the delta events given their reference position as a key.
  * This data structure can then be traversed efficiently, while exploring only those sequence contexts, that are unique
@@ -440,7 +440,7 @@ length(JournaledStringTree<TSequence, TConfig, TSpec> const & jst)
  *
  * @param[in,out] jst   The journaled string tree to resize.
  * @param[in]     size  The new size of the <tt>jst</tt>.
- * 
+ *
  * @see JournaledStringTree#length
  *
  * Note, when invoking this method all stored delta events are parsed and their coverage is resized to the given
@@ -574,7 +574,7 @@ clear(JournaledStringTree<TSequence, TConfig, TSpec> & jst)
  * @param[in]       ids     An object of @link ContainerConcept @endlink storing the ids of the sequences covering this delta event. The ids must be in the range [0, @link JournaledStringTree#length @endlink).
  * @param[in]       type    A tag representing the type of the delta event. One of @link DeltaTypeTags @endlink.
  *
- * Note the value given by <tt>val<\tt> depends on the <tt>type<\tt>, which can be a single character, a string, 
+ * Note the value given by <tt>val<\tt> depends on the <tt>type<\tt>, which can be a single character, a string,
  * an integer or a pair of integer and string, representing a SNP, an insertion, a deletion or
  * a structural variant respectively.
  *
@@ -638,7 +638,7 @@ insert(JournaledStringTree<TSequence, TConfig, TSpec> & jst,
  * A delta event is described by it's host position and the type. If a left end of a deletion is deleted its
  * accompanied right end is deleted as well.
  *
- * @remark The deletion time is depends on the implementation of the underlying @link DeltaMap @endlink. 
+ * @remark The deletion time is depends on the implementation of the underlying @link DeltaMap @endlink.
  * See @link DeltaMap#erase @endlink for detailed information.
  * @see JournaledStringTree#insert
  */

@@ -38,7 +38,7 @@
 
 #include <seqan/basic.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Demonstration of using True and False as base classes.
 //![inheriting from true false]

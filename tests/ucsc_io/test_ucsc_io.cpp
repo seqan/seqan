@@ -42,7 +42,7 @@
 #include <seqan/stream.h>
 #include <seqan/ucsc_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_genes)
 {
@@ -94,7 +94,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_genes)
     for (unsigned i = 0; i < 20; ++i)
     {
         SEQAN_TEST_EXCEPTION(ParseError,
-                             seqan::readRecord(record, ucscIOContext, iter, UcscKnownGene()));
+                             seqan2::readRecord(record, ucscIOContext, iter, UcscKnownGene()));
         skipLine(iter);
     }
 }
@@ -127,7 +127,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_isoforms)
     for (unsigned i = 0; i < 20; ++i)
     {
         SEQAN_TEST_EXCEPTION(ParseError,
-                             seqan::readRecord(record, ucscIOContext, iter, UcscKnownIsoforms()));
+                             seqan2::readRecord(record, ucscIOContext, iter, UcscKnownIsoforms()));
         skipLine(iter);
     }
 }
@@ -217,7 +217,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_genes)
 
     for (unsigned i = 0; i < 20; ++i)
     {
-        SEQAN_TEST_EXCEPTION(ParseError, seqan::readRecord(record, ucscFileIn));
+        SEQAN_TEST_EXCEPTION(ParseError, seqan2::readRecord(record, ucscFileIn));
         skipLine(ucscFileIn.iter);
     }
 }
@@ -228,7 +228,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_isoforms)
     // after line.
     CharString ucscPath = getAbsolutePath("/tests/ucsc_io/example_knownIsoforms.txt");
 
-    
+
     UcscFileIn ucscFileIn(toCString(ucscPath));
     UcscRecord record;
 
@@ -246,7 +246,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_isoforms)
 
     for (unsigned i = 0; i < 20; ++i)
     {
-        SEQAN_TEST_EXCEPTION(ParseError, seqan::readRecord(record, ucscFileIn));
+        SEQAN_TEST_EXCEPTION(ParseError, seqan2::readRecord(record, ucscFileIn));
         skipLine(ucscFileIn.iter);
     }
 }

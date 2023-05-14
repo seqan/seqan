@@ -37,7 +37,7 @@
 #ifndef SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 #define SEQAN_EXTRAS_BLAST_BLAST_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -421,6 +421,6 @@ _untranslateSPositions(TPos & effectiveStart,
         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // header guard

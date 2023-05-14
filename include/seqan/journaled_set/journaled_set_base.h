@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
 #define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -200,6 +200,6 @@ struct JoinConfig{};
 // ============================================================================
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_

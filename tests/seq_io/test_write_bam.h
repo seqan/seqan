@@ -48,11 +48,11 @@ void testSeqIOBamFileWriteSequences(char const * extension, bool withQuals)
 {
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + extension;
 
-    seqan::SeqFileOut seqFileOut(toCString(tmpPath));
+    seqan2::SeqFileOut seqFileOut(toCString(tmpPath));
 
-    seqan::String<seqan::CharString> metas;
-    seqan::String<seqan::Dna5String> seqs;
-    seqan::String<seqan::CharString> quals;
+    seqan2::String<seqan2::CharString> metas;
+    seqan2::String<seqan2::Dna5String> seqs;
+    seqan2::String<seqan2::CharString> quals;
 
     appendValue(metas, "READ0");
     appendValue(metas, "READ1");
@@ -88,9 +88,9 @@ void testSeqIOBamFileWriteSequences(char const * extension, bool withQuals)
     readHeader(header, bamFileIn);
 
     BamAlignmentRecord record;
-    seqan::String<seqan::CharString> new_metas;
-    seqan::String<seqan::Dna5String> new_seqs;
-    seqan::String<seqan::CharString> new_quals;
+    seqan2::String<seqan2::CharString> new_metas;
+    seqan2::String<seqan2::Dna5String> new_seqs;
+    seqan2::String<seqan2::CharString> new_quals;
 
     while (!atEnd(bamFileIn))
     {

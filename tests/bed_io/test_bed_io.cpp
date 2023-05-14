@@ -38,7 +38,7 @@
 #include <seqan/file.h>
 #include <seqan/bed_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_bed_read_bed3_record)
 {
@@ -49,17 +49,17 @@ SEQAN_DEFINE_TEST(test_bed_read_bed3_record)
     DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
-    seqan::BedRecord<seqan::Bed3> record;
-    seqan::CharString buffer;
+    seqan2::BedRecord<seqan2::Bed3> record;
+    seqan2::CharString buffer;
 
     // Perform tests.
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -75,19 +75,19 @@ SEQAN_DEFINE_TEST(test_bed_read_bed4_record)
     DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
-    seqan::BedRecord<seqan::Bed4> record;
-    seqan::CharString buffer;
+    seqan2::BedRecord<seqan2::Bed4> record;
+    seqan2::CharString buffer;
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.name, "NAME");
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -105,12 +105,12 @@ SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
     DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
-    seqan::BedRecord<seqan::Bed5> record;
+    seqan2::BedRecord<seqan2::Bed5> record;
     CharString buffer;
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
@@ -118,7 +118,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
     SEQAN_ASSERT_EQ(record.score, "3");
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -137,12 +137,12 @@ SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
     DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
-    seqan::BedRecord<seqan::Bed6> record;
+    seqan2::BedRecord<seqan2::Bed6> record;
     CharString buffer;
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -171,12 +171,12 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
-    seqan::BedRecord<seqan::Bed12> record;
+    seqan2::BedRecord<seqan2::Bed12> record;
     CharString buffer;
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
@@ -185,7 +185,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.thickBegin, 33);
     SEQAN_ASSERT_EQ(record.thickEnd, 66);
-    SEQAN_ASSERT(record.itemRgb == seqan::BedRgb(255, 0, 0));
+    SEQAN_ASSERT(record.itemRgb == seqan2::BedRgb(255, 0, 0));
     SEQAN_ASSERT_EQ(record.blockCount, 3);
     SEQAN_ASSERT_EQ(length(record.blockSizes), 3u);
     SEQAN_ASSERT_EQ(record.blockSizes[0], 10);
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.blockBegins[2], 3);
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -206,7 +206,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.strand, '.');
     SEQAN_ASSERT_EQ(record.thickBegin, 44);
     SEQAN_ASSERT_EQ(record.thickEnd, 55);
-    SEQAN_ASSERT(record.itemRgb == seqan::BedRgb(0, 0, 0));
+    SEQAN_ASSERT(record.itemRgb == seqan2::BedRgb(0, 0, 0));
     SEQAN_ASSERT_EQ(record.blockCount, 3);
     SEQAN_ASSERT_EQ(length(record.blockSizes), 3u);
     SEQAN_ASSERT_EQ(record.blockSizes[0], 3);
@@ -230,28 +230,28 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_ucsc_compatibility)
     DirectionIterator<String<char>, Input>::Type iter = directionIterator(test, Input());
 
     // The record to load into.
-    seqan::BedRecord<seqan::Bed12> record;
+    seqan2::BedRecord<seqan2::Bed12> record;
     CharString buffer;
 
     // Perform tests.
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
     SEQAN_ASSERT(record.itemRgb == BedRgb(0,0,0));
     SEQAN_ASSERT_EQ(record.data, "data again!");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    readRecord(record, buffer, iter, seqan2::Bed());
 }
 
 SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
 {
-    seqan::BedRecord<seqan::Bed3> record1;
+    seqan2::BedRecord<seqan2::Bed3> record1;
     record1.ref = "I";
     record1.beginPos = 123;
     record1.endPos = 456;
     record1.data = "some data that is \tignored";
 
-    seqan::BedRecord<seqan::Bed3> record2;
+    seqan2::BedRecord<seqan2::Bed3> record2;
     record2.ref = "II";
     record2.beginPos = 999;
     record2.endPos = 1000;
@@ -259,8 +259,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    writeRecord(out, record1, seqan2::Bed());
+    writeRecord(out, record2, seqan2::Bed());
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tsome data that is \tignored\n";
@@ -270,14 +270,14 @@ SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
 
 SEQAN_DEFINE_TEST(test_bed_write_bed4_record)
 {
-    seqan::BedRecord<seqan::Bed4> record1;
+    seqan2::BedRecord<seqan2::Bed4> record1;
     record1.ref = "I";
     record1.beginPos = 123;
     record1.endPos = 456;
     record1.name = "NAME1";
     record1.data = "some data that is \tignored";
 
-    seqan::BedRecord<seqan::Bed4> record2;
+    seqan2::BedRecord<seqan2::Bed4> record2;
     record2.ref = "II";
     record2.beginPos = 999;
     record2.endPos = 1000;
@@ -286,8 +286,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed4_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    writeRecord(out, record1, seqan2::Bed());
+    writeRecord(out, record2, seqan2::Bed());
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tNAME1\tsome data that is \tignored\n";
@@ -297,7 +297,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed4_record)
 
 SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
 {
-    seqan::BedRecord<seqan::Bed5> record1;
+    seqan2::BedRecord<seqan2::Bed5> record1;
     record1.ref = "I";
     record1.beginPos = 123;
     record1.endPos = 456;
@@ -305,7 +305,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
     record1.score = "5";
     record1.data = "some data that is \tignored";
 
-    seqan::BedRecord<seqan::Bed5> record2;
+    seqan2::BedRecord<seqan2::Bed5> record2;
     record2.ref = "II";
     record2.beginPos = 999;
     record2.endPos = 1000;
@@ -315,8 +315,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
 
     // Write BED records to string stream.String<char> out;
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    writeRecord(out, record1, seqan2::Bed());
+    writeRecord(out, record2, seqan2::Bed());
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tNAME1\t5\tsome data that is \tignored\n";
@@ -326,7 +326,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
 
 SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
 {
-    seqan::BedRecord<seqan::Bed6> record1;
+    seqan2::BedRecord<seqan2::Bed6> record1;
     record1.ref = "I";
     record1.beginPos = 123;
     record1.endPos = 456;
@@ -335,7 +335,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
     record1.strand = '-';
     record1.data = "some data that is \tignored";
 
-    seqan::BedRecord<seqan::Bed6> record2;
+    seqan2::BedRecord<seqan2::Bed6> record2;
     record2.ref = "II";
     record2.beginPos = 999;
     record2.endPos = 1000;
@@ -346,8 +346,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    writeRecord(out, record1, seqan2::Bed());
+    writeRecord(out, record2, seqan2::Bed());
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tNAME1\t5\t-\tsome data that is \tignored\n";
@@ -357,7 +357,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
 
 SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 {
-    seqan::BedRecord<seqan::Bed12> record1;
+    seqan2::BedRecord<seqan2::Bed12> record1;
     record1.ref = "I";
     record1.beginPos = 123;
     record1.endPos = 456;
@@ -376,7 +376,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
     appendValue(record1.blockBegins, 15);
     record1.data = "some data that is \tignored";
 
-    seqan::BedRecord<seqan::Bed12> record2;
+    seqan2::BedRecord<seqan2::Bed12> record2;
     record2.ref = "II";
     record2.beginPos = 999;
     record2.endPos = 1000;
@@ -397,8 +397,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    writeRecord(out, record1, seqan2::Bed());
+    writeRecord(out, record2, seqan2::Bed());
 
     // Compar string stream to expected value.
     String<char> expected =
@@ -409,11 +409,11 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 
 SEQAN_DEFINE_TEST(test_bed_bed_file_read)
 {
-    seqan::CharString inPath = getAbsolutePath("/tests/bed_io/example.bed");
+    seqan2::CharString inPath = getAbsolutePath("/tests/bed_io/example.bed");
 
-    seqan::BedFileIn bedStream(toCString(inPath));
+    seqan2::BedFileIn bedStream(toCString(inPath));
 
-    seqan::BedRecord<seqan::Bed3> record1;
+    seqan2::BedRecord<seqan2::Bed3> record1;
     readRecord(record1, bedStream);
 
     SEQAN_ASSERT_EQ(record1.ref, "chr7");
@@ -421,7 +421,7 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_read)
     SEQAN_ASSERT_EQ(record1.endPos, 127472363);
     SEQAN_ASSERT_EQ(record1.data, "Pos1\t0\t+\t127471196\t127472363\t255,0,0");
 
-    seqan::BedRecord<seqan::Bed3> record2;
+    seqan2::BedRecord<seqan2::Bed3> record2;
     readRecord(record2, bedStream);
     SEQAN_ASSERT(atEnd(bedStream));
 
@@ -433,19 +433,19 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_read)
 
 SEQAN_DEFINE_TEST(test_bed_bed_file_write)
 {
-    seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString tmpPath = SEQAN_TEMP_FILENAME();
     append(tmpPath, ".bed");
 
-    seqan::BedFileOut bedStream(toCString(tmpPath));
+    seqan2::BedFileOut bedStream(toCString(tmpPath));
 
-    seqan::BedRecord<seqan::Bed3> record1;
+    seqan2::BedRecord<seqan2::Bed3> record1;
     record1.ref = "chr7";
     record1.beginPos = 127471196;
     record1.endPos = 127472363;
     record1.data = "Pos1\t0\t+\t127471196\t127472363\t255,0,0";
     writeRecord(bedStream, record1);
 
-    seqan::BedRecord<seqan::Bed3> record2;
+    seqan2::BedRecord<seqan2::Bed3> record2;
     record2.ref = "chr8";
     record2.beginPos = 127472363;
     record2.endPos = 127473530;
@@ -454,18 +454,18 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_write)
 
     close(bedStream);
 
-    seqan::CharString goldPath(getAbsolutePath("/tests/bed_io/example.bed"));
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    seqan2::CharString goldPath(getAbsolutePath("/tests/bed_io/example.bed"));
+    SEQAN_ASSERT(seqan2::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_bed_io_isOpen_fileIn)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/tests/bed_io/example.bed");
 
     // Create SequenceStream object.
-    seqan::BedFileIn bedI;
+    seqan2::BedFileIn bedI;
     SEQAN_ASSERT(!isOpen(bedI));
 
     // open file
@@ -480,11 +480,11 @@ SEQAN_DEFINE_TEST(test_bed_io_isOpen_fileIn)
 SEQAN_DEFINE_TEST(test_bed_io_isOpen_fileOut)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".bed");
 
     // Create SequenceStream object.
-    seqan::BedFileOut  bedO;
+    seqan2::BedFileOut  bedO;
     SEQAN_ASSERT(!isOpen(bedO));
 
     // open files

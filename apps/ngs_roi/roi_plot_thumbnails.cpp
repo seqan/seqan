@@ -67,10 +67,10 @@ struct Options
     // -----------------------------------------------------------------------
 
     // Paths to input ROI file.
-    seqan::CharString inputFileName;
+    seqan2::CharString inputFileName;
 
     // Output prefix, will append "%d.png".
-    seqan::CharString outputFileName;
+    seqan2::CharString outputFileName;
 
     // -----------------------------------------------------------------------
     // Plot Options
@@ -137,7 +137,7 @@ public:
     }
 
     // Plot grid to canvas, advance gridNo, plotNo, and write out grid if necessary.
-    void plotGrid(seqan::String<unsigned> const & points)
+    void plotGrid(seqan2::String<unsigned> const & points)
     {
         _doPlot(points);
 
@@ -161,7 +161,7 @@ public:
         return std::make_pair(x, y);
     }
 
-    void _doPlot(seqan::String<unsigned> const & counts)
+    void _doPlot(seqan2::String<unsigned> const & counts)
     {
         std::pair<int, int> startPos = plotStart(plotNo);
         // Compute polyline coordinates.
@@ -275,11 +275,11 @@ void print(std::ostream & out, Options const & options)
 
 // Parse command line with ArgumentParser class.
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("roi_plot_thumbnails");
+    seqan2::ArgumentParser parser("roi_plot_thumbnails");
     setCategory(parser, "NGS ROI Analysis");
 
     // Set short description, version, and date.
@@ -300,8 +300,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "General Options");
 
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Verbose mode."));
-    addOption(parser, seqan::ArgParseOption("vv", "vverbose", "Very verbose mode."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Verbose mode."));
+    addOption(parser, seqan2::ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
     // -----------------------------------------------------------------------
     // Input / Output Options
@@ -309,13 +309,13 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output Parameters");
 
-    addOption(parser, seqan::ArgParseOption("if", "input-file", "ROI to plot.",
-                                            seqan::ArgParseOption::INPUT_FILE));
-    setValidValues(parser, "input-file", seqan::RoiFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("if", "input-file", "ROI to plot.",
+                                            seqan2::ArgParseOption::INPUT_FILE));
+    setValidValues(parser, "input-file", seqan2::RoiFileIn::getFileExtensions());
     setRequired(parser, "input-file");
 
-    addOption(parser, seqan::ArgParseOption("o", "output-prefix", "Prefix of output file.",
-                                            seqan::ArgParseOption::OUTPUT_FILE));
+    addOption(parser, seqan2::ArgParseOption("o", "output-prefix", "Prefix of output file.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE));
     setRequired(parser, "output-prefix");
 
     // -----------------------------------------------------------------------
@@ -324,43 +324,43 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "PlotConfiguration");
 
-	addOption(parser, seqan::ArgParseOption("", "max-rois", "Maximal number of plots to create (0 for all).",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+	addOption(parser, seqan2::ArgParseOption("", "max-rois", "Maximal number of plots to create (0 for all).",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "max-rois", "0");
     setDefaultValue(parser, "max-rois", "20000");
 
-	addOption(parser, seqan::ArgParseOption("", "max-value", "Fix maximal y value.  0 for no limit..",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+	addOption(parser, seqan2::ArgParseOption("", "max-value", "Fix maximal y value.  0 for no limit..",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "max-value", "0");
     setDefaultValue(parser, "max-value", "0");
 
-	addOption(parser, seqan::ArgParseOption("", "num-cols", "Number of plots in one row.",
-                                            seqan::ArgParseOption::INTEGER, "COLS"));
+	addOption(parser, seqan2::ArgParseOption("", "num-cols", "Number of plots in one row.",
+                                            seqan2::ArgParseOption::INTEGER, "COLS"));
     setMinValue(parser, "num-cols", "1");
     setDefaultValue(parser, "num-cols", "40");
 
-	addOption(parser, seqan::ArgParseOption("", "num-rows", "Number of plots in one column.",
-                                            seqan::ArgParseOption::INTEGER, "ROWS"));
+	addOption(parser, seqan2::ArgParseOption("", "num-rows", "Number of plots in one column.",
+                                            seqan2::ArgParseOption::INTEGER, "ROWS"));
     setMinValue(parser, "num-rows", "1");
     setDefaultValue(parser, "num-rows", "50");
 
-	addOption(parser, seqan::ArgParseOption("", "plot-height", "Height of one plot in px.",
-                                            seqan::ArgParseOption::INTEGER, "HEIGHT"));
+	addOption(parser, seqan2::ArgParseOption("", "plot-height", "Height of one plot in px.",
+                                            seqan2::ArgParseOption::INTEGER, "HEIGHT"));
     setMinValue(parser, "plot-height", "1");
     setDefaultValue(parser, "plot-height", "30");
 
-	addOption(parser, seqan::ArgParseOption("", "plot-width", "Width of one plot in px.",
-                                            seqan::ArgParseOption::INTEGER, "WIDTH"));
+	addOption(parser, seqan2::ArgParseOption("", "plot-width", "Width of one plot in px.",
+                                            seqan2::ArgParseOption::INTEGER, "WIDTH"));
     setMinValue(parser, "plot-width", "1");
     setDefaultValue(parser, "plot-width", "30");
 
-	addOption(parser, seqan::ArgParseOption("", "border-width", "Border width.",
-                                            seqan::ArgParseOption::INTEGER, "WIDTH"));
+	addOption(parser, seqan2::ArgParseOption("", "border-width", "Border width.",
+                                            seqan2::ArgParseOption::INTEGER, "WIDTH"));
     setMinValue(parser, "border-width", "0");
     setDefaultValue(parser, "border-width", "0");
 
-	addOption(parser, seqan::ArgParseOption("", "spacing", "Space between plots.",
-                                            seqan::ArgParseOption::INTEGER, "WIDTH"));
+	addOption(parser, seqan2::ArgParseOption("", "spacing", "Space between plots.",
+                                            seqan2::ArgParseOption::INTEGER, "WIDTH"));
     setDefaultValue(parser, "spacing", "2");
 
     // -----------------------------------------------------------------------
@@ -368,10 +368,10 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -394,19 +394,19 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     getOptionValue(options.maxRois, parser, "max-rois");
     getOptionValue(options.maxValue, parser, "max-value");
 
-	return seqan::ArgumentParser::PARSE_OK;
+	return seqan2::ArgumentParser::PARSE_OK;
 }
 
 int main(int argc, char const ** argv)
 {
 	// Parse the command line.
     Options options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If parsing was not successful then exit with code 1 if there were errors.  Otherwise, exit with code 0 (e.g. help
     // was printed).
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Print program name and options.
 
@@ -428,7 +428,7 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.inputFileName << " ...";
-    seqan::RoiFileIn roiFileIn;
+    seqan2::RoiFileIn roiFileIn;
     if (!open(roiFileIn, toCString(options.inputFileName)))
 	{
 		std::cerr << "\nERROR: Could not open " << options.inputFileName << "\n";
@@ -438,7 +438,7 @@ int main(int argc, char const ** argv)
         std::cerr << " OK\n";
 
     // Read header (actually, skip it).
-    seqan::RoiHeader roiHeader;
+    seqan2::RoiHeader roiHeader;
     readHeader(roiHeader, roiFileIn);
 
     // -----------------------------------------------------------------------
@@ -452,7 +452,7 @@ int main(int argc, char const ** argv)
 
     Plotter plotter(options);
 
-    seqan::RoiRecord record;
+    seqan2::RoiRecord record;
     for (int i = 0; (options.maxRois == 0 || i < options.maxRois) && !atEnd(roiFileIn); ++i)
     {
         if (options.verbosity >= 2)

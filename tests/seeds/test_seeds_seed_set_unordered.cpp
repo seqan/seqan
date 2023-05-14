@@ -44,7 +44,7 @@
 // Test container functions for specialization unordered.
 SEQAN_DEFINE_TEST(test_seeds_seed_set_container_functions_unordered)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     { // Construct with begin/end in both dimensions.
         // Define Seed type and declare a variable.

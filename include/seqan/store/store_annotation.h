@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_ANNOTATION_H
 #define SEQAN_HEADER_STORE_ANNOTATION_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1208,6 +1208,6 @@ operator << (std::ostream & out, AnnotationStoreElement<TPos, TSpec> const & ann
     return out;
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

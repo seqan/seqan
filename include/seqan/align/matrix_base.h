@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_MATRIX_BASE_H
 #define SEQAN_HEADER_MATRIX_BASE_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1093,6 +1093,6 @@ std::ostream& operator<<(std::ostream &out, const Matrix<TValue,2, THost> &matri
 //     }
 // }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

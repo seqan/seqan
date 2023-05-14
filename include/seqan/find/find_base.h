@@ -41,7 +41,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan {
+namespace seqan2 {
 
 //////////////////////////////////////////////////////////////////////////////
 // Tags
@@ -249,7 +249,7 @@ struct Needle<Segment<THost, TSpec> const>
  * The output is as follows:
  *
  * @include demos/dox/find/finder_online.cpp.stdout
- * 
+ *
  * Demo: Demo.Index Finder StringSet
  *
  * Demo: Demo.Index Finder
@@ -992,6 +992,6 @@ struct DefaultGetIteratorSpec< Finder<THaystack, TSpec> const>:
 
 //////////////////////////////////////////////////////////////////////////////
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

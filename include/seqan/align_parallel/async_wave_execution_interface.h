@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ASYNC_WAVE_EXECUTION_INTERFACE_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_ASYNC_WAVE_EXECUTION_INTERFACE_H_
 
-namespace seqan
+namespace seqan2
 {
 namespace impl
 {
@@ -248,5 +248,5 @@ alignExecBatch(ExecutionPolicy<WavefrontAlignment<TSpec>, TSimdSpec> const & exe
 }
 
 }  // namespace impl
-}  // namespace seqan
+}  // namespace seqan2
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_ASYNC_WAVE_EXECUTION_INTERFACE_H_

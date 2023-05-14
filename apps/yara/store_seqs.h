@@ -41,7 +41,7 @@
 #include <seqan/seq_io.h>
 #include <random>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes

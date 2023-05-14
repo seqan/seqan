@@ -8,7 +8,7 @@
 
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 // sort operators

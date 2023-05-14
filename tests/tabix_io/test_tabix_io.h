@@ -47,17 +47,17 @@
 SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
 {
     // Open TABIX file
-    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/tabix_io/test.vcf.gz");
-    seqan::VcfFileIn vcfFile(toCString(vcfPath));
+    seqan2::CharString vcfPath = seqan2::getAbsolutePath("/tests/tabix_io/test.vcf.gz");
+    seqan2::VcfFileIn vcfFile(toCString(vcfPath));
 
     // Read header (to get the contig names)
-    seqan::VcfHeader header;
+    seqan2::VcfHeader header;
     readHeader(header, vcfFile);
-    
+
     // Open Tabix index
-    seqan::CharString tbiPath = vcfPath;
+    seqan2::CharString tbiPath = vcfPath;
     append(tbiPath, ".tbi");
-    seqan::TabixIndex tabixIndex(toCString(tbiPath));
+    seqan2::TabixIndex tabixIndex(toCString(tbiPath));
 
     // Search overlapping variants
 
@@ -71,7 +71,7 @@ SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
                               tabixIndex));
     SEQAN_ASSERT(hasEntries);
 
-    seqan::VcfRecord record;
+    seqan2::VcfRecord record;
     SEQAN_ASSERT_NOT(atEnd(vcfFile));
 
     readRecord(record, vcfFile);

@@ -50,7 +50,7 @@
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -195,7 +195,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -291,7 +291,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -360,7 +360,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
 
@@ -419,7 +419,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
     // Alignment with gaps in horizontal sequence.
@@ -499,7 +499,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -569,7 +569,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -665,7 +665,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -733,7 +733,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     AlignConfig<> alignConfig;
@@ -796,7 +796,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -894,7 +894,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_overlap_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -983,7 +983,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_overlap_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_overlap_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -1108,7 +1108,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_overlap_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_overlap_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -1193,7 +1193,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_overlap_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
 
@@ -1269,7 +1269,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -1344,7 +1344,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_overlap_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_overlap_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -1413,7 +1413,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_overlap_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_overlap_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -1508,7 +1508,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_overlap_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_overlap_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -1573,7 +1573,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_overlap_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
 
@@ -1636,7 +1636,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_overlap_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, false, false, true> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -1712,7 +1712,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_semi_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, false, false, true> alignConfig;
 
@@ -1782,7 +1782,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_semi_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_semi_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -1878,7 +1878,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_semi_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_semi_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -1947,7 +1947,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_semi_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     AlignConfig<true, false, false, true> alignConfig;
@@ -2006,7 +2006,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_linear)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, false, false, true> alignConfig;
 
@@ -2083,7 +2083,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_gaps_semi_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_semi_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, false, false, true> alignConfig;
     // Simple alignment without any leading or trailing gaps.
@@ -2152,7 +2152,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_gaps_semi_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_semi_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
@@ -2249,7 +2249,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_gaps_semi_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_semi_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -2317,7 +2317,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_gaps_semi_global_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String> TStringSet;
 
@@ -2384,7 +2384,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_score_semi_global_affine)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_linear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<Dna5String, Dependent<> > TStringSet;
     typedef Gaps<Dna5String, ArrayGaps> TGaps;
@@ -2511,7 +2511,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_linear)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_affine)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<> alignConfig;
 
@@ -2635,7 +2635,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_affine)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_global_different_container)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Global alignment with Segment and DnaString
     {
@@ -2727,7 +2727,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_global_different_container)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fix_floating_point_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "AAATGACGGATTG";
     DnaString strV = "AGTCGGATCTACTG";

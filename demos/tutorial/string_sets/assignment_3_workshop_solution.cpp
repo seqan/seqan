@@ -2,7 +2,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Function to print simple alignment between two sequences with the same length
 template <typename TText1, typename TText2>

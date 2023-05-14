@@ -40,7 +40,7 @@
 
 #include <seqan/store.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -129,6 +129,6 @@ inline void clear(RnaIOContext & context)
     clear(context.typIdent);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_RNA_IO_RNA_IO_CONTEXT_H_

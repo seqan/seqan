@@ -3,7 +3,7 @@
 
 //![bamRecord]
 //![BamTagsDict]
-using namespace seqan;
+using namespace seqan2;
 
 //![BamTagsDict]
 class myBamAlignmentRecord

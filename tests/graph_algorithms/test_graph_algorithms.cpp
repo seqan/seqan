@@ -39,7 +39,7 @@
 #include "test_graph_algorithms.h"
 
 // SeqAn Namespace
-using namespace seqan;
+using namespace seqan2;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,7 @@ SEQAN_BEGIN_TESTSUITE(test_graph_algorithms)
 	SEQAN_CALL_TEST(test_strongly_connected_components);
 	SEQAN_CALL_TEST(test_connected_components);
 	SEQAN_CALL_TEST(test_prims_algorithm);
-	SEQAN_CALL_TEST(test_union_find);	
+	SEQAN_CALL_TEST(test_union_find);
 	SEQAN_CALL_TEST(test_kruskals_algorithm);
 	SEQAN_CALL_TEST(test_mst_all);
 	SEQAN_CALL_TEST(test_dag_shortest_path);
@@ -66,7 +66,7 @@ SEQAN_BEGIN_TESTSUITE(test_graph_algorithms)
 	SEQAN_CALL_TEST(test_longest_increasing_subsequence);
 	SEQAN_CALL_TEST(test_longest_common_subsequence);
 	SEQAN_CALL_TEST(test_heaviest_increasing_subsequence);
-	SEQAN_CALL_TEST(test_hmm_algorithm);	
+	SEQAN_CALL_TEST(test_hmm_algorithm);
 }
 SEQAN_END_TESTSUITE
 

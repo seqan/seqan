@@ -36,7 +36,7 @@
 #include <random>
 #include <seqan/misc/union_find.h>
 
-namespace seqan
+namespace seqan2
 {
 
 template<typename TGraph>

@@ -58,7 +58,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1229,7 +1229,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         inline void erase(int frameNo)
         {
             lruList[pages[frameNo].priority].erase(pages[frameNo].lruEntry);
-            seqan::erase(pages, frameNo);
+            seqan2::erase(pages, frameNo);
         }
 
         inline void rename(int frameNo)
@@ -1240,7 +1240,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         inline void pop_back()
         {
             lruList[back(pages).priority].erase(back(pages).lruEntry);
-            seqan::erase(pages, endPosition(pages) - 1);
+            seqan2::erase(pages, endPosition(pages) - 1);
         }
 
         inline void _print()

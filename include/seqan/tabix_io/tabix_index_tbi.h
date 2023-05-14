@@ -46,7 +46,7 @@
 #ifndef INCLUDE_SEQAN_TABIX_IO_TABIX_INDEX_TBI_H_
 #define INCLUDE_SEQAN_TABIX_IO_TABIX_INDEX_TBI_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -193,7 +193,7 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
 
     if (atEnd(iter))
         return false;
-    
+
     // Extract columns.
     int32_t maxCol = std::max(index.colSeq, std::max(index.colBeg, index.colEnd));
     for (int32_t col = 1; col <= maxCol; ++col)
@@ -209,7 +209,7 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
         {
             readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
         }
-        
+
         if (col == index.colSeq)
             record.refName = buffer;
         else if (col == index.colBeg)
@@ -220,11 +220,11 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
 
     if (index.colEnd == 0 || index.colEnd == index.colBeg)
         record.posEnd = record.posBeg + 1;
-    
+
     // all text-based file formats are 1-based (we use 0-based positions internally)
     --record.posBeg;
     --record.posEnd;
-    
+
     // Go to next line.
     skipLine(iter);
     return true;
@@ -365,7 +365,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
 
         if (record.refName != refName)
             continue;  // Wrong contig.
-        
+
         if (!hasEntries || record.posBeg <= posBeg)
         {
             // Found a valid record.
@@ -380,7 +380,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
     if (offset != std::numeric_limits<uint64_t>::max())
     {
         setPosition(fileIn, offset);
-        
+
         if (firstMatch)
         {
             // skip to the first overlapping record
@@ -441,7 +441,7 @@ inline bool
 open(TabixIndex & index, char const * filename)
 {
     typedef VirtualStream<char, Input> TInStream;
-    
+
     TInStream tbi;
     if (!open(tbi, filename))
         return false;  // Could not open file.
@@ -527,6 +527,6 @@ open(TabixIndex & index, char const * filename)
     return true;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_TABIX_IO_TABIX_INDEX_TBI_H_

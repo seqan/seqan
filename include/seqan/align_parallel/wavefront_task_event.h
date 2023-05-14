@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EVENT_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EVENT_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -99,6 +99,6 @@ wait(WavefrontTaskEvent & event)
         event.conditionLastTask.wait(lck, [&] { return event.readyLastTask; });
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_EVENT_H_

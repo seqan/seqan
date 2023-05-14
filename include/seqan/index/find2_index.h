@@ -38,7 +38,7 @@
 #ifndef SEQAN_INDEX_FIND_INDEX_H_
 #define SEQAN_INDEX_FIND_INDEX_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -106,20 +106,20 @@ struct Finder_<Index<TText, TIndexSpec>, TPattern, TSpec>
     TScore              _scoreThreshold;
     TScore              _score;
 
-   
+
     Finder_() :
         _scoreThreshold(),
         _score()
     {}
 
-   
+
     Finder_(TIndex /* const */ & index) :
         _textIt(index),
         _scoreThreshold(),
         _score()
     {}
 
-   
+
     Finder_(TTextIterator const & textIt) :
         _textIt(textIt),
         _scoreThreshold(),

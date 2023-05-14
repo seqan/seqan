@@ -39,7 +39,7 @@
 #ifndef INDEX_FM_SPARSE_STRING_H_
 #define INDEX_FM_SPARSE_STRING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Forwards

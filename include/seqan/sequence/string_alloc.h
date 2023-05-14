@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_ALLOC_H_
 #define SEQAN_SEQUENCE_STRING_ALLOC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -453,6 +453,6 @@ move(String<TValue, Alloc<TSpec> > & target,
     move(target, const_cast<String<TValue, Alloc<TSpec> > &>(source));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_ALLOC_H_

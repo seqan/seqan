@@ -39,7 +39,7 @@
 #ifndef SEQAN_STREAM_SMART_FILE_H_
 #define SEQAN_STREAM_SMART_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -975,6 +975,6 @@ getFileExtensions(FormattedFile<TFileFormat, TDirection, TSpec> const & file)
     return file.getFileExtensions();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_STREAM_SMART_FILE_H_

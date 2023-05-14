@@ -47,11 +47,11 @@ template <typename TFragmentStore>
 void addGaps(TFragmentStore & store, unsigned alignID, unsigned pos)
 {
     typedef typename TFragmentStore::TAlignedReadStore     TAlignedReadStore;
-    typedef typename seqan::Value<TAlignedReadStore>::Type TAlignedReadStoreElement;
+    typedef typename seqan2::Value<TAlignedReadStore>::Type TAlignedReadStoreElement;
     typedef typename TAlignedReadStoreElement::TGapAnchors TGapAnchors;
     typedef typename TFragmentStore::TReadSeqStore         TReadSeqStore;
-    typedef typename seqan::Value<TReadSeqStore>::Type     TReadSeq;
-    typedef seqan::Gaps<TReadSeq, seqan::AnchorGaps<TGapAnchors> > TGaps;
+    typedef typename seqan2::Value<TReadSeqStore>::Type     TReadSeq;
+    typedef seqan2::Gaps<TReadSeq, seqan2::AnchorGaps<TGapAnchors> > TGaps;
 
     TGaps gaps(store.readSeqStore[store.alignedReadStore[alignID].readId], store.alignedReadStore[alignID].gaps);
     insertGap(gaps, pos);
@@ -60,20 +60,20 @@ void addGaps(TFragmentStore & store, unsigned alignID, unsigned pos)
 // One read only without any gaps.
 SEQAN_DEFINE_TEST(test_realign_one_read_no_gaps)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan::CharString("r0"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan2::CharString("r0"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0, (TSize)0, 0 + length(store.readSeqStore[0]));
 
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -83,13 +83,13 @@ SEQAN_DEFINE_TEST(test_realign_one_read_no_gaps)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 120, 0, 20);
@@ -106,14 +106,14 @@ SEQAN_DEFINE_TEST(test_realign_one_read_no_gaps)
 // One read only with some gaps (beginning, middle, end).
 SEQAN_DEFINE_TEST(test_realign_one_read_with_gaps)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan::CharString("r0"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan2::CharString("r0"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0, (TSize)0, 0 + length(store.readSeqStore[0]) + 3);
 
     // Add gaps at beginning, end, and in the middle.
@@ -124,7 +124,7 @@ SEQAN_DEFINE_TEST(test_realign_one_read_with_gaps)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -134,13 +134,13 @@ SEQAN_DEFINE_TEST(test_realign_one_read_with_gaps)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 120, 0, 20);
@@ -155,16 +155,16 @@ SEQAN_DEFINE_TEST(test_realign_one_read_with_gaps)
 // Two reads that are stacked.
 SEQAN_DEFINE_TEST(test_realign_two_reads_stacked_at_beginning)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan::CharString("r0"));
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan::CharString("r1"));
-    appendRead(store,           "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTCTCCTCTCTC", seqan::CharString("r2"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan2::CharString("r0"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan2::CharString("r1"));
+    appendRead(store,           "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTCTCCTCTCTC", seqan2::CharString("r2"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0, (TSize)0, 0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0, (TSize)0, 0 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0, (TSize)10, 10 + length(store.readSeqStore[2]));
@@ -172,7 +172,7 @@ SEQAN_DEFINE_TEST(test_realign_two_reads_stacked_at_beginning)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 200, 0, 1000);
     }
@@ -182,13 +182,13 @@ SEQAN_DEFINE_TEST(test_realign_two_reads_stacked_at_beginning)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 200, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
@@ -207,23 +207,23 @@ SEQAN_DEFINE_TEST(test_realign_two_reads_stacked_at_beginning)
 // Simple test case where nothing should change.
 SEQAN_DEFINE_TEST(test_realign_simple_case)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan::CharString("r0"));
-    appendRead(store, "TATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r1"));
-    appendRead(store, "AGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACAT", seqan::CharString("r2"));
-    appendRead(store, "AAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTA", seqan::CharString("r3"));
-    appendRead(store, "ATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTT", seqan::CharString("r4"));
-    appendRead(store, "TGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTG", seqan::CharString("r5"));
-    appendRead(store, "TACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTC", seqan::CharString("r6"));
-    appendRead(store, "GTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCT", seqan::CharString("r7"));
-    appendRead(store, "TGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTC", seqan::CharString("r8"));
-    appendRead(store, "GGCTCAATCTCGCCTCTCTGCAGCCTCCGCCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTCCCGAGTAGCTGGGATTACAGGTGCCCGCCACCATGC", seqan::CharString("r9"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan2::CharString("r0"));
+    appendRead(store, "TATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r1"));
+    appendRead(store, "AGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACAT", seqan2::CharString("r2"));
+    appendRead(store, "AAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTA", seqan2::CharString("r3"));
+    appendRead(store, "ATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTT", seqan2::CharString("r4"));
+    appendRead(store, "TGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTG", seqan2::CharString("r5"));
+    appendRead(store, "TACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTC", seqan2::CharString("r6"));
+    appendRead(store, "GTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCT", seqan2::CharString("r7"));
+    appendRead(store, "TGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTC", seqan2::CharString("r8"));
+    appendRead(store, "GGCTCAATCTCGCCTCTCTGCAGCCTCCGCCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTCCCGAGTAGCTGGGATTACAGGTGCCCGCCACCATGC", seqan2::CharString("r9"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0,  (TSize)29,  29 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0,  (TSize)52,  52 + length(store.readSeqStore[2]));
@@ -238,7 +238,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_case)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -248,13 +248,13 @@ SEQAN_DEFINE_TEST(test_realign_simple_case)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 400, 0, 20);
@@ -275,23 +275,23 @@ SEQAN_DEFINE_TEST(test_realign_simple_case)
 // A test case with some gaps strewn in.
 SEQAN_DEFINE_TEST(test_realign_simple_gaps)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan::CharString("r0"));
-    appendRead(store, "TATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r1"));
-    appendRead(store, "AGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACAT", seqan::CharString("r2"));
-    appendRead(store, "AAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTA", seqan::CharString("r3"));
-    appendRead(store, "ATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTT", seqan::CharString("r4"));
-    appendRead(store, "TGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTG", seqan::CharString("r5"));
-    appendRead(store, "TACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTC", seqan::CharString("r6"));
-    appendRead(store, "GTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCT", seqan::CharString("r7"));
-    appendRead(store, "TGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTC", seqan::CharString("r8"));
-    appendRead(store, "GGCTCAATCTCGCCTCTCTGCAGCCTCCGCCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTCCCGAGTAGCTGGGATTACAGGTGCCCGCCACCATGC", seqan::CharString("r9"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT", seqan2::CharString("r0"));
+    appendRead(store, "TATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r1"));
+    appendRead(store, "AGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACAT", seqan2::CharString("r2"));
+    appendRead(store, "AAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTA", seqan2::CharString("r3"));
+    appendRead(store, "ATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTT", seqan2::CharString("r4"));
+    appendRead(store, "TGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTG", seqan2::CharString("r5"));
+    appendRead(store, "TACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTC", seqan2::CharString("r6"));
+    appendRead(store, "GTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCT", seqan2::CharString("r7"));
+    appendRead(store, "TGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTC", seqan2::CharString("r8"));
+    appendRead(store, "GGCTCAATCTCGCCTCTCTGCAGCCTCCGCCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTCCCGAGTAGCTGGGATTACAGGTGCCCGCCACCATGC", seqan2::CharString("r9"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0,  (TSize)29,  29 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0,  (TSize)52,  52 + length(store.readSeqStore[2]));
@@ -312,7 +312,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_gaps)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -322,13 +322,13 @@ SEQAN_DEFINE_TEST(test_realign_simple_gaps)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 400, 0, 20);
@@ -349,18 +349,18 @@ SEQAN_DEFINE_TEST(test_realign_simple_gaps)
 // A test case with an insertion
 SEQAN_DEFINE_TEST(test_realign_simple_insert)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan::CharString("r0"));
-    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan::CharString("r1"));
-    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan::CharString("r2"));
-    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r3"));
-    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan::CharString("r4"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan2::CharString("r0"));
+    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan2::CharString("r1"));
+    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan2::CharString("r2"));
+    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r3"));
+    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan2::CharString("r4"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0,  (TSize)10,  10 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0,  (TSize)20,  20 + length(store.readSeqStore[2]));
@@ -370,7 +370,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -380,13 +380,13 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
@@ -408,18 +408,18 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert)
 // A test case with an insertion and a window enclosing the part comfortably.
 SEQAN_DEFINE_TEST(test_realign_simple_insert_window)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan::CharString("r0"));
-    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan::CharString("r1"));
-    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan::CharString("r2"));
-    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r3"));
-    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan::CharString("r4"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan2::CharString("r0"));
+    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan2::CharString("r1"));
+    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan2::CharString("r2"));
+    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r3"));
+    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan2::CharString("r4"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0,  (TSize)10,  10 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0,  (TSize)20,  20 + length(store.readSeqStore[2]));
@@ -429,7 +429,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -440,13 +440,13 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
@@ -468,18 +468,18 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window)
 // A test case with an insertion and a window being tight on the left.
 SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_left)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan::CharString("r0"));
-    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan::CharString("r1"));
-    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan::CharString("r2"));
-    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r3"));
-    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan::CharString("r4"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan2::CharString("r0"));
+    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan2::CharString("r1"));
+    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan2::CharString("r2"));
+    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r3"));
+    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan2::CharString("r4"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0,  (TSize)10,  10 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0,  (TSize)20,  20 + length(store.readSeqStore[2]));
@@ -489,7 +489,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_left)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -499,13 +499,13 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_left)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
@@ -524,18 +524,18 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_left)
 // A test case with an insertion and a window being tight on the right.
 SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_right)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan::CharString("r0"));
-    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan::CharString("r1"));
-    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan::CharString("r2"));
-    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r3"));
-    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan::CharString("r4"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan2::CharString("r0"));
+    appendRead(store, "ATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan2::CharString("r1"));
+    appendRead(store, "GCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan2::CharString("r2"));
+    appendRead(store, "ATACTCTGGAATACTATACAGTAGTTAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r3"));
+    appendRead(store, "ATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan2::CharString("r4"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]));
     appendAlignedRead(store, 1, 0,  (TSize)10,  10 + length(store.readSeqStore[1]));
     appendAlignedRead(store, 2, 0,  (TSize)20,  20 + length(store.readSeqStore[2]));
@@ -545,7 +545,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_right)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -555,13 +555,13 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_right)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
@@ -579,29 +579,29 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_right)
 
 SEQAN_DEFINE_TEST(test_realign_tricky_insert_window_cuts)
 {
-    seqan::FragmentStore<> store;
+    seqan2::FragmentStore<> store;
 
     resize(store.contigStore, 1);
     appendValue(store.contigNameStore, "ref");
 
-    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGT"                      "CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan::CharString("r0"));
-    appendRead(store,           "ATCCATGTATGCCACAGTGT"                      "CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan::CharString("r1"));
-    appendRead(store,                     "GCCACAGTGT"                      "CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan::CharString("r2"));
-    appendRead(store,                             "GT""CGCCATACTCGTCCGCGGAG""CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan::CharString("r3"));
-    appendRead(store,                                 "CGCCATACTCGTCCGCGGAG""CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan::CharString("r4"));
+    appendRead(store, "AACTAAATGCATCCATGTATGCCACAGTGT"                      "CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCAT", seqan2::CharString("r0"));
+    appendRead(store,           "ATCCATGTATGCCACAGTGT"                      "CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAG", seqan2::CharString("r1"));
+    appendRead(store,                     "GCCACAGTGT"                      "CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCA", seqan2::CharString("r2"));
+    appendRead(store,                             "GT""CGCCATACTCGTCCGCGGAG""CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAA", seqan2::CharString("r3"));
+    appendRead(store,                                 "CGCCATACTCGTCCGCGGAG""CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT", seqan2::CharString("r4"));
 
-    typedef typename seqan::Size<typename seqan::FragmentStore<>::TAlignedReadStore>::Type TSize;
+    typedef typename seqan2::Size<typename seqan2::FragmentStore<>::TAlignedReadStore>::Type TSize;
     appendAlignedRead(store, 0, 0,   (TSize)0,   0 + length(store.readSeqStore[0]) + 20);
     appendAlignedRead(store, 1, 0,  (TSize)10,  10 + length(store.readSeqStore[1]) + 20);
     appendAlignedRead(store, 2, 0,  (TSize)20,  20 + length(store.readSeqStore[2]) + 20);
     appendAlignedRead(store, 3, 0,  (TSize)28,  28 + length(store.readSeqStore[3]));
     appendAlignedRead(store, 4, 0,  (TSize)30,  30 + length(store.readSeqStore[4]));
 
-    typedef typename seqan::FragmentStore<>::TReadSeqStore     TReadSeqStore;
-    typedef typename seqan::Value<TReadSeqStore>::Type         TReadSeq;
-    typedef typename seqan::FragmentStore<>::TAlignedReadStore TAlignedReadStore;
-    typedef typename seqan::Value<TAlignedReadStore>::Type     TAlignedRead;
-    typedef typename seqan::Gaps<TReadSeq, seqan::AnchorGaps<TAlignedRead::TGapAnchors> > TGaps;
+    typedef typename seqan2::FragmentStore<>::TReadSeqStore     TReadSeqStore;
+    typedef typename seqan2::Value<TReadSeqStore>::Type         TReadSeq;
+    typedef typename seqan2::FragmentStore<>::TAlignedReadStore TAlignedReadStore;
+    typedef typename seqan2::Value<TAlignedReadStore>::Type     TAlignedRead;
+    typedef typename seqan2::Gaps<TReadSeq, seqan2::AnchorGaps<TAlignedRead::TGapAnchors> > TGaps;
 
     TGaps gaps0(store.readSeqStore[0], store.alignedReadStore[0].gaps);
     insertGaps(gaps0, 30, 20);
@@ -613,7 +613,7 @@ SEQAN_DEFINE_TEST(test_realign_tricky_insert_window_cuts)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "BEFORE REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
@@ -623,13 +623,13 @@ SEQAN_DEFINE_TEST(test_realign_tricky_insert_window_cuts)
     if (PRINT_REALIGNMENTS)
     {
         std::cout << "AFTER REALIGNMENT\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
     printAlignment(ss, layout, store, 0, 0, 200, 0, 20);

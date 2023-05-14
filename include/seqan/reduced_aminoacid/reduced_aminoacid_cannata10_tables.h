@@ -37,7 +37,7 @@
 #ifndef SEQAN_REDUCED_AMINOACID_CANNATA10_TABLES_H_
 #define SEQAN_REDUCED_AMINOACID_CANNATA10_TABLES_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

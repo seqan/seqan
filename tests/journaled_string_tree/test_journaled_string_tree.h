@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/journaled_string_tree.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_constructor)
 {

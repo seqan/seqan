@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_FILE_MAPPING_H_
 #define SEQAN_INCLUDE_SEQAN_FILE_MAPPING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -785,6 +785,6 @@ remapFileSegment(FileMapping<TSpec> &mapping, void *oldAddr, TPos oldFileOfs, TS
     return addr;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_FILE_MAPPING_H_

@@ -35,7 +35,7 @@
 #ifndef %(HEADER_GUARD)s
 #define %(HEADER_GUARD)s
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -53,6 +53,6 @@ namespace seqan {
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef %(HEADER_GUARD)s

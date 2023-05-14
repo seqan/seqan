@@ -5,7 +5,7 @@
 #include <seqan/stream.h>      // For printing SeqAn Strings.
 #include <seqan/misc/edit_environment.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

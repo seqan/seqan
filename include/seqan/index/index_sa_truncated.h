@@ -37,7 +37,7 @@
 #ifndef SEQAN_INDEX_SA_STREE_TRUNCATED_H_
 #define SEQAN_INDEX_SA_STREE_TRUNCATED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums

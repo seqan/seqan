@@ -51,7 +51,7 @@
 #include "test_sa_bwtwalk.h"
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_BEGIN_TESTSUITE(test_index)
 {

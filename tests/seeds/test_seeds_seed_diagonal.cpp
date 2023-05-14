@@ -43,7 +43,7 @@
 // all member variables are there.
 SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedDiagonal<int, int> TSeedDiagonal;
 
@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_constructors)
 // Test metafunctions of the SeedDiagonal class.
 SEQAN_DEFINE_TEST(test_seeds_seed_diagonal_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test the parametrization expected to be used most.
     {

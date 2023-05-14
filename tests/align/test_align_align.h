@@ -43,7 +43,7 @@
 #include <seqan/align.h>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 template <typename TAlign>

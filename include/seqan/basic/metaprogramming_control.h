@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -275,6 +275,6 @@ class LoopReverse<Worker, 0>
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_

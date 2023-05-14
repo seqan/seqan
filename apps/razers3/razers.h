@@ -46,7 +46,7 @@
 // No parallelism for less than MIN_PARALLEL_WORK reads.
 const unsigned MIN_PARALLEL_WORK = 1; //100/*0*/; // TODO(holtgrew): Set to some useful value after development.
 
-namespace seqan {
+namespace seqan2 {
 
 // Compact representation of a match.
 template <typename TContigPos_>
@@ -642,7 +642,7 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 	{
 		if(options._debugLevel >=1)
 			std::cout << std::endl << "Reading multiple genome files:" << std::endl;
-		
+
 		unsigned i = 1;
         CharString line;
 		while (!atEnd(reader))
@@ -3294,7 +3294,7 @@ int _mapReads(
 
     // set absolute error cut-offs
     Dna5String tmp;
-    
+
     SEQAN_OMP_PRAGMA(parallel for private(tmp))
     for (int i = 0; i < readCount; ++i)
     {

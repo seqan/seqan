@@ -40,7 +40,7 @@
 #include <vector>
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 struct TestJstPosConfig_
 {
@@ -185,7 +185,7 @@ public:
         insert(jst, 90, 10,                                 std::vector<unsigned>{1},                   DeltaTypeDel());
         insert(jst, 99, 'T',                                std::vector<unsigned>{2},                   DeltaTypeSnp());
         insert(jst, 100, "CCT",                             std::vector<unsigned>{3},                   DeltaTypeIns());
-        
+
         return jst;
     }
 

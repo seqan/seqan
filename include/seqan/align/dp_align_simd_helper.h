@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_
 #define INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_
 
-namespace seqan
+namespace seqan2
 {
 
 #if SEQAN_ALIGN_SIMD_PROFILE
@@ -508,5 +508,5 @@ _alignWrapperSimd(TSetH & gapSeqSetH,
     return results;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_ALIGN_SIMD_HELPER_H_

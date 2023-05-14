@@ -37,7 +37,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 #include "test_string.h"
 #include "test_string_packed_extension.h"
@@ -75,7 +75,7 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(test_sequence_adaptions_sequence_interface_std_list);
 
     // Use the constant EMPTY_STRING once to get rid of linker error in Visual Studio.
-    (void)seqan::String<char const, seqan::CStyle>::EMPTY_STRING;
+    (void)seqan2::String<char const, seqan2::CStyle>::EMPTY_STRING;
 
 	SEQAN_CALL_TEST(Sequence_Interface);
 	SEQAN_CALL_TEST(String_Base);

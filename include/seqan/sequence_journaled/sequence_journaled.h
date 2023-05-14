@@ -39,7 +39,7 @@
 #ifndef SEQAN_SEQUENCE_JOURNAL_SEQUENCE_JOURNAL_H_
 #define SEQAN_SEQUENCE_JOURNAL_SEQUENCE_JOURNAL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1100,6 +1100,6 @@ isFlat(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > const & jo
 //    std::cout << "Now he is here but does not actually delete the contents." << std::endl;
 // }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEQUENCE_JOURNAL_SEQUENCE_JOURNAL_H_

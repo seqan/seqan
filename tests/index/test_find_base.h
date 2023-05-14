@@ -40,7 +40,7 @@
 #include <seqan/index.h>
 #include <seqan/parallel.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags, Classes, Enums

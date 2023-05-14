@@ -5,7 +5,7 @@
 
 #include "razers.h"
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TThreadLocalStorage>
 class FilterPatternLSetMaxErrorsWrapper;
@@ -176,6 +176,6 @@ processRead(PairedMatchFilter<TOptionsSpec, TReadSeqSet, TCallback> & filter, un
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef RAZERS_PAIRED_MATCH_FILTER_H_

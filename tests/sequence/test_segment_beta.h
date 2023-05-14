@@ -43,97 +43,97 @@
 #include "test_sequence.h"
 
 template <typename TAlphabetSpecPair>
-class SegmentTest : public seqan::Test
+class SegmentTest : public seqan2::Test
 {
 public:
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 2>::Type TStringSpec;
-    typedef typename seqan::TagListValue<TAlphabetSpecPair, 3>::Type TSegmentSpec;
-    typedef seqan::Segment<seqan::String<TAlphabet, TStringSpec>, TSegmentSpec> TSegment;
-    typedef seqan::String<TAlphabet, TStringSpec> TString;
+    typedef typename seqan2::TagListValue<TAlphabetSpecPair, 1>::Type TAlphabet;
+    typedef typename seqan2::TagListValue<TAlphabetSpecPair, 2>::Type TStringSpec;
+    typedef typename seqan2::TagListValue<TAlphabetSpecPair, 3>::Type TSegmentSpec;
+    typedef seqan2::Segment<seqan2::String<TAlphabet, TStringSpec>, TSegmentSpec> TSegment;
+    typedef seqan2::String<TAlphabet, TStringSpec> TString;
 };
 
 // TODO(singer): MMap causes lots of seg faults
-typedef seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-//             seqan::TagList<CountingChar, seqan::TagList<seqan::MMap<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
+typedef seqan2::TagList<
+//             seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<short, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<CountingChar, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<short, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<CountingChar, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<short, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<CountingChar, seqan2::TagList<seqan2::MMap<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::External<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::External<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::External<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::External<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::External<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
 
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<seqan::Dna, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-//             seqan::TagList<short, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::Packed<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
+//             seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<short, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<short, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<short, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::Packed<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Array<100>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Array<100>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Block<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Block<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
 
 // TODO(Singer): 7 errors and about 400 warnings (deprecated ...)
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-//             seqan::TagList<char, seqan::TagList<seqan::CStyle, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::CStyle, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::CStyle, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+//             seqan2::TagList<char, seqan2::TagList<seqan2::CStyle, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
 
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::InfixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::PrefixSegment> > >, seqan::TagList<
-            seqan::TagList<seqan::Dna, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
-            seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >//, seqan::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::InfixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::PrefixSegment> > >, seqan2::TagList<
+            seqan2::TagList<seqan2::Dna, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<short, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<char, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::SuffixSegment> > >, seqan2::TagList<
+            seqan2::TagList<CountingChar, seqan2::TagList<seqan2::Alloc<>, seqan2::TagList<seqan2::SuffixSegment> > >//, seqan2::TagList<
 //         > > > > > > > > > > > >
         > > > > > > > > > > > >
 //         > > > > > > > > >
@@ -144,31 +144,31 @@ typedef seqan::TagList<
         SegmentTestTypes;
 
 // TODO(singer): MMap causes lots of seg faults
-typedef seqan::TagList<
-    seqan::TagList<seqan::Dna5, seqan::TagList<seqan::External<> > >, seqan::TagList<
-    seqan::TagList<char,        seqan::TagList<seqan::External<> > >, seqan::TagList<
-    seqan::TagList<int,         seqan::TagList<seqan::External<> > >, seqan::TagList<
-    seqan::TagList<CountingChar,seqan::TagList<seqan::External<> > >, seqan::TagList<
-//     seqan::TagList<seqan::Dna5, seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-//     seqan::TagList<char,        seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-//     seqan::TagList<int,         seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-//     seqan::TagList<CountingChar,seqan::TagList<seqan::MMap<> > >, seqan::TagList<
-    seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-    seqan::TagList<char,        seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-    seqan::TagList<int,         seqan::TagList<seqan::Packed<> > >, seqan::TagList<
-    seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-    seqan::TagList<char,        seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-    seqan::TagList<int,         seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-    seqan::TagList<CountingChar,seqan::TagList<seqan::Array<100> > >, seqan::TagList<
-    seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Block<> > >, seqan::TagList<
-    seqan::TagList<char,        seqan::TagList<seqan::Block<> > >, seqan::TagList<
-    seqan::TagList<int,         seqan::TagList<seqan::Block<> > >, seqan::TagList<
-    seqan::TagList<CountingChar,seqan::TagList<seqan::Block<> > >, seqan::TagList<
-    seqan::TagList<seqan::Dna5, seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-    seqan::TagList<char,        seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-    seqan::TagList<int,         seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-    seqan::TagList<CountingChar,seqan::TagList<seqan::Alloc<> > >, seqan::TagList<
-    seqan::TagList<char,        seqan::TagList<seqan::CStyle> >
+typedef seqan2::TagList<
+    seqan2::TagList<seqan2::Dna5, seqan2::TagList<seqan2::External<> > >, seqan2::TagList<
+    seqan2::TagList<char,        seqan2::TagList<seqan2::External<> > >, seqan2::TagList<
+    seqan2::TagList<int,         seqan2::TagList<seqan2::External<> > >, seqan2::TagList<
+    seqan2::TagList<CountingChar,seqan2::TagList<seqan2::External<> > >, seqan2::TagList<
+//     seqan2::TagList<seqan2::Dna5, seqan2::TagList<seqan2::MMap<> > >, seqan2::TagList<
+//     seqan2::TagList<char,        seqan2::TagList<seqan2::MMap<> > >, seqan2::TagList<
+//     seqan2::TagList<int,         seqan2::TagList<seqan2::MMap<> > >, seqan2::TagList<
+//     seqan2::TagList<CountingChar,seqan2::TagList<seqan2::MMap<> > >, seqan2::TagList<
+    seqan2::TagList<seqan2::Dna5, seqan2::TagList<seqan2::Packed<> > >, seqan2::TagList<
+    seqan2::TagList<char,        seqan2::TagList<seqan2::Packed<> > >, seqan2::TagList<
+    seqan2::TagList<int,         seqan2::TagList<seqan2::Packed<> > >, seqan2::TagList<
+    seqan2::TagList<seqan2::Dna5, seqan2::TagList<seqan2::Array<100> > >, seqan2::TagList<
+    seqan2::TagList<char,        seqan2::TagList<seqan2::Array<100> > >, seqan2::TagList<
+    seqan2::TagList<int,         seqan2::TagList<seqan2::Array<100> > >, seqan2::TagList<
+    seqan2::TagList<CountingChar,seqan2::TagList<seqan2::Array<100> > >, seqan2::TagList<
+    seqan2::TagList<seqan2::Dna5, seqan2::TagList<seqan2::Block<> > >, seqan2::TagList<
+    seqan2::TagList<char,        seqan2::TagList<seqan2::Block<> > >, seqan2::TagList<
+    seqan2::TagList<int,         seqan2::TagList<seqan2::Block<> > >, seqan2::TagList<
+    seqan2::TagList<CountingChar,seqan2::TagList<seqan2::Block<> > >, seqan2::TagList<
+    seqan2::TagList<seqan2::Dna5, seqan2::TagList<seqan2::Alloc<> > >, seqan2::TagList<
+    seqan2::TagList<char,        seqan2::TagList<seqan2::Alloc<> > >, seqan2::TagList<
+    seqan2::TagList<int,         seqan2::TagList<seqan2::Alloc<> > >, seqan2::TagList<
+    seqan2::TagList<CountingChar,seqan2::TagList<seqan2::Alloc<> > >, seqan2::TagList<
+    seqan2::TagList<char,        seqan2::TagList<seqan2::CStyle> >
     > > > > > > > > > > > > > > > > > > > >// > > > >
     SegmentTestStringTypes;
 
@@ -187,7 +187,7 @@ SEQAN_TYPED_TEST_CASE(SegmentTestString, SegmentTestTypes);
 template <typename TSegment>
 void testPrefixConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TString string("ACGTACGTACGT");
@@ -218,7 +218,7 @@ void testPrefixConstructible(TSegment & /*Tag*/)
 template <typename TSegment>
 void testInfixConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TString string("ACGTACGTACGT");
@@ -249,7 +249,7 @@ void testInfixConstructible(TSegment & /*Tag*/)
 template <typename TSegment>
 void testSuffixConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TString string("ACGTACGTACGT");
@@ -358,7 +358,7 @@ SEQAN_TYPED_TEST(SegmentTestCommon, Constructible)
 template <typename TSegment>
 void testPrefixCopyConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TString string("ACGTACGTACGT");
@@ -387,7 +387,7 @@ void testPrefixCopyConstructible(TSegment & /*Tag*/)
 template <typename TSegment>
 void testInfixCopyConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TString string("ACGTACGTACGT");
@@ -416,7 +416,7 @@ void testInfixCopyConstructible(TSegment & /*Tag*/)
 template <typename TSegment>
 void testSuffixCopyConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TString string("ACGTACGTACGT");
@@ -510,7 +510,7 @@ SEQAN_TYPED_TEST(SegmentTestCommon, CopyConstructible)
 template <typename TSegment>
 void testSegmentDefaultConstructible(TSegment & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename Host<TSegment>::Type TString;
 
     TSegment infixSeg;
@@ -551,7 +551,7 @@ SEQAN_TYPED_TEST(SegmentTestCommon, DefaultConstructible)
 template <typename TString>
 void testSegmentLess(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
@@ -614,7 +614,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Less)
 template <typename TString>
 void testSegmentLessEqual(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
@@ -673,7 +673,7 @@ SEQAN_TYPED_TEST(SegmentTestString, LessEqual)
 template <typename TString>
 void testSegmentGreater(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
@@ -732,7 +732,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Greater)
 template <typename TString>
 void testSegmentGreaterEqual(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
@@ -791,7 +791,7 @@ SEQAN_TYPED_TEST(SegmentTestString, GreaterEqual)
 template <typename TString>
 void testSegmentEqual(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
@@ -850,7 +850,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Equal)
 template <typename TString>
 void testSegmentUnequal(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
@@ -909,7 +909,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 // template <typename TString>
 // void testSegmentAssignable(TString & /*Tag*/)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
@@ -1034,7 +1034,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 // template <typename TString>
 // void testSegmentAssignValue(TString & /*Tag*/)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     typedef typename Value<TString>::Type TValue;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1062,7 +1062,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 // template <typename TString>
 // void testSegmentBack(TString & /*Tag*/)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     typedef typename Value<TString>::Type TValue;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1089,7 +1089,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 template <typename TString>
 void testSegmentBack(TString const & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type TValue;
     typedef Segment<TString const, PrefixSegment> TPrefix;
@@ -1129,7 +1129,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Back)
 template <typename TString>
 void testSegmentBegin(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type const TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1190,7 +1190,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Begin)
 template <typename TString>
 void testSegmentBeginPosition(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
     typedef Segment<TString, SuffixSegment> TSuffix;
@@ -1222,7 +1222,7 @@ SEQAN_TYPED_TEST(SegmentTestString, BeginPosition)
 template <typename TString>
 void testSegmentClear(TString & /*Tag*/)
 {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
 //     typedef Segment<TString, SuffixSegment> TSuffix;
@@ -1252,7 +1252,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Clear)
 template <typename TString>
 void testSegmentEnd(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1313,7 +1313,7 @@ SEQAN_TYPED_TEST(SegmentTestString, End)
 template <typename TString>
 void testSegmentEndPosition(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
     typedef Segment<TString, SuffixSegment> TSuffix;
@@ -1347,7 +1347,7 @@ SEQAN_TYPED_TEST(SegmentTestString, EndPosition)
 template <typename TString>
 void testSegmentFront(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1374,7 +1374,7 @@ void testSegmentFront(TString & /*Tag*/)
 template <typename TString>
 void testSegmentFront(TString const & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type TValue;
     typedef Segment<TString const, PrefixSegment> TPrefix;
@@ -1419,7 +1419,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Front)
 template <typename TString>
 void testSegmentGetValue(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type TValue;
     typedef Segment<TString const, PrefixSegment> TPrefix;
@@ -1459,7 +1459,7 @@ SEQAN_TYPED_TEST(SegmentTestString, GetValue)
 template <typename TString>
 void testSegmentIter(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     //typedef typename Value<TString>::Type TValue;
 
@@ -1529,7 +1529,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Iter)
 template <typename TString>
 void testSegmentLength(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     //typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1563,7 +1563,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Length)
 template <typename TString>
 void testSegmentMoveValue(TString & /*Tag*/)
 {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     typedef typename Value<TString>::Type TValue;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1599,7 +1599,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Move)
 template <typename TString>
 void testSegmentReplace(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     //typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1675,7 +1675,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Replace)
 template <typename TString>
 void testSegmentResize(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Segment<TString, PrefixSegment> TPrefix;
     typedef Segment<TString, InfixSegment> TInfix;
     typedef Segment<TString, SuffixSegment> TSuffix;
@@ -1714,7 +1714,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Resize)
 template <typename TString>
 void testSegmentSwap(TString & /*Tag*/)
 {
-//    using namespace seqan;
+//    using namespace seqan2;
 //
 //    typedef typename Value<TString>::Type TValue;
 //    typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1761,7 +1761,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Swap)
 template <typename TString>
 void testSegmentValue(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Value<TString>::Type TValue;
     typedef Segment<TString, PrefixSegment> TPrefix;
@@ -1807,7 +1807,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // --------------------------------------------------------------------------
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, InfixSegment> tag(string);
@@ -1832,7 +1832,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, InfixSegment> tag(string);
@@ -1857,7 +1857,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, InfixSegment> tag(string);
@@ -1882,7 +1882,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, InfixSegment> tag(string);
@@ -1912,7 +1912,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_dna_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, InfixSegment> tag(string);
@@ -1938,7 +1938,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, InfixSegment> tag(string);
@@ -1964,7 +1964,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_short_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, InfixSegment> tag(string);
@@ -1990,7 +1990,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_counting_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, InfixSegment> tag(string);
@@ -2019,7 +2019,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Packed<> > string("A");
 //         Segment<String<Dna, Packed<> >, InfixSegment> tag(string);
@@ -2044,7 +2044,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Packed<> > string("A");
 //         Segment<String<char, Packed<> >, InfixSegment> tag(string);
@@ -2069,7 +2069,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_short_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, InfixSegment> tag(string);
@@ -2094,7 +2094,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, InfixSegment> tag(string);
@@ -2119,7 +2119,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, InfixSegment> tag(string);
@@ -2144,7 +2144,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, InfixSegment> tag(string);
@@ -2169,7 +2169,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, InfixSegment> tag(string);
@@ -2198,7 +2198,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, InfixSegment> tag(string);
@@ -2223,7 +2223,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, InfixSegment> tag(string);
@@ -2248,7 +2248,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, InfixSegment> tag(string);
@@ -2273,7 +2273,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, InfixSegment> tag(string);
@@ -2302,7 +2302,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -2327,7 +2327,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -2352,7 +2352,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -2377,7 +2377,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Alloc<> > string("A");
 //         Segment<String<CountingChar, Alloc<> >, InfixSegment> tag(string);
@@ -2406,7 +2406,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_infix_char_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, InfixSegment> tag(string);
@@ -2432,7 +2432,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, PrefixSegment> tag(string);
@@ -2457,7 +2457,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, PrefixSegment> tag(string);
@@ -2482,7 +2482,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, PrefixSegment> tag(string);
@@ -2507,7 +2507,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, PrefixSegment> tag(string);
@@ -2537,7 +2537,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_dna_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, PrefixSegment> tag(string);
@@ -2563,7 +2563,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, PrefixSegment> tag(string);
@@ -2589,7 +2589,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_short_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, PrefixSegment> tag(string);
@@ -2615,7 +2615,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_counting_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, PrefixSegment> tag(string);
@@ -2644,7 +2644,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Packed<> > string("A");
 //         Segment<String<Dna, Packed<> >, PrefixSegment> tag(string);
@@ -2669,7 +2669,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Packed<> > string("A");
 //         Segment<String<char, Packed<> >, PrefixSegment> tag(string);
@@ -2694,7 +2694,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_short_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, PrefixSegment> tag(string);
@@ -2719,7 +2719,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, PrefixSegment> tag(string);
@@ -2744,7 +2744,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, PrefixSegment> tag(string);
@@ -2769,7 +2769,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, PrefixSegment> tag(string);
@@ -2794,7 +2794,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, PrefixSegment> tag(string);
@@ -2823,7 +2823,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, PrefixSegment> tag(string);
@@ -2848,7 +2848,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, PrefixSegment> tag(string);
@@ -2873,7 +2873,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, PrefixSegment> tag(string);
@@ -2898,7 +2898,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, PrefixSegment> tag(string);
@@ -2927,7 +2927,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -2952,7 +2952,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -2977,7 +2977,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -3002,7 +3002,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Alloc<> > string("A");
 //         Segment<String<CountingChar, Alloc<> >, PrefixSegment> tag(string);
@@ -3031,7 +3031,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_prefix_char_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, PrefixSegment> tag(string);
@@ -3058,7 +3058,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, SuffixSegment> tag(string);
@@ -3083,7 +3083,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, SuffixSegment> tag(string);
@@ -3108,7 +3108,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, SuffixSegment> tag(string);
@@ -3133,7 +3133,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, SuffixSegment> tag(string);
@@ -3163,7 +3163,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_dna_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, SuffixSegment> tag(string);
@@ -3189,7 +3189,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_char_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, SuffixSegment> tag(string);
@@ -3215,7 +3215,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_short_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, SuffixSegment> tag(string);
@@ -3241,7 +3241,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_counting_char_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, SuffixSegment> tag(string);
@@ -3270,7 +3270,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Packed<> > string("A");
 //         Segment<String<Dna, Packed<> >, SuffixSegment> tag(string);
@@ -3295,7 +3295,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Packed<> > string("A");
 //         Segment<String<char, Packed<> >, SuffixSegment> tag(string);
@@ -3320,7 +3320,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_short_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, SuffixSegment> tag(string);
@@ -3345,7 +3345,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, SuffixSegment> tag(string);
@@ -3370,7 +3370,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, SuffixSegment> tag(string);
@@ -3395,7 +3395,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, SuffixSegment> tag(string);
@@ -3420,7 +3420,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, SuffixSegment> tag(string);
@@ -3449,7 +3449,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, SuffixSegment> tag(string);
@@ -3474,7 +3474,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, SuffixSegment> tag(string);
@@ -3499,7 +3499,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, SuffixSegment> tag(string);
@@ -3524,7 +3524,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, SuffixSegment> tag(string);
@@ -3553,7 +3553,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_dna_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -3578,7 +3578,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -3603,7 +3603,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_short_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -3628,7 +3628,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_counting_char_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Alloc<> > string("A");
 //         Segment<String<CountingChar, Alloc<> >, SuffixSegment> tag(string);
@@ -3657,7 +3657,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_suffix_char_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, SuffixSegment> tag(string);
@@ -3683,7 +3683,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //_______________________________________________________________________________
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, InfixSegment> tag(string);
@@ -3708,7 +3708,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, InfixSegment> tag(string);
@@ -3733,7 +3733,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, InfixSegment> tag(string);
@@ -3758,7 +3758,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, InfixSegment> tag(string);
@@ -3788,7 +3788,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_dna_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, InfixSegment> tag(string);
@@ -3814,7 +3814,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, InfixSegment> tag(string);
@@ -3840,7 +3840,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_short_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, InfixSegment> tag(string);
@@ -3866,7 +3866,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_counting_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, InfixSegment> tag(string);
@@ -3895,7 +3895,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Packed<> > string("A");
 //         Segment<String<Dna, Packed<> >, InfixSegment> tag(string);
@@ -3920,7 +3920,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Packed<> > string("A");
 //         Segment<String<char, Packed<> >, InfixSegment> tag(string);
@@ -3946,7 +3946,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_short_copy_constructible)
 // {
 // // TODO (singer): Shoult short work or not? Comparison with Proxy is problem.
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, InfixSegment> tag(string);
@@ -3971,7 +3971,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, InfixSegment> tag(string);
@@ -3996,7 +3996,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, InfixSegment> tag(string);
@@ -4021,7 +4021,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, InfixSegment> tag(string);
@@ -4046,7 +4046,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, InfixSegment> tag(string);
@@ -4075,7 +4075,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, InfixSegment> tag(string);
@@ -4100,7 +4100,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, InfixSegment> tag(string);
@@ -4125,7 +4125,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, InfixSegment> tag(string);
@@ -4150,7 +4150,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, InfixSegment> tag(string);
@@ -4179,7 +4179,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -4204,7 +4204,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -4229,7 +4229,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -4254,7 +4254,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Alloc<> > string("A");
 //         Segment<String<CountingChar, Alloc<> >, InfixSegment> tag(string);
@@ -4283,7 +4283,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_infix_char_copy_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, InfixSegment> tag(string);
@@ -4309,7 +4309,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, PrefixSegment> tag(string);
@@ -4334,7 +4334,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, PrefixSegment> tag(string);
@@ -4359,7 +4359,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, PrefixSegment> tag(string);
@@ -4384,7 +4384,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, PrefixSegment> tag(string);
@@ -4414,7 +4414,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_dna_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, PrefixSegment> tag(string);
@@ -4440,7 +4440,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, PrefixSegment> tag(string);
@@ -4466,7 +4466,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_short_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, PrefixSegment> tag(string);
@@ -4492,7 +4492,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_counting_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, PrefixSegment> tag(string);
@@ -4521,7 +4521,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Packed<> > string("A");
 //         Segment<String<Dna, Packed<> >, PrefixSegment> tag(string);
@@ -4546,7 +4546,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Packed<> > string("A");
 //         Segment<String<char, Packed<> >, PrefixSegment> tag(string);
@@ -4572,7 +4572,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_short_copy_constructible)
 // {
 // // TODO (singer): Should short work. Comparison with proxy is the problem.
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, PrefixSegment> tag(string);
@@ -4597,7 +4597,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, PrefixSegment> tag(string);
@@ -4622,7 +4622,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, PrefixSegment> tag(string);
@@ -4647,7 +4647,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, PrefixSegment> tag(string);
@@ -4672,7 +4672,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, PrefixSegment> tag(string);
@@ -4701,7 +4701,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, PrefixSegment> tag(string);
@@ -4726,7 +4726,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, PrefixSegment> tag(string);
@@ -4751,7 +4751,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, PrefixSegment> tag(string);
@@ -4776,7 +4776,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, PrefixSegment> tag(string);
@@ -4805,7 +4805,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -4830,7 +4830,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -4855,7 +4855,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -4880,7 +4880,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Alloc<> > string("A");
 //         Segment<String<CountingChar, Alloc<> >, PrefixSegment> tag(string);
@@ -4909,7 +4909,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_prefix_char_copy_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, PrefixSegment> tag(string);
@@ -4936,7 +4936,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, SuffixSegment> tag(string);
@@ -4961,7 +4961,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, SuffixSegment> tag(string);
@@ -4986,7 +4986,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, SuffixSegment> tag(string);
@@ -5011,7 +5011,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, SuffixSegment> tag(string);
@@ -5041,7 +5041,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_dna_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, SuffixSegment> tag(string);
@@ -5067,7 +5067,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, SuffixSegment> tag(string);
@@ -5093,7 +5093,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_short_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, SuffixSegment> tag(string);
@@ -5119,7 +5119,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_counting_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, SuffixSegment> tag(string);
@@ -5148,7 +5148,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Packed<> > string("A");
 //         Segment<String<Dna, Packed<> >, SuffixSegment> tag(string);
@@ -5173,7 +5173,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Packed<> > string("A");
 //         Segment<String<char, Packed<> >, SuffixSegment> tag(string);
@@ -5199,7 +5199,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_short_copy_constructible)
 // {
 // // TODO (singer): Should short work. Comparison with proxy is the problem.
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, SuffixSegment> tag(string);
@@ -5224,7 +5224,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, SuffixSegment> tag(string);
@@ -5249,7 +5249,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, SuffixSegment> tag(string);
@@ -5274,7 +5274,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, SuffixSegment> tag(string);
@@ -5299,7 +5299,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, SuffixSegment> tag(string);
@@ -5328,7 +5328,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, SuffixSegment> tag(string);
@@ -5353,7 +5353,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, SuffixSegment> tag(string);
@@ -5378,7 +5378,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, SuffixSegment> tag(string);
@@ -5403,7 +5403,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, SuffixSegment> tag(string);
@@ -5432,7 +5432,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -5457,7 +5457,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -5482,7 +5482,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_short_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Alloc<> > string("A");
 //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -5507,7 +5507,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_counting_char_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Alloc<> > string("A");
 //         Segment<String<CountingChar, Alloc<> >, SuffixSegment> tag(string);
@@ -5536,7 +5536,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_suffix_char_copy_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, SuffixSegment> tag(string);
@@ -5563,8 +5563,8 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_dna_default_constructible)
 // {
-// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
-// //     using namespace seqan;
+// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, External<seqan2::ExternalConfig<seqan2::File<seqan2::Async<void> >, 4194304, 2> > > >'))
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, External<> > string("A");
 // //         Segment<String<Dna, External<> >, InfixSegment> tag(string);
@@ -5589,8 +5589,8 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_char_default_constructible)
 // {
-// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
-// //     using namespace seqan;
+// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, External<seqan2::ExternalConfig<seqan2::File<seqan2::Async<void> >, 4194304, 2> > > >'))
+// //     using namespace seqan2;
 // //     {
 // //         String<char, External<> > string("A");
 // //         Segment<String<char, External<> >, InfixSegment> tag(string);
@@ -5615,8 +5615,8 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_short_default_constructible)
 // {
-// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
-// //     using namespace seqan;
+// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, External<seqan2::ExternalConfig<seqan2::File<seqan2::Async<void> >, 4194304, 2> > > >'))
+// //     using namespace seqan2;
 // //     {
 // //         String<short, External<> > string("A");
 // //         Segment<String<short, External<> >, InfixSegment> tag(string);
@@ -5641,8 +5641,8 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_counting_char_default_constructible)
 // {
-// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
-// //     using namespace seqan;
+// // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, External<seqan2::ExternalConfig<seqan2::File<seqan2::Async<void> >, 4194304, 2> > > >'))
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, External<> > string("A");
 // //         Segment<String<CountingChar, External<> >, InfixSegment> tag(string);
@@ -5672,7 +5672,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, InfixSegment> tag(string);
@@ -5698,7 +5698,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, InfixSegment> tag(string);
@@ -5724,7 +5724,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, InfixSegment> tag(string);
@@ -5750,7 +5750,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, InfixSegment> tag(string);
@@ -5780,7 +5780,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Packed<> > string("A");
 // //         Segment<String<Dna, Packed<> >, InfixSegment> tag(string);
@@ -5807,7 +5807,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, Packed<> > string("A");
 // //         Segment<String<char, Packed<> >, InfixSegment> tag(string);
@@ -5834,7 +5834,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, InfixSegment> tag(string);
@@ -5860,7 +5860,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_dna_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, InfixSegment> tag(string);
@@ -5885,7 +5885,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, InfixSegment> tag(string);
@@ -5910,7 +5910,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_short_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, InfixSegment> tag(string);
@@ -5935,7 +5935,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_counting_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, InfixSegment> tag(string);
@@ -5964,7 +5964,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_dna_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, InfixSegment> tag(string);
@@ -5976,7 +5976,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 //     {
-//         // TODO (singer):  error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+//         // TODO (singer):  error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // //         String<Dna,  Block<> > string("A");
 // //         Segment<String<Dna, Block<> >, InfixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -5990,7 +5990,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, InfixSegment> tag(string);
@@ -6002,7 +6002,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<char, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<char, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<char, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<char, seqan2::Block<4096> > *')
 // //         String<char,  Block<> > string("A");
 // //         Segment<String<char, Block<> >, InfixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6016,7 +6016,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_short_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, InfixSegment> tag(string);
@@ -6028,7 +6028,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<short, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<short, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<short, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<short, seqan2::Block<4096> > *')
 // //         String<short,  Block<> > string("A");
 // //         Segment<String<short, Block<> >, InfixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6042,7 +6042,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_counting_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, InfixSegment> tag(string);
@@ -6056,7 +6056,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<CountingChar, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<CountingChar, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<CountingChar, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<CountingChar, seqan2::Block<4096> > *')
 // //         String<CountingChar,  Block<> > string("A");
 // //         Segment<String<CountingChar, Block<> >, InfixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6073,7 +6073,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -6099,7 +6099,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -6125,7 +6125,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, InfixSegment> tag(string);
@@ -6151,7 +6151,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, Alloc<> > string("A");
 // //         Segment<String<CountingChar, Alloc<> >, InfixSegment> tag(string);
@@ -6180,7 +6180,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_infix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, InfixSegment> tag(string);
@@ -6206,7 +6206,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_dna_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, External<> > string("A");
 //         Segment<String<Dna, External<> >, PrefixSegment> tag(string);
@@ -6231,7 +6231,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, External<> > string("A");
 //         Segment<String<char, External<> >, PrefixSegment> tag(string);
@@ -6256,7 +6256,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_short_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, External<> > string("A");
 //         Segment<String<short, External<> >, PrefixSegment> tag(string);
@@ -6281,7 +6281,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_counting_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, External<> > string("A");
 //         Segment<String<CountingChar, External<> >, PrefixSegment> tag(string);
@@ -6311,7 +6311,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, PrefixSegment> tag(string);
@@ -6337,7 +6337,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, PrefixSegment> tag(string);
@@ -6363,7 +6363,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, PrefixSegment> tag(string);
@@ -6389,7 +6389,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, PrefixSegment> tag(string);
@@ -6419,7 +6419,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Packed<> > string("A");
 // //         Segment<String<Dna, Packed<> >, PrefixSegment> tag(string);
@@ -6446,7 +6446,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, Packed<> > string("A");
 // //         Segment<String<char, Packed<> >, PrefixSegment> tag(string);
@@ -6473,7 +6473,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, PrefixSegment> tag(string);
@@ -6499,7 +6499,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_dna_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Array<100> > string("A");
 //         Segment<String<Dna, Array<100> >, PrefixSegment> tag(string);
@@ -6524,7 +6524,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Array<100> > string("A");
 //         Segment<String<char, Array<100> >, PrefixSegment> tag(string);
@@ -6549,7 +6549,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_short_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Array<100> > string("A");
 //         Segment<String<short, Array<100> >, PrefixSegment> tag(string);
@@ -6574,7 +6574,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_counting_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Array<100> > string("A");
 //         Segment<String<CountingChar, Array<100> >, PrefixSegment> tag(string);
@@ -6603,7 +6603,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_dna_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<Dna, Block<> > string("A");
 //         Segment<String<Dna, Block<> >, PrefixSegment> tag(string);
@@ -6615,7 +6615,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // //         String<Dna,  Block<> > string("A");
 // //         Segment<String<Dna, Block<> >, PrefixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6629,7 +6629,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<char, Block<> > string("A");
 //         Segment<String<char, Block<> >, PrefixSegment> tag(string);
@@ -6641,7 +6641,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // //         String<char,  Block<> > string("A");
 // //         Segment<String<char, Block<> >, PrefixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6655,7 +6655,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_short_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<short, Block<> > string("A");
 //         Segment<String<short, Block<> >, PrefixSegment> tag(string);
@@ -6667,7 +6667,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // //         String<short,  Block<> > string("A");
 // //         Segment<String<short, Block<> >, PrefixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6681,7 +6681,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_counting_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     {
 //         String<CountingChar, Block<> > string("A");
 //         Segment<String<CountingChar, Block<> >, PrefixSegment> tag(string);
@@ -6695,7 +6695,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 //     {
-//         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+//         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // //         String<CountingChar,  Block<> > string("A");
 // //         Segment<String<CountingChar, Block<> >, PrefixSegment> const tag(string);
 // //         testSegmentDefaultConstructible(tag);
@@ -6712,7 +6712,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -6738,7 +6738,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -6764,7 +6764,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, PrefixSegment> tag(string);
@@ -6790,7 +6790,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, Alloc<> > string("A");
 // //         Segment<String<CountingChar, Alloc<> >, PrefixSegment> tag(string);
@@ -6819,7 +6819,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_prefix_char_default_constructible)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, PrefixSegment> tag(string);
@@ -6847,7 +6847,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, External<> > string("A");
 // //         Segment<String<Dna, External<> >, SuffixSegment> tag(string);
@@ -6873,7 +6873,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, External<> > string("A");
 // //         Segment<String<char, External<> >, SuffixSegment> tag(string);
@@ -6899,7 +6899,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, External<> > string("A");
 // //         Segment<String<short, External<> >, SuffixSegment> tag(string);
@@ -6925,7 +6925,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, External<> > string("A");
 // //         Segment<String<CountingChar, External<> >, SuffixSegment> tag(string);
@@ -6955,7 +6955,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, MMap<> > string("A");
 // //         Segment<String<Dna, MMap<> >, SuffixSegment> tag(string);
@@ -6981,7 +6981,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, MMap<> > string("A");
 // //         Segment<String<char, MMap<> >, SuffixSegment> tag(string);
@@ -7007,7 +7007,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, MMap<> > string("A");
 // //         Segment<String<short, MMap<> >, SuffixSegment> tag(string);
@@ -7033,7 +7033,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, MMap<> > string("A");
 // //         Segment<String<CountingChar, MMap<> >, SuffixSegment> tag(string);
@@ -7063,7 +7063,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Packed<> > string("A");
 // //         Segment<String<Dna, Packed<> >, SuffixSegment> tag(string);
@@ -7090,7 +7090,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, Packed<> > string("A");
 // //         Segment<String<char, Packed<> >, SuffixSegment> tag(string);
@@ -7117,7 +7117,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Packed<> > string("A");
 // //         Segment<String<short, Packed<> >, SuffixSegment> tag(string);
@@ -7144,7 +7144,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Array<100> > string("A");
 // //         Segment<String<Dna, Array<100> >, SuffixSegment> tag(string);
@@ -7170,7 +7170,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, Array<100> > string("A");
 // //         Segment<String<char, Array<100> >, SuffixSegment> tag(string);
@@ -7196,7 +7196,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Array<100> > string("A");
 // //         Segment<String<short, Array<100> >, SuffixSegment> tag(string);
@@ -7222,7 +7222,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, Array<100> > string("A");
 // //         Segment<String<CountingChar, Array<100> >, SuffixSegment> tag(string);
@@ -7252,7 +7252,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Block<> > string("A");
 // //         Segment<String<Dna, Block<> >, SuffixSegment> tag(string);
@@ -7264,7 +7264,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // //     {
-// //         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+// //         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // // //         String<Dna,  Block<> > string("A");
 // // //         Segment<String<Dna, Block<> >, SuffixSegment> const tag(string);
 // // //         testSegmentDefaultConstructible(tag);
@@ -7279,7 +7279,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<char, Block<> > string("A");
 // //         Segment<String<char, Block<> >, SuffixSegment> tag(string);
@@ -7291,7 +7291,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // //     {
-// //         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+// //         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // // //         String<char,  Block<> > string("A");
 // // //         Segment<String<char, Block<> >, SuffixSegment> const tag(string);
 // // //         testSegmentDefaultConstructible(tag);
@@ -7306,7 +7306,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<short, Block<> > string("A");
 // //         Segment<String<short, Block<> >, SuffixSegment> tag(string);
@@ -7318,7 +7318,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // //     {
-// //         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+// //         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // // //         String<short,  Block<> > string("A");
 // // //         Segment<String<short, Block<> >, SuffixSegment> const tag(string);
 // // //         testSegmentDefaultConstructible(tag);
@@ -7333,7 +7333,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, Block<> > string("A");
 // //         Segment<String<CountingChar, Block<> >, SuffixSegment> tag(string);
@@ -7347,7 +7347,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // //     {
-// //         // TODO (singer): error: no viable conversion from 'seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan::String<seqan::SimpleType<unsigned char, seqan::Dna_>, seqan::Block<4096> > *')
+// //         // TODO (singer): error: no viable conversion from 'seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> >' to 'TContainerPointer_' (aka 'const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Block<4096> > *')
 // // //         String<CountingChar,  Block<> > string("A");
 // // //         Segment<String<CountingChar, Block<> >, SuffixSegment> const tag(string);
 // // //         testSegmentDefaultConstructible(tag);
@@ -7364,7 +7364,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -7390,7 +7390,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -7416,7 +7416,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<Dna, Alloc<> > string("A");
 // //         Segment<String<Dna, Alloc<> >, SuffixSegment> tag(string);
@@ -7442,7 +7442,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     {
 // //         String<CountingChar, Alloc<> > string("A");
 // //         Segment<String<CountingChar, Alloc<> >, SuffixSegment> tag(string);
@@ -7471,7 +7471,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_suffix_char_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 // //     {
 // //         String<char, CStyle> string("A");
 // //         Segment<String<char, CStyle>, SuffixSegment> tag(string);
@@ -7498,7 +7498,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, External<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7508,7 +7508,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, External<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7518,7 +7518,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, External<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7528,7 +7528,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, External<> > tag;
@@ -7544,7 +7544,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_less)
 // {
 //     // TODO (singer): Segementation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentLess(tag);
 // //
@@ -7555,7 +7555,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_less)
 // {
 //     // TODO (singer): Segementation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, MMap<> > tag;
 // //     testSegmentLess(tag);
 // //
@@ -7566,7 +7566,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_less)
 // {
 //     // TODO (singer): Segementation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<short, MMap<> > tag;
 // //     testSegmentLess(tag);
 // //
@@ -7577,7 +7577,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_less)
 // {
 //     // TODO (singer): Segementation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     CountingChar::clear();
 // //
 // //     String<CountingChar, MMap<> > tag;
@@ -7592,7 +7592,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Packed<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7602,7 +7602,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Packed<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7612,7 +7612,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Packed<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7622,7 +7622,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Array<100> > tag;
 //     testSegmentLess(tag);
 //
@@ -7632,7 +7632,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Array<100> > tag;
 //     testSegmentLess(tag);
 //
@@ -7642,7 +7642,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Array<100> > tag;
 //     testSegmentLess(tag);
 //
@@ -7652,7 +7652,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Array<100> > tag;
@@ -7667,7 +7667,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Block<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7677,7 +7677,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Block<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7687,7 +7687,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Block<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7697,7 +7697,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Block<> > tag;
@@ -7712,7 +7712,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7722,7 +7722,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Alloc<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7732,7 +7732,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Alloc<> > tag;
 //     testSegmentLess(tag);
 //
@@ -7742,7 +7742,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Alloc<> > tag;
@@ -7757,7 +7757,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_less)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, CStyle> tag;
 // //     testSegmentLess(tag);
 // //
@@ -7768,7 +7768,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test operator<()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentLess(tag);
@@ -7780,7 +7780,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //################################################################################
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, External<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7790,7 +7790,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, External<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7800,7 +7800,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, External<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7810,7 +7810,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, External<> > tag;
@@ -7826,7 +7826,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
 // //
@@ -7837,7 +7837,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
 // //
@@ -7848,7 +7848,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<short, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
 // //
@@ -7859,7 +7859,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     CountingChar::clear();
 // //
 // //     String<CountingChar, MMap<> > tag;
@@ -7874,7 +7874,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Packed<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7884,7 +7884,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Packed<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7894,7 +7894,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Packed<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7904,7 +7904,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Array<100> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7914,7 +7914,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Array<100> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7924,7 +7924,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Array<100> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7934,7 +7934,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Array<100> > tag;
@@ -7949,7 +7949,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Block<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7959,7 +7959,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Block<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7969,7 +7969,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Block<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -7979,7 +7979,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Block<> > tag;
@@ -7994,7 +7994,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -8004,7 +8004,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -8014,7 +8014,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
 //
@@ -8024,7 +8024,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Alloc<> > tag;
@@ -8039,7 +8039,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_less_equal)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, CStyle> tag;
 // //     testSegmentLessEqual(tag);
 // //
@@ -8050,7 +8050,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test operator<=()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less_equal)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentLessEqual(tag);
@@ -8063,7 +8063,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, External<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8073,7 +8073,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, External<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8083,7 +8083,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, External<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8093,7 +8093,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, External<> > tag;
@@ -8109,7 +8109,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentGreater(tag);
 // //
@@ -8120,7 +8120,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, MMap<> > tag;
 // //     testSegmentGreater(tag);
 // //
@@ -8131,7 +8131,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<short, MMap<> > tag;
 // //     testSegmentGreater(tag);
 // //
@@ -8142,7 +8142,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     CountingChar::clear();
 // //
 // //     String<CountingChar, MMap<> > tag;
@@ -8157,7 +8157,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Packed<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8167,7 +8167,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Packed<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8177,7 +8177,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Packed<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8187,7 +8187,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Array<100> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8197,7 +8197,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Array<100> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8207,7 +8207,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Array<100> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8217,7 +8217,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Array<100> > tag;
@@ -8232,7 +8232,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Block<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8242,7 +8242,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Block<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8252,7 +8252,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Block<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8262,7 +8262,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Block<> > tag;
@@ -8277,7 +8277,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8287,7 +8287,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Alloc<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8297,7 +8297,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Alloc<> > tag;
 //     testSegmentGreater(tag);
 //
@@ -8307,7 +8307,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Alloc<> > tag;
@@ -8322,7 +8322,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_greater)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, CStyle> tag;
 // //     testSegmentGreater(tag);
 // //
@@ -8335,7 +8335,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test operator>()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentGreater(tag);
@@ -8346,7 +8346,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, External<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8356,7 +8356,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, External<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8366,7 +8366,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, External<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8376,7 +8376,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, External<> > tag;
@@ -8392,7 +8392,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
 // //
@@ -8403,7 +8403,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
 // //
@@ -8414,7 +8414,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<short, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
 // //
@@ -8425,7 +8425,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     CountingChar::clear();
 // //
 // //     String<CountingChar, MMap<> > tag;
@@ -8440,7 +8440,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Packed<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8450,7 +8450,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Packed<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8460,7 +8460,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Packed<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8470,7 +8470,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8480,7 +8480,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8490,7 +8490,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8500,7 +8500,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Array<100> > tag;
@@ -8515,7 +8515,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8525,7 +8525,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8535,7 +8535,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8545,7 +8545,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Block<> > tag;
@@ -8560,7 +8560,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8570,7 +8570,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8580,7 +8580,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
 //
@@ -8590,7 +8590,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Alloc<> > tag;
@@ -8605,7 +8605,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_greater_equal)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, CStyle> tag;
 // //     testSegmentGreaterEqual(tag);
 // //
@@ -8618,7 +8618,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test operator>=()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater_equal)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentGreaterEqual(tag);
@@ -8629,7 +8629,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, External<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8639,7 +8639,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, External<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8649,7 +8649,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, External<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8659,7 +8659,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, External<> > tag;
@@ -8675,7 +8675,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentEqual(tag);
 // //
@@ -8686,7 +8686,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, MMap<> > tag;
 // //     testSegmentEqual(tag);
 // //
@@ -8697,7 +8697,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<short, MMap<> > tag;
 // //     testSegmentEqual(tag);
 // //
@@ -8708,7 +8708,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     CountingChar::clear();
 // //
 // //     String<CountingChar, MMap<> > tag;
@@ -8723,7 +8723,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Packed<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8733,7 +8733,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Packed<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8743,7 +8743,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Packed<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8753,7 +8753,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Array<100> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8763,7 +8763,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Array<100> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8773,7 +8773,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Array<100> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8783,7 +8783,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Array<100> > tag;
@@ -8798,7 +8798,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Block<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8808,7 +8808,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Block<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8818,7 +8818,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Block<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8828,7 +8828,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Block<> > tag;
@@ -8843,7 +8843,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8853,7 +8853,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Alloc<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8863,7 +8863,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Alloc<> > tag;
 //     testSegmentEqual(tag);
 //
@@ -8873,7 +8873,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Alloc<> > tag;
@@ -8888,7 +8888,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_equal)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, CStyle> tag;
 // //     testSegmentEqual(tag);
 // //
@@ -8901,7 +8901,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test operator==()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_equal)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentEqual(tag);
@@ -8912,7 +8912,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, External<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -8922,7 +8922,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, External<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -8932,7 +8932,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, External<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -8942,7 +8942,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, External<> > tag;
@@ -8958,7 +8958,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentUnequal(tag);
 // //
@@ -8969,7 +8969,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, MMap<> > tag;
 // //     testSegmentUnequal(tag);
 // //
@@ -8980,7 +8980,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<short, MMap<> > tag;
 // //     testSegmentUnequal(tag);
 // //
@@ -8991,7 +8991,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     CountingChar::clear();
 // //
 // //     String<CountingChar, MMap<> > tag;
@@ -9006,7 +9006,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Packed<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9016,7 +9016,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Packed<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9026,7 +9026,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Packed<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9036,7 +9036,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Array<100> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9046,7 +9046,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Array<100> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9056,7 +9056,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Array<100> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9066,7 +9066,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Array<100> > tag;
@@ -9081,7 +9081,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Block<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9091,7 +9091,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Block<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9101,7 +9101,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Block<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9111,7 +9111,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Block<> > tag;
@@ -9126,7 +9126,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9136,7 +9136,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<char, Alloc<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9146,7 +9146,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     String<short, Alloc<> > tag;
 //     testSegmentUnequal(tag);
 //
@@ -9156,7 +9156,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //     CountingChar::clear();
 //
 //     String<CountingChar, Alloc<> > tag;
@@ -9171,7 +9171,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_unequal)
 // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //     String<char, CStyle> tag;
 // //     testSegmentUnequal(tag);
 // //
@@ -9184,7 +9184,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test operator!=()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_unequal)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentUnequal(tag);
@@ -9196,7 +9196,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test whether sequences are assignable.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assignable)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignable(tag);
@@ -9205,7 +9205,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of assignValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assign_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignValue(tag);
@@ -9214,7 +9214,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of back().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_back)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBack(tag);
@@ -9226,7 +9226,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of begin().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBegin(tag);
@@ -9238,7 +9238,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of beginPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin_position)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBeginPosition(tag);
@@ -9250,7 +9250,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of clear().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_clear)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentClear(tag);
@@ -9259,7 +9259,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of end().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEnd(tag);
@@ -9271,7 +9271,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of endPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end_position)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEndPosition(tag);
@@ -9283,7 +9283,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of front().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_front)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentFront(tag);
@@ -9295,7 +9295,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of getValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_get_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGetValue(tag);
@@ -9307,7 +9307,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of iter().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_iter)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentIter(tag);
@@ -9319,7 +9319,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of length().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_length)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLength(tag);
@@ -9331,7 +9331,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of moveValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_move_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentMoveValue(tag);
@@ -9340,7 +9340,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of replace().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_replace)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentReplace(tag);
@@ -9349,7 +9349,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of resize().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_resize)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentResize(tag);
@@ -9358,7 +9358,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of swap().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_swap)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentSwap(tag);
@@ -9367,7 +9367,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of value().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentValue(tag);
@@ -9390,7 +9390,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test whether sequences are copy constructible.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_copy_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testInfixCopyConstructible(tag);
@@ -9406,7 +9406,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test whether sequences are default constructible.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_default_constructible)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testPrefixDefaultConstructible(tag);
@@ -9422,7 +9422,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test operator<()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLess(tag);
@@ -9434,7 +9434,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test operator<=()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
@@ -9446,7 +9446,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test operator>()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreater(tag);
@@ -9458,7 +9458,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test operator>=()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
@@ -9470,7 +9470,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test operator==()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_equal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEqual(tag);
@@ -9482,7 +9482,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test operator!=()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_unequal)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentUnequal(tag);
@@ -9494,7 +9494,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test whether sequences are assignable.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assignable)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignable(tag);
@@ -9503,7 +9503,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of assignValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assign_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignValue(tag);
@@ -9512,7 +9512,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of back().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_back)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBack(tag);
@@ -9524,7 +9524,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of begin().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBegin(tag);
@@ -9536,7 +9536,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of beginPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin_position)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBeginPosition(tag);
@@ -9548,7 +9548,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // // Test of clear().
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_clear)
 // // {
-// //     using namespace seqan;
+// //     using namespace seqan2;
 // //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentClear(tag);
@@ -9557,7 +9557,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of end().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEnd(tag);
@@ -9569,7 +9569,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of endPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end_position)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEndPosition(tag);
@@ -9581,7 +9581,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of front().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_front)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentFront(tag);
@@ -9593,7 +9593,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of getValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_get_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGetValue(tag);
@@ -9605,7 +9605,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of iter().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_iter)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentIter(tag);
@@ -9617,7 +9617,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of length().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_length)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLength(tag);
@@ -9629,7 +9629,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of moveValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_move_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentMoveValue(tag);
@@ -9638,7 +9638,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // // Test of value().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_value)
 // {
-//     using namespace seqan;
+//     using namespace seqan2;
 //
 //     String<Dna, Alloc<> > tag;
 //     testSegmentValue(tag);

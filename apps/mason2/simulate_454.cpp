@@ -57,7 +57,7 @@ public:
     // The edge length of the matrix.
     mutable unsigned _size;
     // The data of the matrix.
-    mutable seqan::String<double> _data;
+    mutable seqan2::String<double> _data;
 
     ThresholdMatrix()
             : _k(0), _useSqrt(false), _noiseMu(0), _noiseSigma(0), _size(0)
@@ -117,7 +117,7 @@ public:
     {
         // Allocate new data array for matrix.  Then compute values or copy
         // over existing ones.
-        seqan::String<double> newData;
+        seqan2::String<double> newData;
         resize(newData, dim * dim);
         for (unsigned i = 0; i < dim; ++i) {
             for (unsigned j = 0; j < dim; ++j) {
@@ -169,7 +169,7 @@ public:
     inline void
     setNoiseMeanStdDev(double mean, double stdDev)
     {
-        auto tmp = seqan::cvtLogNormalDistParam(mean, stdDev);
+        auto tmp = seqan2::cvtLogNormalDistParam(mean, stdDev);
         _noiseMu = tmp.m();
         _noiseSigma = tmp.s();
     }
@@ -300,19 +300,19 @@ void Roche454SequencingSimulator::simulateRead(
         reverseComplement(haplotypeInfix);
 
     // In the flow cell simulation, we will simulate light intensities which will be stored in observedIntensities.
-    seqan::String<double> observedIntensities;
+    seqan2::String<double> observedIntensities;
     reserve(observedIntensities, 4 * sampleLength);
-    seqan::Dna5String observedBases;
+    seqan2::Dna5String observedBases;
     // We also store the real homopolymer length.
-    seqan::String<unsigned> realBaseCount;
+    seqan2::String<unsigned> realBaseCount;
 
     // Probability density function to use for the background noise.
-    std::lognormal_distribution<double> distNoise(seqan::cvtLogNormalDistParam(roche454Options.backgroundNoiseMean,
+    std::lognormal_distribution<double> distNoise(seqan2::cvtLogNormalDistParam(roche454Options.backgroundNoiseMean,
                                                                                roche454Options.backgroundNoiseStdDev));
 
     // Initialize information about the current homopolymer length.
     unsigned homopolymerLength = 0;
-    seqan::Dna homopolymerType = haplotypeInfix[0];
+    seqan2::Dna homopolymerType = haplotypeInfix[0];
     while (homopolymerLength < length(haplotypeInfix) && haplotypeInfix[homopolymerLength] == homopolymerType)
         ++homopolymerLength;
 
@@ -351,11 +351,11 @@ void Roche454SequencingSimulator::simulateRead(
         }
     }
 
-    seqan::String<seqan::CigarElement<> > cigar;
+    seqan2::String<seqan2::CigarElement<> > cigar;
 
     // Call bases, from this build the edit string and maybe qualities.  We only support the "inter" base calling
     // method which was published by the MetaSim authors in the PLOS paper.
-    typedef seqan::Iterator<seqan::String<double>, seqan::Standard>::Type IntensitiesIterator;
+    typedef seqan2::Iterator<seqan2::String<double>, seqan2::Standard>::Type IntensitiesIterator;
     int i = 0;  // Flow round, Dna(i % 4) gives base.
     for (IntensitiesIterator it = begin(observedIntensities); it != end(observedIntensities); ++it, ++i)
     {
@@ -366,13 +366,13 @@ void Roche454SequencingSimulator::simulateRead(
         for (; j < std::min(calledBaseCount, realBaseCount[i]); ++j)
         {
             appendOperation(cigar, 'M');
-            appendValue(seq, seqan::Dna(i % 4));
+            appendValue(seq, seqan2::Dna(i % 4));
         }
         // Add insertions, if any.
         for (; j < calledBaseCount; ++j)
         {
             appendOperation(cigar, 'I');
-            appendValue(seq, seqan::Dna(i % 4));
+            appendValue(seq, seqan2::Dna(i % 4));
         }
         // Add deletions, if any.
         for (; j < realBaseCount[i]; ++j)

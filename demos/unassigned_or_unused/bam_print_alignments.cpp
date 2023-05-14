@@ -46,7 +46,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/seq_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 #if SEQAN_HAS_ZLIB
 

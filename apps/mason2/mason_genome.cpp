@@ -59,10 +59,10 @@ struct MasonGenomeOptions
     int verbosity;
 
     // The output file name.
-    seqan::CharString outputFilename;
+    seqan2::CharString outputFilename;
 
     // Lengths of the contigs.
-    seqan::String<int64_t> contigLengths;
+    seqan2::String<int64_t> contigLengths;
 
     // The seed to use for the RNG.
     int seed;
@@ -79,11 +79,11 @@ struct MasonGenomeOptions
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_genome");
+    seqan2::ArgumentParser parser("mason_genome");
     // Set short description, version, and date.
     setShortDescription(parser, "Random Genome Simulation");
     setDateAndVersion(parser);
@@ -96,26 +96,26 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
                    "entry, a contig with the given length will be simulated.");
 
     // We require one argument.
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
 
     addSection(parser, "Simulation Configuration");
-    addOption(parser, seqan::ArgParseOption("l", "contig-length",
+    addOption(parser, seqan2::ArgParseOption("l", "contig-length",
                                             "Length of the contig to simulate. Give one \\fB-l\\fP "
                                             "value for each contig to simulate.",
-                                            seqan::ArgParseOption::INT64, "LENGTH", true));
+                                            seqan2::ArgParseOption::INT64, "LENGTH", true));
     setMinValue(parser, "contig-length", "1");
     setRequired(parser, "contig-length");
 
-    addOption(parser, seqan::ArgParseOption("s", "seed", "The seed to use for the random number generator.",
-                                            seqan::ArgParseOption::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("s", "seed", "The seed to use for the random number generator.",
+                                            seqan2::ArgParseOption::INTEGER, "INT"));
     setDefaultValue(parser, "seed", 42);
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-file", "Output file.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "FILE"));
-    setValidValues(parser, "out-file", seqan::SeqFileOut::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("o", "out-file", "Output file.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "FILE"));
+    setValidValues(parser, "out-file", seqan2::SeqFileOut::getFileExtensions());
     setRequired(parser, "out-file");
 
     // Add Examples Section.
@@ -124,10 +124,10 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
                 "Simulate a genome with two contigs of lengths 1000 and 4000 and write it to genome.fa.");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -148,7 +148,7 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
         appendValue(options.contigLengths, len);
     }
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -160,15 +160,15 @@ parseCommandLine(MasonGenomeOptions & options, int argc, char const ** argv)
 int main(int argc, char const ** argv)
 {
     // Parse the command line.
-    seqan::ArgumentParser parser;
+    seqan2::ArgumentParser parser;
     MasonGenomeOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     std::cout << "MASON GENOME SIMULATOR\n"
               << "======================\n\n";

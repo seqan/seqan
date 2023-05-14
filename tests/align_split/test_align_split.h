@@ -45,13 +45,13 @@
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_unbanded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
-    seqan::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
+    seqan2::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Align<seqan::DnaString> alignL, alignR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Align<seqan2::DnaString> alignL, alignR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     resize(rows(alignL), 2);
     assignSource(row(alignL, 0), contig);
@@ -76,15 +76,15 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_unbanded
     contigS << row(alignL, 0) << row(alignR, 0);
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
     SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 0)), 0);
     SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignL, 1)), 0);
     SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 0)), 23);
     SEQAN_ASSERT_EQ(clippedEndPosition(row(alignL, 1)), 23);
 
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
     SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 0)), 23);
     SEQAN_ASSERT_EQ(clippedBeginPosition(row(alignR, 1)), 1);
     SEQAN_ASSERT_EQ(clippedEndPosition(row(alignR, 0)), 45);
@@ -94,13 +94,13 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_unbanded
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_unbanded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
-    seqan::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
+    seqan2::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Align<seqan::DnaString> alignL, alignR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Align<seqan2::DnaString> alignL, alignR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     resize(rows(alignL), 2);
     assignSource(row(alignL, 0), contig);
@@ -125,21 +125,21 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_unband
     contigS << row(alignL, 0) << row(alignR, 0);
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_unbanded)
 {
     // Define the input sequences.  contig1 has an insertion with respect to contig1.
-    seqan::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
-    seqan::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
+    seqan2::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
 
     // Variables for the alignments.
-    seqan::Align<seqan::DnaString> alignL, alignR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Align<seqan2::DnaString> alignL, alignR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     resize(rows(alignL), 2);
     assignSource(row(alignL, 0), contig1);
@@ -164,22 +164,22 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_unbanded)
     contigS << row(alignL, 0) << row(alignR, 0);
     SEQAN_ASSERT_EQ(contig1, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), row(alignL, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), row(alignR, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATTTTAGATAAGATAG"), row(alignL, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAG"), row(alignL, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), row(alignR, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 1));
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_unbanded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
-    seqan::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
+    seqan2::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Gaps<seqan::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Gaps<seqan2::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     assignSource(gapsHL, contig);
     assignSource(gapsVL, seqL);
@@ -193,22 +193,22 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_unbanded)
     contigS << gapsHL << gapsHR;
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_unbanded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
-    seqan::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
+    seqan2::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Gaps<seqan::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Gaps<seqan2::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     assignSource(gapsHL, contig);
     assignSource(gapsVL, seqL);
@@ -222,21 +222,21 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_unbande
     contigS << gapsHL << gapsHR;
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_unbanded)
 {
     // Define the input sequences.  contig1 has an insertion with respect to contig1.
-    seqan::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
-    seqan::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
+    seqan2::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
 
     // Variables for the alignments.
-    seqan::Gaps<seqan::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Gaps<seqan2::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     assignSource(gapsHL, contig1);
     assignSource(gapsVL, contig2);
@@ -262,22 +262,22 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_unbanded)
     contigS << gapsHL << gapsHR;
     SEQAN_ASSERT_EQ(contig1, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), gapsHL);
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), gapsVL);
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), gapsHR);
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), gapsVR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATTTTAGATAAGATAG"), gapsHL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAG"), gapsVL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), gapsHR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), gapsVR);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_banded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
-    seqan::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
+    seqan2::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Align<seqan::DnaString> alignL, alignR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Align<seqan2::DnaString> alignL, alignR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     resize(rows(alignL), 2);
     assignSource(row(alignL, 0), contig);
@@ -304,22 +304,22 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_align_banded)
     contigS << row(alignL, 0) << row(alignR, 0);
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_banded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
-    seqan::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
+    seqan2::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Align<seqan::DnaString> alignL, alignR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Align<seqan2::DnaString> alignL, alignR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     resize(rows(alignL), 2);
     assignSource(row(alignL, 0), contig);
@@ -344,21 +344,21 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_align_banded
     contigS << row(alignL, 0) << row(alignR, 0);
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), row(alignL, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), row(alignL, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), row(alignR, 1));
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_banded)
 {
     // Define the input sequences.  contig1 has an insertion with respect to contig1.
-    seqan::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
-    seqan::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
+    seqan2::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
 
     // Variables for the alignments.
-    seqan::Align<seqan::DnaString> alignL, alignR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Align<seqan2::DnaString> alignL, alignR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     resize(rows(alignL), 2);
     assignSource(row(alignL, 0), contig1);
@@ -383,22 +383,22 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_align_banded)
     contigS << row(alignL, 0) << row(alignR, 0);
     SEQAN_ASSERT_EQ(contig1, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), row(alignL, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), row(alignL, 1));
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), row(alignR, 0));
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATTTTAGATAAGATAG"), row(alignL, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAG"), row(alignL, 1));
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), row(alignR, 0));
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), row(alignR, 1));
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_banded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
-    seqan::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT";
+    seqan2::DnaString seqR =                         "GGCTAGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Gaps<seqan::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Gaps<seqan2::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     assignSource(gapsHL, contig);
     assignSource(gapsVL, seqL);
@@ -412,22 +412,22 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_reads_in_reference_gaps_banded)
     contigS << gapsHL << gapsHR;
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_banded)
 {
     // Define the input sequences.
-    seqan::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
-    seqan::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
-    seqan::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
+    seqan2::DnaString contig = "AGCATGTTAGATAAGATAGCTGTGCT"                                   "AGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString seqL =   "AGCCTGTTAGATAAGATAGCTGTGGT""TTCTCCTCCTGCAAATAAAACCTCACCCATGAATGCTCACGCAAG";
+    seqan2::DnaString seqR =   "TTTCCTCGCTTGGTGGTTTGAGTGGACCTCCCAGGCCAGTGCCGGGCCCCTCATAGGGGCT""AGTAGGCAGTCAGCGACAT";
 
     // Variables for the alignments.
-    seqan::Gaps<seqan::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Gaps<seqan2::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     assignSource(gapsHL, contig);
     assignSource(gapsVL, seqL);
@@ -441,21 +441,21 @@ SEQAN_DEFINE_TEST(test_align_split_overlapping_contigs_in_reference_gaps_banded)
     contigS << gapsHL << gapsHR;
     SEQAN_ASSERT_EQ(contig, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
-    SEQAN_ASSERT_EQ(seqan::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAGCTGT"), gapsHL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCCTGTTAGATAAGATAGCTGT"), gapsVL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGCCAT"), gapsHR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("GCTAGTAGGCAGTCAGCGACAT"), gapsVR);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_banded)
 {
     // Define the input sequences.  contig1 has an insertion with respect to contig1.
-    seqan::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
-    seqan::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
+    seqan2::DnaString contig1 = "AGCATTTTAGATAAGATAGCTGTGCTAGTAGGCAGTCAGCGCCTT";
+    seqan2::DnaString contig2 = "AGCATGTTAGATAAGATAGCCCCCCCCCCCCTGTGCTAGTAGGCAGTCAGCGCCAT";
 
     // Variables for the alignments.
-    seqan::Gaps<seqan::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
-    seqan::Score<int, seqan::Simple> score(0, -1, -1, -1);
+    seqan2::Gaps<seqan2::DnaString> gapsHL, gapsVL, gapsHR, gapsVR;
+    seqan2::Score<int, seqan2::Simple> score(0, -1, -1, -1);
 
     assignSource(gapsHL, contig1);
     assignSource(gapsVL, contig2);
@@ -481,15 +481,15 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_banded)
     contigS << gapsHL << gapsHR;
     SEQAN_ASSERT_EQ(contig1, contigS.str());
 
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATTTTAGATAAGATAG"), gapsHL);
-    SEQAN_ASSERT_EQ(seqan::CharString("AGCATGTTAGATAAGATAG"), gapsVL);
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), gapsHR);
-    SEQAN_ASSERT_EQ(seqan::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), gapsVR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATTTTAGATAAGATAG"), gapsHL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("AGCATGTTAGATAAGATAG"), gapsVL);
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCTT"), gapsHR);
+    SEQAN_ASSERT_EQ(seqan2::CharString("CTGTGCTAGTAGGCAGTCAGCGCCAT"), gapsVR);
 }
 
 SEQAN_DEFINE_TEST(test_align_split_issue_1679)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Scenario 1:
     DnaString refLeft  = "TTTTTTTTTTTTGAGCCGATTTTTTTT";

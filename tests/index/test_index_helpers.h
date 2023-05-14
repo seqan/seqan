@@ -43,7 +43,7 @@
 #include <seqan/stream.h>
 #include <seqan/index.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 unsigned const SEED = 41;
 
@@ -240,7 +240,7 @@ void createText(CharString & text, char)
 // Functions
 // ==========================================================================
 
-namespace seqan
+namespace seqan2
 {
 
 // Return shared random number generator for this test's helpers.  Note that the helper cannot be called in parallel.
@@ -613,7 +613,7 @@ bool isEqual(TA &_a, TB &_b) {
     return true;
 }
 
-} //namespace seqan
+} //namespace seqan2
 
 
 // ==========================================================================

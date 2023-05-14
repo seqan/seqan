@@ -46,7 +46,7 @@ class SimdAlignTestCommon : public SimdAlignTest<T>
 {};
 
 typedef
-        seqan::TagList<std::tuple<seqan::AlignConfig<>, impl::test_align_mock::VariableLengthSimd, seqan::BandOff>
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<>, impl::test_align_mock::VariableLengthSimd, seqan2::BandOff>
         > SimdAlignLocalVariableLengthTestTypes;
 
 SEQAN_TYPED_TEST_CASE(SimdAlignTestCommon, SimdAlignLocalVariableLengthTestTypes);
@@ -54,6 +54,6 @@ SEQAN_TYPED_TEST_CASE(SimdAlignTestCommon, SimdAlignLocalVariableLengthTestTypes
 #include "test_align_simd_local.h"
 
 int main(int argc, char const ** argv) {
-    seqan::TestSystem::init(argc, argv);
-    return seqan::TestSystem::runAll();
+    seqan2::TestSystem::init(argc, argv);
+    return seqan2::TestSystem::runAll();
 }

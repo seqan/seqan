@@ -43,7 +43,7 @@
 
 void testProfileCharConcepts()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<ProfileChar<Dna> >));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<ProfileChar<Dna5> >));
@@ -55,7 +55,7 @@ void testProfileCharConcepts()
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_profile_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef ProfileChar<bool> TProfileChar;
 
@@ -77,7 +77,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_profile_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_profile_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef ProfileChar<Dna> TProfileChar;
 
@@ -118,7 +118,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_profile_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_profile_relations)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     ProfileChar<Dna> c, d;
 
@@ -136,7 +136,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_profile_relations)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_profile_empty)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     ProfileChar<Dna> c;
 

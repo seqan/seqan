@@ -3,7 +3,7 @@
 #include <seqan/vcf_io.h>
 #include <seqan/tabix_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, char const * argv[])
 {
@@ -22,9 +22,9 @@ int main(int argc, char const * argv[])
     }
 
     // Read header (to get the contig names)
-    seqan::VcfHeader header;
+    seqan2::VcfHeader header;
     readHeader(header, vcfFile);
-    
+
     // Open Tabix index
     std::string tbiFileName = (std::string)argv[1] + ".tbi";
     TabixIndex tabixIndex;
@@ -49,7 +49,7 @@ int main(int argc, char const * argv[])
         return 1;
     }
 
-    seqan::VcfRecord record;
+    seqan2::VcfRecord record;
     while (hasEntries && !atEnd(vcfFile))
     {
         readRecord(record, vcfFile);
@@ -57,7 +57,7 @@ int main(int argc, char const * argv[])
         // If we are on the next reference or at the end already then we stop.
         if (record.rID == -1 || contigNames(context(vcfFile))[record.rID] != argv[2] || record.beginPos >= endPos)
             break;
-        
+
         std::cout << record.beginPos << '\t' << record.ref << '\t' << record.alt << std::endl;
     }
 

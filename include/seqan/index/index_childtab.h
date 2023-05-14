@@ -35,10 +35,10 @@
 #ifndef SEQAN_HEADER_INDEX_CHILDTAB_H
 #define SEQAN_HEADER_INDEX_CHILDTAB_H
 
-namespace seqan
+namespace seqan2
 {
 
-//namespace SEQAN_NAMESPACE_PIPELINING
+//namespace seqan2_NAMESPACE_PIPELINING
 //{
 
     struct Childtab {};

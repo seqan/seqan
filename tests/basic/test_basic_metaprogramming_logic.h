@@ -67,7 +67,7 @@ const bool TestTypeEq<T, T>::VALUE = true;
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_bool_type)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the values of the VALUE members.
     SEQAN_ASSERT_EQ(+False::VALUE, 0);
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_bool_type)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_eval)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the VALUE members.
     SEQAN_ASSERT_EQ(+Eval<false>::VALUE, +false);
@@ -93,7 +93,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_eval)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_or)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the VALUE members.
     SEQAN_ASSERT_EQ((+Or<False, False>::VALUE), +false);
@@ -110,7 +110,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_or)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_or_c)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the VALUE members.
     SEQAN_ASSERT_EQ((+OrC<false, false>::VALUE), +false);
@@ -127,7 +127,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_or_c)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_and)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the VALUE members.
     SEQAN_ASSERT_EQ((+And<False, False>::VALUE), +false);
@@ -144,7 +144,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_and)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_and_c)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the VALUE members.
     SEQAN_ASSERT_EQ((+AndC<false, false>::VALUE), +false);
@@ -161,7 +161,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_and_c)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_if)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the Type members.
     SEQAN_ASSERT_EQ((TestTypeEq<If<True,  True, False>::Type, True>::VALUE),  true);
@@ -170,7 +170,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_if)
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_if_c)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test for the Type members.
     SEQAN_ASSERT_EQ((TestTypeEq<If<True,  True, False>::Type, True>::VALUE),  true);

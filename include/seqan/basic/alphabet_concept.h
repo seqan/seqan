@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_CONCEPT_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_CONCEPT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Concepts for generic alphabets
@@ -581,6 +581,6 @@ SEQAN_CONCEPT_REFINE(AlphabetWithQualitiesConcept, (TValue), (AlphabetConcept))
 };
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_CONCEPT_H_

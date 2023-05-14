@@ -3,7 +3,7 @@
 # ===========================================================================
 # File: /apps/seqan_tcoffee/CMakeLists.txt
 #
-# CMakeLists.txt file for SeqAn::T-Coffee.
+# CMakeLists.txt file for seqan2::T-Coffee.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.0.0)
@@ -88,7 +88,7 @@ seqan_add_ctd_test (seqan_tcoffee)
 
 if (SEQAN_BUILD_SYSTEM STREQUAL "APP:seqan_tcoffee")
   set (CPACK_PACKAGE_NAME "seqan_tcoffee")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "SeqAn::T-Coffee - Multiple Sequence Alignment")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "seqan2::T-Coffee - Multiple Sequence Alignment")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "David Weese <david.weese@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
 

@@ -41,7 +41,7 @@
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan {
+namespace seqan2 {
 
 //____________________________________________________________________________
 // TagAllocateAligned_
@@ -154,7 +154,7 @@ inline bool fileExists(const char *fileName);           // "include/seqan/file/f
 
 inline bool fileUnlink(const char *fileName);           // "include/seqan/file/file_sync.h"(194)
 
-} //namespace seqan
+} //namespace seqan2
 
 //////////////////////////////////////////////////////////////////////////////
 

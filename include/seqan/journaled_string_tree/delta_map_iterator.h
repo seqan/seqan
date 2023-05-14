@@ -37,7 +37,7 @@
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_ITERATOR_H_
 #define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_ITERATOR_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -595,6 +595,6 @@ position(Iter<TDeltaMap, DeltaMapIteratorSpec> const & iter)
 //    swap(lhs._mapIter, rhs._mapIter);
 //}
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_ITERATOR_H_

@@ -38,7 +38,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan
+namespace seqan2
 {
 
 SEQAN_DEFINE_TEST(testEmptyIndex)
@@ -702,7 +702,7 @@ void testFind()
         Finder<Index< String<char> >, TAlgorithmSpec> finder(index);
 
         String<char> needle1("ist");
-        seqan::Pattern<String<char> > pattern(needle1);
+        seqan2::Pattern<String<char> > pattern(needle1);
 
         while (find(finder, pattern))
             appendValue(pos,position(finder));
@@ -792,6 +792,6 @@ SEQAN_DEFINE_TEST(testRadixTreeIterator)
 //////////////////////////////////////////////////////////////////////////////
 
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

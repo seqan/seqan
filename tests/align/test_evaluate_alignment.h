@@ -37,28 +37,28 @@
 
 SEQAN_DEFINE_TEST(test_align_compute_alignment_stats)
 {
-    seqan::Peptide subject =
+    seqan2::Peptide subject =
             "MGLSDGEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHLKSEDEMKASE"
             "DLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKIPVKYLEFISECIIQVLQSKH"
             "PGDFGADAQGAMNKALELFRKDMASNYK";
-    seqan::Peptide query =
+    seqan2::Peptide query =
             "MSLTKTERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHFDLHPGSA"
             "QLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRVDPVNFKLLSHCLLVTLAARF"
             "PADFTAEAHAAWDKFLSVTEKYR";
 
-    seqan::Align<seqan::Peptide> align;
+    seqan2::Align<seqan2::Peptide> align;
     resize(rows(align), 2);
     setSource(row(align, 0), subject);
     setSource(row(align, 1), query);
 
     // Compute the alignment.
-    seqan::Blosum62 scoringScheme(-1, -12);
+    seqan2::Blosum62 scoringScheme(-1, -12);
     int score = globalAlignment(align, scoringScheme);
 //     std::cerr << align;
     SEQAN_ASSERT_EQ(score, 159);
 
     // Compute alignment statistics.
-    seqan::AlignmentStats stats;
+    seqan2::AlignmentStats stats;
     score = computeAlignmentStats(stats, align, scoringScheme);
     SEQAN_ASSERT_EQ(score, 159);
 

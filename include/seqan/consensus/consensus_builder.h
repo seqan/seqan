@@ -43,7 +43,7 @@
 #include "consensus_alignment_options.h"
 #include "overlapper.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -445,7 +445,7 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
     if (options.verbosity >= 2)
     {
         std::cerr << "before realignment\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
         {
@@ -467,7 +467,7 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
     if (options.verbosity >= 2)
     {
         std::cerr << "after realignment\n";
-        seqan::AlignedReadLayout layout;
+        seqan2::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
         {
@@ -489,6 +489,6 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_

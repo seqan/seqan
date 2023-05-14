@@ -39,7 +39,7 @@
 
 SEQAN_DEFINE_TEST(test_align_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<CharString, Dependent<> > CharStringSet;
     typedef    Id<CharStringSet>::Type TId;
@@ -100,7 +100,7 @@ SEQAN_DEFINE_TEST(test_align_fragment)
 
 SEQAN_DEFINE_TEST(test_align_reversable_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<CharString, Dependent<> > CharStringSet;
     typedef    Id<CharStringSet>::Type TId;

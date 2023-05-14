@@ -38,5 +38,5 @@
 
 void pairAlignLcs(Options const & options)
 {
-    pairAlignConfig(options, seqan::Lcs(), seqan::Nothing());
+    pairAlignConfig(options, seqan2::Lcs(), seqan2::Nothing());
 }

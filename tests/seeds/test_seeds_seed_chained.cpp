@@ -44,14 +44,14 @@ struct TestSmallSeedConfig
     typedef unsigned TPosition;
     typedef unsigned TSize;
     typedef int TDiagonal;
-    typedef seqan::True THasScore;
+    typedef seqan2::True THasScore;
     typedef int TScoreValue;
 };
 
 // Test assignment of chained seeds.
 SEQAN_DEFINE_TEST(test_seeds_seed_chained_assign)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
 
@@ -65,7 +65,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_assign)
 // Test the metafunctions of the ChainedSeed specialization.
 SEQAN_DEFINE_TEST(test_seeds_seed_chained_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test with the default configuration.
     {
@@ -110,8 +110,8 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_metafunctions)
 // Test the front() and back() functions for Chained Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_chained_front_back)
 {
-    using namespace seqan;
-    
+    using namespace seqan2;
+
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<TSeed>::Type TSeedDiagonal;
 
@@ -130,7 +130,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_front_back)
 // Test the appendDiagonal() function for Chained Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_chained_append_diagonal)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<TSeed>::Type TSeedDiagonal;
@@ -158,7 +158,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_append_diagonal)
 // Test the truncateDiagonal() function for Chained Seed.
 SEQAN_DEFINE_TEST(test_seeds_seed_chained_truncate_diagonals)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<TSeed>::Type TSeedDiagonal;
@@ -180,7 +180,7 @@ SEQAN_DEFINE_TEST(test_seeds_seed_chained_truncate_diagonals)
 // Test the begin/end functions for chained seeds.
 SEQAN_DEFINE_TEST(test_seeds_seed_chained_iterators)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<ChainedSeed> TSeed;
     typedef Value<TSeed>::Type TSeedDiagonal;

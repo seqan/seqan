@@ -62,7 +62,7 @@
 #include "finder.h"
 #include "writer.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags, Classes, Enums

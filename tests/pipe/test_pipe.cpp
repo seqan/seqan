@@ -45,7 +45,7 @@
 #include "test_pipe.h"
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 // Maximum size of data to use for the external tests.
@@ -65,7 +65,7 @@ void testExternalString(unsigned maxSize = 32*1024*1024)
     allocPage(buf, maxSize, buf);
 
     TExtString extString;
-    for(unsigned i = 1; i <= maxSize; i = i << 1) 
+    for(unsigned i = 1; i <= maxSize; i = i << 1)
 	{
         // std::cout << i << " "; std::cout.flush();
         resize(buf, i);
@@ -108,7 +108,7 @@ void testPool(unsigned maxSize = 16*1024*1024) {
         /*
         if (pool.memBuffer.begin)
             std::cout << "* ";
-        else 
+        else
             std::cout << " ";
         std::cout.flush();
         */
@@ -149,7 +149,7 @@ void testMapper(unsigned maxSize = 16*1024*1024) {
         /*(
         if (mapper.memBuffer.begin)
             std::cout << "* ";
-        else 
+        else
             std::cout << " ";
         std::cout.flush();
         */
@@ -160,7 +160,7 @@ void testMapper(unsigned maxSize = 16*1024*1024) {
                 freePage(buf, buf);
                 SEQAN_ASSERT_FAIL("testMapper failed at position %u", j);
                 // not reached
-            }	
+            }
             ++mapper;
         }
         endRead(mapper);
@@ -184,7 +184,7 @@ void testPartiallyFilledMapper(unsigned maxSize = 16*1024*1024) {
         resize(buf, i);
         permute(buf);
 
-        // partially fill the mapper 
+        // partially fill the mapper
         mapper.undefinedValue = i;	// select i as an undefined value (all defined values are less than i)
         resize(mapper, i);
         resize(buf, i - i/3);
@@ -194,7 +194,7 @@ void testPartiallyFilledMapper(unsigned maxSize = 16*1024*1024) {
         /*
         if (mapper.memBuffer.begin)
             std::cout << "* ";
-        else 
+        else
             std::cout << " ";
         std::cout.flush();
         */
@@ -202,7 +202,7 @@ void testPartiallyFilledMapper(unsigned maxSize = 16*1024*1024) {
         unsigned undefCounter = 0, missCounter = 0;
         beginRead(mapper);
         for(unsigned j = 0; j < i; ++j) {
-            if (*mapper == i) 
+            if (*mapper == i)
                 ++undefCounter;
             else
                 if (*mapper != j) {
@@ -252,7 +252,7 @@ void testSorter(unsigned maxSize = 16*1024*1024) {
         /*
         if (sorter.memBuffer.begin)
             std::cout << "* ";
-        else 
+        else
             std::cout << " ";
         std::cout.flush();
         */

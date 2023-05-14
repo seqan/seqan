@@ -41,23 +41,23 @@ namespace test_align_mock
 {
 
 struct TestAlignSimdVariableLength_;
-using VariableLengthSimd = seqan::Tag<TestAlignSimdVariableLength_>;
+using VariableLengthSimd = seqan2::Tag<TestAlignSimdVariableLength_>;
 
 struct TestAlignSimdEqualLength_;
-using EqualLengthSimd = seqan::Tag<TestAlignSimdEqualLength_>;
+using EqualLengthSimd = seqan2::Tag<TestAlignSimdEqualLength_>;
 
 template <typename TAlphabet, typename TSimdLength>
 struct TestSequences_;
 
 template <>
-struct TestSequences_<seqan::Dna, EqualLengthSimd>
+struct TestSequences_<seqan2::Dna, EqualLengthSimd>
 {
-    using TSeq = seqan::String<seqan::Dna>;
+    using TSeq = seqan2::String<seqan2::Dna>;
 
     static auto
     getSequences()
     {
-        seqan::StringSet<TSeq> set;
+        seqan2::StringSet<TSeq> set;
         appendValue(set, "AGCGACTGCAAACATCAGATCAGAG");
         appendValue(set, "TAATACTAGCATGCGATAAGTCCCT");
         appendValue(set, "GGCACGTGGATGGTTTAGAGGAATC");
@@ -89,22 +89,22 @@ struct TestSequences_<seqan::Dna, EqualLengthSimd>
         appendValue(set, "ACGCGCAGGCATAGTTTTAGGAGAA");
         appendValue(set, "TTATTCGGGGGCAGTGACAACCAAC");
 
-        seqan::StringSet<TSeq>  set2(set);
-        std::sort(seqan::begin(set2, seqan::Standard()), seqan::end(set2, seqan::Standard()),
-                  [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        seqan2::StringSet<TSeq>  set2(set);
+        std::sort(seqan2::begin(set2, seqan2::Standard()), seqan2::end(set2, seqan2::Standard()),
+                  [](auto& strA, auto& strB){ return seqan2::isLess(strA, strB); });
         return std::make_tuple(set, set2);
     }
 };
 
 template <>
-struct TestSequences_<seqan::Dna, VariableLengthSimd>
+struct TestSequences_<seqan2::Dna, VariableLengthSimd>
 {
-    using TSeq = seqan::String<seqan::Dna>;
+    using TSeq = seqan2::String<seqan2::Dna>;
 
     static auto
     getSequences()
     {
-        seqan::StringSet<TSeq> set;
+        seqan2::StringSet<TSeq> set;
         appendValue(set, "AGCGACTGCAAACATCAGATCAGAGGTAGAG");
         appendValue(set, "TAATACTAGCATGCGATAAGTCCCT");
         appendValue(set, "GGCACGTGTGGTTTAGAGGAATC");
@@ -137,21 +137,21 @@ struct TestSequences_<seqan::Dna, VariableLengthSimd>
         appendValue(set, "TTATTCGGGGGCAGTGACAACACTTAGCGACTAC");
 
         auto set2(set);
-        std::sort(seqan::begin(set2, seqan::Standard()), seqan::end(set2, seqan::Standard()),
-                  [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        std::sort(seqan2::begin(set2, seqan2::Standard()), seqan2::end(set2, seqan2::Standard()),
+                  [](auto& strA, auto& strB){ return seqan2::isLess(strA, strB); });
         return std::make_tuple(set, set2);
     }
 };
 
 template <>
-struct TestSequences_<seqan::AminoAcid, EqualLengthSimd>
+struct TestSequences_<seqan2::AminoAcid, EqualLengthSimd>
 {
-    using TSeq = seqan::String<seqan::AminoAcid>;
+    using TSeq = seqan2::String<seqan2::AminoAcid>;
 
     static auto
     getSequences()
     {
-        seqan::StringSet<TSeq> set;
+        seqan2::StringSet<TSeq> set;
         appendValue(set, "FNQSAEYPDISLHCGVLKWRATLGT");
         appendValue(set, "EIKSDVLLHRPGNIGMQVAESYFAT");
         appendValue(set, "PIIMWSMKNRTIERLPTGVLMISHT");
@@ -184,20 +184,20 @@ struct TestSequences_<seqan::AminoAcid, EqualLengthSimd>
         appendValue(set, "PMMDLDHCMLIECLRPHNRDNCARH");
 
         decltype(set) set2(set);
-        std::sort(seqan::begin(set2, seqan::Standard()), seqan::end(set2, seqan::Standard()),
-                  [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        std::sort(seqan2::begin(set2, seqan2::Standard()), seqan2::end(set2, seqan2::Standard()),
+                  [](auto& strA, auto& strB){ return seqan2::isLess(strA, strB); });
         return std::make_tuple(set, set2);
     }
 };
 
 template <>
-struct TestSequences_<seqan::AminoAcid, VariableLengthSimd>
+struct TestSequences_<seqan2::AminoAcid, VariableLengthSimd>
 {
-    using TSeq = seqan::String<seqan::AminoAcid>;
+    using TSeq = seqan2::String<seqan2::AminoAcid>;
 
     static auto
     getSequences()    {
-        seqan::StringSet<TSeq> set;
+        seqan2::StringSet<TSeq> set;
         appendValue(set, "FNQSAEYPDISHCGVMQLKWRATLGT");
         appendValue(set, "EIKSDVLLHRWSMKNPGNILMIDVGMQVAESYFAT");
         appendValue(set, "PIIMWSMKNRTIEPTGLMISHT");
@@ -230,8 +230,8 @@ struct TestSequences_<seqan::AminoAcid, VariableLengthSimd>
         appendValue(set, "PMMDLDWSMKNMLIECLRPHNRMQDNLMIDVCARH");
 
         auto set2(set);
-        std::sort(seqan::begin(set2, seqan::Standard()), seqan::end(set2, seqan::Standard()),
-                  [](auto& strA, auto& strB){ return seqan::isLess(strA, strB); });
+        std::sort(seqan2::begin(set2, seqan2::Standard()), seqan2::end(set2, seqan2::Standard()),
+                  [](auto& strA, auto& strB){ return seqan2::isLess(strA, strB); });
         return std::make_tuple(set, set2);
     }
 };

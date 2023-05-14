@@ -44,7 +44,7 @@
 
 #include "verifier.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -199,7 +199,7 @@ struct DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact>
 // Metafunction PatternIterator_
 // ----------------------------------------------------------------------------
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TDistance, typename TSpec>
 struct PatternIterator_<TDbDnaSaSmall, TDbDnaSaSmall, Backtracking<TDistance, TSpec> >
@@ -313,7 +313,7 @@ _stayInCurrentStage(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatte
     return true;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 // ----------------------------------------------------------------------------
 // Function setMinSeedLength()                                       [DbFinder]
@@ -352,7 +352,7 @@ template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDele
 void index(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
 {
     // Build database index.
-    build(dbFinder.dbIndex, dbFinder.db, seqan::Exact());
+    build(dbFinder.dbIndex, dbFinder.db, seqan2::Exact());
 }
 
 template <typename TText, typename TIndex, typename TDbQuerySpec, typename TDelegate>
@@ -605,7 +605,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         TTextIterator textIt(dbFinder.dbIndex.index);
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = _min(dbFinder.queryIndex.seedLength, dbFinder.parallelDepth);
-        
+
         _setScoreThreshold(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
         _find(finderExt, dbFinder, StageInitial_());
@@ -721,7 +721,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
 }
 
 // NOTE(esiragusa): This is computing exact join using a dfs traversal.
-//namespace seqan
+//namespace seqan2
 //{
 //    struct SAInfix;
 //

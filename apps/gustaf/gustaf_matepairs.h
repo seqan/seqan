@@ -40,7 +40,7 @@
 #include <seqan/seq_io.h>
 #include "stellar_routines.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // Imports mate pairs from two files, joins them, stores the joining position in
 // String readJoinPositions, and stores the sequences in the StringSet seqs and
@@ -58,7 +58,7 @@ _importSequences(CharString const & fileNameL,
 {
     typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
 
-    seqan::SeqFileIn l, r;
+    seqan2::SeqFileIn l, r;
     if (!open(l, toCString(fileNameL)) || !open(r, toCString(fileNameR)))
     {
         std::cerr << "Failed to open file." << std::endl;
@@ -105,7 +105,7 @@ _importSequences(CharString const & fileNameL,
         clear(seq);
         clear(qual);
     }
-    
+
     // Check for dupliacte id entries.
     StringSet<TId> uniqueIds = ids;
     std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))
@@ -139,7 +139,7 @@ _importSequences(CharString const & fileNameL,
 {
     typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
 
-    seqan::SeqFileIn leftMates, rightMates;
+    seqan2::SeqFileIn leftMates, rightMates;
     if (!open(leftMates, toCString(fileNameL)))
     {
         std::cerr << "Failed to open " << fileNameL << " file." << std::endl;
@@ -165,7 +165,7 @@ _importSequences(CharString const & fileNameL,
             readRecord(idL, seqL, leftMates);
             readRecord(idR, seqR, rightMates);
         }
-        catch (seqan::IOError const & ioErr)
+        catch (seqan2::IOError const & ioErr)
         {
             std::cerr << "Problem reading mates (" << ioErr.what() << ")\n";
             return false;

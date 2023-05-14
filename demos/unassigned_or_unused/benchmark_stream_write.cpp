@@ -57,7 +57,7 @@
 
 const int MB = 1024 * 1024;
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TMetas, typename TSeqs>
 void constructFastaStrings(TMetas & metas, TSeqs & seqs)

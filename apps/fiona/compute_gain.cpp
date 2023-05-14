@@ -26,16 +26,16 @@ struct Options
     unsigned chunkSize;
 
     // Path to genome.
-    seqan::CharString pathGenome;
+    seqan2::CharString pathGenome;
     // Path to pre-correction SAM file.
-    seqan::CharString pathSamPreCorrection;
+    seqan2::CharString pathSamPreCorrection;
     // Path to post-correction SAM file.
-    seqan::CharString pathSamPostCorrection;
+    seqan2::CharString pathSamPostCorrection;
     // Path to post-correction FASTA/FASTQ file.
-    seqan::CharString pathFastaFastqPostCorrection;
+    seqan2::CharString pathFastaFastqPostCorrection;
 
     // Path to list with fixed and introduced errors.
-    seqan::CharString pathCorrectionLog;
+    seqan2::CharString pathCorrectionLog;
 
     // Whether to log all alignments.
     bool logAll;
@@ -126,10 +126,10 @@ struct Stats
     std::map<int, unsigned> preErrorHisto;
 
     // Histogram of errors at a certain position.
-    typedef seqan::Tuple<unsigned, 4> TPositionalCounts;
+    typedef seqan2::Tuple<unsigned, 4> TPositionalCounts;
     TPositionalCounts zeroCounts;
-    seqan::String<TPositionalCounts> preErrorsAtPos;  // 0..mismatch, 1..insert, 2..deletion in the read compared to reference
-    seqan::String<TPositionalCounts> postErrorsAtPos; // 3..total number of reads having a base at that position (not cropped)
+    seqan2::String<TPositionalCounts> preErrorsAtPos;  // 0..mismatch, 1..insert, 2..deletion in the read compared to reference
+    seqan2::String<TPositionalCounts> postErrorsAtPos; // 3..total number of reads having a base at that position (not cropped)
 
     // We can later compute the gain from actualErrorSum / diffErrorSum.
     //
@@ -143,17 +143,17 @@ struct Stats
     uint64_t numErrorsRemoved;
 
     // Reusable data structures
-    seqan::BamAlignmentRecord _recordPre;
-    seqan::BamAlignmentRecord _recordPost;
-    seqan::String<seqan::BamAlignmentRecord> _chunkPre;
-    seqan::String<seqan::Dna5String> _chunkPost;
+    seqan2::BamAlignmentRecord _recordPre;
+    seqan2::BamAlignmentRecord _recordPost;
+    seqan2::String<seqan2::BamAlignmentRecord> _chunkPre;
+    seqan2::String<seqan2::Dna5String> _chunkPost;
 
-    seqan::Dna5String _genomeInfixPre;
-    seqan::Dna5String _genomeInfixPost;
-    seqan::Dna5String _preRead;
-    seqan::Dna5String _postRead;
+    seqan2::Dna5String _genomeInfixPre;
+    seqan2::Dna5String _genomeInfixPost;
+    seqan2::Dna5String _preRead;
+    seqan2::Dna5String _postRead;
 
-    typedef seqan::Align<seqan::Dna5String> TAlign;
+    typedef seqan2::Align<seqan2::Dna5String> TAlign;
     TAlign _preAlign;
     TAlign _postAlign;
 
@@ -169,8 +169,8 @@ struct Stats
     }
 };
 
-typedef seqan::StringSet<seqan::CharString> TNameStore;
-typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
+typedef seqan2::StringSet<seqan2::CharString> TNameStore;
+typedef seqan2::NameStoreCache<TNameStore>   TNameStoreCache;
 
 // Error in alignment.
 
@@ -203,10 +203,10 @@ std::ostream & operator<<(std::ostream & out, AlignmentError const & ae)
 }
 
 void computeErrors(std::vector<AlignmentError> & result,
-                   seqan::Align<seqan::Dna5String> const & align,
+                   seqan2::Align<seqan2::Dna5String> const & align,
                    int genomeOffset)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     result.clear();
 
@@ -243,10 +243,10 @@ void computeErrors(std::vector<AlignmentError> & result,
 
 int countTrueNegatives(std::vector<AlignmentError> const & errorsPre,
                        std::vector<AlignmentError> const & errorsPost,
-                       seqan::Align<seqan::Dna5String> const & alignPre,
+                       seqan2::Align<seqan2::Dna5String> const & alignPre,
                        int genomeOffsetPre)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int leadingGaps = countGaps(begin(row(alignPre, 1), Standard()));
     int trailingGaps = 0;
@@ -273,7 +273,7 @@ int countTrueNegatives(std::vector<AlignmentError> const & errorsPre,
 
 // Allows the trimming of strings after the first whitespace.
 
-void trimSeqHeaderToId(seqan::CharString & header)
+void trimSeqHeaderToId(seqan2::CharString & header)
 {
     unsigned i = 0;
     for (; i < length(header); ++i)
@@ -293,13 +293,13 @@ char const * getYesNo(bool b)
 
 void updateStats(Stats & stats,
                  std::ofstream & correctionLog,
-                 seqan::BamAlignmentRecord const & preRecord,
-                 seqan::Dna5String & postRead,  // rc-ed to same as preRecord.
-                 seqan::String<unsigned> const & idMap,
-                 seqan::StringSet<seqan::Dna5String> const & seqs,
+                 seqan2::BamAlignmentRecord const & preRecord,
+                 seqan2::Dna5String & postRead,  // rc-ed to same as preRecord.
+                 seqan2::String<unsigned> const & idMap,
+                 seqan2::StringSet<seqan2::Dna5String> const & seqs,
                  Options const & options)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     stats.numUnmappedPre += hasFlagUnmapped(preRecord);
 
@@ -715,11 +715,11 @@ void updateStats(Stats & stats,
     stats.histo[diffPre - diffPost] += 1;
 }
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(Options & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("compute_gain");
+    seqan2::ArgumentParser parser("compute_gain");
 
     setShortDescription(parser, "Compute read correction metric GAIN.");
     setCategory(parser, "Error Correction");
@@ -736,20 +736,20 @@ parseCommandLine(Options & options, int argc, char const ** argv)
                    "statistics and computes the GAIN, based on the edit or Hamming distance for reach read before "
                    "and after correction.");
 
-    addOption(parser, seqan::ArgParseOption("q", "quiet", "Disable most output."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable more verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable even more verbose output."));
+    addOption(parser, seqan2::ArgParseOption("q", "quiet", "Disable most output."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable more verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable even more verbose output."));
 
 #ifdef _OPENMP
-    addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threads to use.", seqan::ArgParseOption::INTEGER, "THREADS"));
+    addOption(parser, seqan2::ArgParseOption("nt", "num-threads", "Number of threads to use.", seqan2::ArgParseOption::INTEGER, "THREADS"));
     setDefaultValue(parser, "num-threads", options.numThreads);
     setMinValue(parser, "num-threads", "1");
 #endif
-    addOption(parser, seqan::ArgParseOption("", "chunk-size", "Chunk size.", seqan::ArgParseOption::INTEGER, "THREADS"));
+    addOption(parser, seqan2::ArgParseOption("", "chunk-size", "Chunk size.", seqan2::ArgParseOption::INTEGER, "THREADS"));
     setDefaultValue(parser, "chunk-size", "10000");
     setMinValue(parser, "chunk-size", "100");
 
-    addOption(parser, seqan::ArgParseOption("", "max-chunks", "Maximal number of chunks to read (0=disabled).", seqan::ArgParseOption::INTEGER));
+    addOption(parser, seqan2::ArgParseOption("", "max-chunks", "Maximal number of chunks to read (0=disabled).", seqan2::ArgParseOption::INTEGER));
     setMinValue(parser, "max-chunks", "0");
     setDefaultValue(parser, "max-chunks", "0");
 
@@ -757,14 +757,14 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     //
     addSection(parser, "Comparison");
 
-    addOption(parser, seqan::ArgParseOption("", "padding", "Additional genome characters to use for alignment in percent of the origina read length.", seqan::ArgParseOption::INTEGER, "PADDING"));
+    addOption(parser, seqan2::ArgParseOption("", "padding", "Additional genome characters to use for alignment in percent of the origina read length.", seqan2::ArgParseOption::INTEGER, "PADDING"));
     setDefaultValue(parser, "padding", 5);
     setMinValue(parser, "padding", "0");
-    addOption(parser, seqan::ArgParseOption("", "bandwidth", "Bandwidth to use for alignment.", seqan::ArgParseOption::INTEGER, "BAND"));
+    addOption(parser, seqan2::ArgParseOption("", "bandwidth", "Bandwidth to use for alignment.", seqan2::ArgParseOption::INTEGER, "BAND"));
     setDefaultValue(parser, "bandwidth", 10);
     setMinValue(parser, "bandwidth", "1");
     hideOption(parser, "bandwidth");
-    addOption(parser, seqan::ArgParseOption("", "metric", "The metric type to use.", seqan::ArgParseOption::STRING,
+    addOption(parser, seqan2::ArgParseOption("", "metric", "The metric type to use.", seqan2::ArgParseOption::STRING,
                                             "METRIC"));
     setDefaultValue(parser, "metric", "edit");
     setValidValues(parser, "metric", "hamming edit");
@@ -773,21 +773,21 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output");
 
-    addOption(parser, seqan::ArgParseOption("", "min-unclipped-bases", "Reads with fewer unclipped bases are ignored. "
+    addOption(parser, seqan2::ArgParseOption("", "min-unclipped-bases", "Reads with fewer unclipped bases are ignored. "
                                             "Set to 0 to disable ignoring because of this.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "min-unclipped-bases", "0");
     setMinValue(parser, "min-unclipped-bases", "0");
 
-    addOption(parser, seqan::ArgParseOption("", "max-error-rate", "Reads with a higher error rate in the initial mapping "
+    addOption(parser, seqan2::ArgParseOption("", "max-error-rate", "Reads with a higher error rate in the initial mapping "
                                             "are ignored.  Given in percent.  Set to 0 to disable ignoring because of "
-                                            "this.", seqan::ArgParseOption::INTEGER, "NUM"));
+                                            "this.", seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "max-error-rate", "0");
     setMinValue(parser, "max-error-rate", "0");
 
-    addOption(parser, seqan::ArgParseOption("", "max-error-count", "Reads with a higher error count in the initial mapping "
+    addOption(parser, seqan2::ArgParseOption("", "max-error-count", "Reads with a higher error count in the initial mapping "
                                             "are ignored.  Given in percent.  Set to -1 to disable ignoring because of "
-                                            "this.", seqan::ArgParseOption::INTEGER, "NUM"));
+                                            "this.", seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "max-error-count", "-1");
     setMinValue(parser, "max-error-count", "-1");
 
@@ -795,35 +795,35 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output");
 
-    addOption(parser, seqan::ArgParseOption("g", "genome", "Genome file.", seqan::ArgParseOption::INPUT_FILE,
+    addOption(parser, seqan2::ArgParseOption("g", "genome", "Genome file.", seqan2::ArgParseOption::INPUT_FILE,
                                             "GENOME.fa"));
     setRequired(parser, "genome");
-    setValidValues(parser, "genome", seqan::SeqFileIn::getFileExtensions());
+    setValidValues(parser, "genome", seqan2::SeqFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan::ArgParseOption::INPUT_FILE,
+    addOption(parser, seqan2::ArgParseOption("", "pre", "Pre-correction SAM file.", seqan2::ArgParseOption::INPUT_FILE,
                                             "PRE.{sam,bam}"));
     setRequired(parser, "pre");
     setValidValues(parser, "pre", "sam bam");
 
-    addOption(parser, seqan::ArgParseOption("", "post-sam", "Post-correction SAM file.", seqan::ArgParseOption::INPUT_FILE,
+    addOption(parser, seqan2::ArgParseOption("", "post-sam", "Post-correction SAM file.", seqan2::ArgParseOption::INPUT_FILE,
                                             "POST.sam"));
     setValidValues(parser, "post-sam", "sam");
 
-    addOption(parser, seqan::ArgParseOption("", "post", "Post-correction FASTQ or FASTA file.", seqan::ArgParseOption::INPUT_FILE,
+    addOption(parser, seqan2::ArgParseOption("", "post", "Post-correction FASTQ or FASTA file.", seqan2::ArgParseOption::INPUT_FILE,
                                             "POST.fq"));
     setValidValues(parser, "post", "fastq fq fastq.gz fq.gz fasta fa fasta.gz fa.gz");
 
-    addOption(parser, seqan::ArgParseOption("", "correction-log", "Write log about introduced/removed errors to this file.",
-                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT.txt"));
-    addOption(parser, seqan::ArgParseOption("", "log-all", "Log all not only introduced/removed errors."));
+    addOption(parser, seqan2::ArgParseOption("", "correction-log", "Write log about introduced/removed errors to this file.",
+                                            seqan2::ArgParseOption::OUTPUT_FILE, "OUT.txt"));
+    addOption(parser, seqan2::ArgParseOption("", "log-all", "Log all not only introduced/removed errors."));
 
-    addOption(parser, seqan::ArgParseOption("", "no-check-sorting", "No checking for reads being sorted."));
+    addOption(parser, seqan2::ArgParseOption("", "no-check-sorting", "No checking for reads being sorted."));
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract option values.
@@ -836,7 +836,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     if (!isSet(parser, "post-sam") && !isSet(parser, "post"))
     {
         std::cerr << "ERROR: Neither --post-sam nor --post was set!\n";
-        return seqan::ArgumentParser::PARSE_ERROR;
+        return seqan2::ArgumentParser::PARSE_ERROR;
     }
 #ifdef _OPENMP
     getOptionValue(options.numThreads, parser, "num-threads");
@@ -852,18 +852,18 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     getOptionValue(options.maxErrorCount, parser, "max-error-count");
     getOptionValue(options.maxChunks, parser, "max-chunks");
     options.logAll = isSet(parser, "log-all");
-    seqan::CharString metricValue;
+    seqan2::CharString metricValue;
     getOptionValue(metricValue, parser, "metric");
     options.indels = (metricValue == "edit");
 
     options.checkSorting = !isSet(parser, "no-check-sorting");
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // -----------------------------------------------------------------------
     // Program Initialization
@@ -871,16 +871,16 @@ int main(int argc, char const ** argv)
 
     // Checking command line parameters.
     Options options;
-    seqan::ArgumentParser::ParseResult argParseRes = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult argParseRes = parseCommandLine(options, argc, argv);
 
     // If parsing was not successful then exit with code 1 if there were errors.
     // Otherwise, exit with code 0 (e.g. help was printed).
-    if (argParseRes != seqan::ArgumentParser::PARSE_OK)
-        return argParseRes == seqan::ArgumentParser::PARSE_ERROR;
+    if (argParseRes != seqan2::ArgumentParser::PARSE_OK)
+        return argParseRes == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Opening file and record reader.
 
-    seqan::BamFileIn inPre;
+    seqan2::BamFileIn inPre;
     if (!open(inPre, toCString(options.pathSamPreCorrection)))
     {
         std::cerr << "ERROR: Could not open pre-correction file.\n";
@@ -891,14 +891,14 @@ int main(int argc, char const ** argv)
     {
         readHeader(header, inPre);
     }
-    catch (seqan::ParseError const & e)
+    catch (seqan2::ParseError const & e)
     {
         std::cerr << "ERROR: Problem parsing pre SAM/BAM header.\n";
         return 1;
     }
 
-    seqan::BamFileIn inPostBam(inPre);
-    seqan::SeqFileIn inPostFastq;
+    seqan2::BamFileIn inPostBam(inPre);
+    seqan2::SeqFileIn inPostFastq;
     bool success;
     bool postBam = !empty(options.pathSamPostCorrection);  // Whether or not to read post SAM.
     if (postBam)
@@ -925,7 +925,7 @@ int main(int argc, char const ** argv)
             BamHeader header;
             readHeader(header, inPostBam);
         }
-        catch (seqan::ParseError const & e)
+        catch (seqan2::ParseError const & e)
         {
             std::cerr << "ERROR: Problem parsing post SAM/BAM header\n";
             return 1;
@@ -936,7 +936,7 @@ int main(int argc, char const ** argv)
 
     std::cerr << "Read Genome...\n";
 
-    seqan::SeqFileIn inGenome;
+    seqan2::SeqFileIn inGenome;
     if (!open(inGenome, toCString(options.pathGenome)))
     {
         std::cerr << "ERROR: Could not open genome file\n";
@@ -949,7 +949,7 @@ int main(int argc, char const ** argv)
     {
         readRecords(ids, seqs, inGenome);
     }
-    catch (seqan::ParseError const & e)
+    catch (seqan2::ParseError const & e)
     {
         std::cerr << "ERROR: Problem reading genome file.\n";
         return 1;
@@ -982,7 +982,7 @@ int main(int argc, char const ** argv)
 
     std::cerr << "Compute Statistics...\n";
 
-    seqan::String<Stats> stats;
+    seqan2::String<Stats> stats;
     resize(stats, options.numThreads);
 
     // Whether or not to break out of the loop below with or without an error, required in this way because we return
@@ -1003,8 +1003,8 @@ int main(int argc, char const ** argv)
         int const tid = omp_get_thread_num();
         BamAlignmentRecord &recordPre = stats[tid]._recordPre;
         BamAlignmentRecord &recordPost = stats[tid]._recordPost;
-        seqan::String<BamAlignmentRecord> &chunkPre = stats[tid]._chunkPre;
-        seqan::String<seqan::Dna5String> &chunkPost = stats[tid]._chunkPost;
+        seqan2::String<BamAlignmentRecord> &chunkPre = stats[tid]._chunkPre;
+        seqan2::String<seqan2::Dna5String> &chunkPost = stats[tid]._chunkPost;
 
         clear(chunkPre);
         clear(chunkPost);
@@ -1017,8 +1017,8 @@ int main(int argc, char const ** argv)
         {
             int const tid = omp_get_thread_num();
             unsigned myChunkSize = (unsigned)distChunkSizeNoise(rng);
-            seqan::CharString prevName;
-            seqan::CharString postId;
+            seqan2::CharString prevName;
+            seqan2::CharString postId;
             clear(recordPre.qName);
             clear(recordPost.qName);
 
@@ -1037,7 +1037,7 @@ int main(int argc, char const ** argv)
                 {
                     readRecord(recordPre, inPre);
                 }
-                catch (seqan::IOError const & e)
+                catch (seqan2::IOError const & e)
                 {
                     error = true;
                     continue;
@@ -1073,7 +1073,7 @@ int main(int argc, char const ** argv)
                             stop = atEnd(inPostFastq);
                         }
                     }
-                    catch (seqan::IOError const & e)
+                    catch (seqan2::IOError const & e)
                     {
                         error = true;
                         continue;

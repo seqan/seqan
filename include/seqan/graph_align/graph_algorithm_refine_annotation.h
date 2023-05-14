@@ -38,7 +38,7 @@
 
 //SEQAN_NO_DDDOC: do not generate documentation for this file
 
-namespace seqan {
+namespace seqan2 {
 
 
 template<typename TSequence, typename TValue, typename TSpec = Simple>
@@ -350,6 +350,6 @@ matchRefinement(TAlignmentString & alis,
     matchRefinement(alis,seq,fake_score,ali_graph,1,anno,ExactRefinement());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_

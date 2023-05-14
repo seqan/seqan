@@ -38,7 +38,7 @@
 #define SEQAN_HEADER_SEGMENT_SUFFIX_H
 
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ public:
 
 public:
 
-   
+
     Segment():
         data_host(),
         data_begin_position(0)
@@ -120,7 +120,7 @@ public:
     {
     }
 
-   
+
     ~ Segment()
     {
     }
@@ -649,6 +649,6 @@ suffix(Segment<T, SuffixSegment> const & t,
 
 //////////////////////////////////////////////////////////////////////////////
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

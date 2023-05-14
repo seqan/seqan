@@ -77,7 +77,7 @@ struct CDStruct
         copyConstructions += 1;
     }
 
-    CDStruct(CDStruct & other, seqan::Move const & /*tag*/)
+    CDStruct(CDStruct & other, seqan2::Move const & /*tag*/)
             : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
     {
         lastOther = &other;
@@ -119,7 +119,7 @@ struct CDStruct
     }
 };
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct HasMoveConstructor<CDStruct> : True {};
@@ -186,7 +186,7 @@ void resetCDStructStatics()
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_metafunction_is_simple)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     bool b = IsSimple<bool>::VALUE;
     SEQAN_ASSERT(b);
@@ -198,7 +198,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_metafunction_is_simple)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_construct_value_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Default construction.
     {
@@ -247,7 +247,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_construct_value_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_destruct_value_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Destruct default-constructed object.
     {
@@ -285,7 +285,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_destruct_value_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_construct_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // arrayConstruct() calling default constructors
     {
@@ -334,7 +334,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_construct_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_construct_copy_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Construct two objects.
     char space[2 * sizeof(CDStruct)];
@@ -366,7 +366,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_construct_copy_point
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_construct_move_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Construct two objects.
     char space[2 * sizeof(CDStruct)];
@@ -404,7 +404,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_construct_move_point
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_destruct_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // arrayDestruct() calling default constructors
     char space[2 * sizeof(CDStruct)];
@@ -426,7 +426,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_destruct_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_fill_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CDStruct prototype;
     char space[2 * sizeof(CDStruct)];
@@ -455,7 +455,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_fill_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_copy_forward_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): A more refined version of this test would copy forward inside the same array.
     char source[2 * sizeof(CDStruct)];
@@ -487,7 +487,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_copy_forward_pointer
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_copy_backward_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): A more refined version of this test would copy backward inside the same array.
     char source[2 * sizeof(CDStruct)];
@@ -519,7 +519,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_copy_backward_pointe
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_copy_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): A more refined version of this test would copy (1) forward and (2) backward inside the same array.
     char source[2 * sizeof(CDStruct)];
@@ -555,7 +555,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_copy_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_move_forward_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): A more refined version of this test would move forward inside the same array.
     char source[2 * sizeof(CDStruct)];
@@ -587,7 +587,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_move_forward_pointer
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_move_backward_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): A more refined version of this test would move backward inside the same array.
     char source[2 * sizeof(CDStruct)];
@@ -619,7 +619,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_move_backward_pointe
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_move_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): A more refined version of this test would move (1) forward and (2) backward inside the same array.
     char source[2 * sizeof(CDStruct)];
@@ -655,7 +655,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_move_pointer)
 
 SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_clear_space_pointer)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Clear only.
     {

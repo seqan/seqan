@@ -37,7 +37,7 @@
 #ifndef SEQAN_SSCORE_SIMPLE_H_
 #define SEQAN_SSCORE_SIMPLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class SimpleScore
@@ -286,6 +286,6 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 //        return scoreMismatch(me);
 //}
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SSCORE_SIMPLE_H_

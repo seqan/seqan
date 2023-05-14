@@ -46,7 +46,7 @@
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_nw)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_banded_nw)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -132,7 +132,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_banded_nw)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -175,7 +175,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_gotoh)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_banded_gotoh)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     AlignConfig<true, true, true, true> alignConfig;
 
@@ -218,7 +218,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_banded_gotoh)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_hirschberg)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "ATGT";
     DnaString strV = "ATAGAT";
@@ -241,7 +241,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_hirschberg)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "AAAAAATTTTTTTTG";
     DnaString strV = "AATTTTTTTTTTGGGGG";
@@ -261,7 +261,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers_hirschberg)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "AAAAAATTTTTTTTG";
     DnaString strV = "AATTTTTTTTTTGGGGG";

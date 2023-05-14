@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PROXY_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_PROXY_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -470,6 +470,6 @@ operator<<(TStream & strm,
     return strm;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PROXY_BASE_H_

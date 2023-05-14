@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_SIMPLE_H
 #define SEQAN_HEADER_FIND_SIMPLE_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -130,6 +130,6 @@ inline bool find(TFinder & finder,
 
 //____________________________________________________________________________
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

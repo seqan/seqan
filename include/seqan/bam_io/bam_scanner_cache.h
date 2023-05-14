@@ -38,7 +38,7 @@
 #include <functional>
 #include <unordered_map>
 
-namespace seqan {
+namespace seqan2 {
 
 using namespace std;
 
@@ -140,7 +140,7 @@ uint64_t _suffixHash(TSequence const &sequence)
 }
 
 inline void
-insertRecord(BamScannerCache &cache, seqan::BamAlignmentRecord const &record)
+insertRecord(BamScannerCache &cache, seqan2::BamAlignmentRecord const &record)
 {
     int _id;
     if (empty(cache.unusedIds))
@@ -296,7 +296,7 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamFileIn &bamFile, BamSca
             if (records[0].beginPos != records[0].pNext)
             {
                 std::cerr << "WARNING: Mate could not be found for:\n";
-                write(std::cerr, records[0], context(bamFile), seqan::Sam());
+                write(std::cerr, records[0], context(bamFile), seqan2::Sam());
             }
             insertRecord(cache, records[0]);
         }
@@ -304,6 +304,6 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamFileIn &bamFile, BamSca
     clear(records);
 }
 
-}  // namespace seqan;
+}  // namespace seqan2;
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_

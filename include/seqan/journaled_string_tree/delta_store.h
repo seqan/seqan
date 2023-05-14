@@ -37,7 +37,7 @@
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_STORE_H_
 #define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_STORE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -567,6 +567,6 @@ netSize(TStore const & store, TPos const pos, TTag const & /*tag*/)
 
 }  // namespace impl
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_STORE_H_

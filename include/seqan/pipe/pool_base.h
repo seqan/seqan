@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_BASE_H
 #define SEQAN_HEADER_POOL_BASE_H
 
-namespace seqan
+namespace seqan2
 {
 
 /*!
@@ -341,7 +341,7 @@ namespace seqan
         {
             TPageFrame *p = chain.first;
             while (p) {
-                seqan::cancel(*p, pool.file);
+                seqan2::cancel(*p, pool.file);
                 freePage(*p, pool.file);
                 p = p->next;
             }
@@ -470,14 +470,14 @@ namespace seqan
                 freePage(*p, pool.file);
                 p = p->next;
             }
-            seqan::flush(pool.file);
+            seqan2::flush(pool.file);
         }
 
         inline void cancel()
         {
             TPageFrame *p = chain.first;
             while (p) {
-                seqan::cancel(*p, pool.file);
+                seqan2::cancel(*p, pool.file);
                 freePage(*p, pool.file);
                 p = p->next;
             }
@@ -764,7 +764,7 @@ namespace seqan
             _ownFile = false;
             _temporary = false;
             memBufferSize = 0;
-            _setSize(seqan::length(file) / sizeof(TValue));
+            _setSize(seqan2::length(file) / sizeof(TValue));
         }
 
         Pool(const char *fileName, const PoolParameters &_conf = PoolParameters()) :
@@ -775,7 +775,7 @@ namespace seqan
             memBufferSize = 0;
             _ownFile = open(file, fileName);
             if (_ownFile)
-                _setSize(seqan::length(file) / sizeof(TValue));
+                _setSize(seqan2::length(file) / sizeof(TValue));
             else
                 _setSize(0);
         }
@@ -1180,7 +1180,7 @@ namespace seqan
 
 
     // the pipe interface of pool classes
-    //namespace SEQAN_NAMESPACE_PIPELINING
+    //namespace seqan2_NAMESPACE_PIPELINING
     //{
         //template < typename TValue, typename TSpec >
         //struct Value< Pool< TValue, TSpec > >

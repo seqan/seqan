@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_RESULT_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_RESULT_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -160,6 +160,6 @@ swap(WavefrontAlignmentResult<TArgs...> & lhs,
     rhs = std::move(tmp);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_RESULT_H_

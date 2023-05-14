@@ -37,7 +37,7 @@
 #ifndef SEQAN_SSCORE_BASE_H_
 #define SEQAN_SSCORE_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class Score
@@ -339,6 +339,6 @@ score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {
         return scoreMismatch(me);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SSCORE_BASE_H_

@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -175,6 +175,6 @@ stronglyConnectedComponents(TComponents & components,
     return label;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_

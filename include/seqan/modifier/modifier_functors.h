@@ -39,7 +39,7 @@
 
 // TODO(holtgrew): Make the structs here into classes.
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================
@@ -293,6 +293,6 @@ struct FunctorComplement<Iupac> : public std::function<Iupac(Iupac)>
 };
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_MODIFIER_MODIFIER_FUNCTORS_H_

@@ -43,7 +43,7 @@
 // Test StringEnumerator for Hamming distance.
 SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_hamming)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString original = "CGAT";
 
@@ -65,7 +65,7 @@ SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_hamming)
 // More comprehensive tests for Hamming StringEnumerator Iterator.
 SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_iterator_hamming)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString original = "CGAT";
 
@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_iterator_hamming)
 // Test StringEnumerator for Edit distance.
 SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_edit)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString original = "CGAT";
 
@@ -111,7 +111,7 @@ SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_edit)
 // More comprehensive tests for Edit StringEnumerator Iterator.
 SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_iterator_edit)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString original = "CGAT";
 

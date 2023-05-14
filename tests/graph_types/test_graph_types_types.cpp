@@ -33,7 +33,7 @@
 #include <seqan/basic.h>
 #include <seqan/graph_types.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_graph_types_types_directed)
 {
@@ -1525,7 +1525,7 @@ SEQAN_DEFINE_TEST(test_graph_types_types_word_tree)
     childC2C1C1C1 = addChild(g, childC2C1C1);
     childC2C1C1C2 = addChild(g, childC2C1C1);
     childC4 = addChild(g, rootV);
-    String<unsigned int> mat;   
+    String<unsigned int> mat;
     // Adjacency matrix
     getAdjacencyMatrix(g, mat);
     unsigned int len = (unsigned int) std::sqrt((double) length(mat));

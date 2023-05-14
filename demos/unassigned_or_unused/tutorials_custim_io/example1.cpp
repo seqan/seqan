@@ -3,7 +3,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Read "<key>\t<value>" map from stdin.  Write out as "<key> -> <value>".
 

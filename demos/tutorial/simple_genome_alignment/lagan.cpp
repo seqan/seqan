@@ -18,7 +18,7 @@
 #include <seqan/seeds.h>
 //![include_seeds]
 
-using namespace seqan;
+using namespace seqan2;
 
 std::stringstream quiet_output;
 
@@ -55,22 +55,22 @@ auto parseCommandLine(LaganOption & options, int const argc, char * argv[])
                   "the alignment around this chain.");
 
     // We require two arguments.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "SEQUENCE_1"));
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "SEQUENCE_2"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "SEQUENCE_1"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "SEQUENCE_2"));
 
-    addOption(parser, seqan::ArgParseOption("o", "output", "Output file to write the alignment to.",
+    addOption(parser, seqan2::ArgParseOption("o", "output", "Output file to write the alignment to.",
                                             ArgParseArgument::OUTPUT_FILE, "FILE"));
     setValidValues(parser, "output", ".align");
     setDefaultValue(parser, "output", "out.align");
 
-    addOption(parser, seqan::ArgParseOption("q", "qgram", "Size of the qGram.", ArgParseArgument::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("q", "qgram", "Size of the qGram.", ArgParseArgument::INTEGER, "INT"));
     addDefaultValue(parser, "qgram", "12");
 
-    addOption(parser, seqan::ArgParseOption("d", "distance", "Distance criteria for CHAOS chaining.",
+    addOption(parser, seqan2::ArgParseOption("d", "distance", "Distance criteria for CHAOS chaining.",
                                             ArgParseArgument::INTEGER, "INT"));
     addDefaultValue(parser, "distance", "10");
 
-    addOption(parser, seqan::ArgParseOption("g", "gap", "Gap criteria for CHAOS chaining.",
+    addOption(parser, seqan2::ArgParseOption("g", "gap", "Gap criteria for CHAOS chaining.",
                                             ArgParseArgument::INTEGER, "INT"));
     addDefaultValue(parser, "gap", "15");
 
@@ -109,22 +109,22 @@ auto parseCommandLine(LaganOption & options, int const argc, char * argv[])
                   "the alignment around this chain.");
 
     // We require two arguments.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "SEQUENCE_1"));
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "SEQUENCE_2"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "SEQUENCE_1"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "SEQUENCE_2"));
 
-    addOption(parser, seqan::ArgParseOption("o", "output", "Output file to write the alignment to.",
+    addOption(parser, seqan2::ArgParseOption("o", "output", "Output file to write the alignment to.",
                                             ArgParseArgument::OUTPUT_FILE, "FILE"));
     setValidValues(parser, "output", ".align");
     setDefaultValue(parser, "output", "out.align");
 
-    addOption(parser, seqan::ArgParseOption("q", "qgram", "Size of the qGram.", ArgParseArgument::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("q", "qgram", "Size of the qGram.", ArgParseArgument::INTEGER, "INT"));
     addDefaultValue(parser, "qgram", "12");
 
-    addOption(parser, seqan::ArgParseOption("d", "distance", "Distance criteria for CHAOS chaining.",
+    addOption(parser, seqan2::ArgParseOption("d", "distance", "Distance criteria for CHAOS chaining.",
                                             ArgParseArgument::INTEGER, "INT"));
     addDefaultValue(parser, "distance", "10");
 
-    addOption(parser, seqan::ArgParseOption("g", "gap", "Gap criteria for CHAOS chaining.",
+    addOption(parser, seqan2::ArgParseOption("g", "gap", "Gap criteria for CHAOS chaining.",
                                             ArgParseArgument::INTEGER, "INT"));
     addDefaultValue(parser, "gap", "15");
 

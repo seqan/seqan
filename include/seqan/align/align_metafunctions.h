@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -110,6 +110,6 @@ struct StringSetType;
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_

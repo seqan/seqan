@@ -14,7 +14,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -327,6 +327,6 @@ popBack(TJob & job, TaskQueue<TJob, OmpLock> & queue, TPredicate const & predica
 //     work(threadLocalStorages, predicateTrue<TJob>, tag);
 // }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef RAZERS_PARALLEL_JOB_QUEUE_H_

@@ -44,7 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_parallel_splitter_equidistant)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Simple case.
     {
@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_parallel_splitter_equidistant)
 
 SEQAN_DEFINE_TEST(test_parallel_splitting_compute_splitters)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Simple case.
     {

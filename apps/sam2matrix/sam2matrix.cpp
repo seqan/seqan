@@ -28,7 +28,7 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 // DAMAGE.
 //
-// This program determines for each read in the reference file if it has an 
+// This program determines for each read in the reference file if it has an
 // entry in the provided sam files stating that it mapped.
 //
 // ==========================================================================
@@ -54,7 +54,7 @@
 // --------------------------------------------------------------------------
 
 // This struct stores the options from the command line.
-using namespace seqan;
+using namespace seqan2;
 
 struct SamToGasicOptions
 {
@@ -72,11 +72,11 @@ struct SamToGasicOptions
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("sam2matrix");
+    seqan2::ArgumentParser parser("sam2matrix");
     // Set short description, version, and date.
     setShortDescription(parser, "This program outputs for each read the ids of references it maps to.");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
@@ -90,17 +90,17 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
                            "provided sam files stating that it mapped. Afterwards a file is generated containing a row"
                            " for each read which contains the read ID and the index of the mapped references.");
 
-    addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUT_FILE, 
+    addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUT_FILE,
                                      "FILE", true));
     setValidValues(parser, "mapping", BamFileIn::getFileExtensions());
     setRequired(parser, "mapping");
-    addOption(parser, ArgParseOption("r", "reads", "File containing the reads contained in the mapping file(s).", 
+    addOption(parser, ArgParseOption("r", "reads", "File containing the reads contained in the mapping file(s).",
                                      ArgParseOption::INPUT_FILE, "FILE"));
     setValidValues(parser, "reads", SeqFileIn::getFileExtensions());
     setRequired(parser, "reads");
 
     addOption(parser, ArgParseOption("rf", "reference", "Name of the file used as reference of the corresponding sam "
-                                     "file. If not specified the names of the mapping files are taken", 
+                                     "file. If not specified the names of the mapping files are taken",
                                      ArgParseOption::STRING, "STRING", true));
 
     addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUT_FILE));
@@ -117,10 +117,10 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
                         "files \\fIa.sam\\fP and \\fIb.sam\\fP.");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     options.samFileNames = getOptionValues(parser, "m");
@@ -132,19 +132,19 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
         for (unsigned i = length(options.genomeFileNames); i < length(options.samFileNames); ++i)
             appendValue(options.genomeFileNames, options.samFileNames[i]);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // A std::map is used to quickly find a read id when parsing the sam
 // files.
 bool _initializeMap(std::map<String<char>, unsigned> & nameToPos, SamToGasicOptions const & options)
 {
-    seqan::CharString id;
-    seqan::Dna5String seq;
+    seqan2::CharString id;
+    seqan2::Dna5String seq;
 
     SeqFileIn seqStream(toCString(options.readNameFileName));
 
-    seqan::CharString fixedId;
+    seqan2::CharString fixedId;
     for (unsigned i = 0; !atEnd(seqStream); ++i)
     {
         readRecord(id, seq, seqStream);
@@ -162,8 +162,8 @@ bool _initializeMap(std::map<String<char>, unsigned> & nameToPos, SamToGasicOpti
     return true;
 }
 
-bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads, 
-                    std::map<String<char>, unsigned> & nameToPos, 
+bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
+                    std::map<String<char>, unsigned> & nameToPos,
                     SamToGasicOptions const & options)
 {
     resize(mappedReads, nameToPos.size());
@@ -238,15 +238,15 @@ void _writeFile(StringSet<String<unsigned> > const & result,
 int main(int argc, char const ** argv)
 {
     // Parse the command line.
-    seqan::ArgumentParser parser;
+    seqan2::ArgumentParser parser;
     SamToGasicOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     StringSet<String<unsigned> > mappedReads;
     std::map<String<char>, unsigned> nameToPos;

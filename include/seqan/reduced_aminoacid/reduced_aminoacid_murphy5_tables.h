@@ -37,7 +37,7 @@
 #ifndef SEQAN_REDUCED_AMINOACID_MURPHY5_TABLES_H_
 #define SEQAN_REDUCED_AMINOACID_MURPHY5_TABLES_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -80,7 +80,7 @@ struct TranslateTableByteToRedAA_<Murphy5, TSpec>
 template <typename TVoidSpec>
 char const TranslateTableRedAAToChar_<Murphy5, TVoidSpec>::VALUE[5] =
 {
-    'A', // A G P S T X 
+    'A', // A G P S T X
     'B', // B D E N Q Z
     'C', // C I J L M U V
     'F', // F W Y *

@@ -35,7 +35,7 @@
 #ifndef TESTS_BASIC_TEST_BASIC_ALPHABET_H_
 #define TESTS_BASIC_TEST_BASIC_ALPHABET_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 //Helper class that counts ctors, dtors and copys
 struct Test1

@@ -37,7 +37,7 @@
 #ifndef SEQAN_REDUCED_AMINOACID_BASE_LATE_H_
 #define SEQAN_REDUCED_AMINOACID_BASE_LATE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

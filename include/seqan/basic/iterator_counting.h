@@ -37,7 +37,7 @@
 #ifndef SEQAN_BASIC_ITERATOR_COUNTING_H_
 #define SEQAN_BASIC_ITERATOR_COUNTING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -354,6 +354,6 @@ assign(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & target, TSource con
     setPosition(target, position(source));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_ITERATOR_COUNTING_H_

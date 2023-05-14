@@ -35,7 +35,7 @@
 #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
 #define SEQAN_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_basic_exception_try_catch)
 {

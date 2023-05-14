@@ -3,7 +3,7 @@
 #include <seqan/basic.h>
 #include <iostream>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![showAllLettersOfMyAlphabet]

@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_MATH_FUNCTIONS_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_MATH_FUNCTIONS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -200,7 +200,7 @@ T _abs(T const & x)
         return x;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_MATH_FUNCTIONS_H_
 

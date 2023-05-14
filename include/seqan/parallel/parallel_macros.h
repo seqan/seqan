@@ -113,7 +113,7 @@ inline int omp_get_thread_num()
 
 inline double omp_get_wtime()
 {
-    return seqan::sysTime();
+    return seqan2::sysTime();
 }
 
 #endif  // #ifdef _OPENMP

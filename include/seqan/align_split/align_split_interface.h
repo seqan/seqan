@@ -39,7 +39,7 @@
 
 #include "dp_scout_split.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -457,7 +457,7 @@ auto _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
     clear(traceR);
     _computeSplitTrace(traceR, source(gapsContigR), source(gapsReadR), dpContextR,
                        scoutStateR.splitPos[bestPrefixLength], alignConfigR);
-    
+
     _reverseTrace(traceR, length(source(gapsContigR)), length(source(gapsReadR)));
     _adaptTraceSegmentsTo(gapsContigR, gapsReadR, traceR);
 
@@ -753,6 +753,6 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
                           lowerDiagonal, upperDiagonal);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_

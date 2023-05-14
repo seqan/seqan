@@ -36,7 +36,7 @@
 #ifndef APP_YARA_MAPPER_H_
 #define APP_YARA_MAPPER_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes
@@ -842,7 +842,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
     start(me.timer);
     // Create a position modifier of the matches from the identity permutation.
-    assign(me.matchesPositions, seqan::Range<TMatchesSize>(0, length(me.matchesByCoord)), Exact());
+    assign(me.matchesPositions, seqan2::Range<TMatchesSize>(0, length(me.matchesByCoord)), Exact());
     setHost(me.matchesByErrors, me.matchesByCoord);
     setCargo(me.matchesByErrors, me.matchesPositions);
 
@@ -1237,7 +1237,7 @@ inline void alignMatches(Mapper<TSpec, TConfig> & me)
     else
     {
         // If only the primary matches were aligned, we use the identity modifier
-        assign(me.primaryCigarPositions, seqan::Range<TCigarsPos>(0, length(me.primaryMatches)), Exact());
+        assign(me.primaryCigarPositions, seqan2::Range<TCigarsPos>(0, length(me.primaryMatches)), Exact());
     }
 
     stop(me.timer);

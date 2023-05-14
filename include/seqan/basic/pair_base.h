@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -109,19 +109,19 @@ struct Pair
     // Constructors
     // ------------------------------------------------------------------------
 
-   
+
     Pair() : i1(T1()), i2(T2()) {}
 
     template <typename T1_, typename T2_>
-   
+
     Pair(Pair<T1_, T2_> const & _p) : i1(_p.i1), i2(_p.i2) {}
 
-   
+
     Pair(T1 const & _i1, T2 const & _i2) : i1(_i1), i2(_i2) {}
 
     template <typename T1_, typename T2_, typename TSpec__>
     // TODO(holtgrew): explicit?
-   
+
     Pair(Pair<T1_, T2_, TSpec__> const &_p) :
         i1(getValueI1(_p)), i2(getValueI2(_p))
     {}
@@ -477,6 +477,6 @@ swap(Pair<L1, L2, LPack> const & a,
     swap(a.i2, b.i2);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BASE_H_

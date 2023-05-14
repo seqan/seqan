@@ -39,7 +39,7 @@
 #ifndef INDEX_FM_COMPRESSED_SA_H_
 #define INDEX_FM_COMPRESSED_SA_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

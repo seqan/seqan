@@ -37,7 +37,7 @@
 #include <random>
 
 
-namespace seqan
+namespace seqan2
 {
 
 /*!

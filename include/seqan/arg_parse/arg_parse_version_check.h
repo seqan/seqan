@@ -43,7 +43,7 @@
 #include <future>
 #include <chrono>
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================
@@ -482,5 +482,5 @@ inline void _checkForNewerVersion(VersionCheck & me, std::promise<bool> prom)
     std::thread(_callServer, me, std::move(prom)).detach();
 }
 
-} // namespace seqan
+} // namespace seqan2
 #endif //SEQAN_INCLUDE_ARG_PARSE_VERSION_CHECK_H_

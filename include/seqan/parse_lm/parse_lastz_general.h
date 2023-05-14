@@ -39,7 +39,7 @@
 #ifndef INCLUDE_SEQAN_PARSE_LM_PARSE_LASTZ_GENERAL_H_
 #define INCLUDE_SEQAN_PARSE_LM_PARSE_LASTZ_GENERAL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -211,6 +211,6 @@ readRecord(TLocalMatchStore & store,
     appendLocalMatch(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_PARSE_LM_PARSE_LASTZ_GENERAL_H_

@@ -1,7 +1,7 @@
 #include <seqan/gff_io.h>
 
 //![GffRecord]
-using namespace seqan;
+using namespace seqan2;
 
 class GffRecord
 {

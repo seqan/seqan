@@ -39,7 +39,7 @@
 #ifndef SEQAN_MODIFIER_MODIFIER_VIEW_H_
 #define SEQAN_MODIFIER_MODIFIER_VIEW_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================
@@ -446,6 +446,6 @@ convert(TSequence const & sequence, TFunctor const &F)
 #endif
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_MODIFIER_MODIFIER_VIEW_H_

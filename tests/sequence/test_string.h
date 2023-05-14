@@ -486,7 +486,7 @@ SEQAN_DEFINE_TEST(String_Alloc)
 
     String<char, Alloc<> > left = "left";
     String<char, Alloc<> > right = "right";
-    seqan::swap(left, right);
+    seqan2::swap(left, right);
     SEQAN_ASSERT_EQ(left, "right");
     SEQAN_ASSERT_EQ(right, "left");
 }
@@ -972,12 +972,12 @@ SEQAN_DEFINE_TEST(Std_String)
 
     std::string str_1("hamster");
     SEQAN_ASSERT_EQ(0, 0);
-    size_t len1 = seqan::end(str_1) - seqan::begin(str_1);
+    size_t len1 = seqan2::end(str_1) - seqan2::begin(str_1);
     size_t len2 = length(str_1);
     SEQAN_ASSERT_EQ(len1, len2);
 
     std::string const str_2("goldfish");
-    len1 = seqan::end(str_2) - seqan::begin(str_2);
+    len1 = seqan2::end(str_2) - seqan2::begin(str_2);
     len2 = length(str_2);
     SEQAN_ASSERT_EQ(len1, len2);
 
@@ -1268,7 +1268,7 @@ SEQAN_DEFINE_TEST(Combinatoric)
 
 SEQAN_DEFINE_TEST(ticket901)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     String<char> source = "acgtgcat";
     String<Dna> target;

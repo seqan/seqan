@@ -37,7 +37,7 @@
 #ifndef SEQAN_BLAST_BLAST_TABULAR_WRITE_H_
 #define SEQAN_BLAST_BLAST_TABULAR_WRITE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -133,9 +133,9 @@ _writeFieldLabels(TFwdIterator & stream,
     }
     else
     {
-        for (auto it = seqan::begin(context.fields),
+        for (auto it = seqan2::begin(context.fields),
                   itB = it,
-                  itEnd = seqan::end(context.fields);
+                  itEnd = seqan2::end(context.fields);
             it != itEnd;
             ++it)
         {
@@ -481,7 +481,7 @@ _writeField(TFwdIterator & s,
                 // replace whitespace with _
                 std::string buf;
                 resize(buf, length(record.lcaId));
-                std::transform(seqan::begin(record.lcaId, Standard()), seqan::end(record.lcaId, Standard()), std::begin(buf), [] (auto const c)
+                std::transform(seqan2::begin(record.lcaId, Standard()), seqan2::end(record.lcaId, Standard()), std::begin(buf), [] (auto const c)
                 {
                     return ((c == ' ') || (c == '\t')) ? '_' : c;
                 });
@@ -734,5 +734,5 @@ writeFooter(BlastTabularFileOut<TContext> & formattedFile)
     writeFooter(formattedFile.iter, context(formattedFile), BlastTabular());
 }
 
-} // namespace seqan
+} // namespace seqan2
 #endif // header guard

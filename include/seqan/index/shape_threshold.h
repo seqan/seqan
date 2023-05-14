@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_SHAPE_THRESHOLD_H
 #define SEQAN_HEADER_SHAPE_THRESHOLD_H
 
-namespace seqan
+namespace seqan2
 {
 
 struct ThreshQGramLemma_;
@@ -1174,6 +1174,6 @@ void qgramFilteringSensitivity(
     computeQGramFilteringSensitivity(sensMat, states, length(bitString), maxThresh + 1, errors + 1, logErrorDistribution, true);
 }
 
-}    // namespace seqan
+}    // namespace seqan2
 
 #endif

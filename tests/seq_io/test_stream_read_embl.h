@@ -298,7 +298,7 @@ char const * testHelperReturnEmblFile()
 template <typename TFwdIterator>
 void testHelperReadEmblSingle(TFwdIterator & iter)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString k, v;
 
@@ -337,7 +337,7 @@ void testHelperReadEmblSingle(TFwdIterator & iter)
 template <typename TFwdIterator>
 void testHelperReadEmblRecord(TFwdIterator & iter)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString id;
     Dna5String seq;
@@ -353,7 +353,7 @@ void testHelperReadEmblRecord(TFwdIterator & iter)
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_char_array_stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CharString TStream;
 
@@ -366,7 +366,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_char_array_stream)
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_record_char_array_stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CharString TStream;
 
@@ -379,7 +379,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_record_char_array_stream)
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef String<char, MMap<> > TString;
 
@@ -392,7 +392,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_batch_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef String<char, MMap<> > TString;
 

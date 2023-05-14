@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_LIBRARY_H
 #define SEQAN_HEADER_STORE_LIBRARY_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -92,6 +92,6 @@ struct LibraryStoreElement
 //////////////////////////////////////////////////////////////////////////////
 
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -38,7 +38,7 @@
 #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_H_
 #define EXTRAS_INCLUDE_SEQAN_JOURNALED_STRING_TREE_DELTA_MAP_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -89,8 +89,8 @@ typedef Tag<DeltaMapStoreMember_> DeltaMapStoreMember;
  * This map stores delta events, i.e. replacements, insertions and deletions, for multiple sequences
  * based on a common reference sequence. A bitvector is used to store the coverage of a delta.
  * The types of the corresponding delta values must be set with the <tt>TConfig<\tt> object, which can be any
- * object which defines the following types: 
- * 
+ * object which defines the following types:
+ *
  * <tt>TDeltaPos<\tt>: The value type used to store the position of the delta within the reference.
  * <tt>TDeltaSnp<\tt>: The value type used to store SNPs.
  * <tt>TDeltaDel<\tt>: The value type used to store deletions.
@@ -99,8 +99,8 @@ typedef Tag<DeltaMapStoreMember_> DeltaMapStoreMember;
  *
  * The delta values are stored in a multi-container. To access a delta value at any given iterator position
  * of the delta map the delta type (see @link DeltaTypeTags @endlink) must be known.
- * The function @link DeltaMapIterator#deltaType @endlink can be used to access the id of the corresponding delta event. 
- * Given the delta type the function @link DeltaMapIterator#deltaValue @endlink can be used to access the corresponding 
+ * The function @link DeltaMapIterator#deltaType @endlink can be used to access the id of the corresponding delta event.
+ * Given the delta type the function @link DeltaMapIterator#deltaValue @endlink can be used to access the corresponding
  * value.
  *
  * The delta map implements the interfaces of the <b>AssociativeContainerConcept<\b> and is a multi-map.

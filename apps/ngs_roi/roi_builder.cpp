@@ -45,7 +45,7 @@ int RoiBuilder::nextId = 0;
 // ---------------------------------------------------------------------------
 
 // Create a new ROI.
-void RoiBuilder::createRoi(seqan::BamAlignmentRecord const & record)
+void RoiBuilder::createRoi(seqan2::BamAlignmentRecord const & record)
 {
     clear(currentProfile);
     clear(connective);
@@ -72,7 +72,7 @@ void RoiBuilder::createRoi(seqan::BamAlignmentRecord const & record)
 // ---------------------------------------------------------------------------
 
 // Extend the current ROI.
-void RoiBuilder::extendRoi(seqan::BamAlignmentRecord const & record)
+void RoiBuilder::extendRoi(seqan2::BamAlignmentRecord const & record)
 {
     // We will use this for extending the connective array in case of using pairing.
     bool fillConnective = false;
@@ -104,10 +104,10 @@ void RoiBuilder::extendRoi(seqan::BamAlignmentRecord const & record)
     }
 
     // Increase counts.
-    typedef seqan::Iterator<seqan::String<seqan::CigarElement<> > const, seqan::Rooted>::Type TCigarIt;
+    typedef seqan2::Iterator<seqan2::String<seqan2::CigarElement<> > const, seqan2::Rooted>::Type TCigarIt;
     unsigned beginPos = record.beginPos - currentRoi.beginPos;
     unsigned k = 0;
-    for (TCigarIt it = begin(record.cigar, seqan::Rooted()); !atEnd(it); goNext(it))
+    for (TCigarIt it = begin(record.cigar, seqan2::Rooted()); !atEnd(it); goNext(it))
     {
         switch (it->operation)
         {
@@ -116,7 +116,7 @@ void RoiBuilder::extendRoi(seqan::BamAlignmentRecord const & record)
             case '=':
                 for (unsigned i = 0; i < it->count; ++i, ++beginPos, ++k)
                 {
-                    currentProfile[beginPos].count[ordValue(seqan::Dna5(record.seq[k]))] += 1;
+                    currentProfile[beginPos].count[ordValue(seqan2::Dna5(record.seq[k]))] += 1;
                     currentRoi.count[beginPos] += 1;
                     connective[beginPos] = true;
                 }
@@ -152,7 +152,7 @@ void RoiBuilder::extendRoi(seqan::BamAlignmentRecord const & record)
 // Member Function RoiBuilder::pushRecord()
 // ---------------------------------------------------------------------------
 
-void RoiBuilder::pushRecord(seqan::BamAlignmentRecord const & record)
+void RoiBuilder::pushRecord(seqan2::BamAlignmentRecord const & record)
 {
     if (options.verbosity >= 2 && currentRoi.rID != record.rID)
         std::cerr << "switching to rId == " << record.rID << "\n";
@@ -182,10 +182,10 @@ void RoiBuilder::pushRecord(seqan::BamAlignmentRecord const & record)
 
 void RoiBuilder::writeHeader()
 {
-    seqan::RoiHeader header;
+    seqan2::RoiHeader header;
     appendValue(header.extraColumns, "num_reads");
     appendValue(header.extraColumns, "gc_content");
-    seqan::writeHeader(roiFileOut, header);
+    seqan2::writeHeader(roiFileOut, header);
 }
 
 // ---------------------------------------------------------------------------
@@ -193,7 +193,7 @@ void RoiBuilder::writeHeader()
 // ---------------------------------------------------------------------------
 
 int RoiBuilder::writeRecord(MyRoiRecord & record,
-                            seqan::String<TProfileChar> const & profile)
+                            seqan2::String<TProfileChar> const & profile)
 {
     // Compute maximal count.
     for (unsigned i = 1; i < record.len; i++)
@@ -213,7 +213,7 @@ int RoiBuilder::writeRecord(MyRoiRecord & record,
     unsigned cg = 0, at = 0;
     for (unsigned i = 0; i < length(profile); ++i)
     {
-        seqan::Dna5 x = profile[i];
+        seqan2::Dna5 x = profile[i];
         cg += (x == 'C' || x == 'G');
         at += (x == 'A' || x == 'T');
     }
@@ -222,7 +222,7 @@ int RoiBuilder::writeRecord(MyRoiRecord & record,
     snprintf(buffer, 99, "%4.4f", cgContent);
     appendValue(record.data, buffer);
 
-    seqan::writeRecord(roiFileOut, record);
+    seqan2::writeRecord(roiFileOut, record);
     return 0;
 }
 
@@ -232,13 +232,13 @@ int RoiBuilder::writeRecord(MyRoiRecord & record,
 
 int RoiBuilder::writeCurrentRecord()
 {
-    if (currentRoi.beginPos == seqan::RoiRecord::INVALID_POS)
+    if (currentRoi.beginPos == seqan2::RoiRecord::INVALID_POS)
         return 0;  // Do not write out if not set.
 
     // TODO(holtgrew): Cache that there was no N in cigar string and short circuit to writeRecord()?
 
     // Try to find a value in connective that is false and extract infixes with consecutive stretches of 1s.
-    seqan::String<seqan::Pair<int, int> > pairs;
+    seqan2::String<seqan2::Pair<int, int> > pairs;
     SEQAN_ASSERT_NOT_MSG(empty(connective), "ROI cannot be empty.");
     SEQAN_ASSERT_MSG(connective[0], "First element of ROI must be match.");
     int beginPos = 0;
@@ -249,7 +249,7 @@ int RoiBuilder::writeCurrentRecord()
         {
             if (!connective[i])
             {
-                appendValue(pairs, seqan::Pair<int, int>(beginPos, i));
+                appendValue(pairs, seqan2::Pair<int, int>(beginPos, i));
                 state = false;
                 beginPos = i;
             }
@@ -264,7 +264,7 @@ int RoiBuilder::writeCurrentRecord()
         }
     }
     if (state && beginPos != (int)length(connective))
-        appendValue(pairs, seqan::Pair<int, int>(beginPos, length(connective)));
+        appendValue(pairs, seqan2::Pair<int, int>(beginPos, length(connective)));
 
     // Easy case of all connective: Early exit.
     if (length(pairs) == 1u && front(pairs).i1 == 0 && back(pairs).i2 == (int)length(connective))
@@ -272,7 +272,7 @@ int RoiBuilder::writeCurrentRecord()
 
     // Write out connected components.
     MyRoiRecord infixRecord;
-    seqan::String<TProfileChar> infixProfile;
+    seqan2::String<TProfileChar> infixProfile;
     for (unsigned i = 0; i < length(pairs); ++i)
     {
         clear(infixRecord);

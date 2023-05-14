@@ -47,13 +47,13 @@
 
 void testSeqIOBamFileReadSequences(char const * pathFragment)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::SeqFileIn seqFileIn(toCString(filePath));
+    seqan2::SeqFileIn seqFileIn(toCString(filePath));
 
-    seqan::String<seqan::CharString> metas;
-    seqan::String<seqan::Dna5String> seqs;
+    seqan2::String<seqan2::CharString> metas;
+    seqan2::String<seqan2::Dna5String> seqs;
     while (!atEnd(seqFileIn))
     {
         resize(metas, length(metas) + 1);
@@ -89,14 +89,14 @@ SEQAN_DEFINE_TEST(test_seq_io_bam_file_bam_read_sequences)
 
 void testSeqIOBamFileReadSequencesAndQualities(char const * pathFragment)
 {
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, pathFragment);
 
-    seqan::SeqFileIn seqFileIn(toCString(filePath));
+    seqan2::SeqFileIn seqFileIn(toCString(filePath));
 
-    seqan::String<seqan::CharString> metas;
-    seqan::String<seqan::Dna5String> seqs;
-    seqan::String<seqan::CharString> quals;
+    seqan2::String<seqan2::CharString> metas;
+    seqan2::String<seqan2::Dna5String> seqs;
+    seqan2::String<seqan2::CharString> quals;
 
     while (!atEnd(seqFileIn))
     {

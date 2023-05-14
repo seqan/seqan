@@ -28,7 +28,7 @@ static GappedParamsRecord RECORDS[] = {
      #include "param_tabs.inc"
 };
 
-bool getGappedParamsRecords(seqan::String<GappedParamsRecord> & records,
+bool getGappedParamsRecords(seqan2::String<GappedParamsRecord> & records,
                             unsigned n,
                             char errorModel)
 {
@@ -43,6 +43,6 @@ bool getGappedParamsRecords(seqan::String<GappedParamsRecord> & records,
     for (unsigned i = 0; RECORDS[i].readLength != 0; ++i)
         if (RECORDS[i].readLength == n && RECORDS[i].type == errorModel)
             appendValue(records, RECORDS[i]);
-    
+
     return true;
 }

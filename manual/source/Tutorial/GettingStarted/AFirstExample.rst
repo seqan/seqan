@@ -60,15 +60,15 @@ In SeqAn the program could look like this (we will explain every line of code sh
 .. includefrags:: demos/tutorial/a_first_example/basic_code.cpp
    :fragment: all
 
-Whenever we use SeqAn classes or functions we have to explicitly write the namespace qualifier ``seqan::`` in front of the class name or function.
-This can be circumvented if we include the line ``using namespace seqan;`` at the top of the working example.
+Whenever we use SeqAn classes or functions we have to explicitly write the namespace qualifier ``seqan2::`` in front of the class name or function.
+This can be circumvented if we include the line ``using namespace seqan2;`` at the top of the working example.
 However, during this tutorial we will not do this, such that SeqAn classes and functions can be recognized more easily.
 
 .. attention::
 
    Argument-Dependent Name Lookup (Koenig Lookup)
 
-   Using the namespace prefix ``seqan::`` is not really necessary in all places.
+   Using the namespace prefix ``seqan2::`` is not really necessary in all places.
    In many cases, the Koenig lookup rule in C++ for functions makes this unnecessary.
    Consider the following, compiling, example.
 

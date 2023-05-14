@@ -1,7 +1,7 @@
 #include <seqan/sequence.h>
 #include <iostream>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

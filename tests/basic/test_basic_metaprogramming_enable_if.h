@@ -42,7 +42,7 @@
 template <typename T>
 bool testForEnableIf(
     T const & /*x*/,
-    typename seqan::EnableIf2<seqan::IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
+    typename seqan2::EnableIf2<seqan2::IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
 {
     return true;
 }
@@ -50,7 +50,7 @@ bool testForEnableIf(
 template <typename T>
 bool testForEnableIf(
     T const & /*x*/,
-    typename seqan::DisableIf2<seqan::IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
+    typename seqan2::DisableIf2<seqan2::IsSameType<T, int>::VALUE>::Type* /*dummy*/ = 0)
 {
     return false;
 }
@@ -58,7 +58,7 @@ bool testForEnableIf(
 template <typename T>
 bool testForEnableIf2(
     T const & /*x*/,
-    typename seqan::EnableIf<typename seqan::IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
+    typename seqan2::EnableIf<typename seqan2::IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
 {
     return true;
 }
@@ -66,7 +66,7 @@ bool testForEnableIf2(
 template <typename T>
 bool testForEnableIf2(
     T const & /*x*/,
-    typename seqan::DisableIf<typename seqan::IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
+    typename seqan2::DisableIf<typename seqan2::IsSameType<T, int>::Type>::Type* /*dummy*/ = 0)
 {
     return false;
 }

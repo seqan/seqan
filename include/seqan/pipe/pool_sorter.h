@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_SORTER_H
 #define SEQAN_HEADER_POOL_SORTER_H
 
-namespace seqan
+namespace seqan2
 {
 
     template < typename TValue, typename Compare >
@@ -235,7 +235,7 @@ namespace seqan
             {
                 // bucket is empty, we have to fetch the next bucket
                 if (!readBucket(pb, pb.pageNo, pool.pageSize, pool.dataSize(pb.pageNo), pool.file)) {
-                    seqan::pop(pqueue);
+                    seqan2::pop(pqueue);
                     return;
                 }
             }
@@ -250,7 +250,7 @@ namespace seqan
             if (++pb.cur == pb.end)
                 // bucket is empty, we have to fetch the next bucket
                 if (!readBucket(pb, pb.pageNo, pool.pageSize, pool.dataSize(pb.pageNo), pool.file)) {
-                    seqan::pop(pqueue);
+                    seqan2::pop(pqueue);
                     return;
                 }
             adjustTop(pqueue);

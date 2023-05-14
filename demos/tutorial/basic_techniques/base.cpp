@@ -4,7 +4,7 @@ template <typename T>
 class vector{};
 //![class]
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

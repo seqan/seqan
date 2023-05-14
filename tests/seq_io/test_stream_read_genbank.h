@@ -315,7 +315,7 @@ char const * testHelperReturnGenBankFile()
 template <typename TRecordReader>
 void testHelperReadGenBankSingle(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString buffer, k, v;
 
@@ -354,7 +354,7 @@ void testHelperReadGenBankSingle(TRecordReader & reader)
 template <typename TRecordReader>
 void testHelperReadGenBankRecord(TRecordReader & reader)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString id;
     Dna5String seq;
@@ -370,7 +370,7 @@ void testHelperReadGenBankRecord(TRecordReader & reader)
 
 SEQAN_DEFINE_TEST(test_stream_read_genbank_single_char_array_stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CharString TStream;
 
@@ -383,7 +383,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_char_array_stream)
 
 SEQAN_DEFINE_TEST(test_stream_read_genbank_record_char_array_stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CharString TStream;
 
@@ -396,7 +396,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_record_char_array_stream)
 
 SEQAN_DEFINE_TEST(test_stream_read_genbank_single_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef String<char, MMap<> > TString;
 
@@ -409,7 +409,7 @@ SEQAN_DEFINE_TEST(test_stream_read_genbank_single_mmap)
 
 SEQAN_DEFINE_TEST(test_stream_read_genbank_single_batch_mmap)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef String<char, MMap<> > TString;
 

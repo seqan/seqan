@@ -75,11 +75,11 @@ public:
     // ------------------------------------------------------------------------
 
     // Path to reference file.
-    seqan::CharString fastaFileName;
+    seqan2::CharString fastaFileName;
     // Path to VCF file.
-    seqan::CharString vcfFileName;
+    seqan2::CharString vcfFileName;
     // Path to methylation FASTA file.
-    seqan::CharString methFastaFileName;
+    seqan2::CharString methFastaFileName;
 
     // ------------------------------------------------------------------------
     // State for position in reference
@@ -94,7 +94,7 @@ public:
     // The variants for the current contig.
     Variants contigVariants;
     // Current contig reference sequence.
-    seqan::Dna5String contigSeq;
+    seqan2::Dna5String contigSeq;
     // Current methylation levels.
     MethylationLevels currentLevels;
 
@@ -103,14 +103,14 @@ public:
     // ------------------------------------------------------------------------
 
     // The FAI Index to load the reference sequence from.
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     // The FAI Index to load the methylation sequences from.
-    seqan::FaiIndex methFaiIndex;
+    seqan2::FaiIndex methFaiIndex;
     // The VCF stream to load from and the VCF heade.r
-    seqan::VcfFileIn vcfFileIn;
-    seqan::VcfHeader vcfHeader;
+    seqan2::VcfFileIn vcfFileIn;
+    seqan2::VcfHeader vcfHeader;
     // The current VCF record.  rID == INVALID_REFID if invalid, used for termination.
-    seqan::VcfRecord vcfRecord;
+    seqan2::VcfRecord vcfRecord;
 
     VcfMaterializer(TRng & rng) : rng(rng), currRID(-1), nextHaplotype(0), numHaplotypes(0)
     {}
@@ -140,14 +140,14 @@ public:
     // Call init() before calling materializeNext().
     //
     // Throws: MasonIOException
-    bool materializeNext(seqan::Dna5String & seq,
+    bool materializeNext(seqan2::Dna5String & seq,
                          std::vector<SmallVarInfo> & varInfos,
                          std::vector<std::pair<int, int> > & breakpoints,
-                         int & rID, int & haplotype);   
+                         int & rID, int & haplotype);
 
     // Similar to the one above but loads methylation levels into levels.  Can only work if methFastFileName is not
     // empty.
-    bool materializeNext(seqan::Dna5String & seq,
+    bool materializeNext(seqan2::Dna5String & seq,
                          MethylationLevels & levels,
                          std::vector<SmallVarInfo> & varInfos,
                          std::vector<std::pair<int, int> > & breakpoints,
@@ -155,7 +155,7 @@ public:
 
 private:
 
-    bool _materializeNext(seqan::Dna5String & seq, MethylationLevels * levels,
+    bool _materializeNext(seqan2::Dna5String & seq, MethylationLevels * levels,
                           std::vector<SmallVarInfo> & varInfos,
                           std::vector<std::pair<int, int> > & breakpoints,
                           int & rID, int & haplotype);
@@ -164,10 +164,10 @@ private:
     int _loadVariantsForContig(Variants & variants, int rID);
 
     // Append VCF record to variants.
-    void _appendToVariants(Variants & variants, seqan::VcfRecord const & vcfRecord);
+    void _appendToVariants(Variants & variants, seqan2::VcfRecord const & vcfRecord);
 
     // Append chunk of 6 BND records to variants.
-    void _appendToVariantsBnd(Variants & variants, std::vector<seqan::VcfRecord> const & vcfRecords);
+    void _appendToVariantsBnd(Variants & variants, std::vector<seqan2::VcfRecord> const & vcfRecords);
 
     // Load the levels for the contig with the given rID.
     void _loadLevels(int rID);

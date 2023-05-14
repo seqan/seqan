@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/find.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Tags, Classes, Enums

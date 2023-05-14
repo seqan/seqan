@@ -60,14 +60,14 @@
 
 // Subclass of GffRecord that has an rID member.
 
-class MyGffRecord : public seqan::GffRecord
+class MyGffRecord : public seqan2::GffRecord
 {
 public:
     int rID;
 
     static const int INVALID_IDX;
 
-    MyGffRecord() : seqan::GffRecord(), rID(std::numeric_limits<int>::max())
+    MyGffRecord() : seqan2::GffRecord(), rID(std::numeric_limits<int>::max())
     {}
 };
 
@@ -125,10 +125,10 @@ public:
     VcfMaterializer vcfMat;
 
     // Input GFF/GTF stream.
-    seqan::GffFileIn gffFileIn;
+    seqan2::GffFileIn gffFileIn;
 
     // Output sequence stream.
-    seqan::SeqFileOut seqFileOut;
+    seqan2::SeqFileOut seqFileOut;
 
     MasonSplicingApp(MasonSplicingOptions const & _options) :
             options(_options), rng(options.seed),
@@ -170,8 +170,8 @@ public:
             return 0;  // at end, could not read any, done
 
         // Transcript names.
-        typedef seqan::StringSet<seqan::CharString> TNameStore;
-        typedef seqan::NameStoreCache<TNameStore> TNameStoreCache;
+        typedef seqan2::StringSet<seqan2::CharString> TNameStore;
+        typedef seqan2::NameStoreCache<TNameStore> TNameStoreCache;
         TNameStore transcriptNames;
         TNameStoreCache transcriptNamesCache(transcriptNames);
 
@@ -179,15 +179,15 @@ public:
         std::vector<SplicingInstruction> splicingInstructions;
 
         // Materialized sequence.
-        seqan::Dna5String seq;
+        seqan2::Dna5String seq;
         // Tanscript ids, used as a buffer below.
-        seqan::String<unsigned> transcriptIDs;
+        seqan2::String<unsigned> transcriptIDs;
 
         // Read GFF/GTF file contig by contig (must be sorted by reference name).  For each contig, we all recors,
         // create simulation instructions and then build the transcripts for each haplotype.
         while (record.rID != std::numeric_limits<int>::max())  // sentinel, at end
         {
-            seqan::CharString refName = record.ref;
+            seqan2::CharString refName = record.ref;
             std::cerr << "Splicing for " << refName << " ...";
 
             // Read GFF records for this contig.
@@ -271,8 +271,8 @@ public:
 
     // Perform splicing of transcripts.
     void _performSplicing(std::vector<SplicingInstruction> const & instructions,
-                          seqan::Dna5String const & seq,
-                          seqan::StringSet<seqan::CharString> const & tNames,
+                          seqan2::Dna5String const & seq,
+                          seqan2::StringSet<seqan2::CharString> const & tNames,
                           int hID,  // -1 in case of no variants
                           VcfMaterializer const & vcfMat)
     {
@@ -282,7 +282,7 @@ public:
         if (itEnd != instructions.end())
             ++itEnd;
 
-        seqan::Dna5String transcript, buffer;
+        seqan2::Dna5String transcript, buffer;
 
         do
         {
@@ -340,14 +340,14 @@ public:
     }
 
     // Append the transcript names for the given record.
-    void _appendTranscriptNames(seqan::String<unsigned> & tIDs,  // transcript ids to write out
-                                seqan::StringSet<seqan::CharString> & contigNames,
-                                seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > & cache,
+    void _appendTranscriptNames(seqan2::String<unsigned> & tIDs,  // transcript ids to write out
+                                seqan2::StringSet<seqan2::CharString> & contigNames,
+                                seqan2::NameStoreCache<seqan2::StringSet<seqan2::CharString> > & cache,
                                 MyGffRecord const & record)
     {
         clear(tIDs);
 
-        seqan::CharString groupNames;
+        seqan2::CharString groupNames;
         for (unsigned i = 0; i < length(record.tagNames); ++i)
             if (record.tagNames[i] == options.gffGroupBy)
                 groupNames = record.tagValues[i];
@@ -356,8 +356,8 @@ public:
 
         // Write out the ids of the transcripts that the record belongs to as indices in contigNames.
         unsigned idx = 0;
-        seqan::StringSet<seqan::CharString> ss;
-        strSplit(ss, groupNames, seqan::EqualsChar<','>());
+        seqan2::StringSet<seqan2::CharString> ss;
+        strSplit(ss, groupNames, seqan2::EqualsChar<','>());
         for (unsigned i = 0; i < length(ss); ++i)
         {
             if (empty(ss[i]))
@@ -408,11 +408,11 @@ public:
 // Function parseCommandLine()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(MasonSplicingOptions & options, int argc, char const ** argv)
 {
     // Setup ArgumentParser.
-    seqan::ArgumentParser parser("mason_splicing");
+    seqan2::ArgumentParser parser("mason_splicing");
     // Set short description, version, and date.
     setShortDescription(parser, "Generating Transcripts");
     setDateAndVersion(parser);
@@ -433,15 +433,15 @@ parseCommandLine(MasonSplicingOptions & options, int argc, char const ** argv)
     options.addTextSections(parser);
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     options.getOptionValues(parser);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 // --------------------------------------------------------------------------
@@ -454,13 +454,13 @@ int main(int argc, char const ** argv)
 {
     // Parse the command line.
     MasonSplicingOptions options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If there was an error parsing or built-in argument parser functionality
     // was triggered then we exit the program.  The return code is 1 if there
     // were errors and 0 if there were none.
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     std::cerr << "MASON SPLICING\n"
               << "==============\n\n";

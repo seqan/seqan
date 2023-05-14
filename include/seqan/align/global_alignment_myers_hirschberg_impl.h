@@ -37,7 +37,7 @@
 
 #include <bitset>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -757,6 +757,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     return total_score;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_HIRSCHBERG_IMPL_H_

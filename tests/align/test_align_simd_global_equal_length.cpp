@@ -47,14 +47,14 @@ class SimdAlignTestCommon : public SimdAlignTest<T>
 {};
 
 typedef
-        seqan::TagList<std::tuple<seqan::AlignConfig<>,                         impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<true, true, true, true>,   impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<true, false, false, true>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<false, true, true, false>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOff>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<>,                         impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<true, true, true, true>,   impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<true, false, false, true>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>,
-        seqan::TagList<std::tuple<seqan::AlignConfig<false, true, true, false>, impl::test_align_mock::EqualLengthSimd,     seqan::BandOn>
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<>,                         impl::test_align_mock::EqualLengthSimd,     seqan2::BandOff>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<true, true, true, true>,   impl::test_align_mock::EqualLengthSimd,     seqan2::BandOff>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<true, false, false, true>, impl::test_align_mock::EqualLengthSimd,     seqan2::BandOff>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<false, true, true, false>, impl::test_align_mock::EqualLengthSimd,     seqan2::BandOff>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<>,                         impl::test_align_mock::EqualLengthSimd,     seqan2::BandOn>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<true, true, true, true>,   impl::test_align_mock::EqualLengthSimd,     seqan2::BandOn>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<true, false, false, true>, impl::test_align_mock::EqualLengthSimd,     seqan2::BandOn>,
+        seqan2::TagList<std::tuple<seqan2::AlignConfig<false, true, true, false>, impl::test_align_mock::EqualLengthSimd,     seqan2::BandOn>
         > > > > > > > > SimdAlignGlobalEqualLengthTestTypes;
 
 SEQAN_TYPED_TEST_CASE(SimdAlignTestCommon, SimdAlignGlobalEqualLengthTestTypes);
@@ -62,6 +62,6 @@ SEQAN_TYPED_TEST_CASE(SimdAlignTestCommon, SimdAlignGlobalEqualLengthTestTypes);
 #include "test_align_simd_global.h"
 
 int main(int argc, char const ** argv) {
-    seqan::TestSystem::init(argc, argv);
-    return seqan::TestSystem::runAll();
+    seqan2::TestSystem::init(argc, argv);
+    return seqan2::TestSystem::runAll();
 }

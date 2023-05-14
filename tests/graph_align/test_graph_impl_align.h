@@ -41,7 +41,7 @@
 #define SEQAN_HEADER_TEST_GRAPH_IMPL_ALIGN_H
 
 
-namespace seqan {
+namespace seqan2 {
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -840,7 +840,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_OutEdgeIteratorAlignment)
     SEQAN_ASSERT_EQ(&g,  &hostGraph(it));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif
 

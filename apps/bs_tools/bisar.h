@@ -10,7 +10,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/score.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 class Times
 {
@@ -195,7 +195,7 @@ reAlign4(TReadGaps &readGaps,
 
 template <typename TFragmentStore, typename TContigGaps, typename TId, typename TScore, typename TOptions>
 inline int
-writeBsAlignment(seqan::BamFileOut & bamFileOut,
+writeBsAlignment(seqan2::BamFileOut & bamFileOut,
                  TFragmentStore &store,
                  TContigGaps &contigGaps,
                  TId &bestId,
@@ -269,7 +269,7 @@ writeBsAlignment(seqan::BamFileOut & bamFileOut,
 
     if (store.alignedReadStore[bestId].contigId == TAlignedRead::INVALID_ID)
     {
-        record.rID = seqan::BamAlignmentRecord::INVALID_REFID;
+        record.rID = seqan2::BamAlignmentRecord::INVALID_REFID;
         record.beginPos = -1;
     }
     else
@@ -277,7 +277,7 @@ writeBsAlignment(seqan::BamFileOut & bamFileOut,
         record.rID = store.alignedReadStore[bestId].contigId;
     }
 
-    seqan::BamTagsDict tagsDict(record.tags);
+    seqan2::BamTagsDict tagsDict(record.tags);
     setTagValue(tagsDict, "NM", (int)store.alignQualityStore[bestId].errors);
     if (!empty(md))
         setTagValue(tagsDict, "MD", md);
@@ -1005,13 +1005,13 @@ postProcessMain(TOptions &options, TModel const &)
     refresh(store.contigNameStoreCache);
 
     // Parse SAM file ....
-    seqan::BamFileOut bamFileOut;
+    seqan2::BamFileOut bamFileOut;
     if (!open(bamFileOut, toCString(options.outputFileName)))
     {
         std::cerr << "ERROR: Could not open " << toCString(options.outputFileName) << " for writing.\n";
         return 1;
     }
-    seqan::BamFileIn bamFileIn(bamFileOut);  // make sequence names etc. known to bamFileOut.
+    seqan2::BamFileIn bamFileIn(bamFileOut);  // make sequence names etc. known to bamFileOut.
     if (!open(bamFileIn, toCString(options.samFileName)))
     {
         std::cerr << "ERROR: Could not open " << toCString(options.samFileName) << " for reading.\n";

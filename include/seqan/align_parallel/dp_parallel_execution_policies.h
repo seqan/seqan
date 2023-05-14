@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_PARALLEL_EXECUTION_PLOCIES_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_PARALLEL_EXECUTION_PLOCIES_H_
 
-namespace seqan
+namespace seqan2
 {
 // ============================================================================
 // Forwards
@@ -169,6 +169,6 @@ setParallelAlignments(ExecutionPolicy<WavefrontAlignment<TSpec>, TVectorizationS
     p.parallelAlignments = pi;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_PARALLEL_EXECUTION_PLOCIES_H_

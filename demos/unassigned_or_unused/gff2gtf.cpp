@@ -5,7 +5,7 @@
 
 #include <seqan/store.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, const char * argv[])
 {

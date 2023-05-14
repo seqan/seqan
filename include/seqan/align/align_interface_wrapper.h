@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_ALIGN_INTERFACE_WRAPPER_H_
 #define INCLUDE_SEQAN_ALIGN_ALIGN_INTERFACE_WRAPPER_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -84,7 +84,7 @@ _alignWrapperSequential(TSetH const & stringsH,
     forEach(zipCont,
             [&] (auto tuple)
             {
-                using namespace seqan;
+                using namespace seqan2;
                 DPScoutState_<Default> dpScoutState;
                 String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
                 std::get<0>(tuple) = _setUpAndRunAlignment(traceSegments, dpScoutState,
@@ -124,7 +124,7 @@ _alignWrapperSequential(TSeqH const & stringH,
     forEach(zipCont,
             [&] (auto tuple)
             {
-                using namespace seqan;
+                using namespace seqan2;
                 DPScoutState_<Default> dpScoutState;
                 String<TraceSegment_<unsigned, unsigned> > traceSegments;  // Dummy segments.
                 std::get<0>(tuple) = _setUpAndRunAlignment(traceSegments, dpScoutState, stringH, std::get<1>(tuple),
@@ -162,12 +162,12 @@ _alignWrapperSequential(TSetH & gapSeqSetH,
 
     String<TScoreValue> results;
     resize(results, length(gapSeqSetH));
-    
+
     auto zipCont = makeZipView(results, gapSeqSetH, gapSeqSetV);
     forEach(zipCont,
             [&] (auto tuple)
             {
-                using namespace seqan;
+                using namespace seqan2;
                 String<TTraceSegment> trace;
                 DPScoutState_<Default> dpScoutState;
                 std::get<0>(tuple) = _setUpAndRunAlignment(trace, dpScoutState, source(std::get<1>(tuple)),
@@ -193,6 +193,6 @@ inline auto _alignWrapper(TArgs && ...args)
 #endif
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_ALIGN_INTERFACE_WRAPPER_H_

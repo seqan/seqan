@@ -38,13 +38,13 @@
 #include <sstream>
 
 #include <seqan/basic.h>
-#include <seqan/stream.h>  // for printing seqan::String<>
+#include <seqan/stream.h>  // for printing seqan2::String<>
 
 #include <seqan/seeds.h>
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -100,7 +100,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -156,7 +156,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_global_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     {
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     {
         CharString sequenceH = "CGAATCCATCCCACACA";
@@ -261,7 +261,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_semi_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     {
         CharString sequenceH = "CGAATCCATCCCACACA";
@@ -288,7 +288,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_overlap_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     {
         CharString sequenceH = "CGAATCCATCCCACACA";
@@ -317,7 +317,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_linear_overlap_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
@@ -337,7 +337,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_one_score)
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, 8);
-    
+
         // Compare alignment rows.
         SEQAN_ASSERT_EQ(row(alignment, 0), "--CGAAT--CCATCCCACACA");
         SEQAN_ASSERT_EQ(row(alignment, 1), "GGCG-ATNNNCATGGCACA--");
@@ -369,7 +369,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -424,7 +424,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_global_two_scores)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     {
@@ -444,7 +444,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_one_score)
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, 11);
-    
+
         // Compare alignment rows.
         SEQAN_ASSERT_EQ(row(alignment, 0), "--CGAAT--CCATCCCACACA");
         SEQAN_ASSERT_EQ(row(alignment, 1), "GGCG-ATNNNCATGGCACA--");
@@ -476,7 +476,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -510,7 +510,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_two_scores)
         CharString sequenceV = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
-        
+
         String<TSeed> seedChain;
         appendValue(seedChain, TSeed(0,2,5,6));
         appendValue(seedChain, TSeed(6,9,9,12));
@@ -532,7 +532,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_semi_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     {
@@ -552,7 +552,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_one_score)
 
         int result = bandedChainAlignment(alignment, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 14);
-    
+
         // Compare alignment rows.
         SEQAN_ASSERT_EQ(row(alignment, 0), "--CGAAT--CCATCCCACACA");
         SEQAN_ASSERT_EQ(row(alignment, 1), "GGCG-ATNNNCATGGCACA--");
@@ -561,7 +561,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -593,7 +593,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_align_affine_overlap_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
@@ -646,7 +646,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_two_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
@@ -700,7 +700,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_two_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     {
@@ -752,7 +752,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_two_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     {
         CharString sequenceV = "CGAATCCATCCCACACA";
@@ -805,7 +805,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_two_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     {
         CharString sequenceV = "CGAATCCATCCCACACA";
@@ -831,14 +831,14 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_overlap_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_overlap_two_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     {
         CharString sequenceV = "CGAATCCATCCCACACA";
         Dna5String sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -2);
-        
+
         String<TSeed> seedChain;
         appendValue(seedChain, TSeed(0,2,5,6));
         appendValue(seedChain, TSeed(6,9,9,12));
@@ -860,7 +860,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_overlap_two_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
     {
@@ -880,7 +880,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_one_score)
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, 8);
-    
+
         // Compare alignment rows.
         SEQAN_ASSERT_EQ(gapsHorizontal, "--CGAAT--CCATCCCACACA");
         SEQAN_ASSERT_EQ(gapsVertical, "GGCG-ATNNNCATGGCACA--");
@@ -913,7 +913,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -968,7 +968,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_global_two_scores)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     {
@@ -988,7 +988,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_one_score)
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, 11);
-    
+
         // Compare alignment rows.
         SEQAN_ASSERT_EQ(gapsHorizontal, "--CGAAT--CCATCCCACACA");
         SEQAN_ASSERT_EQ(gapsVertical, "GGCG-ATNNNCATGGCACA--");
@@ -1020,7 +1020,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -1054,7 +1054,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_two_scores)
         CharString sequenceH = "GGCGATNNNCATGGCACA";
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
-        
+
         String<TSeed> seedChain;
         appendValue(seedChain, TSeed(0,2,5,6));
         appendValue(seedChain, TSeed(6,9,9,12));
@@ -1076,7 +1076,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_semi_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     {
@@ -1096,7 +1096,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_one_score)
 
         int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 14);
-    
+
         // Compare alignment rows.
         SEQAN_ASSERT_EQ(gapsHorizontal, "--CGAAT--CCATCCCACACA");
         SEQAN_ASSERT_EQ(gapsVertical, "GGCG-ATNNNCATGGCACA--");
@@ -1105,7 +1105,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test on whole strings with AlignConfig.
@@ -1137,7 +1137,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_affine_overlap_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1207,7 +1207,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_one_s
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1282,7 +1282,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_global_two_s
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1324,7 +1324,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_one_sco
         appendValue(strings, "GGCGATNNNCATGGCACA");
 
         TAlignmentGraph alignGraph(strings);
-        
+
         Score<int, Simple> scoringScheme(2, -1, -2);
 
         String<TSeed> seedChain;
@@ -1351,7 +1351,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_one_sco
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1425,7 +1425,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_semi_two_sco
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1465,7 +1465,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_one_
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1507,7 +1507,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_linear_overlap_two_
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1520,7 +1520,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_one_s
         appendValue(seedChain, TSeed(0,2,5,6));
         appendValue(seedChain, TSeed(6,9,9,12));
         appendValue(seedChain, TSeed(11,14,17,16));
-        
+
         TStringSet strings;
         appendValue(strings, "CGAATCCATCCCACACA");
         appendValue(strings, "GGCGATNNNCATGGCACA");
@@ -1575,7 +1575,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_one_s
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
@@ -1599,7 +1599,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_two_s
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<false, false, false, false>(), 2);
         SEQAN_ASSERT_EQ(result, -98);
-        
+
         std::stringstream ss;
         ss << alignGraph;
 
@@ -1648,7 +1648,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_global_two_s
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1716,7 +1716,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_one_sco
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
@@ -1758,7 +1758,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_two_sco
     {
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
-        
+
         String<TSeed> seedChain;
         appendValue(seedChain, TSeed(0,2,5,6));
         appendValue(seedChain, TSeed(6,9,9,12));
@@ -1789,7 +1789,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_semi_two_sco
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
     typedef StringSet<CharString, Dependent<> > TDependentStringSet;
@@ -1810,7 +1810,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_one_
 
         int result = bandedChainAlignment(alignGraph, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 14);
-    
+
         std::stringstream ss;
         ss << alignGraph;
 
@@ -1827,7 +1827,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_one_
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef StringSet<CharString> TStringSet;
@@ -1869,7 +1869,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_alignmentgraph_affine_overlap_two_
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     typedef StringSet<Dna5String> TStringSet;
@@ -1926,7 +1926,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_one_score)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     typedef StringSet<Dna5String> TStringSet;
@@ -1983,7 +1983,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_global_two_scores
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     typedef StringSet<Dna5String> TStringSet;
@@ -2038,7 +2038,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     typedef StringSet<Dna5String> TStringSet;
@@ -2094,7 +2094,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_semi_two_scores)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     typedef StringSet<Dna5String> TStringSet;
@@ -2127,7 +2127,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_overlap_one_score
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
 
     typedef StringSet<Dna5String> TStringSet;
@@ -2159,7 +2159,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_linear_overlap_two_score
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -2210,7 +2210,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
     typedef String<TFragment>  TFragmentString;
@@ -2264,7 +2264,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_global_two_scores
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -2315,7 +2315,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_one_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
     typedef String<TFragment>  TFragmentString;
@@ -2337,7 +2337,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores)
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringSchemeAnchor, scoringSchemeGap, AlignConfig<true, false, false, true>(), 2);
         SEQAN_ASSERT_EQ(result, -8);
-        
+
         SEQAN_ASSERT(length(fragments) == 3u);
         SEQAN_ASSERT(fragments[0] == TFragment(0, 11, 1, 14, 4));
         SEQAN_ASSERT(fragments[1] == TFragment(0, 9, 1, 8, 2));
@@ -2351,7 +2351,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores)
         appendValue(strings, "GGCGATNNNCATGGCACA");
         Score<int, Simple> scoringSchemeAnchor(5, -10, -10, -20);
         Score<int, Simple> scoringSchemeGap(0, -2, -1, -2);
-        
+
         String<TSeed> seedChain;
         appendValue(seedChain, TSeed(0,2,5,6));
         appendValue(seedChain, TSeed(6,9,9,12));
@@ -2370,7 +2370,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef Seed<Simple> TSeed;
     typedef StringSet<Dna5String> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -2390,7 +2390,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score
         TFragmentString fragments;
         int result = bandedChainAlignment(fragments, strings, seedChain, scoringScheme, AlignConfig<true, true, true, true>(), 2);
         SEQAN_ASSERT_EQ(result, 14);
-        
+
         SEQAN_ASSERT(length(fragments) == 3u);
         SEQAN_ASSERT(fragments[0] == TFragment(0, 5, 1, 8, 10));
         SEQAN_ASSERT(fragments[1] == TFragment(0, 3, 1, 4, 2));
@@ -2400,7 +2400,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_scores)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef StringSet<Dna5String> TStringSet;
@@ -2431,7 +2431,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_score
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_stl_vector_adaption)
 {
-	using namespace seqan;
+	using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     {

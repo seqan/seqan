@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOIN_H_
 #define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOIN_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -125,6 +125,6 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
    join(journalSet, journalIdx, JoinConfig<GlobalAlign<JournaledManhatten> >());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOIN_H_

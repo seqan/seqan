@@ -1,5 +1,5 @@
 *************************************************
-* Multiple sequence alignment - SeqAn::T-Coffee *
+* Multiple sequence alignment - seqan2::T-Coffee *
 * (c) Copyright 2009 by Tobias Rausch           *
 *************************************************
 
@@ -9,18 +9,18 @@ Table of Contents
   1.   Installation
   2.   Example
   3.   Contact
-  
+
 ---------------------------------------------------------------------------
 1. Installation
 ---------------------------------------------------------------------------
 
-SeqAn::T-Coffee is distributed with SeqAn, http://www.seqan.de. 
+seqan2::T-Coffee is distributed with SeqAn, http://www.seqan.de.
 You can build it using the latest snapshot or directly from
 the Github repository.
 
 Snapshot:
 
-  1)  Download the latest snapshot of SeqAn::T-Coffee (http://packages.seqan.de/seqan_tcoffee/)
+  1)  Download the latest snapshot of seqan2::T-Coffee (http://packages.seqan.de/seqan_tcoffee/)
   2)  Unzip it to a directory of your choice (e.g. snapshot)
   3)  cd snapshot/bin
   4)  ./seqan_tcoffee --help

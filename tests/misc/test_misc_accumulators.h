@@ -43,7 +43,7 @@
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_average)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<int, AccuAverage> acc;
 
@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_average)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_count)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<int, AccuAverage> acc;
 
@@ -73,7 +73,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_count)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_sum)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<int, AccuAverage> acc;
 
@@ -88,7 +88,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_sum)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_clear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<int, AccuAverage> acc;
 
@@ -105,7 +105,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_int_clear)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_average)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<double, AccuAverage> acc;
 
@@ -120,7 +120,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_average)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_count)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<double, AccuAverage> acc;
 
@@ -135,7 +135,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_count)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_sum)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<double, AccuAverage> acc;
 
@@ -150,7 +150,7 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_sum)
 
 SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_clear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Accumulator<double, AccuAverage> acc;
 

@@ -40,7 +40,7 @@
 // Test GetDefaultRang and defaultRng().
 SEQAN_DEFINE_TEST(test_default_rng)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test that calling the function works.
     typedef String<Dna> TTag;

@@ -45,7 +45,7 @@
 #ifndef SEQAN_APPS_RABEMA_FAI_INDEX_H_
 #define SEQAN_APPS_RABEMA_FAI_INDEX_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -690,6 +690,6 @@ inline bool build(FaiIndex & index, char const * seqFilename)
     return build(index, seqFilename, toCString(faiFilename));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_APPS_RABEMA_FAI_INDEX_H_

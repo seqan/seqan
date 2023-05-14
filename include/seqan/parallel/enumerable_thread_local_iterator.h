@@ -39,20 +39,20 @@ namespace std
 {
 
 template<typename TContainer>
-struct iterator_traits<seqan::Iter<TContainer, seqan::EnumerableThreadLocalIterSpec> > // nolint
+struct iterator_traits<seqan2::Iter<TContainer, seqan2::EnumerableThreadLocalIterSpec> > // nolint
 {
-    typedef seqan::Iter<TContainer, seqan::EnumerableThreadLocalIterSpec> TIter; // nolint
+    typedef seqan2::Iter<TContainer, seqan2::EnumerableThreadLocalIterSpec> TIter; // nolint
 
     typedef forward_iterator_tag iterator_category; // nolint
-    typedef typename seqan::Value<TIter>::Type value_type; // nolint
-    typedef typename seqan::Difference<TIter>::Type difference_type; // nolint
-    typedef typename seqan::Value<TIter>::Type * pointer; // nolint
-    typedef typename seqan::Reference<TIter>::Type reference; // nolint
+    typedef typename seqan2::Value<TIter>::Type value_type; // nolint
+    typedef typename seqan2::Difference<TIter>::Type difference_type; // nolint
+    typedef typename seqan2::Value<TIter>::Type * pointer; // nolint
+    typedef typename seqan2::Reference<TIter>::Type reference; // nolint
 };
 
 }
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -181,6 +181,6 @@ operator!=(Iter<TEnumerableThreadLocalLeft, EnumerableThreadLocalIterSpec> const
     return !(lhs._mInnerIter == rhs._mInnerIter);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLDUE_SEQAN_ALIGN_PARALLEL_ENUMERABLE_THREAD_LOCAL_ITERATOR_H_

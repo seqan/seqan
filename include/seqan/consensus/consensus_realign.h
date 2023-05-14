@@ -35,7 +35,7 @@
 #ifndef SEQAN_CONSENSUS_CONSENSUS_REALIGN_H_
 #define SEQAN_CONSENSUS_CONSENSUS_REALIGN_H_
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -789,6 +789,6 @@ reAlign(FragmentStore<TSpec, TConfig>& fragStore,
     reAlign(fragStore, consScore, contigId, 0, bandwidth, includeReference);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_CONSENSUS_CONSENSUS_REALIGN_H_

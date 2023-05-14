@@ -77,7 +77,7 @@
 struct MasonSimulateGenomeOptions
 {
     // A list of the lengths of the contigs to simulate.
-    seqan::String<int64_t> contigLengths;
+    seqan2::String<int64_t> contigLengths;
     // The seed to use for random number generation.
     int seed;
 
@@ -114,13 +114,13 @@ struct BSSeqOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -152,13 +152,13 @@ struct MethylationLevelSimulatorOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -178,9 +178,9 @@ struct MaterializerOptions
     int verbosity;
 
     // Path to reference file.  Required.
-    seqan::CharString fastaFileName;
+    seqan2::CharString fastaFileName;
     // Path to VCF file.  No variation is applied if empty.
-    seqan::CharString vcfFileName;
+    seqan2::CharString vcfFileName;
 
     // TODO(holtgrew): Add options for methylation levels FASTA input here?
 
@@ -188,13 +188,13 @@ struct MaterializerOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -258,13 +258,13 @@ struct FragmentSamplerOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -313,7 +313,7 @@ struct SequencingOptions
     BSSeqOptions bsSeqOptions;
 
     // Prefix to give all reads.
-    seqan::CharString readNamePrefix;
+    seqan2::CharString readNamePrefix;
     // Whether or not to simulate qualities.
     bool simulateQualities;
     // Whether or not to simulate mate pairs.
@@ -333,13 +333,13 @@ struct SequencingOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -364,7 +364,7 @@ struct IlluminaSequencingOptions
     unsigned readLength;
 
     // Path to file with positional error probabilities.
-    seqan::CharString probabilityMismatchFile;
+    seqan2::CharString probabilityMismatchFile;
 
     // The default orientation for Illumina paired-end reads.
     SequencingOptions::MateOrientation defaultOrientation;
@@ -397,7 +397,7 @@ struct IlluminaSequencingOptions
 
     // Paths to left/right template FASTQ files.  The qualities will be used to compute positional qualities, patterns
     // of Ns will be applied to the simulated reads.  If set, this will be used instead of the built-in model.
-    seqan::CharString leftTemplateFastq, rightTemplateFastq;
+    seqan2::CharString leftTemplateFastq, rightTemplateFastq;
 
     // -----------------------------------------------------------------------
     // Base Calling Quality Model Parameters.
@@ -446,13 +446,13 @@ struct IlluminaSequencingOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -541,13 +541,13 @@ struct SangerSequencingOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -619,13 +619,13 @@ struct Roche454SequencingOptions
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -667,11 +667,11 @@ struct MasonSimulatorOptions
     bool forceSingleEnd;
 
     // Path to input methylation FASTA file.
-    seqan::CharString methFastaInFile;
+    seqan2::CharString methFastaInFile;
     // Path to output sequence files for left (and single end) and right reads.
-    seqan::CharString outFileNameLeft, outFileNameRight;
+    seqan2::CharString outFileNameLeft, outFileNameRight;
     // Path to output SAM file.
-    seqan::CharString outFileNameSam;
+    seqan2::CharString outFileNameSam;
 
     // Configuration for the reading of the reference and application of the variants from the VCF file.
     MaterializerOptions matOptions;
@@ -696,13 +696,13 @@ struct MasonSimulatorOptions
     {}
 
     // Add options to the argument parser.  Calls addOptions() on the nested *Options objects.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser, calls addTextSections() on *Options objects.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.  Calls getOptionValues() on the nested *Option objects.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -730,27 +730,27 @@ struct MasonMaterializerOptions
     MethylationLevelSimulatorOptions methOptions;
 
     // Path to output file.
-    seqan::CharString outputFileName;
+    seqan2::CharString outputFileName;
     // Path to TSV file to write the resulting breakpoints in variant genomes to.
-    seqan::CharString outputBreakpointFile;
+    seqan2::CharString outputBreakpointFile;
     // Separator between contig names and haplotype number.
-    seqan::CharString haplotypeNameSep;
+    seqan2::CharString haplotypeNameSep;
     // FASTA file to load the methylation levels from.
-    seqan::CharString methFastaInFile;
+    seqan2::CharString methFastaInFile;
     // FASTA file to write the methylation levels to.
-    seqan::CharString methFastaOutFile;
+    seqan2::CharString methFastaOutFile;
 
     MasonMaterializerOptions() : verbosity(1), seed(0), methSeed(0)
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -774,28 +774,28 @@ struct MasonSplicingOptions
     MaterializerOptions matOptions;
 
     // Path to input GFF/GTF file.
-    seqan::CharString inputGffFile;
+    seqan2::CharString inputGffFile;
     // Type of the annotations to splice.
-    seqan::CharString gffType;
+    seqan2::CharString gffType;
     // Name of the group-by column.
-    seqan::CharString gffGroupBy;
+    seqan2::CharString gffGroupBy;
 
     // Path to output file.
-    seqan::CharString outputFileName;
+    seqan2::CharString outputFileName;
     // Separator between contig names and haplotype number.
-    seqan::CharString haplotypeNameSep;
+    seqan2::CharString haplotypeNameSep;
 
     MasonSplicingOptions() : verbosity(1), seed(0)
     {}
 
     // Add options to the argument parser.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -819,10 +819,10 @@ struct MasonFragmentSequencingOptions
     bool forceSingleEnd;
 
     // Path to input file.
-    seqan::CharString inputFileName;
+    seqan2::CharString inputFileName;
 
     // Path to output sequence files for left (and single end) and right reads.
-    seqan::CharString outFileNameLeft, outFileNameRight;
+    seqan2::CharString outFileNameLeft, outFileNameRight;
 
     // Generic sequencing configuration.
     SequencingOptions seqOptions;
@@ -837,13 +837,13 @@ struct MasonFragmentSequencingOptions
     {}
 
     // Add options to the argument parser.  Calls addOptions() on the nested *Options objects.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser, calls addTextSections() on *Options objects.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.  Calls getOptionValues() on the nested *Option objects.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -869,21 +869,21 @@ struct MasonMethylationOptions
     MethylationLevelSimulatorOptions methOptions;
 
     // FASTA file to import.
-    seqan::CharString fastaInFile;
+    seqan2::CharString fastaInFile;
     // FASTA file to write the methylation levels to.
-    seqan::CharString methFastaOutFile;
+    seqan2::CharString methFastaOutFile;
 
     MasonMethylationOptions() : verbosity(1), seed(0)
     {}
 
     // Add options to the argument parser.  Calls addOptions() on the nested *Options objects.
-    void addOptions(seqan::ArgumentParser & parser) const;
+    void addOptions(seqan2::ArgumentParser & parser) const;
 
     // Add possible text sections to the argument parser, calls addTextSections() on *Options objects.
-    void addTextSections(seqan::ArgumentParser & parser) const;
+    void addTextSections(seqan2::ArgumentParser & parser) const;
 
     // Get option values from the argument parser.  Calls getOptionValues() on the nested *Option objects.
-    void getOptionValues(seqan::ArgumentParser const & parser);
+    void getOptionValues(seqan2::ArgumentParser const & parser);
 
     // Print settings to out.
     void print(std::ostream & out) const;
@@ -910,7 +910,7 @@ char const * getFragmentSizeModelStr(Roche454SequencingOptions::ReadLengthModel 
 // ----------------------------------------------------------------------------
 
 inline
-void setDateAndVersion(seqan::ArgumentParser & parser)
+void setDateAndVersion(seqan2::ArgumentParser & parser)
 {
 #ifdef SEQAN_APP_VERSION
     #ifdef SEQAN_REVISION

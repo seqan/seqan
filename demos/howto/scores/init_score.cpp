@@ -31,12 +31,12 @@
 #include <seqan/stream.h>   // For printing strings.
 #include <seqan/score.h>    // The module score.
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![user-defined-matrix]
 // Extend SeqAn by a user-define scoring matrix.
-namespace seqan {
+namespace seqan2 {
 
 // We have to create a new specialization of the ScoringMatrix_ class
 // for the DNA alphabet.  For this, we first create a new tag.
@@ -67,7 +67,7 @@ struct ScoringMatrixData_<int, Dna5, UserDefinedMatrix>
     }
 
 };
-}  // namespace seqan
+}  // namespace seqan2
 //![user-defined-matrix]
 
 //![show-scoring-matrix]

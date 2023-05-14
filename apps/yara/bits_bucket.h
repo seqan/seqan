@@ -37,7 +37,7 @@
 #ifndef APP_YARA_BITS_BUCKET_H_
 #define APP_YARA_BITS_BUCKET_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functors

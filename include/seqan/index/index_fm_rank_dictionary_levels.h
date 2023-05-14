@@ -40,7 +40,7 @@
 
 #define TPREFIXLEVELS Levels<TSpec, LevelsPrefixRDConfig<TSize, TFibre, LEVELS, WPB> >
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

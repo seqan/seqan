@@ -42,8 +42,8 @@
 
 struct ConceptsInStruct
 {
-    SEQAN_CONCEPT_ASSERT((seqan::IntegerConcept<char>));
-    // SEQAN_CONCEPT_ASSERT((seqan::IntegerConcept<double>));
+    SEQAN_CONCEPT_ASSERT((seqan2::IntegerConcept<char>));
+    // SEQAN_CONCEPT_ASSERT((seqan2::IntegerConcept<double>));
 
     // BOOST_CONCEPT_ASSERT((boost::Integer<char>));
     // BOOST_CONCEPT_ASSERT((boost::Integer<double>));
@@ -51,8 +51,8 @@ struct ConceptsInStruct
 
 template <typename T>
 SEQAN_CONCEPT_REQUIRES(
-        ((seqan::IntegerConcept<T>))
-        ((seqan::SignedIntegerConcept<T>)),
+        ((seqan2::IntegerConcept<T>))
+        ((seqan2::SignedIntegerConcept<T>)),
         (void)) // return type
 foo(T const &)
 {}
@@ -68,20 +68,20 @@ foo(T const &)
 // A test for strings.
 SEQAN_DEFINE_TEST(test_basic_concepts_integer_concept)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // foo(10);
     // foo(10u);
     // foo(3.0);
 
     // SEQAN_ASSERT((IntegerConcept<char>));
-    // SEQAN_ASSERT_EQ((seqan::IntegerConcept<double>::VALUE), 0);
+    // SEQAN_ASSERT_EQ((seqan2::IntegerConcept<double>::VALUE), 0);
 
     // foo2(10);
     // foo2(10u);
 
     SEQAN_CONCEPT_ASSERT((IntegerConcept<char>));
-    // SEQAN_CONCEPT_ASSERT((seqan::IntegerConcept<double>));
+    // SEQAN_CONCEPT_ASSERT((seqan2::IntegerConcept<double>));
 
     // BOOST_CONCEPT_ASSERT((boost::Integer<char>));
     // BOOST_CONCEPT_ASSERT((boost::Integer<double>));
@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_basic_concepts_integer_concept)
 
 SEQAN_DEFINE_TEST(test_basic_concepts_move_construtible_concept)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     struct TestMoveable
     {

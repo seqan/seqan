@@ -38,7 +38,7 @@
 // uncomment this for verbose debug output
 //#define SEQAN_DEBUG_PEX
 
-namespace seqan
+namespace seqan2
 {
 
 struct Hierarchical;
@@ -731,7 +731,7 @@ inline bool find (TFinder & finder, Pattern<TNeedle, Pex<Hierarchical, TMultiFin
 }
 
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_..
 

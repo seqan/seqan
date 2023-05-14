@@ -45,7 +45,7 @@
 #ifndef INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
 #define INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -243,6 +243,6 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator 
     readRecord(meta, seq, iter, GenBank());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_

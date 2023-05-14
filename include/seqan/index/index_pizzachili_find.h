@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_PIZZACHILI_FIND_H
 #define SEQAN_HEADER_INDEX_PIZZACHILI_FIND_H
 
-namespace seqan {
+namespace seqan2 {
 
 struct PizzaChiliFinder_;
 
@@ -156,6 +156,6 @@ inline void _findFirstIndex(
     finder.range.i2 = occ + numocc;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_HEADER_INDEX_PIZZACHILI_FIND_H

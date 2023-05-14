@@ -59,11 +59,11 @@ class Roche454Model;
 // Tags, Classes, Enums
 // ============================================================================
 
-typedef seqan::Dna5String TRead;
-typedef seqan::CharString TQualities;
+typedef seqan2::Dna5String TRead;
+typedef seqan2::CharString TQualities;
 typedef std::mt19937 TRng;
-typedef seqan::Infix<seqan::Dna5String const>::Type TFragment;
-typedef seqan::String<seqan::CigarElement<> > TCigarString;
+typedef seqan2::Infix<seqan2::Dna5String const>::Type TFragment;
+typedef seqan2::String<seqan2::CigarElement<> > TCigarString;
 
 // ----------------------------------------------------------------------------
 // Class SequencingSimulationInfo
@@ -162,7 +162,7 @@ public:
     SequencingOptions const * seqOptions;
 
     // Buffer for the materialization of BS-seq treated fragments.
-    seqan::Dna5String methFrag;
+    seqan2::Dna5String methFrag;
 
     SequencingSimulator(TRng & rng, TRng & methRng, SequencingOptions const & _options) :
             rng(rng), methRng(methRng), seqOptions(&_options)
@@ -202,7 +202,7 @@ private:
     // Simulate BS-seq treatment on forward/reverse strand of frag with the given methylation levels.
     //
     // The result is a DNA string with the translations.
-    void _simulateBSTreatment(seqan::Dna5String & methFragment,
+    void _simulateBSTreatment(seqan2::Dna5String & methFragment,
                               TFragment const & frag,
                               MethylationLevels const & levels,
                               bool reverse);
@@ -385,7 +385,7 @@ inline std::pair<int, int> appendOperation(TCigarString & cigar, char op)
     if (!empty(cigar) && back(cigar).operation == op)
         back(cigar).count += 1;
     else
-        appendValue(cigar, seqan::CigarElement<>(op, 1));
+        appendValue(cigar, seqan2::CigarElement<>(op, 1));
     return std::make_pair((op != 'D'), (op != 'I'));
 }
 

@@ -4,7 +4,7 @@
 #include <seqan/score.h>
 #include <seqan/seeds.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

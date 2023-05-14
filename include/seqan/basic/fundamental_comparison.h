@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
 #define SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -144,6 +144,6 @@ inline bool ordGreater(TValue1 const & left, TValue2 const & right)
     return ordValue(left) > ordValue(static_cast<TValue1>(right));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_

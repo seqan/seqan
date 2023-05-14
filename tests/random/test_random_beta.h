@@ -43,7 +43,7 @@
 
 SEQAN_DEFINE_TEST(test_random_beta_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {  // Default constructor.
         BetaDistribution<double> pdf;
@@ -67,15 +67,15 @@ SEQAN_DEFINE_TEST(test_random_beta_constructors)
 
 SEQAN_DEFINE_TEST(test_random_beta_alpha)
 {
-    using namespace seqan;
-    
+    using namespace seqan2;
+
     BetaDistribution<double> pdf(0.5, 0.3);
     SEQAN_ASSERT_EQ(pdf.alpha(), 0.5);
 }
 
 SEQAN_DEFINE_TEST(test_random_beta_beta)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BetaDistribution<double> pdf(0.5, 0.3);
     SEQAN_ASSERT_EQ(pdf.beta(), 0.3);
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_random_beta_beta)
 
 SEQAN_DEFINE_TEST(test_random_beta_min)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BetaDistribution<double> pdf(0.5, 0.3);
     SEQAN_ASSERT_EQ(pdf.min(), 0.0);
@@ -91,7 +91,7 @@ SEQAN_DEFINE_TEST(test_random_beta_min)
 
 SEQAN_DEFINE_TEST(test_random_beta_max)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BetaDistribution<double> pdf(0.5, 0.3);
     SEQAN_ASSERT_EQ(pdf.max(), 1.0);
@@ -99,7 +99,7 @@ SEQAN_DEFINE_TEST(test_random_beta_max)
 
 SEQAN_DEFINE_TEST(test_random_beta_param)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BetaDistribution<double> pdf(0.5, 0.3);
     SEQAN_ASSERT_EQ(pdf.param().alpha(), 0.5);
@@ -108,7 +108,7 @@ SEQAN_DEFINE_TEST(test_random_beta_param)
 
 SEQAN_DEFINE_TEST(test_random_beta_set_param)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TParam = BetaDistribution<double>::param_type;
 
@@ -121,7 +121,7 @@ SEQAN_DEFINE_TEST(test_random_beta_set_param)
 
 SEQAN_DEFINE_TEST(test_random_beta_write)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BetaDistribution<double> pdf(0.5, 0.3);
 
@@ -132,7 +132,7 @@ SEQAN_DEFINE_TEST(test_random_beta_write)
 
 SEQAN_DEFINE_TEST(test_random_beta_read)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BetaDistribution<double> pdf;
 
@@ -144,7 +144,7 @@ SEQAN_DEFINE_TEST(test_random_beta_read)
 
 SEQAN_DEFINE_TEST(test_random_beta_functor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // mean = 0.3, stddev = 0.2
     {

@@ -39,7 +39,7 @@
 #ifndef INDEX_FM_H
 #define INDEX_FM_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Metafunctions

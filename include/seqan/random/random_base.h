@@ -37,7 +37,7 @@
 #ifndef SEQAN_RANDOM_RANDOM_BASE_H_
 #define SEQAN_RANDOM_RANDOM_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Forwards, Tags.
@@ -114,6 +114,6 @@ defaultRng(T const &)
     return defaultRng<TRng>();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_RANDOM_RANDOM_BASE_H_

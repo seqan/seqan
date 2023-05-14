@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -513,6 +513,6 @@ atNil(TIterator * me)
     return me == 0;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_

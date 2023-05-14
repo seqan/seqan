@@ -38,16 +38,16 @@
 #include <seqan/basic/debug_test_system.h>
 #include <string>
 
-namespace seqan
+namespace seqan2
 {
 
 void failExceptionTest()
 {
-    seqan::ClassTest::StaticData::thisTestOk() = false;
-    seqan::ClassTest::StaticData::errorCount() += 1;
-    seqan::ClassTest::fail();
+    seqan2::ClassTest::StaticData::thisTestOk() = false;
+    seqan2::ClassTest::StaticData::errorCount() += 1;
+    seqan2::ClassTest::fail();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_

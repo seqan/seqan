@@ -39,7 +39,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_ATOMIC_MISC_H_
 #define SEQAN_PARALLEL_PARALLEL_ATOMIC_MISC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -125,6 +125,6 @@ atomicMin(T volatile & x, T y)
     }
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // #define SEQAN_PARALLEL_PARALLEL_ATOMIC_MISC_H_

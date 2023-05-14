@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
 #define SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -197,6 +197,6 @@ inline void clear(VcfRecord & record)
     clear(record.genotypeInfos);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_

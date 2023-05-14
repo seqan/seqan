@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -348,6 +348,6 @@ setContigNamesCache(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & co
     context._contigNamesCache = &contigNamesCache;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_

@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_MODIFIER_MODIFIER_PADDING_H_
 #define INCLUDE_SEQAN_MODIFIER_MODIFIER_PADDING_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

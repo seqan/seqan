@@ -38,7 +38,7 @@
 
 #include <seqan/rna_io.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -235,6 +235,6 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & /*context
     writeRecord(target, record, Bpseq());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_RNA_IO_BPSEQ_READ_WRITE_H_

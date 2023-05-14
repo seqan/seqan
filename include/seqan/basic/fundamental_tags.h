@@ -40,7 +40,7 @@
 #ifndef SEQAN_BASIC_BASIC_TAGS_H_
 #define SEQAN_BASIC_BASIC_TAGS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -169,13 +169,13 @@ typedef Tag<Raw_> Raw;
  * class Klass
  * {
  * public:
- *     seqan::String m;
+ *     seqan2::String m;
  *
  *     // Copy constructor, other is left untouched.
  *     Klass(Klass const & other) { ... }
  *
  *     // Move constructor, leaves other and its members in an "empty" state.
- *     Klass(Klass & other, seqan::Move const &) { ... }
+ *     Klass(Klass & other, seqan2::Move const &) { ... }
  * };
  * @endcode
  *
@@ -559,7 +559,7 @@ inline bool tagSelectIntersect(TagSelector<TOutTagList> & outTagList, Tag<TagSpe
     {
         result = tagSelectIntersect(static_cast<typename TagSelector<TOutTagList>::Base & >(outTagList), inTag);
     }
-    
+
     return result;
 }
 
@@ -656,6 +656,6 @@ tagApply(TContext &ctx, TagSelector<TTagList> &format)
 }
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_BASIC_TAGS_H_

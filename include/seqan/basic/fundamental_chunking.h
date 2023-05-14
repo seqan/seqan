@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -143,6 +143,6 @@ inline void advanceChunk(TIterator &iter, TSize size)
     iter += size;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_

@@ -42,7 +42,7 @@
 // A test for strings.
 SEQAN_DEFINE_TEST(test_%(NAME)s_strings_example1)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Define some constant test data for comparison...
     CharString const STRING1 = "test 1";

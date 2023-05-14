@@ -36,7 +36,7 @@
 #include <boost/math/distributions.hpp>
 #endif
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1297,7 +1297,7 @@ interpretBamTags(TBamTags & tags, int & editDist, bool & multi,
             while (x < length(clipLeftRight) && isdigit(clipLeftRight[x]))
                 ++x;
             // Extract left and right clipping count.
-            seqan::CharString buffer = infix(clipLeftRight, 0, x);
+            seqan2::CharString buffer = infix(clipLeftRight, 0, x);
             lexicalCastWithException(clipLeft, buffer);
             if (x + 1 <= length(clipLeftRight))
                 buffer = infix(clipLeftRight, x + 1, length(clipLeftRight));
@@ -1780,7 +1780,7 @@ bool loadPositions(TPositions & positions,
         }
         SEQAN_ASSERT_GT(length(positions), contigId);
         skipUntil(fileIter, NotFunctor<IsWhitespace>());
-        seqan::CharString buffer;
+        seqan2::CharString buffer;
         skipUntil(fileIter, NotFunctor<IsDigit>());
         unsigned pos = 0;
         lexicalCastWithException(pos, buffer);

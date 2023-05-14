@@ -53,15 +53,15 @@ struct FxBamCoverageOptions
 {
     // Verbosity level.  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
     int verbosity;
-    
+
     // Path to Genome file.
-    seqan::CharString inGenomePath;
+    seqan2::CharString inGenomePath;
 
     // Path to SAM file.
-    seqan::CharString inBamPath;
+    seqan2::CharString inBamPath;
 
     // Path to output file.
-    seqan::CharString outPath;
+    seqan2::CharString outPath;
 
     // Window size to use for computation.
     int32_t windowSize;
@@ -83,7 +83,7 @@ struct BinData
     unsigned length;
     // Percentag C+G.
     double cgContent;
-    
+
     BinData() : coverage(0), length(0), cgContent(0)
     {}
 };
@@ -92,12 +92,12 @@ struct BinData
 // Function parseArgs()
 // --------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseArgs(FxBamCoverageOptions & options,
           int argc,
           char const ** argv)
 {
-    seqan::ArgumentParser parser("fx_bam_coverage");
+    seqan2::ArgumentParser parser("fx_bam_coverage");
     setShortDescription(parser, "Read Coverage Computation.");
     setCategory(parser, "Utilities");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
@@ -109,35 +109,35 @@ parseArgs(FxBamCoverageOptions & options,
     addDescription(parser, "Compute read coverage and C+G content for a genome.");
 
     // Two input files: Genome, and mapping.
-    addOption(parser, seqan::ArgParseOption("r", "in-reference", "Path to the reference file.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "IN.fa"));
+    addOption(parser, seqan2::ArgParseOption("r", "in-reference", "Path to the reference file.",
+                                            seqan2::ArgParseArgument::INPUT_FILE, "IN.fa"));
     setValidValues(parser, "in-reference", "fasta fa");
     setRequired(parser, "in-reference");
 
-    addOption(parser, seqan::ArgParseOption("m", "in-mapping", "Path to the mapping file to analyze.",
-                                            seqan::ArgParseArgument::INPUT_FILE));
+    addOption(parser, seqan2::ArgParseOption("m", "in-mapping", "Path to the mapping file to analyze.",
+                                            seqan2::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "in-mapping", "sam bam");
     setRequired(parser, "in-mapping");
 
     // TODO(holtgrew): I want a custom help text!
-    // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Verbose, log to STDERR."));
+    // addOption(parser, seqan2::ArgParseOption("h", "help", "This helpful screen."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Verbose, log to STDERR."));
     hideOption(parser, "verbose");
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Very verbose, log to STDERR."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Very verbose, log to STDERR."));
     hideOption(parser, "very-verbose");
 
     addSection(parser, "Main Options");
-    addOption(parser, seqan::ArgParseOption("w", "window-size", "Set the size of the non-overlapping windows in base pairs.", seqan::ArgParseArgument::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("w", "window-size", "Set the size of the non-overlapping windows in base pairs.", seqan2::ArgParseArgument::INTEGER, "NUM"));
     setDefaultValue(parser, "window-size", options.windowSize);
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
+    addOption(parser, seqan2::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan2::ArgParseArgument::OUTPUT_FILE, "TSV"));
     setRequired(parser, "out-path");
     setValidValues(parser, "out-path", ".coverage.tsv");
 
-    seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    if (res == seqan::ArgumentParser::PARSE_OK)
+    if (res == seqan2::ArgumentParser::PARSE_OK)
     {
         getOptionValue(options.inGenomePath, parser, "in-reference");
         getOptionValue(options.inBamPath, parser, "in-mapping");
@@ -159,15 +159,15 @@ parseArgs(FxBamCoverageOptions & options,
 
 int main(int argc, char const ** argv)
 {
-    double startTime = seqan::sysTime();
-    
+    double startTime = seqan2::sysTime();
+
     // -----------------------------------------------------------------------
     // Parse command line.
     // -----------------------------------------------------------------------
     FxBamCoverageOptions options;
-    seqan::ArgumentParser::ParseResult res = parseArgs(options, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;  // 1 on errors, 0 otherwise
+    seqan2::ArgumentParser::ParseResult res = parseArgs(options, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;  // 1 on errors, 0 otherwise
 
     // -----------------------------------------------------------------------
     // Show options.
@@ -191,7 +191,7 @@ int main(int argc, char const ** argv)
               << "___PREPARATION____________________________________________________________________\n"
               << "\n";
 
-    seqan::FaiIndex faiIndex;
+    seqan2::FaiIndex faiIndex;
     if (!open(faiIndex, toCString(options.inGenomePath)))
     {
         std::cerr << "Indexing GENOME file  " << options.inGenomePath << " ...";
@@ -205,18 +205,18 @@ int main(int argc, char const ** argv)
     std::cerr << " OK\n";
 
     // Prepare bins.
-    seqan::String<seqan::String<BinData> > bins;
+    seqan2::String<seqan2::String<BinData> > bins;
     resize(bins, numSeqs(faiIndex));
 
     // -----------------------------------------------------------------------
-    // Compute C+G content 
+    // Compute C+G content
     // -----------------------------------------------------------------------
 
     std::cerr << "\n"
               << "___C+G CONTENT COMPUTATION________________________________________________________\n"
               << "\n";
 
-    seqan::Dna5String contigSeq;
+    seqan2::Dna5String contigSeq;
     for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
     {
         std::cerr << "[" << sequenceName(faiIndex, i) << "] ...";
@@ -250,26 +250,26 @@ int main(int argc, char const ** argv)
               << "\n"
               << "Computing Coverage...";
 
-    seqan::BamFileIn bamFile;
+    seqan2::BamFileIn bamFile;
     if (!open(bamFile, toCString(options.inBamPath)))
     {
         std::cerr << "Could not open " << options.inBamPath << "!\n";
         return 1;
     }
 
-    seqan::BamHeader header;
+    seqan2::BamHeader header;
     readHeader(header, bamFile);
 
-    seqan::BamAlignmentRecord record;
+    seqan2::BamAlignmentRecord record;
     while (!atEnd(bamFile))
     {
         readRecord(record, bamFile);
 
-        if (hasFlagUnmapped(record) || hasFlagSecondary(record) || record.rID == seqan::BamAlignmentRecord::INVALID_REFID)
+        if (hasFlagUnmapped(record) || hasFlagSecondary(record) || record.rID == seqan2::BamAlignmentRecord::INVALID_REFID)
             continue;  // Skip these records.
 
         int contigId = 0;
-        seqan::CharString const & contigName = contigNames(context(bamFile))[record.rID];
+        seqan2::CharString const & contigName = contigNames(context(bamFile))[record.rID];
         if (!getIdByName(contigId, faiIndex, contigName))
         {
             std::cerr << "ERROR: Alignment to unknown contig " << contigName << "!\n";
@@ -314,7 +314,7 @@ int main(int argc, char const ** argv)
     }
 
     if (options.verbosity >= 2)
-        std::cerr << "Took " << (seqan::sysTime() - startTime) << " s\n";
+        std::cerr << "Took " << (seqan2::sysTime() - startTime) << " s\n";
 
     return 0;
 }

@@ -40,7 +40,7 @@
 #include <seqan/sequence.h>
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 
 // test iteration over a modified string

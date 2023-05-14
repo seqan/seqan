@@ -41,7 +41,7 @@
 #ifndef SEQAN_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
 #define SEQAN_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Forwards
@@ -1230,7 +1230,7 @@ operator!=(
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
 

@@ -41,7 +41,7 @@
 #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
 #define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -388,6 +388,6 @@ void _computeTraceback(StringSet<TTarget> & targetSet,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_

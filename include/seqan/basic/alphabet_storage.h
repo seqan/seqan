@@ -41,7 +41,7 @@
 
 #include <float.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -286,6 +286,6 @@ valueSize()
     return +ValueSize<T>::VALUE;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_

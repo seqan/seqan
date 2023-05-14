@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_ADAPT_STL_CONTAINER_H_
 #define SEQAN_SEQUENCE_ADAPT_STL_CONTAINER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations

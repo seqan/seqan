@@ -44,7 +44,7 @@
 // Test the modifier view metafunctions.
 SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CaesarChiffre<char> TFunctor;
     typedef ModifiedIterator<CharString, ModView<TFunctor> > TModifiedIterator;
@@ -79,7 +79,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_iterator_metafunctions)
 // Test the modifier view iterator.
 SEQAN_DEFINE_TEST(test_modifier_view_iterator)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CaesarChiffre<char> TFunctor;
     typedef Iterator<CharString, Standard>::Type    TIterator;
@@ -141,7 +141,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_const_iterator)
 // Test the modified string class with caesar chiffre.
 SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef CaesarChiffre<char> TFunctor;
     TFunctor myFunctor(1);
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_caesar_chiffre)
 // Test the modified string class with upper case functor.
 SEQAN_DEFINE_TEST(test_modifier_view_string_upper_case)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FunctorUpcase<char> TFunctor;
     TFunctor myFunctor;
@@ -233,7 +233,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_upper_case)
 // Test the modified string class with low case functor.
 SEQAN_DEFINE_TEST(test_modifier_view_string_low_case)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Would it make more sense to name this FunctorDowncase?
     typedef FunctorLowcase<char> TFunctor;
@@ -259,7 +259,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_low_case)
 // Test the modified string class with alphabet conversion.
 SEQAN_DEFINE_TEST(test_modifier_view_string_alphabet_conversion)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FunctorConvert<char, Dna5> TFunctor;
     TFunctor myFunctor;
@@ -285,7 +285,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_alphabet_conversion)
 // Test the modified string class with nested modifier.
 SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         typedef CaesarChiffre<char> TFunctor;
@@ -370,7 +370,7 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
 // Test the convert() function.
 SEQAN_DEFINE_TEST(test_modifier_convert_in_place)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString const originalStr = "This is a test!";
     CharString const expectedResult = "Uijt jt b uftu!";

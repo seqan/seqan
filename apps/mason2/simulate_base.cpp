@@ -117,7 +117,7 @@ void SequencingSimulator::simulateSingleEnd(TRead & seq, TQualities & quals, Seq
 // ---------------------------------------------------------------------------
 
 // Simulate single-end sequencing from a fragment.
-void SequencingSimulator::_simulateBSTreatment(seqan::Dna5String & methFragment,
+void SequencingSimulator::_simulateBSTreatment(seqan2::Dna5String & methFragment,
                                                TFragment const & frag,
                                                MethylationLevels const & levels,
                                                bool reverse)

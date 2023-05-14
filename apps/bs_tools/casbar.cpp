@@ -75,7 +75,7 @@
 #include "casbar_calling.h"
 
 //using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 // load entire genome into memory
 template <typename TGenomeSet, typename TGenomeNames>
@@ -84,10 +84,10 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std
     clear(genomes);
     clear(genomeNames);
 
-    seqan::CharString id, seq;
+    seqan2::CharString id, seq;
     for (unsigned filecount = 0; filecount < length(fileNameList); ++filecount)
     {
-        seqan::SeqFileIn seqFileIn;
+        seqan2::SeqFileIn seqFileIn;
         if (!open(seqFileIn, toCString(fileNameList[filecount])))
             return false;
 
@@ -591,8 +591,8 @@ assignIntervalsToContigs(TContigIntervals &contigIntervals, TFragmentStore &frag
 
 template <typename TSpec, typename TContigId, typename TBamFileIns, typename TRecords, typename TContigIntervals, typename TOptions, typename TMethOptions>
 inline bool
-detectSNPsForContig(seqan::VcfFileOut & vcfFileOut,
-                    seqan::BedFileOut & bedFileOut,
+detectSNPsForContig(seqan2::VcfFileOut & vcfFileOut,
+                    seqan2::BedFileOut & bedFileOut,
                     FragmentStore<TSpec> &fragmentStore1,
                     TContigId &currContigId,
                     TBamFileIns & bamFileIns,
@@ -808,11 +808,11 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
 
 #if !defined(SEQAN_ENABLE_PARALLELISM)
     // For each contig we need own record readers (for each given sam file)
-    std::vector<seqan::BamFileIn *> bamFileIns(length(options.readFNames));
-    std::vector<seqan::BamAlignmentRecord> records(bamFileIns.size());
+    std::vector<seqan2::BamFileIn *> bamFileIns(length(options.readFNames));
+    std::vector<seqan2::BamAlignmentRecord> records(bamFileIns.size());
     for (unsigned i = 0; i < length(options.readFNames); ++i)
     {
-        bamFileIns[i] = new seqan::BamFileIn;
+        bamFileIns[i] = new seqan2::BamFileIn;
         if (!open(*bamFileIns[i], toCString(options.readFNames[i])))
         {
             ::std::cerr << "Failed to open read file " << options.readFNames[i] << ::std::endl;
@@ -820,7 +820,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
         }
 
         // Read header.
-        seqan::BamHeader header;
+        seqan2::BamHeader header;
         readHeader(header, *bamFileIns[i]);
     }
 #endif  // #if !defined(SEQAN_ENABLE_PARALLELISM)
@@ -833,12 +833,12 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
     {
 #if defined(SEQAN_ENABLE_PARALLELISM)
         // For each contig we need our own BamFileIn (for each given sam file)
-        std::vector<seqan::BamFileIn *> bamFileIns(length(options.readFNames));
-        std::vector<seqan::BamAlignmentRecord> records(bamFileIns.size());
+        std::vector<seqan2::BamFileIn *> bamFileIns(length(options.readFNames));
+        std::vector<seqan2::BamAlignmentRecord> records(bamFileIns.size());
 
         for (unsigned i = 0; i < length(options.readFNames); ++i)
         {
-            bamFileIns[i] = new seqan::BamFileIn;
+            bamFileIns[i] = new seqan2::BamFileIn;
             if (!open(*bamFileIns[i], toCString(options.readFNames[i])))
             {
                 ::std::cerr << "Failed to open read file " << options.readFNames[i] << ::std::endl;
@@ -847,7 +847,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             else
             {
                 // Read header.
-                seqan::BamHeader header;
+                seqan2::BamHeader header;
                 readHeader(header, *bamFileIns[i]);
             }
         }
@@ -870,8 +870,8 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             contigTempFileNamesVcf[currContigId] = tempFileNameVcf;
             contigTempFileNamesBed[currContigId] = tempFileNameBed;
 
-            seqan::VcfFileOut vcfFileOut(toCString(tempFileNameVcf));
-            seqan::VcfHeader vcfHeader;
+            seqan2::VcfFileOut vcfFileOut(toCString(tempFileNameVcf));
+            seqan2::VcfHeader vcfHeader;
 
             appendName(contigNamesCache(context(vcfFileOut)), fragmentStore1.contigNameStore[currContigId]);
             appendName(sampleNamesCache(context(vcfFileOut)), "NA00001");
@@ -896,7 +896,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
             writeHeader(vcfFileOut, vcfHeader);
 
-            seqan::BedFileOut bedFileOut(toCString(tempFileNameBed));
+            seqan2::BedFileOut bedFileOut(toCString(tempFileNameBed));
             //XXX addSequenceName(tempBedStream, fragmentStore1.contigNameStore[currContigId]);
             detectSNPsForContig(vcfFileOut, bedFileOut, fragmentStore1, currContigId, bamFileIns, records, contigIntervals, options, methOptions);
         }
@@ -906,8 +906,8 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
         return CALLSNPS_GFF_FAILED;
 
     // Prepare VCF output
-    seqan::VcfFileOut vcfFileOut(toCString(options.vcfOut));
-    seqan::VcfHeader vcfHeader;
+    seqan2::VcfFileOut vcfFileOut(toCString(options.vcfOut));
+    seqan2::VcfHeader vcfHeader;
 
     appendName(sampleNamesCache(context(vcfFileOut)), "NA00001");
     appendValue(vcfHeader, VcfHeaderRecord("fileformat", "VCFv4.1"));
@@ -931,7 +931,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
     writeHeader(vcfFileOut, vcfHeader);
 
     // Prepare BED output
-    seqan::BedFileOut bedFileOut;
+    seqan2::BedFileOut bedFileOut;
     if (!open(bedFileOut, toCString(options.bedOut)))
     {
         std::cerr << "Could not open output BED file.\n";
@@ -942,17 +942,17 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
     for (unsigned i = 0; i < length(fragmentStore1.contigStore); ++i)
     {
         // VCF
-        seqan::VcfFileIn vcfFileIn;
+        seqan2::VcfFileIn vcfFileIn;
         if (!open(vcfFileIn, toCString(contigTempFileNamesVcf[i])))
         {
             std::cerr << "ERROR: Could not open temporary vcf file: " << contigTempFileNamesVcf[i] << "\n";
             return 1;
         }
 
-        seqan::VcfHeader vcfHeader;
+        seqan2::VcfHeader vcfHeader;
         readHeader(vcfHeader, vcfFileIn);
 
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         while (!atEnd(vcfFileIn))
         {
             readRecord(vcfRecord, vcfFileIn);
@@ -964,14 +964,14 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
         remove(toCString(contigTempFileNamesVcf[i]));  // Delete temp. files
 
         // BED
-        seqan::BedFileIn bedFileIn;
+        seqan2::BedFileIn bedFileIn;
         if (!open(bedFileIn, toCString(contigTempFileNamesBed[i])))
         {
             std::cerr << "ERROR: Could not open temporary bed file: " << contigTempFileNamesBed[i] << "\n";
             return 1;
         }
 
-        seqan::BedRecord<seqan::Bed6> bedRecord;
+        seqan2::BedRecord<seqan2::Bed6> bedRecord;
         while (!atEnd(bedFileIn))
         {
             readRecord(bedRecord, bedFileIn);

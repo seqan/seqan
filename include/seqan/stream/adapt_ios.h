@@ -40,7 +40,7 @@
 #define SEQAN_ASSERT_BADBIT(s) SEQAN_ASSERT_MSG(s.exceptions() | std::ios_base::badbit, \
         "The badbit exception is not set in the stream. Call either std::exceptions() or streamInit() on the stream.")
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -397,6 +397,6 @@ inline bool close(std::basic_ofstream<TValue, TTraits> & stream)
     return !stream.is_open();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_STREAM_ADAPT_IOS_H_

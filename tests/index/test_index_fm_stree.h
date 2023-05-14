@@ -36,7 +36,7 @@
 #ifndef TESTS_INDEX_TEST_INDEX_FM_ITER_H_
 #define TESTS_INDEX_TEST_INDEX_FM_ITER_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TIter>
 void fmIndexIteratorConstuctor(TIter & /*tag*/)
@@ -311,7 +311,7 @@ void fmIndexIteratorRange(TIter & /*tag*/)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_constuctor)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
@@ -333,7 +333,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_constuctor)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_go_down)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
@@ -355,7 +355,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_down)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_is_leaf)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
@@ -377,7 +377,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_is_leaf)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_go_right)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
@@ -399,7 +399,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_right)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_go_up)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
@@ -415,7 +415,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_up)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_representative)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
@@ -431,7 +431,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_representative)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_is_root)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
@@ -453,7 +453,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_is_root)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_count_occurrences)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
@@ -482,7 +482,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_count_occurrences)
 
 SEQAN_DEFINE_TEST(fm_index_iterator_range)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;

@@ -1,7 +1,7 @@
 #include <seqan/basic.h>
 #include <seqan/gff_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // USAGE: gff_stream_read IN.gff
 //

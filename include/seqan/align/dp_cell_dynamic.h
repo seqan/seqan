@@ -39,7 +39,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
 #define INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -89,7 +89,7 @@ public:
     TFlagMaskType   _flagMask   = TFlagMaskType();
 
     DPCell_() = default;
-    
+
     // Copy c'tor.
     DPCell_(DPCell_ const & other) : _score(other._score), _flagMask(other._flagMask)
     {}
@@ -103,7 +103,7 @@ public:
     // Construct with score.
     DPCell_(TScoreValue const & pScore) : _score(pScore)
     {}
-    
+
     // Assignment and move operator.
     DPCell_& operator=(DPCell_ other)
     {
@@ -118,7 +118,7 @@ public:
         _score = score;
         return *this;
     }
-    
+
     ~DPCell_() = default;
 };
 
@@ -240,6 +240,6 @@ swap(DPCell_<TScoreValue, DynamicGaps> & lhs,
     std::swap(lhs._flagMask, rhs._flagMask);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_

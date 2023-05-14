@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TAlphabet>
 struct UnmaskedAlphabet_
@@ -83,7 +83,7 @@ struct UnmaskedAlphabet_<const TAlphabet>
  * Calculate the alignment free sequence similarity o two masked DNA sequences.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * // Masked sequence, we do not want to count words overlapping 'N'
  * Dna5String sequenceDna5 =
  *     "TAGGTTTTCCGAAAAGGTAGCAACTTTACGTGATCAAACCTCTGACGGGGTTTTCCCCGTCGAAATTGGGTG"
@@ -348,7 +348,7 @@ void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> 
  * Calculate the probability for the word CCCAAGTTT with <i>p(A) = p(T) = 0.3</i> and <i>p(C) = p(G) = 0.2</i>.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * double p = 0.0;
  * DnaString word = "CCCAAGTTT";
  * String<double> model;
@@ -407,7 +407,7 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
  * <i>p(A) = p(T) = 0.3</i> and <i>p(C) = p(G) = 0.2</i>.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * double var = 0.0;
  * int n = 10000;
  * DnaString word = "CAAGTC";
@@ -424,7 +424,7 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
  * CAAGTC in a sequence of length 10000bp.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * double var = 0.0;
  * int n = 10000;
  * DnaString word = "CAAGTC";
@@ -530,7 +530,7 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
  * <i>p(A) = p(T) = 0.3</i> and <i>p(C) = p(G) = 0.2</i>.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * double covar = 0.0;
  * int n = 10000;
  * DnaString word1 = "ATATAT";
@@ -548,7 +548,7 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
  * and TATATA in a sequence of length 10000bp.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * double covar = 0.0;
  * int n = 10000;
  * DnaString word1 = "ATATAT";
@@ -682,7 +682,7 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
  * Calculate the periodicity of two words (At which positions can they overlap?)
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * DnaString word1 = "ATATA";
  * DnaString word2 = "TATAT";
  * String<int> periodicity;
@@ -752,7 +752,7 @@ void calculatePeriodicity(String<int> & periodicity, TString const & word1, TStr
  * Calculate the overlap indicator (epsilon) for two words
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * DnaString word1 = "ATATA";
  * DnaString word2 = "TATAT";
  * String<int> epsilon;
@@ -812,7 +812,7 @@ void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TSt
  * Transform a masked DNA sequence into a set of sequences with all masked parts removed.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * Dna5String sequenceDna5 =
  *     "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG";
  * StringSet<DnaString> sequencesDna;
@@ -899,7 +899,7 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
  * Transform a masked DNA sequence into an unmasked sequences with all masked parts cut out
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * Dna5String sequenceMasked =
  *     "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG";
  * Dna5String sequenceMaskedPartsRemoved;
@@ -960,6 +960,6 @@ cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_

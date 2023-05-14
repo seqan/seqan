@@ -38,7 +38,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_SERIALIZER_H_
 #define SEQAN_PARALLEL_PARALLEL_SERIALIZER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Classes
@@ -214,6 +214,6 @@ releaseValue(Serializer<TValue, TWorker> & me, TValue *ptr)
     return false;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_SERIALIZER_H_

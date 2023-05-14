@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
 #define INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Macros
@@ -73,6 +73,6 @@ namespace seqan {
 #define SEQAN_DEPRECATED_POST(func)
 #endif
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_

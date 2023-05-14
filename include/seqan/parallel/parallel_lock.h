@@ -45,7 +45,7 @@
 #include <Windows.h>
 #endif
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -307,6 +307,6 @@ empty(ReadWriteLock & lock)
     return (lock.readers == 0u && lock.writers == 0u);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_LOCK_H_

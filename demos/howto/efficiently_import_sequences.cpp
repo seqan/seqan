@@ -3,7 +3,7 @@
 #include <seqan/seq_io.h>
 #include <iostream>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![open_file]

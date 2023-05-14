@@ -3,7 +3,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/journaled_set.h>
 
-using namespace seqan;
+using namespace seqan2;
 //![include]
 
 //![searchAtBorder]

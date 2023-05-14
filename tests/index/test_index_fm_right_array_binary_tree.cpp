@@ -36,7 +36,7 @@
 #include "test_index_fm_right_array_binary_tree.h"
 #include "test_index_fm_right_array_binary_tree_iterator.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_BEGIN_TESTSUITE(test_index_fm_right_array_binary_tree)
 {

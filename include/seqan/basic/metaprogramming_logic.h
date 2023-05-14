@@ -45,7 +45,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -531,6 +531,6 @@ struct IfC<false, T1, T2>
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_

@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -94,7 +94,7 @@ void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
     // Define gaps and scoring scheme.
     Gaps<TProfileString> gapsH(profile);
     Gaps<TSequence> gapsV(seq);
-    seqan::Score<int, seqan::ProfileSeqScore> sScheme(profile);
+    seqan2::Score<int, seqan2::ProfileSeqScore> sScheme(profile);
 
     // Perform the global alignment.
     if (lDiag == std::numeric_limits<int>::min() || uDiag == std::numeric_limits<int>::max())
@@ -160,6 +160,6 @@ void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
     swap(buffer, profile);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_

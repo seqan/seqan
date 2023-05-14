@@ -38,7 +38,7 @@
 #ifndef SEQAN_INDEX_FIND_FUNCTORS_H_
 #define SEQAN_INDEX_FIND_FUNCTORS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags

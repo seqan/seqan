@@ -43,7 +43,7 @@
 
 SEQAN_DEFINE_TEST(test_random_shuffle)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::mt19937 mt(0);
     CharString container = "Hello!";
@@ -55,7 +55,7 @@ SEQAN_DEFINE_TEST(test_random_shuffle)
 
 SEQAN_DEFINE_TEST(test_random_cvt_beta_param)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TParam = BetaDistribution<double>::param_type;
     TParam p = cvtBetaDistParam(0.3, 0.2);
@@ -65,7 +65,7 @@ SEQAN_DEFINE_TEST(test_random_cvt_beta_param)
 
 SEQAN_DEFINE_TEST(test_random_cvt_lognormal_param)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TParam = std::lognormal_distribution<double>::param_type;
 

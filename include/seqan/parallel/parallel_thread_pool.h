@@ -39,7 +39,7 @@
 #include <sched.h>
 #endif  // defined(__linux__)
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -214,6 +214,6 @@ setCpuAffinity(ThreadPool & /*me*/, size_t /*firstCpu = 0*/, size_t const /*scal
 }
 #endif  // defined(__linux__)
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_PARALLEL_PARALLEL_THREAD_POOL_H_

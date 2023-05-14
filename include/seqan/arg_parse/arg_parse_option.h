@@ -40,7 +40,7 @@
 #include <seqan/arg_parse/arg_parse_argument.h>
 #include <seqan/arg_parse/arg_parse_exceptions.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ----------------------------------------------------------------------------
 // Class ArgParseOption
@@ -487,6 +487,6 @@ inline TStream & operator<<(TStream & target, ArgParseOption const & source)
     return target;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_

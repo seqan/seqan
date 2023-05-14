@@ -43,7 +43,7 @@
 #include <direct.h>
 #endif
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Functors

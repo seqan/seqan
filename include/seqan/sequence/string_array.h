@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_ARRAY_H_
 #define SEQAN_SEQUENCE_STRING_ARRAY_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -284,6 +284,6 @@ _setLength(String<TValue, Array<CAPACITY> > & me,
     me.data_length = new_length;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_ARRAY_H_

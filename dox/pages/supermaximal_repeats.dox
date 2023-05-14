@@ -7,7 +7,7 @@
  * of any longer repeat. The following example demonstrates how to iterate
  * over all supermaximal repeats and output them.
  *
- * We start by including the required headers and using the namespace seqan.
+ * We start by including the required headers and using the namespace seqan2.
  *
  * @snippet demos/dox/index/supermaxrepeats.cpp includes
  *

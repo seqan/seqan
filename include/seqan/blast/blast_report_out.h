@@ -37,7 +37,7 @@
 #ifndef SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 #define SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -863,6 +863,6 @@ writeFooter(BlastReportFileOut<TContext> & formattedFile)
     writeFooter(formattedFile.iter, context(formattedFile), BlastReport());
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // header guard

@@ -2,7 +2,7 @@
 #include <seqan/stream.h>  // For String output to std::cout.
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 void replaceAs(CharString & str)
 {

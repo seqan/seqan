@@ -40,7 +40,7 @@
 #include <seqan/sequence.h>
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 
 SEQAN_DEFINE_TEST(test_modifier_cyclic_shape_cyclic_shape)

@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -239,6 +239,6 @@ move(TTarget const & target,
     assign(target, source);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_

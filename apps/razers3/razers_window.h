@@ -24,7 +24,7 @@
 
 #include <iostream>
 
-namespace seqan {
+namespace seqan2 {
 
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in a single genome sequence

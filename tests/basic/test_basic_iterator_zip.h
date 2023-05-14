@@ -48,7 +48,7 @@
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Iterator.
     {
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_metafunctions)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_constructors)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TFirst = typename Iterator<std::vector<int>, Standard>::Type;
     using TSecond = typename Iterator<std::string, Standard>::Type;
@@ -145,7 +145,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_constructors)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_make_zip_iterator)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TFirst = typename Iterator<std::vector<int>, Standard>::Type;
     using TSecond = typename Iterator<std::string, Standard>::Type;
@@ -163,7 +163,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_make_zip_iterator)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_transport)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TFirst = typename Iterator<std::vector<int>, Standard>::Type;
     using TSecond = typename Iterator<std::string, Standard>::Type;
@@ -184,7 +184,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_transport)
     // set()
     {
         TIterator it2;
-        seqan::set(it2, it);
+        seqan2::set(it2, it);
         SEQAN_ASSERT(it == it2);
     }
     // move()
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_transport)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_transport_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // assignValue()
     {
@@ -251,7 +251,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_transport_value)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_movement)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::vector<int> vec{0,1,2,3,4,5,6,7,8,9};
     std::string str = "abcdefghij";
@@ -306,7 +306,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_movement)
 
 SEQAN_DEFINE_TEST(test_basic_iterator_zip_arithmetics)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     std::vector<int> vec{0,1,2,3,4,5,6,7,8,9};
     std::string str = "abcdefghij";
@@ -315,11 +315,11 @@ SEQAN_DEFINE_TEST(test_basic_iterator_zip_arithmetics)
     auto it2 = makeZipIterator(begin(vec, Standard()) + 6, begin(str, Standard()) + 6);
     SEQAN_ASSERT_EQ(&std::get<0>(*it2), &vec[6]);
     SEQAN_ASSERT_EQ(&std::get<1>(*it2), &str[6]);
-    
+
     it2 = it - 2;
     SEQAN_ASSERT_EQ(&std::get<0>(*it2), &vec[2]);
     SEQAN_ASSERT_EQ(&std::get<1>(*it2), &str[2]);
-    
+
     it2 = it + 2;
     SEQAN_ASSERT_EQ(it2 - it, 2);
 }

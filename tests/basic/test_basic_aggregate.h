@@ -41,7 +41,7 @@
 #ifndef TESTS_BASIC_TEST_BASIC_AGGREGATES_H_
 #define TESTS_BASIC_TEST_BASIC_AGGREGATES_H_
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Helper Code

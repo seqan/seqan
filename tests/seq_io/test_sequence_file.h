@@ -47,7 +47,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_type_gz_fasta)
 {
 #if SEQAN_HAS_ZLIB
     // Build path to file.
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa.gz");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa.gz");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -61,7 +61,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_type_bz2_fasta)
 {
 #if SEQAN_HAS_BZIP2
     // Build path to file.
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa.bz2");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa.bz2");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -78,7 +78,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_type_bz2_fasta)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta)
 {
     // Build path to file.
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -90,7 +90,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq)
 {
     // Build path to file.
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fq");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fq");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -107,7 +107,7 @@ template <typename TId, typename TSeq>
 void testSeqIOSequenceFileReadRecordTextFasta()
 {
     // Build path to file.
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
@@ -133,23 +133,23 @@ void testSeqIOSequenceFileReadRecordTextFasta()
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
 {
-    testSeqIOSequenceFileReadRecordTextFasta<seqan::CharString, seqan::Dna5String>();
+    testSeqIOSequenceFileReadRecordTextFasta<seqan2::CharString, seqan2::Dna5String>();
     testSeqIOSequenceFileReadRecordTextFasta<std::string, std::string>();
-    testSeqIOSequenceFileReadRecordTextFasta<std::string, seqan::Dna5String>();
-    testSeqIOSequenceFileReadRecordTextFasta<seqan::CharString, std::string>();
+    testSeqIOSequenceFileReadRecordTextFasta<std::string, seqan2::Dna5String>();
+    testSeqIOSequenceFileReadRecordTextFasta<seqan2::CharString, std::string>();
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_all_text_fasta)
 {
     // Build path to file.
-    seqan::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
+    seqan2::CharString filePath = getAbsolutePath("/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
     SeqFileIn seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
-    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan2::StringSet<seqan2::CharString> ids;
+    seqan2::StringSet<seqan2::Dna5String> seqs;
 
     readRecords(ids, seqs, seqIO);
     SEQAN_ASSERT_EQ(length(seqs), 3u);
@@ -170,18 +170,18 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_all_text_fasta)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fasta)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fa");
 
     // Create SequenceStream object.
     SeqFileOut seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
+    seqan2::StringSet<seqan2::CharString> ids;
     appendValue(ids, "seq1");
     appendValue(ids, "seq2");
     appendValue(ids, "seq3");
-    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan2::StringSet<seqan2::Dna5String> seqs;
     appendValue(seqs, "CGATCGATAAT");
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
@@ -190,25 +190,25 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fasta)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fa");
-    SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fa");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fasta)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fa");
 
     // Create SequenceStream object.
     SeqFileOut seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
+    seqan2::StringSet<seqan2::CharString> ids;
     appendValue(ids, "seq1");
     appendValue(ids, "seq2");
     appendValue(ids, "seq3");
-    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan2::StringSet<seqan2::Dna5String> seqs;
     appendValue(seqs, "CGATCGATAAT");
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
@@ -217,24 +217,24 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fasta)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fa");
-    SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fa");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_no_qual)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fq");
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
 
     // Create SequenceStream object.
     SeqFileIn seqIn(toCString(pathToExpected));
     SeqFileOut seqOut(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
-    seqan::StringSet<seqan::Dna5QString> seqs;
+    seqan2::StringSet<seqan2::CharString> ids;
+    seqan2::StringSet<seqan2::Dna5QString> seqs;
 
     readRecords(ids, seqs, seqIn);
     writeRecords(seqOut, ids, seqs);
@@ -242,28 +242,28 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_no_qual)
     close(seqIn);
     close(seqOut);  // Make sure we can read this later.
 
-    SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fq");
 
     // Create SequenceStream object.
     SeqFileOut seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
+    seqan2::StringSet<seqan2::CharString> ids;
     appendValue(ids, "seq1");
     appendValue(ids, "seq2");
     appendValue(ids, "seq3");
-    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan2::StringSet<seqan2::Dna5String> seqs;
     appendValue(seqs, "CGATCGATAAT");
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
-    seqan::StringSet<seqan::CharString> quals;
+    seqan2::StringSet<seqan2::CharString> quals;
     appendValue(quals, "IIIIIIIIIII");
     appendValue(quals, "IIIIIIIIIIIII");
     appendValue(quals, "IIIIIIII");
@@ -272,25 +272,25 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
-    SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fq");
 
     // Create SequenceStream object.
     SeqFileOut seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
+    seqan2::StringSet<seqan2::CharString> ids;
     appendValue(ids, "seq1");
     appendValue(ids, "seq2");
     appendValue(ids, "seq3");
-    seqan::StringSet<seqan::Dna5QString> seqs;
+    seqan2::StringSet<seqan2::Dna5QString> seqs;
     appendValue(seqs, "CGATCGATAAT");
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
@@ -299,29 +299,29 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
-    SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fq");
 
     // Create SequenceStream object.
     SeqFileOut seqIO(toCString(filePath));
 
     // Check that the file type and format are set correctly.
-    seqan::StringSet<seqan::CharString> ids;
+    seqan2::StringSet<seqan2::CharString> ids;
     appendValue(ids, "seq1");
     appendValue(ids, "seq2");
     appendValue(ids, "seq3");
-    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan2::StringSet<seqan2::Dna5String> seqs;
     appendValue(seqs, "CGATCGATAAT");
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
-    seqan::StringSet<seqan::CharString> quals;
+    seqan2::StringSet<seqan2::CharString> quals;
     appendValue(quals, "IIIIIIIIIII");
     appendValue(quals, "IIIIIIIIIIIII");
     appendValue(quals, "IIIIIIII");
@@ -330,8 +330,8 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual)
 
     close(seqIO);  // Make sure we can read this later.
 
-    seqan::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
-    SEQAN_ASSERT_MSG(seqan::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
+    seqan2::CharString pathToExpected = getAbsolutePath("/tests/seq_io/test_dna.fq");
+    SEQAN_ASSERT_MSG(seqan2::_compareTextFilesAlt(toCString(pathToExpected), toCString(filePath)), "Output should match example.");
 }
 
 // ---------------------------------------------------------------------------
@@ -341,7 +341,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_isOpen_fileIn)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString filePath = SEQAN_PATH_TO_ROOT();
     append(filePath, "/tests/seq_io/test_dna.fa");
 
     // Create SequenceStream object.
@@ -360,7 +360,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_isOpen_fileIn)
 SEQAN_DEFINE_TEST(test_seq_io_sequence_file_isOpen_fileOut)
 {
     // Build path to file.
-    seqan::CharString filePath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString filePath = SEQAN_TEMP_FILENAME();
     append(filePath, ".fa");
 
     // Create SequenceStream object.

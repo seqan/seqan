@@ -39,7 +39,7 @@
 
 //#define SEQAN_DEBUG
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -110,21 +110,21 @@ struct VertexSA : public VertexEsa<TSize>
     TSize       repLen;
     TAlphabet   lastChar;
 
-   
+
     VertexSA() :
         TBase(),
         repLen(0),
         lastChar()
     {}
 
-   
+
     VertexSA(MinimalCtor) :
         TBase(MinimalCtor()),
         repLen(0),
         lastChar()
     {}
 
-   
+
     VertexSA(VertexSA const & other) :
         TBase(other),
         repLen(other.repLen),
@@ -690,6 +690,6 @@ inline bool save(Index<TObject, IndexSa<TSpec> > & index, const char * fileName)
     return save(index, fileName, DefaultOpenMode<Index<TObject, IndexSa<TSpec> > >::VALUE);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INDEX_SA_STREE_H_

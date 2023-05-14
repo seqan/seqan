@@ -56,7 +56,7 @@ struct TestVersionCheck_
 };
 
 const std::chrono::duration<long int>::rep TestVersionCheck_::TIME_NOW = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-const std::string TestVersionCheck_::PATH = seqan::_getPath();
+const std::string TestVersionCheck_::PATH = seqan2::_getPath();
 const std::string TestVersionCheck_::APP_NAME = "test_version_check_" + std::to_string(TIME_NOW); // avoid name conflicts
 const std::string TestVersionCheck_::APP_VERSION_FILENAME     = TestVersionCheck_::PATH + "/" +
                                                                 TestVersionCheck_::APP_NAME +
@@ -65,7 +65,7 @@ const std::string TestVersionCheck_::APP_TIMESTAMP_FILENAME   = TestVersionCheck
                                                                 TestVersionCheck_::APP_NAME +
                                                                 static_cast<std::string>("_usr.timestamp");
 
-namespace seqan {
+namespace seqan2 {
 
 inline ArgumentParser::ParseResult _simulateArgumentParser(String<CharString> & stream_result,
                                                            bool & app_call_succeeded,
@@ -245,7 +245,7 @@ SEQAN_DEFINE_TEST(test_greater_app_version)
 
     // create timestamp file that dates one day before current to trigger a message
     _createFile(TestVersionCheck_::APP_TIMESTAMP_FILENAME.c_str(), TestVersionCheck_::TIME_NOW - 86401); // one day = 86400 seconds
- 
+
     ArgumentParser::ParseResult res = _simulateArgumentParser(stream_result, app_call_succeeded, argc, argv);
 
     SEQAN_ASSERT_EQ(res, ArgumentParser::PARSE_OK);
@@ -273,6 +273,6 @@ SEQAN_DEFINE_TEST(test_time_out)
     SEQAN_ASSERT(!fileExists(TestVersionCheck_::APP_VERSION_FILENAME.c_str()));
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_VERSION_CHECK_H_

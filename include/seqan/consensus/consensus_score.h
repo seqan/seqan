@@ -36,7 +36,7 @@
 #define SEQAN_HEADER_SEQAN_CONSENSUS_SH
 
 
-namespace seqan
+namespace seqan2
 {
 
 

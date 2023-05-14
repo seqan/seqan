@@ -3,7 +3,7 @@
 #include <seqan/stream.h>  // for I/O
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

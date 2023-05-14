@@ -43,7 +43,7 @@
 // Test global chaining weighting the seeds by their length only (Simple Seed)
 // -----------------------------------------------------------------------------
 
-using namespace seqan;
+using namespace seqan2;
 
 typedef SeedSet<Seed<Simple>, Unordered> TSeedSet;
 typedef Value<TSeedSet>::Type TSeed;

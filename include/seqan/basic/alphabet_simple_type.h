@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -179,7 +179,7 @@ public:
     // This cannot be a template since it would conflict to the template
     // constructor.
 
-   
+
     operator int64_t() const
     {
         int64_t c;
@@ -187,7 +187,7 @@ public:
         return c;
     }
 
-   
+
     operator uint64_t() const
     {
         uint64_t c;
@@ -195,7 +195,7 @@ public:
         return c;
     }
 
-   
+
     operator int() const
     {
         int c;
@@ -203,7 +203,7 @@ public:
         return c;
     }
 
-   
+
     operator unsigned int() const
     {
         unsigned int c;
@@ -211,7 +211,7 @@ public:
         return c;
     }
 
-   
+
     operator short() const
     {
         short c;
@@ -219,7 +219,7 @@ public:
         return c;
     }
 
-   
+
     operator unsigned short() const
     {
         unsigned short c;
@@ -227,7 +227,7 @@ public:
         return c;
     }
 
-   
+
     operator char() const
     {
         char c;
@@ -235,7 +235,7 @@ public:
         return c;
     }
 
-   
+
     operator signed char() const
     {
         signed char c;
@@ -253,7 +253,7 @@ public:
 };
 #pragma pack(pop)
 
-} // namespace seqan
+} // namespace seqan2
 
 // ----------------------------------------------------------------------------
 // Class numeric_limits
@@ -262,7 +262,7 @@ namespace std
 {
 
 template <typename TValue, typename TSpec>
-class numeric_limits<seqan::SimpleType<TValue, TSpec> >
+class numeric_limits<seqan2::SimpleType<TValue, TSpec> >
 {
 public:
     static constexpr bool is_specialized    = true;
@@ -278,7 +278,7 @@ public:
     static constexpr bool is_iec559         = false;
     static constexpr bool is_bounded        = true;
     static constexpr bool is_modulu         = false;
-    static constexpr int  digits            = seqan::BitsPerValue<seqan::SimpleType<TValue, TSpec>>::VALUE;
+    static constexpr int  digits            = seqan2::BitsPerValue<seqan2::SimpleType<TValue, TSpec>>::VALUE;
     static constexpr int  digits10          = digits - 1;
     static constexpr int  max_digits10      = 0;
     static constexpr int  radix             = 2;
@@ -289,30 +289,30 @@ public:
     static constexpr bool traps             = false;
     static constexpr bool tinyness_before   = false;
 
-    static constexpr seqan::SimpleType<TValue, TSpec> min()
+    static constexpr seqan2::SimpleType<TValue, TSpec> min()
     {
-        return seqan::SimpleType<TValue, TSpec>(0);
+        return seqan2::SimpleType<TValue, TSpec>(0);
     }
 
-    static constexpr seqan::SimpleType<TValue, TSpec> max()
+    static constexpr seqan2::SimpleType<TValue, TSpec> max()
     {
-        return seqan::SimpleType<TValue, TSpec>(((TValue)seqan::ValueSize<seqan::SimpleType<TValue, TSpec> >::VALUE - 1));
+        return seqan2::SimpleType<TValue, TSpec>(((TValue)seqan2::ValueSize<seqan2::SimpleType<TValue, TSpec> >::VALUE - 1));
     }
 
-    static constexpr seqan::SimpleType<TValue, TSpec> lowest()
+    static constexpr seqan2::SimpleType<TValue, TSpec> lowest()
     {
-        return seqan::SimpleType<TValue, TSpec>(0);
+        return seqan2::SimpleType<TValue, TSpec>(0);
     }
 
-    static constexpr seqan::SimpleType<TValue, TSpec> infinity()
+    static constexpr seqan2::SimpleType<TValue, TSpec> infinity()
     {
-        return seqan::SimpleType<TValue, TSpec>(((TValue)seqan::ValueSize<seqan::SimpleType<TValue, TSpec> >::VALUE - 1));
+        return seqan2::SimpleType<TValue, TSpec>(((TValue)seqan2::ValueSize<seqan2::SimpleType<TValue, TSpec> >::VALUE - 1));
     }
 };
 
 } //namespace std
 
-namespace seqan
+namespace seqan2
 {
 // ============================================================================
 // Metafunctions
@@ -1137,6 +1137,6 @@ ordValue(SimpleType<TValue, TSpec> const & c)
     return convert<unsigned>(c);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_

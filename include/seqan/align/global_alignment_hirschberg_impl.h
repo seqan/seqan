@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_HIRSCHBERG_IMPL_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_HIRSCHBERG_IMPL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -689,6 +689,6 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     return total_score;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_HIRSCHBERG_IMPL_H_

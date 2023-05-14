@@ -40,7 +40,7 @@
 
 
 
-using namespace seqan;
+using namespace seqan2;
 using namespace std;
 
 typedef float TFloat;
@@ -51,7 +51,7 @@ typedef float TFloat;
 
 //////////////////////////////////////////////////////////////////////////////
 // Print usage
-void printHelp(int, const char *[], ParamChooserOptions & pm_options, bool longHelp = false) 
+void printHelp(int, const char *[], ParamChooserOptions & pm_options, bool longHelp = false)
 {
 	cerr << "*******************************************************************" << endl;
 	cerr << "********** Compute filter parameters for given loss rate **********" << endl;
@@ -81,12 +81,12 @@ void printHelp(int, const char *[], ParamChooserOptions & pm_options, bool longH
 	}
 }
 
-int main(int argc, const char *argv[]) 
+int main(int argc, const char *argv[])
 {
 	//////////////////////////////////////////////////////////////////////////////
 	// Parse command line
-//	static const TFloat epsilon = 0.0000001;	
-	static const TFloat epsilon = (TFloat)0.0000000000001;	
+//	static const TFloat epsilon = 0.0000001;
+	static const TFloat epsilon = (TFloat)0.0000000000001;
 
         RazerSOptions<> r_options;
         ParamChooserOptions pm_options;
@@ -187,7 +187,7 @@ int main(int argc, const char *argv[])
 					fstream file;
 					pm_options.fname[0] = argv[arg];
 				}
-				else 
+				else
 				{
 					printHelp(argc, argv, pm_options);
 					return 0;
@@ -199,7 +199,7 @@ int main(int argc, const char *argv[])
 					pm_options.paramFolder = argv[arg];
 //					cout << "Session id prefix specified\n";
 				}
-				else 
+				else
 				{
 					printHelp(argc, argv, pm_options);
 					return 0;
@@ -212,7 +212,7 @@ int main(int argc, const char *argv[])
 					pm_options.useDefaultShapes = false;
 //					cout << "Session id prefix specified\n";
 				}
-				else 
+				else
 				{
 					printHelp(argc, argv, pm_options);
 					return 0;
@@ -226,7 +226,7 @@ int main(int argc, const char *argv[])
 					pm_options.fprefix[0] = argv[arg];
 //					cout << "Session id prefix specified\n";
 				}
-				else 
+				else
 				{
 					printHelp(argc, argv, pm_options);
 					return 0;
@@ -239,7 +239,7 @@ int main(int argc, const char *argv[])
 					fstream file;
 					pm_options.fname[1] = argv[arg];
 				}
-				else 
+				else
 				{
 					printHelp(argc, argv, pm_options);
 					return 0;
@@ -266,7 +266,7 @@ int main(int argc, const char *argv[])
 			}
 
 			if (strcmp(argv[arg], "-ug") == 0 || strcmp(argv[arg], "--ungapped") == 0) {
-                                if(pm_options.chooseOneGappedOnly) continue;     //if both ungapped and onegapped specified --> optionChooseOneGappedOnly 
+                                if(pm_options.chooseOneGappedOnly) continue;     //if both ungapped and onegapped specified --> optionChooseOneGappedOnly
                                 pm_options.chooseUngappedOnly = true;
 				continue;
 			}
@@ -312,12 +312,12 @@ int main(int argc, const char *argv[])
 	}
 	pm_options.optionErrorRate += epsilon;
 	pm_options.optionLossRate += epsilon;
-	
+
 //	pm_options.verbose = true;
 	r_options._debugLevel = 1;
 	r_options.errorRate = pm_options.optionErrorRate;
 
-	if(length(pm_options.paramFolder) == 0) 
+	if(length(pm_options.paramFolder) == 0)
 	{
 		string appFolder = argv[0];
 		size_t lastPos = appFolder.find_last_of('/') + 1;
@@ -329,7 +329,7 @@ int main(int argc, const char *argv[])
 
 	pm_options.verbose = true;
 
-	
+
 	if(pm_options.optionProbINSERT <= epsilon && pm_options.optionProbDELETE <= epsilon)
 		pm_options.optionHammingOnly=true;
 

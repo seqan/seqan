@@ -44,7 +44,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PROFILING_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_PROFILING_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // todo: substitute defines with inlines

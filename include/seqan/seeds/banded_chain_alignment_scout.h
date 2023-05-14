@@ -39,7 +39,7 @@
 #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_SCOUT_H_
 #define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_SCOUT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -365,6 +365,6 @@ _nextMatrixBeginV(DPScout_<TDPCell, BandedChainAlignmentScout> const & scout)
     return scout._posV;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_SCOUT_H_

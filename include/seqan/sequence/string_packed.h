@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_PACKED_H_
 #define SEQAN_SEQUENCE_STRING_PACKED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -2039,6 +2039,6 @@ inline bool save(String<TValue, Packed<THostspec> > const & me, const char *file
     return save(host(me), fileName, openMode);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_PACKED_H_

@@ -37,7 +37,7 @@
 
 //#define SEQAN_DEBUG
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -629,6 +629,6 @@ inline bool save(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index
     return save(static_cast<TBaseIndex &>(index), fileName);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INDEX_QGRAM_BUCKETREFINEMENT_H_

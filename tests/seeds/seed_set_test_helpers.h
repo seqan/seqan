@@ -42,7 +42,7 @@
 template <typename TSeedSpec>
 void testSeedsSeedBaseConstructors(TSeedSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Execute default constructor.
     {

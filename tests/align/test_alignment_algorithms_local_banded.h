@@ -41,7 +41,7 @@
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         Dna5String strH("GGGGCTTAAGCTTGGGG");
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_local_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         DnaString strH("GGGGCTTAAGCTTGGGG");
@@ -95,7 +95,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_local_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_local_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Graph<Alignment<StringSet<DnaString, Dependent<> > > > TGraph;
     typedef StringSet<DnaString> TStringSet;
@@ -132,7 +132,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_local_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_local_linear_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<DnaString> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -160,7 +160,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_local_linear_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         Dna5String strH("GGGGCTTAAGCTTGGGG");
@@ -187,7 +187,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_local_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_local_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         DnaString strH("GGGGCTTAAGCTTGGGG");
@@ -213,7 +213,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_gaps_local_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_local_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Graph<Alignment<StringSet<DnaString, Dependent<> > > > TGraph;
     typedef StringSet<DnaString> TStringSet;
@@ -250,7 +250,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_graph_local_affine_banded)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_local_affine_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef StringSet<DnaString> TStringSet;
     typedef Fragment<unsigned> TFragment;
@@ -282,7 +282,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_fragments_local_affine_banded)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Example from original testLocalAlign2 test.
     {
@@ -397,7 +397,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Example from original testLocalAlign2 test.
     {
@@ -538,7 +538,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_gaps)
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_fragment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // TODO(holtgrew): Test after this is written.
 }

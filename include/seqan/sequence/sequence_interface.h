@@ -40,7 +40,7 @@
 #ifndef SEQAN_SEQUENCE_SEQUENCE_INTERFACE_H_
 #define SEQAN_SEQUENCE_SEQUENCE_INTERFACE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1324,6 +1324,6 @@ shrinkToFit(T & me)
     swap(me, tmp);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_SEQUENCE_INTERFACE_H_

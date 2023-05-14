@@ -44,7 +44,7 @@
 
 #include <string>
 
-using namespace seqan;
+using namespace seqan2;
 
 // --------------------------------------------------------------------------
 // CountingChar is used to test sequences of non simple data types.
@@ -125,7 +125,7 @@ inline TStream & operator<<(TStream & stream, CountingChar const & countingChar)
 }
 
 template <typename TStream, typename TSpec>
-inline TStream & operator<<(TStream & stream, seqan::String<CountingChar, TSpec> const & string)
+inline TStream & operator<<(TStream & stream, seqan2::String<CountingChar, TSpec> const & string)
 {
     for (unsigned i = 0; i < length(string); ++i)
         stream << string[i];
@@ -164,7 +164,7 @@ void testConstructDeconstruct(TString const &str)
 
 
 template <typename TAlphabetSpecPair_>
-class StringTest : public seqan::Test
+class StringTest : public seqan2::Test
 {
 public:
     typedef TAlphabetSpecPair_ TString;
@@ -179,51 +179,51 @@ class StringTestCommon : public StringTest<T>
 {};
 
 typedef
-    seqan::TagList<String<Dna5, External<> >,
-    seqan::TagList<String<char, External<> >,
-    seqan::TagList<String< int, External<> >,
-    seqan::TagList<String<CountingChar, External<> >,
-    seqan::TagList<String<Dna5, MMap<> >,
-    seqan::TagList<String<char, MMap<> >,
-    seqan::TagList<String<int, MMap<> >,
-    seqan::TagList<String<CountingChar, MMap<> >,
-    seqan::TagList<String<Dna, Packed<> >,
-    seqan::TagList<String<Dna5, Packed<> >,
-    seqan::TagList<String<char, Packed<> >,
-    seqan::TagList<String<char, Packed<> >,
-    seqan::TagList<String<int, Packed<> >,
-    seqan::TagList<String<Dna5, Array<100> >,
-    seqan::TagList<String<char, Array<100> >,
-    seqan::TagList<String<int, Array<100> >,
-    seqan::TagList<String<CountingChar,Array<100> >,
-    seqan::TagList<String<seqan::Dna5, Block<> >,
-    seqan::TagList<String<char, Block<> >,
-    seqan::TagList<String<int, Block<> >,
-    seqan::TagList<String<CountingChar,Block<> >,
-    seqan::TagList<String<seqan::Dna5, Alloc<> >,
-    seqan::TagList<String<char, Alloc<> >,
-    seqan::TagList<String<int, Alloc<> >,
-    seqan::TagList<String<CountingChar, Alloc<> >,
-//     seqan::TagList<std::basic_string<seqan::Dna5>,
-    seqan::TagList<std::basic_string<char>,
-    seqan::TagList<std::basic_string<int>,
-//     seqan::TagList<std::basic_string<CountingChar>
-    seqan::TagList<std::vector<seqan::Dna5>,
-    seqan::TagList<std::vector<char>,
-    seqan::TagList<std::vector<int>,
-    seqan::TagList<std::vector<CountingChar>,
-    seqan::TagList<std::deque<seqan::Dna5>,
-    seqan::TagList<std::deque<char>,
-    seqan::TagList<std::deque<int>,
-    seqan::TagList<std::deque<CountingChar>,
-    seqan::TagList<std::forward_list<seqan::Dna5>,
-    seqan::TagList<std::forward_list<char>,
-    seqan::TagList<std::forward_list<int>,
-    seqan::TagList<std::forward_list<CountingChar>,
-    seqan::TagList<std::list<seqan::Dna5>,
-    seqan::TagList<std::list<char>,
-    seqan::TagList<std::list<int>,
-    seqan::TagList<std::list<CountingChar>
+    seqan2::TagList<String<Dna5, External<> >,
+    seqan2::TagList<String<char, External<> >,
+    seqan2::TagList<String< int, External<> >,
+    seqan2::TagList<String<CountingChar, External<> >,
+    seqan2::TagList<String<Dna5, MMap<> >,
+    seqan2::TagList<String<char, MMap<> >,
+    seqan2::TagList<String<int, MMap<> >,
+    seqan2::TagList<String<CountingChar, MMap<> >,
+    seqan2::TagList<String<Dna, Packed<> >,
+    seqan2::TagList<String<Dna5, Packed<> >,
+    seqan2::TagList<String<char, Packed<> >,
+    seqan2::TagList<String<char, Packed<> >,
+    seqan2::TagList<String<int, Packed<> >,
+    seqan2::TagList<String<Dna5, Array<100> >,
+    seqan2::TagList<String<char, Array<100> >,
+    seqan2::TagList<String<int, Array<100> >,
+    seqan2::TagList<String<CountingChar,Array<100> >,
+    seqan2::TagList<String<seqan2::Dna5, Block<> >,
+    seqan2::TagList<String<char, Block<> >,
+    seqan2::TagList<String<int, Block<> >,
+    seqan2::TagList<String<CountingChar,Block<> >,
+    seqan2::TagList<String<seqan2::Dna5, Alloc<> >,
+    seqan2::TagList<String<char, Alloc<> >,
+    seqan2::TagList<String<int, Alloc<> >,
+    seqan2::TagList<String<CountingChar, Alloc<> >,
+//     seqan2::TagList<std::basic_string<seqan2::Dna5>,
+    seqan2::TagList<std::basic_string<char>,
+    seqan2::TagList<std::basic_string<int>,
+//     seqan2::TagList<std::basic_string<CountingChar>
+    seqan2::TagList<std::vector<seqan2::Dna5>,
+    seqan2::TagList<std::vector<char>,
+    seqan2::TagList<std::vector<int>,
+    seqan2::TagList<std::vector<CountingChar>,
+    seqan2::TagList<std::deque<seqan2::Dna5>,
+    seqan2::TagList<std::deque<char>,
+    seqan2::TagList<std::deque<int>,
+    seqan2::TagList<std::deque<CountingChar>,
+    seqan2::TagList<std::forward_list<seqan2::Dna5>,
+    seqan2::TagList<std::forward_list<char>,
+    seqan2::TagList<std::forward_list<int>,
+    seqan2::TagList<std::forward_list<CountingChar>,
+    seqan2::TagList<std::list<seqan2::Dna5>,
+    seqan2::TagList<std::list<char>,
+    seqan2::TagList<std::list<int>,
+    seqan2::TagList<std::list<CountingChar>
     > > > > > > > > > > > > > > > > > > > > > > > > >
     > > > > > > > > > > > > > > //> >
     > > > >
@@ -246,7 +246,7 @@ void testSequenceDefaultConstructible(TString & /*Tag*/)
     CountingChar::clear();
 
     TString string;
-    SEQAN_ASSERT(seqan::begin(string) == seqan::end(string));
+    SEQAN_ASSERT(seqan2::begin(string) == seqan2::end(string));
 }
 
 SEQAN_TYPED_TEST(StringTestCommon, DefaultConstructible)
@@ -810,7 +810,7 @@ SEQAN_TYPED_TEST(StringTestCommon, OperatorAssign)
 template <typename TString>
 void testSequenceSwap(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     {
         TString string1;
         assign(string1, "");
@@ -890,7 +890,7 @@ void testSequenceReverse(std::deque<TChar, TAlloc> & ) {}
 template <typename TString>
 void testSequenceReverse(TString & /*Tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
     {
         TString string1;
         assign(string1, "");
@@ -1098,7 +1098,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Back)
     testConstructDeconstruct(str);
 }
 
-// Test of seqan::begin().
+// Test of seqan2::begin().
 template <typename TString>
 void testSequenceBegin(TString & /*Tag*/)
 {
@@ -1106,9 +1106,9 @@ void testSequenceBegin(TString & /*Tag*/)
 
     TString string;
     assign(string, "ACGT");
-    SEQAN_ASSERT_EQ(*seqan::begin(string), TValue('A'));
-    SEQAN_ASSERT_EQ(*seqan::begin(string, Standard()), TValue('A'));
-//     SEQAN_ASSERT_EQ(*seqan::begin(string, Rooted()), TValue('A'));
+    SEQAN_ASSERT_EQ(*seqan2::begin(string), TValue('A'));
+    SEQAN_ASSERT_EQ(*seqan2::begin(string, Standard()), TValue('A'));
+//     SEQAN_ASSERT_EQ(*seqan2::begin(string, Rooted()), TValue('A'));
 }
 
 // template <typename TValue>
@@ -1197,7 +1197,7 @@ void testSequenceClear(TString & /*Tag*/)
         TString string;
         assign(string, "");
         clear(string);
-        SEQAN_ASSERT(seqan::begin(string) == seqan::end(string));
+        SEQAN_ASSERT(seqan2::begin(string) == seqan2::end(string));
         SEQAN_ASSERT_EQ(length(string), 0u);
     }
     {
@@ -1219,7 +1219,7 @@ SEQAN_TYPED_TEST(StringTestCommon, Clear)
     testConstructDeconstruct(str);
 }
 
-// Test of seqan::end().
+// Test of seqan2::end().
 template <typename TString>
 void testSequenceEnd(TString & /*Tag*/)
 {
@@ -1227,15 +1227,15 @@ void testSequenceEnd(TString & /*Tag*/)
 
     TString string;
     assign(string, "ACGT");
-    typename Iterator<TString>::Type iter = seqan::end(string);
+    typename Iterator<TString>::Type iter = seqan2::end(string);
     --iter;
     SEQAN_ASSERT_EQ(*iter, TValue('T'));
 
-    typename Iterator<TString, Standard>::Type standardIter = seqan::end(string, Standard());
+    typename Iterator<TString, Standard>::Type standardIter = seqan2::end(string, Standard());
     --standardIter;
     SEQAN_ASSERT_EQ(*standardIter, TValue('T'));
 
-//     typename Iterator<TString, Rooted>::Type rootedIter = seqan::end(string, Rooted());
+//     typename Iterator<TString, Rooted>::Type rootedIter = seqan2::end(string, Rooted());
 //     --rootedIter;
 //     SEQAN_ASSERT_EQ(*rootedIter, TValue('T'));
 }
@@ -1299,11 +1299,11 @@ void testSequenceErase(TString & /*Tag*/)
     // Test on a non empty string.
     TString string, string0;
     assign(string, "ACGTACGTACGT");
-    seqan::erase(string, 1);
+    seqan2::erase(string, 1);
     assign(string0, "AGTACGTACGT");
     SEQAN_ASSERT(string == string0);
 
-    seqan::erase(string, 2, 5);
+    seqan2::erase(string, 2, 5);
     assign(string0, "AGGTACGT");
     SEQAN_ASSERT(string == string0);
 }
@@ -1514,9 +1514,9 @@ void testSequenceIter(TString & /*Tag*/)
         TIterator iterator = iter(string, 0);
         TStandardIterator standardIterator = iter(string, 0);
         TRootedIterator rootedIterator = iter(string, 0);
-        SEQAN_ASSERT(iterator == seqan::begin(string));
-        SEQAN_ASSERT(standardIterator == seqan::begin(string));
-        SEQAN_ASSERT(rootedIterator == seqan::begin(string));
+        SEQAN_ASSERT(iterator == seqan2::begin(string));
+        SEQAN_ASSERT(standardIterator == seqan2::begin(string));
+        SEQAN_ASSERT(rootedIterator == seqan2::begin(string));
     }
 
     // Test on a non empty string.

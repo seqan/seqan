@@ -45,7 +45,7 @@
 #include "gustaf_matepairs.h"
 #include "stellar_routines.h"
 #include "create_stellarmatches_from_file.h"
-using namespace seqan;
+using namespace seqan2;
 
 // /////////////////////////////////////////////////////////////////////////////
 // MSplazer Wrapper

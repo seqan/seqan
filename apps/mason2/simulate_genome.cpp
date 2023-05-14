@@ -43,15 +43,15 @@
 //
 // The resulting sequence is written to stream.
 
-int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
+int simulateGenome(seqan2::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
 {
     // Initialize std generator and distribution
     std::mt19937 generator(options.seed);
     std::uniform_real_distribution<double> distribution(0, 1);
     auto randomNumber = std::bind ( distribution, generator );
 
-    seqan::CharString id;
-    seqan::Dna5String contig;
+    seqan2::CharString id;
+    seqan2::Dna5String contig;
 
     for (unsigned i = 0; i < length(options.contigLengths); ++i)
     {
@@ -84,7 +84,7 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
         {
             writeRecord(stream, id, contig);
         }
-        catch (seqan::IOError const & ioErr)
+        catch (seqan2::IOError const & ioErr)
         {
             std::cerr << "\nERROR: Could not write contig " << id << " to output file.\n";
             return 1;
@@ -102,7 +102,7 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
 
 int simulateGenome(char const * filename, MasonSimulateGenomeOptions const & options)
 {
-    seqan::SeqFileOut stream;
+    seqan2::SeqFileOut stream;
     if (!open(stream, filename))
     {
         std::cerr << "ERROR: Could not open " << filename << "for writing!\n";

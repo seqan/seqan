@@ -42,7 +42,7 @@
 
 #include <algorithm>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -695,6 +695,6 @@ void swap(StringSet<TString, Owner<ConcatDirect<TSpec> > > & lhs,
     swap(lhs.concat, rhs.concat);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_CONCAT_DIRECT_H_

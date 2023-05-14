@@ -37,7 +37,7 @@
 #ifndef SEQAN_REDUCED_AMINOACID_SOLIS10_BASE_H_
 #define SEQAN_REDUCED_AMINOACID_SOLIS10_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

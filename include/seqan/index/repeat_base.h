@@ -39,7 +39,7 @@
 #include <seqan/parallel.h>
 #endif  // #if SEQAN_ENABLE_PARALLELISM
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class Repeat
@@ -589,6 +589,6 @@ namespace seqan {
             appendValue(repString, (*lit).second);
     }
 
-}    // namespace seqan
+}    // namespace seqan2
 
 #endif

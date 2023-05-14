@@ -37,7 +37,7 @@
 #ifndef APP_YARA_FILE_PREFETCHED_H_
 #define APP_YARA_FILE_PREFETCHED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Classes

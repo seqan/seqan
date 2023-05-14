@@ -45,7 +45,7 @@
 struct TestStruct1_ {};
 struct TestStruct2_ {};
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Value<TestStruct1_>
@@ -59,7 +59,7 @@ struct Value<TestStruct1_ const>
     typedef int const Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 // Test our Value metafunction.  The tested point here is that the
 // mechanisms works the way it should.
@@ -77,7 +77,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_value)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct GetValue<TestStruct1_>
@@ -91,7 +91,7 @@ struct GetValue<TestStruct1_ const>
     typedef int Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_get_value)
 {
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_get_value)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Reference<TestStruct1_>
@@ -121,7 +121,7 @@ struct Reference<TestStruct1_ const>
     typedef int const & Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_reference)
 {
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_reference)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Size<TestStruct1_>
@@ -151,7 +151,7 @@ struct Size<TestStruct1_ const>
     typedef unsigned short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_size)
 {
@@ -166,7 +166,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_size)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Difference<TestStruct1_>
@@ -180,7 +180,7 @@ struct Difference<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_difference)
 {
@@ -195,7 +195,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_difference)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Position<TestStruct1_>
@@ -209,7 +209,7 @@ struct Position<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_position)
 {
@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_position)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Host<TestStruct1_>
@@ -238,7 +238,7 @@ struct Host<TestStruct1_ const>
     typedef int const Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_host)
 {
@@ -264,7 +264,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_deepest_spec)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Cargo<TestStruct1_>
@@ -272,7 +272,7 @@ struct Cargo<TestStruct1_>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_cargo)
 {
@@ -287,7 +287,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_cargo)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct VertexDescriptor<TestStruct1_>
@@ -301,7 +301,7 @@ struct VertexDescriptor<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_vertex_descriptor)
 {
@@ -316,7 +316,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_vertex_descriptor)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Id<TestStruct1_>
@@ -330,7 +330,7 @@ struct Id<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_id)
 {
@@ -345,7 +345,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_id)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Key<TestStruct1_>
@@ -359,7 +359,7 @@ struct Key<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_key)
 {
@@ -374,7 +374,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_key)
     SEQAN_ASSERT(b);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Object<TestStruct1_>
@@ -388,7 +388,7 @@ struct Object<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_object)
 {
@@ -400,7 +400,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_object)
     // Has no default implementation.
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct Source<TestStruct1_>
@@ -414,7 +414,7 @@ struct Source<TestStruct1_ const>
     typedef short Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_source)
 {
@@ -475,7 +475,7 @@ SEQAN_DEFINE_TEST(seqan_basic_type_to_parameter)
     SEQAN_ASSERT_EQ(*p4, 99);
 }
 
-namespace seqan {
+namespace seqan2 {
 
 template <>
 struct LENGTH<TestStruct1_>
@@ -489,7 +489,7 @@ struct LENGTH<TestStruct1_ const>
     enum { VALUE = 10 };
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 SEQAN_DEFINE_TEST(seqan_basic_type_metafunction_length)
 {

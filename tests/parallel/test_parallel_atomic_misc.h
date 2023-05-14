@@ -44,7 +44,7 @@
 template <typename T>
 void atomicMinTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int const ARR_SIZE = 4 * 1024;
 
@@ -71,7 +71,7 @@ void atomicMinTestImpl(T const &)
 template <typename T>
 void atomicMaxTestImpl(T const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int const ARR_SIZE = 4 * 1024;
 
@@ -97,7 +97,7 @@ void atomicMaxTestImpl(T const &)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_min)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned short SEQAN_ushort;
     typedef unsigned long SEQAN_ulong;
 
@@ -115,7 +115,7 @@ SEQAN_DEFINE_TEST(test_parallel_atomic_min)
 
 SEQAN_DEFINE_TEST(test_parallel_atomic_max)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef unsigned short SEQAN_ushort;
     typedef unsigned long SEQAN_ulong;
 

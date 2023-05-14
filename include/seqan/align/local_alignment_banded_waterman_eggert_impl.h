@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -596,6 +596,6 @@ _localAlignmentNext(LocalAlignmentFinder<TScoreValue> & finder,
     return maxScore;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_

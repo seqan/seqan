@@ -40,7 +40,7 @@
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -105,7 +105,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case1)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -168,7 +168,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case2)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -230,7 +230,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case3)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -291,7 +291,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case4)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -355,7 +355,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case5)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -418,7 +418,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case6)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -481,7 +481,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case7)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -543,7 +543,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case8)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -605,7 +605,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case9)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -666,7 +666,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case10)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -729,7 +729,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case11)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -791,7 +791,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case12)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -853,7 +853,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case13)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -916,7 +916,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case14)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -978,7 +978,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case15)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1039,7 +1039,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case16)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1100,7 +1100,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case17)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1161,7 +1161,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case18)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1222,7 +1222,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case19)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1283,7 +1283,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case20)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1344,7 +1344,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case21)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1405,7 +1405,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case22)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1466,7 +1466,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case23)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1529,7 +1529,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case24)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1591,7 +1591,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case25)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1654,7 +1654,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case26)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1715,7 +1715,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case27)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1777,7 +1777,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case28)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1838,7 +1838,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case29)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;
@@ -1899,7 +1899,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case30)
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_band_position_case31)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<> > TDPProfile;
     typedef DPProfile_<GlobalAlignment_<FreeEndGaps_<True, True, True, True> >, LinearGaps, TracebackOn<> > TDPProfileOverlap;

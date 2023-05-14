@@ -37,7 +37,7 @@
 #ifndef SEQAN_GFF_IO_GFF_FILE_H_
 #define SEQAN_GFF_IO_GFF_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Typedefs
@@ -160,6 +160,6 @@ writeRecord(FormattedFile<Gff, Output, TSpec> & file, GffRecord & record)
     writeRecord(file.iter, record, file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_GFF_IO_GFF_FILE_H_

@@ -4,7 +4,7 @@
 
 #include <seqan/arg_parse.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Classes

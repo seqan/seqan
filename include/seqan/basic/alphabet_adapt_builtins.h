@@ -41,7 +41,7 @@
 
 #include <limits>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -240,6 +240,6 @@ infimumValueImpl(long double *)
     return _value;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_

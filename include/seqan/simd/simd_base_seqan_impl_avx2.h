@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX2_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX2_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // SimdParams_<32, 32>: 256bit = 32 elements * 8bit
 SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32Char,     char,           32)
@@ -1487,6 +1487,6 @@ inline int _testAllOnes(TSimdVector const & vector, SimdParams_<32>)
     return _mm256_testc_si256(vec, _mm256_cmpeq_epi32(vec, vec));
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_AVX2_H_

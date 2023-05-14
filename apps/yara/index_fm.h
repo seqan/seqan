@@ -38,7 +38,7 @@
 #ifndef APP_YARA_INDEX_FM_H_
 #define APP_YARA_INDEX_FM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Functions

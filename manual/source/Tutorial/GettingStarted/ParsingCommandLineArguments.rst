@@ -143,8 +143,8 @@ Next, we parse the command line using :dox:`ArgumentParser#parse`.
    :fragment: parse
 
 We then check the result of the parsing operation.
-The result is ``seqan::ArgumentParser::PARSE_ERROR`` if there was a problem with the parsing.
-Otherwise, it is ``seqan::ArgumentParser::PARSE_OK`` if there was no problem and no special functionality of the argument parser was triggered.
+The result is ``seqan2::ArgumentParser::PARSE_ERROR`` if there was a problem with the parsing.
+Otherwise, it is ``seqan2::ArgumentParser::PARSE_OK`` if there was no problem and no special functionality of the argument parser was triggered.
 The command line parser automatically adds some arguments, such as ``--help``.
 If such built-in functionality is triggered, it will return a value that is neither ``PARSE_ERROR`` nor ``PARSE_OK``.
 
@@ -285,7 +285,7 @@ Best Practice: Wrapping Parsing In Its Own Function
 
 As a next step towards a cleaner program, we should extract the argument parsing into its own function, e.g. call it ``parseCommandLine()``.
 Following the style guide (:ref:`infra-contribute-style-cpp`), we first pass the output parameter, then the input parameters.
-The return value of our function is a ``seqan::ArgumentParser::ParseResult`` such that we can differentiate whether the program can go on, the help was printed and the program is to exit with success, or there was a problem with the passed argument and the program is to exit with an error code.
+The return value of our function is a ``seqan2::ArgumentParser::ParseResult`` such that we can differentiate whether the program can go on, the help was printed and the program is to exit with success, or there was a problem with the passed argument and the program is to exit with an error code.
 
 Also, note that we should check that the user cannot specify both to-lowercase and to-uppercase.
 This check cannot be performed by the :dox:`ArgumentParser` by itself but we can easily add this check.
@@ -631,7 +631,7 @@ Therefore we will inform you whenever a new library version is available:
     [SEQAN INFO] :: You might want to regsiter you app for support and version check features?
     [SEQAN INFO] :: Just send us an email to seqan@team.fu-berlin.de with your app name and version number.
     [SEQAN INFO] :: If you don't want to recieve this message anymore set --version_check OFF
-  
+
 
 The information we do (not) collect
 """""""""""""""""""""""""""""""""""
@@ -639,7 +639,7 @@ The process of checking for a new version happens at most once a day and takes a
 
 .. note::
 
-    The runtime of your application might be slightly affected by the process of checkng the version. 
+    The runtime of your application might be slightly affected by the process of checkng the version.
     You might want to temporarily switch off the option while doing sensible performance measurements (``--version-check OFF``).
 
 The following information is transmitted to the servers solely via the URL:
@@ -655,8 +655,8 @@ This may be used for anonymized analysis by the SeqAn team, but raw data is neve
 
 .. attention::
 
-    There is no form of user identification and no tracking. 
-    IP-Addresses are never stored permanently. 
+    There is no form of user identification and no tracking.
+    IP-Addresses are never stored permanently.
     SeqAn collects no information regarding your use of the application, like selected options or arguments provided, and of course no information on your files!
 
 Disable this feature any time you want

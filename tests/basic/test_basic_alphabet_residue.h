@@ -45,7 +45,7 @@
 
 inline void testResidueConcepts()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<Dna>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<Dna5>));
@@ -93,7 +93,7 @@ inline void testResidueConcepts()
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -119,7 +119,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -150,7 +150,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna_q)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -181,7 +181,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna_q)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -217,7 +217,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_dna5_q)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -243,7 +243,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -274,7 +274,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_rna5)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -312,7 +312,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_iupac)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Alphabet Concept Metafunctions / Type Queries
 
@@ -389,7 +389,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -441,7 +441,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna_q)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -493,7 +493,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna_q)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -545,7 +545,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna5)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna5_q)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -597,7 +597,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_dna5_q)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_rna)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -649,7 +649,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_rna)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_rna5)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -701,7 +701,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_rna5)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {
@@ -758,7 +758,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_iupac)
 
 SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_amino_acid)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Test Increment / Decrement Operators
     {

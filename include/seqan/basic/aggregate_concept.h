@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -127,6 +127,6 @@ struct MakePacked
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_

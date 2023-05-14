@@ -44,7 +44,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -685,6 +685,6 @@ namespace impl
         return stream;
     }
 }  // namespace impl
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_PROFILE_H_

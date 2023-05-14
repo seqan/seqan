@@ -41,7 +41,7 @@ template <typename TPosition, typename TSize>
 void
 testAlign2TracebackTraceSegmentsConstructor()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
     { // test default ctor
@@ -89,7 +89,7 @@ template <typename TPosition, typename TSize>
 void
 testAlign2TracebackTraceSegmentsAssignment()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
 
@@ -120,7 +120,7 @@ template <typename TPosition, typename TSize>
 void
 testAlign2TracebackTraceSegmentsCompare()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
 
     TTraceSegment traceSegment;
@@ -141,7 +141,7 @@ template <typename TPosition, typename TSize>
 void
 testAlign2TracebackTraceSegmentsPosition()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef typename Position<TTraceSegment>::Type TPosition_;
     bool result = +IsSameType<TPosition_, TPosition>::VALUE;
@@ -152,7 +152,7 @@ template <typename TPosition, typename TSize>
 void
 testAlign2TracebackTraceSegmentsSize()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<TPosition, TSize> TTraceSegment;
     typedef typename Size<TTraceSegment>::Type TSize_;
     bool result = +IsSameType<TSize_, TSize>::VALUE;
@@ -162,7 +162,7 @@ testAlign2TracebackTraceSegmentsSize()
 template <typename TTarget>
 void testAlign2TracebackRecordTrace(TTarget & target)
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef typename TraceBitMap_<>::Type TTraceValue;
 
     TTraceValue tv1 = TraceBitMap_<>::DIAGONAL | TraceBitMap_<>::HORIZONTAL | TraceBitMap_<>::VERTICAL;
@@ -195,7 +195,7 @@ void testAlign2TracebackRecordTrace(TTarget & target)
 
 void testAlign2TraceAdaptorAdaptFile()
 {
-    using namespace seqan;
+    using namespace seqan2;
     std::stringstream stream;
     typedef TraceSegment_<size_t, size_t> TTraceSegment;
     String<TTraceSegment> traceSegments;
@@ -268,7 +268,7 @@ void testAlign2TraceAdaptorAdaptFile()
 
 void testAlign2TraceAdaptorAdaptAlign()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<size_t, size_t> TTraceSegment;
     String<TTraceSegment> traceSegments;
 
@@ -308,7 +308,7 @@ void testAlign2TraceAdaptorAdaptAlign()
 
 void testAlign2TraceAdaptorAdaptFragments()
 {
-    using namespace seqan;
+    using namespace seqan2;
     typedef TraceSegment_<size_t, size_t> TTraceSegment;
     typedef Fragment<unsigned> TFragment;
     String<TFragment> fragmentString;
@@ -331,7 +331,7 @@ void testAlign2TraceAdaptorAdaptFragments()
 
 void testAlign2TraceAdaptorAdaptAlignmentGraph()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef TraceSegment_<size_t, size_t> TTraceSegment;
     typedef Graph<Alignment<StringSet<CharString, Dependent<> > > > TAlignGraph;
@@ -381,7 +381,7 @@ SEQAN_DEFINE_TEST(test_align2_trace_adaptor_trace_segment)
 
 SEQAN_DEFINE_TEST(test_align2_trace_adaptor_record_trace_segment)
 {
-    seqan::StringSet<seqan::TraceSegment_<int, int> > traceSegments;
+    seqan2::StringSet<seqan2::TraceSegment_<int, int> > traceSegments;
     testAlign2TracebackRecordTrace(traceSegments);
 }
 

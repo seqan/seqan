@@ -36,7 +36,7 @@
 #ifndef SEQAN_MODIFIER_MODIFIER_STRING_H_
 #define SEQAN_MODIFIER_MODIFIER_STRING_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ==========================================================================
@@ -892,6 +892,6 @@ template <typename THost, typename TSpec >
 inline void clear(ModifiedString<THost, TSpec> &)
 {}
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_MODIFIER_MODIFIER_STRING_H_

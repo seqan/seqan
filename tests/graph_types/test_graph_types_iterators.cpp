@@ -33,7 +33,7 @@
 #include <seqan/basic.h>
 #include <seqan/graph_types.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TGraphType>
 void Test_VertexIterator()

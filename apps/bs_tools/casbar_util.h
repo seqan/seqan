@@ -13,7 +13,7 @@ Functors and functions for likelihood function evaluation
 #include <cmath>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 template<typename TDna>
 bool

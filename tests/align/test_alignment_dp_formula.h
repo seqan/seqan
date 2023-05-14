@@ -44,7 +44,7 @@
 template <typename TBand>
 void testDPFormulaNoTraceLocalLinearDiagonalDirection(TBand const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
@@ -81,7 +81,7 @@ void testDPFormulaNoTraceLocalLinearDiagonalDirection(TBand const &)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -140,7 +140,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_diagonal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_horizontal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -177,7 +177,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_horizontal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_vertical_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_vertical_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -292,7 +292,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_upper_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -373,7 +373,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_lower_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -566,7 +566,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_linear_all_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -631,7 +631,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_diagonal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -706,7 +706,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_horizontal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -774,7 +774,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_vertical_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -967,7 +967,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_upper_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -1155,7 +1155,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_lower_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     // We need to distinguish between all traces and single trace.
@@ -1518,7 +1518,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_affine_all_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -1577,7 +1577,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_diagonal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -1622,7 +1622,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_horizontal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_vertical_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -1666,7 +1666,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_vertical_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -1787,7 +1787,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_upper_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -1885,7 +1885,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_lower_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<GlobalAlignment_<>, DynamicGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2310,7 +2310,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_global_dynamic_all_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2366,7 +2366,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_diagonal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2430,7 +2430,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_horizontal_direction)
 }
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2493,7 +2493,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_vertical_direction)
 }
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2558,7 +2558,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_upper_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2620,7 +2620,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_lower_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2686,7 +2686,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_linear_all_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2761,7 +2761,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_diagonal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2837,7 +2837,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_horizontal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2912,7 +2912,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_vertical_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -2989,7 +2989,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_upper_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -3066,7 +3066,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_lower_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, AffineGaps, TracebackOn<TracebackConfig_<SingleTrace, GapsLeft> > > TDPProfileSingleTrace;
@@ -3144,7 +3144,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_trace_local_affine_all_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_notrace_diagonal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
@@ -3171,7 +3171,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_diagonal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_notrace_horizontal_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
@@ -3198,7 +3198,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_horizontal_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_notrace_vertical_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
@@ -3225,7 +3225,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_vertical_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_notrace_upper_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
@@ -3252,7 +3252,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_upper_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_notrace_lower_band_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;
@@ -3279,7 +3279,7 @@ SEQAN_DEFINE_TEST(test_dp_formula_notrace_lower_band_direction)
 
 SEQAN_DEFINE_TEST(test_dp_formula_notrace_all_direction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename TraceBitMap_<>::Type TTraceValue;
     typedef DPProfile_<LocalAlignment_<>, LinearGaps, TracebackOff> TDPProfile;

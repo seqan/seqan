@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -228,6 +228,6 @@ void dagShortestPath(TPredecessorMap & predecessor,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_

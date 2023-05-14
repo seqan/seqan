@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_COMPARISON_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_COMPARISON_H_
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @fn alignmentFreeComparison
@@ -58,7 +58,7 @@ namespace seqan {
  * Calculate the alignment free sequence similarity of two masked DNA sequences.
  *
  * @code{.cpp}
- * using namespace seqan;
+ * using namespace seqan2;
  * StringSet<Dna5String> sequences;
  * Dna5String seq1 =
  *     "TAGGTTTTCCGAAAAGGTAGCAACTTTACGTGATCAAACCTCTGACGGGGTTTTCCCCGTCGAAATTGGGTG"
@@ -101,6 +101,6 @@ void alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix, TStringSet const &
     _alignmentFreeComparison(scoreMatrix, sequenceSet, comparisonMethod);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_COMPARISON_H_

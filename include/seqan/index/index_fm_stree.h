@@ -39,7 +39,7 @@
 #ifndef INDEX_FM_STREE_H_
 #define INDEX_FM_STREE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Classes

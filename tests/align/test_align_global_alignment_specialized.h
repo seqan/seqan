@@ -40,7 +40,7 @@
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_hirschberg_single_character)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Horizontal sequence has length 1.
     {
@@ -122,7 +122,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_hirschberg_single_character)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_hirschberg_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // More or less simple alignment.
     {
@@ -152,7 +152,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_hirschberg_align)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_hirschberg_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // More or less simple alignment.
     {
@@ -190,7 +190,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_hirschberg_graph)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_myers_hirschberg_align)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // More or less simple alignment.
     {
@@ -218,7 +218,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_myers_hirschberg_align)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_myers_hirschberg_gaps)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // More or less simple alignment.
     {
@@ -254,7 +254,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_myers_hirschberg_graph)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_hirschberg)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "ATGT";
     DnaString strV = "ATAGAT";
@@ -277,7 +277,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_hirschberg)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "AAAAAATTTTTTTTG";
     DnaString strV = "AATTTTTTTTTTGGGGG";
@@ -297,7 +297,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
 
 SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers_hirschberg)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Dna5String strH = "AAAAAATTTTTTTTG";
     DnaString strV = "AATTTTTTTTTTGGGGG";

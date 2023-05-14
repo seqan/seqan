@@ -36,15 +36,15 @@
 
 namespace test_align_parallel
 {
-struct DPTestConfig : public seqan::DPTraits::GlobalAffine
+struct DPTestConfig : public seqan2::DPTraits::GlobalAffine
 {
-    using TTracebackType = seqan::TracebackOff;
+    using TTracebackType = seqan2::TracebackOff;
 };
 }  // namespace test_align_parallel
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
     // We need to be able to construct a thread pool.
 
     // Define the traits object based on the settings.
@@ -89,7 +89,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_single_global_alignment)
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seqH = "GGTTTTGTTTGATGGAGAATTGCGCAGAGGGGTTATATCTGCGTGAGGATCTGTCACTCGGCGGTGTGGG"
                      "ATACCTCCCTGCTAAGGCGGGTTGAGTGATGTTCCCTCGGACTGGGGACCGCTGGCTTGCGAGCTATGTC"
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment)
 #ifdef SEQAN_SIMD_ENABLED
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_multiple_global_alignment_simd)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString seqH = "GGTTTTGTTTGATGGAGAATTGCGCAGAGGGGTTATATCTGCGTGAGGATCTGTCACTCGGCGGTGTGGG"
     "ATACCTCCCTGCTAAGGCGGGTTGAGTGATGTTCCCTCGGACTGGGGACCGCTGGCTTGCGAGCTATGTC"

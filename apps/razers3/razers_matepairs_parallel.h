@@ -34,7 +34,7 @@
 #include "razers_matepairs.h"
 #include "razers_paired_match_filter.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations

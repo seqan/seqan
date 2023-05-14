@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -424,6 +424,6 @@ operator==(AlignCols<TAlign> const & left,
     return left.data_align == right.data_align;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_

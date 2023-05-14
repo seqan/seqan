@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -111,13 +111,13 @@ public:
     }
     */
 
-   
+
     Iter(typename Parameter_<TContainer>::Type container_, TIterator it_)
             : data_container(_toPointer(container_)),
               data_iterator(it_)
     {}
 
-   
+
     Iter(Iter const & other_)
             : data_container(other_.data_container),
               data_iterator(other_.data_iterator)
@@ -125,7 +125,7 @@ public:
 
     // TODO(holtgrew): Use this technique to the other Iter specializations.
     template <typename TContainer_, typename TIterator2>
-   
+
     Iter(Iter<TContainer_, AdaptorIterator<TIterator2, TSpec> > const & other,
          SEQAN_CTOR_ENABLE_IF(IsSameType<TContainer, TContainer_ const>)) :
             data_container(other.data_container), data_iterator(other.data_iterator)
@@ -137,7 +137,7 @@ public:
     // Assignment Operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-   
+
     Iter &
     operator=(Iter const & other_)
     {
@@ -148,7 +148,7 @@ public:
 
     template <typename TContainer_>
     SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer, TContainer_ const>, Iter &)
-   
+
     operator=(Iter<TContainer_, AdaptorIterator<TIterator, TSpec> > const & other_)
     {
         data_container = other_.data_container;
@@ -162,14 +162,14 @@ public:
 
     // For chaining behaviour of operator->(), see http://stackoverflow.com/a/8782794/84349
 
-   
+
     TIterator &
     operator->()
     {
         return data_iterator;
     }
 
-   
+
     TIterator const &
     operator->() const
     {
@@ -180,7 +180,7 @@ public:
     // Conversion Operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
 
-   
+
     operator TIterator() const
     {
         return data_iterator;
@@ -751,6 +751,6 @@ getChunk(TChunk &result, Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &roo
     return assignRange(result, hostIterator(rootedIter), begin(cont, Standard()) + capacity(cont));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_

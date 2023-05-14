@@ -41,7 +41,7 @@
 #ifndef INDEX_FM_LF_TABLE_H_
 #define INDEX_FM_LF_TABLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

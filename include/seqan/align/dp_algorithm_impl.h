@@ -133,7 +133,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1440,6 +1440,6 @@ _computeAlignment(DPContext<TDPScoreValue, TTraceValue, TScoreMatHost, TTraceMat
     return _finishAlignment(traceSegments, dpTraceMatrixNavigator, dpScout, seqH, seqV, band, dpProfile);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_

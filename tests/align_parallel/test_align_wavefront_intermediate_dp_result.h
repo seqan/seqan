@@ -46,7 +46,7 @@ struct IntermediateTraits_
 
 SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_construct)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TIntermediate = WavefrontAlignmentResult<test_align_parallel::IntermediateTraits_>;
 
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_construct)
 
 SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_update_max)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TIntermediate = WavefrontAlignmentResult<test_align_parallel::IntermediateTraits_>;
     using TState = typename TIntermediate::TState;
@@ -105,7 +105,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_update_max)
 
 SEQAN_DEFINE_TEST(test_align_parallel_intermediate_dp_result_clear)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TIntermediate = WavefrontAlignmentResult<test_align_parallel::IntermediateTraits_>;
 

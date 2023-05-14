@@ -36,7 +36,7 @@
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_construct)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // We need to be able to construct a thread pool.
     SEQAN_ASSERT(std::is_default_constructible<WavefrontAlignmentScheduler>::value);
@@ -71,7 +71,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_construct)
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TTask = SchedulerTraits<WavefrontAlignmentScheduler>::TTask;
 
@@ -122,7 +122,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async)
         }
 
         notify(scheduler);
-        seqan::wait(scheduler);
+        seqan2::wait(scheduler);
     }
     catch (...)
     {
@@ -181,7 +181,7 @@ struct RaiiEvent
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_exception)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TTask = SchedulerTraits<WavefrontAlignmentScheduler>::TTask;
 
@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
         }
 
         notify(scheduler);
-        seqan::wait(scheduler);
+        seqan2::wait(scheduler);
     }
     catch (std::runtime_error & e)
     {
@@ -257,7 +257,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
     }
 
     notify(scheduler);
-    seqan::wait(scheduler);
+    seqan2::wait(scheduler);
     auto val = std::accumulate(std::begin(calledIds), std::end(calledIds), 0);
     SEQAN_ASSERT_EQ(val, 50);
     SEQAN_ASSERT_NOT(isValid(scheduler));

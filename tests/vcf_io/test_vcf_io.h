@@ -44,16 +44,16 @@
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 {
-    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
+    seqan2::CharString vcfPath = seqan2::getAbsolutePath("/tests/vcf_io/example.vcf");
 
-    seqan::String<char, seqan::MMap<> > mmapString;
+    seqan2::String<char, seqan2::MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(vcfPath)));
-    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
+    seqan2::Iterator<seqan2::String<char, seqan2::MMap<> >, seqan2::Rooted>::Type iter = begin(mmapString);
 
-    seqan::VcfIOContext<> vcfIOContext;
-    seqan::VcfHeader vcfHeader;
+    seqan2::VcfIOContext<> vcfIOContext;
+    seqan2::VcfHeader vcfHeader;
 
-    readHeader(vcfHeader, vcfIOContext, iter, seqan::Vcf());
+    readHeader(vcfHeader, vcfIOContext, iter, seqan2::Vcf());
 
     SEQAN_ASSERT_EQ(length(vcfHeader), 18u);
     SEQAN_ASSERT_EQ(vcfHeader[0].key, "fileformat");
@@ -105,22 +105,22 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
-    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example_records_with_errors.vcf");
+    seqan2::CharString vcfPath = seqan2::getAbsolutePath("/tests/vcf_io/example_records_with_errors.vcf");
 
-    seqan::String<char, seqan::MMap<> > mmapString;
+    seqan2::String<char, seqan2::MMap<> > mmapString;
     open(mmapString, toCString(vcfPath));
-    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
+    seqan2::Iterator<seqan2::String<char, seqan2::MMap<> >, seqan2::Rooted>::Type iter = begin(mmapString);
 
-    seqan::VcfIOContext<> vcfIOContext;
-    seqan::VcfHeader vcfHeader;
+    seqan2::VcfIOContext<> vcfIOContext;
+    seqan2::VcfHeader vcfHeader;
 
     resize(sampleNames(vcfIOContext), 3);
 
-    seqan::String<seqan::VcfRecord> records;
-    seqan::VcfRecord record;
+    seqan2::String<seqan2::VcfRecord> records;
+    seqan2::VcfRecord record;
     for (unsigned i = 0; i < 5; ++i)
     {
-        readRecord(record, vcfIOContext, iter, seqan::Vcf());
+        readRecord(record, vcfIOContext, iter, seqan2::Vcf());
         appendValue(records, record);
     }
 
@@ -186,17 +186,17 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     // continuing to read after EOF file should also result in ParseError
     for (unsigned i = 0; i < 25; ++i)
     {
-        SEQAN_TEST_EXCEPTION(seqan::ParseError,
-                             seqan::readRecord(record, vcfIOContext, iter, seqan::Vcf()));
+        SEQAN_TEST_EXCEPTION(seqan2::ParseError,
+                             seqan2::readRecord(record, vcfIOContext, iter, seqan2::Vcf()));
     }
 }
 
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 {
-    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
+    seqan2::CharString vcfPath = seqan2::getAbsolutePath("/tests/vcf_io/example.vcf");
 
-    seqan::VcfFileIn vcfStream(toCString(vcfPath));
-    seqan::VcfHeader header;
+    seqan2::VcfFileIn vcfStream(toCString(vcfPath));
+    seqan2::VcfHeader header;
 
     readHeader(header, vcfStream);
 
@@ -246,10 +246,10 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
     SEQAN_ASSERT_EQ(sampleNames(context(vcfStream))[1], "NA00002");
     SEQAN_ASSERT_EQ(sampleNames(context(vcfStream))[2], "NA00003");
 
-    seqan::String<seqan::VcfRecord> records;
+    seqan2::String<seqan2::VcfRecord> records;
     while (!atEnd(vcfStream))
     {
-        seqan::VcfRecord record;
+        seqan2::VcfRecord record;
         readRecord(record, vcfStream);
         appendValue(records, record);
     }
@@ -292,8 +292,8 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
 {
-    seqan::VcfIOContext<> vcfIOContext;
-    seqan::VcfHeader vcfHeader;
+    seqan2::VcfIOContext<> vcfIOContext;
+    seqan2::VcfHeader vcfHeader;
     appendName(contigNamesCache(vcfIOContext), "20");
     appendName(sampleNamesCache(vcfIOContext), "NA00001");
     appendName(sampleNamesCache(vcfIOContext), "NA00002");
@@ -339,45 +339,45 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
 
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
     std::ofstream file(tmpPath.c_str());
-    seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iter = directionIterator(file, seqan::Output());
-    writeHeader(iter, vcfHeader, vcfIOContext, seqan::Vcf());
+    seqan2::DirectionIterator<std::ofstream, seqan2::Output>::Type iter = directionIterator(file, seqan2::Output());
+    writeHeader(iter, vcfHeader, vcfIOContext, seqan2::Vcf());
     file.close();
 
-    std::string goldPath = seqan::getAbsolutePath("/tests/vcf_io/vcf_header.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
+    std::string goldPath = seqan2::getAbsolutePath("/tests/vcf_io/vcf_header.vcf");
+    SEQAN_ASSERT(seqan2::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
 {
-    std::string goldPath = seqan::getAbsolutePath("/tests/vcf_io/example_records.vcf");
+    std::string goldPath = seqan2::getAbsolutePath("/tests/vcf_io/example_records.vcf");
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
 
     std::ifstream file(goldPath.c_str());
     std::ofstream fileOut(tmpPath.c_str());
 
-    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type iter = directionIterator(file, seqan::Input());
-    seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iterOut = directionIterator(fileOut, seqan::Output());
+    seqan2::DirectionIterator<std::ifstream, seqan2::Input>::Type iter = directionIterator(file, seqan2::Input());
+    seqan2::DirectionIterator<std::ofstream, seqan2::Output>::Type iterOut = directionIterator(fileOut, seqan2::Output());
 
-    seqan::VcfHeader vcfHeader;
-    seqan::VcfIOContext<> vcfIOContext;
+    seqan2::VcfHeader vcfHeader;
+    seqan2::VcfIOContext<> vcfIOContext;
     resize(sampleNames(vcfIOContext), 3);
 
-    seqan::VcfRecord record;
+    seqan2::VcfRecord record;
     while (!atEnd(iter))
     {
-        readRecord(record, vcfIOContext, iter, seqan::Vcf());
-        writeRecord(iterOut, record, vcfIOContext, seqan::Vcf());
+        readRecord(record, vcfIOContext, iter, seqan2::Vcf());
+        writeRecord(iterOut, record, vcfIOContext, seqan2::Vcf());
     }
     fileOut.close();
 
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
+    SEQAN_ASSERT(seqan2::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 {
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
-    seqan::VcfFileOut vcfStream(tmpPath.c_str());
+    seqan2::VcfFileOut vcfStream(tmpPath.c_str());
 
     // Build header.
     appendName(contigNamesCache(context(vcfStream)), "20");
@@ -385,7 +385,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
     appendName(sampleNamesCache(context(vcfStream)), "NA00002");
     appendName(sampleNamesCache(context(vcfStream)), "NA00003");
 
-    seqan::VcfHeader header;
+    seqan2::VcfHeader header;
     resize(header, 18);
     header[0].key = "fileformat";
     header[0].value = "VCFv4.1";
@@ -429,7 +429,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 
     // Write first record.
     {
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = 0;
         vcfRecord.beginPos = 14369;
         vcfRecord.id = "rs6054257";
@@ -447,7 +447,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 
     // Write second record.
     {
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = 0;
         vcfRecord.beginPos = 17329;
         vcfRecord.id = ".";
@@ -465,7 +465,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 
     // Write third record.
     {
-        seqan::VcfRecord vcfRecord;
+        seqan2::VcfRecord vcfRecord;
         vcfRecord.rID = 0;
         vcfRecord.beginPos = 1110695;
         vcfRecord.id = "rs6040355";
@@ -483,18 +483,18 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 
     close(vcfStream);
 
-    seqan::CharString goldPath(seqan::getAbsolutePath("/tests/vcf_io/example.vcf"));
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
+    seqan2::CharString goldPath(seqan2::getAbsolutePath("/tests/vcf_io/example.vcf"));
+    SEQAN_ASSERT(seqan2::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileIn)
 {
     // Build path to file.
-    seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
+    seqan2::CharString vcfPath = SEQAN_PATH_TO_ROOT();
     append(vcfPath, "/tests/vcf_io/example.vcf");
 
     // Create SequenceStream object.
-    seqan::VcfFileIn vcfI;
+    seqan2::VcfFileIn vcfI;
     SEQAN_ASSERT(!isOpen(vcfI));
 
     // open file
@@ -509,14 +509,14 @@ SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileIn)
 SEQAN_DEFINE_TEST(test_vcf_io_access_const_io_context)
 {
     // Build path to file.
-    seqan::CharString vcfPath = seqan::getAbsolutePath("/tests/vcf_io/example.vcf");
+    seqan2::CharString vcfPath = seqan2::getAbsolutePath("/tests/vcf_io/example.vcf");
 
-    seqan::VcfFileIn vcfStream(toCString(vcfPath));
-    seqan::VcfHeader header;
+    seqan2::VcfFileIn vcfStream(toCString(vcfPath));
+    seqan2::VcfHeader header;
 
     readHeader(header, vcfStream);
 
-    seqan::VcfIOContext<> const & cContext = seqan::context(vcfStream);
+    seqan2::VcfIOContext<> const & cContext = seqan2::context(vcfStream);
 
     SEQAN_ASSERT_EQ(length(contigNames(cContext)), 1u);
     SEQAN_ASSERT(!empty(contigNamesCache(cContext)));
@@ -528,11 +528,11 @@ SEQAN_DEFINE_TEST(test_vcf_io_access_const_io_context)
 SEQAN_DEFINE_TEST(test_vcf_io_isOpen_fileOut)
 {
     // Build path to file.
-    seqan::CharString vcfPath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString vcfPath = SEQAN_TEMP_FILENAME();
     append(vcfPath, ".vcf");
 
     // Create SequenceStream object.
-    seqan::VcfFileOut  vcfO;
+    seqan2::VcfFileOut  vcfO;
     SEQAN_ASSERT(!isOpen(vcfO));
 
     // open files

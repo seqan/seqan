@@ -39,7 +39,7 @@
 
 // Test for the Tag<T> template.
 struct SomeTag_;
-typedef seqan::Tag<SomeTag_> SomeTag;
+typedef seqan2::Tag<SomeTag_> SomeTag;
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tag)
 {
@@ -50,7 +50,7 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tag)
 // Test that predefined tags are there.
 SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tags)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
 #define SEQAN_TAG_INSTANCE_TEST(x) x instance ## x; (void) instance ## x
 
@@ -70,7 +70,7 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tags)
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tag_list)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef TagList<void, TagList<void, TagList<void> > > TTagList;
 
@@ -79,13 +79,13 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tag_list)
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tag_selector)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
 }
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_tags_length_tag_list)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef TagList<>                                           TList0;
     typedef TagList<void, void>                                 TList1;

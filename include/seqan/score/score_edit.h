@@ -37,7 +37,7 @@
 #ifndef SEQAN_SSCORE_EDIT_H_
 #define SEQAN_SSCORE_EDIT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 /*!
  * @class EditDistanceScore
@@ -128,6 +128,6 @@ scoreGapOpen(Score<TValue, EditDistance> const &) {
     return -1;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SSCORE_EDIT_H_

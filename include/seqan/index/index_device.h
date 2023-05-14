@@ -37,7 +37,7 @@
 #ifndef SEQAN_INDEX_DEVICE_H_
 #define SEQAN_INDEX_DEVICE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Metafunctions

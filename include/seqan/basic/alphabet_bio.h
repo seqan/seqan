@@ -40,7 +40,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -96,6 +96,6 @@ unknownValue()
     return unknownValueImpl(_tag);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_

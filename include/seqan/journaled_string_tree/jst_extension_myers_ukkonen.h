@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_MYERS_UKKONEN_H_
 #define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_MYERS_UKKONEN_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -272,6 +272,6 @@ run(JstExtension<Pattern<TNeedle, Myers<TSpec, THasState, TFindBeginPatternSpec>
 {
     return (me.isLongNeedle) ? impl::runLongNeedle(me, hystkIt) : impl::runShortNeedle(me, hystkIt);
 }
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JST_EXTENSION_MYERS_UKKONEN_H_

@@ -48,7 +48,7 @@
 #include "bisar.h"
 
 
-using namespace seqan;
+using namespace seqan2;
 
 struct AppOptions
 {

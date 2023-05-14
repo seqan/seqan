@@ -33,7 +33,7 @@
 // Tags, Classes, Enums
 // ============================================================================
 
-namespace seqan {
+namespace seqan2 {
 struct Tsv_;
 typedef Tag<Tsv_> Tsv;
 }
@@ -125,7 +125,7 @@ void updateMaximalErrorRate(RabemaStats & stats, unsigned maxErrorRate)
 // ----------------------------------------------------------------------------
 
 template <typename TStream>
-void write(TStream & stream, RabemaStats const & stats, /*int maxError,*/ seqan::Raw const & /*tag*/)
+void write(TStream & stream, RabemaStats const & stats, /*int maxError,*/ seqan2::Raw const & /*tag*/)
 {
     stream << "Intervals to find:              " << stats.intervalsToFind << '\n'
            << "Intervals found:                " << stats.intervalsFound << '\n';
@@ -178,7 +178,7 @@ void write(TStream & stream, RabemaStats const & stats, /*int maxError,*/ seqan:
 
 template <typename TStream>
 int write(TStream & stream, RabemaStats const & stats, int maxError, CharString const & benchmarkCategory,
-          bool oracleMode, CharString const & distanceMetric, seqan::Tsv const & /*tag*/)
+          bool oracleMode, CharString const & distanceMetric, seqan2::Tsv const & /*tag*/)
 {
     stream << "##Rabema Results\n"
            << "##\n"

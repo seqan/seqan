@@ -4,7 +4,7 @@
 #include <seqan/align.h>
 #include <seqan/index.h>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![matrix_init]

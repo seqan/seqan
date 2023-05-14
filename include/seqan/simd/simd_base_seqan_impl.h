@@ -56,7 +56,7 @@
   "with -DSEQAN_UMESIMD_ENABLED for a different SIMD backend."
 #endif
 
-namespace seqan {
+namespace seqan2 {
 
 #ifdef COMPILER_LINTEL
 #include <type_traits>
@@ -150,6 +150,6 @@ struct SimdMatrixParams_
         SEQAN_CONCEPT_IMPL((TSimdVector const), (SimdVectorConcept));
 #endif  // SEQAN_SIMD_ENABLED
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_IMPL_H_

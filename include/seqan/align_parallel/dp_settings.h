@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SETTINGS_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SETTINGS_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -104,6 +104,6 @@ struct SimdDPSettings : public TDPSettings
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_DP_SETTINGS_H_

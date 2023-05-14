@@ -35,7 +35,7 @@
 
 #include <seqan/random.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 
 

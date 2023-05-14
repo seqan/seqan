@@ -36,7 +36,7 @@
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_task_scheduler_construct)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // We need to be able to construct a thread pool.
     SEQAN_ASSERT(!std::is_default_constructible<WavefrontTaskScheduler>::value);
@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_task_scheduler_construct)
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_task_scheduler_async)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TTask = SchedulerTraits<WavefrontTaskScheduler>::TTask;
 
@@ -92,7 +92,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_task_scheduler_async)
     unlockWriting(scheduler);
 
     // Wait until schduler is done with all jobs.
-    seqan::wait(scheduler);
+    seqan2::wait(scheduler);
 
     SEQAN_ASSERT(t1Executed);
     SEQAN_ASSERT(t2Executed);

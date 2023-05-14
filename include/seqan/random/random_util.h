@@ -38,7 +38,7 @@
 #ifndef INCLUDE_SEQAN_RANDOM_RANDOM_UTIL_H_
 #define INCLUDE_SEQAN_RANDOM_RANDOM_UTIL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Forwards, Tags.
@@ -128,6 +128,6 @@ auto cvtLogNormalDistParam(TRealType const & mean, TRealType const & stddev)
                       static_cast<TRealType>(std::sqrt(std::log(1.0 + stddev * stddev / mean / mean))));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_RANDOM_RANDOM_UTIL_H_

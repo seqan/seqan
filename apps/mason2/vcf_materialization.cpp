@@ -42,7 +42,7 @@
 
 // Returns true if haystack contains needle.
 
-bool contains(seqan::CharString const & haystack, char const * needle)
+bool contains(seqan2::CharString const & haystack, char const * needle)
 {
     return strstr(toCString(haystack), needle);
 }
@@ -53,13 +53,13 @@ bool contains(seqan::CharString const & haystack, char const * needle)
 
 // Get integer value of SVLEN=<number> from VCF INFO column strings.
 
-int getSVLen(seqan::CharString const & str)
+int getSVLen(seqan2::CharString const & str)
 {
-    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-            directionIterator(str, seqan::Input());
+    seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+            directionIterator(str, seqan2::Input());
 
     // Parse out key/value pairs and interpret SVLEN.
-    seqan::CharString key, val;
+    seqan2::CharString key, val;
     enum { IN_KEY, IN_VALUE } state = IN_KEY;
     for (; !atEnd(inputIter); ++inputIter)
     {
@@ -71,7 +71,7 @@ int getSVLen(seqan::CharString const & str)
         else if (*inputIter == ';')
         {
             if (key == "SVLEN")
-                return seqan::lexicalCast<int>(val);
+                return seqan2::lexicalCast<int>(val);
 
             clear(val);
             clear(key);
@@ -89,7 +89,7 @@ int getSVLen(seqan::CharString const & str)
     }
 
     if (key == "SVLEN")
-        return seqan::lexicalCast<int>(val);
+        return seqan2::lexicalCast<int>(val);
 
     SEQAN_FAIL("Missing INFO SVLEN %s", toCString(str));
     return 0;
@@ -101,13 +101,13 @@ int getSVLen(seqan::CharString const & str)
 
 // Returns reference name and position from TARGETPOS=<ref>:<pos> in VCF INFO column strings.
 
-std::pair<seqan::CharString, int> getTargetPos(seqan::CharString const & str)
+std::pair<seqan2::CharString, int> getTargetPos(seqan2::CharString const & str)
 {
-    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-            directionIterator(str, seqan::Input());
+    seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+            directionIterator(str, seqan2::Input());
 
     // Parse out key/value pairs and interpret SVLEN.
-    seqan::CharString key, val;
+    seqan2::CharString key, val;
     enum { IN_KEY, IN_VALUE } state = IN_KEY;
     for (; !atEnd(inputIter); ++inputIter)
     {
@@ -120,11 +120,11 @@ std::pair<seqan::CharString, int> getTargetPos(seqan::CharString const & str)
         {
             if (key == "TARGETPOS")
             {
-                seqan::StringSet<seqan::CharString> xs;
-                strSplit(xs, val, seqan::EqualsChar<':'>());
+                seqan2::StringSet<seqan2::CharString> xs;
+                strSplit(xs, val, seqan2::EqualsChar<':'>());
                 SEQAN_CHECK(length(xs) == 2u, "TARGETPOS has invalid format %s", toCString(val));
                 SEQAN_CHECK(!empty(xs[0]) && !empty(xs[1]), "TARGETPOS has invalid format %s", toCString(val));
-                return std::make_pair(xs[0], seqan::lexicalCast<int>(xs[1]));
+                return std::make_pair(xs[0], seqan2::lexicalCast<int>(xs[1]));
             }
 
             clear(val);
@@ -144,11 +144,11 @@ std::pair<seqan::CharString, int> getTargetPos(seqan::CharString const & str)
 
     if (key == "TARGETPOS")
     {
-        seqan::StringSet<seqan::CharString> xs;
-        strSplit(xs, val, seqan::EqualsChar<':'>());
+        seqan2::StringSet<seqan2::CharString> xs;
+        strSplit(xs, val, seqan2::EqualsChar<':'>());
         SEQAN_CHECK(length(xs) == 2u, "TARGETPOS has invalid format %s", toCString(val));
         SEQAN_CHECK(!empty(xs[0]) && !empty(xs[1]), "TARGETPOS has invalid format %s", toCString(val));
-        return std::make_pair(xs[0], seqan::lexicalCast<int>(xs[1]));
+        return std::make_pair(xs[0], seqan2::lexicalCast<int>(xs[1]));
     }
 
     SEQAN_FAIL("Missing INFO TARGETPOS %s", toCString(str));
@@ -176,9 +176,9 @@ void VcfMaterializer::init()
 
         // Get number of haplotypes in VCF file.
         SEQAN_ASSERT_NOT(empty(vcfRecord.genotypeInfos));
-        seqan::StringSet<seqan::CharString> xs;
-        seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-                directionIterator(vcfRecord.genotypeInfos[0], seqan::Input());
+        seqan2::StringSet<seqan2::CharString> xs;
+        seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+                directionIterator(vcfRecord.genotypeInfos[0], seqan2::Input());
         numHaplotypes = 1;
         for (; !atEnd(inputIter); ++inputIter)
             numHaplotypes += (*inputIter == '|' || *inputIter == '/');
@@ -194,7 +194,7 @@ void VcfMaterializer::init()
         if (!build(faiIndex, toCString(fastaFileName)))
             throw MasonIOException("Could not build FAI index.");
 
-        seqan::CharString faiPath = fastaFileName;
+        seqan2::CharString faiPath = fastaFileName;
         append(faiPath, ".fai");
         if (!save(faiIndex, toCString(faiPath)))
             throw MasonIOException("Could not write FAI index.");
@@ -208,7 +208,7 @@ void VcfMaterializer::init()
             if (!build(methFaiIndex, toCString(methFastaFileName)))
                 throw MasonIOException("Could not build methylation levels FAI index.");
 
-            seqan::CharString faiPath = methFastaFileName;
+            seqan2::CharString faiPath = methFastaFileName;
             append(faiPath, ".fai");
             if (!save(methFaiIndex, toCString(faiPath)))
                 throw MasonIOException("Could not write methylation levels FAI index.");
@@ -261,7 +261,7 @@ void VcfMaterializer::_loadLevels(int rID)
 // Function VcfMaterializer::materializeNext()
 // ----------------------------------------------------------------------------
 
-bool VcfMaterializer::materializeNext(seqan::Dna5String & seq,
+bool VcfMaterializer::materializeNext(seqan2::Dna5String & seq,
                                       std::vector<SmallVarInfo> & varInfos,
                                       std::vector<std::pair<int, int> > & breakpoints,
                                       int & rID,
@@ -270,7 +270,7 @@ bool VcfMaterializer::materializeNext(seqan::Dna5String & seq,
     return _materializeNext(seq, 0, varInfos, breakpoints, rID, haplotype);
 }
 
-bool VcfMaterializer::materializeNext(seqan::Dna5String & seq,
+bool VcfMaterializer::materializeNext(seqan2::Dna5String & seq,
                                       MethylationLevels & levels,
                                       std::vector<SmallVarInfo> & varInfos,
                                       std::vector<std::pair<int, int> > & breakpoints,
@@ -284,7 +284,7 @@ bool VcfMaterializer::materializeNext(seqan::Dna5String & seq,
 // Function VcfMaterializer::_materializeNext()
 // ----------------------------------------------------------------------------
 
-bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq,
+bool VcfMaterializer::_materializeNext(seqan2::Dna5String & seq,
                                        MethylationLevels * levels,
                                        std::vector<SmallVarInfo> & varInfos,
                                        std::vector<std::pair<int, int> > & breakpoints,
@@ -312,7 +312,7 @@ bool VcfMaterializer::_materializeNext(seqan::Dna5String & seq,
         reinit(journal, length(seq));
         posMap.reinit(journal);
         GenomicInterval gi(0, length(seq), 0, length(seq));
-        seqan::String<PositionMap::TInterval> intervals;
+        seqan2::String<PositionMap::TInterval> intervals;
         appendValue(intervals, PositionMap::TInterval(gi.svBeginPos, gi.svEndPos, gi));
         createIntervalTree(posMap.svIntervalTree, intervals);
         createIntervalTree(posMap.svIntervalTreeSTL, intervals);
@@ -362,14 +362,14 @@ int VcfMaterializer::_loadVariantsForContig(Variants & variants, int rID)
 
     // Compute number of haplotypes.
     SEQAN_ASSERT_NOT(empty(vcfRecord.genotypeInfos));
-    seqan::StringSet<seqan::CharString> xs;
-    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-            directionIterator(vcfRecord.genotypeInfos[0], seqan::Input());
+    seqan2::StringSet<seqan2::CharString> xs;
+    seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+            directionIterator(vcfRecord.genotypeInfos[0], seqan2::Input());
     numHaplotypes = 1;
     for (; !atEnd(inputIter); ++inputIter)
         numHaplotypes += (*inputIter == '|' || *inputIter == '/');
 
-    std::vector<seqan::VcfRecord> chunk;
+    std::vector<seqan2::VcfRecord> chunk;
     while (vcfRecord.rID != -1 && vcfRecord.rID <= rID)
     {
         // Translocations are the only SVs that are stored as breakends (BND).  We collect the BNDs in chunks of 6
@@ -405,12 +405,12 @@ int VcfMaterializer::_loadVariantsForContig(Variants & variants, int rID)
 // Function VcfMaterializer::_appendToVariants()
 // ----------------------------------------------------------------------------
 
-void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord const & vcfRecord)
+void VcfMaterializer::_appendToVariants(Variants & variants, seqan2::VcfRecord const & vcfRecord)
 {
     // Compute maximal length of alternative.
     unsigned altLength = 0;
-    seqan::StringSet<seqan::CharString> alts;
-    strSplit(alts, vcfRecord.alt, seqan::EqualsChar<','>());
+    seqan2::StringSet<seqan2::CharString> alts;
+    strSplit(alts, vcfRecord.alt, seqan2::EqualsChar<','>());
     for (unsigned i = 0; i < length(alts); ++i)
         altLength = std::max(altLength, (unsigned)length(alts[i]));
 
@@ -443,7 +443,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         {
             svRecord.kind = StructuralVariantRecord::DUPLICATION;
             svRecord.size = getSVLen(vcfRecord.info);
-            std::pair<seqan::CharString, int> pos = getTargetPos(vcfRecord.info);
+            std::pair<seqan2::CharString, int> pos = getTargetPos(vcfRecord.info);
             unsigned idx = 0;
             if (!getIdByName(idx, contigNamesCache(context(vcfFileIn)), pos.first))
                 SEQAN_FAIL("Unknown sequence %s", toCString(pos.first));
@@ -461,16 +461,16 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
 
         // Split the target variants.
         SEQAN_ASSERT_NOT(empty(vcfRecord.genotypeInfos));
-        seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-                directionIterator(vcfRecord.genotypeInfos[0], seqan::Input());
-        seqan::CharString buffer;
+        seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+                directionIterator(vcfRecord.genotypeInfos[0], seqan2::Input());
+        seqan2::CharString buffer;
         svRecord.haplotype = 0;
         for (; !atEnd(inputIter); ++inputIter)
             if ((*inputIter == '|' || *inputIter == '/'))
             {
                 if (!empty(buffer))
                 {
-                    unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);
+                    unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer), 1u);
                     if (idx != 0u)  // if not == ref
                         appendValue(variants.svRecords, svRecord);
                 }
@@ -483,7 +483,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
             }
         if (!empty(buffer))
         {
-            unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);
+            unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer), 1u);
             if (idx != 0u)  // if not == ref
                 appendValue(variants.svRecords, svRecord);
         }
@@ -495,14 +495,14 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         snpRecord.pos = vcfRecord.beginPos;
 
         // Split the alternatives.
-        seqan::StringSet<seqan::CharString> alternatives;
-        strSplit(alternatives, vcfRecord.alt, seqan::EqualsChar<','>());
+        seqan2::StringSet<seqan2::CharString> alternatives;
+        strSplit(alternatives, vcfRecord.alt, seqan2::EqualsChar<','>());
 
         // Split the target variants.
         SEQAN_ASSERT_NOT(empty(vcfRecord.genotypeInfos));
-        seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-                directionIterator(vcfRecord.genotypeInfos[0], seqan::Input());
-        seqan::CharString buffer;
+        seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+                directionIterator(vcfRecord.genotypeInfos[0], seqan2::Input());
+        seqan2::CharString buffer;
         snpRecord.haplotype = 0;
         for (; !atEnd(inputIter); ++inputIter)
         {
@@ -511,7 +511,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
             {
                 if (!empty(buffer))
                 {
-                    unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer),
+                    unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer),
                                             (unsigned)length(alternatives));
                     if (idx != 0u)  // if not == ref
                     {
@@ -530,7 +530,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         }
         if (!empty(buffer))
         {
-            unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer),
+            unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer),
                                     (unsigned)length(alternatives));
             if (idx != 0u)  // if not == ref
             {
@@ -562,9 +562,9 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
 
         // Split the target variants.
         SEQAN_ASSERT_NOT(empty(vcfRecord.genotypeInfos));
-        seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-                directionIterator(vcfRecord.genotypeInfos[0], seqan::Input());
-        seqan::CharString buffer;
+        seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+                directionIterator(vcfRecord.genotypeInfos[0], seqan2::Input());
+        seqan2::CharString buffer;
         smallIndel.haplotype = 0;
         for (; !atEnd(inputIter); ++inputIter)
         {
@@ -573,7 +573,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
             {
                 if (!empty(buffer))
                 {
-                    unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);
+                    unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer), 1u);
                     if (idx != 0u)  // if not == ref
                         appendValue(variants.smallIndels, smallIndel);
                 }
@@ -587,7 +587,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
         }
         if (!empty(buffer))
         {
-            unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);
+            unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer), 1u);
             if (idx != 0u)  // if not == ref
                 appendValue(variants.smallIndels, smallIndel);
         }
@@ -598,7 +598,7 @@ void VcfMaterializer::_appendToVariants(Variants & variants, seqan::VcfRecord co
 // Function VcfMaterializer::_appendToVariantsBnd()
 // ----------------------------------------------------------------------------
 
-void VcfMaterializer::_appendToVariantsBnd(Variants & variants, std::vector<seqan::VcfRecord> const & vcfRecords)
+void VcfMaterializer::_appendToVariantsBnd(Variants & variants, std::vector<seqan2::VcfRecord> const & vcfRecords)
 {
     // Sanity check.
     SEQAN_CHECK(length(vcfRecords) == 6u, "Must be 6-tuple.");
@@ -620,16 +620,16 @@ void VcfMaterializer::_appendToVariantsBnd(Variants & variants, std::vector<seqa
 
     // Split the target variants.
     SEQAN_ASSERT_NOT(empty(vcfRecord.genotypeInfos));
-    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type inputIter =
-            directionIterator(vcfRecord.genotypeInfos[0], seqan::Input());
-    seqan::CharString buffer;
+    seqan2::DirectionIterator<seqan2::CharString const, seqan2::Input>::Type inputIter =
+            directionIterator(vcfRecord.genotypeInfos[0], seqan2::Input());
+    seqan2::CharString buffer;
     svRecord.haplotype = 0;
     for (; !atEnd(inputIter); ++inputIter)
         if ((*inputIter == '|' || *inputIter == '/'))
         {
             if (!empty(buffer))
             {
-                unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);
+                unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer), 1u);
                 if (idx != 0u)  // if not == ref
                     appendValue(variants.svRecords, svRecord);
             }
@@ -642,7 +642,7 @@ void VcfMaterializer::_appendToVariantsBnd(Variants & variants, std::vector<seqa
         }
     if (!empty(buffer))
     {
-        unsigned idx = std::min(seqan::lexicalCast<unsigned>(buffer), 1u);
+        unsigned idx = std::min(seqan2::lexicalCast<unsigned>(buffer), 1u);
         if (idx != 0u)  // if not == ref
             appendValue(variants.svRecords, svRecord);
     }

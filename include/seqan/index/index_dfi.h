@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_DFI_H
 #define SEQAN_HEADER_INDEX_DFI_H
 
-namespace seqan
+namespace seqan2
 {
 
 

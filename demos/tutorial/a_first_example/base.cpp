@@ -4,7 +4,7 @@
 #include <seqan/align.h>
 
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {
@@ -12,14 +12,14 @@ int main()
     typedef Align<TSequence, ArrayGaps> TAlign;      // align type
 
 //![lookup_rule]
-    seqan::String<char> s = "example";
+    seqan2::String<char> s = "example";
     unsigned i = length(s);
 //![lookup_rule]
     ignoreUnusedVariableWarning(i);
 
     TAlign align;
 //![seqan_tags]
-    globalAlignment(align, seqan::MyersHirschberg());
+    globalAlignment(align, seqan2::MyersHirschberg());
 //![seqan_tags]
     return 0;
 }

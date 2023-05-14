@@ -59,8 +59,8 @@
         int verbosity;
 
         // The arguments of the program are stored here.
-        seqan::CharString inputFile;
-        seqan::CharString outputFile;
+        seqan2::CharString inputFile;
+        seqan2::CharString outputFile;
 
         KnimeNodeOptions() :
             verbosity(1)
@@ -75,11 +75,11 @@
     // Function parseCommandLine()
     // --------------------------------------------------------------------------
 
-    seqan::ArgumentParser::ParseResult
+    seqan2::ArgumentParser::ParseResult
     parseCommandLine(KnimeNodeOptions & options, int argc, char const ** argv)
     {
         // Setup ArgumentParser.
-        seqan::ArgumentParser parser("knime_node");
+        seqan2::ArgumentParser parser("knime_node");
         // Set short description, version, and date.
         setShortDescription(parser, "This is a very simple KNIME node providing an input and output port.");
         setVersion(parser, "0.1");
@@ -90,18 +90,18 @@
         addDescription(parser, "This is a very simple KNIME node providing an input and output port. The code should be modified such that the node does something useful");
 
         // We require one argument.
-        addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
+        addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "IN"));
         setValidValues(parser, 0, "fastq fq");
 
-        addOption(parser, seqan::ArgParseOption("o", "outputFile", "Name of the multi-FASTA output.", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+        addOption(parser, seqan2::ArgParseOption("o", "outputFile", "Name of the multi-FASTA output.", seqan2::ArgParseOption::OUTPUT_FILE, "OUT"));
         setValidValues(parser, "outputFile", "fastq fq");
         setDefaultValue(parser, "outputFile", "result.fastq");
         setRequired(parser, "o");
 
         // The verbosity option should be used to help debugging
-        addOption(parser, seqan::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
-        addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
-        addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
+        addOption(parser, seqan2::ArgParseOption("q", "quiet", "Set verbosity to a minimum."));
+        addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable verbose output."));
+        addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
 
         // Add Examples Section.
         addTextSection(parser, "Examples");
@@ -109,12 +109,12 @@
                     "Call with \\fITEXT\\fP set to \"text\" with verbose output.");
 
         // Parse command line.
-        seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+        seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
 
         std::cout << <u>LINE</u> << std::endl;
 
         // Only extract  options if the program will continue after parseCommandLine()
-        if (res != seqan::ArgumentParser::PARSE_OK)
+        if (res != seqan2::ArgumentParser::PARSE_OK)
             return res;
 
         std::cout << <u>LINE</u> << std::endl;
@@ -127,13 +127,13 @@
             options.verbosity = 3;
 
         std::cout << <u>LINE</u> << std::endl;
-        seqan::getArgumentValue(options.inputFile, parser, 0);
+        seqan2::getArgumentValue(options.inputFile, parser, 0);
 
         // Get output file name from command line if set.  Otherwise, autogenerate from input file name.
         if (isSet(parser, "outputFile"))
         {
             std::cout << <u>LINE</u> << std::endl;
-            seqan::getOptionValue(options.outputFile, parser, "outputFile");
+            seqan2::getOptionValue(options.outputFile, parser, "outputFile");
             std::cout << options.inputFile << std::endl;
             std::cout << options.outputFile << std::endl;
         }
@@ -142,12 +142,12 @@
             std::cout << <u>LINE</u> << std::endl;
             options.outputFile = options.inputFile;
             std::cout << options.outputFile << std::endl;
-            seqan::append(options.outputFile, ".fastq");
+            seqan2::append(options.outputFile, ".fastq");
             std::cout << options.outputFile << std::endl;
         }
 
         std::cout << <u>LINE</u> << std::endl;
-        return seqan::ArgumentParser::PARSE_OK;
+        return seqan2::ArgumentParser::PARSE_OK;
     }
 
     // --------------------------------------------------------------------------
@@ -159,15 +159,15 @@
     int main(int argc, char const ** argv)
     {
         // Parse the command line.
-        seqan::ArgumentParser parser;
+        seqan2::ArgumentParser parser;
         KnimeNodeOptions options;
-        seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+        seqan2::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
         // If there was an error parsing or built-in argument parser functionality
         // was triggered then we exit the program.  The return code is 1 if there
         // were errors and 0 if there were none.
-        if (res != seqan::ArgumentParser::PARSE_OK)
-            return res == seqan::ArgumentParser::PARSE_ERROR;
+        if (res != seqan2::ArgumentParser::PARSE_OK)
+            return res == seqan2::ArgumentParser::PARSE_ERROR;
 
         std::cout << "EXAMPLE PROGRAM\n"
                   << "===============\n\n";
@@ -183,10 +183,10 @@
         }
 
         // Reading the input
-        seqan::SequenceStream seqIn(seqan::toCString(options.inputFile));
-        seqan::StringSet<seqan::CharString> ids;
-        seqan::StringSet<seqan::Dna5String> seqs;
-        seqan::StringSet<seqan::CharString> quals;
+        seqan2::SequenceStream seqIn(seqan2::toCString(options.inputFile));
+        seqan2::StringSet<seqan2::CharString> ids;
+        seqan2::StringSet<seqan2::Dna5String> seqs;
+        seqan2::StringSet<seqan2::CharString> quals;
 
         std::cout << <u>LINE</u> << std::endl;
 
@@ -195,7 +195,7 @@
             std::cout << "ERROR: File does not contain any sequences!\n";
             return 1;
         }
-        if(seqan::readAll(ids, seqs, quals, seqIn) != 0)
+        if(seqan2::readAll(ids, seqs, quals, seqIn) != 0)
         {
             std::cout << "ERROR: Could not read first record!\n";
             return 1;
@@ -207,12 +207,12 @@
         // *
         // *
 
-        seqan::SequenceStream seqOut(seqan::toCString(options.outputFile), seqan::SequenceStream::WRITE);
+        seqan2::SequenceStream seqOut(seqan2::toCString(options.outputFile), seqan2::SequenceStream::WRITE);
         std::cout << options.outputFile << std::endl;
         std::cout << "id: " << ids[0] << " " << length(ids) << std::endl;
         std::cout << seqs[0] << " " << length(seqs) << std::endl;
         std::cout << quals[0] << " " << length(quals) << std::endl;
-        if (seqan::writeAll(seqOut, ids, seqs, quals) != 0)
+        if (seqan2::writeAll(seqOut, ids, seqs, quals) != 0)
         {
             std::cerr << "ERROR: Could not write records!\n";
             return 1;

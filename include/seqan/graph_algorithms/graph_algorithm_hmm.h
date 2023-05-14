@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_HMM_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_HMM_H
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -1166,6 +1166,6 @@ msaToProfileHmm(String<TAlignmentChar> const& matr,
 */
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

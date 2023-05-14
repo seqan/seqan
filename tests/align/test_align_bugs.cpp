@@ -43,35 +43,35 @@ auto compute_affine_alignment(TGapSequence1 & gapSequence1,
                               TGapSequence2 & gapSequence2,
                               TScoringScheme const & scoringScheme)
 {
-    using TSize = typename seqan::Size<TGapSequence1>::Type;
-    using TPosition = typename seqan::Position<TGapSequence1>::Type;
-    using TTraceSegment = seqan::TraceSegment_<TPosition, TSize>;
+    using TSize = typename seqan2::Size<TGapSequence1>::Type;
+    using TPosition = typename seqan2::Position<TGapSequence1>::Type;
+    using TTraceSegment = seqan2::TraceSegment_<TPosition, TSize>;
 
     // Test explicitly the complete trace functionality.
-    using TTracebackPolicy = seqan::TracebackOn<seqan::TracebackConfig_<seqan::CompleteTrace, seqan::GapsLeft>>;
-    using TAlignConfig = seqan::AlignConfig2<seqan::LocalAlignment_<>,
-                                             seqan::DPBandConfig<seqan::BandOff>,
-                                             seqan::FreeEndGaps_<seqan::True, seqan::True, seqan::True, seqan::True>,
+    using TTracebackPolicy = seqan2::TracebackOn<seqan2::TracebackConfig_<seqan2::CompleteTrace, seqan2::GapsLeft>>;
+    using TAlignConfig = seqan2::AlignConfig2<seqan2::LocalAlignment_<>,
+                                             seqan2::DPBandConfig<seqan2::BandOff>,
+                                             seqan2::FreeEndGaps_<seqan2::True, seqan2::True, seqan2::True, seqan2::True>,
                                              TTracebackPolicy>;
 
-    seqan::String<TTraceSegment> trace;
-    seqan::DPScoutState_<seqan::Default> dpScoutState;
+    seqan2::String<TTraceSegment> trace;
+    seqan2::DPScoutState_<seqan2::Default> dpScoutState;
     TAlignConfig config;
-    auto score = seqan::_setUpAndRunAlignment(trace,
+    auto score = seqan2::_setUpAndRunAlignment(trace,
                                               dpScoutState,
-                                              seqan::source(gapSequence1),
-                                              seqan::source(gapSequence2),
+                                              seqan2::source(gapSequence1),
+                                              seqan2::source(gapSequence2),
                                               scoringScheme,
                                               config,
-                                              seqan::AffineGaps());
-    seqan::_adaptTraceSegmentsTo(gapSequence1, gapSequence2, trace);
+                                              seqan2::AffineGaps());
+    seqan2::_adaptTraceSegmentsTo(gapSequence1, gapSequence2, trace);
     return score;
 }
 
 SEQAN_DEFINE_TEST(test_local_alignment_with_complete_trace_produces_wrong_alignment)
 {
-    seqan::String<seqan::AminoAcid> s1 = "QDPKEPCISIYCLYLPVAGLGNLRGCCLPWM**";
-    seqan::String<seqan::AminoAcid> s2 = "*SS*IVSRTPARTSPPGPGPIGGPH*TIQSVVATVGVYKGQGRNQRELMTRAYWEFLVQGK*LQFPIPST"
+    seqan2::String<seqan2::AminoAcid> s1 = "QDPKEPCISIYCLYLPVAGLGNLRGCCLPWM**";
+    seqan2::String<seqan2::AminoAcid> s2 = "*SS*IVSRTPARTSPPGPGPIGGPH*TIQSVVATVGVYKGQGRNQRELMTRAYWEFLVQGK*LQFPIPST"
                                          "TGVQRVSRTCRPRRAHADPVSVARVRPRTSKGITDLLLLNLVWLNATCPSKKLNADRDGRVTI*QARVSF"
                                          "VIGINQTNRSTN*ERPCTTTHRIKKELSICQSSLCPGRVRFPVLSQIKPQAPLLVVPFRQFL*VSALQPY"
                                          "FPRNPKTLVSRKLPEGSSM*RPPIASWHRL*SELGRYLIVFEPLTFALD*RKHSWQMLSQSFVLRRSKNF"
@@ -80,24 +80,24 @@ SEQAN_DEFINE_TEST(test_local_alignment_with_complete_trace_produces_wrong_alignm
                                          "SCIVIFRHYLPASGMGNLRACCLPWMW*PFLRLPLRNRTLIPRHP*EPR*ANTVPTKVDRADT*MIRRRC"
                                          "*TVRSAKLSRVTKANAPEDAAGFWSDKCT";
 
-    seqan::Align<seqan::String<seqan::AminoAcid> > correctAlignment;
-    seqan::resize(seqan::rows(correctAlignment), 2);
-    seqan::assignSource(seqan::row(correctAlignment, 0), s1);
-    seqan::assignSource(seqan::row(correctAlignment, 1), s2);
+    seqan2::Align<seqan2::String<seqan2::AminoAcid> > correctAlignment;
+    seqan2::resize(seqan2::rows(correctAlignment), 2);
+    seqan2::assignSource(seqan2::row(correctAlignment, 0), s1);
+    seqan2::assignSource(seqan2::row(correctAlignment, 1), s2);
 
-    seqan::Blosum62 scoringScheme(-1, -11);
+    seqan2::Blosum62 scoringScheme(-1, -11);
 
     // Compute the known correct alignment.
-    auto correctScore = seqan::localAlignment(correctAlignment, scoringScheme);
+    auto correctScore = seqan2::localAlignment(correctAlignment, scoringScheme);
 
-    seqan::Align<seqan::String<seqan::AminoAcid> > testAlignment;
-    seqan::resize(seqan::rows(testAlignment), 2);
-    seqan::assignSource(seqan::row(testAlignment, 0), s1);
-    seqan::assignSource(seqan::row(testAlignment, 1), s2);
+    seqan2::Align<seqan2::String<seqan2::AminoAcid> > testAlignment;
+    seqan2::resize(seqan2::rows(testAlignment), 2);
+    seqan2::assignSource(seqan2::row(testAlignment, 0), s1);
+    seqan2::assignSource(seqan2::row(testAlignment, 1), s2);
 
     // Compute the known incorrect alignment.
-    auto testScore = compute_affine_alignment(seqan::row(testAlignment, 0),
-                                              seqan::row(testAlignment, 1),
+    auto testScore = compute_affine_alignment(seqan2::row(testAlignment, 0),
+                                              seqan2::row(testAlignment, 1),
                                               scoringScheme);
 
     SEQAN_ASSERT_EQ(correctScore, testScore);

@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
 #define INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -140,6 +140,6 @@ struct ConsensusAlignmentOptions
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_

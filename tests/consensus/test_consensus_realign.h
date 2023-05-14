@@ -47,19 +47,19 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     // Load example SAM from file.
     //
     // There are many superfluous gaps in the SAM file that we will get rid of below.
-    seqan::FragmentStore<> store;
-    seqan::CharString samPath = seqan::getAbsolutePath("/tests/consensus/small_example.sam");
-    seqan::BamFileIn fSamIn(toCString(samPath));
+    seqan2::FragmentStore<> store;
+    seqan2::CharString samPath = seqan2::getAbsolutePath("/tests/consensus/small_example.sam");
+    seqan2::BamFileIn fSamIn(toCString(samPath));
     readRecords(store, fSamIn);
 
-    seqan::AlignedReadLayout layout;
+    seqan2::AlignedReadLayout layout;
     // layoutAlignment(layout, store);
-    // printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 160, 0, 1000);
+    // printAlignment(std::cout, seqan2::Raw(), layout, store, 0, 0, 160, 0, 1000);
 
     // Call Realignment method.
-    seqan::Score<int, seqan::WeightedConsensusScore<
-                          seqan::Score<int, seqan::FractionalScore>,
-                          seqan::Score<int, seqan::ConsensusScore> > > combinedScore;
+    seqan2::Score<int, seqan2::WeightedConsensusScore<
+                          seqan2::Score<int, seqan2::FractionalScore>,
+                          seqan2::Score<int, seqan2::ConsensusScore> > > combinedScore;
     reAlignment(store, 0, 1, 30, false);
 
     layoutAlignment(layout, store);

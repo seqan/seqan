@@ -41,7 +41,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -912,6 +912,6 @@ endPosition(Gaps<TSequence, ArrayGaps> & gaps)
     return gaps._sourceEndPos;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_

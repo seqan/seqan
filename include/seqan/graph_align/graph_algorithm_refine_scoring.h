@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
 #define SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // Fake score function.
 
@@ -47,6 +47,6 @@ _getRefinedMatchScore(TScoreValue const &, TStringSet const &, TAlign const &, T
     return 1;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_

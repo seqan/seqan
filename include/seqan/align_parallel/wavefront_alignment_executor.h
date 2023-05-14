@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_EXECUTOR_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_EXECUTOR_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -93,6 +93,6 @@ local(WavefrontAlignmentExecutor<TArgs...> & executor)
     return local(*executor.ptrThreadLocal);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_ALIGNMENT_EXECUTOR_H_

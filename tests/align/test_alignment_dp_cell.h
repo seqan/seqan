@@ -42,7 +42,7 @@
 template <typename TGapCosts>
 void testDPCellValue(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPCell_<int, TGapCosts> TDPCell;
     typedef DPCell_<int, TGapCosts> const TDPConstCell;
@@ -58,7 +58,7 @@ void testDPCellValue(TGapCosts const &)
 template <typename TGapCosts>
 void testDPCellReference(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPCell_<int, TGapCosts> TDPCell;
     typedef DPCell_<int, TGapCosts> const TDPConstCell;
@@ -75,7 +75,7 @@ void testDPCellReference(TGapCosts const &)
 template <typename TGapCosts>
 void testDPCellDefaultInfinity(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int    result_int       = DPCellDefaultInfinity<DPCell_<int, TGapCosts>>::VALUE;
     int    result_int_const = DPCellDefaultInfinity<DPCell_<int, TGapCosts> const>::VALUE;
@@ -95,7 +95,7 @@ void testDPCellDefaultInfinity(TGapCosts const &)
 template <typename TGaps>
 void testDPCellConstructor(TGaps const & /*tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, TGaps> dpValue;
 
@@ -107,7 +107,7 @@ void testDPCellConstructor(TGaps const & /*tag*/)
 template <typename TGaps>
 void testDPCellCopyConstructor(TGaps const & /*tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, TGaps> dpValue;
 
@@ -123,7 +123,7 @@ void testDPCellCopyConstructor(TGaps const & /*tag*/)
 template <typename TGaps>
 void testDPCellAssignment(TGaps const & /*tag*/)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, TGaps> dpValue;
 
@@ -139,7 +139,7 @@ void testDPCellAssignment(TGaps const & /*tag*/)
 
 void testDPCellAffineConstructor()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, AffineGaps> dpValue;
 
@@ -151,7 +151,7 @@ void testDPCellAffineConstructor()
 
 void testDPCellAffineCopyConstructor()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, AffineGaps> dpValue;
 
@@ -178,7 +178,7 @@ void testDPCellAffineCopyConstructor()
 
 void testDPCellAffineAssignment()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, AffineGaps> dpValue;
 
@@ -207,7 +207,7 @@ void testDPCellAffineAssignment()
 template <typename TGapCosts>
 void testDPCellScore(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, TGapCosts> dpValue;
 
@@ -220,7 +220,7 @@ void testDPCellScore(TGapCosts const &)
 
 void testDPCellVerticalScore()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, AffineGaps> dpValue;
 
@@ -237,7 +237,7 @@ void testDPCellVerticalScore()
 
 void testDPCellHorizontalScore()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DPCell_<int, AffineGaps> dpValue;
 
@@ -253,43 +253,43 @@ void testDPCellHorizontalScore()
 
 SEQAN_DEFINE_TEST(test_dp_cell_value)
 {
-    testDPCellValue(seqan::LinearGaps());
-    testDPCellValue(seqan::AffineGaps());
-    testDPCellValue(seqan::DynamicGaps());
+    testDPCellValue(seqan2::LinearGaps());
+    testDPCellValue(seqan2::AffineGaps());
+    testDPCellValue(seqan2::DynamicGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_reference)
 {
-    testDPCellReference(seqan::LinearGaps());
-    testDPCellReference(seqan::AffineGaps());
-    testDPCellReference(seqan::DynamicGaps());
+    testDPCellReference(seqan2::LinearGaps());
+    testDPCellReference(seqan2::AffineGaps());
+    testDPCellReference(seqan2::DynamicGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_default_infinity)
 {
-    testDPCellDefaultInfinity(seqan::LinearGaps());
-    testDPCellDefaultInfinity(seqan::AffineGaps());
-    testDPCellDefaultInfinity(seqan::DynamicGaps());
+    testDPCellDefaultInfinity(seqan2::LinearGaps());
+    testDPCellDefaultInfinity(seqan2::AffineGaps());
+    testDPCellDefaultInfinity(seqan2::DynamicGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_linear_constructor)
 {
-    testDPCellConstructor(seqan::LinearGaps());
+    testDPCellConstructor(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_linear_copy_constructor)
 {
-    testDPCellCopyConstructor(seqan::LinearGaps());
+    testDPCellCopyConstructor(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_linear_assignment)
 {
-    testDPCellAssignment(seqan::LinearGaps());
+    testDPCellAssignment(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_linear_score)
 {
-    testDPCellScore(seqan::LinearGaps());
+    testDPCellScore(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_affine_constructor)
@@ -309,7 +309,7 @@ SEQAN_DEFINE_TEST(test_dp_cell_affine_assignment)
 
 SEQAN_DEFINE_TEST(test_dp_cell_affine_score)
 {
-    testDPCellScore(seqan::AffineGaps());
+    testDPCellScore(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_affine_vertical_score)
@@ -324,22 +324,22 @@ SEQAN_DEFINE_TEST(test_dp_cell_affine_horizontal_score)
 
 SEQAN_DEFINE_TEST(test_dp_cell_dynamic_constructor)
 {
-    testDPCellConstructor(seqan::DynamicGaps());
+    testDPCellConstructor(seqan2::DynamicGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_dynamic_copy_constructor)
 {
-    testDPCellCopyConstructor(seqan::DynamicGaps());
+    testDPCellCopyConstructor(seqan2::DynamicGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_dynamic_assignment)
 {
-    testDPCellAssignment(seqan::DynamicGaps());
+    testDPCellAssignment(seqan2::DynamicGaps());
 }
 
 SEQAN_DEFINE_TEST(test_dp_cell_dynamic_score)
 {
-    testDPCellScore(seqan::DynamicGaps());
+    testDPCellScore(seqan2::DynamicGaps());
 }
 
 #endif  // #ifndef SANDBOX_RMAERKER_TESTS_ALIGN2_TEST_ALIGNMENT_DP_CELL_H_

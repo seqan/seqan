@@ -3,7 +3,7 @@
 #include <iostream>
 #include <seqan/index.h>
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![constraints]
@@ -16,7 +16,7 @@ struct TMyConstraints
 //![constraints]
 
 //![extensions]
-namespace seqan {
+namespace seqan2 {
 // custom TSpec for our customized wotd-Index
 struct TMyIndex;
 

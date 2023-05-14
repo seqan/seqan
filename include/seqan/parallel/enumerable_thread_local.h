@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ENUMERABLE_THREAD_LOCAL_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_ENUMERABLE_THREAD_LOCAL_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -471,6 +471,6 @@ combine(EnumerableThreadLocal<TValue, TManager, TSpec> & me,
     return std::accumulate(begin(me), end(me), TValue{}, std::forward<TBinaryCombine>(fBinaryCombine));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_ENUMERABLE_THREAD_LOCAL_H_

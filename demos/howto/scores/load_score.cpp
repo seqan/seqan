@@ -27,7 +27,7 @@
 #include <seqan/stream.h>   // For printing strings.
 #include <seqan/score.h>  // The module score.
 
-using namespace seqan;
+using namespace seqan2;
 //![includes]
 
 //![show-scoring-matrix]

@@ -1,7 +1,7 @@
 #include <seqan/sequence.h>
 
 //![vcfRecord]
-using namespace seqan;
+using namespace seqan2;
 
 class VcfRecord
 {

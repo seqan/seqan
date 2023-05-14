@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_PACKED_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_PAIR_PACKED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -194,6 +194,6 @@ inline void moveValueI2(Pair<T1, T2, Pack> & pair, T & _i)
     pair.i2 = _i;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_PACKED_H_

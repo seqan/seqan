@@ -39,7 +39,7 @@
 
 #include <seqan/stream.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -294,6 +294,6 @@ readRecord(BedRecord<TSpec> & record,
     readLine(record.data, iter);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BED_IO_READ_BED_H_

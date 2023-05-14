@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_WUMANBER_H
 #define SEQAN_HEADER_FIND_WUMANBER_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -436,6 +436,6 @@ inline bool find(TFinder & finder,
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

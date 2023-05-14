@@ -36,8 +36,8 @@ The description of the command line is kept in XML files called :ref:`Common Too
 
   .. tip::
 
-    *For SeqAn Apps*, 
-    thanks to the seqan::ArgumentParser class generating a plugin directory is completely automatic if you are using the SeqAn build infrastructure. All you have to do is run make with target prepare_workflow_plugin. Read the tutorial :ref:`Generating SeqAn KNIME Nodes <tutorial-workflows-generating-seqan-knime-nodes>` for more details.
+    *For SeqAn Apps*,
+    thanks to the seqan2::ArgumentParser class generating a plugin directory is completely automatic if you are using the SeqAn build infrastructure. All you have to do is run make with target prepare_workflow_plugin. Read the tutorial :ref:`Generating SeqAn KNIME Nodes <tutorial-workflows-generating-seqan-knime-nodes>` for more details.
 
 The input of the GWN package is a directory tree with the following structure:
 
@@ -96,11 +96,11 @@ When creating your own plugin directory, you only have to update the first three
 
 |br|
 
-The Directory descriptors 
+The Directory descriptors
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The descriptors directory contains two types of files i.e. the *CTD files* for each application in our plugin and a *mime.types* file.
-    
+
 MIME Types
 ^^^^^^^^^^
 *mime.types*  file is a text file that contains a mapping between MIME types and file extensions. Every file extension, to be either used or produced by the applications in the plugin, has to be registered here. Each line contains the definition of a `MIME type <http://en.wikipedia.org/wiki/Internet_media_type>`_.
@@ -115,7 +115,7 @@ The name of the mime type is followed (separated by a space) by the file extensi
 
 .. important::
 
-  There may be no ambiguous mappings, like giving a single extension for both *application/x-fasta* and *application/x-fastq* in the example shown above. An extension should be mapped to a single application. 
+  There may be no ambiguous mappings, like giving a single extension for both *application/x-fasta* and *application/x-fastq* in the example shown above. An extension should be mapped to a single application.
 
 .. _tutorial-workflows-generating-knime-nodes-ctd:
 
@@ -124,8 +124,8 @@ The CTD (Common Tool descriptor) files
 For every application with the name ``app_name``, there is one CTD file called *${app_name}.ctd*. These files contain the command line description of an application in XML format. They also decide which command-line arguments will be input/output ports or configuration entries in the node to be generated.
 
 .. Tip::
-  
-  For applications developed in SeqAn or applications using the seqan::ArgumentParser for parsing their command-line arguments a CTD file can be generated using a hidden parameter ``-write-ctd``.
+
+  For applications developed in SeqAn or applications using the seqan2::ArgumentParser for parsing their command-line arguments a CTD file can be generated using a hidden parameter ``-write-ctd``.
 
   for example:
 
@@ -267,14 +267,14 @@ Click **more...** to see the description of the tags and the attributes in the C
       A good example for this would be the ``-l`` flag of the ``ls`` program.
 
 
-The Directory payload 
+The Directory payload
 ^^^^^^^^^^^^^^^^^^^^^^
 
 The directory ``payload`` contains ZIP files with the executable tool binaries. Usually there is one ZIP file for each platform ``(Linux, Windows, and Mac Os X)`` architecture ``(32Bit or 64Bit)``combination. The names of the files are ``binaries_${plat}_${arch}.zip`` where ``${plat}`` is one of ``lnx``, ``win``, or ``mac``, and ``${arch}`` is one of ``32`` and ``64``. In this way the appropriate binaries will be used based on the system that KNIME is running on. Some, even all, of the zip files representing different architectures can be missing. That means the node will not be functional on a KNIME instance installed on the architecture(s) corresponding to missing zip file(s). Nevertheless the payload directory has to be present even if it is empty.
 
 Each ZIP file contains a directory ``/bin`` which is used as the search path for the binary given by ``<executableName>`` and an INI file ``/binaries.ini`` which can be used to set environment variables before executing any of tools.
 
-The Directory icons 
+The Directory icons
 ^^^^^^^^^^^^^^^^^^^
 
 Here we put icons for different purposes.
@@ -283,7 +283,7 @@ Here we put icons for different purposes.
   - An image file with a name *splash.png* (50x50 px):  an icon to be displayed in the KNIME splash screen.
   - An image file with a name *app_name.png* (15x15 px):  an icon to be displayed with the corresponding node of the application ``app_name``. This is done once for each app but it's optional.
 
-The files DESCRIPTION, LICENSE, COPYRIGHT 
+The files DESCRIPTION, LICENSE, COPYRIGHT
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - **DESCRIPTION**:
@@ -328,18 +328,18 @@ wget
 .. code-block:: console
 
     knime_samtools # wget https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2
-    
-curl 
+
+curl
 
 .. code-block:: console
 
     knime_samtools # curl -OL https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2
-    
-Now let us extract and build samtools 
+
+Now let us extract and build samtools
 
 .. code-block:: console
 
-    knime_samtools # tar -jxvf samtools-1.3.tar.bz2 
+    knime_samtools # tar -jxvf samtools-1.3.tar.bz2
     ...
     knime_samtools # cd samtools-1.3
     samtools-1.3 # ./configure
@@ -358,9 +358,9 @@ Then, we need to download GenericKnimeNodes:
 
 Preparation: Installing KNIME File Handling
 -------------------------------------------
-We need to install support for file handling nodes in KNIME. In order to do that 
+We need to install support for file handling nodes in KNIME. In order to do that
 - Launch your Eclipse-KNIME-SDK
-  
+
   .. tip::
 
     **Launching Eclipse-KNIME-SDK**

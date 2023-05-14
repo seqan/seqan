@@ -42,7 +42,7 @@
 
 SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename BamHeaderRecord::TTag    TTag;
 
@@ -81,7 +81,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
 
 SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Create input.
 

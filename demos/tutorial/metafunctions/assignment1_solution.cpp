@@ -2,7 +2,7 @@
 #include <seqan/basic.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename T>
 void checkContainerForDna(T & container)

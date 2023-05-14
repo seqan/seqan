@@ -42,7 +42,7 @@
 #ifndef INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
 #define INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -458,7 +458,7 @@ public:
                 {
                     swap(store.alignedReadStore, contigAlignedReads);
                     std::cerr << "ALIGNMENT is (current == " << store.readSeqStore[el.readId] << ")\n";
-                    seqan::AlignedReadLayout layout;
+                    seqan2::AlignedReadLayout layout;
                     layoutAlignment(layout, store);
                     std::stringstream ss;
                     printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
@@ -1121,7 +1121,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
 
             swap(store.alignedReadStore, contigAlignedReads);
             std::cerr << "ALIGNMENT is\n";
-            seqan::AlignedReadLayout layout;
+            seqan2::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
@@ -1148,7 +1148,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
 
             swap(store.alignedReadStore, contigAlignedReads);
             std::cerr << "AFTER SUBTRACTION of " << store.readSeqStore[it->readId] << " id= " << it->readId << "\n";
-            seqan::AlignedReadLayout layout;
+            seqan2::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
@@ -1295,7 +1295,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         {
             swap(store.alignedReadStore, contigAlignedReads);
             std::cerr << "BEFORE INTEGRATION of " << store.readSeqStore[it->readId] << "\n";
-            seqan::AlignedReadLayout layout;
+            seqan2::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
@@ -1339,7 +1339,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
 
             swap(store.alignedReadStore, contigAlignedReads);
             std::cerr << "AFTER REALIGNMENT STEP of " << store.readSeqStore[it->readId] << "\n";
-            seqan::AlignedReadLayout layout;
+            seqan2::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
@@ -1547,7 +1547,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::_updateAlignments(
     //
     // We record the positions of all-gaps columns and remove them later.  We also insert all-gaps columns into *it and
     // remove it together with the rest of the alignment.
-    seqan::String<unsigned> gapPositions;
+    seqan2::String<unsigned> gapPositions;
     for (; itP != itPEnd;)
     {
         SEQAN_ASSERT_NOT_MSG(isGap(itP) && isGap(itR), "No all-gaps columns in pairwise alignment.");
@@ -1818,6 +1818,6 @@ void reAlignment(FragmentStore<TSpec, TConfig> & store,
                 printTiming);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_

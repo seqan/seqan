@@ -40,7 +40,7 @@
 #include "four2three.h"
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 struct AppOptions
 {

@@ -39,7 +39,7 @@
 
 #include <seqan/simple_intervals_io/simple_intervals_io.h>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -171,6 +171,6 @@ void writeRecord(FormattedFile<SimpleIntervals, Output, TSpec> & file, GenomicRe
     writeRecord(file.iter, context(file), record, file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_

@@ -3,7 +3,7 @@
 #include <seqan/misc/interval_tree.h>
 #include <seqan/parallel.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 
 // define used types
@@ -85,7 +85,7 @@ int main(int argc, char const * argv[])
     if (!loadFiles(store, annotationFileName, alignmentFileName))
         return 1;
 
-    extractGeneIntervals(intervals, store);    
+    extractGeneIntervals(intervals, store);
 
     return 0;
 }

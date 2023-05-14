@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
 #define INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -158,6 +158,6 @@ unknownValueImpl(T *)
     return 'N';
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_

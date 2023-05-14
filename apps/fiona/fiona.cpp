@@ -146,7 +146,7 @@ using namespace boost::numeric::ublas;
 
 //#define MEDIAN
 
-using namespace seqan;
+using namespace seqan2;
 
 #ifdef FIONA_ALLOWINDELS
 
@@ -249,7 +249,7 @@ char const * methodName(FionaMethod m)
 
 // Convert a valid method name into a FionaMethod.
 
-FionaMethod methodForName(seqan::CharString const & str)
+FionaMethod methodForName(seqan2::CharString const & str)
 {
     if (str == "control_fp")
         return CONTROL_FP;
@@ -481,7 +481,7 @@ struct CorrectionIndelPos
                                         //  x..deletion
 };
 
-namespace seqan
+namespace seqan2
 {
 
     struct CargoQgramIndex
@@ -857,7 +857,7 @@ namespace seqan
         return cons.replen_min <= repLen && repLen <= cons.replen_max;
     }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 
 // fill an array of type alphabet with the correction string
@@ -3467,7 +3467,7 @@ void traverseAndSearchCorrections(
 //            std::cerr<<"END"<<std::endl;
 //        }
         unsigned commonPrefix = parentRepLength(iter);            // length of parent label
-//        if (seqan::range(iter).i1==127 && prefix(representative(iter),commonPrefix) == "AAAAACAAAAACA")
+//        if (seqan2::range(iter).i1==127 && prefix(representative(iter),commonPrefix) == "AAAAACAAAAACA")
 //        std::cout<<"HERE"<<std::endl;
 
         if ((int)commonPrefix < options.fromLevel)
@@ -3585,7 +3585,7 @@ if (LOOP_LEVEL != 0)
         // continue only if we have found a correct read
         if (!empty(correctCandidates))
         {
-//std::cout << seqan::range(iter) << '\t' << parentEdgeFirstChar(iter) << '\t' << prefix(representative(iter),commonPrefix) << '\t';
+//std::cout << seqan2::range(iter) << '\t' << parentEdgeFirstChar(iter) << '\t' << prefix(representative(iter),commonPrefix) << '\t';
 //for (unsigned j = 0; j < length(correctCandidates); ++j)
 //    std::cout << beginPosition(correctCandidates[j]) << ',' << endPosition(correctCandidates[j]) << '\t';
 //std::cout << '\n';
@@ -5067,11 +5067,11 @@ int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOpti
 }
 
 // Parse the command line and return the status of the parsing.
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(FionaOptions & options, int argc, char const ** argv)
 {
     // Setup command line parser.
-    seqan::ArgumentParser parser(FIONA_BINARY_NAME);
+    seqan2::ArgumentParser parser(FIONA_BINARY_NAME);
 
     // Set short description, version, and date.
     setShortDescription(parser, "Parallel and automatic read error correction");
@@ -5092,43 +5092,43 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                    "The reads are read from the file \\fIIN.{fq,fa}\\fP and are written to \\fIOUT.fa\\fP.");
 
     // Fiona gets two parameters:  The paths to the input and the output files.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::INPUT_FILE, "IN"));
     setValidValues(parser, 0, "fa fasta fq fastq");
     setHelpText(parser, 0, "An input file with reads to be corrected.");
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUT_FILE, "OUT"));
+    addArgument(parser, seqan2::ArgParseArgument(seqan2::ArgParseArgument::OUTPUT_FILE, "OUT"));
     setValidValues(parser, 1, "fa fasta fq fastq");
     setHelpText(parser, 1, "An output file to store the corrected reads.");
 
     // General Options.
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "More verbose output."));
-    addOption(parser, seqan::ArgParseOption("", "correction-infos",
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "More verbose output."));
+    addOption(parser, seqan2::ArgParseOption("", "correction-infos",
                                             "Enable embedding of correction information in the output file."));
 
     // Internal Options
     addSection(parser, "Internal");
-    addOption(parser, seqan::ArgParseOption("", "global-corr-limit", "Limit corrections globally and not per round."));
-    addOption(parser, seqan::ArgParseOption("", "no-final-trim-ns", "Disable trimming of Ns at the end."));
+    addOption(parser, seqan2::ArgParseOption("", "global-corr-limit", "Limit corrections globally and not per round."));
+    addOption(parser, seqan2::ArgParseOption("", "no-final-trim-ns", "Disable trimming of Ns at the end."));
 
     // Dataset Properties.
     addSection(parser, "Dataset Properties");
 
-    addOption(parser, seqan::ArgParseOption("g", "genome-length", "Approximate length of the underlying genome.",
-                                            seqan::ArgParseOption::INT64, "LEN"));
+    addOption(parser, seqan2::ArgParseOption("g", "genome-length", "Approximate length of the underlying genome.",
+                                            seqan2::ArgParseOption::INT64, "LEN"));
     setMinValue(parser, "genome-length", "1");
     setRequired(parser, "genome-length");
 
-    addOption(parser, seqan::ArgParseOption("e", "error-rate",
+    addOption(parser, seqan2::ArgParseOption("e", "error-rate",
                                             "Approximate per-base error rate in the read set. A slight "
                                             "overestimation gives better results.",
-                                            seqan::ArgParseOption::DOUBLE, "ERATE"));
+                                            seqan2::ArgParseOption::DOUBLE, "ERATE"));
     setMinValue(parser, "error-rate", "0");
     setMaxValue(parser, "error-rate", "1");
     setDefaultValue(parser, "error-rate", options.errorrate);
 
-    addOption(parser, seqan::ArgParseOption("oe", "overlap-error-scale",
+    addOption(parser, seqan2::ArgParseOption("oe", "overlap-error-scale",
                                             "The \\fIerror-rate\\fP is multiplied by this scale to define the error rate cutoff in the pairwise read overlap.",
-                                            seqan::ArgParseOption::DOUBLE, "ERATE"));
+                                            seqan2::ArgParseOption::DOUBLE, "ERATE"));
     setMinValue(parser, "overlap-error-scale", "0");
     setDefaultValue(parser, "overlap-error-scale", "2");
 
@@ -5136,103 +5136,103 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     addSection(parser, "Tree Iteration Options");
 
     // TODO(holtgrew): The old help for --levels was "set to 0 <x> for auto HiTEC, 1 <x> for auto fiona".. Fix this here?
-    addOption(parser, seqan::ArgParseOption("fl", "from-level",
+    addOption(parser, seqan2::ArgParseOption("fl", "from-level",
                                             "Set the lower bound on the level for suffix tree DFS.  Use "
                                             "\\fI0\\fP for both \\fIfrom-level\\fP and \\fIto-level\\fP "
                                             "to get automatic level detection.",
-                                            seqan::ArgParseOption::INTEGER, "LEVEL"));
+                                            seqan2::ArgParseOption::INTEGER, "LEVEL"));
     setMinValue(parser, "from-level", "0");
     setDefaultValue(parser, "from-level", options.fromLevel);
 
     // TODO(holtgrew): The old help for --levels was "set to 0 <x> for auto HiTEC, 1 <x> for auto fiona".. Fix this here?
-    addOption(parser, seqan::ArgParseOption("tl", "to-level",
+    addOption(parser, seqan2::ArgParseOption("tl", "to-level",
                                             "Set the upper bound on the level for suffix tree DFS.  Use "
                                             "\\fI0\\fP for both \\fIto-level\\fP and \\fIto-level\\fP "
                                             "to get automatic level detection.",
-                                            seqan::ArgParseOption::INTEGER, "LEVEL"));
+                                            seqan2::ArgParseOption::INTEGER, "LEVEL"));
     setMinValue(parser, "to-level", "0");
     setDefaultValue(parser, "to-level", options.toLevel);
 
-    addOption(parser, seqan::ArgParseOption("dsr", "depth-sample-rate", "The depth sampling rate factor.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("dsr", "depth-sample-rate", "The depth sampling rate factor.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "depth-sample-rate", "1");
     setDefaultValue(parser, "depth-sample-rate", options.depthSampleRate);
 
     // Repeat Masking Options
     addSection(parser, "Repeat Masking Options");
 
-    addOption(parser, seqan::ArgParseOption("", "no-mask-repeats", "Turn off automatic repeat masking."));
+    addOption(parser, seqan2::ArgParseOption("", "no-mask-repeats", "Turn off automatic repeat masking."));
     //hideOption(parser, "no-mask-repeats");
 
-    addOption(parser, seqan::ArgParseOption("krr", "kmer-repeat-ratio",
+    addOption(parser, seqan2::ArgParseOption("krr", "kmer-repeat-ratio",
                                             "The fraction of k-mers that are considered as repeats.",
-                                            seqan::ArgParseOption::DOUBLE, "RATIO"));
+                                            seqan2::ArgParseOption::DOUBLE, "RATIO"));
     setMinValue(parser, "kmer-repeat-ratio", "0");
     setMaxValue(parser, "kmer-repeat-ratio", "1");
     setDefaultValue(parser, "kmer-repeat-ratio", options.kmerAbundanceCutoff);
 
-    addOption(parser, seqan::ArgParseOption("krsd", "kmer-repeat-std-dev",
+    addOption(parser, seqan2::ArgParseOption("krsd", "kmer-repeat-std-dev",
                                             "Multiples of standard deviation (for k-mer repeat cut-off).",
-                                            seqan::ArgParseOption::DOUBLE, "SCALE"));
+                                            seqan2::ArgParseOption::DOUBLE, "SCALE"));
     setMinValue(parser, "kmer-repeat-std-dev", "0");
     setDefaultValue(parser, "kmer-repeat-std-dev", options.kmerStdDevCutOff);
 
     // Correction Algorithm Options.
     addSection(parser, "Correction Algorithm Options");
 
-    addOption(parser, seqan::ArgParseOption("", "method", "Selects the correction method to use.",
-                                            seqan::ArgParseOption::STRING, "NAME"));
+    addOption(parser, seqan2::ArgParseOption("", "method", "Selects the correction method to use.",
+                                            seqan2::ArgParseOption::STRING, "NAME"));
     setValidValues(parser, "method", "classifier control_fp control_fn expected count");
     setDefaultValue(parser, "method", "classifier");
 
-    addOption(parser, seqan::ArgParseOption("i", "iterations",
+    addOption(parser, seqan2::ArgParseOption("i", "iterations",
                                             "Number of iterations.  Use \\fI0\\fP for auto-detection.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "iterations", "0");
     setDefaultValue(parser, "iterations", options.cycles);
 
-    addOption(parser, seqan::ArgParseOption("f", "expected",
+    addOption(parser, seqan2::ArgParseOption("f", "expected",
                                             "Use expected value correction with the given strictness cutoff "
                                             "for the \\fIexpected\\fP method.",
-                                            seqan::ArgParseOption::DOUBLE, "CUTOFF"));
+                                            seqan2::ArgParseOption::DOUBLE, "CUTOFF"));
     setMinValue(parser, "expected", "0");
     setDefaultValue(parser, "expected", "1");
 
-    addOption(parser, seqan::ArgParseOption("c", "count", "Use fixed count correction cutoff.",
-                                            seqan::ArgParseOption::DOUBLE, "CUTOFF"));
+    addOption(parser, seqan2::ArgParseOption("c", "count", "Use fixed count correction cutoff.",
+                                            seqan2::ArgParseOption::DOUBLE, "CUTOFF"));
     setMinValue(parser, "count", "0");
     setDefaultValue(parser, "count", "7");
 
-    addOption(parser, seqan::ArgParseOption("or", "odds-ratio", "Odds-ratio for the \\fIclassifier\\fP method.",
-                                            seqan::ArgParseOption::DOUBLE, "RATIO"));
+    addOption(parser, seqan2::ArgParseOption("or", "odds-ratio", "Odds-ratio for the \\fIclassifier\\fP method.",
+                                            seqan2::ArgParseOption::DOUBLE, "RATIO"));
     setMinValue(parser, "odds-ratio", "0");
     setDefaultValue(parser, "odds-ratio", "1");
 
-    addOption(parser, seqan::ArgParseOption("p", "p-value", "The p value for the \\fIexpected\\fP mode. In "
+    addOption(parser, seqan2::ArgParseOption("p", "p-value", "The p value for the \\fIexpected\\fP mode. In "
                                             "sensitivity mode, this is the false discovery rate.",
-                                            seqan::ArgParseOption::DOUBLE, "P-VALUE"));
+                                            seqan2::ArgParseOption::DOUBLE, "P-VALUE"));
     setMinValue(parser, "p-value", "0");
     setDefaultValue(parser, "p-value", "1");
 
-    addOption(parser, seqan::ArgParseOption("m", "mismatches", "The number of accepted mismatches per read.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("m", "mismatches", "The number of accepted mismatches per read.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "mismatches", "0");
     setDefaultValue(parser, "mismatches", options.acceptedMismatches);
 
-    addOption(parser, seqan::ArgParseOption("os", "overlap-sum",
+    addOption(parser, seqan2::ArgParseOption("os", "overlap-sum",
                                             "Filter on the number of overlapping bp needed to correct an "
                                             "erroneous bp.  A smaller value leads to lower sensitivity, a "
                                             "higher value leads to higher sensitivity.",
-                                            seqan::ArgParseOption::DOUBLE, "P-VALUE"));
+                                            seqan2::ArgParseOption::DOUBLE, "P-VALUE"));
     setMinValue(parser, "overlap-sum", "0");
     setMaxValue(parser, "overlap-sum", "1");
     setDefaultValue(parser, "overlap-sum", options.wovsum);
 
 #ifdef FIONA_ALLOWINDELS
-    addOption(parser, seqan::ArgParseOption("id", "indel-length", "Maximal indel length.  Use \\fI0\\fP for "
+    addOption(parser, seqan2::ArgParseOption("id", "indel-length", "Maximal indel length.  Use \\fI0\\fP for "
                                             "correcting only substitutions and \\fI1\\fP for edit distance "
                                             "corrections on Illumina reads.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "indel-length", "0");
     {
         std::stringstream tmp;
@@ -5244,39 +5244,39 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
 
     // DEBUG Options
 
-    addOption(parser, seqan::ArgParseOption("", "loop-level", "For time measurements.",
-                                            seqan::ArgParseOption::INTEGER, "NUM"));
+    addOption(parser, seqan2::ArgParseOption("", "loop-level", "For time measurements.",
+                                            seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "loop-level", options.loopLevel);
     hideOption(parser, "loop-level");
 
-    addOption(parser, seqan::ArgParseOption("", "debug-read", "Dump information for a read given by its id.",
-                                            seqan::ArgParseOption::INTEGER, "ID"));
+    addOption(parser, seqan2::ArgParseOption("", "debug-read", "Dump information for a read given by its id.",
+                                            seqan2::ArgParseOption::INTEGER, "ID"));
     hideOption(parser, "debug-read");
 
-    addOption(parser, seqan::ArgParseOption("", "corr-read", "Dump information for a correcting read.",
-                                            seqan::ArgParseOption::INTEGER, "ID"));
+    addOption(parser, seqan2::ArgParseOption("", "corr-read", "Dump information for a correcting read.",
+                                            seqan2::ArgParseOption::INTEGER, "ID"));
     hideOption(parser, "corr-read");
 
     // Parallelization Options.
     addSection(parser, "Parallelization Options");
 
-    addOption(parser, seqan::ArgParseOption("nt", "num-threads", "Number of threads to use (default 1).",
-                                            seqan::ArgParseArgument::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("nt", "num-threads", "Number of threads to use (default 1).",
+                                            seqan2::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "num-threads", "1");
     setDefaultValue(parser, "num-threads", options.numThreads);
 
 #ifdef FIONA_INTERNAL_MEMORY
-    addOption(parser, seqan::ArgParseOption("", "super-packages", "Number of internal q-gram index creation runs.",
-                                            seqan::ArgParseArgument::INTEGER, "INT"));
+    addOption(parser, seqan2::ArgParseOption("", "super-packages", "Number of internal q-gram index creation runs.",
+                                            seqan2::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "super-packages", "1");
     setDefaultValue(parser, "super-packages", options.numSuperPackages);
 #endif
 
 
-    addOption(parser, seqan::ArgParseOption("ppt", "packages-per-thread",
+    addOption(parser, seqan2::ArgParseOption("ppt", "packages-per-thread",
                                             "Set the number of work packages per thread.  More packages result "
                                             "lower memory consumption but possibly a longer running time.",
-                                            seqan::ArgParseArgument::INTEGER, "INT"));
+                                            seqan2::ArgParseArgument::INTEGER, "INT"));
     setMinValue(parser, "packages-per-thread", "1");
     setDefaultValue(parser, "packages-per-thread", options.packagesPerThread);
 
@@ -5318,10 +5318,10 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
             "ask your administrator for the appropriate value.");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
     // Only extract options if the program will continue after parseCommandLine().
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // Extract Argument and Option Value
@@ -5337,7 +5337,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     options.trimNsOnOutput = !isSet(parser, "no-final-trim-ns");
     options.limitCorrPerRound = !isSet(parser, "global-corr-limit");
 
-    seqan::CharString tmp;
+    seqan2::CharString tmp;
     getOptionValue(tmp, parser, "method");
     options.method = methodForName(tmp);
 
@@ -5398,19 +5398,19 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
         // nothing more needs to be done, the parameter is implicitly decreased
     }
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return seqan2::ArgumentParser::PARSE_OK;
 }
 
 int main(int argc, const char* argv[])
 {
     // Declare options variable and parse command line.
     FionaOptions options;
-    seqan::ArgumentParser::ParseResult parseRes = parseCommandLine(options, argc, argv);
+    seqan2::ArgumentParser::ParseResult parseRes = parseCommandLine(options, argc, argv);
 
     // If parsing was not successful then exit with code 1 if there were errors.  Otherwise, exit with code 0 (e.g. help
     // was printed).
-    if (parseRes != seqan::ArgumentParser::PARSE_OK)
-        return parseRes == seqan::ArgumentParser::PARSE_ERROR;
+    if (parseRes != seqan2::ArgumentParser::PARSE_OK)
+        return parseRes == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Set number of threads to use from the command line.
 #if defined(_OPENMP)

@@ -1,6 +1,6 @@
 /*==========================================================================
                SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de 
+                         http://www.seqan.de
 ============================================================================
 Copyright (C) 2007
 
@@ -24,7 +24,7 @@ Lesser General Public License for more details.
 #include <iostream>
 
 
-using namespace seqan;
+using namespace seqan2;
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +86,7 @@ int main(int argc, const char *argv[])
     // -----------------------------------------------------------------------
     // Setup argument parser
     // -----------------------------------------------------------------------
-    seqan::ArgumentParser parser("tree_recon");
+    seqan2::ArgumentParser parser("tree_recon");
 
     // Set short description, version, date.
     setShortDescription(parser, "Tree reconstruction");
@@ -99,15 +99,15 @@ int main(int argc, const char *argv[])
     addDescription(parser, "Reconstruct phylogenetic tree from Phylip matrix \\fIIN.DIST\\fP.");
 
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUT_FILE, "FILE"));
+    addOption(parser, seqan2::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan2::ArgParseArgument::INPUT_FILE, "FILE"));
     setRequired(parser, "matrix");
     setValidValues(parser, "matrix", "dist");
-    addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE"));
+    addOption(parser, seqan2::ArgParseOption("o", "out-file", "Path to write output to.", seqan2::ArgParseArgument::OUTPUT_FILE, "FILE"));
     setDefaultValue(parser, "out-file", "tree.dot");
     setValidValues(parser, "out-file", "dot newick");
 
     addSection(parser, "Algorithm Options");
-    addOption(parser, seqan::ArgParseOption("b", "build", "Tree building method. \\fInj\\fP: neighbour-joining, \\fImin\\fP: UPGMA single linkage, \\fImax\\fP: UPGMA complete linkage, \\fIavg\\fP: UPGMA average linkage, \\fIwavg\\fP: UPGMA weighted average linkage.  Neighbour-joining creates an unrooted tree.  We root that tree at the least joined pair.", seqan::ArgParseArgument::STRING, "METHOD"));
+    addOption(parser, seqan2::ArgParseOption("b", "build", "Tree building method. \\fInj\\fP: neighbour-joining, \\fImin\\fP: UPGMA single linkage, \\fImax\\fP: UPGMA complete linkage, \\fIavg\\fP: UPGMA average linkage, \\fIwavg\\fP: UPGMA weighted average linkage.  Neighbour-joining creates an unrooted tree.  We root that tree at the least joined pair.", seqan2::ArgParseArgument::STRING, "METHOD"));
     setValidValues(parser, "build", "nj min max avg wavg");
     setDefaultValue(parser, "build", "nj");
 
@@ -116,10 +116,10 @@ int main(int argc, const char *argv[])
     addListItem(parser, "SeqAn Homepage:", "http://www.seqan.de");
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != seqan2::ArgumentParser::PARSE_OK)
+        return res == seqan2::ArgumentParser::PARSE_ERROR;
 
     // Tree reconstruction
     typedef double TDistanceValue;

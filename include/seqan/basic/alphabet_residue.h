@@ -48,7 +48,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1499,6 +1499,6 @@ assign(unsigned char & c_target,
     c_target = Dna5(source);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_

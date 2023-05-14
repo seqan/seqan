@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_SET_SEGMENT_H_
 #define SEQAN_SEQUENCE_STRING_SET_SEGMENT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -506,6 +506,6 @@ void swap(StringSet<THost, Segment<TSpec> > & lhs,
     swap(lhs.concat, rhs.concat);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_SET_SEGMENT_H_

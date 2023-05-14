@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_
 #define INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -530,6 +530,6 @@ isBase(TraverserImpl<TJst, JstTraversalSpec<TSpec> > const & me)
     return length(*me._stackPtr) == 1;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_STRING_TREE_JOURNALED_STRING_TREE_TRAVERSER_H_

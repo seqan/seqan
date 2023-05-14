@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_MATEPAIR_H
 #define SEQAN_HEADER_STORE_MATEPAIR_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -119,6 +119,6 @@ MatePairStoreElement<TSpec>::INVALID_ID = std::numeric_limits<typename Id<MatePa
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

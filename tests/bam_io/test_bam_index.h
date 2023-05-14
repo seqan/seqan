@@ -40,7 +40,7 @@
 
 #include <seqan/bam_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_index_build)
 {

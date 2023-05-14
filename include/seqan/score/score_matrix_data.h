@@ -71,7 +71,7 @@ M6 = [M6(1:20,:); M6(25,:); M6(21:26,:)];
 #ifndef SEQAN_SSCORE_MATRIX_DATA_H_
 #define SEQAN_SSCORE_MATRIX_DATA_H_
 
-namespace seqan {
+namespace seqan2 {
 
 struct Blosum30_ {};
 typedef Blosum30_ ScoreSpecBlosum30;
@@ -940,6 +940,6 @@ struct ScoringMatrixData_<TValue, AminoAcid, ScoreSpecVtml200> {
     }
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SSCORE_MATRIX_DATA_H_

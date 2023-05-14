@@ -44,7 +44,7 @@
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_two_tags)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXAyXYAx";
     CharString samTags;
@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_two_tags)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_A)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXAy";
     CharString samTags;
@@ -64,7 +64,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_A)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_c)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXc\xFF";
     CharString samTags;
@@ -74,7 +74,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_c)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_C)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXC\xFF";
     CharString samTags;
@@ -84,7 +84,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_C)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_s)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXs\x2E\xFB";
     CharString samTags;
@@ -94,7 +94,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_s)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_S)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXS\x2E\xFB";
     CharString samTags;
@@ -104,7 +104,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_S)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_i)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXi\xFF\xFE\x1D\xC0";
     CharString samTags;
@@ -114,7 +114,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_i)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_I)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags = "XXI\xFF\xFE\x1D\xC0";
     CharString samTags;
@@ -127,7 +127,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_f)
 #if defined (__arm__) && defined(__ARM_PCS_VFP) // NOTE(h-2): armhf CRASHES here for unknown reasons
     return;
 #endif
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 7);
@@ -142,7 +142,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_f)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Z)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 18);
@@ -155,7 +155,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Z)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_H)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 12);
@@ -168,7 +168,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_H)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bc)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 10);
@@ -181,7 +181,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bc)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_BC)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 10);
@@ -194,7 +194,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_BC)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bs)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 12);
@@ -207,7 +207,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bs)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_BS)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 12);
@@ -220,7 +220,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_BS)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bi)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 16);
@@ -233,7 +233,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bi)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_BI)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 16);
@@ -246,7 +246,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_BI)
 
 SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bf)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     resize(bamTags, 16);
@@ -261,7 +261,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_bam_to_sam_type_Bf)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_two_tags)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:A:y\tXY:A:x";
@@ -271,7 +271,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_two_tags)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_A)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:A:y";
@@ -281,7 +281,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_A)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_i)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:i:-123456";
@@ -291,7 +291,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_i)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_f)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:f:0.5";
@@ -307,7 +307,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_f)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Z)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:Z:This is a test";
@@ -321,7 +321,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Z)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_H)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:H:FF00FF00";
@@ -335,7 +335,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_H)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bc)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:c,-1,-1";
@@ -349,7 +349,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bc)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_BC)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:C,255,255";
@@ -363,7 +363,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_BC)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bs)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:s,-1,-1";
@@ -377,7 +377,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bs)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_BS)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:S,65535,65535";
@@ -391,7 +391,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_BS)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bi)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:i,-1,-1";
@@ -405,7 +405,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bi)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_BI)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:I,4294967295,4294967295";
@@ -419,7 +419,7 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_BI)
 
 SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bf)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     CharString bamTags;
     CharString samTags = "XX:B:f,0.5,0.5";

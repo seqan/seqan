@@ -41,7 +41,7 @@
 #include <seqan/sequence.h>
 #include <seqan/journaled_string_tree.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 struct TestDeltaMapConfig
 {

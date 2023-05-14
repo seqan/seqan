@@ -38,7 +38,7 @@
 #include <cstdio>
 #include <cstring>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -241,6 +241,6 @@ protected:
     }
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_STREAM_BUFFERED_STREAM_

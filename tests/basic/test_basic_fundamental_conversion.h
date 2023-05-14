@@ -40,7 +40,7 @@
 // Test default implementation of Convert<> metafunction.
 SEQAN_DEFINE_TEST(test_basic_fundamental_convert_metafunction)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     SEQAN_ASSERT((+SameType_<typename Convert<int, unsigned>::Type, int>::VALUE));
     SEQAN_ASSERT((+SameType_<typename Convert<double, unsigned>::Type, double>::VALUE));
@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_convert_metafunction)
 // Test implementation of Convert<> function.
 SEQAN_DEFINE_TEST(test_basic_fundamental_convert_function)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Compiler would warn if result type incorrect.
     SEQAN_ASSERT_EQ(convert<unsigned>(3), 3u);

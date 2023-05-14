@@ -38,5 +38,5 @@
 
 void pairAlignLocal(Options const & options)
 {
-    pairAlignConfig(options, seqan::SmithWaterman(), seqan::Nothing());
+    pairAlignConfig(options, seqan2::SmithWaterman(), seqan2::Nothing());
 }

@@ -35,7 +35,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace seqan
+namespace seqan2
 {
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>

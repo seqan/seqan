@@ -40,7 +40,7 @@
 // TODO(holtgrew): What about const holders?
 // TODO(holtgrew): Are holders on pointers used anywhere?
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -950,6 +950,6 @@ assign(Holder<TValue const, Tristate> & target_,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_HOLDER_TRISTATE_H_

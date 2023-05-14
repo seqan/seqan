@@ -39,7 +39,7 @@
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_transport_assign)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int dest = 0, src = 1;
     assign(dest, src);
@@ -48,7 +48,7 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_transport_assign)
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_transport_move)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int dest = 0, src = 1;
     move(dest, src);
@@ -57,7 +57,7 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_transport_move)
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_transport_set)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     int dest = 0, src = 1;
     set(dest, src);

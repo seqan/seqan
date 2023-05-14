@@ -3,7 +3,7 @@
 #include <seqan/stream.h>
 #include <seqan/store.h>
 
-using namespace seqan;
+using namespace seqan2;
 int main()
 {
     CharString fileName = getAbsolutePath("demos/tutorial/genome_annotations/assignment_annotations.gtf");

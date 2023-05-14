@@ -44,7 +44,7 @@
 #include <seqan/sequence.h>
 #include <seqan/find.h>
 
-namespace seqan {
+namespace seqan2 {
 
 struct MyersUkkonenReads_;
 typedef Tag<MyersUkkonenReads_> MyersUkkonenReads;
@@ -295,6 +295,6 @@ inline bool setEndPosition(Finder<THaystack, void> & finder,
     return result;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_APPS_FIND_MYERS_UKKONEN_READS_H_

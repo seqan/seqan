@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_KERNEL_ADAPTOR_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_DP_KERNEL_ADAPTOR_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -338,6 +338,6 @@ _computeCell(TDPScout & scout,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_DP_KERNEL_ADAPTOR_H_

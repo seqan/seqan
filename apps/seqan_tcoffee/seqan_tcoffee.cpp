@@ -26,7 +26,7 @@ Lesser General Public License for more details.
 #include <seqan/seq_io.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -382,7 +382,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     setShortDescription(parser, "Multiple sequence alignment");
 
     addUsageLine(parser, "-s <\\fIFASTA FILE\\fP> [\\fIOPTIONS\\fP]");
-    addDescription(parser, "SeqAn::T-Coffee is a multiple sequence alignment tool.");
+    addDescription(parser, "seqan2::T-Coffee is a multiple sequence alignment tool.");
     addDescription(parser, "(c) Copyright 2009 by Tobias Rausch");
 
     addSection(parser, "Main Options:");

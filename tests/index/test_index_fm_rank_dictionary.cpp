@@ -39,7 +39,7 @@
 
 #include "test_index_helpers.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Metafunctions
@@ -49,7 +49,7 @@ using namespace seqan;
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-//namespace seqan {
+//namespace seqan2 {
 //template <typename TValue>
 //struct Size<RankDictionary<TValue, Levels<unsigned> > >
 //{
@@ -367,9 +367,9 @@ SEQAN_TYPED_TEST(RankDictionaryPrefixTest, GetPrefixRank)
 //    std::cout << std::endl;
 //}
 
-// ========================================================================== 
+// ==========================================================================
 // Functions
-// ========================================================================== 
+// ==========================================================================
 
 int main(int argc, char const ** argv)
 {

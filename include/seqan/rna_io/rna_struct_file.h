@@ -37,7 +37,7 @@
 #ifndef SEQAN_RNA_IO_RNA_STRUCT_FILE_H_
 #define SEQAN_RNA_IO_RNA_STRUCT_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Tags, Classes, Enums
@@ -342,6 +342,6 @@ inline void writeRecords(FormattedFile<RnaStruct, Output, TSpec> & file, RnaStru
         writeRecord(file, record);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_RNA_IO_RNA_STRUCT_FILE_H_

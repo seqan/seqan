@@ -2,7 +2,7 @@
 #include <seqan/basic.h>
 #include <seqan/stream.h>  // for printing Seqan strings
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

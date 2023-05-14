@@ -38,7 +38,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_BAND_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_BAND_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -379,6 +379,6 @@ bandSize(DPBandConfig<TSwitch> const & band)
     return upperDiagonal(band) - lowerDiagonal(band) + 1;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_BAND_H_

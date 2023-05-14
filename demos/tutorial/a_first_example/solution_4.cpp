@@ -3,7 +3,7 @@
 #include <seqan/sequence.h>
 #include <seqan/score.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TText, typename TPattern>
 int computeLocalScore(TText const & subText, TPattern const & pattern)

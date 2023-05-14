@@ -41,7 +41,7 @@
 template <typename TStream>
 void testStreamReadSimpleUsage(TStream & stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 
@@ -64,7 +64,7 @@ void testStreamReadSimpleUsage(TStream & stream)
 template <typename TStream>
 void testStreamReadComplexUsage(TStream & stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 
@@ -82,7 +82,7 @@ void testStreamReadComplexUsage(TStream & stream)
 template <typename TStream>
 void testStreamEof(TStream & stream, bool checkTell = true)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
@@ -109,7 +109,7 @@ void testStreamEof(TStream & stream, bool checkTell = true)
 template <typename TStream>
 void testStreamPeek(TStream & stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
@@ -124,7 +124,7 @@ void testStreamPeek(TStream & stream)
 template <typename TStream>
 void testStreamReadBlockHitLimit(TStream & stream, bool checkTell = true)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
@@ -140,7 +140,7 @@ void testStreamReadBlockHitLimit(TStream & stream, bool checkTell = true)
 template <typename TStream>
 void testStreamReadBlockHitNoLimit(TStream & stream, bool checkTell = true)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 
@@ -155,7 +155,7 @@ void testStreamReadBlockHitNoLimit(TStream & stream, bool checkTell = true)
 template <typename TStream>
 void testStreamWriteBlock(TStream & stream, bool checkTell = true)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
@@ -170,7 +170,7 @@ void testStreamWriteBlock(TStream & stream, bool checkTell = true)
 template <typename TStream>
 void testStreamWriteChar(TStream & stream, bool checkTell = true)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
@@ -184,7 +184,7 @@ void testStreamWriteChar(TStream & stream, bool checkTell = true)
 template <typename TStream>
 void testStreamPut(TStream & stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
@@ -230,7 +230,7 @@ void testStreamPut(TStream & stream)
 template <typename TStream>
 void testStreamReadChar(TStream & stream, bool checkTell = true)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 
@@ -252,7 +252,7 @@ void testStreamReadChar(TStream & stream, bool checkTell = true)
 template <typename TStream>
 void testStreamSeek(TStream & stream)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(stream, Input());
 

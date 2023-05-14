@@ -40,7 +40,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
 #define INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -218,6 +218,6 @@ getProperty(TPropertyMap const & pm, TDescriptor const d)
     return getValue(pm, _getId(d));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_

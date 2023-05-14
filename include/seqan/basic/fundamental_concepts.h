@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_CONCEPTS_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_CONCEPTS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -1041,6 +1041,6 @@ template <> struct UnignedIntegerConcept<unsigned long> {};
 //template <> struct UnignedIntegerConcept<uint64_t> {};
 */
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_CONCEPTS_H_

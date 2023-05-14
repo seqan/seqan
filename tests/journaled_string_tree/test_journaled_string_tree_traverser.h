@@ -45,7 +45,7 @@
 
 #include "test_journaled_string_tree_mock.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_journaled_string_tree_traverser_constructor)
 {

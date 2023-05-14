@@ -5,7 +5,7 @@
 #include <seqan/statistics.h>
 #include <seqan/seq_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

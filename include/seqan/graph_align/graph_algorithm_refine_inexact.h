@@ -38,7 +38,7 @@
 
 //SEQAN_NO_DDDOC: do not generate documentation for this file
 
-namespace seqan {
+namespace seqan2 {
 
 
 struct TagInexactRefinement_;
@@ -326,6 +326,6 @@ matchRefinement(TAlignmentString & alis,
         matchRefinement(alis,seq,fake_score,ali_graph,min_frag_len,anno,ExactRefinement());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_INEXACT_H_

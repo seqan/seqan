@@ -44,7 +44,7 @@
 
 #include <algorithm>    // copy
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -500,6 +500,6 @@ _decompressBlock(TDestValue *dstBegin,   TDestCapacity dstCapacity,
 
 #endif  // #if SEQAN_HAS_ZLIB
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_STREAM_STREAM_COMPRESSOR_H_

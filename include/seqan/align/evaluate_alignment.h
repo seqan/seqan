@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
 #define INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -326,6 +326,6 @@ TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
     return computeAlignmentStats(stats, align, scoringScheme);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_

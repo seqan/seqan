@@ -37,7 +37,7 @@
 #ifndef SEQAN_BAM_IO_BAM_FILE_H_
 #define SEQAN_BAM_IO_BAM_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Typedefs
@@ -358,6 +358,6 @@ writeRecords(FormattedFile<Bam, Output, TSpec> & file, TRecords const & records)
         write(file.iter, buffers[i]);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_BAM_IO_BAM_FILE_H_

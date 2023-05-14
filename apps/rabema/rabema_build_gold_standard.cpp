@@ -138,15 +138,15 @@ struct BuildGoldStandardOptions
     DistanceMetric distanceMetric;
 
     // Path to the output file that we will write the GSI to.
-    seqan::CharString outGsiPath;
+    seqan2::CharString outGsiPath;
 
     // Path to the reference contigs file.
-    seqan::CharString referencePath;
+    seqan2::CharString referencePath;
 
     // Exactly one of the following two has to be given.
     //
     // Path to the perfect input SAM/BAM file.
-    seqan::CharString inBamPath;
+    seqan2::CharString inBamPath;
 
     BuildGoldStandardOptions() :
         verbosity(1),
@@ -195,7 +195,7 @@ char const * yesNo(bool b)
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Such a method is already in the SeqAn library, but in extras. Remove here when it is in core.
-void trimSeqHeaderToId(seqan::CharString & header)
+void trimSeqHeaderToId(seqan2::CharString & header)
 {
     unsigned i = 0;
     for (; i < length(header); ++i)
@@ -798,7 +798,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
         {
             readRecord(record, inBam);
         }
-        catch (seqan::ParseError const & ioErr)
+        catch (seqan2::ParseError const & ioErr)
         {
             std::cerr << "ERROR reading SAM/BAM record(" << ioErr.what() << ")!\n";
             return 1;
@@ -864,7 +864,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             {
                 readSequence(contig, faiIndex, faiRefId);
             }
-            catch (seqan::ParseError const & ioErr)
+            catch (seqan2::ParseError const & ioErr)
             {
                 std::cerr << "Could not load sequence " << contigNameStore[record.rID]
                           << " from FASTA file with FAI (" << ioErr.what() << ").\n";
@@ -969,14 +969,14 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
 // Function parseCommandLine()
 // ---------------------------------------------------------------------------
 
-seqan::ArgumentParser::ParseResult
+seqan2::ArgumentParser::ParseResult
 parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** argv)
 {
     // -----------------------------------------------------------------------
     // Parse Command Line Using ArgumentParser
     // -----------------------------------------------------------------------
 
-    seqan::ArgumentParser parser("rabema_build_gold_standard");
+    seqan2::ArgumentParser parser("rabema_build_gold_standard");
     setShortDescription(parser, "RABEMA Gold Standard Builder");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
@@ -992,41 +992,41 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
                    "The input SAM/BAM file must be \\fIsorted by coordinate\\fP.  The program will create a "
                    "FASTA index file \\fIREF.fa.fai\\fP for fast random access to the reference.");
 
-    addOption(parser, seqan::ArgParseOption("v", "verbose", "Enable verbose output."));
-    addOption(parser, seqan::ArgParseOption("vv", "very-verbose", "Enable even more verbose output."));
+    addOption(parser, seqan2::ArgParseOption("v", "verbose", "Enable verbose output."));
+    addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable even more verbose output."));
 
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
-                                            seqan::ArgParseArgument::OUTPUT_FILE, "GSI"));
+    addOption(parser, seqan2::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
+                                            seqan2::ArgParseArgument::OUTPUT_FILE, "GSI"));
     setValidValues(parser, "out-gsi", "gsi gsi.gz");
     setRequired(parser, "out-gsi", true);
-    addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "FASTA"));
+    addOption(parser, seqan2::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
+                                            seqan2::ArgParseArgument::INPUT_FILE, "FASTA"));
     setRequired(parser, "reference", true);
-    setValidValues(parser, "reference", seqan::SeqFileIn::getFileExtensions());
-    addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "BAM"));
+    setValidValues(parser, "reference", seqan2::SeqFileIn::getFileExtensions());
+    addOption(parser, seqan2::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
+                                            seqan2::ArgParseArgument::INPUT_FILE, "BAM"));
     setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());
 
     addSection(parser, "Gold Standard Parameters");
-    addOption(parser, seqan::ArgParseOption("", "oracle-mode",
+    addOption(parser, seqan2::ArgParseOption("", "oracle-mode",
                                             "Enable oracle mode.  This is used for simulated data when the input "
                                             "SAM/BAM file gives exactly one position that is considered as the true "
                                             "sample position."));
-    addOption(parser, seqan::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
-    addOption(parser, seqan::ArgParseOption("", "distance-metric",
+    addOption(parser, seqan2::ArgParseOption("", "match-N", "When set, N matches all characters without penalty."));
+    addOption(parser, seqan2::ArgParseOption("", "distance-metric",
                                             "Set distance metric.  Valid values: hamming, edit.  Default: edit.",
-                                            seqan::ArgParseOption::STRING, "METRIC"));
+                                            seqan2::ArgParseOption::STRING, "METRIC"));
     setValidValues(parser, "distance-metric", "hamming edit");
     setDefaultValue(parser, "distance-metric", "edit");
 
-    addOption(parser, seqan::ArgParseOption("e", "max-error",
+    addOption(parser, seqan2::ArgParseOption("e", "max-error",
                                             "Maximal error rate to build gold standard for in percent.  This "
                                             "parameter is an integer and relative to the read length.  "
                                             "In case of oracle mode, the error rate for the read at the "
                                             "sampling position is used and \\fIRATE\\fP is used as a cutoff "
                                             "threshold.",
-                                            seqan::ArgParseArgument::INTEGER, "RATE"));
+                                            seqan2::ArgParseArgument::INTEGER, "RATE"));
     setDefaultValue(parser, "max-error", 0);
 
     addTextSection(parser, "Return Values");
@@ -1066,8 +1066,8 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     addListItem(parser, "\\fIhttp://www.seqan.de/mason\\fP", "Mason Homepage");
 
     // Actually do the parsing and exit on error, help display etc.
-    seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    seqan2::ArgumentParser::ParseResult res = parse(parser, argc, argv);
+    if (res != seqan2::ArgumentParser::PARSE_OK)
         return res;
 
     // -----------------------------------------------------------------------
@@ -1111,9 +1111,9 @@ int main(int argc, char const ** argv)
 {
     // Parse command line and store results in options.
     BuildGoldStandardOptions options;
-    seqan::ArgumentParser::ParseResult parseRes = parseCommandLine(options, argc, argv);
-    if (parseRes != seqan::ArgumentParser::PARSE_OK)
-        return parseRes == seqan::ArgumentParser::PARSE_ERROR;
+    seqan2::ArgumentParser::ParseResult parseRes = parseCommandLine(options, argc, argv);
+    if (parseRes != seqan2::ArgumentParser::PARSE_OK)
+        return parseRes == seqan2::ArgumentParser::PARSE_ERROR;
 
     double startTime = 0;  // For measuring time below.
 
@@ -1153,14 +1153,14 @@ int main(int argc, char const ** argv)
             return 1;
         }
         std::cerr << " OK\n";
-        seqan::CharString faiPath = options.referencePath;
+        seqan2::CharString faiPath = options.referencePath;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
         try
         {
             save(faiIndex, toCString(faiPath));
         }
-        catch (seqan::IOError const & ioErr)
+        catch (seqan2::IOError const & ioErr)
         {
             std::cerr << "Could not write FAI index we just built (" << ioErr.what() << ").\n";
             return 1;
@@ -1181,7 +1181,7 @@ int main(int argc, char const ** argv)
     {
         readHeader(bamHeader, inBam);
     }
-    catch (seqan::ParseError const & ioErr)
+    catch (seqan2::ParseError const & ioErr)
     {
         std::cerr << "Could not read BAM header (" << ioErr.what() << ").\n";
         return 1;

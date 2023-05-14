@@ -11,7 +11,7 @@
 #include <omp.h>
 #endif
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TReads, typename TErrorDist, typename TStore>
 void simulateReads(TReads & reads, TErrorDist const & errorDist, TStore const & store)

@@ -42,7 +42,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>  // for tokenization
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -84,7 +84,7 @@ inline void parse(GenomicRegion & region, CharString const & regionString);
  * Construct a @link GenomicRegion @endlink object and fill it from different region strings.
  *
  * @code{.cpp}
- * seqan::GenomicRegion genomicRegion;
+ * seqan2::GenomicRegion genomicRegion;
  *
  * parse(genomicRegion, "chr1");
  * // genomicRegion.seqName == "chr1"
@@ -278,6 +278,6 @@ parse(GenomicRegion & region, CharString const & regionString)
         SEQAN_THROW(ParseError("GenomicRegion: End postition less than 1"));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_

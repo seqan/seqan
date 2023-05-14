@@ -37,7 +37,7 @@
 #ifndef SEQAN_SCORE_MATRIX_DYN_H_
 #define SEQAN_SCORE_MATRIX_DYN_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================

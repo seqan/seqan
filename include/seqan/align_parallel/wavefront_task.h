@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_H_
 
-namespace seqan
+namespace seqan2
 {
 // ============================================================================
 // Forwards
@@ -360,6 +360,6 @@ executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
 }
 #endif  // SEQAN_SIMD_ENABLED
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_H_

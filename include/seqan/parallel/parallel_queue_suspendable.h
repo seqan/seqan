@@ -39,7 +39,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_SUSPENDABLE_H_
 #define SEQAN_PARALLEL_PARALLEL_QUEUE_SUSPENDABLE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -458,6 +458,6 @@ appendValue(ConcurrentQueue<TValue, Suspendable<TSpec> > & me,
     return appendValue(me, val, typename DefaultOverflowImplicit<ConcurrentQueue<TValue, Suspendable<TSpec> > >::Type());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_QUEUE_SUSPENDABLE_H_

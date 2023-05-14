@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -391,6 +391,6 @@ _setUpAndRunAlignment(TTrace & traceSegments,
         return _setUpAndRunAlignment(traceSegments, dpScoutState, seqH, seqV, scoringScheme, alignConfig, LinearGaps());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_

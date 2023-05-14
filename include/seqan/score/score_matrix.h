@@ -39,7 +39,7 @@
 
 // TODO(holtgrew): If the complex type conversions are necessary, a static_cast<> is more C++ and explicit.
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TValue, typename TSequenceValue, typename TSpec>
 struct ScoringMatrixData_;
@@ -220,6 +220,6 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, D
     arrayFill(sc.data_tab, sc.data_tab + TScore::TAB_SIZE, TValue());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SSCORE_MATRIX_H_

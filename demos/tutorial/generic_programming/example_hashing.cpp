@@ -1,16 +1,16 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 //![hashAll]
-template <typename TShape, typename TString> 
+template <typename TShape, typename TString>
 void hashAll(TShape & shape, TString & str)
-{ 
+{
     typedef typename Iterator<TString>::Type TIterator;
     TIterator it = begin(str);
     TIterator it_end = end(str) - span(shape);
-    while (it != it_end) 
+    while (it != it_end)
     {
         unsigned int hash_value = hash(shape, it);
         /* do some things with the hash value */ ++it;
@@ -25,12 +25,12 @@ void hashAll(TShape & shape, TString & str)
 struct SimpleShape_;
 typedef Tag<SimpleShape_> SimpleShape;
 
-template <typename TValue, typename TSpec = SimpleShape> 
+template <typename TValue, typename TSpec = SimpleShape>
 class Shape;
 //![classShape]
 
 //![classSimpleShape]
-template <typename TValue> 
+template <typename TValue>
 class Shape< TValue, SimpleShape >
 {
     public:
@@ -39,10 +39,10 @@ class Shape< TValue, SimpleShape >
 //![classSimpleShape]
 
 //![classUngappedShape]
-template <unsigned int q = 0> 
+template <unsigned int q = 0>
 struct UngappedShape;
 
-template <typename TValue, unsigned int q> 
+template <typename TValue, unsigned int q>
 class Shape< TValue, UngappedShape<q> >
 {
   public:
@@ -67,7 +67,7 @@ template <typename TValue, unsigned int q, typename TString>
 void specializedHashAll(Shape< TValue, UngappedShape<q> > & shape, TString & str)
 {
     typedef typename Iterator<TString>::Type TIterator;
-    TIterator it = begin(str); 
+    TIterator it = begin(str);
     TIterator it_end = end(str) - span(shape);
     unsigned int hash_value = hash(shape, it);
     /* do some things with the hash value */

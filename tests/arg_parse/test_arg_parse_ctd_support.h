@@ -46,7 +46,7 @@
 SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
 {
     // define a minimal argument parser
-    seqan::ArgumentParser parser;
+    seqan2::ArgumentParser parser;
 
     setAppName(parser, "test_app");
     setVersion(parser, "0.1.0");
@@ -55,40 +55,40 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addDescription(parser, "This is the first line of our test description.");
     addDescription(parser, "The second one contains formating <\\fIbla\\fP>.");
 
-    addOption(parser, seqan::ArgParseOption("b", "bool", "set a bool option", seqan::ArgParseArgument::BOOL));
-    addOption(parser, seqan::ArgParseOption("d", "double", "set a double option", seqan::ArgParseArgument::DOUBLE));
-    addOption(parser, seqan::ArgParseOption("i", "integer", "set an integer option", seqan::ArgParseArgument::INTEGER));
+    addOption(parser, seqan2::ArgParseOption("b", "bool", "set a bool option", seqan2::ArgParseArgument::BOOL));
+    addOption(parser, seqan2::ArgParseOption("d", "double", "set a double option", seqan2::ArgParseArgument::DOUBLE));
+    addOption(parser, seqan2::ArgParseOption("i", "integer", "set an integer option", seqan2::ArgParseArgument::INTEGER));
     setMinValue(parser, "i", "1");
     setMaxValue(parser, "i", "10");
-    addOption(parser, seqan::ArgParseOption("j", "int64", "set a 64 bit integer option", seqan::ArgParseArgument::INT64));
-    addOption(parser, seqan::ArgParseOption("s", "string", "set a string option", seqan::ArgParseArgument::STRING, "", true));
+    addOption(parser, seqan2::ArgParseOption("j", "int64", "set a 64 bit integer option", seqan2::ArgParseArgument::INT64));
+    addOption(parser, seqan2::ArgParseOption("s", "string", "set a string option", seqan2::ArgParseArgument::STRING, "", true));
     setValidValues(parser, "s", "a b c");
-    addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUT_FILE));
+    addOption(parser, seqan2::ArgParseOption("f", "in", "set an input file", seqan2::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "f", "fasta");
-    addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUT_FILE));
+    addOption(parser, seqan2::ArgParseOption("o", "out", "set an output file", seqan2::ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", "sam");
-    addOption(parser, seqan::ArgParseOption("ip", "input-prefix-option", "set an input prefix", seqan::ArgParseArgument::INPUT_PREFIX));
+    addOption(parser, seqan2::ArgParseOption("ip", "input-prefix-option", "set an input prefix", seqan2::ArgParseArgument::INPUT_PREFIX));
     setValidValues(parser, "ip", "btx");
-    addOption(parser, seqan::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan::ArgParseArgument::OUTPUT_PREFIX));
+    addOption(parser, seqan2::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan2::ArgParseArgument::OUTPUT_PREFIX));
     setValidValues(parser, "output-prefix-option", "blub");
 
-    addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will not appear in the ctd", seqan::ArgParseArgument::STRING));
+    addOption(parser, seqan2::ArgParseOption("hi", "hidden", "a hidden option - will not appear in the ctd", seqan2::ArgParseArgument::STRING));
     hideOption(parser, "hi");
 
-    addOption(parser, seqan::ArgParseOption("ad", "advanced", "an advanced option - will appear as advanced in the ctd, too", seqan::ArgParseArgument::STRING));
+    addOption(parser, seqan2::ArgParseOption("ad", "advanced", "an advanced option - will appear as advanced in the ctd, too", seqan2::ArgParseArgument::STRING));
     setAdvanced(parser, "advanced");
 
-    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::DOUBLE, "DOUBLE"));
+    addArgument(parser, seqan2::ArgParseArgument(ArgParseArgument::DOUBLE, "DOUBLE"));
     setHelpText(parser, 0, "Double Argument");
-    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "STRING"));
+    addArgument(parser, seqan2::ArgParseArgument(ArgParseArgument::STRING, "STRING"));
     setHelpText(parser, 1, "String Argument");
-    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "DOC"));
+    addArgument(parser, seqan2::ArgParseArgument(ArgParseArgument::STRING, "DOC"));
     setHelpText(parser, 2, "Documentated Argument with \\fBformating\\fP");
-    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "OUTPUT-FILE"));
+    addArgument(parser, seqan2::ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "OUTPUT-FILE"));
     setHelpText(parser, 3, "Testing output file arguments");
 
     // export ctd
-    seqan::CharString outPath = SEQAN_TEMP_FILENAME();
+    seqan2::CharString outPath = SEQAN_TEMP_FILENAME();
     append(outPath, ".ctd");
 
     std::ofstream ofstream(toCString(outPath), std::ofstream::out | std::ofstream::binary);
@@ -96,9 +96,9 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     ofstream.close();
 
     // compare ctd to expected
-    seqan::CharString goldPath = getAbsolutePath("/tests/arg_parse/test_app.ctd");
+    seqan2::CharString goldPath = getAbsolutePath("/tests/arg_parse/test_app.ctd");
 
-    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan2::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 #endif // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_

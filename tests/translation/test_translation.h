@@ -44,7 +44,7 @@
 
 #include <seqan/translation.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TString>
 inline void

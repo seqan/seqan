@@ -71,7 +71,7 @@
 //
 // The resulting sequence is written to stream.
 
-int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options);
+int simulateGenome(seqan2::SeqFileOut & stream, MasonSimulateGenomeOptions const & options);
 
 // ----------------------------------------------------------------------------
 // Function simulateGenome()

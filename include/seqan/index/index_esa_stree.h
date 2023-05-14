@@ -36,7 +36,7 @@
 #ifndef SEQAN_HEADER_INDEX_ESA_STREE_H
 #define SEQAN_HEADER_INDEX_ESA_STREE_H
 
-namespace seqan
+namespace seqan2
 {
 
 template <typename TText, typename TSpec>
@@ -201,10 +201,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //____________________________________________________________________________
 
-       
+
         Iter() : index() {}
 
-       
+
         Iter(TIndex &_index):
             index(&_index)
         {
@@ -212,14 +212,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
             goRoot(*this);
         }
 
-       
+
         Iter(TIndex &_index, MinimalCtor):
             index(&_index),
             vDesc(MinimalCtor()),
             _parentDesc(MinimalCtor()) {}
 
         // NOTE(esiragusa): _parentDesc is unitialized
-       
+
         Iter(TIndex &_index, TVertexDesc const &_vDesc):
             index(&_index),
             vDesc(_vDesc)
@@ -228,7 +228,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
         }
 
         template <typename TSpec2>
-       
+
         Iter(Iter<TIndex, VSTree<TopDown<TSpec2> > > const &_origin):
             index(&container(_origin)),
             vDesc(value(_origin)),
@@ -339,20 +339,20 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //____________________________________________________________________________
 
-       
+
         Iter() :
             TBase()
         {}
 
-       
+
         Iter(TIndex &_index):
             TBase(_index) {}
 
-       
+
         Iter(TIndex &_index, MinimalCtor):
             TBase(_index, MinimalCtor()) {}
 
-       
+
         Iter(Iter const &_origin):
             TBase((TBase const &)_origin),
             history(_origin.history) {}

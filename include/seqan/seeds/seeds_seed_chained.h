@@ -37,7 +37,7 @@
 #ifndef SEQAN_SEEDS_SEEDS_SEED_CHAINED_H_
 #define SEQAN_SEEDS_SEEDS_SEED_CHAINED_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -498,6 +498,6 @@ __write(TStream & stream, Seed<ChainedSeed, TConfig> const & seed, Tikz_ const &
         stream << "\\draw[seed diagonal] (" << it->beginDim1 << ", -" << it->beginDim0 << ") -- (" << (it->beginDim1 + it->length - 1) << ", -" << (it->beginDim0 + it->length - 1) << ");" << std::endl;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_SEED_CHAINED_H_

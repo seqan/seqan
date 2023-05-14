@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 #define SEQAN_SEQ_IO_SEQUENCE_FILE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Classes
@@ -551,6 +551,6 @@ writeRecords(TFile & file, TIdStringSet const & meta, TSeqStringSet const & seq,
         writeRecord(file, meta[i], seq[i], qual[i], file.format);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_SEQ_IO_SEQUENCE_FILE_H_

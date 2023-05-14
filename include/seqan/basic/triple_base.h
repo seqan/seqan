@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -532,6 +532,6 @@ operator!=(Triple<L1, L2, L3, LPack> const & _left,
 {
     return !operator==(_left, _right);
 }
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_

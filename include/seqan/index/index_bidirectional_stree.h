@@ -37,7 +37,7 @@
 #ifndef INDEX_BIDIRECTIONAL_STREE_H_
 #define INDEX_BIDIRECTIONAL_STREE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 struct BidirectionalDirection {};
 

@@ -41,7 +41,7 @@
 // Test the size metafunctions.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_size_metafunctions)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -59,7 +59,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_size_metafunctions)
 
 SEQAN_DEFINE_TEST(test_modifier_DnaQ)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna5Q, ModExpand<'-'> > TDna5QWithGap;
@@ -96,7 +96,7 @@ SEQAN_DEFINE_TEST(test_modifier_DnaQ)
 
 SEQAN_DEFINE_TEST(test_modifier_alphabet_enumerate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -128,7 +128,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_enumerate)
 
 SEQAN_DEFINE_TEST(test_modifier_alphabet_convert)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -164,7 +164,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_convert)
 
 SEQAN_DEFINE_TEST(test_modifier_alphabet_ord_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -188,7 +188,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_ord_value)
 // Test the operator== implementations.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_eq)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -252,7 +252,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_eq)
 // Test the operator!= implementations.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_neq)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -316,7 +316,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_neq)
 // Test the operator< implementations.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_lt)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -370,7 +370,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_lt)
 // Test the operator> implementations.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_gt)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -424,7 +424,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_gt)
 // Test the operator<= implementations.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_leq)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
@@ -490,7 +490,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_leq)
 // Test the operator>= implementations.
 SEQAN_DEFINE_TEST(test_modifier_alphabet_operator_geq)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;

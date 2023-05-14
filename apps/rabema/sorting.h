@@ -76,8 +76,8 @@ inline int strnum_cmp(const char *a, const char *b)
 
 // Wrapper for SeqAn char strings.
 
-inline bool lessThanSamtoolsQueryName(seqan::CharString const & lhs,
-                                      seqan::CharString const & rhs)
+inline bool lessThanSamtoolsQueryName(seqan2::CharString const & lhs,
+                                      seqan2::CharString const & rhs)
 {
     return strnum_cmp(toCString(lhs), toCString(rhs)) < 0;
 }

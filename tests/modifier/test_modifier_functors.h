@@ -41,7 +41,7 @@
 
 SEQAN_DEFINE_TEST(test_modifier_functors_functor_upcase)
 {
-    seqan::FunctorUpcase<char> func;
+    seqan2::FunctorUpcase<char> func;
 
     SEQAN_ASSERT_EQ('A', func('a'));
     SEQAN_ASSERT_EQ('A', func('A'));
@@ -50,7 +50,7 @@ SEQAN_DEFINE_TEST(test_modifier_functors_functor_upcase)
 
 SEQAN_DEFINE_TEST(test_modifier_functors_functor_lowcase)
 {
-    seqan::FunctorLowcase<char> func;
+    seqan2::FunctorLowcase<char> func;
 
     SEQAN_ASSERT_EQ('a', func('a'));
     SEQAN_ASSERT_EQ('a', func('A'));
@@ -60,21 +60,21 @@ SEQAN_DEFINE_TEST(test_modifier_functors_functor_lowcase)
 SEQAN_DEFINE_TEST(test_modifier_functors_dna_complement)
 {
     {
-        seqan::FunctorComplement<seqan::Dna> func;
+        seqan2::FunctorComplement<seqan2::Dna> func;
 
-        SEQAN_ASSERT_EQ(seqan::Dna('C'), func(seqan::Dna('G')));
-        SEQAN_ASSERT_EQ(seqan::Dna('G'), func(seqan::Dna('C')));
-        SEQAN_ASSERT_EQ(seqan::Dna('A'), func(seqan::Dna('T')));
-        SEQAN_ASSERT_EQ(seqan::Dna('T'), func(seqan::Dna('A')));
+        SEQAN_ASSERT_EQ(seqan2::Dna('C'), func(seqan2::Dna('G')));
+        SEQAN_ASSERT_EQ(seqan2::Dna('G'), func(seqan2::Dna('C')));
+        SEQAN_ASSERT_EQ(seqan2::Dna('A'), func(seqan2::Dna('T')));
+        SEQAN_ASSERT_EQ(seqan2::Dna('T'), func(seqan2::Dna('A')));
     }
     {
-        seqan::FunctorComplement<seqan::Dna5> func;
+        seqan2::FunctorComplement<seqan2::Dna5> func;
 
-        SEQAN_ASSERT_EQ(seqan::Dna5('C'), func(seqan::Dna5('G')));
-        SEQAN_ASSERT_EQ(seqan::Dna5('G'), func(seqan::Dna5('C')));
-        SEQAN_ASSERT_EQ(seqan::Dna5('A'), func(seqan::Dna5('T')));
-        SEQAN_ASSERT_EQ(seqan::Dna5('T'), func(seqan::Dna5('A')));
-        SEQAN_ASSERT_EQ(seqan::Dna5('N'), func(seqan::Dna5('N')));
+        SEQAN_ASSERT_EQ(seqan2::Dna5('C'), func(seqan2::Dna5('G')));
+        SEQAN_ASSERT_EQ(seqan2::Dna5('G'), func(seqan2::Dna5('C')));
+        SEQAN_ASSERT_EQ(seqan2::Dna5('A'), func(seqan2::Dna5('T')));
+        SEQAN_ASSERT_EQ(seqan2::Dna5('T'), func(seqan2::Dna5('A')));
+        SEQAN_ASSERT_EQ(seqan2::Dna5('N'), func(seqan2::Dna5('N')));
     }
 }
 

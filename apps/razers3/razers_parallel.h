@@ -7,7 +7,7 @@
 #include "parallel_job_queue.h"
 #include "razers_match_filter.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -1203,6 +1203,6 @@ int _mapSingleReadsParallel(
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef RAZERS_RAZERS_PARALLEL_H_

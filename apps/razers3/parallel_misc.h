@@ -1,7 +1,7 @@
 #ifndef RAZERS_PARALLEL_MISC_H_
 #define RAZERS_PARALLEL_MISC_H_
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TPos, typename TSize, typename TCount>
 void computeSplittersBySlotCount(String<TPos> & splitters, TSize size, TCount count)
@@ -43,6 +43,6 @@ void computeSplittersBySlotSize(String<TPos> & splitters, TDataSize size, TSlotS
     computeSplittersBySlotSize(splitters, size, slotSize, 0u);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef RAZERS_PARALLEL_MISC_H_

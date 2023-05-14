@@ -40,7 +40,7 @@
 #ifndef SEQAN_BASIC_BASIC_VOLATILE_PTR_H_
 #define SEQAN_BASIC_BASIC_VOLATILE_PTR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -220,6 +220,6 @@ inline void nukeCopies(VolatilePtr<TValue> & ptr)
     ptr.nukeCopies();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_BASIC_BASIC_VOLATILE_PTR_H_

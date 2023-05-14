@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
 #define INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -121,6 +121,6 @@ _adaptTraceSegmentsTo(String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec
     _setLength(targetJournal, virtualPos);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_

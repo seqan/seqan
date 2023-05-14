@@ -52,7 +52,7 @@
 #include "test_graph_impl_align.h"
 #include "test_graph_match_refinement.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 
 //////////////////////////////////////////////////////////////////////////////

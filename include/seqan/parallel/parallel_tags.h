@@ -38,7 +38,7 @@
 #ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_
 #define SEQAN_PARALLEL_PARALLEL_TAGS_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -253,6 +253,6 @@ setNumThreads(ExecutionPolicy<TParallelSpec, TVectorizationSpec> & p,
     p._numThreads = nt;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_PARALLEL_PARALLEL_TAGS_H_

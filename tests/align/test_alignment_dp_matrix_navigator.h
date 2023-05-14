@@ -44,7 +44,7 @@
 template <typename TSpec>
 void testAlignmentDPMatrixTraceNavigatorConstructorDefault(TSpec const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, FullDPMatrix> TDPMatrix;
     typedef typename Iterator<TDPMatrix, Standard>::Type TIterator;
@@ -67,7 +67,7 @@ void testAlignmentDPMatrixTraceNavigatorConstructorDefault(TSpec const &)
 
 void testAlignmentDPMatrixNavigatorScoreMarixInitUnbanded()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, FullDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
@@ -87,7 +87,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitUnbanded()
 
 void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, SparseDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
@@ -110,7 +110,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitUnbanded()
 
 void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, FullDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
@@ -164,7 +164,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixInitBanded()
 
 void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, SparseDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
@@ -215,7 +215,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseInitBanded()
 
 void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, FullDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
@@ -285,7 +285,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixGoNextCell()
 
 void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, SparseDPMatrix> TDPMatrix;
     typedef Value<TDPMatrix>::Type TDPCell;
@@ -356,7 +356,7 @@ void testAlignmentDPMatrixNavigatorScoreMarixSparseGoNextCell()
 template <typename TDPMatrixSpec>
 void testAlignmentDPScoreMatrixNavigatorAssignValue(TDPMatrixSpec const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
     typedef typename Value<TDPMatrix>::Type TDPCell;
@@ -378,7 +378,7 @@ void testAlignmentDPScoreMatrixNavigatorAssignValue(TDPMatrixSpec const)
 template <typename TDPMatrixSpec>
 void testAlignmentDPScoreMatrixNavigatorValue(TDPMatrixSpec const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
     typedef typename Value<TDPMatrix>::Type TDPCell;
@@ -405,7 +405,7 @@ void testAlignmentDPScoreMatrixNavigatorValue(TDPMatrixSpec const)
 template <typename TDPMatrixSpec>
 void testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(TDPMatrixSpec const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
     typedef typename Value<TDPMatrix>::Type TDPCell;
@@ -431,7 +431,7 @@ void testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(TDPMatrixSpec con
 template <typename TDPMatrixSpec>
 void testAlignmentDPScoreMatrixNavigatorCoordinate(TDPMatrixSpec const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
     typedef typename Value<TDPMatrix>::Type TDPCell;
@@ -454,7 +454,7 @@ void testAlignmentDPScoreMatrixNavigatorCoordinate(TDPMatrixSpec const)
 template <typename TDPMatrixSpec>
 void testAlignmentDPScoreMatrixNavigatorContainer(TDPMatrixSpec const)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<DPCell_<int, LinearGaps>, TDPMatrixSpec> TDPMatrix;
     typedef typename Value<TDPMatrix>::Type TDPCell;
@@ -495,12 +495,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_init_band
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_value)
 {
-    testAlignmentDPScoreMatrixNavigatorValue(seqan::FullDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorValue(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_previous_cell_horizontal)
 {
-    testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(seqan::FullDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_cell)
@@ -510,17 +510,17 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_go_next_c
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_assign_value)
 {
-    testAlignmentDPScoreMatrixNavigatorAssignValue(seqan::FullDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorAssignValue(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_coordinate)
 {
-    testAlignmentDPScoreMatrixNavigatorCoordinate(seqan::FullDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorCoordinate(seqan2::FullDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_full_container)
 {
-    testAlignmentDPScoreMatrixNavigatorContainer(seqan::FullDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorContainer(seqan2::FullDPMatrix());
 }
 
 // ----------------------------------------------------------------------------
@@ -543,12 +543,12 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_init_ba
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_value)
 {
-    testAlignmentDPScoreMatrixNavigatorValue(seqan::SparseDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorValue(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_previous_cell_horizontal)
 {
-    testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(seqan::SparseDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorPreviousCellHorizontal(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next)
@@ -558,17 +558,17 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_go_next
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_assign_value)
 {
-    testAlignmentDPScoreMatrixNavigatorAssignValue(seqan::SparseDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorAssignValue(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_coordinate)
 {
-    testAlignmentDPScoreMatrixNavigatorCoordinate(seqan::SparseDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorCoordinate(seqan2::SparseDPMatrix());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_container)
 {
-    testAlignmentDPScoreMatrixNavigatorContainer(seqan::SparseDPMatrix());
+    testAlignmentDPScoreMatrixNavigatorContainer(seqan2::SparseDPMatrix());
 }
 
 // ----------------------------------------------------------------------------
@@ -577,7 +577,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_score_matrix_sparse_contain
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_unbanded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -596,7 +596,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_u
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_unbanded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -614,7 +614,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -665,7 +665,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_init_b
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_banded)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -713,7 +713,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_disabled_init_
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_next)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -766,7 +766,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_go_nex
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_assign_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -785,7 +785,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_assign
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -807,7 +807,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_value)
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordinate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -827,7 +827,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_coordi
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_container)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 
@@ -847,7 +847,7 @@ SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_contai
 
 SEQAN_DEFINE_TEST(test_alignment_dp_matrix_navigator_trace_matrix_enabled_to_global_position)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef DPMatrix_<int, FullDPMatrix> TDPMatrix;
 

@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_SCHEDULER_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_SCHEDULER_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -213,6 +213,6 @@ getExceptions(WavefrontTaskScheduler & me)
     return me._exceptionPointers;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_SCHEDULER_H_

@@ -1,6 +1,6 @@
 #include <seqan/vcf_io.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
             std::cout << contigNames(context(vcfIn))[i] << '\t'
                       << counters[i] << '\n';
     }
-    catch (seqan::Exception const & e)
+    catch (seqan2::Exception const & e)
     {
         std::cerr << "ERROR:" << e.what() << std::endl;
         return 1;

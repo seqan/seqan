@@ -41,7 +41,7 @@
 #include <seqan/align_split.h>
 #include "gustaf_matepairs.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // Check for match overlap
 template <typename TPos>
@@ -1342,7 +1342,7 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
 	    if (bp.dupMiddlePos != std::numeric_limits<unsigned>::max() && tempBP.dupMiddlePos != std::numeric_limits<unsigned>::max()
 		&& bp.dupMiddlePos < tempBP.dupMiddlePos)
             {
-                tempBP.dupMiddlePos = bp.dupMiddlePos; 
+                tempBP.dupMiddlePos = bp.dupMiddlePos;
 	    }
 	    if (bp.startSeqPos < tempBP.startSeqPos)
 		tempBP.startSeqPos = bp.startSeqPos;
@@ -1594,7 +1594,7 @@ void _findAllBestChains(String<TMSplazerChain> & queryChains,
     unsigned brokenChainCount = 0;
     unsigned similarBPId = 0;
     // 1st pass scanning:
-    // Extract 
+    // Extract
     for (unsigned i = 0; i < length(queryChains); ++i)
     {
         String<TBreakpoint> localBreakpoints;

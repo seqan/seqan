@@ -53,7 +53,7 @@
 
 // TODO(holtgrew): Test this!
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -681,6 +681,6 @@ bitScanForward(TWord word)
    return _bitScanForward(word, WordSize_<(BitsPerValue<TWord>::VALUE <= 32) ? 32 : BitsPerValue<TWord>::VALUE>());
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // #ifndef SEQAN_MISC_BIT_TWIDDLING_H_

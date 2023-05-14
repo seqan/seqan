@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
 #define INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -427,6 +427,6 @@ void clear(BedRecord<TSpec> & record)
     record._clear();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BED_IO_BED_RECORD_H_

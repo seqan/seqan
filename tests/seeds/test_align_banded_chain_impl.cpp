@@ -38,14 +38,14 @@
 #include <sstream>
 
 #include <seqan/basic.h>
-#include <seqan/stream.h>  // for printing seqan::String<>
+#include <seqan/stream.h>  // for printing seqan2::String<>
 
 #include <seqan/seeds.h>
 
 template <typename TGapCosts>
 void testBandedChainAlignmentEmptyChain(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef SeedSet<Seed<Simple>, Unordered> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
@@ -74,7 +74,7 @@ void testBandedChainAlignmentEmptyChain(TGapCosts const &)
 template <typename TGapCosts>
 void testBandedChainAlignmentOneSeed(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef SeedSet<TSeed, Unordered> TSeedSet;
@@ -389,12 +389,12 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
 template <typename TGapCosts>
 void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef SeedSet<TSeed, Unordered> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
-    
+
     // Test two anchors that does not overlap.
     {
                         //012345678901234567890123456789
@@ -609,7 +609,7 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
 template <typename TGapCosts>
 void testBandedChainAlignmentThreeSeeds(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef StringSet<TSeed> TSeedSet;
@@ -792,7 +792,7 @@ void testBandedChainAlignmentThreeSeeds(TGapCosts const &)
 template <typename TGapCosts>
 void testBandedChainAlignmentRareCases(TGapCosts const &)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     typedef StringSet<TSeed> TSeedSet;
@@ -952,7 +952,7 @@ void testBandedChainAlignmentRareCases(TGapCosts const &)
 template <typename TGapSpec>
 void testBandedChainAlignmentBandExtension(TGapSpec)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef Seed<Simple> TSeed;
     // Test alignment with chain of length 1 with various bandwidths
@@ -993,7 +993,7 @@ void testBandedChainAlignmentBandExtension(TGapSpec)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_issue_1020)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     DnaString query = "ATCTCTCTCAACAAAACAACGAGGAGGAGTGAAAAGAGAGAGAT";
     DnaString ref   = "ATCTCTCTCAACAACAACAACGGAGGAGGAGGAAAAGAGAGAGAT";
@@ -1017,67 +1017,67 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_issue_1020)
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_empty_set_linear)
 {
-    testBandedChainAlignmentEmptyChain(seqan::LinearGaps());
+    testBandedChainAlignmentEmptyChain(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_empty_set_affine)
 {
-    testBandedChainAlignmentEmptyChain(seqan::AffineGaps());
+    testBandedChainAlignmentEmptyChain(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_one_seed_linear)
 {
-    testBandedChainAlignmentOneSeed(seqan::LinearGaps());
+    testBandedChainAlignmentOneSeed(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_one_seed_affine)
 {
-    testBandedChainAlignmentOneSeed(seqan::AffineGaps());
+    testBandedChainAlignmentOneSeed(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_two_seeds_linear)
 {
-    testBandedChainAlignmentTwoSeeds(seqan::LinearGaps());
+    testBandedChainAlignmentTwoSeeds(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_two_seeds_affine)
 {
-    testBandedChainAlignmentTwoSeeds(seqan::AffineGaps());
+    testBandedChainAlignmentTwoSeeds(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_three_seeds_linear)
 {
-    testBandedChainAlignmentThreeSeeds(seqan::LinearGaps());
+    testBandedChainAlignmentThreeSeeds(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_three_seeds_affine)
 {
-    testBandedChainAlignmentThreeSeeds(seqan::AffineGaps());
+    testBandedChainAlignmentThreeSeeds(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_special_seeds_linear)
 {
-    testBandedChainAlignmentRareCases(seqan::LinearGaps());
+    testBandedChainAlignmentRareCases(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_special_seeds_affine)
 {
-    testBandedChainAlignmentRareCases(seqan::AffineGaps());
+    testBandedChainAlignmentRareCases(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_band_extensions_linear)
 {
-    testBandedChainAlignmentBandExtension(seqan::LinearGaps());
+    testBandedChainAlignmentBandExtension(seqan2::LinearGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_band_extensions_affine)
 {
-    testBandedChainAlignmentBandExtension(seqan::AffineGaps());
+    testBandedChainAlignmentBandExtension(seqan2::AffineGaps());
 }
 
 SEQAN_DEFINE_TEST(test_banded_chain_score_overflow_detection)
 {
-    using namespace seqan;
+    using namespace seqan2;
     Score<int8_t> score(2, -5, -2);
     SEQAN_ASSERT(!_checkScoreOverflow(127, score));
     SEQAN_ASSERT(_checkScoreOverflow(50, score));

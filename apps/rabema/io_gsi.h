@@ -37,7 +37,7 @@
 #define GSI_COLUMN_NAMES "QNAME\tSCORE\tRNAME\tRDIR\tSPOS\tEPOS"
 
 struct Gsi_;
-typedef seqan::Tag<Gsi_> Gsi;
+typedef seqan2::Tag<Gsi_> Gsi;
 
 // ---------------------------------------------------------------------------
 // Class GsiHeader
@@ -259,7 +259,7 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 
     // No more records in file.
     if (atEnd(iter))
-        throw seqan::UnexpectedEnd();
+        throw seqan2::UnexpectedEnd();
 
     // Read read name.
     clear(record);
@@ -276,7 +276,7 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
         else if (c == '1')
             record.flags = GsiRecord::FLAG_PAIRED | GsiRecord::FLAG_SECOND_MATE;
         else
-            throw seqan::ParseError("Could not interpret trailing mate indicator.");
+            throw seqan2::ParseError("Could not interpret trailing mate indicator.");
 
         resize(record.readName, length(record.readName) - 2);
     }

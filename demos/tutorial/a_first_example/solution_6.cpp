@@ -5,7 +5,7 @@
 #include <seqan/sequence.h>
 #include <seqan/score.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 template <typename TText>
 int computeLocalScore(TText const & subText, String<AminoAcid> const & pattern)

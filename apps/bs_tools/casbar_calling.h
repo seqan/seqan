@@ -21,7 +21,7 @@ Add underconversion rates...
 #include <cmath>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 // TODO:
 // precalculate probs and get rid of thousand different cases to check

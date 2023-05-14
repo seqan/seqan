@@ -40,7 +40,7 @@
 #ifndef SEQAN_HEADER_MISC_NAME_STORE_CACHE_H
 #define SEQAN_HEADER_MISC_NAME_STORE_CACHE_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -429,6 +429,6 @@ nameToId(NameStoreCache<TNameStore, TName> & cache, TName2 const & name)
     return nameId;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_HEADER_MISC_NAME_STORE_CACHE_H

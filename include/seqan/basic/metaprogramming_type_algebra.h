@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -269,6 +269,6 @@ struct Product<TagList<TTag1, TSubList1>, TagList<TTag2, TSubList2> >
                          typename Product<TSubList1, TagList<TTag2, TSubList2> >::Type>::Type Type;
 };
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_

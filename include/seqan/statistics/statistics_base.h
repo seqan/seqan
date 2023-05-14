@@ -33,7 +33,7 @@
 #ifndef SEQAN_STATISTICS_STATISTICS_BASE_H_
 #define SEQAN_STATISTICS_STATISTICS_BASE_H_
 
-namespace seqan
+namespace seqan2
 {
 
 template <typename TAlgorithm, typename TFloat, typename TAlphabet>
@@ -484,6 +484,6 @@ TFloat expectation(StringSet<String<TAlphabet> > & W, StringSet<String<TAlphabet
     return E;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_STATISTICS_STATISTICS_BASE_H_

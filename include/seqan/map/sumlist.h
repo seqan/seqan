@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_SUMLIST_H
 #define SEQAN_HEADER_SUMLIST_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -209,6 +209,6 @@ clear(SumListValues<DIM, TValue> & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
 #define SEQAN_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -57,6 +57,6 @@ namespace seqan {
 // Records for the meta information lines.
 typedef String<VcfHeaderRecord> VcfHeader;
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_VCF_HEADER_H_

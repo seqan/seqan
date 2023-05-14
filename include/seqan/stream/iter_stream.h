@@ -41,7 +41,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
 #define SEQAN_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags
@@ -763,6 +763,6 @@ atEnd(Iter<TStream, StreamIterator<Output> > const & iter)
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_

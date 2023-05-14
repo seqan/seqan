@@ -60,18 +60,18 @@
 struct MethylationLevels
 {
     // Forward and reverse levels, encoded as round(level / 0.125) + 33.
-    seqan::CharString forward, reverse;
+    seqan2::CharString forward, reverse;
 
     void resize(unsigned len)
     {
-        seqan::resize(forward, len, '!');
-        seqan::resize(reverse, len, '!');
+        seqan2::resize(forward, len, '!');
+        seqan2::resize(reverse, len, '!');
     }
 
     void clear()
     {
-        seqan::clear(forward);
-        seqan::clear(reverse);
+        seqan2::clear(forward);
+        seqan2::clear(reverse);
     }
 
     // Translate character in forward/reverse to level (0..80).
@@ -150,26 +150,26 @@ public:
     TRng & rng;
 
     // Beta probability density functions for level generation.
-    seqan::BetaDistribution<double> pdfCG, pdfCHG, pdfCHH; // TODO::(smehringer) change to beta distribution!
+    seqan2::BetaDistribution<double> pdfCG, pdfCHG, pdfCHH; // TODO::(smehringer) change to beta distribution!
 
     MethylationLevelSimulator(TRng & rng, MethylationLevelSimulatorOptions const & options) :
             options(options), rng(rng),
-            pdfCG(seqan::cvtBetaDistParam(options.methMuCG,options.methSigmaCG)),
-            pdfCHG(seqan::cvtBetaDistParam(options.methMuCHG, options.methSigmaCHG)),
-            pdfCHH(seqan::cvtBetaDistParam(options.methMuCHH, options.methSigmaCHH))
+            pdfCG(seqan2::cvtBetaDistParam(options.methMuCG,options.methSigmaCG)),
+            pdfCHG(seqan2::cvtBetaDistParam(options.methMuCHG, options.methSigmaCHG)),
+            pdfCHH(seqan2::cvtBetaDistParam(options.methMuCHH, options.methSigmaCHH))
     {}
 
     // Simulate methylation levels for the sequence in contig.  The results are stored in levels.
-    void run(MethylationLevels & levels, seqan::Dna5String const & contig)
+    void run(MethylationLevels & levels, seqan2::Dna5String const & contig)
     {
         levels.resize(length(contig));
 
-        typedef seqan::Iterator<seqan::Dna5String const>::Type TContigIter;
-        TContigIter it = begin(contig, seqan::Standard());
-        TContigIter itEnd = end(contig, seqan::Standard()) - 3;
+        typedef seqan2::Iterator<seqan2::Dna5String const>::Type TContigIter;
+        TContigIter it = begin(contig, seqan2::Standard());
+        TContigIter itEnd = end(contig, seqan2::Standard()) - 3;
 
         // We will go over the contig with hashes to search for patterns efficiently.
-        seqan::Shape<seqan::Dna5> shape2, shape3;
+        seqan2::Shape<seqan2::Dna5> shape2, shape3;
         if (levels.forward[0] != '!') SEQAN_ASSERT_EQ_MSG(contig[0], 'C', "pos = %d", 0);
         if (levels.reverse[0] != '!') SEQAN_ASSERT_EQ_MSG(contig[0], 'G', "pos = %d", 0);
         if (length(contig) >= 2u)
@@ -209,7 +209,7 @@ public:
     // Handle 3mer, forward case.
     void handleThreeMer(MethylationLevels & levels, unsigned pos, unsigned hashValue)
     {
-        // seqan::Dna5String dbg, dbg2;
+        // seqan2::Dna5String dbg, dbg2;
         // unhash(dbg, hashValue, 3);
         // dbg2 = dbg;
         // reverse(dbg2);
@@ -223,7 +223,7 @@ public:
                 break;
             case 32:  // CCG
                 levels.setLevelF(pos, pdfCHG(rng));
-                levels.setLevelR(pos + 2, pdfCG(rng)); 
+                levels.setLevelR(pos + 2, pdfCG(rng));
                 break;
             case 25:    // CAA
             case 26:    // CAC
@@ -260,7 +260,7 @@ public:
     {
         if (hashValue == 7)  // CpG forward (symmetric, also reverse)
         {
-            // seqan::Dna5String dbg;
+            // seqan2::Dna5String dbg;
             // unhash(dbg, hashValue, 2);
             // std::cerr << "CpG     \t" << dbg << "\n";
             levels.setLevelF(pos, pdfCG(rng));
@@ -285,8 +285,8 @@ public:
 
 void fixVariationLevels(MethylationLevels & levels,
                         TRng & rng,
-                        seqan::Dna5String const & contig,
-                        seqan::String<std::pair<int, bool> > const & varPoints,
+                        seqan2::Dna5String const & contig,
+                        seqan2::String<std::pair<int, bool> > const & varPoints,
                         MethylationLevelSimulatorOptions const & options);
 
 #endif  // #ifndef APPS_MASON2_METHYLATION_LEVELS_H_

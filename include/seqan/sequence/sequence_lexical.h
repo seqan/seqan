@@ -38,7 +38,7 @@
 #define SEQAN_HEADER_LEXICAL_H
 
 
-namespace seqan
+namespace seqan2
 {
 //////////////////////////////////////////////////////////////////////////////
 // Switches for prefix ordering mode
@@ -758,6 +758,6 @@ lcpLength(Lexical<TSpec> const & _lex)
     return _lex.data_lcp;
 }
 
-} //namespace seqan
+} //namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

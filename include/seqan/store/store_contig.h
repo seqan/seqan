@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_CONTIG_H
 #define SEQAN_HEADER_STORE_CONTIG_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ ContigFile<TSpec_>::INVALID_ID = std::numeric_limits<typename Id<ContigFile<TSpe
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...
 

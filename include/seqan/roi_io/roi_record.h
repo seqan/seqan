@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ROI_IO_ROI_RECORD_H_
 #define INCLUDE_SEQAN_ROI_IO_ROI_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -52,7 +52,7 @@ namespace seqan {
 class RoiHeader
 {
 public:
-    seqan::StringSet<seqan::CharString> extraColumns;
+    seqan2::StringSet<seqan2::CharString> extraColumns;
 };
 
 // ----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ public:
     unsigned countMax;  // TODO(holtgrew): Rename to maxCount/maxCoverages?
 
     // Additional data as string.
-    seqan::StringSet<seqan::CharString> data;
+    seqan2::StringSet<seqan2::CharString> data;
 
     RoiRecord() : beginPos(INVALID_POS), endPos(INVALID_POS), strand('.'), len(0), countMax(0)
     {}
@@ -114,6 +114,6 @@ inline void clear(RoiRecord & record)
     clear(record.data);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ROI_IO_ROI_RECORD_H_

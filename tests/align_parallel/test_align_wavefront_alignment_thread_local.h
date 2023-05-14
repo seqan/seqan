@@ -47,7 +47,7 @@ struct TestConfig
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_thread_local_storage_construt)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TLocalStorage = WavefrontAlignmentThreadLocalStorage<test_align_parallel::TestConfig>;
     SEQAN_ASSERT(std::is_default_constructible<TLocalStorage>::value);
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_thread_local_storage_c
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_thread_local_storage_intermediate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TLocalStorage = WavefrontAlignmentThreadLocalStorage<test_align_parallel::TestConfig>;
     {
@@ -82,7 +82,7 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_thread_local_storage_i
 
 SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_thread_local_storage_cache)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     using TLocalStorage = WavefrontAlignmentThreadLocalStorage<test_align_parallel::TestConfig>;
     {

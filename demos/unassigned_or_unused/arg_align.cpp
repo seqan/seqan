@@ -43,7 +43,7 @@ const char * kUsageStr = (
 const int kRetOk = 0;      // No error.
 const int kRetArgErr = 1;  // Argument error.
 
-using namespace seqan;
+using namespace seqan2;
 
 
 typedef Dna5String TSequenceType;  // The sequence type used below.

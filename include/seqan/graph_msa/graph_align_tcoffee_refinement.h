@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_REFINEMENT_H
 #define SEQAN_HEADER_GRAPH_ALIGN_TCOFFEE_REFINEMENT_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -511,6 +511,6 @@ msaRefinement(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
     convertAlignment(mat, gAlign);
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

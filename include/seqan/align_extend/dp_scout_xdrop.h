@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
 #define INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -204,6 +204,6 @@ _computeCell(TDPScout & scout,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_

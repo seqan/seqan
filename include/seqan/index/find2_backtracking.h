@@ -39,7 +39,7 @@
 
 //#define SEQAN_DEBUG
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards

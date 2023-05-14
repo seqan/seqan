@@ -39,7 +39,7 @@
 
 #include "../../apps/stellar/stellar.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // calls local swift and compares swift hits to expected swift hits
 template<typename THaystack, typename TIndex>
@@ -60,7 +60,7 @@ void testLocalSwift(Finder<THaystack, Swift<SwiftLocal> > & finder,
 }
 
 void testOneLocalSwiftHit() {
-	// a single pattern and a single hit 
+	// a single pattern and a single hit
     typedef Finder<DnaString, Swift<SwiftLocal> > TFinder;
 	DnaString text = "aaaaaaacgatcgatgcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 	TFinder finder_swift(text);
@@ -225,7 +225,7 @@ SEQAN_DEFINE_TEST(test_longest_epsMatch) {
     alignment = testLongestEpsMatch(seq1, seq2);
     SEQAN_ASSERT(row(alignment, 0) == "ACCTTTGCCCCCCCCCCTAAAAAAAA");
     SEQAN_ASSERT(row(alignment, 1) == "ACGTTT-CCCCCCCCCCGAAAAAAAA");
-    
+
     seq1 = "AAAATTAAAAAAAATCCCCCCCCCCGTTTCCA";
     seq2 = "AAAAGAAAAAAAAGCCCCCCCCCCTTTGCA";
     alignment = testLongestEpsMatch(seq1, seq2);
@@ -286,14 +286,14 @@ SEQAN_DEFINE_TEST(test_split_xDrop_align) {
     SEQAN_ASSERT(row(value(aliString, 0), 1) == "cgataa");
     SEQAN_ASSERT(row(value(aliString, 1), 0) == "tcagttggacta");
     SEQAN_ASSERT(row(value(aliString, 1), 1) == "tca-ctggacta");
-    
+
     seq1 = "aaaaaa";
     seq2 = "ccaaaaaa";
     clear(aliString);
     testXDropAlign(seq1, seq2, scoring, 3/*scoreDropOff*/, 12/*minScore*/, aliString);
     SEQAN_ASSERT_EQ(length(aliString), 1u);
     SEQAN_ASSERT(row(value(aliString, 0), 0) == "aaaaaa");
-    SEQAN_ASSERT(row(value(aliString, 0), 1) == "aaaaaa"); 
+    SEQAN_ASSERT(row(value(aliString, 0), 1) == "aaaaaa");
 
     seq1 = "aaaaaa";
     seq2 = "aaaaaa";
@@ -302,7 +302,7 @@ SEQAN_DEFINE_TEST(test_split_xDrop_align) {
     SEQAN_ASSERT_EQ(length(aliString), 1u);
     SEQAN_ASSERT(row(value(aliString, 0), 0) == "aaaaaa");
     SEQAN_ASSERT(row(value(aliString, 0), 1) == "aaaaaa");
-    
+
     seq1 = "CCCCAGGGGGGACAAAAAAGAAACCCAGGGGGGACCCAGGG";
     seq2 = "CCCCTGGGGGGTCTTTTTGTCCCTGGGGGGTCCCTGGG";
     clear(aliString);

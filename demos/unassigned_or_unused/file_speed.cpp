@@ -5,7 +5,7 @@
 #include <seqan/stream.h>
 #include <iostream>
 
-using namespace seqan;
+using namespace seqan2;
 
 const unsigned long blockSize = 1 << 12;
 const unsigned long repeats = 1 << 19;

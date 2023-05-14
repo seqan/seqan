@@ -4,7 +4,7 @@
 #include <seqan/graph_algorithms.h>
 #include <seqan/basic/basic_math.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main()
 {

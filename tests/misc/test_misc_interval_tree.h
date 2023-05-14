@@ -45,7 +45,7 @@
 
 #include <seqan/basic.h>
 
-namespace seqan {
+namespace seqan2 {
 
 
 

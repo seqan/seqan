@@ -8,7 +8,7 @@
 #include <fstream>
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 struct ConvertCT : public ::std::function<char(char)>
@@ -38,8 +38,8 @@ preProcess(TOptions &options)
 
     CharString id, seq, quals;
 
-    seqan::SeqFileIn  seqFileIn(toCString(options.inputFileName));
-    seqan::SeqFileOut seqFileOut(toCString(options.outputFileName));
+    seqan2::SeqFileIn  seqFileIn(toCString(options.inputFileName));
+    seqan2::SeqFileOut seqFileOut(toCString(options.outputFileName));
 
     // Get lower case of the output file name.  File endings are accepted in both upper and lower case.
     CharString tmp = options.inputFileName;

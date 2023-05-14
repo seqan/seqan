@@ -38,7 +38,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -367,6 +367,6 @@ void assignTagsBamToSam(TTarget & target, TSource const & source)
     appendTagsBamToSam(target, source);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_

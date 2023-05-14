@@ -43,11 +43,11 @@
 template <typename TAlignment, bool FreeTop, bool FreeLeft, bool FreeRight, bool FreeBottom, typename TACSpec,
           typename TScore>
 bool _validateAlignment(TAlignment const & align,
-                        seqan::AlignConfig<FreeTop, FreeLeft, FreeRight, FreeBottom, TACSpec> const & /*conf*/,
+                        seqan2::AlignConfig<FreeTop, FreeLeft, FreeRight, FreeBottom, TACSpec> const & /*conf*/,
                         TScore const & score,
-                        seqan::Score<TScore, seqan::Simple> const & scoreScheme)
+                        seqan2::Score<TScore, seqan2::Simple> const & scoreScheme)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef typename Row<TAlignment const>::Type TRow;
     typedef typename Iterator<TRow, Standard>::Type TRowIterator;
@@ -179,7 +179,7 @@ void testDynamicGapInterfaces(TAlign & alignObj,
                               int lDiag = 0,
                               int uDiag = 0)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     Score<int, Simple> scoreScheme(2, -2, -1, -4);
 
@@ -212,7 +212,7 @@ void testDynamicGapInterfaces(TAlgorithm const & algo,
                               int lDiag = 0,
                               int uDiag = 0)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     {
         DnaString str1 = "AAAAACTACGTACGTTTCTGGCCCCC";  // A G T A G C T A C G T A C G T T T C T G G A T G A C
@@ -268,34 +268,34 @@ void testDynamicGapInterfaces(TAlgorithm const & algo,
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_global_dynamic_cost)
 {
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<>());
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<false, true, true, false>());
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<true, false, false, true>());
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<true, true, true, true>());
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<>());
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<false, true, true, false>());
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<true, false, false, true>());
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<true, true, true, true>());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_global_dynamic_cost_banded)
 {
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<>(), -3, 3);
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<false, true, true, false>(), -3, 3);
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<true, false, false, true>(), -3, 3);
-    testDynamicGapInterfaces(seqan::NeedlemanWunsch(), seqan::AlignConfig<true, true, true, true>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<false, true, true, false>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<true, false, false, true>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::NeedlemanWunsch(), seqan2::AlignConfig<true, true, true, true>(), -3, 3);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_local_dynamic_cost)
 {
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>());
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>());
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>());
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>());
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>());
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>());
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>());
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>());
 }
 
 SEQAN_DEFINE_TEST(test_alignment_algorithms_local_dynamic_cost_banded)
 {
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>(), -3, 3);
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>(), -3, 3);
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>(), -3, 3);
-    testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>(), -3, 3);
+    testDynamicGapInterfaces(seqan2::SmithWaterman(), seqan2::AlignConfig<>(), -3, 3);
 }
 
 #endif // TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_

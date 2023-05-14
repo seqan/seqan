@@ -35,7 +35,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
 #define SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Classes
@@ -221,6 +221,6 @@ sampleNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> const &
     return _referenceCast<TNameStoreCache const &>(context._sampleNamesCache);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_

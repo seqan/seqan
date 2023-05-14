@@ -36,7 +36,7 @@
 
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_construct)
 {
-    using namespace seqan;
+    using namespace seqan2;
     // We need to be able to construct a thread pool.
     SEQAN_ASSERT(std::is_default_constructible<ThreadPool>::value);
     SEQAN_ASSERT(!std::is_copy_constructible<ThreadPool>::value);
@@ -47,7 +47,7 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_construct)
 
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_spawn)
 {
-    using namespace seqan;
+    using namespace seqan2;
     // We need to be able to construct a thread pool
     ThreadPool pool;
     bool res = false;
@@ -64,7 +64,7 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_spawn)
 
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_join)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     ThreadPool pool;
     std::vector<bool> res{false, false};
@@ -93,7 +93,7 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_join)
 
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_destruct)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     { // Destructor.
         void* buffer = malloc(sizeof(ThreadPool));

@@ -131,12 +131,12 @@ std::ostream & operator<<(std::ostream & out, StructuralVariantRecord const & re
 // ----------------------------------------------------------------------------
 
 int VariantMaterializer::_runImpl(
-        seqan::Dna5String * resultSeq,
+        seqan2::Dna5String * resultSeq,
         PositionMap * posMap,
         MethylationLevels * resultLvls,
         std::vector<SmallVarInfo> & varInfos,
         std::vector<std::pair<int, int> > & breakpoints,
-        seqan::Dna5String const * ref,
+        seqan2::Dna5String const * ref,
         MethylationLevels const * refLvls,
         int haplotypeId)
 {
@@ -146,7 +146,7 @@ int VariantMaterializer::_runImpl(
         resultLvls->clear();
 
     // Apply small variants.  We get a sequence with the small variants and a journal of the difference to contig.
-    seqan::Dna5String seqSmallVariants;
+    seqan2::Dna5String seqSmallVariants;
     TJournalEntries journal;
     MethylationLevels levelsSmallVariants;  // only used if revLevels != 0
     MethylationLevels * smallLvlsPtr = refLvls ? &levelsSmallVariants : 0;
@@ -182,11 +182,11 @@ int VariantMaterializer::_runImpl(
 // ----------------------------------------------------------------------------
 
 int VariantMaterializer::_materializeSmallVariants(
-        seqan::Dna5String & seq,
+        seqan2::Dna5String & seq,
         TJournalEntries & journal,
         MethylationLevels * levelsSmallVariants,
         std::vector<SmallVarInfo> & smallVarInfos,
-        seqan::Dna5String const & contig,
+        seqan2::Dna5String const & contig,
         Variants const & variants,
         MethylationLevels const * levels,
         int hId)
@@ -202,7 +202,7 @@ int VariantMaterializer::_materializeSmallVariants(
     if (levelsSmallVariants)
         levelsSmallVariants->clear();
     // Store variation points with a flag whether it is a SNP (true) or a breakpoint (false).
-    seqan::String<std::pair<int, bool> > varPoints;
+    seqan2::String<std::pair<int, bool> > varPoints;
 
     // Fors this, we have to iterate in parallel over SNP and small indel records.
     //
@@ -366,13 +366,13 @@ int VariantMaterializer::_materializeSmallVariants(
 // ----------------------------------------------------------------------------
 
 int VariantMaterializer::_materializeLargeVariants(
-        seqan::Dna5String & seq,
+        seqan2::Dna5String & seq,
         MethylationLevels * levelsLargeVariants,
         std::vector<SmallVarInfo> & varInfos,
         std::vector<std::pair<int, int> > & breakpoints,
         PositionMap & positionMap,
         TJournalEntries const & journal,
-        seqan::Dna5String const & contig,
+        seqan2::Dna5String const & contig,
         std::vector<SmallVarInfo> const & smallVarInfos,
         Variants const & variants,
         MethylationLevels const * levels,
@@ -385,14 +385,14 @@ int VariantMaterializer::_materializeLargeVariants(
     }
 
     // We will record all intervals for the positionMap.svIntervalTree in this String.
-    seqan::String<GenomicInterval> intervals;
+    seqan2::String<GenomicInterval> intervals;
 
     // Clear output methylation levels->
     if (levelsLargeVariants)
         levelsLargeVariants->clear();
     // Store variation points.  We reuse the fixVariationLevels() function from small indel/snp simulation and thus
     // have to store a bool that is always set to false.
-    seqan::String<std::pair<int, bool> > varPoints;
+    seqan2::String<std::pair<int, bool> > varPoints;
 
     // Track last position from contig appended to seq so far.
     int lastPos = 0;
@@ -684,7 +684,7 @@ int VariantMaterializer::_materializeLargeVariants(
     }
 
     // Build the interval trees of the positionMap.
-    seqan::String<PositionMap::TInterval> svIntervals, svIntervalsSTL;
+    seqan2::String<PositionMap::TInterval> svIntervals, svIntervalsSTL;
     for (unsigned i = 0; i < length(intervals); ++i)
         appendValue(svIntervals, PositionMap::TInterval(
                 intervals[i].svBeginPos, intervals[i].svEndPos, intervals[i]));
@@ -714,7 +714,7 @@ bool PositionMap::overlapsWithBreakpoint(int svBeginPos, int svEndPos) const
 
 GenomicInterval PositionMap::getGenomicInterval(int svPos) const
 {
-    seqan::String<GenomicInterval> intervals;
+    seqan2::String<GenomicInterval> intervals;
     findIntervals(intervals, svIntervalTree, svPos);
     SEQAN_ASSERT_EQ(length(intervals), 1u);
     return intervals[0];
@@ -727,7 +727,7 @@ GenomicInterval PositionMap::getGenomicInterval(int svPos) const
 // Returns the GenomicInterval on the sequence using a position on the small var reference.
 GenomicInterval PositionMap::getGenomicIntervalSmallVarPos(int smallVarPos) const
 {
-    seqan::String<GenomicInterval> intervals;
+    seqan2::String<GenomicInterval> intervals;
     findIntervals(intervals, svIntervalTreeSTL, smallVarPos);
     return intervals[0];
 }
@@ -796,8 +796,8 @@ std::pair<int, int> PositionMap::originalToSmallVarInterval(int beginPos, int en
     // TODO(holtgrew): Project to the left at the end.
 
     // Get anchor gaps objects from anchors.
-    TGaps refGaps(seqan::Nothing(), refGapAnchors);
-    TGaps smallVarGaps(seqan::Nothing(), smallVarGapAnchors);
+    TGaps refGaps(seqan2::Nothing(), refGapAnchors);
+    TGaps smallVarGaps(seqan2::Nothing(), smallVarGapAnchors);
 
     // Translate begin and end position.
     int beginPos2 = toViewPosition(refGaps, beginPos);
@@ -816,8 +816,8 @@ std::pair<int, int> PositionMap::toOriginalInterval(int smallVarBeginPos, int sm
     // TODO(holtgrew): Project to the left at the end.
 
     // Get anchor gaps objects from anchors.
-    TGaps refGaps(seqan::Nothing(), refGapAnchors);
-    TGaps smallVarGaps(seqan::Nothing(), smallVarGapAnchors);
+    TGaps refGaps(seqan2::Nothing(), refGapAnchors);
+    TGaps smallVarGaps(seqan2::Nothing(), smallVarGapAnchors);
 
     // Translate begin and end position.
     int smallVarBeginPos2 = toViewPosition(smallVarGaps, smallVarBeginPos);
@@ -844,24 +844,24 @@ void PositionMap::reinit(TJournalEntries const & journal)
     // Convert the journal to two gaps.
     //
     // Get anchor gaps objects from anchors.
-    typedef seqan::Iterator<TGaps, seqan::Standard>::Type TGapsIter;
-    TGaps refGaps(seqan::Nothing(), refGapAnchors);
-    TGapsIter itRef = begin(refGaps, seqan::Standard());
-    TGaps smallVarGaps(seqan::Nothing(), smallVarGapAnchors);
-    TGapsIter itVar = begin(smallVarGaps, seqan::Standard());
+    typedef seqan2::Iterator<TGaps, seqan2::Standard>::Type TGapsIter;
+    TGaps refGaps(seqan2::Nothing(), refGapAnchors);
+    TGapsIter itRef = begin(refGaps, seqan2::Standard());
+    TGaps smallVarGaps(seqan2::Nothing(), smallVarGapAnchors);
+    TGapsIter itVar = begin(smallVarGaps, seqan2::Standard());
 
     // Iterate over the journal.
-    typedef seqan::Iterator<TJournalEntries const, seqan::Standard>::Type TJournalEntriesIt;
-    TJournalEntriesIt it = begin(journal, seqan::Standard());
-    SEQAN_ASSERT_NEQ(it->segmentSource, seqan::SOURCE_NULL);
+    typedef seqan2::Iterator<TJournalEntries const, seqan2::Standard>::Type TJournalEntriesIt;
+    TJournalEntriesIt it = begin(journal, seqan2::Standard());
+    SEQAN_ASSERT_NEQ(it->segmentSource, seqan2::SOURCE_NULL);
     SEQAN_ASSERT_EQ(it->virtualPosition, 0u);
 
     unsigned lastRefPos = std::numeric_limits<unsigned>::max();  // Previous position from reference.
-    for (; it != end(journal, seqan::Standard()); ++it)
+    for (; it != end(journal, seqan2::Standard()); ++it)
     {
         // std::cerr << *it << "\n";
-        SEQAN_ASSERT_NEQ(it->segmentSource, seqan::SOURCE_NULL);
-        if (it->segmentSource == seqan::SOURCE_ORIGINAL)
+        SEQAN_ASSERT_NEQ(it->segmentSource, seqan2::SOURCE_NULL);
+        if (it->segmentSource == seqan2::SOURCE_ORIGINAL)
         {
             if (lastRefPos == std::numeric_limits<unsigned>::max())
             {
@@ -906,9 +906,9 @@ void PositionMap::reinit(TJournalEntries const & journal)
 
     // std::cerr << "--> done\n";
 
-    // typedef seqan::Gaps<seqan::CharString, seqan::AnchorGaps<TGapAnchors> > TGaps2;
-    // seqan::CharString seqH;
-    // seqan::CharString seqV;
+    // typedef seqan2::Gaps<seqan2::CharString, seqan2::AnchorGaps<TGapAnchors> > TGaps2;
+    // seqan2::CharString seqH;
+    // seqan2::CharString seqV;
     // for (unsigned i = 0; i < 1000; ++i)
     // {
     //     appendValue(seqH, 'X');

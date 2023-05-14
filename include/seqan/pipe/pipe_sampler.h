@@ -35,10 +35,10 @@
 #ifndef SEQAN_HEADER_PIPE_SAMPLER_H
 #define SEQAN_HEADER_PIPE_SAMPLER_H
 
-namespace seqan
+namespace seqan2
 {
 
-//namespace SEQAN_NAMESPACE_PIPELINING
+//namespace seqan2_NAMESPACE_PIPELINING
 //{
 
     template <int I, typename T = void>

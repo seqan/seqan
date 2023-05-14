@@ -40,7 +40,7 @@
 
 #include <cmath>
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -379,7 +379,7 @@ addSeed(SeedSet<TSeed, Unordered> & seedSet,
     return true;    // Always returns true.
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // SEQAN_SEEDS_SEEDS_SEED_SET_UNORDERED_H_
 

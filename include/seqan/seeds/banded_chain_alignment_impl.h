@@ -41,7 +41,7 @@
 #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
 #define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ============================================================================
@@ -1359,6 +1359,6 @@ _computeAlignment(TTraceSet & globalTraceSet,
     return score;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_

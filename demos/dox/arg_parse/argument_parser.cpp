@@ -6,7 +6,7 @@
 
 #include <seqan/arg_parse.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 int main(int argc, char const ** argv)
 {

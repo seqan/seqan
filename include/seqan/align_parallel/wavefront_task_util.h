@@ -35,7 +35,7 @@
 #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_UTIL_H_
 #define INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_UTIL_H_
 
-namespace seqan
+namespace seqan2
 {
 namespace impl
 {
@@ -552,6 +552,6 @@ computeSimdBatch(DPContext<TDPCell, TTraceValue, TScoreMat, TTraceMat> & cache,
 }
 #endif // SEQAN_SIMD_ENABLED
 }  // namespace impl
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_ALIGN_PARALLEL_WAVEFRONT_TASK_UTIL_H_

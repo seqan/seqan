@@ -39,7 +39,7 @@
 
 #include <seqan/basic.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Demo worker for Loop<>.
 //![print worker]

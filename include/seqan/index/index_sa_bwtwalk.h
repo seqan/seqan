@@ -49,7 +49,7 @@
 // lexprevpos[p] = pos[rank[p]-1]
 // lexxorpos = lexprevpos ^ lexnextpos
 
-namespace seqan
+namespace seqan2
 {
     // Public tags
     struct BwtWalkFast_ {};

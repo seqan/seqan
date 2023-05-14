@@ -49,7 +49,7 @@ void testTransferTag()
 
     SeqOutFormat outFormat;
     SeqFileIn inputFile;
-    seqan::CharString filePath;
+    seqan2::CharString filePath;
     bool result = false;
 
     // In the case of unselected input tag

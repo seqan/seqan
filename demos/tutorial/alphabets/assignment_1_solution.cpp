@@ -2,7 +2,7 @@
 #include <seqan/basic.h>
 #include <iostream>
 
-using namespace seqan;
+using namespace seqan2;
 
 // We define a function which takes
 // the alphabet type as an argument

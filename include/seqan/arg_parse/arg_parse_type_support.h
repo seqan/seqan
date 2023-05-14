@@ -42,7 +42,7 @@
 
 #include <seqan/sequence.h>
 
-namespace seqan {
+namespace seqan2 {
 
 
 // ==========================================================================
@@ -231,6 +231,6 @@ inline bool _convertArgumentValue(TObject & dst, ArgParseArgument const & opt, s
     return true;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_

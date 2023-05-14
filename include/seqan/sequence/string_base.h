@@ -38,7 +38,7 @@
 #ifndef SEQAN_SEQUENCE_STRING_ARRAY_BASE_H_
 #define SEQAN_SEQUENCE_STRING_ARRAY_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -2110,6 +2110,6 @@ getValueById(String<TValue, TSpec> & me,
         return TValue();
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_ARRAY_BASE_H_

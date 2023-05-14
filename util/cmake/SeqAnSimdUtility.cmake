@@ -67,7 +67,7 @@
 #
 #   add_simd_platform_tests(target)
 #       - builds target on different simd implementations and architectures
-#       - adds targets which use the seqan::simd default implementation
+#       - adds targets which use the seqan2::simd default implementation
 #       - adds targets which use the UME::SIMD library instead of the seqan
 #         default implementation if UMESIMD_FOUND is set
 #       - adds tests for different architectures if the Intel® Software

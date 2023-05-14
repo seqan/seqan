@@ -33,7 +33,7 @@
 #ifndef SEQAN_HEADER_GRAPH_ITERATOR_BFS_H
 #define SEQAN_HEADER_GRAPH_ITERATOR_BFS_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -293,6 +293,6 @@ operator !=(Iter<TGraph, GraphIterator<InternalBfsIterator<TSpec> > >& it1,
             (it1.data_queue!=it2.data_queue));
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

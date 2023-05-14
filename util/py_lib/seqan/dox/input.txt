@@ -339,7 +339,7 @@ With multiple paragraphs.
 Strings can be used yada yad yada.
 
 @code{.cpp}
-seqan::CharString s = "asdf";
+seqan2::CharString s = "asdf";
 append(s, "foo");
 @endcode
 
@@ -363,9 +363,9 @@ The following examples shows the different ways that a String can be
 constructed in.
 
 @code{.cpp}
-seqan::String<char> s;      // Default Construction
-seqan::String<char> s2(s);  // Copy construction
-seqan::String<char> s3("Hi there");  // Conversion construction from sequence.
+seqan2::String<char> s;      // Default Construction
+seqan2::String<char> s2(s);  // Copy construction
+seqan2::String<char> s3("Hi there");  // Conversion construction from sequence.
 @endcode
 
 @fn String::~String

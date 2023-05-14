@@ -41,12 +41,12 @@
 #define PLUS_COMMENTS_CUSTOM     "/tests/blast/customfields.m9"
 #define NOCOMMENTS_CUSTOM        "/tests/blast/customfields.m8"
 
-using namespace seqan;
+using namespace seqan2;
 
 inline void
 _test_blast_read_tabular_match_lowlevel(std::string const & path)
 {
-    std::string inPath = seqan::getAbsolutePath(path.c_str());
+    std::string inPath = seqan2::getAbsolutePath(path.c_str());
 
     std::ifstream ifstream(toCString(inPath),
                            std::ios_base::in | std::ios_base::binary);
@@ -159,12 +159,12 @@ void _testReadTabularWithoutComments(TContext &,
 {
     typedef BlastMatchField<> TField;
 
-    std::string inPath = seqan::getAbsolutePath(path.c_str());
+    std::string inPath = seqan2::getAbsolutePath(path.c_str());
 
     BlastRecord<> r;
 
     BlastTabularFileIn<TContext> fileIn(toCString(inPath));
-    TContext & context = seqan::context(fileIn);
+    TContext & context = seqan2::context(fileIn);
 
     /* Variables we will be comparing with */
     std::vector<typename TField::Enum> const fieldsDefault =
@@ -365,12 +365,12 @@ void _testReadTabularWithComments(TContext &,
 {
     typedef BlastMatchField<> TField;
 
-    std::string inPath = seqan::getAbsolutePath(path.c_str());
+    std::string inPath = seqan2::getAbsolutePath(path.c_str());
 
     BlastRecord<> r;
 
     BlastTabularFileIn<TContext> fileIn(toCString(inPath));
-    TContext & context = seqan::context(fileIn);
+    TContext & context = seqan2::context(fileIn);
 
     /* Variables we will be comparing with */
     std::vector<typename TField::Enum> const fieldsDefault =

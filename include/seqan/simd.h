@@ -41,7 +41,7 @@
 
 // Check if more than simd back end is selected
 #if SEQAN_SEQANSIMD_ENABLED && SEQAN_UMESIMD_ENABLED
-    #error UME::SIMD and SEQAN::SIMD are both enabled, you can only use one SIMD back end.
+    #error UME::SIMD and seqan2::SIMD are both enabled, you can only use one SIMD back end.
 #endif
 
 // MSVC doesn't define SSE4 macros, even if instruction set is available (e.g.
@@ -83,7 +83,7 @@
 #endif
 
 #if defined(SEQAN_SEQANSIMD_ENABLED) && (defined(COMPILER_MSVC) || defined(COMPILER_WINTEL))
-    #error SEQAN::SIMD (vector extension) is not supported by msvc and windows intel compiler, try compiling with -DSEQAN_UMESIMD_ENABLED
+    #error seqan2::SIMD (vector extension) is not supported by msvc and windows intel compiler, try compiling with -DSEQAN_UMESIMD_ENABLED
 #endif
 
 // SIMD operations have severe performance issues on <= gcc4.9

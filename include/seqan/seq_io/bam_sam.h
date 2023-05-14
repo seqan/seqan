@@ -41,7 +41,7 @@
 #ifndef SEQAN_SEQ_IO_BAM_SAM_H_
 #define SEQAN_SEQ_IO_BAM_SAM_H_
 
-namespace seqan
+namespace seqan2
 {
 
 // ----------------------------------------------------------------------------
@@ -396,7 +396,7 @@ inline void _writeRecord(TFile & file,
     rec.seq = seq;
     rec.qual = qual;
     rec.flag = BAM_FLAG_UNMAPPED;
-    
+
     write(file.iter, rec, context(file).bamIOContext, Sam());
 }
 
@@ -431,7 +431,7 @@ inline void _writeRecord(TFile & file,
     rec.seq = seq;
     rec.qual = qual;
     rec.flag = BAM_FLAG_UNMAPPED;
-    
+
     write(file.iter, rec, context(file).bamIOContext, Bam());
 }
 
@@ -550,6 +550,6 @@ readRecord(TIdString & /* meta */,
            Sam const & /* format */)
 {}
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEQ_IO_BAM_SAM_H_

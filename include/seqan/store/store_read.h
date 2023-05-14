@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_READ_H
 #define SEQAN_HEADER_STORE_READ_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -96,6 +96,6 @@ ReadStoreElement<TSpec>::INVALID_ID = std::numeric_limits<typename Id<ReadStoreE
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

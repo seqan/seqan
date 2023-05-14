@@ -40,7 +40,7 @@
 
 #include "consensus_alignment_options.h"
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -370,7 +370,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildAllToAllOverlapInfos(
     _patternInit(filterPattern, maxErrorRate);
 
     // Perform the pigeonhole-based search.
-    for (TStringSetIter it = begin(subSet, seqan::Rooted()); !atEnd(it); ++it)
+    for (TStringSetIter it = begin(subSet, seqan2::Rooted()); !atEnd(it); ++it)
     {
         unsigned seq0 = position(it);
         TFilterFinder filterFinder(*it);
@@ -420,6 +420,6 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildAllToAllOverlapInfos(
 // Functions
 // ============================================================================
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_OVERLAP_INFO_COMPUTATION_H_

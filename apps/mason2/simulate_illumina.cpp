@@ -42,17 +42,17 @@ class IlluminaModel
 {
 public:
     // Probabilities for a mismatch at a given position.
-    seqan::String<double> mismatchProbabilities;
+    seqan2::String<double> mismatchProbabilities;
 
     // Standard deviations for the normal distributions of base qualities for the mismatch case.
-    seqan::String<double> mismatchQualityMeans;
+    seqan2::String<double> mismatchQualityMeans;
     // Standard deviations for the normal distributions of base qualities for the mismatch case.
-    seqan::String<double> mismatchQualityStdDevs;
+    seqan2::String<double> mismatchQualityStdDevs;
 
     // Standard deviations for the normal distributions of base qualities for the non-mismatch case.
-    seqan::String<double> qualityMeans;
+    seqan2::String<double> qualityMeans;
     // Standard deviations for the normal distributions of base qualities for the non-mismatch case.
-    seqan::String<double> qualityStdDevs;
+    seqan2::String<double> qualityStdDevs;
 
     IlluminaModel()
     {}
@@ -189,8 +189,8 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
 {
     clear(read);
 
-    typedef typename seqan::Iterator<TFrag>::Type TFragIter;
-    TFragIter it = begin(frag, seqan::Standard());
+    typedef typename seqan2::Iterator<TFrag>::Type TFragIter;
+    TFragIter it = begin(frag, seqan2::Standard());
 
     for (unsigned i = 0; i < length(cigar); ++i)
     {
@@ -220,9 +220,9 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
             // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
 
             if (cigar[i].operation == 'I')
-                appendValue(read, seqan::Dna5(num));
+                appendValue(read, seqan2::Dna5(num));
             else
-                appendValue(read, seqan::Dna5(num + (num == ordValue(*it))));
+                appendValue(read, seqan2::Dna5(num + (num == ordValue(*it))));
         }
 
         if (cigar[i].operation == 'X')
@@ -253,14 +253,14 @@ void IlluminaSequencingSimulator::simulateRead(TRead & seq, TQualities & quals, 
     }
 
     // Simulate sequence (materialize mismatches and insertions).
-    typedef seqan::ModifiedString<seqan::ModifiedString<TFragment, seqan::ModView<seqan::FunctorComplement<seqan::Dna5> > >, seqan::ModReverse> TRevCompFrag;
+    typedef seqan2::ModifiedString<seqan2::ModifiedString<TFragment, seqan2::ModView<seqan2::FunctorComplement<seqan2::Dna5> > >, seqan2::ModReverse> TRevCompFrag;
     if ((dir == LEFT) && (strand == FORWARD))
     {
         _simulateSequence(seq, rng, prefix(frag, lenInRef), cigar);
     }
     else if ((dir == LEFT) && (strand == REVERSE))
     {
-        seqan::Prefix<TFragment>::Type holder(prefix(frag, lenInRef));
+        seqan2::Prefix<TFragment>::Type holder(prefix(frag, lenInRef));
         _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
     }
     else if ((dir == RIGHT) && (strand == FORWARD))
@@ -269,7 +269,7 @@ void IlluminaSequencingSimulator::simulateRead(TRead & seq, TQualities & quals, 
     }
     else  // ((dir == RIGHT) && (strand == REVERSE))
     {
-        seqan::Suffix<TFragment>::Type holder(suffix(frag, length(frag) - lenInRef));
+        seqan2::Suffix<TFragment>::Type holder(suffix(frag, length(frag) - lenInRef));
         _simulateSequence(seq, rng, TRevCompFrag(holder), cigar);
     }
 

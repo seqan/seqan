@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_POOL_MAPPER_H
 #define SEQAN_HEADER_POOL_MAPPER_H
 
-namespace seqan
+namespace seqan2
 {
 
     // external synchronous permutation mapping
@@ -298,13 +298,13 @@ namespace seqan
 
         inline void _initializeBuffer() {
             if (empty(buffer)) return;
-            arrayFill(seqan::begin(buffer, Standard()), seqan::end(buffer, Standard()), pool.undefinedValue);
+            arrayFill(seqan2::begin(buffer, Standard()), seqan2::end(buffer, Standard()), pool.undefinedValue);
         }
 
         inline bool begin() {
             buffer = handler.first();
             _initializeBuffer();
-            return seqan::begin(buffer) != NULL;
+            return seqan2::begin(buffer) != NULL;
         }
 
         inline void push(TValue const & Val_) {

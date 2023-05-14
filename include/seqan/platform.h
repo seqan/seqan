@@ -497,7 +497,7 @@ typedef int8_t __int8;     // nolint
     #endif
 #endif // SEQAN_BIG_ENDIAN
 
-namespace seqan
+namespace seqan2
 {
 
 template <typename T>
@@ -543,7 +543,7 @@ inline void enforceLittleEndian(double & in)
 }
 #endif // SEQAN_BIG_ENDIAN
 
-} // namespace seqan
+} // namespace seqan2
 
 // DEFAULT PAGESIZE FOR MMAP
 #ifndef SEQAN_DEFAULT_PAGESIZE

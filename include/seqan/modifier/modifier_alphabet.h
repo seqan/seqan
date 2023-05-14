@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_MODIFIER_ALPHABET_H
 #define SEQAN_HEADER_MODIFIER_ALPHABET_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -723,6 +723,6 @@ public:
 template <typename TSource>
 unsigned * AlphabetOrdTable_<TSource>::table = AlphabetOrdTable_<TSource>::initialize();
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif

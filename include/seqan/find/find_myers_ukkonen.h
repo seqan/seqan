@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MYERS_UKKONEN_H
 #define SEQAN_HEADER_FIND_MYERS_UKKONEN_H
 
-namespace seqan
+namespace seqan2
 {
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1654,7 +1654,7 @@ inline bool find (TFinder & finder,
     return find(finder, pattern, pattern, minScore); //static cast
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...
 

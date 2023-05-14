@@ -39,7 +39,7 @@
 #ifndef SEQAN_SEEDS_SEEDS_COMBINATION_H_
 #define SEQAN_SEEDS_SEEDS_COMBINATION_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ===========================================================================
 // Enums, Tags, Classes, Specializations
@@ -456,6 +456,6 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     _updateSeedsScoreChaos(seed, other, bestScore + remainingGap * scoreGap(scoringScheme));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_SEEDS_SEEDS_COMBINATION_UNORDERED_H_

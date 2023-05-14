@@ -38,7 +38,7 @@
 #ifndef INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
 #define INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -888,6 +888,6 @@ tagsToBamRecord(BamAlignmentRecord & record,
     record.tags = host(dict);
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_

@@ -37,7 +37,7 @@
 #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
 #define INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -117,6 +117,6 @@ void floydWarshallAlgorithm(TMatrix & distMatrix,
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_

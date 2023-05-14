@@ -45,7 +45,7 @@
 
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 
 SEQAN_DEFINE_TEST(testLocalAlign) {

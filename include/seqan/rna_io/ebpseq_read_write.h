@@ -42,7 +42,7 @@
 #include <string>
 #include <cstdint>
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -667,6 +667,6 @@ writeRecord(TTarget & target, RnaRecord const & record, RnaIOContext & context, 
     }
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_RNA_IO_EBPSEQ_READ_WRITE_H_

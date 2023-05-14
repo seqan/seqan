@@ -9,7 +9,7 @@
 #include <seqan/stream.h>      // For printing SeqAn Strings.
 #include <seqan/modifier.h>
 
-using namespace seqan;
+using namespace seqan2;
 int main(int argc, char const ** argv)
 {
 

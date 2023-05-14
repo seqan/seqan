@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -273,6 +273,6 @@ assign(Iter<TTargetContainer, PositionIterator> & target, TSource const & source
     setPosition(target, position(source));
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_

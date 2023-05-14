@@ -42,7 +42,7 @@
 
 #include "test_index_helpers.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Functions

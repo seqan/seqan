@@ -1,6 +1,6 @@
 #include <seqan/sequence.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 //![func_exchange1]
 void amino_exchangeFirstValues(String<AminoAcid> & str)

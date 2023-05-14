@@ -58,12 +58,12 @@
 #include "test_misc_bit_twiddling.h"
 
 using namespace std;
-using namespace seqan;
+using namespace seqan2;
 
 SEQAN_DEFINE_TEST(test_misc_terminal_get_terminal_size)
 {
-    using namespace seqan;
-    
+    using namespace seqan2;
+
     unsigned cols = std::numeric_limits<unsigned>::max(), rows = std::numeric_limits<unsigned>::max();
     bool succ = getTerminalSize(cols, rows);
 

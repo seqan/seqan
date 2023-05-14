@@ -4,7 +4,7 @@
 #include <seqan/misc/interval_tree.h>
 #include <seqan/parallel.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 //![definitions]
 // define used types

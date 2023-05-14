@@ -24,7 +24,7 @@
 #define SEQAN_BGZF_NUM_THREADS 16
 #endif
 
-namespace seqan {
+namespace seqan2 {
 
 const unsigned BGZF_MAX_BLOCK_SIZE = 64 * 1024;
 const unsigned BGZF_BLOCK_HEADER_LENGTH = 18;
@@ -926,6 +926,6 @@ typedef basic_bgzf_istream<char> bgzf_istream;
 // A typedef for basic_bgzf_istream<wchart>
 typedef basic_bgzf_istream<wchar_t> bgzf_wistream;
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // INCLUDE_SEQAN_STREAM_IOSTREAM_BGZF_H_

@@ -36,7 +36,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_UCSC_RECORD_H_
 #define SEQAN_INCLUDE_SEQAN_UCSC_RECORD_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -158,6 +158,6 @@ inline void clear(UcscRecord & record)
     record.annotationEndPos = -1;
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_

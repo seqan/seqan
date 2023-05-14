@@ -45,7 +45,7 @@
 // Simply instantiate class.
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_class)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     // The BamAlignmentRecord class is not too interesting, we simply
     // instantiate it and call clear once.
@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_class)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_multiple)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -71,7 +71,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_multiple)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_unmapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -84,7 +84,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_unmapped)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_next_unmapped)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -97,7 +97,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_next_unmapped)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_rc)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -110,7 +110,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_rc)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_next_rc)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -123,7 +123,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_next_rc)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_first)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -136,7 +136,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_first)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_last)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -149,7 +149,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_last)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_secondary)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -162,7 +162,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_secondary)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_qc_no_pass)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -175,7 +175,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_qc_no_pass)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_duplicate)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 
@@ -188,7 +188,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_duplicate)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_supplementary)
 {
-    using namespace seqan;
+    using namespace seqan2;
 
     BamAlignmentRecord record;
 

@@ -38,7 +38,7 @@
 #define SEQAN_HEADER_MODIFIER_SHAPE_H
 
 
-namespace seqan {
+namespace seqan2 {
 
 // NOTE(meiers): Only a few functions are documented, the rest should be derived
 

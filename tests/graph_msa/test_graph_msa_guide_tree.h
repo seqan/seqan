@@ -40,7 +40,7 @@
 
 void Test_GuideTree_NeighbourJoining()
 {
-    using namespace seqan;
+    using namespace seqan2;
 //____________________________________________________________________________
 // Neighbor Joining
 
@@ -83,7 +83,7 @@ void Test_GuideTree_NeighbourJoining()
 template<typename TTag>
 void
 Test_UpgmaGuideTree(int seed) {
-    using namespace seqan;
+    using namespace seqan2;
 
     typedef unsigned int TSize;
 
@@ -182,25 +182,25 @@ SEQAN_DEFINE_TEST(test_graph_msa_guide_tree_neighbour_joining)
 SEQAN_DEFINE_TEST(test_graph_msa_guide_tree_upgma_weight_avg)
 {
     for (int i = 0; i < 10; ++i)
-        Test_UpgmaGuideTree<seqan::UpgmaWeightAvg>(i);
+        Test_UpgmaGuideTree<seqan2::UpgmaWeightAvg>(i);
 }
 
 SEQAN_DEFINE_TEST(test_graph_msa_guide_tree_upgma_avg)
 {
     for (int i = 0; i < 10; ++i)
-        Test_UpgmaGuideTree<seqan::UpgmaAvg>(i);
+        Test_UpgmaGuideTree<seqan2::UpgmaAvg>(i);
 }
 
 SEQAN_DEFINE_TEST(test_graph_msa_guide_tree_upgma_min)
 {
     for (int i = 0; i < 10; ++i)
-        Test_UpgmaGuideTree<seqan::UpgmaMin>(i);
+        Test_UpgmaGuideTree<seqan2::UpgmaMin>(i);
 }
 
 SEQAN_DEFINE_TEST(test_graph_msa_guide_tree_upgma_max)
 {
     for (int i = 0; i < 10; ++i)
-        Test_UpgmaGuideTree<seqan::UpgmaMax>(i);
+        Test_UpgmaGuideTree<seqan2::UpgmaMax>(i);
 }
 
 #endif  // #ifndef TESTS_TEST_GRAPH_MSA_GUIDE_TREE_H_

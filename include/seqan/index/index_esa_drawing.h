@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_ESA_DRAWING_H
 #define SEQAN_HEADER_INDEX_ESA_DRAWING_H
 
-namespace seqan
+namespace seqan2
 {
 
 template <typename TFile, typename TText, typename TESASpec>
@@ -107,6 +107,6 @@ void writeRecords(
     write(iter, "}\n");
 }
 
-}// namespace seqan
+}// namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

@@ -39,7 +39,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_INTERFACE_H_
 #define SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_INTERFACE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TSimdVector>
 struct SimdMaskVectorImpl<TSimdVector, True>
@@ -387,6 +387,6 @@ shuffleVector(TSimdVector1 const & vector, TSimdVector2 const & indices)
                 SimdParams_<sizeof(TSimdVector2), sizeof(TSimdVector2) / sizeof(TValue2)>());
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif // SEQAN_INCLUDE_SEQAN_SIMD_SIMD_BASE_SEQAN_INTERFACE_H_

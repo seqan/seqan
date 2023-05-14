@@ -37,7 +37,7 @@
 #ifndef SEQAN_HEADER_SHAPE_BASE_H
 #define SEQAN_HEADER_SHAPE_BASE_H
 
-namespace seqan
+namespace seqan2
 {
 
     template <unsigned q>
@@ -307,7 +307,7 @@ namespace seqan
         TValue        leftChar;    // leftmost character
 //____________________________________________________________________________
 
-       
+
         Shape():
             hValue(0),
             XValue(0),
@@ -970,6 +970,6 @@ namespace seqan
     {
     }
 
-}    // namespace seqan
+}    // namespace seqan2
 
 #endif

@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
 #define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -573,7 +573,7 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  * @return TSize The number of gap characters at <tt>viewPos</tt>  (Metafunction: @link ContainerConcept#Size
  *               @endlink).
  *
- * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be 
+ * If the the direction tag is @link GapDirectionTags#RightOfViewPos @endlink the current view position will be
  * included in the count, and excluded when @link GapDirectionTags#LeftOfViewPos @endlink is selected.
  */
 
@@ -1235,6 +1235,6 @@ inline bool operator!=(Gaps<TSequence, TSpec> const & lhs,
 }
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_

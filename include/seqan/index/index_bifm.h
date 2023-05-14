@@ -37,7 +37,7 @@
 #ifndef INDEX_BIFM_H_
 #define INDEX_BIFM_H_
 
-namespace seqan {
+namespace seqan2 {
 
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_CONCEPT_IMPL((Index<TText, BidirectionalIndex<FMIndex<TSpec, TConfig> > >), (StringTrieConcept));

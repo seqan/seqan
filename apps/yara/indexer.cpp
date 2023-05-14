@@ -61,7 +61,7 @@
 #include "misc_options.h"
 #include "index_fm.h"
 
-using namespace seqan;
+using namespace seqan2;
 
 // ============================================================================
 // Classes

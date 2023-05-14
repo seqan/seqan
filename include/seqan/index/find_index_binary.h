@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_INDEX_FIND_BINARY_H
 #define SEQAN_HEADER_INDEX_FIND_BINARY_H
 
-namespace seqan
+namespace seqan2
 {
     //////////////////////////////////////////////////////////////////////////////
     // different layouts of a suffix array or lcp table

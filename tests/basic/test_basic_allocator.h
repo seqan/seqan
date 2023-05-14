@@ -42,7 +42,7 @@
 #include <map>
 
 // TODO(holtgrew): Get rid fo using namespace
-using namespace seqan;
+using namespace seqan2;
 
 // ==========================================================================
 // Helper Code

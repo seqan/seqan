@@ -39,7 +39,7 @@
 #ifndef SEQAN_HEADER_GRAPH_STACK_H
 #define SEQAN_HEADER_GRAPH_STACK_H
 
-namespace seqan {
+namespace seqan2 {
 
 // ============================================================================
 // Forwards
@@ -540,6 +540,6 @@ capacity(String<TValue, Block<SPACE> > const & me)
         return 0;
 }
 
-} // namespace seqan
+} // namespace seqan2
 
 #endif //#ifndef SEQAN_HEADER_...

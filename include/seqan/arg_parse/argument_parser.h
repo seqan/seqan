@@ -50,7 +50,7 @@
 #include <map>
 #include <future>
 
-namespace seqan {
+namespace seqan2 {
 
 // ==========================================================================
 // Forwards
@@ -261,7 +261,7 @@ public:
         if (appVersionCheckFuture.valid())
             appVersionCheckFuture.wait_for(std::chrono::seconds(3));
     }
-    
+
 };
 
 // ==========================================================================
@@ -1187,6 +1187,6 @@ getFileExtensions(T const formatTag)
 }
 
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif // SEQAN_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_

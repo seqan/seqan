@@ -36,7 +36,7 @@
 #define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_
 
 
-namespace seqan {
+namespace seqan2 {
 
 // --------------------------------------------------------------------------
 // Dna
@@ -82,6 +82,6 @@ _translateCharToDna5(unsigned char c)
     };
 }
 
-}  // namespace seqan
+}  // namespace seqan2
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_

@@ -27,7 +27,7 @@
 
 #include <seqan/find.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // Set the end position of the pattern in the finder.
 template <typename THaystack, typename TNeedle, typename TPosition>

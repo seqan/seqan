@@ -3,7 +3,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-using namespace seqan;
+using namespace seqan2;
 
 // The following few lines are the actual solution to the assignment.
 
