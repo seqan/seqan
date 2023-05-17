@@ -80,6 +80,10 @@
 #
 # ============================================================================
 
+if (TARGET seqan::seqan2)
+  return ()
+endif ()
+
 include(FindPackageMessage)
 include(CheckIncludeFileCXX)
 include(CheckCXXSourceCompiles)
@@ -93,26 +97,13 @@ if (POLICY CMP0054)  # Disables auto-dereferencing of variables in quoted statem
 endif()
 
 # ----------------------------------------------------------------------------
-# Define Constants.
+# Opt-out options for finding dependencies.
 # ----------------------------------------------------------------------------
 
-set(_SEQAN_DEFAULT_LIBRARIES ZLIB OpenMP)
-set(_SEQAN_ALL_LIBRARIES     ZLIB BZip2 OpenMP)
-
-# ----------------------------------------------------------------------------
-# Set variables SEQAN_FIND_* to their default unless they have been set.
-# ----------------------------------------------------------------------------
-
-# SEQAN_FIND_DEPENDENCIES
-if (SEQAN_FIND_DEPENDENCIES STREQUAL "DEFAULT")
-  set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_DEFAULT_LIBRARIES})
-elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "ALL")
-  set(SEQAN_FIND_DEPENDENCIES ${_SEQAN_ALL_LIBRARIES})
-elseif (SEQAN_FIND_DEPENDENCIES STREQUAL "NONE")
-  set(SEQAN_FIND_DEPENDENCIES)
-endif ()
-
-# SEQAN_FIND_DEPENDENCIES IS DEPRECATED, just use find_package!
+# If you want to force-require these, just do find_package (zlib REQUIRED), etc. before find_package (seqan)
+option (SEQAN_NO_ZLIB "Don't use ZLIB, even if present." OFF)
+option (SEQAN_NO_BZIP2 "Don't use BZip2, even if present." OFF)
+option (SEQAN_NO_OPENMP "Don't use OpenMP, even if present." OFF)
 
 # ----------------------------------------------------------------------------
 # Deactivate verbosity if package detection is quite
@@ -276,7 +267,7 @@ else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When NOT using the SeqAn build system then we only look for one directory
   # with subdirectory seqan and thus only one library.
   find_path(_SEQAN_BASEDIR "seqan/version.h"
-            PATHS ${SEQAN_INCLUDE_PATH} ENV SEQAN_INCLUDE_PATH
+            PATHS ${SEQAN_INCLUDE_PATH} "${CMAKE_CURRENT_LIST_DIR}/../../include" ENV SEQAN_INCLUDE_PATH
             NO_DEFAULT_PATH)
 
   if (NOT _SEQAN_BASEDIR)
@@ -329,11 +320,8 @@ endif (_SEQAN_HAVE_EXECINFO)
 
 set (SEQAN_HAS_ZLIB FALSE)
 
-# should SeqAn search for dependency?
-list(FIND SEQAN_FIND_DEPENDENCIES "ZLIB" _SEQAN_FIND_ZLIB)
-mark_as_advanced(_SEQAN_FIND_ZLIB)
-if (NOT _SEQAN_FIND_ZLIB EQUAL -1)
-    find_package(ZLIB QUIET)
+if (NOT SEQAN_NO_ZLIB)
+    find_package (ZLIB QUIET)
 endif ()
 
 if (ZLIB_FOUND)
@@ -347,20 +335,16 @@ endif ()
 
 set (SEQAN_HAS_BZIP2 FALSE)
 
-# should SeqAn search for dependency?
-list(FIND SEQAN_FIND_DEPENDENCIES "BZip2" _SEQAN_FIND_BZIP2)
-mark_as_advanced(_SEQAN_FIND_BZIP2)
-if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
-    find_package(BZip2 QUIET)
+if (NOT SEQAN_NO_BZIP2)
+    find_package (BZip2 QUIET)
 endif ()
 
 if (NOT ZLIB_FOUND AND BZIP2_FOUND)
     # NOTE(marehr): iostream_bzip2 uses the type `uInt`, which is defined by
     # `zlib`. Therefore, `bzip2` will cause a ton of errors without `zlib`.
     message(AUTHOR_WARNING "Disabling BZip2 [which was successfully found], "
-            "because ZLIB was not found. BZip2 is depending on ZLIB.")
+            "because ZLIB was not found. SeqAn depends on ZLIB to use BZip2.")
     unset(BZIP2_FOUND)
-    unset(SEQAN_HAS_BZIP2)
 endif ()
 
 if (BZIP2_FOUND)
@@ -374,11 +358,8 @@ endif ()
 
 set (SEQAN_HAS_OPENMP FALSE)
 
-# should SeqAn search for dependency?
-list(FIND SEQAN_FIND_DEPENDENCIES "OpenMP" _SEQAN_FIND_OPENMP)
-mark_as_advanced(_SEQAN_FIND_OPENMP)
-if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
-    find_package(OpenMP QUIET)
+if (NOT SEQAN_NO_OPENMP)
+    find_package (OpenMP QUIET)
 endif ()
 
 if (OPENMP_FOUND)
@@ -392,8 +373,8 @@ if (OPENMP_FOUND)
         set (OPENMP_FOUND FALSE)
     else ()
         set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
-        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
-        set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
+        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_CXX_LIBRARIES})
+        set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_CXX_INCLUDE_DIRS})
         set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
         set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif ()
@@ -475,11 +456,33 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
 endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 # ----------------------------------------------------------------------------
-# Print Variables
+# Finish find_package call
 # ----------------------------------------------------------------------------
 
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (SeqAn FOUND_VAR SEQAN_FOUND REQUIRED_VARS SEQAN_INCLUDE_PATH VERSION_VAR SEQAN_VERSION_STRING)
+string (STRIP ${SEQAN_CXX_FLAGS} SEQAN_CXX_FLAGS) # SEQAN_CXX_FLAGS may have a leading whitespace
+
+# ----------------------------------------------------------------------------
+# Export targets
+# ----------------------------------------------------------------------------
+
+separate_arguments (SEQAN_CXX_FLAGS_LIST UNIX_COMMAND "${SEQAN_CXX_FLAGS}")
+
+add_library (seqan_seqan2 INTERFACE)
+target_compile_definitions (seqan_seqan2 INTERFACE ${SEQAN_DEFINITIONS})
+target_compile_options (seqan_seqan2 INTERFACE ${SEQAN_CXX_FLAGS_LIST})
+target_link_libraries (seqan_seqan2 INTERFACE "${SEQAN_LIBRARIES}")
+# include seqan/include/ as -I, because seqan should never produce warnings.
+target_include_directories (seqan_seqan2 INTERFACE "${SEQAN_INCLUDE_DIRS_MAIN}")
+# include everything except seqan/include/ as -isystem, i.e.
+# a system header which suppresses warnings of external libraries.
+target_include_directories (seqan_seqan2 SYSTEM INTERFACE "${SEQAN_INCLUDE_DIRS_DEPS}")
+add_library (seqan::seqan2 ALIAS seqan_seqan2)
+
+# ----------------------------------------------------------------------------
+# Print Variables
+# ----------------------------------------------------------------------------
 
 if (SEQAN_FIND_DEBUG)
   message("Result for ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
