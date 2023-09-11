@@ -26,7 +26,7 @@ jobs:
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout SeqAn2
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get cached python environment
         uses: actions/cache@v3
