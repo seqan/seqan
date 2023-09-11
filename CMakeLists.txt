@@ -6,14 +6,14 @@
 # Main CMakeLists.txt file.
 # ===========================================================================
 
-project (seqan CXX)
-
 # ===========================================================================
 # We require CMake 3.12. Since it is available in the currently stable
 # Debian, it should be available everywhere else, too.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 3.12)
+
+project (seqan CXX)
 
 # ===========================================================================
 # Warn People About the Perils Of In-Source Builds
