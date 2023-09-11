@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the rna_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_rna_io CXX)
 message (STATUS "Configuring tests/rna_io")
 

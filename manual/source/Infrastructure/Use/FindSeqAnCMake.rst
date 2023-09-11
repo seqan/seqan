@@ -35,7 +35,7 @@ Create a folder somewhere, e.g. ``~/devel/my_project`` and in it the following t
 .. code-block:: cmake
 
    # Minimum cmake version
-   cmake_minimum_required (VERSION 3.0.0)
+   cmake_minimum_required (VERSION 3.12)
 
    # Name of project and that it is C++ only.
    project (my_project CXX)
@@ -77,29 +77,29 @@ First you should create a build directory, i.e. for cmake-builds everything happ
    # mkdir -p ~/devel/my_project-build/release
    # cd ~/devel/my_project-build/release
 
-Cmake supports two different modes to load settings from an external project: The **module** and the **config** mode. 
+Cmake supports two different modes to load settings from an external project: The **module** and the **config** mode.
 Please read the `cmake documentation <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_ to learn more about this feature.
 
 Install SeqAn from package maintainer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The recommended way for SeqAn 2.3 or newer is to use the config mode. 
+The recommended way for SeqAn 2.3 or newer is to use the config mode.
 If you installed/updated SeqAn from one of the downstream package maintainer listed in :ref:`Getting Started with SeqAn <infra-use-install>`, then a file called ``seqan-config.cmake`` was installed in a system path that is automatically searched by the cmake system (see the cmake documentation for `find_package <https://cmake.org/cmake/help/v3.0/command/find_package.html>`_).
 If everything was done with default settings, than you can simply build your project like:
 
 .. code-block:: console
-   
+
    # cmake ../../my_project
 
 Install SeqAn into user defined prefix or clone from GitHub
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In case you obtained SeqAn from a git clone, or installed SeqAn into a user defined location, you need to specify the install location by setting the ``CMAKE_PREFIX_PATH`` in your cmake call.
-In addition you also have to specify the ``SEQAN_INCLUDE_PATH`` variable to find the SeqAn headers. 
+In addition you also have to specify the ``SEQAN_INCLUDE_PATH`` variable to find the SeqAn headers.
 Assume you have cloned SeqAn into ``~/devel/seqan``, then your setup could look as the following:
 
 .. code-block:: console
-   
+
    # cmake ../../my_project \
       -DCMAKE_PREFIX_PATH="$HOME/devel/seqan/util/cmake" \
       -DSEQAN_INCLUDE_PATH="$HOME/devel/seqan/include"
@@ -112,7 +112,7 @@ To allow backwards compatibility we added a redirect from the ``FindSeqAn.cmake`
 In this case configuing your project with the old approach using the ``CMAKE_MODULE_PATH`` variable, will still work:
 
 .. code-block:: console
-   
+
    # cmake ../../my_project \
       -DCMAKE_MODULE_PATH="$HOME/devel/seqan/util/cmake" \
       -DSEQAN_INCLUDE_PATH="$HOME/devel/seqan/include"

@@ -6,7 +6,7 @@
 # CMakeLists.txt file for seqan2::T-Coffee.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_seqan_tcoffee CXX)
 message (STATUS "Configuring apps/seqan_tcoffee")
 

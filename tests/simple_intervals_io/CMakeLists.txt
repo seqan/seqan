@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the simple_intervals_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_simple_intervals_io CXX)
 message (STATUS "Configuring tests/simple_intervals_io")
 

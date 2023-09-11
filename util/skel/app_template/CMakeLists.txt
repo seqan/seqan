@@ -6,7 +6,7 @@
 # CMakeLists.txt file for %(NAME)s.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_%(CMAKE_PROJECT_NAME)s CXX)
 message (STATUS "Configuring %(CMAKE_PROJECT_PATH)s")
 

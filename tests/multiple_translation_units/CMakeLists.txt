@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the multiple_translation_units module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_multiple_translation_units CXX)
 message (STATUS "Configuring tests/multiple_translation_units")
 

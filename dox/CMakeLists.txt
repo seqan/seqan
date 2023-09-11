@@ -6,7 +6,7 @@
 # CMakeLists.txt file for dox.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_dox CXX)
 
 find_package (Python3)

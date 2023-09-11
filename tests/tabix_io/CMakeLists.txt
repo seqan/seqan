@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the tabix_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_tabix_io CXX)
 message (STATUS "Configuring tests/tabix_io")
 

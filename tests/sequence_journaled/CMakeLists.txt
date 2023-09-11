@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the sequence_journaled module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_sequence_journaled CXX)
 message (STATUS "Configuring tests/sequence_journaled")
 

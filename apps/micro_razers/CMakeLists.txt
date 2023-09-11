@@ -6,7 +6,7 @@
 # CMakeLists.txt file for MicroRazerS.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_micro_razers CXX)
 message (STATUS "Configuring apps/micro_razers")
 

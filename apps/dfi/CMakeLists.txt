@@ -6,7 +6,7 @@
 # CMakeLists.txt file for DFI.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_dfi CXX)
 message (STATUS "Configuring apps/dfi")
 

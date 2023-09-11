@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the pipe module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_pipe CXX)
 message (STATUS "Configuring tests/pipe")
 

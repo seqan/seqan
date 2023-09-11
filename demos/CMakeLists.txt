@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the core demos.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_demos CXX)
 
 # Recursively register all demos in core and prefix their target/binary names
