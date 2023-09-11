@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the map module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_map CXX)
 message (STATUS "Configuring tests/map")
 

@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the graph_align module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_graph_align CXX)
 message (STATUS "Configuring tests/graph_align")
 

@@ -9,11 +9,11 @@
 project (seqan CXX)
 
 # ===========================================================================
-# We require CMake 3.0.0. Since it is available in the currently stable
+# We require CMake 3.12. Since it is available in the currently stable
 # Debian, it should be available everywhere else, too.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 
 # ===========================================================================
 # Warn People About the Perils Of In-Source Builds
@@ -86,7 +86,7 @@ option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 # ===========================================================================
 
 option (SEQAN_VERSION_CHECK_OPT_IN "Enable version check but activate as opt-in." OFF)
-option (SEQAN_DISABLE_VERSION_CHECK "Disable version check." OFF) 
+option (SEQAN_DISABLE_VERSION_CHECK "Disable version check." OFF)
 
 # ===========================================================================
 # Setup Modules and Find Packages.

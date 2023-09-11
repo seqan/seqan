@@ -6,7 +6,7 @@
 # CMakeLists.txt file for %(CMAKE_PROJECT_PATH)s.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_%(CMAKE_PROJECT_NAME)s CXX)
 
 # Add the paths %(CMAKE_PROJECT_PATH)s/include and %(CMAKE_PROJECT_PATH)s/include to the paths that CMake

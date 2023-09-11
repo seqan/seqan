@@ -6,7 +6,7 @@
 # CMakeLists.txt file for mason2.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_mason2 CXX)
 message (STATUS "Configuring apps/mason2")
 

@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the find module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_find CXX)
 message (STATUS "Configuring tests/find")
 

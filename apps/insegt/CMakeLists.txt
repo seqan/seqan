@@ -6,7 +6,7 @@
 # CMakeLists.txt file for insegt.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_insegt CXX)
 message (STATUS "Configuring apps/insegt")
 

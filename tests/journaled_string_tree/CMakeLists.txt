@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the journaled_string_tree module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_journaled_string_tree CXX)
 message (STATUS "Configuring tests/journaled_string_tree")
 

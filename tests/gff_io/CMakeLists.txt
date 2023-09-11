@@ -6,7 +6,7 @@
 # CMakeLists.txt file for the gff_io module tests.
 # ===========================================================================
 
-cmake_minimum_required (VERSION 3.0.0)
+cmake_minimum_required (VERSION 3.12)
 project (seqan_tests_gff_io CXX)
 message (STATUS "Configuring tests/gff_io")
 
