@@ -204,25 +204,9 @@ macro (seqan_build_system_init)
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_CRT_SECURE_NO_WARNINGS)
     endif()
 
-    # Set Warnings
-    # NOTE(marehr): COMPILER_CLANG on windows uses the same flags as on linux,
-    # whereas COMPILER_WINTEL uses on windows the same flags as COMPILER_MSVC.
     if (COMPILER_MSVC)
-        # TODO(h-2): raise this to W4
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W2")
-    elseif (COMPILER_WINTEL)
-        # TODO(h-2): raise this to W4
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /W3")
-    else()
-        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -W -Wall -pedantic")
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
-
-        # disable some warnings on ICC
-        if (COMPILER_LINTEL)
-            # warning #3373: nonstandard use of "auto" to both deduce the type
-            # from an initializer and to announce a trailing return type
-            set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -wd3373,2102")
-        endif ()
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /Zc:__cplusplus")
     endif ()
 
     if (NOT SEQAN_BUILD_SYSTEM)
@@ -428,7 +412,8 @@ macro (seqan_add_ctd_test APP_NAME)
         # Add a custom command to create the ctd once the binary has been built.
         add_custom_command(TARGET ${APP_NAME}
                            POST_BUILD
-                           COMMAND ${SEQAN_BIN_DIR}/${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd")
+                           COMMAND ${APP_NAME} --write-ctd "${CTD_SCHEMA_ROOT}/${APP_NAME}.ctd"
+                           WORKING_DIRECTORY "${SEQAN_BIN_DIR}")
 
         # Add the ctd test.
         add_test (NAME ctd_test_${APP_NAME}

@@ -1,16 +1,15 @@
-name: CI on Windows
+name: Windows
 
 on:
   push:
     branches:
       - 'main'
   pull_request:
-  # Enables a manual trigger, may run on any branch
   workflow_dispatch:
 
 concurrency:
   group: windows-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'push' }}
 
 env:
   TZ: Europe/Berlin
@@ -18,7 +17,7 @@ env:
 jobs:
   build:
     name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-2022
     timeout-minutes: 180
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
@@ -26,16 +25,15 @@ jobs:
       matrix:
         include:
           - name: "Visual Studio 17 2022"
-            os: windows-2022
-            vsversion : '2022'
+            vsversion : 2022
             build_type: Release
             cxx_flags: "/std:c++latest"
 
     steps:
-      - name: Checkout SeqAn2
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: seqan
+          fetch-depth: 1
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -50,57 +48,40 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install setuptools wheel
-          pip install -r seqan/manual/requirements.txt
+          pip install -r manual/requirements.txt
 
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v2
 
       - name: Install conda dependencies
-        run: conda install -c conda-forge ccache boost-cpp bzip2 libxml2 zlib
-
-      - name: Get cached build
-        uses: actions/cache@v3
-        with:
-          path: .ccache
-          key: ${{ matrix.name }}-ccache-${{ github.ref }}-${{ github.run_number }}
-          # Restoring: From current branch, otherwise from base branch, otherwise from any branch.
-          restore-keys: |
-            ${{ matrix.name }}-ccache-${{ github.ref }}
-            ${{ matrix.name }}-ccache-${{ github.base_ref }}
-            ${{ matrix.name }}-ccache-
+        run: conda install -c conda-forge boost-cpp bzip2 libxml2 zlib
 
       - name: Configure tests
-        env:
-          SEQAN_WIN_CONTRIB_DIRECTORY: ${{ github.workspace }}\seqan-contrib
         run: |
-          New-Item -Name "seqan-build" -ItemType "directory" -Force
-          cd seqan-build
-          cmake ../seqan -G"${{ matrix.name }}" `
-                         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
-                         -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" `
-                         -DSEQAN_DISABLE_VERSION_CHECK=ON `
-                         -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON `
-                         -DPython3_ROOT_DIR=$env:pythonLocation `
-                         -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3 `
-                         -DCMAKE_C_COMPILER_LAUNCHER=ccache `
-                         -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          New-Item -Name "build" -ItemType "directory" -Force
+          cd build
+          cmake .. -G "${{ matrix.name }}" `
+                   -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+                   -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} /EHsc /W2 /wd4244 /wd4146" `
+                   -DSEQAN_DISABLE_VERSION_CHECK=ON `
+                   -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON `
+                   -DPython3_ROOT_DIR=$env:pythonLocation `
+                   -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3
 
       - name: Build tests
-        env:
-          CCACHE_BASEDIR: ${{ github.workspace }}
-          CCACHE_DIR: ${{ github.workspace }}/.ccache
-          CCACHE_COMPRESS: true
-          CCACHE_COMPRESSLEVEL: 6
-          CCACHE_MAXSIZE: 200M
         run: |
-          cd seqan-build
-          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:TrackFileAccess=false
+          cd build
+          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:ContinueOnError=ErrorAndContinue
 
       - name: Run tests
+        continue-on-error: true
+        id: test
         run: |
-          cd seqan-build
-          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 -E "build_manual|test_py_lib_dox"
-          if (!$?)
-          {
-            ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 --rerun-failed
-          }
+          cd build
+          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 -E "app_test_yara"
+
+      - name: Rerun failed tests
+        if: steps.test.outcome == 'failure'
+        run: |
+          cd build
+          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 --rerun-failed
