@@ -3,7 +3,7 @@
 
 using namespace seqan2;
 
-int main(int argc, char const ** argv)
+int main(int, char const **)
 {
     // create a (generic) CyclicShape
     typedef CyclicShape<GenericShape> TShape;

@@ -3,7 +3,7 @@
 
 using namespace seqan2;
 
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     CharString bamFileName = getAbsolutePath("demos/tutorial/sam_and_bam_io/example.bam");
     CharString baiFileName = getAbsolutePath("demos/tutorial/sam_and_bam_io/example.bam.bai");

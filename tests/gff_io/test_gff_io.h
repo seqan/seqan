@@ -113,14 +113,12 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
     String<char> compare;
 
     String<char> temp = "A";
-    unsigned count = 0;
     while (!atEnd(iter))
     {
         readRecord(record, buffer, iter);
         record.ref = temp;
         writeRecord(compare, record, Gff());
         appendValue(temp, 'A');
-        ++count;
     }
 
     String<char> goldPath = getAbsolutePath("/tests/gff_io/example_context.gff");
@@ -329,13 +327,11 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
     String<char> outString;
 
     String<char> temp = "A";
-    unsigned count = 0;
     while (!atEnd(iter))
     {
         readRecord(record, buffer, iter);
         record.ref = temp;
         writeRecord(outString, record, Gtf());
-        ++count;
         appendValue(temp, 'A');
     }
 

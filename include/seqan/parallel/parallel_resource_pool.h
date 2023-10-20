@@ -66,11 +66,8 @@ struct ResourcePool
     {
         unlockWriting(recycled);
         TValue *ptr = NULL;
-        unsigned count = 0;
         while (popBack(ptr, recycled))
         {
-            if (ptr != NULL)
-                count++;
             delete ptr;
         }
     }

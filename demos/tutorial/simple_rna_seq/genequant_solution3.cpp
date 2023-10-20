@@ -89,7 +89,7 @@ void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
 //![solution]
 
 //![main]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     TStore store;
     String<String<TInterval> > intervals;

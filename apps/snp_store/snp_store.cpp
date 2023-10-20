@@ -779,7 +779,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     /////////////////////////////////////////////////////////////////////////////
     // helper variables
     Pair<int,int> zeroPair(0,0);
-    int sumwindows = 0;
 
     bool positionStatsOnly = (options.outputSNP == "" && options.outputPosition != "");
     TPosIterator inspectPosIt, inspectPosItEnd;
@@ -831,7 +830,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
                 clear(tmpReads); clear(tmpRs); clear(tmpMatches); clear(tmpQualities);
                 clear(tmpReadClips); clear(tmpReadCounts); clear(tmpReadCigars);
                 currentWindowBegin = currentWindowEnd;
-                ++sumwindows;
                 continue;
             }
             if(options._debugLevel > 0)
@@ -1007,7 +1005,6 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
                 }
 //            }
             currentWindowBegin = currentWindowEnd;
-            ++sumwindows;
         }
 
     }

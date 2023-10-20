@@ -119,7 +119,7 @@ reAlign4(TReadGaps &readGaps,
     itC = begin(contigGaps);
     unsigned gaps = 0;
     unsigned mismatches = 0;
-    unsigned matches = 0;
+    [[maybe_unused]] unsigned matches = 0;
 
     if (false)
     {
@@ -1046,10 +1046,8 @@ postProcessMain(TOptions &options, TModel const &)
     //TSetContigGapAnchors setContigGapAnchors;   // TODO only store anchorGaps and assign contig seq later for output
     TSetContigGaps setContigGaps;
 
-    int helper = 0;
     while (!atEnd(bamFileIn))
     {
-        ++helper;
         readRecord(record, bamFileIn);
         // TODO generalize
         if ((record.qName[length(record.qName)-2] == '/' && (!empty(currReadName) && prefix(record.qName, length(record.qName)-2) != prefix(currReadName, length(currReadName)-2)  )) ||

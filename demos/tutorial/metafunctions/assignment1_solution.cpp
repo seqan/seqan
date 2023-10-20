@@ -5,7 +5,7 @@
 using namespace seqan2;
 
 template <typename T>
-void checkContainerForDna(T & container)
+void checkContainerForDna(T & /* container */)
 {
     // Type Metafunction Value<>
     typedef typename Value<T>::Type TAlphType;

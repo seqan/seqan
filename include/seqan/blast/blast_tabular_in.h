@@ -266,7 +266,6 @@ _readCommentLinesImpl(BlastRecord<TSpecs...> & r,
     int queryLinePresent = 0;
     int dbLinePresent = 0;
     int fieldsLinePresent = 0;
-    int hitsLinePresent = 0;
 
     do
     {
@@ -383,7 +382,6 @@ _readCommentLinesImpl(BlastRecord<TSpecs...> & r,
                         strSplit(context.fieldsAsStrings, context._stringBuffer, EqualsChar<'\x7F'>(), true);
                     }
 
-                    ++hitsLinePresent;
 //                     break; // comments are finished
                 }
                 else

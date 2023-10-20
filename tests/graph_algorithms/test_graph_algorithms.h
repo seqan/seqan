@@ -53,7 +53,6 @@ _createRandomGraph(TGraph& g)
     std::uniform_int_distribution<int> stPdf(0, nVertices - 1);
     for(unsigned int i=0; i<nVertices; ++i) addVertex(g);
     unsigned int maxEdges = edgePdf(rng) + 2 * nVertices;
-    unsigned int nEdges = 0;
     for(unsigned int i=0; i<maxEdges; ++i) {
         unsigned int source = 0;
         unsigned int target = 0;
@@ -62,7 +61,6 @@ _createRandomGraph(TGraph& g)
             target = stPdf(rng);
         } while (source == target);
         if (findEdge(g, source, target) == 0) {
-            ++nEdges;
             addEdge(g, source, target);
         }
     }

@@ -52,6 +52,7 @@ public:
     EnableIfExample(T const & n, SEQAN_CTOR_ENABLE_IF(Is<IntegerConcept<T> >)) :
         num(0)
     {
+        ignoreUnusedVariableWarning(n);
         ignoreUnusedVariableWarning(dummy);
     }
 
@@ -62,6 +63,7 @@ public:
     EnableIfExample(T const & n, SEQAN_CTOR_DISABLE_IF(Is<IntegerConcept<T> >)) :
         num(0)
     {
+        ignoreUnusedVariableWarning(n);
         ignoreUnusedVariableWarning(dummy);
     }
 

@@ -122,7 +122,7 @@ read(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
     // The matrix is read line-wise, we read the score for a (source, dest) replacement.
 
     CharString buffer;
-    for (unsigned row = 0; !atEnd(reader); ++row)
+    while (!atEnd(reader))
     {
         skipUntil(reader, NotFunctor<IsBlank>());
 

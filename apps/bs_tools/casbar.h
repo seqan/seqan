@@ -1420,8 +1420,8 @@ void doSnpAndMethCalling(
         }
 
         bool observedAtLeastOneMut = false;
-        int numIndelsObservedF = 0;  // if refGap then this counts the number of insertions on forward
-        int numIndelsObservedR = 0;  // if refGap then this counts the number of insertions on reverse
+        [[maybe_unused]] int numIndelsObservedF = 0;  // if refGap then this counts the number of insertions on forward
+        [[maybe_unused]] int numIndelsObservedR = 0;  // if refGap then this counts the number of insertions on reverse
                         // else it counts the number of deletions
 
         unsigned positionCoverage = 0;   // how many reads actually span the position?

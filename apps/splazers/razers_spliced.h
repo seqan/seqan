@@ -362,10 +362,8 @@ void compactSplicedMatches(TMatches &matches,
 	// sort
 //	::std::sort(it, itEnd, LessSplicedErrors<TMatch>());
 	::std::sort(it, itEnd, LessSplicedScore<TMatch>());
-	int counter = 0;
 	for (; it != itEnd; ++it)
 	{
-		++counter;
 		if ((*it).orientation == '-') { ++it; continue; }
 		if (readNo == (*it).rseqNo)
 		{
@@ -458,10 +456,8 @@ void compactAndCountSplicedMatches(TMatches &matches,
 	// sort
 	::std::sort(it, itEnd, LessSplicedScoreGPos<TMatch>());
 //	::std::sort(it, itEnd, LessSplicedErrorsGPos<TMatch>());
-	int counter = 0;
 	for (; it != itEnd; ++it)
 	{
-		++counter;
 		if ((*it).orientation == '-') { ++it; continue; }
 		if (readNo == (*it).rseqNo) // current match is either multi or suboptimal
 		{
@@ -1989,8 +1985,6 @@ findBestSplitPosition(TLongerSegment &longSeg,
 	// int bestLErrors = 0;
 	// int bestRErrors = 0;
 	int bestPos = shortPos;
-	int errorsL = 0;
-	int errorsR = 0;
 	int errorsPosL = 0;
 	int errorsPosR = 0;
 
@@ -2018,13 +2012,11 @@ findBestSplitPosition(TLongerSegment &longSeg,
 	{
 		if((options.compMask[ordValue(shortSeg[shortPos])] & options.compMask[ordValue(longSeg[leftLongPos])]) == 0)
 		{
-			++errorsL;
 			++errorsPosL;
 		}
 		if((options.compMask[ordValue(shortSeg[shortPos])] & options.compMask[ordValue(longSeg[rightLongPos])]) == 0)
 		{
 			--errorsPosR;
-			++errorsR;
 		}
 		if(errorsPosL+errorsPosR < bestSumErrors
 			|| (orientation == 'R' && errorsPosL+errorsPosR == bestSumErrors))
@@ -2521,7 +2513,6 @@ void mapSplicedReads(
 		TDequeueIterator it;
 		int64_t lastPositive = (int64_t)-1;
 
-		TSize counter = 0;
 		bool noMatchRight = false;
 		bool notYetVerifiedRight = true;
 		lastLeftMatch.i1 = 0;
@@ -2710,7 +2701,6 @@ void mapSplicedReads(
 						totalTimeCombine += (t2 - t1) ;
 						++options.TP;
 					}
-					++counter;
 
 					//assign an alignment score
 					//mRtmp.alignmentScore = (options.matchScore * (sumLength - sumDist)) + (options.mismatchScore * sumDist);

@@ -861,20 +861,17 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
             j = i;
         }
     }
-    int counterN = 0;
     TPosition startSplitSequence = position(itSeq);  // The position of possible starts of a sequence after Ns is stored to split the sequence.
     for (; itSeq <= (end(sequence) - 1); ++itSeq)
     {
         if (value(itSeq) == 'N')
         {
-            counterN = 1;
             if (((position(itSeq)) > startSplitSequence))
             {
                 appendValue(dnaStringSet, infix(sequence, startSplitSequence, position(itSeq)));
             }
             startSplitSequence = (position(itSeq) + 1);  // Position after N, possible start
         }
-        counterN--;
     }
     // Create the stringSet, the stringSet can be used to create a Markov model
     if (position(itSeq) > startSplitSequence)
@@ -940,18 +937,15 @@ cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)
             j = i;
         }
     }
-    int counterN = 0;
     TPosition startSplitSequence = position(itSeq);  // The position of possible starts of a sequence after Ns is stored to split the sequence.
     for (; itSeq <= (end(sequence) - 1); ++itSeq)
     {
         if (value(itSeq) == 'N')
         {
-            counterN = 1;
             if (((position(itSeq)) > startSplitSequence))
                 sequenceCut += infix(sequence, startSplitSequence, position(itSeq));
             startSplitSequence = (position(itSeq) + 1);  // Position after N, possible start
         }
-        counterN--;
     }
     // Create the sequence with any N cut out.
     if (position(itSeq) > startSplitSequence)

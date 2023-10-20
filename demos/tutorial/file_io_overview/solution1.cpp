@@ -2,7 +2,7 @@
 
 using namespace seqan2;
 
-int main(int argc, char const ** argv)
+int main(int, char const **)
 {
     CharString bamFileInName = getAbsolutePath("demos/tutorial/file_io_overview/example.bam");
     CharString samFileOutName = getAbsolutePath("demos/tutorial/file_io_overview/example.sam");
