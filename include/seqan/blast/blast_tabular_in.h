@@ -337,13 +337,14 @@ _readCommentLinesImpl(BlastRecord<TSpecs...> & r,
                         if (context.fieldsAsStrings[j] ==
                             BlastMatchField<>::columnLabels[i])
                         {
-                            context.fields[j] =
-                                static_cast<BlastMatchField<>::Enum>(i);
+                            auto column_as_enum = static_cast<BlastMatchField<>::Enum>(i);
 
-                            if ((j >= length(BlastMatchField<>::defaults)) &&
-                                (static_cast<BlastMatchField<>::Enum>(i) !=
-                                BlastMatchField<>::defaults[j]))
+                            context.fields[j] = column_as_enum;
+
+                            constexpr size_t num_default{BlastMatchField<>::defaults.size()};
+                            if ((j >= num_default) || (column_as_enum != BlastMatchField<>::defaults[j]))
                                 defaults = false;
+
                             break;
                         }
                     }
