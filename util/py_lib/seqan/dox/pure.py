@@ -64,7 +64,7 @@ class Config(object):
 
     def load(self, file_name):
         """Load configuration from INI file."""
-        config = configparser.SafeConfigParser()
+        config = configparser.ConfigParser()
         config.read(file_name)
         # Get colors.
         for key in list(DEFAULT_COLORS.keys()):
