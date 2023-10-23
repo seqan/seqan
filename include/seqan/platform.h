@@ -41,7 +41,6 @@
 // ==========================================================================
 
 #include <cstddef> // makes __GLIBCXX__ available
-#include <ciso646> // makes _LIBCPP_VERSION available
 
 /*!
  * @macro STDLIB_VS
