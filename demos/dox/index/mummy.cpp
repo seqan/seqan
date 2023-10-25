@@ -33,7 +33,7 @@ void findMUMs(TIndex & esa, unsigned minLen)
 }
 
 template <typename TSpec>
-int runMummy(int argc, const char * argv[], unsigned seqCount, unsigned minLen)
+int runMummy(int argc, const char * argv[], unsigned, unsigned minLen)
 {
     typedef String<Dna5, TSpec> TString;
     typedef StringSet<TString>  TStringSet;
@@ -43,7 +43,7 @@ int runMummy(int argc, const char * argv[], unsigned seqCount, unsigned minLen)
 
     // import sequences
     StringSet<CharString> meta;
-    for (int arg = 1, seq = 0; arg < argc; ++arg)
+    for (int arg = 1; arg < argc; ++arg)
     {
         // skip two argument options
         if (strcmp(argv[arg], "-p") == 0 || strcmp(argv[arg], "--profile") == 0 ||
@@ -64,7 +64,6 @@ int runMummy(int argc, const char * argv[], unsigned seqCount, unsigned minLen)
             readRecords(meta, indexText(index), file);
             clear(meta);
             close(file);
-            ++seq;
         }
     }
     std::cout << lengthSum(indexText(index)) << " bps sequence imported.\n";

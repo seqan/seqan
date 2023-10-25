@@ -99,13 +99,16 @@ void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
 //
 void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> const & intervalTrees, TStore const & store)
 {
+    (void) readsPerGene;
+    (void) intervalTrees;
+    (void) store;
     // INSERT YOUR CODE HERE ...
     //
 }
 //![yourcode]
 
 //![yourcode_end]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     TStore store;
     String<String<TInterval> > intervals;

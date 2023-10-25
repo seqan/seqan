@@ -71,7 +71,7 @@ struct Options
 };
 
 void
-setupArgumentParser(ArgumentParser & parser, Options const & options)
+setupArgumentParser(ArgumentParser & parser)
 {
     setVersion(parser, "1.0");
 
@@ -240,7 +240,7 @@ int main(int argc, char const * argv[])
     // Setup command line parser.
     ArgumentParser parser;
     Options options;
-    setupArgumentParser(parser, options);
+    setupArgumentParser(parser);
 
     // Then, parse the command line and handle the cases where help display
     // is requested or erroneous parameters were given.

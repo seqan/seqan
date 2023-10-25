@@ -158,7 +158,7 @@ _importSequences(CharString const & fileNameL,
     TId idR;
     TId sId;
     unsigned seqCount = 0;
-    for (unsigned i = 0; !atEnd(leftMates) && !atEnd(rightMates); ++i, ++seqCount)
+    while (!atEnd(leftMates) && !atEnd(rightMates))
     {
         try
         {
@@ -182,6 +182,7 @@ _importSequences(CharString const & fileNameL,
         _getShortId(sId, idR);
         appendValue(ids, sId, Generous());
         clear(seq);
+        ++seqCount;
     }
     if (!atEnd(leftMates) || !atEnd(rightMates))
     {

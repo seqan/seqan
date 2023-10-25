@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - 'main'
-  # Enables a manual trigger, may run on any branch
-  workflow_dispatch:
 
 concurrency:
   group: documentation-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   TZ: Europe/Berlin
@@ -23,16 +21,10 @@ jobs:
     name: Deploy Documentation
     runs-on: ubuntu-22.04
     timeout-minutes: 30
-    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
+    if: github.repository_owner == 'seqan'
     steps:
-      - name: Checkout SeqAn2
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get cached python environment
-        uses: actions/cache@v3
-        with:
-          path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-${{ hashFiles('manual/environment.yml') }}
 
       - name: Setup python environment
         uses: conda-incubator/setup-miniconda@v2

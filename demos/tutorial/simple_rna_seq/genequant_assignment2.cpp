@@ -53,13 +53,15 @@ bool loadFiles(TStore & store, std::string const & annotationFileName,  std::str
 //
 void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const & store)
 {
+    (void) intervals;
+    (void) store;
     // INSERT YOUR CODE HERE ...
     //
 }
 //![yourcode]
 
 //![yourcode_end]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
 //![main]
     TStore store;

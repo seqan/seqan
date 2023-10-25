@@ -158,8 +158,9 @@ _testBlastOutputGenerateContent(TFile & file,
 
         for (int s = 0; s < 2; ++s)
         {
-            records[q].matches.emplace_back(qIds[q], sIds[s]);
+            records[q].matches.emplace_back(sIds[s]);
             TBlastMatch & m = records[q].matches.back();
+            m.qId = qIds[q]; // BlastMatch(qId, sId) is deprecated, but BlastMatch::qId is accessed in the tests
 
             assignSource(m.alignRow0, queries[q]);
             assignSource(m.alignRow1, subjects[s]);

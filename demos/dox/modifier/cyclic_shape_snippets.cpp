@@ -10,7 +10,7 @@
 #include <seqan/modifier.h>
 
 using namespace seqan2;
-int main(int argc, char const ** argv)
+int main(int, char const **)
 {
 
     {

@@ -120,7 +120,7 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
 //![solution]
 
 //![main]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     TStore store;
     String<String<TInterval> > intervals;

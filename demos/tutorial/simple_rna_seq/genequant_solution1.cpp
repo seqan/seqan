@@ -41,7 +41,7 @@ bool loadFiles(TStore & store, std::string const & annotationFileName,  std::str
 //![solution]
 
 //![main]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     TStore store;
     std::string annotationFileName = getAbsolutePath("demos/tutorial/simple_rna_seq/example.gtf");

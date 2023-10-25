@@ -510,7 +510,7 @@ SEQAN_DEFINE_TEST(test_string_list)
     SEQAN_ASSERT_EQ(error_stream.str(), "");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 
-    std::vector<std::string> const & values = getOptionValues(parser, "string");
+    std::vector<std::string> values = getOptionValues(parser, "string");
 
     SEQAN_ASSERT_EQ(length(values), 3u);
 

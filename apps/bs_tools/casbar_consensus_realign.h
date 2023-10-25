@@ -172,7 +172,6 @@ reAlign(double &profileScore,
 	TConsensus myRead;
 	TConsensus newConsensus;
     int i = 0;
-    int help = 0;   // TODO rm
 	for (; alignIt != alignItEnd; ++alignIt) {
         double tBegin = sysTime();
         if (i++ > 1000 || i == 1) {
@@ -189,7 +188,6 @@ reAlign(double &profileScore,
         double mapq = 0;
         if (!isRef) mapq = fragStore.alignQualityStore[alignIt->id].score;  // TODO Get rid of it
 
-        ++help;   // TODO rm
 		TSize itConsPos = 0;
 		TConsIter itCons = begin(consensus, Standard());
 		TConsIter itConsEnd = end(consensus, Standard());

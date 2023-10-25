@@ -4610,7 +4610,6 @@ void dumpSNPsBatch(
     TMatchIterator matchIt  = begin(matches, Standard());
     TMatchIterator matchItEnd   = end(matches, Standard());
     //matchItEnd--;
-    unsigned countLowerMQ = 0, countHigherMQ = 0;
 
     if(options._debugLevel > 1) ::std::cout << "Scanning chromosome " << genomeID << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
 
@@ -4759,9 +4758,7 @@ void dumpSNPsBatch(
                     if(!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)   // dont trust the quality of this position more
                     {                                                                               // than the average quality of this read
                         quality = (int) matchQualities[(*matchIt).id].score;
-                        ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
                     //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
@@ -4797,9 +4794,7 @@ void dumpSNPsBatch(
                     if(!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
                     {
                         quality = (int) matchQualities[(*matchIt).id].score;
-                        ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
                     //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
@@ -6065,7 +6060,6 @@ void dumpPosBatch(
     TMatchIterator matchIt  = begin(matches, Standard());
     TMatchIterator matchItEnd   = end(matches, Standard());
     //matchItEnd--;
-    unsigned countLowerMQ = 0, countHigherMQ = 0;
 
     if(options._debugLevel > 1) ::std::cout << "Scanning chromosome " << genomeID << " window (" << currStart<<","<< currEnd << ") for SNPs..." << ::std::endl;
 
@@ -6203,9 +6197,7 @@ void dumpPosBatch(
                     if(!options.useBaseQuality && quality > (int)matchQualities[(*matchIt).id].score)   // dont trust the quality of this position more
                     {                                                                               // than the average quality of this read
                         quality = (int) matchQualities[(*matchIt).id].score;
-                        ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
                     //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;
@@ -6240,9 +6232,7 @@ void dumpPosBatch(
                     if(!options.useBaseQuality && quality > (int) matchQualities[(*matchIt).id].score)
                     {
                         quality = (int) matchQualities[(*matchIt).id].score;
-                        ++countLowerMQ;
                     }
-                    else ++countHigherMQ;
                     //if(quality < 0 || quality > 40)::std::cout << "falschQ candPos = " << candidatePos + startCoord << std::endl;
 
                     unsigned tmpCount = 1;

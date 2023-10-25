@@ -12,6 +12,12 @@ message (STATUS "Configuring apps/mason2")
 
 set (SEQAN_APP_VERSION "2.0.10")
 
+# Presumably due to https://github.com/gcc-mirror/gcc/commit/98c37d3bacbb2f8bbbe56ed53a9547d3be01b66b
+if (SEQAN_GH_ACTIONS_BUILD)
+    message (STATUS "  Skipping mason2 on GitHub Actions")
+    return ()
+endif (SEQAN_GH_ACTIONS_BUILD)
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -171,13 +177,7 @@ install (FILES example/adeno_virus.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-# Presumably due to https://github.com/gcc-mirror/gcc/commit/98c37d3bacbb2f8bbbe56ed53a9547d3be01b66b
-if (CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
-                                            CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 10))
-  seqan_add_app_test (mason2)
-else ()
-  message (STATUS "Skipping mason2 tests on Unix GCC!=10")
-endif ()
+seqan_add_app_test (mason2)
 
 # ----------------------------------------------------------------------------
 # CPack Install

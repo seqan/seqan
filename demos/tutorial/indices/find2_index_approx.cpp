@@ -16,7 +16,7 @@ int main()
     Index<DnaString, BidirectionalIndex<FMIndex<> > > index(genome);
 
     //![Delegate]
-    auto delegate = [](auto & iter, DnaString const & needle, uint8_t errors)
+    auto delegate = [](auto & iter, DnaString const &, uint8_t /* errors */)
     {
         for (auto occ : getOccurrences(iter))
             std::cout << occ << std::endl;
@@ -40,7 +40,7 @@ int main()
     //![ParallelMode]
     std::mutex mtx;
     std::set<Pair<DnaString, unsigned> > hits;
-    auto delegateParallel = [&hits, &mtx](auto & iter, DnaString const & needle, uint8_t errors)
+    auto delegateParallel = [&hits, &mtx](auto & iter, DnaString const & needle, uint8_t /* errors */)
     {
         std::lock_guard<std::mutex> lck(mtx); // critical section below this line
         for (auto occ : getOccurrences(iter))

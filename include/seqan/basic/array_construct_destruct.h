@@ -632,7 +632,16 @@ _arrayCopyForwardDefault(TSource1 source_begin,
                          TSource2 source_end,
                          TTarget target_begin)
 {
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 13)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Warray-bounds="
+#    pragma GCC diagnostic ignored "-Wstringop-overread"
+#    pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
     std::copy(source_begin, source_end, target_begin);
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ == 13)
+#    pragma GCC diagnostic pop
+#endif
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>

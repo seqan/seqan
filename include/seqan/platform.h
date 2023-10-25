@@ -41,7 +41,6 @@
 // ==========================================================================
 
 #include <cstddef> // makes __GLIBCXX__ available
-#include <ciso646> // makes _LIBCPP_VERSION available
 
 /*!
  * @macro STDLIB_VS
@@ -89,6 +88,9 @@
      #warning ICC versions older than 17.0 are not supported.
 #endif
 #endif
+#if !defined(_MSC_VER) && defined(__INTEL_LLVM_COMPILER)
+#define COMPILER_LINTEL
+#endif
 
 /*!
  * @macro COMPILER_WINTEL
@@ -101,6 +103,9 @@
 #if __ICL < 1700
      #warning Intel compiler (windows) versions older than 17.0 are not supported.
 #endif
+#endif
+#if defined(_MSC_VER) && defined(__INTEL_LLVM_COMPILER)
+#define COMPILER_WINTEL
 #endif
 
 /*!

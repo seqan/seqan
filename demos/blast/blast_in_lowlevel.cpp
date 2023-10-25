@@ -33,7 +33,8 @@ int main()
     }
 
     std::sort(std::begin(hsps), std::end(hsps));
-    std::unique(std::begin(hsps), std::end(hsps));
+    auto last = std::unique(std::begin(hsps), std::end(hsps));
+    hsps.erase(last, hsps.end());
 
     for (THsp const & hsp : hsps)
         std::cout << '(' << hsp.first << ", " << hsp.second << ")\n";

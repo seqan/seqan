@@ -461,7 +461,7 @@ endif (NOT DEFINED SEQAN_VERSION_STRING)
 
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args (SeqAn FOUND_VAR SEQAN_FOUND REQUIRED_VARS SEQAN_INCLUDE_PATH VERSION_VAR SEQAN_VERSION_STRING)
-string (STRIP ${SEQAN_CXX_FLAGS} SEQAN_CXX_FLAGS) # SEQAN_CXX_FLAGS may have a leading whitespace
+string (STRIP "${SEQAN_CXX_FLAGS}" SEQAN_CXX_FLAGS) # SEQAN_CXX_FLAGS may have a leading whitespace
 
 # ----------------------------------------------------------------------------
 # Export targets

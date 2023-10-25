@@ -559,12 +559,10 @@ int main(int argc, const char *argv[])
     if (isSet(parser, "shape"))
     {
 		unsigned ones = 0;
-		unsigned zeros = 0;
 		for(unsigned i = 0; i < length(options.shape); ++i)
 			switch (options.shape[i])
 			{
 				case '0':
-					++zeros;
 					break;
 				case '1':
 					++ones;

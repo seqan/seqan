@@ -74,7 +74,7 @@ void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const &
 //![solution]
 
 //![main]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     TStore store;
     String<String<TInterval> > intervals;

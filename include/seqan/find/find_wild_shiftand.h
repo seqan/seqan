@@ -157,7 +157,6 @@ bool _validate(TNeedle2 const & needle)
     typedef unsigned TWord;
 
     TWord nl = length(needle);
-    TWord len = nl;
     TWord i = 0;
 
     while (i < nl){
@@ -177,10 +176,10 @@ bool _validate(TNeedle2 const & needle)
             String <char> number;
             TWord n,m;
             n = m = 0;
-            --len;++i; // get to the first number
+            ++i; // get to the first number
             while(i < nl && convert<char>(getValue(needle,i)) != '}' && convert<char>(getValue(needle,i)) != ',') {
                 append(number,convert<char>(getValue(needle,i)));
-                --len;++i;
+                ++i;
             }
             // class didn't ended
             if(i == nl)    return false;
@@ -191,11 +190,11 @@ bool _validate(TNeedle2 const & needle)
 
             // check the second number
             if (convert<char>(getValue(needle,i)) == ','){
-                --len;++i;
+                ++i;
                 clear(number);
                 while(i < nl && convert<char>(getValue(needle,i)) != '}') {
                     append(number,convert<char>(getValue(needle,i)));
-                    --len;++i;
+                    ++i;
                 }
 
                 // class didn't ended
@@ -204,9 +203,7 @@ bool _validate(TNeedle2 const & needle)
                 // isNumber
                 if(!_isUnsigned(number)) return false;
                 m = atoi(toCString(number));
-                --len;
             }
-            else --len;
 
             // check if optional part is greater or equal then fixed
             if(m < n && m != 0)    return false;

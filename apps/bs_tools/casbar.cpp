@@ -91,8 +91,7 @@ bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std
         if (!open(seqFileIn, toCString(fileNameList[filecount])))
             return false;
 
-        unsigned seqCount = 0;
-        for (; !atEnd(seqFileIn); ++seqCount)
+        for (; !atEnd(seqFileIn);)
         {
             readRecord(id, seq, seqFileIn);
             cropAfterFirst(id, IsBlank());

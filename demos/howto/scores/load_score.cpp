@@ -53,7 +53,7 @@ void showScoringMatrix(Score<TScoreValue, ScoreMatrix<TSequenceValue, TSpec> > c
 //![show-scoring-matrix]
 
 //![main]
-int main(int argc, char ** argv)
+int main(int, char **)
 {
     typedef int TScoreValue;
 

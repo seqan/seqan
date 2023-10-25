@@ -205,11 +205,15 @@ guessFormatFromStream(TStream &istream, Tag<TFormat_>)
     // This could also be solved by:
     //   * Adding specialisations. However, this would need some forward declarations, etc.
     //   * if constexpr. This would require to make all VALUE static constexpr.
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Waddress"
+#endif
     if ((char *)MagicHeader<TFormat>::VALUE == NULL)
         return true;
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
+#endif
 
     bool match = true;
 

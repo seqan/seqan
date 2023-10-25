@@ -539,25 +539,22 @@ void updateStats(Stats & stats,
             TGapsIter genomeIter = begin(row(postAlign, 0), Standard()) + viewBegin;
             TGapsIter readIter = begin(row(postAlign, 1), Standard()) + viewBegin;
 
-            unsigned readPos = 0, errors = 0;
+            unsigned readPos = 0;
             for (int i = viewBegin; i < viewEnd; ++i, goNext(genomeIter), goNext(readIter))
             {
                 // errro types: 0..mismatch, 1..insert, 2..deletion in the read compared to reference
                 if (isGap(genomeIter))
                 {
                     ++stats.postErrorsAtPos[readPos][1];
-                    ++errors;
                 }
                 else if (isGap(readIter))
                 {
                     ++stats.postErrorsAtPos[readPos][2];
-                    ++errors;
                     continue; // don't increment readPos here
                 }
                 else if (*genomeIter != *readIter)
                 {
                     ++stats.postErrorsAtPos[readPos][0];
-                    ++errors;
                 }
                 // increment number of total bases
                 ++stats.postErrorsAtPos[readPos][3];

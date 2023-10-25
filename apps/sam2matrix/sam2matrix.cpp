@@ -176,7 +176,7 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
 
         readHeader(header, bamIO);
 
-        for (unsigned j = 0; !atEnd(bamIO); ++j)
+        while (!atEnd(bamIO))
         {
             readRecord(record, bamIO);
             if (!hasFlagUnmapped(record))

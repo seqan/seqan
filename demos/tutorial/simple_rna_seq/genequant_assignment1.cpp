@@ -13,6 +13,9 @@ typedef FragmentStore<> TStore;
 //
 bool loadFiles(TStore & store, std::string const & annotationFileName,  std::string const & alignmentFileName)
 {
+    (void) store;
+    (void) annotationFileName;
+    (void) alignmentFileName;
     // INSERT YOUR CODE HERE ...
     //
 
@@ -20,7 +23,7 @@ bool loadFiles(TStore & store, std::string const & annotationFileName,  std::str
 }
 
 //![main]
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
     TStore store;
     std::string annotationFileName = getAbsolutePath("demos/tutorial/simple_rna_seq/example.gtf");

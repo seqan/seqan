@@ -524,6 +524,9 @@ _computeAlignmentImpl(TDPScout & scout,
 
     TConstSeqHIterator seqHIter = begin(seqH, Rooted());
     TConstSeqHIterator seqHIterEnd = end(seqH, Rooted()) - 1;
+#ifdef __INTEL_LLVM_COMPILER
+    asm ("" : : "m"(seqHIter)); // Kindly request IntelLLVM (2023.2) to not optimize seqHIter away.
+#endif
     for (; seqHIter != seqHIterEnd; ++seqHIter)
     {
         _incHorizontalPos(scout);

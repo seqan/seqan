@@ -5560,49 +5560,49 @@ int main(int argc, const char* argv[])
         // thus we can also show the total number of reads that are corrected at the final stage
         //if (autoCycles)
         //{
-            resize(logCorrections, options.cycle);
-            resize(roundsDone, options.cycle);
-            logCorrections[options.cycle-1] = (double)log((double)numCorrected);
-            roundsDone[options.cycle-1]     = (double)options.cycle;
+        resize(logCorrections, options.cycle);
+        resize(roundsDone, options.cycle);
+        logCorrections[options.cycle-1] = (double)log((double)numCorrected);
+        roundsDone[options.cycle-1]     = (double)options.cycle;
 
-            if (options.cycle >= 1)
+        if (options.cycle >= 1)
+        {
+            //compute adjusted R-Square after fitting model
+            LinearModel linearModel;
+            linearRegression(linearModel,roundsDone,logCorrections);
+            double adjRSquare =  adjustedRSquare(linearModel,roundsDone,logCorrections);
+            if (options.verbosity >= 2)
+                std::cerr << "The adjusted R^2 in cycle " << options.cycle << " is " << adjRSquare << "\n";
+            if (autoCycles)
             {
-                //compute adjusted R-Square after fitting model
-                LinearModel linearModel;
-                linearRegression(linearModel,roundsDone,logCorrections);
-                double adjRSquare =  adjustedRSquare(linearModel,roundsDone,logCorrections);
-                if (options.verbosity >= 2)
-                    std::cerr << "The adjusted R^2 in cycle " << options.cycle << " is " << adjRSquare << "\n";
-                if (autoCycles)
+                //do another round if adjusted R square value is better than 0.95
+                if (!bestExpFit && options.cycle > 3)
                 {
-                    //do another round if adjusted R square value is better than 0.95
-                    if (!bestExpFit && options.cycle > 3)
+                    if (adjRSquare <= 0.95)
                     {
-                        if (adjRSquare <= 0.95)
-                        {
-                            if (options.verbosity >= 2)
-                                std::cerr <<std::endl<<"Stopped at cycle: "<< options.cycle <<" with adjustedRSquare : "<< adjRSquare <<std::endl;
-                            ++options.cycle;
-                            break;
-                        }
+                        if (options.verbosity >= 2)
+                            std::cerr <<std::endl<<"Stopped at cycle: "<< options.cycle <<" with adjustedRSquare : "<< adjRSquare <<std::endl;
+                        ++options.cycle;
+                        break;
+                    }
+                }
+                else
+                {
+
+                    if (adjRSquare < lastAdjRSquare)
+                    {
+                        if (options.verbosity >= 2)
+                            std::cerr <<std::endl<<"Stopped at cycle: "<< options.cycle <<" with adjustedRSquare (previous): "<< adjRSquare <<" ("<<lastAdjRSquare <<")"<<std::endl;
+                        ++options.cycle;
+                        break;
                     }
                     else
                     {
-
-                        if (adjRSquare < lastAdjRSquare)
-                        {
-                            if (options.verbosity >= 2)
-                                std::cerr <<std::endl<<"Stopped at cycle: "<< options.cycle <<" with adjustedRSquare (previous): "<< adjRSquare <<" ("<<lastAdjRSquare <<")"<<std::endl;
-                            ++options.cycle;
-                            break;
-                        }
-                        else
-                        {
-                            lastAdjRSquare=adjRSquare;
-                        }
+                        lastAdjRSquare=adjRSquare;
                     }
                 }
             }
+        }
         //}
     }
 

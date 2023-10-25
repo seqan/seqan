@@ -9,6 +9,9 @@ void findPatternInReference(String<int> & hits,
                             TString const & reference,
                             TPattern const & pattern)
 {
+    (void) hits;
+    (void) reference;
+    (void) pattern;
 // [A] Check whether pattern fits into the sequence.
 
 // [B] Iterate over all positions at which the pattern might occur.
@@ -26,6 +29,10 @@ void _findInOriginalNode(String<int> & hitTarget,
                          TPattern const & pattern,
                          String<int> const & refHits)
 {
+    (void) hitTarget;
+    (void) entriesIt;
+    (void) pattern;
+    (void) refHits;
 // [A] Check if hits exist in the reference.
 
 // [B] Find upper bound to current physical position in sorted refHits using std::upper_bound.
@@ -45,6 +52,10 @@ void _searchAtBorder(String<int> & hitTarget,
                      TJournal const & journal,
                      TPattern const & pattern)
 {
+    (void) hitTarget;
+    (void) entriesIt;
+    (void) journal;
+    (void) pattern;
 // [A] Determine first position of the at which pattern crosses the border of current node.
 
 // [B] Determine last position before pattern exits the current node or reaches the end of the sequence.
