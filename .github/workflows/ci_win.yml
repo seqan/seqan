@@ -51,7 +51,7 @@ jobs:
           pip install -r manual/requirements.txt
 
       - name: Setup conda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
 
       - name: Install conda dependencies
         run: conda install -c conda-forge boost-cpp bzip2 libxml2 zlib
