@@ -206,9 +206,8 @@ if (COMPILER_GCC OR COMPILER_CLANG OR COMPILER_LINTEL)
   set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64)
 
   # Determine GCC version.
-  EXEC_PROGRAM(${CMAKE_CXX_COMPILER}
-               ARGS --version
-               OUTPUT_VARIABLE __GCC_VERSION)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} --version
+                  OUTPUT_VARIABLE __GCC_VERSION)
   # Remove all but first line.
   STRING(REGEX REPLACE "([^\n]+).*" "\\1" __GCC_VERSION ${__GCC_VERSION})
   # Find out version (3 or 2 components).
