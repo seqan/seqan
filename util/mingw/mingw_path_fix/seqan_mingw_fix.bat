@@ -3,7 +3,7 @@
 REM ==========================================================================
 REM                     SeqAn MinGW Fix Batch
 REM ==========================================================================
-REM Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+REM Copyright (c) 2006-2024, Knut Reinert, FU Berlin
 REM All rights reserved.
 REM
 REM Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@ REM
 REM ==========================================================================
 REM Author: Rene Rahn <rene.rahn@fu-berlin.de>
 REM ==========================================================================
-REM This tool parses the directories of the PATH environment (using the 
-REM external program seqan_mingw_fix.exe) and removes all directories that 
-REM contains "sh.exe" as one of their childs. The modified PATH is then set 
+REM This tool parses the directories of the PATH environment (using the
+REM external program seqan_mingw_fix.exe) and removes all directories that
+REM contains "sh.exe" as one of their childs. The modified PATH is then set
 REM to the current environment.
 REM ==========================================================================
 

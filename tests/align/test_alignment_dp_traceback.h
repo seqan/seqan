@@ -1,7 +1,7 @@
 // ==========================================================================
 //                       test_alignment_dp_traceback.h
 // ==========================================================================
-// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2024, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

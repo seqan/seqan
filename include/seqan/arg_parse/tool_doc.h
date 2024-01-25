@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2021, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2024, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -1405,7 +1405,7 @@ void HtmlToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
             stream << doc._name << " Copyright: </strong>"
                    << doc._shortCopyright << "<br>\n<strong>";
 
-        stream << "SeqAn Copyright:</strong> 2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.<br>\n<strong>";
+        stream << "SeqAn Copyright:</strong> 2006-2024 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.<br>\n<strong>";
 
         if (!empty(doc._citation))
             stream << "In your academic works please cite:</strong> " << doc._citation << "<br>\n";
@@ -1515,7 +1515,7 @@ void TextToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         }
         std::fill_n(out, _layout.leftPadding, ' ');
         stream << _toText("\\fB") << "SeqAn Copyright: " << _toText("\\fP")
-               << "2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n";
+               << "2006-2024 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n";
         if (!empty(doc._citation))
         {
             std::fill_n(out, _layout.leftPadding, ' ');
@@ -1622,7 +1622,7 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
         if (!empty(doc._shortCopyright))
             stream << "\\fB" << doc._name << " Copyright:\\fR " << doc._shortCopyright << "\n.br\n";
 
-        stream << "\\fBSeqAn Copyright:\\fR 2006-2015 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n.br\n";
+        stream << "\\fBSeqAn Copyright:\\fR 2006-2024 Knut Reinert, FU-Berlin; released under the 3-clause BSDL.\n.br\n";
 
         if (!empty(doc._citation))
             stream << "\\fBIn your academic works please cite:\\fR " << doc._citation << "\n.br\n";
