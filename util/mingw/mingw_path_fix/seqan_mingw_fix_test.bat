@@ -1,9 +1,9 @@
 @echo off
 
 REM ==========================================================================
-REM                     SeqAn MinGW Fix Test Batch 
+REM                     SeqAn MinGW Fix Test Batch
 REM ==========================================================================
-REM Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+REM Copyright (c) 2006-2024, Knut Reinert, FU Berlin
 REM All rights reserved.
 REM
 REM Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ mkdir %currentDir%test\test4\test4_b
 
 echo "" > %currentDir%test\test4\test4_a\sh.exe
 set PATH_TEST_4=;%currentDir%test\test4\test4_a;%currentDir%test\test4\test4_b
-REM ### 
+REM ###
 
 REM ### create test scenario for 5th test case: two paths, trailing ;
 mkdir %currentDir%test\test5
@@ -105,7 +105,7 @@ mkdir %currentDir%test\test8\test8_b
 
 echo "" > %currentDir%test\test8\test8_b\sh.exe
 set PATH_TEST_8=;%currentDir%test\test8\test8_a;PathWithoutBackslash;%currentDir%test\test8\test8_b
-REM ### 
+REM ###
 
 REM call program in test mode and wait until it is finished.
 START /WAIT %currentDir%seqan_mingw_fix.exe -t %currentDir%

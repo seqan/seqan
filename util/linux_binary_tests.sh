@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------
 #                  SeqAn - The Library for Sequence Analysis
 # ----------------------------------------------------------------------------
-# Copyright (c) 2006-2016, Knut Reinert, FU Berlin
+# Copyright (c) 2006-2024, Knut Reinert, FU Berlin
 # All rights reserved.
 #
 # License: BSD 3-clause
@@ -69,7 +69,7 @@ BINARY_URLS=(
 APP_CALLS=(
     "./razers3 -o output.razers ../example/genome.fa ../example/reads.fa"
     "./razers3 -o output.razers ../example/genome.fa ../example/reads.fa"
-    "./stellar -o ../example/mapped_reads.gff --minLength 30 ../example/NC_001477.fasta ../example/reads.fasta" 
+    "./stellar -o ../example/mapped_reads.gff --minLength 30 ../example/NC_001477.fasta ../example/reads.fasta"
     "./stellar -o ../example/mapped_reads.gff --minLength 30 ../example/NC_001477.fasta ../example/reads.fasta"
     "./breakpoint_calculator -d2 ../example/alignment.maf"
     "./breakpoint_calculator -d2 ../example/alignment.maf"
@@ -135,14 +135,14 @@ function test_app ()
 
     # Remove temporary directory.
 	ssh $USER_SERVER "rm -r $TMPDIR"
-    
+
 }
 
 echo "Testing SeqAn Linux Binaries..." >&2
 echo >&2
 
 RESULTS=()
-IFS=";"; 
+IFS=";";
 
 # Execute tests for each server.
 for SERVER_NAME in ${SERVER_NAMES[@]}; do
