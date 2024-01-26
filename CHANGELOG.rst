@@ -6,9 +6,9 @@ This file summarizes the changes to the SeqAn library and apps.
 Release 2.5.0
 ~~~~~~~~~~~~~
 
-This release aims to add support for interoperability with `SeqAn3 <https://github.com/seqan/seqan3>`_.
-Therefore, this release only supports and tests compilers that work with SeqAn3. Release 2.5.0 might work with older
-compilers, but there is no support.
+This release aims to add support for interoperability with `SeqAn3 <https://github.com/seqan/seqan3>`_ and newer
+C++ standards (17, 20, 23).
+Release 2.5.0 might work with older compilers, but there is no support.
 
 Library Features
 ^^^^^^^^^^^^^^^^
@@ -47,10 +47,11 @@ Platform Support
 ^^^^^^^^^^^^^^^^
 
 - Compiler support:
-   - GCC 7, 8, 9, 10, 11
-   - clang 9, 10, 11, 12
-   - Intel C++ Compiler Classic 2021.3.0 (part of Intel OneAPI)
-   - Microsoft Visual Studio 16
+   - GCC 11, 12, 13
+   - Clang 15, 16, 17
+   - Intel oneAPI C++ Compiler 2024.0.2 (IntelLLVM)
+   - Microsoft Visual Studio 17
+   - Other compilers might work, but are not tested.
 
 Release 2.4.0
 ~~~~~~~~~~~~~
