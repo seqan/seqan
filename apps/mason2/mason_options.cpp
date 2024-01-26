@@ -531,6 +531,21 @@ void SequencingOptions::addTextSections(seqan2::ArgumentParser & parser) const
                 "Reads are on the same strand but the \"right\" reads are sequenced to the left of the \"left\" reads, "
                 "same as 454 paired: R2 --> --> R1.");
 
+    addTextSection(parser, "Caveats");
+    addText(parser,
+            "There are a few potential issues you might run into when using this program, which could result in a "
+            "segmentation fault:");
+    addListItem(parser, "\\fB-File Handle Limit\\fP",
+                "The program may try to open more file handles than allowed by your operating system. If you encounter"
+                " this issue, you can increase the limit by running the following command in your terminal before "
+                "starting the program: `ulimit -Sn $(ulimit -Hn)`.");
+    addListItem(parser, "\\fB-Disk Space for Temporary Files\\fP",
+                "The program may run out of disk space for its temporary files. If this happens, you can set the "
+                "`TMPDIR` environment variable to a directory with more available disk space. This can be done by, for "
+                "example, running `export TMPDIR=/path/to/some/dir` in your terminal before starting the program, or "
+                "by adding `TMPDIR=/path/to/some/dir` before the program call, like so: "
+                "`TMPDIR=/path/to/some/dir mason_[...]`.");
+
     // Add text sections for nested options structs.
     bsSeqOptions.addTextSections(parser);
 }
