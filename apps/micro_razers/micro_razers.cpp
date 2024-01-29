@@ -1,6 +1,6 @@
  /*==========================================================================
              MicroRazerS - Rapid Alignment of Small RNA Reads
-                   http://www.seqan.de/projects/microRazers.html
+                   https://www.seqan.de/apps/microRazers.html
 
  ============================================================================
   Copyright (C) 2009 by Anne-Katrin Emde
@@ -16,7 +16,7 @@
   Lesser General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ==========================================================================*/
 
 #define SEQAN_PROFILE			// enable time measuring

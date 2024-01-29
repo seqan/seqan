@@ -136,7 +136,7 @@ log2(T val)
 // Function _min()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Subject to removal.  http://trac.mi.fu-berlin.de/seqan/ticket/855
+// TODO(holtgrew): Subject to removal.  https://trac.mi.fu-berlin.de/seqan/ticket/855
 
 // to avoid conflicts with non-standard macros and namespaces
 // we define our own Min/Max functions
@@ -162,7 +162,7 @@ Tx_ _min(const Tx_& _Left, const Ty_& Right_)
 // Function _max()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Subject to removal.  http://trac.mi.fu-berlin.de/seqan/ticket/855
+// TODO(holtgrew): Subject to removal.  https://trac.mi.fu-berlin.de/seqan/ticket/855
 
 // to avoid conflicts with non-standard macros and namespaces
 // we define our own Min/Max functions

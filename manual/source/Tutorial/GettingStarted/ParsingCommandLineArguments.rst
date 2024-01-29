@@ -29,8 +29,8 @@ Using this class will give you the following functionality:
 * Automatically generated and nicely formatted help screens when called with ``--help``.
   You can also export this help to HTML and man pages.
 * You are able to automatically generate nodes for
-  workflow engines such as `KNIME <http://knime.org/>`_ or
-  `Galaxy <http://en.wikipedia.org/wiki/Galaxy_(computational_biology)>`_.
+  workflow engines such as `KNIME <https://knime.org/>`_ or
+  `Galaxy <https://en.wikipedia.org/wiki/Galaxy_(computational_biology)>`_.
 
 As a continuous example, we will write a little program that is given strings on the command line and applies an operation to every i-th character:
 
@@ -501,7 +501,7 @@ This information will go to the Synopsis section of the program help.
 
     For example, ``"Words \\fBwere\\fP made for \\fIbeing\\fP written!"`` would result in the formatted string "Words **were** made for *being* written!".
 
-    Note that formatting the command line relies on `ANSI escape codes <http://en.wikipedia.org/wiki/ANSI_escape_code>`_ which is not supported by modern Windows versions.
+    Note that formatting the command line relies on `ANSI escape codes <https://en.wikipedia.org/wiki/ANSI_escape_code>`_ which is not supported by modern Windows versions.
     If you are using Windows, you will not see bold or underlined text.
 
 The argument parser will add some options of its own, for example for printing the help and displaying version information.

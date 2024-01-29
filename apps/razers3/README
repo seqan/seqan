@@ -1,5 +1,5 @@
 *** RazerS 3 - Faster, fully sensitive read mapping ***
-http://www.seqan.de/projects/razers.html
+https://www.seqan.de/apps/razers3.html
 
 ------------------------------------------------------------------------------
 Table of Contents
@@ -58,7 +58,7 @@ version or use a precompiled binary.
 2.1. Compilation from source code
 ------------------------------------------------------------------------------
 
-Follow the "Getting Started" section on http://trac.seqan.de/wiki and check
+Follow the "Getting Started" section on https://trac.seqan.de/wiki and check
 out the latest Git repo. Instead of creating a project file in Debug mode,
 switch to Release mode (-DCMAKE_BUILD_TYPE=Release) and compile razers3. This
 can be done as follows:
@@ -88,7 +88,7 @@ After compilation, copy the binary to a folder in your PATH variable, e.g.
 
 We also provide a precompiled binary of RazerS 3 for 64bit Linux. It was
 succesfully tested on Debian GNU/Linux 6.0.5 (squeeze) and Ubuntu 12.04.
-Please download the binary from: http://www.seqan.de/projects/razers.html
+Please download the binary from: https://www.seqan.de/apps/razers3.html
 
 ------------------------------------------------------------------------------
 3. Usage
@@ -134,7 +134,7 @@ pairs.
 
   Set the percent recognition rate. NUM must be a value between 80 and 100
   (default is 99). The recognition rate controls the sensitivity of RazerS 3.
-  The higher the recognition rate the more sensitive is RazerS 3. The lower 
+  The higher the recognition rate the more sensitive is RazerS 3. The lower
   the recognition rate the faster runs RazerS 3. A value of 100 corresponds
   to a lossless read mapping. The recognition rate corresponds to the
   expected fraction of matches RazerS 3 will find compared to a lossless
@@ -276,7 +276,7 @@ pairs.
 ------------------------------------------------------------------------------
 
   [ -fl STRING ],  [ --filter STRING ]
-  
+
   Described in section 3.1.
 
   [ -mr NUM ],  [ --mutation-rate NUM ]
@@ -381,8 +381,8 @@ chosen from the output filename suffix.
   .fa|.fasta = Enhanced Fasta Format
   .eland     = Eland Format
   .sam|.bam  = Sequence Alignment and Mapping Format (SAM)
-  .afg       = AMOS assembler format 
-  
+  .afg       = AMOS assembler format
+
 ------------------------------------------------------------------------------
 4.1. Razer Format
 ------------------------------------------------------------------------------
@@ -475,7 +475,7 @@ alignments as this way has established to be the defacto standard.
 The BAM format is the binary representation of SAM compressed with gzip.
 Whenever possible the more compact BAM format should be preferred over SAM.
 
-See http://samtools.sourceforge.net/ for more details.
+See https://samtools.sourceforge.net/ for more details.
 
 ------------------------------------------------------------------------------
 4.5. AMOS Output Format
@@ -485,7 +485,7 @@ The AMOS assembly format (aka AFG format) is used by the AMOS assembler and
 represents a multiple global alignment between reads and contig and also
 stores the consensus sequences (including gaps).
 
-See http://www.cbcb.umd.edu/research/contig_representation.shtml#AMOS for more
+See https://www.cbcb.umd.edu/research/contig_representation.shtml#AMOS for more
 details.
 
 ------------------------------------------------------------------------------

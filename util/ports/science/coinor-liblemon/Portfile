@@ -20,9 +20,9 @@ long_description    A C++ template library providing easy-to-use implementations
                     of common graph and network related data structures and \
                     algorithms.
 
-homepage            http://lemon.cs.elte.hu
+homepage            https://lemon.cs.elte.hu
 
-master_sites        http://lemon.cs.elte.hu/pub/sources/
+master_sites        https://lemon.cs.elte.hu/pub/sources/
 distname            lemon-${version}
 checksums           rmd160  25a19a53166531f5794b5f6aa85e78e491e9d9bc \
                     sha256  6c190dbb1e17bdb71597e79c409b2e798ffcbdb7d764ea45d6299339b12d3e05

@@ -1,7 +1,7 @@
                  Fast String Mining of Multiple Databases
                         under Frequency Constraints
 
-                   http://www.seqan.de/projects/dfi.html
+                   https://www.seqan.de/apps/dfi.html
 
 ---------------------------------------------------------------------------
 Table of Contents
@@ -40,7 +40,7 @@ There are precompiled executables for various platforms:
   dfiOSX   dfi for Mac OS X on Intel
 
 DFI is distributed with SeqAn - The C++ Sequence Analysis Library (see
-http://www.seqan.de). To compile DFI on your system do the following:
+https://www.seqan.de). To compile DFI on your system do the following:
 
   1)  Download the latest snapshot of SeqAn
   2)  Unzip it to a directory of your choice (e.g. snapshot)

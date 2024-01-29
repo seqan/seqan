@@ -507,7 +507,7 @@ SEQAN_BEGIN_TESTSUITE(test_seeds_extension)
 
     // Disabled the test for now.  Extension function contains a
     // force-failure assertion and instruction show to implement this.
-    // See http://trac.mi.fu-berlin.de/seqan/ticket/344 for details.
+    // See https://trac.mi.fu-berlin.de/seqan/ticket/344 for details.
     //
     // TODO(holtgrew): Implement this.
     //

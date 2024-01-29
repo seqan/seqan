@@ -15,22 +15,22 @@ Table of Contents
 1. Overview
 ---------------------------------------------------------------------------
 
-BS tools are designed for the analysis of BS-Seq data, from bisulfite read 
+BS tools are designed for the analysis of BS-Seq data, from bisulfite read
 mapping to SNP and methylation level calling at single-nucleotide resolution.
 It consists out of two main tools: Bisar and Casbar.
 
-Bisar reads three-letter mappings of bisulfite reads and computes 
-local pairwise four-letter realignments using an advanced statistical 
+Bisar reads three-letter mappings of bisulfite reads and computes
+local pairwise four-letter realignments using an advanced statistical
 alignment model.
 
-These alignments can be then used in the subsequent tool Casbar for a simultaneous 
-SNP and methylation level calling. A Bayesian model is used to compute the 
-posterior probability for each possible genotype under the observed data 
-and a given methylation level. The methylation level maximizing the 
-posterior probability is determined and the genotype with the highest 
+These alignments can be then used in the subsequent tool Casbar for a simultaneous
+SNP and methylation level calling. A Bayesian model is used to compute the
+posterior probability for each possible genotype under the observed data
+and a given methylation level. The methylation level maximizing the
+posterior probability is determined and the genotype with the highest
 probability is chosen.
 
-The files README.bisar and README.bisar contain detailed documentation of 
+The files README.bisar and README.bisar contain detailed documentation of
 the respective tools.
 
 ---------------------------------------------------------------------------
@@ -60,6 +60,6 @@ or
 ---------------------------------------------------------------------------
 
 More detailed information you can find in the following document:
-http://www.mi.fu-berlin.de/en/inf/groups/abi/theses/master_dipl/krakau/
+https://www.mi.fu-berlin.de/en/inf/groups/abi/theses/master_dipl/krakau/
 msc_thesis_krakau.pdf?1394119375
 

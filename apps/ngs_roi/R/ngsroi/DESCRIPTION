@@ -10,4 +10,4 @@ Authors@R: c(person("Bernd Jagla", "Developer", role = c("aut", "cre", "cph"),
 Maintainer: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 Description: Routines for I/O of NGS ROI files and manipulation thereof.
 License: BSD + file LICENSE
-URL: http://www.seqan.de/projects/ngs_roi
+URL: https://www.seqan.de/apps/ngs_roi

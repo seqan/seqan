@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
 
-  
+
+
+
 
 
   <head>
@@ -31,7 +31,7 @@
   <body>
     <div id="banner">
       <div id="header">
-        <a id="logo" href="http://trac.seqan.de/"><img src="/static/seqan_trac_banner.png" alt="" height="75" width="215" /></a>
+        <a id="logo" href="https://trac.seqan.de/"><img src="/static/seqan_trac_banner.png" alt="" height="75" width="215" /></a>
       </div>
       <form id="search" action="/search" method="get">
         <div>
@@ -118,7 +118,7 @@ changed image<br />
         </tr>
       </table>
       <div id="preview" class="searchable">
-        
+
   <div class="image-file"><img src="/export/14828/trunk/docs2/images/ReadLayout.svg" alt="trunk/seqan/docs2/images/ReadLayout.svg" /></div>
 
       </div>
@@ -148,10 +148,10 @@ changed image<br />
     </div>
     </div>
     <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="/chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <a id="tracpowered" href="https://trac.edgewall.org/"><img src="/chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
       <p class="left">Powered by <a href="/about"><strong>Trac 0.12.5</strong></a><br />
-        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><a href="http://www.seqan.de">www.seqan.de</a></p>
+        By <a href="https://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><a href="https://www.seqan.de">www.seqan.de</a></p>
     </div>
   </body>
 </html>

@@ -1810,7 +1810,7 @@ void test_pattern_set_host()
 
 SEQAN_DEFINE_TEST(test_pattern_copycon) {
     // Test whether the needle is preserved in copying a pattern.
-    // See http://trac.mi.fu-berlin.de/seqan/ticket/318
+    // See https://trac.mi.fu-berlin.de/seqan/ticket/318
     test_pattern_copycon<Simple>();
     test_pattern_copycon<Horspool>();
     test_pattern_copycon<ShiftAnd>();
@@ -1823,7 +1823,7 @@ SEQAN_DEFINE_TEST(test_pattern_copycon) {
 
 SEQAN_DEFINE_TEST(test_pattern_assign) {
     // Test whether the needle is preserved in assigning a pattern.
-    // See http://trac.mi.fu-berlin.de/seqan/ticket/318
+    // See https://trac.mi.fu-berlin.de/seqan/ticket/318
     test_pattern_assign<Simple>();
     test_pattern_assign<Horspool>();
     test_pattern_assign<ShiftAnd>();

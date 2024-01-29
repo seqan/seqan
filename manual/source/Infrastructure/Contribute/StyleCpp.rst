@@ -10,7 +10,7 @@ C++ Code Style
 The aim of this style guide is to enforce a certain level of canonicity on all SeqAn code.
 Besides good comments, having a common style guide is the key to being able to understand and change code written by others easily.
 
-(The style guide partially follows the `Google C++ Code Style Guide <http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml>`_.)
+(The style guide partially follows the `Google C++ Code Style Guide <https://github.com/google/styleguide/blob/gh-pages/cppguide.xml>`_.)
 
 C++ Features
 ------------
@@ -152,7 +152,7 @@ Const-Correctness
 ^^^^^^^^^^^^^^^^^
 
 Write const correct code.
-Read the `C++ FAQ const correctness article <http://www.parashift.com/c ++-faq-lite/const-correctness.html>`_ for more information.
+Read the `C++ FAQ const correctness article <https://www.parashift.com/c ++-faq-lite/const-correctness.html>`_ for more information.
 Besides other things, this allows to use temporary objects without copying in functions that do not need to change their arguments.
 
 Compiler Warnings
@@ -287,7 +287,7 @@ The constructor, destructor and few operators have to be defined inside the clas
 
 .. container:: foldable
 
-    The following has to be defined and declared within the class (also see `Wikipedia <http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B>`_):
+    The following has to be defined and declared within the class (also see `Wikipedia <https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B>`_):
 
     * constructors
     * destructors

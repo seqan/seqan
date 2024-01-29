@@ -57,7 +57,7 @@ inline void test_matrix_transpose()
     resize(random, ROWS * COLS);
 
     std::mt19937 rng;
-    // http://stackoverflow.com/questions/31460733/why-arent-stduniform-int-distributionuint8-t-and-stduniform-int-distri
+    // https://stackoverflow.com/questions/31460733/why-arent-stduniform-int-distributionuint8-t-and-stduniform-int-distri
     std::uniform_int_distribution<uint64_t> pdf(0, MaxValue<TValue>::VALUE);
     for (unsigned i = 0; i < length(random); ++i)
         random[i] = static_cast<TValue>(pdf(rng));

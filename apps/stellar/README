@@ -1,5 +1,5 @@
               *** STELLAR - the SwifT Exact LocaL AligneR ***
-                 http://www.seqan.de/projects/stellar.html
+                 https://www.seqan.de/apps/stellar.html
                               February, 2013
 
 ---------------------------------------------------------------------------
@@ -16,7 +16,7 @@ Table of Contents
 1. Overview
 ---------------------------------------------------------------------------
 
-STELLAR is a tool for finding pairwise local alignments between long 
+STELLAR is a tool for finding pairwise local alignments between long
 genomic or very many short sequences. It identifies all local alignments
 with a maximal error rate and a minimal length, whereby errors can be
 mismatches, insertions or deletions (edit operations).
@@ -30,15 +30,15 @@ written to the output file.
 ---------------------------------------------------------------------------
 
 For precompiled executables (Windows, Linux 64, and Mac OS X) download the
-archive stellar_v1.x.zip from http://www.seqan.de/projects/stellar and
+archive stellar_v1.x.zip from https://www.seqan.de/apps/stellar and
 extract it.
 On linux, for example:
-  1) wget http://www.seqan.de/wp-content/plugins/download-monitor/download.php?id=32 -O stellar_v1.3.zip
+  1) wget https://www.seqan.de/wp-content/plugins/download-monitor/download.php?id=32 -O stellar_v1.3.zip
   2) unzip stellar_v1.3.zip
   3) ./stellar
 
-STELLAR is distributed with SeqAn - The C++ Sequence Analysis Library (see 
-http://www.seqan.de). To build STELLAR do the following:
+STELLAR is distributed with SeqAn - The C++ Sequence Analysis Library (see
+https://www.seqan.de). To build STELLAR do the following:
 
   1)  Download the latest snapshot of SeqAn
   2)  Unzip it to a directory of your choice (e.g. seqan)
@@ -56,7 +56,7 @@ with:
   4)  make stellar
   5)  ./bin/stellar --help
 
-On success, an executable file stellar was build and a brief usage 
+On success, an executable file stellar was build and a brief usage
 description was dumped.
 
 ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ description was dumped.
 
 Usage: stellar [Options] <FASTA sequence file 1> <FASTA sequence file 2>
 
-To get a short usage description of STELLAR, you can execute stellar -h or 
+To get a short usage description of STELLAR, you can execute stellar -h or
 stellar --help.
 
 ---------------------------------------------------------------------------
@@ -76,13 +76,13 @@ STELLAR always expects two arguments, a database and a query sequence
 file, both in Fasta format.
 
   <FASTA sequence file 1>
- 
+
   Set the name of the file containing the database sequence(s) in
   (multi-)Fasta format.  Note that STELLAR expects Fasta identifiers to
   be unique before the first whitespace.
- 
+
   <FASTA sequence file 2>
- 
+
   Set the name of the file containing the query sequence(s) in (multi-)
   Fasta format. All query sequences will be compared to all database
   sequences.  Note that STELLAR expects Fasta identifiers to be unique
@@ -101,7 +101,7 @@ the command line:
 ---------------------------------------------------------------------------
 
   [ -e NUM ],  [ --epsilon NUM ]
-  
+
   Set the maximal error rate for local alignments. NUM must be a floating
   point number between 0 and 0.25. The default value is 0.05. NUM is the
   number of edit operations needed to transform the aligned query substring
@@ -110,7 +110,7 @@ the command line:
   (90% identity).
 
   [ -l NUM ],  [ --minLength NUM ]
-  
+
   Set the minimal length of a local alignment. The default value is 100.
   NUM is the minimal length of an alignment, not the length of the
   aligned substrings.
@@ -122,7 +122,7 @@ the command line:
 
   [ -r ],  [ --reverse ]
 
-  Only compare query sequence(s) to the negative/reverse-complemented 
+  Only compare query sequence(s) to the negative/reverse-complemented
   database sequence(s). By default, both strands are scanned.
 
   [ -a ],  [ --alphabet STR ]
@@ -133,7 +133,7 @@ the command line:
   sequences. By default, dna5 is assumed.
 
   [ -v ],  [ --verbose ]
-  
+
   Verbose. Print extra information and running times.
 
   [ -h ],  [ --help ]
@@ -141,7 +141,7 @@ the command line:
   Print a usage summary. All other options are ignored.
 
   [ --version ]
-  
+
   Print version information.
 
 ---------------------------------------------------------------------------
@@ -157,17 +157,17 @@ the command line:
   hit.
 
   [ -rp NUM ],  [ --repeatPeriod NUM ]
-  
-  Set the maximal period of low complexity repeats in the database 
-  sequence(s) to be filtered out by the repeat masker of STELLAR before 
+
+  Set the maximal period of low complexity repeats in the database
+  sequence(s) to be filtered out by the repeat masker of STELLAR before
   comparing the sequences, i.e. the number of repeated characters. NUM must
   be a number greater than 0. The default value is 1. If NUM is set to 1,
   all homopolymers, e.g. AAAA... will be masked, if NUM is set to 2, e.g.
-  CGCGCG... will be masked. Independently of this parameter, N characters 
+  CGCGCG... will be masked. Independently of this parameter, N characters
   in the database sequence(s) are filetered out automatically.
-  
+
   [ -rl NUM ],  [ --repeatLength NUM ]
-  
+
   Set the minimal length of a low-complexity repeat region in the database
   sequence(s) to be filtered out by the repeat masker of STELLAR before
   comparing the sequences. NUM must be a number greater than 1. The default
@@ -176,31 +176,31 @@ the command line:
   at least 8 times and all homopolymers with a minimal length of 15.
   Independently of this parameter, N characters in the genome are filtered
   out automatically.
-  
+
   [ -c NUM ],  [ --abundanceCut NUM ]
-  
-  Remove overabundant query k-mers from the k-mer index. NUM must be a 
+
+  Remove overabundant query k-mers from the k-mer index. NUM must be a
   value between 0 (remove all) and 1 (remove nothing, default). k-mers with
   a relative abundance above NUM are removed. The relative abundance is
   the absolute number of a k-mers occurrences divided by the total number of
   k-mers in the query sequence(s). The total number of k-mers is about
   the total length of the query sequence(s).
-  
+
 ---------------------------------------------------------------------------
 3.4. Verification Options
 ---------------------------------------------------------------------------
 
   [ -x NUM ],  [ --xDrop NUM ]
-  
+
   Set the X-Drop parameter for the verification of SWIFT hits. The default
-  value is 5. NUM corresponds to the number of errors allowed in close 
+  value is 5. NUM corresponds to the number of errors allowed in close
   proximity in an alignment. STELLAR does not compute local alignments that
-  contain a region where the score drops by X*(1/errorRate-1) or more 
+  contain a region where the score drops by X*(1/errorRate-1) or more
   scoring matches by 1 and errors by -1/errorRate+1. During verification
   the X-drop parameter serves as a stop criterion for gapped extension.
-  
+
   [ -vs STR ],  [ --verification STR ]
-  
+
   Set the verification strategy. The default is exact verification. Options
   are exact, bestLocal, and bandedGlobal.
    exact        = The exact verification strategy as described in the
@@ -210,29 +210,29 @@ the command line:
                   STELLAR paper.
    bandedGlobal = A banded global alignment on the SWIFT hits is processed
                   like extended epsilon-cores in the exact strategy.
-  
+
   [ -dt NUM ],  [ --disableThresh NUM ]
-  
+
   Set the minimal number of local alignments for one query sequence per
-  database sequence that result in disabling a query sequence for this 
-  database sequence. The default value is infinity. All disabled queries 
+  database sequence that result in disabling a query sequence for this
+  database sequence. The default value is infinity. All disabled queries
   will be written to the file "stellar.disabled.fasta" if no other filename
   is specified.
-  
+
   [ -n NUM ],  [ --numMatches NUM ]
-  
-  The maximal number of local alignments for one query sequence per 
-  database sequence. The default value is 50. If there are more local 
+
+  The maximal number of local alignments for one query sequence per
+  database sequence. The default value is 50. If there are more local
   alignments, the rest is discarded and STELLAR only outputs the NUM
   longest local alignments.
-  
+
   [ -s NUM ],  [ --sortThresh NUM ]
-  
+
   Set the number of local alignments that trigger removal of overlapping
-  and duplicate local alignments. NUM must be at least numMatches. The 
+  and duplicate local alignments. NUM must be at least numMatches. The
   default value is 500. The algorithm implemented in STELLAR often computes
   identical and largely overlapping local alignments. STELLAR removes these
-  local alignments before outputting, and also every NUM local alignments. 
+  local alignments before outputting, and also every NUM local alignments.
   Choose a small value for saving space.
 
 ---------------------------------------------------------------------------
@@ -247,7 +247,7 @@ the command line:
 
   [ -od FILE ],  [ --outDisabled FILE ]
 
-  Change the name of the output file disabled query sequences are written 
+  Change the name of the output file disabled query sequences are written
   to to FILE. The default filename is "stellar.disabled.fa".
 
 ---------------------------------------------------------------------------
@@ -261,7 +261,7 @@ STELLAR supports currently two output format selectable via the
   txt = Human Readable Alignment Format
 
 The following subsections describe the structure of these formats.
- 
+
 ---------------------------------------------------------------------------
 4.1. General Feature Format (GFF)
 ---------------------------------------------------------------------------
@@ -271,7 +271,7 @@ delimited text format with the following columns:
 
 <seqname> <src> <feat> <start> <end> <score> <strand> <frame> [attr] [cmts]
 
-See also: http://www.sanger.ac.uk/resources/software/gff/spec.html
+See also: https://www.sanger.ac.uk/resources/software/gff/spec.html
 Consistent with this specification stellar GFF output looks as follows:
 
 DNAME stellar eps-matches DBEGIN DEND PERCID DSTRAND . ATTRIBUTES
@@ -281,7 +281,7 @@ Match value description:
   DNAME        Name of the database sequence
   stellar      Constant
   eps-matches  Constant
-  DBEGIN       Beginning position in the database sequence 
+  DBEGIN       Beginning position in the database sequence
                (positions are counted from 1)
   DEND         End position in the database sequence (included)
   PERCID       Percent identity (100 - 100 * error rate)
@@ -290,7 +290,7 @@ Match value description:
   ATTRIBUTES   A list of attributes in the format <tag_name>=<tag>
                separated by ';'
 
-Attributes are: 
+Attributes are:
 
   ID=          Name of the query sequence
   seq2Range=   Begin and end position of the alignment in the query
@@ -299,7 +299,7 @@ Attributes are:
   mutations=   Positions and bases that differ from the database sequence
                with respect to the query sequence (counting from 1)
 
-For matches on the reverse strand, DBEGIN and DEND are positions on the 
+For matches on the reverse strand, DBEGIN and DEND are positions on the
 related forward strand. It holds DBEGIN < DEND, regardless of DSTRAND.
 
 ---------------------------------------------------------------------------
@@ -311,7 +311,7 @@ the name of the database sequence followed by a line containing the start
 and end position of the match in this sequence.
 The next two lines contain the name of the query sequence and the start and
 end positions in the query sequence.
-Positions are counted from 0, end positions are exclusive, i.e. the first 
+Positions are counted from 0, end positions are exclusive, i.e. the first
 position behind the last position of the match.
 
 The alignment is displayed in rows, one row for the database sequence and
@@ -328,7 +328,7 @@ is a '.' above each line every 5 positions and a ':' every ten positions.
 5.1. Two long sequences
 ---------------------------------------------------------------------------
 
-In the folder seqan/apps/stellar/examples/ you can find the files 
+In the folder seqan/apps/stellar/examples/ you can find the files
 NC_001477.fasta and NC_001474.fasta containing the sequences of two virus
 serotypes. To compare the two sequences do the following:
 
@@ -371,7 +371,7 @@ fragments:
 The output file will contain 15 matches, 6 entirely mapped reads, 3 reads
 split into 2 fragments each, and one read split into 3 matches at different
 genome locations.
-  
+
 ---------------------------------------------------------------------------
 6. Reference and Contact
 ---------------------------------------------------------------------------

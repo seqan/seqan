@@ -59,7 +59,7 @@ namespace seqan2 {
 /*!
  * @tag FileCompressionTags#GZFile
  * @headerfile <seqan/stream.h>
- * @brief File compression using the popular <a href="http://www.gzip.org">gzip</a> format.
+ * @brief File compression using the popular <a href="https://www.gzip.org">gzip</a> format.
  * @signature typedef Tag<GZFile_> GZFile;
  */
 
@@ -72,7 +72,7 @@ typedef Tag<GZFile_> GZFile;
  * @signature typedef Tag<BgzfFile_> BgzfFile;
  * @brief File compression using the BGZF (Block GZip Format).
  *
- * The file format is described in the <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">SAM file format
+ * The file format is described in the <a href="https://samtools.github.io/hts-specs/SAMv1.pdf">SAM file format
  * description</a>.
  */
 
@@ -83,7 +83,7 @@ typedef Tag<BgzfFile_> BgzfFile;
  * @tag FileCompressionTags#BZ2File
  * @headerfile <seqan/stream.h>
  *
- * @brief File compression using the popular <a href="http://bzip.org">bzip2</a> format.
+ * @brief File compression using the popular <a href="https://bzip.org">bzip2</a> format.
  *
  * @signature typedef Tag<BZ2File_> BZ2File;
  */

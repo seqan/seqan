@@ -1,6 +1,6 @@
                           Mason Fragment Sequencing
 
-                      http://www.seqan.de/projects/mason
+                      https://www.seqan.de/apps/mason
                               Version 2.0.0-beta1
                                 February, 2014
 
@@ -62,7 +62,7 @@ paired-end Illumina reads (default) of length 100.
   CACGGCGCCATTATGAGAACTGAAATGACTCCCTTGGTCCTGTCGTATCAGGAAGCTGACGACATATTGG
   $ mason_frag_sequencing -i adeno_fragments.fa -o left.fq -or right.fq
   ...
-  $ head left.fq 
+  $ head left.fq
   @simulated.1
   GCCTATAATAAAATTGCCGTCATCAATTTTCACTTCCGCATTTCAGTTTTCGCGCCTAAAACACAAAATTTGCACAAACAACGCCCAAAAAACATCATTT
   +
@@ -73,7 +73,7 @@ paired-end Illumina reads (default) of length 100.
   IHIIHIHHIHIIIHHHHIIHFHHGFIIHGIIIGHIIEGIHIHHHEGGIIIGGIIIIDGBIIIIICIDDEICGIFII=IIEHFDDHIIIIIII;DAGEBI?
   @simulated.3
   AGTCCTGTGAGCACCACCGGAATAGTACTGGAAATACTGACTTAATGTGCTCTTTGTGCTATCTGCGAGCCTACAACATGTTCATTTACAGTAAGTGTGC
-  $ head right.fq 
+  $ head right.fq
   @simulated.1
   CCTATCTAATAATATACCTTATACTGGACTAGTGCCAATATTAAAATGAAGTGGGCGTAGTGTGTAATTTGATTGGGTGGAGGTGTGGCTTTGGCGTGCT
   +
@@ -95,5 +95,5 @@ In case of questions and problems please contact the mailing list
 
 or file a bug at
 
-  http://trac.seqan.de/newticket
+  https://trac.seqan.de/newticket
 

@@ -160,7 +160,7 @@ public:
     // Pointer Operators;  Have to be defined within class.
     // ------------------------------------------------------------------------
 
-    // For chaining behaviour of operator->(), see http://stackoverflow.com/a/8782794/84349
+    // For chaining behaviour of operator->(), see https://stackoverflow.com/a/8782794/84349
 
 
     TIterator &

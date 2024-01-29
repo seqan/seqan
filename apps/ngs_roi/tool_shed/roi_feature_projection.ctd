@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="RoiFeatureProjection" version="0.1" docurl="http://www.seqan.de" category="NGS ROI Analysis" >
+<tool name="RoiFeatureProjection" version="0.1" docurl="https://www.seqan.de" category="NGS ROI Analysis" >
 	<executableName>roi_feature_projection</executableName>
 	<description>Region Of Interest Projection.</description>
 	<manual>Compute the projection of a ROI file to regions from a BED or GFF file.  The result is a ROI file where each interval from the BED/GFF/GTF file that overlapped with one input ROI file is a region of interest, with the coverage counts projected to the new region of interest.
@@ -54,7 +54,7 @@
 			<mapping referenceName="roi_feature_projection.gff-group-by" />
 		</clielement>
 	</cli>
-	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="https://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="roi_feature_projection" description="Region Of Interest Projection.">
 			<ITEM name="write-ctd-file-ext" value="" type="string" description="Override file extension for --write-ctd" required="false" advanced="true" />
 			<ITEM name="quiet" value="false" type="string" description="Set verbosity to a minimum." restrictions="true,false" required="false" advanced="false" />

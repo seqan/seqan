@@ -80,7 +80,7 @@ namespace seqan2
  *
  * @section Remarks
  *
- * See the <a href="http://wikipedia.org/wiki/Viterbi_algorithm"> Wikipedia article on the Viterbi algorithm</a> for an
+ * See the <a href="https://wikipedia.org/wiki/Viterbi_algorithm"> Wikipedia article on the Viterbi algorithm</a> for an
  * introduction to the algorithm itself.
  *
  * @see HmmAlgorithms#forwardAlgorithm
@@ -356,7 +356,7 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  *
  * @section Remarks
  *
- * See the <a href="http://en.wikipedia.org/wiki/Forward_algorithm">Wikipedia article on the Forward algorithm</a> for
+ * See the <a href="https://en.wikipedia.org/wiki/Forward_algorithm">Wikipedia article on the Forward algorithm</a> for
  * an introduction to the algorithm itself.
  *
  * @see HmmAlgorithms#viterbiAlgorithm
@@ -521,7 +521,7 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  * @return TCargo The probability of the sequence <tt>seq</tt>.  <tt>TProbability</tt> is the type parameter
  *                <tt>TCargo</tt> of the type of <tt>hmm</tt>.
  *
- * See the <a href="http://en.wikipedia.org/wiki/Forward-backward_algorithm">Wikipedia article on the Forward-backward
+ * See the <a href="https://en.wikipedia.org/wiki/Forward-backward_algorithm">Wikipedia article on the Forward-backward
  * algorithm</a> for an introduction to the algorithm itself.
  *
  * @see HmmAlgorithms#viterbiAlgorithm

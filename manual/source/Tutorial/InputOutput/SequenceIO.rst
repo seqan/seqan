@@ -216,6 +216,6 @@ Assignment 4
 Next Steps
 ----------
 
-* Read the Wikipedia articles about the `FASTA file format <http://en.wikipedia.org/wiki/FASTA_format>`_ and the `FASTQ file format and quality values <http://en.wikipedia.org/wiki/FASTQ_format>`_ to refresh your knowledge.
+* Read the Wikipedia articles about the `FASTA file format <https://en.wikipedia.org/wiki/FASTA_format>`_ and the `FASTQ file format and quality values <https://en.wikipedia.org/wiki/FASTQ_format>`_ to refresh your knowledge.
 * Read the :ref:`tutorial-io-indexed-fasta-io` tutorial to learn how to read FASTA files efficiently in a random-access fashion.
 * Continue with the :ref:`tutorial`.

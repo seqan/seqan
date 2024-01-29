@@ -53,7 +53,7 @@ namespace seqan2
 /*!
  * @class ThreadPool
  * @headerfile <seqan/parallel.h>
- * @brief Handles a pool of concurrent <a href="http://en.cppreference.com/w/cpp/thread/thread">std::threads</a>.
+ * @brief Handles a pool of concurrent <a href="https://en.cppreference.com/w/cpp/thread/thread">std::threads</a>.
  * @signature class ThreadPool;
  *
  * This is a simple raii-wrapper class to manage a set of <tt>std::threads</tt>.

@@ -7,7 +7,7 @@
 Fixing Whitespace Automatically
 ===============================
 
-This page describes how to use `Universal Indent GUI <http://universalindent.sourceforge.net/>`_ and `Uncrustify <http://uncrustify.sourceforge.net/>`_ to automatically fix whitespace such that code resembles the :ref:`infra-contribute-style-cpp` more closely.
+This page describes how to use `Universal Indent GUI <https://universalindent.sourceforge.net/>`_ and `Uncrustify <https://uncrustify.sourceforge.net/>`_ to automatically fix whitespace such that code resembles the :ref:`infra-contribute-style-cpp` more closely.
 
 * Uncrustify is a command line program that is given a style definition and a source file and reformats the source file according to the configuration.
 * Universal Indent GUI is a graphical front-end to Uncrustify with life preview that allows to manipulate the configuration and immediately see the results.
@@ -16,7 +16,7 @@ Installing Universal Indent GUI
 -------------------------------
 
 This one is pretty easy. On Ubuntu and other Linux systems, you can use the package management system to install the GUI and the reformatting programs.
-The `Universal Indent GUI download page <http://sourceforge.net/projects/universalindent/files/uigui/>`_ has binaries for Mac Os X and Windows.
+The `Universal Indent GUI download page <https://sourceforge.net/projects/universalindent/files/uigui/>`_ has binaries for Mac Os X and Windows.
 
 Preview with Universal Indent GUI
 ---------------------------------

@@ -7,7 +7,7 @@ Dependencies
  * Python packages: Cheetah, matplotlib
  * ngs_roi binaries:
 
-   svn co http://svn.seqan.de/seqan/trunk seqan-trunk
+   svn co https://svn.seqan.de/seqan/trunk seqan-trunk
    pushd seqan-trunk/sandbox
    svn co https://projets.pasteur.fr/.../jagla jagla
    popd

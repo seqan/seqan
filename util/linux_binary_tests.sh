@@ -56,14 +56,14 @@ fi
 
 # List of binary packages to tests.
 BINARY_URLS=(
-    "http://packages.seqan.de/razers3/razers3-3.1.1-Linux-i686.tar.bz2"
-    "http://packages.seqan.de/razers3/razers3-3.1.1-Linux-x86_64.tar.bz2"
-    "http://packages.seqan.de/stellar/stellar-1.4.1-Linux-i686.tar.bz2"
-    "http://packages.seqan.de/stellar/stellar-1.4.1-Linux-x86_64.tar.bz2"
-    "http://packages.seqan.de/breakpoint_calculator/breakpoint_calculator-0.2.1-Linux-i686.tar.bz2"
-    "http://packages.seqan.de/breakpoint_calculator/breakpoint_calculator-0.2.1-Linux-x86_64.tar.bz2"
-    "http://packages.seqan.de/snp_store/snp_store-1.0.1-Linux-i686.tar.bz2"
-    "http://packages.seqan.de/snp_store/snp_store-1.0.1-Linux-x86_64.tar.bz2")
+    "https://packages.seqan.de/razers3/razers3-3.1.1-Linux-i686.tar.bz2"
+    "https://packages.seqan.de/razers3/razers3-3.1.1-Linux-x86_64.tar.bz2"
+    "https://packages.seqan.de/stellar/stellar-1.4.1-Linux-i686.tar.bz2"
+    "https://packages.seqan.de/stellar/stellar-1.4.1-Linux-x86_64.tar.bz2"
+    "https://packages.seqan.de/breakpoint_calculator/breakpoint_calculator-0.2.1-Linux-i686.tar.bz2"
+    "https://packages.seqan.de/breakpoint_calculator/breakpoint_calculator-0.2.1-Linux-x86_64.tar.bz2"
+    "https://packages.seqan.de/snp_store/snp_store-1.0.1-Linux-i686.tar.bz2"
+    "https://packages.seqan.de/snp_store/snp_store-1.0.1-Linux-x86_64.tar.bz2")
 
 # Array with test calls for each package.
 APP_CALLS=(

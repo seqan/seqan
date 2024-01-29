@@ -19,13 +19,13 @@ Duration
 
 Prerequisites
   Eclipse KNIME SDK
-    You can download it from the `KNIME Download Site <http://www.knime.org/downloads/overview>`_ (at the end of the page). We will use Version 3.1.
+    You can download it from the `KNIME Download Site <https://www.knime.org/downloads/overview>`_ (at the end of the page). We will use Version 3.1.
   git
     For downloading the latest GenericKnimeNodes.
   Apache Ant
-   The Generic KNIME Plugins project uses `Apache Ant <http://ant.apache.org/>`_ as the build system.
+   The Generic KNIME Plugins project uses `Apache Ant <https://ant.apache.org/>`_ as the build system.
    On Linux and Mac, you should be able to install it through your package manager.
-   For Windows, see the `Apache Ant Downloads <http://ant.apache.org/bindownload.cgi>`_.
+   For Windows, see the `Apache Ant Downloads <https://ant.apache.org/bindownload.cgi>`_.
 
 
 .. important::
@@ -51,9 +51,9 @@ We will work in a new directory *knime_node* (we will assume that the directory 
 
 Preparation: Installing KNIME File Handling
 -------------------------------------------
-We need to install support for file handling nodes in KNIME. In order to do that 
+We need to install support for file handling nodes in KNIME. In order to do that
 - Launch your Eclipse-KNIME-SDK
-  
+
   .. tip::
 
     **Launching Eclipse-KNIME-SDK**
@@ -65,7 +65,7 @@ We need to install support for file handling nodes in KNIME. In order to do that
 
 .. figure:: install-knime-1.png
 
-- On the install window enter ``http://www.knime.org/update/3.1`` into the ``Work with:`` field, enter ``file`` into the search box, and finally select ``KNIME File Handling Nodes`` in the list.
+- On the install window enter ``https://www.knime.org/update/3.1`` into the ``Work with:`` field, enter ``file`` into the search box, and finally select ``KNIME File Handling Nodes`` in the list.
 
 - Then, click ``Next`` and follow through with the installation of the plugin. When done, Eclipse must be restarted.; in the program's main menu: ``Help > Install New Software...``.
 
@@ -89,7 +89,7 @@ The following example will demonstrate the creation of a SeqAn app and its regis
 
 .. code-block:: console
 
-   ~ # git clone http://github.com/seqan/seqan seqan-src
+   ~ # git clone https://github.com/seqan/seqan seqan-src
    ~ # cd seqan-src
    ~ # ./util/bin/skel.py app knime_node .
 
@@ -187,6 +187,6 @@ Your tool will show up in the tool selector in ``Community Nodes``.
 
    If you are running a MacOS you might need to add *-Xms40m -Xmx512M -XX:MaxPermSize=256m -Xdock:icon=../Resources/Eclipse.icns -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -server* to the ``VM argument`` box of your ``Run Configuration``.
 
-You should now be able to use the created node in a KNIME workflow. 
+You should now be able to use the created node in a KNIME workflow.
 
 If you would like to learn more about the structure of the plugin and where the crucial information is stored you can read the :ref:`tutorial-workflows-generating-knime-nodes-overview` section of the tutorial Generating KNIME Nodes.

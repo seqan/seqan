@@ -431,7 +431,7 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_fill_pointer)
     CDStruct prototype;
     char space[2 * sizeof(CDStruct)];
     resetCDStructStatics();
-    // TODO(holtgrew): Need to initialize arrays before assigning with fill_n() through arrayFill()?  Also see http://stackoverflow.com/questions/5490756.
+    // TODO(holtgrew): Need to initialize arrays before assigning with fill_n() through arrayFill()?  Also see https://stackoverflow.com/questions/5490756.
 
     CDStruct * itBeg = reinterpret_cast<CDStruct *>(&space[0]);
     CDStruct * itEnd = itBeg + 2;

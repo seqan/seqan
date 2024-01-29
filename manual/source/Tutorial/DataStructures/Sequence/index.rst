@@ -19,7 +19,7 @@ You will also find some more information about using the alphabet types.
 
 Besides the alphabets SeqAn also implements a string class.
 SeqAn strings are generic containers in which characters of any alphabet are stored continuously in memory.
-The default string class implementation is equivalent to the STL `vector <http://en.cppreference.com/w/cpp/container/vector>`_ class.
+The default string class implementation is equivalent to the STL `vector <https://en.cppreference.com/w/cpp/container/vector>`_ class.
 However, the memory mangement of the SeqAn string class is optimized for working with SeqAn's alphabets.
 Apart of the default string class implementation SeqAn provides many useful specializations of this class, which are very useful in the bioinformatics context.
 The tutorial about :ref:`tutorial-datastructures-sequences-strings-and-segments` gives you a more detailed overview over the string class and it's functionality.

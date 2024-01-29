@@ -3,7 +3,7 @@
 Contributer Guide
 =================
 
-SeqAn is on GitHub: http://github.com/seqan/seqan
+SeqAn is on GitHub: https://github.com/seqan/seqan
 
 Use the GitHub page to fork SeqAn, create tickets and/or pull requests.
 You can also follow and like the project there!

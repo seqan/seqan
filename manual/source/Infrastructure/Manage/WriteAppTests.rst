@@ -357,7 +357,7 @@ For example, the output could be as follows:
 This is a common error that tells us that we have to appropriately set the environment variable *PYTHONPATH* so the module *seqan.app_tests* is available from within Python.
 
 You have to add ``util/py_lib`` to your PYTHONPATH.
-On Linux/Mac Os X, you can do this as follows (on Windows you have to set the environment variable, e.g. following `this guide <http://vlaurie.com/computers2/Articles/environment.htm>`_).
+On Linux/Mac Os X, you can do this as follows (on Windows you have to set the environment variable, e.g. following `this guide <https://vlaurie.com/computers2/Articles/environment.htm>`_).
 
 .. code-block:: console
 

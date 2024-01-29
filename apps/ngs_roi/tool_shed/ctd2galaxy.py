@@ -393,7 +393,7 @@ class CTDWriter(XMLWriter):
         self.closeTag('cli')
         # <PARAMETERS>, <NODE>, <ITEM>, <ITEMLIST> group
         self.openTag('PARAMETERS', args={'version': 1.4,
-                                         'xsi:noNamespaceSchemaLocation': 'http://open-ms.sourceforge.net/schemas/Param_1_4.xsd',
+                                         'xsi:noNamespaceSchemaLocation': 'https://open-ms.sourceforge.net/schemas/Param_1_4.xsd',
                                          'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'})
         self.indent_level += 1
         self.handleParameters(tool.parameters)

@@ -84,7 +84,7 @@ typedef Tag<ZipIterator_> ZipIterator;
  * This iterator ties together different iterator types for different containers of the same size.
  * It allows one to operate on a single iterator, if multiple containers need to be traversed simultaneously.
  * Note, that all operations are still executed in a serial fashion.
- * If the zip iterator is dereferenced it returns a <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
+ * If the zip iterator is dereferenced it returns a <a href="https://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a>
  * containing the dereferenced values of all embedded iterators.
  * The metafunctions @link Value @endlink, @link GetValue @endlink and @link Reference @endlink
  * are overloaded accordingly.
@@ -164,7 +164,7 @@ struct MakeIndexSequence<0, Indices...>
  *
  * @tparam TZipIterator The type of the @link ZipIterator @endlink.
  *
- * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the container
+ * @return TRes A <a href="https://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the container
  *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
  */
 template <typename... TIteratorPack>
@@ -189,7 +189,7 @@ struct Container<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
  *
  * @tparam TZipIterator The type of the @link ZipIterator @endlink.
  *
- * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
+ * @return TRes A <a href="https://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
  *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
  */
 template <typename... TIteratorPack>
@@ -211,7 +211,7 @@ struct Value<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
  *
  * @tparam TZipIterator The type of the @link ZipIterator @endlink.
  *
- * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
+ * @return TRes A <a href="https://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
  *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
  */
 template <typename... TIteratorPack>
@@ -233,7 +233,7 @@ struct GetValue<Iter<std::tuple<TIteratorPack...>, ZipIterator> >
  *
  * @tparam TZipIterator The type of the @link ZipIterator @endlink.
  *
- * @return TRes A <a href="http://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
+ * @return TRes A <a href="https://en.cppreference.com/w/cpp/utility/tuple">std::tuple</a> containing the value
  *               types of all iterator types embedded in the <tt>TZipIterator</tt> type.
  */
 template <typename... TIteratorPack>

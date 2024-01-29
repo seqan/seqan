@@ -103,7 +103,7 @@ int main(int argc, const char * argv[])
     addTextSection(parser, "Contact and References");
     addListItem(parser, "For questions or comments, contact:", "Jonathan Goeke <goeke@molgen.mpg.de>");
     addListItem(parser, "Please reference the following publication if you used ALF or the N2 method for your analysis:", "Jonathan Goeke, Marcel H. Schulz, Julia Lasserre, and Martin Vingron. Estimation of Pairwise Sequence Similarity of Mammalian Enhancers with Word Neighbourhood Counts. Bioinformatics (2012).");
-    addListItem(parser, "Project Homepage:", "http://www.seqan.de/projects/alf");
+    addListItem(parser, "Project Homepage:", "https://www.seqan.de/apps/alf");
 
     // Parse command line.
     seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);

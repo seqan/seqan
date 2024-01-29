@@ -165,7 +165,7 @@ macros are seqan:Macro.SEQAN\_PATH\_TO\_ROOT and
 seqan:Macro.SEQAN\_TEMP\_FILENAME.
 
 The macros themselves are documented on the `Macro page of the SeqAn
-docs <http://www.seqan.de/dddoc/html_devel/INDEXPAGE_Macro.html>`__.
+docs <https://www.seqan.de/dddoc/html_devel/INDEXPAGE_Macro.html>`__.
 
 Best Practices
 ~~~~~~~~~~~~~~

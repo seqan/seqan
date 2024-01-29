@@ -1,6 +1,6 @@
  /*==========================================================================
                      Dfi - The Deferred Frequency Index
-                   http://www.seqan.de/projects/dfi.html
+                   https://www.seqan.de/apps/dfi.html
 
  ============================================================================
   This is an application of the Dfi algorithm in
@@ -20,7 +20,7 @@
   Lesser General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ==========================================================================*/
 
 #include <seqan/arg_parse.h>

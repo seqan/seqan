@@ -51,11 +51,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_TUPLE_REM_HPP
 // # define SEQAN_PREPROCESSOR_TUPLE_REM_HPP
@@ -125,16 +125,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_TUPLE_ELEM_HPP
 // # define SEQAN_PREPROCESSOR_TUPLE_ELEM_HPP
@@ -516,11 +516,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_SEQ_SIZE_HPP
 // # define SEQAN_PREPROCESSOR_SEQ_SIZE_HPP
@@ -1065,16 +1065,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_CAT_HPP
 // # define SEQAN_PREPROCESSOR_CAT_HPP
@@ -1109,11 +1109,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_SEQ_ENUM_HPP
 //# define SEQAN_PREPROCESSOR_SEQ_ENUM_HPP
@@ -1399,16 +1399,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_TUPLE_EAT_HPP
 // # define SEQAN_PREPROCESSOR_TUPLE_EAT_HPP
@@ -1461,16 +1461,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_REPETITION_DETAIL_FOR_HPP
 // # define SEQAN_PREPROCESSOR_REPETITION_DETAIL_FOR_HPP
@@ -2003,11 +2003,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # include <boost/preprocessor/config/config.hpp>
 #
@@ -2295,16 +2295,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_LOGICAL_BOOL_HPP
 // # define SEQAN_PREPROCESSOR_LOGICAL_BOOL_HPP
@@ -2589,11 +2589,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_CONTROL_EXPR_IIF_HPP
 // # define SEQAN_PREPROCESSOR_CONTROL_EXPR_IIF_HPP
@@ -2625,11 +2625,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_CONTROL_IIF_HPP
 // # define SEQAN_PREPROCESSOR_CONTROL_IIF_HPP
@@ -2662,16 +2662,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_CONTROL_IF_HPP
 //# define SEQAN_PREPROCESSOR_CONTROL_IF_HPP
@@ -2697,16 +2697,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_FACILITIES_EMPTY_HPP
 //# define SEQAN_PREPROCESSOR_FACILITIES_EMPTY_HPP
@@ -2723,16 +2723,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_PUNCTUATION_COMMA_HPP
 //# define SEQAN_PREPROCESSOR_PUNCTUATION_COMMA_HPP
@@ -2749,16 +2749,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_PUNCTUATION_COMMA_IF_HPP
 //# define SEQAN_PREPROCESSOR_PUNCTUATION_COMMA_IF_HPP
@@ -2785,16 +2785,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_REPETITION_REPEAT_HPP
 //# define SEQAN_PREPROCESSOR_REPETITION_REPEAT_HPP
@@ -3615,16 +3615,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_REPETITION_FOR_HPP
 // # define SEQAN_PREPROCESSOR_REPETITION_FOR_HPP
@@ -3924,16 +3924,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_FACILITIES_EMPTY_HPP
 // # define SEQAN_PREPROCESSOR_FACILITIES_EMPTY_HPP
@@ -3953,11 +3953,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_SEQ_ELEM_HPP
 // # define SEQAN_PREPROCESSOR_SEQ_ELEM_HPP
@@ -4059,11 +4059,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_SEQ_SEQ_HPP
 // # define SEQAN_PREPROCESSOR_SEQ_SEQ_HPP
@@ -4106,16 +4106,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_ARITHMETIC_INC_HPP
 //# define SEQAN_PREPROCESSOR_ARITHMETIC_INC_HPP
@@ -4399,16 +4399,16 @@
 
 # /* Copyright (C) 2001
 #  * Housemarque Oy
-#  * http://www.housemarque.com
+#  * https://www.housemarque.com
 #  *
 #  * Distributed under the Boost Software License, Version 1.0. (See
 #  * accompanying file LICENSE_1_0.txt or copy at
-#  * http://www.boost.org/LICENSE_1_0.txt)
+#  * https://www.boost.org/LICENSE_1_0.txt)
 #  */
 #
 # /* Revised by Paul Mensonides (2002) */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_ARITHMETIC_DEC_HPP
 // # define SEQAN_PREPROCESSOR_ARITHMETIC_DEC_HPP
@@ -4693,11 +4693,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 // # ifndef SEQAN_PREPROCESSOR_SEQ_FOR_EACH_HPP
 // # define SEQAN_PREPROCESSOR_SEQ_FOR_EACH_HPP
@@ -4760,11 +4760,11 @@
 #  *     (C) Copyright Paul Mensonides 2002.
 #  *     Distributed under the Boost Software License, Version 1.0. (See
 #  *     accompanying file LICENSE_1_0.txt or copy at
-#  *     http://www.boost.org/LICENSE_1_0.txt)
+#  *     https://www.boost.org/LICENSE_1_0.txt)
 #  *                                                                          *
 #  ************************************************************************** */
 #
-# /* See http://www.boost.org for most recent version. */
+# /* See https://www.boost.org for most recent version. */
 #
 //# ifndef SEQAN_PREPROCESSOR_SEQ_FOR_EACH_I_HPP
 //# define SEQAN_PREPROCESSOR_SEQ_FOR_EACH_I_HPP
@@ -4832,7 +4832,7 @@
 //  Copyright (c) 2010 Eric Jourdanneau, Joel Falcou
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
+// https://www.boost.org/LICENSE_1_0.txt)
 
 //
 // Helper macro SEQAN_JOIN:

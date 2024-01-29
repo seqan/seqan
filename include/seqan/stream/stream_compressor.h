@@ -119,7 +119,7 @@ struct DefaultPageSize<BgzfFile>
 {
     static const unsigned MAX_BLOCK_SIZE = 64 * 1024;
     static const unsigned BLOCK_FOOTER_LENGTH = 8;
-    // 5 bytes block overhead (see 3.2.4. at http://www.gzip.org/zlib/rfc-deflate.html)
+    // 5 bytes block overhead (see 3.2.4. at https://datatracker.ietf.org/doc/html/rfc1951#section-3.2.4)
     static const unsigned ZLIB_BLOCK_OVERHEAD = 5;
 
     // Reduce the maximal input size, such that the compressed data

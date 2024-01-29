@@ -15,21 +15,21 @@ Install the command line client, download a GUI and have a look at the basic Atl
 GUI
 ^^^
 
-* `SourceTree <http://www.sourcetreeapp.com>`_ - Windows or MacOS X.
-* `Gitg <http://wiki.gnome.org/Gitg>`_ - Linux/GNOME.
+* `SourceTree <https://www.sourcetreeapp.com>`_ - Windows or MacOS X.
+* `Gitg <https://wiki.gnome.org/Gitg>`_ - Linux/GNOME.
 
 Documentation
 ^^^^^^^^^^^^^
 
 * `Atlassian`__ git tutorials - easy and recommended.
-* `Official <http://git-scm.com/doc>`_ git manual - complete but more advanced.
+* `Official <https://git-scm.com/doc>`_ git manual - complete but more advanced.
 
 .. __: https://www.atlassian.com/git/tutorial/git-basics
 
 Clone the SeqAn repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-SeqAn is hosted on `GitHub <http://github.com/seqan/>`_.
+SeqAn is hosted on `GitHub <https://github.com/seqan/>`_.
 Execute the following command to get the last sources:
 
 .. code-block:: console

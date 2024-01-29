@@ -59,7 +59,7 @@ namespace seqan2 {
  * @signature typedef Murphy5 Tag<Murphy5_>;
  *
  * This is the 5-character reduction defined by Murphy et al,
- * 2000, <a href="http://www.ncbi.nlm.nih.gov/pubmed/10775656">http://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
+ * 2000, <a href="https://www.ncbi.nlm.nih.gov/pubmed/10775656">https://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
  *
  * Since it was created from the 20-letter alphabet the clusters in SeqAn are
  * not identical (they contain more symbols). This is the clustering:

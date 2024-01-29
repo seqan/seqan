@@ -102,7 +102,7 @@ clear(FaiIndexEntry_ &entry)
  * @signature class FaiIndex;
  *
  * FAI indices allow the rast random access to sequences or parts of sequences in a FASTA file.  Originally, they were
- * introduced in the <a href="http://samtools.sourceforge.net/samtools.shtml">samtools</a> program.
+ * introduced in the <a href="https://samtools.sourceforge.net/samtools.shtml">samtools</a> program.
  *
  * Also see the <a href="https://seqan.readthedocs.io/en/main/Tutorial/InputOutput/IndexedFastaIO.html">Indexed FASTA I/O
  * Tutorial</a>.

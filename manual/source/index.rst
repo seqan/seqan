@@ -20,7 +20,7 @@ Requirements
 
 Well, as SeqAn is written in C++ it might not come as a surprise, that you should bring some basic knowledge about the C++ programming language.
 We made quite an effort to not depend on other libraries, than the on-board tools already bring.
-This means, to learn SeqAn it suffices in the beginning to only know about C++ and the `STL <http://en.cppreference.com/w/cpp>`_ which is the standard template library defined by the ISO C++ committee.
+This means, to learn SeqAn it suffices in the beginning to only know about C++ and the `STL <https://en.cppreference.com/w/cpp>`_ which is the standard template library defined by the ISO C++ committee.
 The rest will be discussed in the subsequent tutorials step by step.
 
 Before we start, here is a strong advice!
@@ -107,13 +107,13 @@ The API documentation can be found :dox:`mainpage here`.
 
 Partners
 --------
-   
+
 
     |intelLink|_
-    
+
     .. |intelLink| image:: Intel-Logo-300x198.jpg
                         :scale: 70%
-    .. _intelLink: http://www.intel.com/
+    .. _intelLink: https://www.intel.com/
 
 
     |deNBILink|_
@@ -157,10 +157,10 @@ Partners
     :maxdepth: 1
     :titlesonly:
 
-    SeqAn Project <http://seqan.de>
-    GitHub <http://github.com/seqan>
-    Twitter <http://twitter.com/SeqAnLib>
-    RSS Feeds <http://www.seqan.de/feed/>
+    SeqAn Project <https://seqan.de>
+    GitHub <https://github.com/seqan>
+    Twitter <https://twitter.com/SeqAnLib>
+    RSS Feeds <https://www.seqan.de/feed/>
     SeqAn Mailinglist <https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe>
 
 .. toctree::

@@ -1,6 +1,6 @@
 /*==========================================================================
                SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de
+                         https://www.seqan.de
 ============================================================================
 Copyright (C) 2007
 
@@ -113,7 +113,7 @@ int main(int argc, const char *argv[])
 
     addTextSection(parser, "Contact and References");
     addListItem(parser, "For questions or comments, contact:", "Tobias Rausch <rausch@embl.de>");
-    addListItem(parser, "SeqAn Homepage:", "http://www.seqan.de");
+    addListItem(parser, "SeqAn Homepage:", "https://www.seqan.de");
 
     // Parse command line.
     seqan2::ArgumentParser::ParseResult res = seqan2::parse(parser, argc, argv);

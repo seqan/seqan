@@ -34,7 +34,7 @@
 // ==========================================================================
 // beta distribution for random module
 // build by two std::gamma_distribution's
-// source: http://stackoverflow.com/questions/15165202/random-number-generator-with-beta-distribution.
+// source: https://stackoverflow.com/questions/15165202/random-number-generator-with-beta-distribution.
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_RANDOM_RANDOM_BETA_DIST_H_

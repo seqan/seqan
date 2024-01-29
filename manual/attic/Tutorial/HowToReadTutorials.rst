@@ -39,7 +39,7 @@ Typographic Conventions
    *Start -> All Programs -> Accessories -> Command Prompt*.
 -  File names are written in ``typewriter text``.
 -  Where appropriate we use
-   `links <http://en.wikipedia.org/wiki/Hyperlink>`__, e.g. to the
+   `links <https://en.wikipedia.org/wiki/Hyperlink>`__, e.g. to the
    documentation: seqan:Class.ArgumentParser.
 
 Source code is usually written with highlighting in blocks as follows
@@ -178,7 +178,7 @@ Further Steps
 
 If you found a mistake or have suggestions about an improvement of this
 page press:
-[/newticket?component=Documentation&description=Tutorial+Enhancement+for+page+http://trac.seqan.de/wiki/Tutorial/HowToReadTutorials&type=enhancement
+[/newticket?component=Documentation&description=Tutorial+Enhancement+for+page+https://trac.seqan.de/wiki/Tutorial/HowToReadTutorials&type=enhancement
 submit your comment].
 
 .. raw:: mediawiki

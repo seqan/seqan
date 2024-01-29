@@ -27,7 +27,7 @@ specializations of seqan:Class.Index:
 +-------------------------------------------------+-------------------------------------------------------------------------------------+
 | seqan:Spec.IndexQGram                           | q-gram index                                                                        |
 +-------------------------------------------------+-------------------------------------------------------------------------------------+
-| [seqan:"Spec.Pizza & Chili Index" PizzaChili]   | An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`__ index API   |
+| [seqan:"Spec.Pizza & Chili Index" PizzaChili]   | An adapter for the `Pizza & Chili <https://pizzachili.dcc.uchile.cl/>`__ index API   |
 +-------------------------------------------------+-------------------------------------------------------------------------------------+
 
 Suffix Tree Interface
@@ -254,7 +254,7 @@ important ones.
 +-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | seqan:Function.isRightTerminal                                                    | suffix tree]] figures)                                                                                                                       |
 +-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| `isLeaf <http://www.seqan.de/dddoc/html_devel/FUNCTION_Index_23is_Leaf.html>`__   | tests if the current node is a tree leaf                                                                                                     |
+| `isLeaf <https://www.seqan.de/dddoc/html_devel/FUNCTION_Index_23is_Leaf.html>`__   | tests if the current node is a tree leaf                                                                                                     |
 +-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | seqan:Function.parentEdgeLabel                                                    | returns the substring that represents the edge from the current node to its parent (only TopDownHistory Iterator)                            |
 +-----------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------+
@@ -511,7 +511,7 @@ Submit a comment
 
 If you found a mistake, or have suggestions about an improvement of this
 page press:
-[/newticket?component=Documentation&description=Tutorial+Enhancement+for+page+http://trac.seqan.de/wiki/Tutorial/Indices&type=enhancement
+[/newticket?component=Documentation&description=Tutorial+Enhancement+for+page+https://trac.seqan.de/wiki/Tutorial/Indices&type=enhancement
 submit your comment]
 
 .. raw:: mediawiki

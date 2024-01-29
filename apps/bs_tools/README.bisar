@@ -18,19 +18,19 @@ Table of Contents
 1. Overview
 ---------------------------------------------------------------------------
 
-Bisar reads three-letter mappings of bisulfite reads and computes 
-local pairwise four-letter realignments using an advanced statistical 
-alignment model. The alignment scoring scheme incorporates the global 
-methylation rate, the bisulfite conversion rate and base qualities combined 
+Bisar reads three-letter mappings of bisulfite reads and computes
+local pairwise four-letter realignments using an advanced statistical
+alignment model. The alignment scoring scheme incorporates the global
+methylation rate, the bisulfite conversion rate and base qualities combined
 with base dependent sequencing error frequencies.
-Mapping qualities are computed and after the final verification step only 
+Mapping qualities are computed and after the final verification step only
 unique four-letter alignments are given out in a SAM file.
 
 ---------------------------------------------------------------------------
 3. Usage
 ---------------------------------------------------------------------------
 
-To get a short usage description of Bisar, you can execute bisar -h or 
+To get a short usage description of Bisar, you can execute bisar -h or
 bisar --help.
 
 Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
@@ -45,7 +45,7 @@ Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
   [ -o  FILE ],  [--output-file FILE ]
 
   Mapping output file. Valid filetype is: .sam.
-  
+
   [ -e3 NUM ],  [ --max3-error NUM ]
 
   Max. error rate in 3-letter alphabet. In range [0..100]. Default: 3.
@@ -62,15 +62,15 @@ Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
 
   Use empirical substitution error frequencies of Illumina sequencing
   data for alignment scoring scheme (corresponding to Dohm et al. 2008).
-   
+
   [ -nsi ],  [ --ns-ins-errors ]
 
-  Use empirical insertion error frequencies of Illumina sequencing data for 
+  Use empirical insertion error frequencies of Illumina sequencing data for
   alignment scoring scheme (corresponding to Minoche et al. 2011).
 
   [ -nsd ],  [ --ns-del-errors ]
 
-  Use empirical deletion error frequencies of Illumina sequencing data for 
+  Use empirical deletion error frequencies of Illumina sequencing data for
   alignment scoring scheme (corresponding to Minoche et al. 2011).
 
   [ -der NUM ],  [ --del-error-rate NUM ]
@@ -118,7 +118,7 @@ Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
   [ -h ],  [ --help ]
 
   Displays this help message.
-  
+
   [ --version ]
 
   Display version information.
@@ -130,14 +130,14 @@ Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
 
 The verified four-letter pairwise alignments are given out in SAM format.
 
-See http://samtools.sourceforge.net/ for more details.
+See https://samtools.sourceforge.net/ for more details.
 
 ---------------------------------------------------------------------------
 5. Example
 ---------------------------------------------------------------------------
 
-In order to compute realignments for all reads with up to 4% errors in their 
-three-letter alignment, while allowing up to 5% errors in four-letter 
+In order to compute realignments for all reads with up to 4% errors in their
+three-letter alignment, while allowing up to 5% errors in four-letter
 alignments call:
 
   bisar -e3 4 -e4 5 -o mapped_reads_verified.sam mapped_reads.sam \
@@ -161,8 +161,8 @@ or
 7. References
 ---------------------------------------------------------------------------
 
-More detailed information about the underlying method you can find in the 
+More detailed information about the underlying method you can find in the
 following document:
-http://www.mi.fu-berlin.de/en/inf/groups/abi/theses/master_dipl/krakau/
+https://www.mi.fu-berlin.de/en/inf/groups/abi/theses/master_dipl/krakau/
 msc_thesis_krakau.pdf?1394119375
 

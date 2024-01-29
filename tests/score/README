@@ -11,7 +11,7 @@ There are the following kind of matrices in this directory:
 
   PAM<n>
     PAM amino acid substitution score matrices with distance n.
-    Source: http://www.bioinformatics.nl/tools/pam.html
+    Source: https://www.bioinformatics.nl/tools/pam.html
 
   VTML200I
-    Source: http://www.drive5.com/pop/
+    Source: https://www.drive5.com/pop/

@@ -6,7 +6,7 @@
 	<description>Region Of Interest Intersection.</description>
 	<manual>Compute the intersection of a ROI file and regions from a BED or GFF file.  The result is a ROI file where each interval from the BED/GFF/GTF file that overlapped with one input ROI file is a region of interest, with the coverage counts projected to the new region of interest.
 </manual>
-	<docurl>http://www.seqan.de</docurl>
+	<docurl>https://www.seqan.de</docurl>
 	<category></category>
 	<cli>
 		<clielement optionIdentifier="--quiet" isList="false">
@@ -43,7 +43,7 @@
 			<mapping referenceName="roi_intersect.gff-group-by" />
 		</clielement>
 	</cli>
-	<PARAMETERS  version="1.4" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_4.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<PARAMETERS  version="1.4" xsi:noNamespaceSchemaLocation="https://open-ms.sourceforge.net/schemas/Param_1_4.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="roi_intersect" description="Region Of Interest Intersection.">
 			<ITEM name="quiet" value="false" type="string" description="Set verbosity to a minimum." restrictions="true,false"  />
 			<ITEM name="verbose" value="false" type="string" description="Enable verbose output." restrictions="true,false"  />

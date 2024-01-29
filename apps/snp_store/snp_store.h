@@ -1,6 +1,6 @@
  /*==========================================================================
   SNP Calling routine of RazerS - Fast Read Mapping with Controlled Loss Rate
-                   http://www.seqan.de/projects/razers.html
+                   https://www.seqan.de/apps/razers3.html
 
  ============================================================================
   Copyright (C) 2008 by Anne-Katrin Emde
@@ -16,7 +16,7 @@
   Lesser General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ==========================================================================*/
 
 #ifndef SEQAN_HEADER_CALLSNPS_H
@@ -1843,7 +1843,7 @@ logSum(TValue x, TValue y)
 // this is basically maq's source code translated into seqan
 // see Li, H., Ruan, J. & Durbin, R. Mapping short DNA sequencing reads and calling variants
 // using mapping quality scores. Genome Res. 2008.
-// and http://maq.sourceforge.net
+// and https://maq.sourceforge.net
 template <typename THomoTable, typename TDependencies, typename TOptions>
 void computeCnks(THomoTable & cnks, TDependencies & fks, TOptions & options)
 {

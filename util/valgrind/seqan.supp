@@ -43,7 +43,7 @@
 }
 
 # Suppress warning in zlib.  Also see the zlib FAQ:
-# http://www.zlib.net/zlib_faq.html#faq36
+# https://www.zlib.net/zlib_faq.html#faq36
 {
    supp_zlib_gzclose
    Memcheck:Cond

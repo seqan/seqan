@@ -80,7 +80,7 @@ The following bash script calls programs and reacts to the return code.
 Links
 ^^^^^
 
-*  `Error Level @ Wikipedia <http://en.wikipedia.org/wiki/Exit_status>`_
+*  `Error Level @ Wikipedia <https://en.wikipedia.org/wiki/Exit_status>`_
 
 Assume Few Things About Paths
 -----------------------------
@@ -249,9 +249,9 @@ If it is not set, then use ``/tmp`` or ``/var/tmp``.
 Links
 ^^^^^
 
-*  `TMPDIR @ Wikipedia <http://en.wikipedia.org/wiki/TMPDIR>`_
+*  `TMPDIR @ Wikipedia <https://en.wikipedia.org/wiki/TMPDIR>`_
 
 Misc Links
 ----------
 
-*  `Heng Li's "Debugging Memory Problems" <http://lh3lh3.users.sourceforge.net/memdebug.shtml>`_ (Heng Li of BWA, samtools etc. fame)
+*  `Heng Li's "Debugging Memory Problems" <https://lh3lh3.users.sourceforge.net/memdebug.shtml>`_ (Heng Li of BWA, samtools etc. fame)

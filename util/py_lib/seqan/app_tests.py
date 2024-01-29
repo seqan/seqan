@@ -38,7 +38,7 @@ import gzip
 def md5ForFile(f, block_size=2**20):
     """Compute MD5 of a file.
 
-    Taken from http://stackoverflow.com/a/1131255/84349.
+    Taken from https://stackoverflow.com/a/1131255/84349.
     """
     md5 = hashlib.md5()
     while True:

@@ -1,4 +1,4 @@
-# Source: http://svn.python.org/projects/python/trunk/Misc/valgrind-python.supp
+# Source: https://svn.python.org/projects/python/trunk/Misc/valgrind-python.supp
 
 # Suppressing all warnings in the python2.7 binary.
 {

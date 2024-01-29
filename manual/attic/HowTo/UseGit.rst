@@ -14,9 +14,9 @@ GUI
 
 -
 
-   -  `SourceTree <http://www.sourcetreeapp.com>`__ - Windows or MacOS
+   -  `SourceTree <https://www.sourcetreeapp.com>`__ - Windows or MacOS
       X.
-   -  `Gitg <http://wiki.gnome.org/Gitg>`__ - Linux/GNOME.
+   -  `Gitg <https://wiki.gnome.org/Gitg>`__ - Linux/GNOME.
 
 Documentation
 ^^^^^^^^^^^^^
@@ -25,13 +25,13 @@ Documentation
 
    -  `Atlassian <https://www.atlassian.com/git/tutorial/git-basics>`__
       git tutorials - easy and recommended.
-   -  `Official <http://git-scm.com/doc>`__ git manual - complete but
+   -  `Official <https://git-scm.com/doc>`__ git manual - complete but
       more advanced.
 
 Clone the SeqAn repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-SeqAn is hosted on `GitHub <http://github.com/seqan/>`__. Execute the
+SeqAn is hosted on `GitHub <https://github.com/seqan/>`__. Execute the
 following command to get the last sources:
 
 ::

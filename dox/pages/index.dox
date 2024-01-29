@@ -52,7 +52,7 @@ Alternatively you might want to check the <a href="https://seqan.readthedocs.io/
             <tr><td><ul><li>@link DirectedGraph @endlink</li><li>@link UndirectedGraph @endlink.</li></ul></td><td>simple directed and undirected graphs structures</td></tr>
             <tr><td><ul><li>@link Automaton @endlink</li><li>@link WordGraph @endlink</li><li>@link HmmGraph @endlink</li></ul></td><td>special subclasses for sequence analysis</td></tr>
             <tr><td><ul><li>@link dijkstra Dijkstra's algorithm @endlink</li><li>@link bellmanFordAlgorithm Bellman-Ford algorithm @endlink</li><li>@link topologicalSort topological sorting @endlink</li><li>@link dagShortestPath shortest paths in DAGs @endlink</li></ul></td><td>standard graph algorithms</td></tr>
-            <tr><td colspan="2">For more advanced usage and algorithms, we recommend using the <a href="http://lemon.cs.elte.hu/trac/lemon" target="_top">LEMON Graph Library</a>.</td></tr>
+            <tr><td colspan="2">For more advanced usage and algorithms, we recommend using the <a href="https://lemon.cs.elte.hu/trac/lemon" target="_top">LEMON Graph Library</a>.</td></tr>
         </table>
     </li>
 </ul>
