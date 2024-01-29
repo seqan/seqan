@@ -207,7 +207,7 @@ void _testBlastOutputCheckFileWritten(TString const & contents, TContext const &
     versionLine.append(std::to_string(SEQAN_VERSION_MINOR));
     versionLine.append(".");
     versionLine.append(std::to_string(SEQAN_VERSION_PATCH));
-    versionLine.append(", http://www.seqan.de]\n");
+    versionLine.append(", https://www.seqan.de]\n");
 
     std::string fieldsLine = "# Fields: ";
     if (context.legacyFormat)
@@ -335,7 +335,7 @@ void _testBlastOutputCheckFileWritten(TString const & output, TContext const & c
     compString.append(std::to_string(SEQAN_VERSION_MINOR));
     compString.append(".");
     compString.append(std::to_string(SEQAN_VERSION_PATCH));
-    compString.append(", http://www.seqan.de]\n"
+    compString.append(", https://www.seqan.de]\n"
     "\n\n"
     "Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,\n"
     "Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997),\n"

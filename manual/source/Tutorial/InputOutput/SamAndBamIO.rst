@@ -17,7 +17,7 @@ Duration
   1 h (45 min if you know the SAM format)
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_
+  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, `SAM Format Specification <https://samtools.sourceforge.net/SAM1.pdf>`_
 
 Overview
 --------
@@ -45,7 +45,7 @@ Here, we will focus on multi-read alignments.
 
 SAM files are text files, having one record per line.
 BAM files are just binary, compressed versions of SAM files that have a stricter organization and aim to be more efficiently usable by programs and computers.
-The nuts and bolts of the formats are described in the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
+The nuts and bolts of the formats are described in the `SAM Format Specification <https://samtools.sourceforge.net/SAM1.pdf>`_.
 
 The SAM and BAM related I/O functionality in SeqAn focuses on allowing access to these formats in SeqAn with thin abstractions.
 The :ref:`tutorial-datastructures-store-fragment-store` Tutorial shows how to get a more high-level abstraction for multi-read alignments.
@@ -310,5 +310,5 @@ You can read indices into a :dox:`BaiBamIndex` object with the function :dox:`Ba
 Next Steps
 ----------
 
-* Read the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
+* Read the `SAM Format Specification <https://samtools.sourceforge.net/SAM1.pdf>`_.
 * Continue with the :ref:`tutorial`.

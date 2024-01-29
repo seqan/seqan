@@ -393,7 +393,7 @@ Library Updates and Selected Bugfixes
 
 - Journaled String Tree (new module):
     - reference compressed string set structure
-    - for more details see the `publication <http://bioinformatics.oxfordjournals.org/content/30/24/3499.short>`_
+    - for more details see the `publication <https://bioinformatics.oxfordjournals.org/content/30/24/3499.short>`_
 
 - STL containers:
     - added a completely new adaptation to SeqAn interfaces that supports all STL containers, also ``std::array`` and ``std::forward_list``

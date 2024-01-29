@@ -35,7 +35,7 @@ Unsupported data
 Installation from sources
 -------------------------
 
-The following instructions assume Linux or OS X. For more information, including Windows instructions, refer to the `SeqAn getting started tutorial <http://trac.seqan.de/wiki/Tutorial/GettingStarted>`_.
+The following instructions assume Linux or OS X. For more information, including Windows instructions, refer to the `SeqAn getting started tutorial <https://trac.seqan.de/wiki/Tutorial/GettingStarted>`_.
 
 Software requirements
 ~~~~~~~~~~~~~~~~~~~~~
@@ -138,20 +138,20 @@ Map paired-end reads by providing two DNA read files:
 Output format
 ^^^^^^^^^^^^^
 
-Output files follow the `SAM/BAM format specification <http://samtools.github.io/hts-specs/SAMv1.pdf>`_.
+Output files follow the `SAM/BAM format specification <https://samtools.github.io/hts-specs/SAMv1.pdf>`_.
 In addition, Yara generates the following optional tags:
 
-+-----+----------------------------------------------------+ 
-| Tag | Meaning                                            | 
-+=====+====================================================+ 
++-----+----------------------------------------------------+
+| Tag | Meaning                                            |
++=====+====================================================+
 | NM  | Edit distance                                      |
-+-----+----------------------------------------------------+ 
++-----+----------------------------------------------------+
 | X0  | Number of co-optimal mapping locations             |
-+-----+----------------------------------------------------+ 
++-----+----------------------------------------------------+
 | X1  | Number of sub-optimal mapping locations            |
-+-----+----------------------------------------------------+ 
++-----+----------------------------------------------------+
 | XA  | Alternative locations: (chr,begin,end,strand,NM;)* |
-+-----+----------------------------------------------------+ 
++-----+----------------------------------------------------+
 
 
 Contact

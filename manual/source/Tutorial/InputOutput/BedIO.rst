@@ -17,7 +17,7 @@ Duration
   45min
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, `BED Format Specification <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_
+  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, `BED Format Specification <https://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_
 
 This tutorial shows how to read and write BED files using the :dox:`BedFileIn` and :dox:`BedFileOut` classes.
 It starts out with a quick reminder on the structure of BED files and will then continue with how to read and write BED files.

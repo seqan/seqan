@@ -35,7 +35,7 @@ Journaled String
 The :dox:`JournaledString` data structure behaves like a normal :dox:`String` in SeqAn, except that it is composed of two data structures.
 
 #. The first data structure is a :dox:`Holder` which stores a sequence.
-#. The second data structure stores modifications that are made to this particular sequence using a **journal** (see `Journaling Filesystems <http://en.wikipedia.org/wiki/Journaling_file_system>`_ for more information).
+#. The second data structure stores modifications that are made to this particular sequence using a **journal** (see `Journaling Filesystems <https://en.wikipedia.org/wiki/Journaling_file_system>`_ for more information).
    This journal contains a list of deletions and insertions.
    The inserted characters are stored in an additional **insertion buffer**.
 

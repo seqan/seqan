@@ -22,7 +22,7 @@ Useful commands:
 Google Perftools (Linux, Mac Os X)
 ----------------------------------
 
-*  Download and install http://code.google.com/p/gperftools/ (also available through Ubuntu/Debian packages)
+*  Download and install https://code.google.com/p/gperftools/ (also available through Ubuntu/Debian packages)
 *  Compile your program with debug symbols (you probably want to enable optimization as well).
 
 .. code-block:: console

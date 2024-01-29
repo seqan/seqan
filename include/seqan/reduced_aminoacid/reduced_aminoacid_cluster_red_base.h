@@ -77,7 +77,7 @@ namespace seqan2 {
  * @section Background
  *
  * The method employed for reducing the alphabet is similar to Murphy et al,
- * 2000, <a href="http://www.ncbi.nlm.nih.gov/pubmed/10775656">http://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
+ * 2000, <a href="https://www.ncbi.nlm.nih.gov/pubmed/10775656">https://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
  *
  * Correlation coefficients for the Blosum62 scores of all pairs of amino
  * acids in the alphabet were computed and clustered with WPGMA (using

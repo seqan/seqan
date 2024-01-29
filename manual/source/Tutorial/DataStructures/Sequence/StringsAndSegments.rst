@@ -80,7 +80,7 @@ For commonly used string parameterizations, SeqAn has a range of shortcuts imple
 Working with Strings
 ^^^^^^^^^^^^^^^^^^^^
 
-The SeqAn String implementation provides the common C++ operators that you know already from the `vector <http://en.cppreference.com/w/cpp/container/vector>`_ class of the STL.
+The SeqAn String implementation provides the common C++ operators that you know already from the `vector <https://en.cppreference.com/w/cpp/container/vector>`_ class of the STL.
 For example:
 
 .. includefrags:: demos/tutorial/sequences/example_functionality1.cpp

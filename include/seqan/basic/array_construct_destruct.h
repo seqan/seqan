@@ -36,7 +36,7 @@
 // ==========================================================================
 
 // TODO(holtgrew): Order of parameters should be (target1, target2, ..., source1, source2, ...).
-// TODO(holtgrew): Can we maybe replace at least part with http://www.cplusplus.com/reference/std/memory/?
+// TODO(holtgrew): Can we maybe replace at least part with https://www.cplusplus.com/reference/std/memory/?
 // TODO(holtgrew): The metafunction should go into the alphabet submodule, the functions into the sequence/string module.
 
 #include <new>

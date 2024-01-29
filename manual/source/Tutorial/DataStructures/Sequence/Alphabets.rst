@@ -26,7 +26,7 @@ Types
 -----
 
 Any type that provides a default constructor, a copy constructor and an assignment operator can be used as the alphabet / contained type of a :dox:`String` (see also the tutorial :ref:`tutorial-datastructures-sequences`).
-This includes the C++ `POD types <http://www.parashift.com/c++-faq-lite/intrinsic-types.html#faq-26.7>`_, e.g. ``char``, ``int``, ``double`` etc.
+This includes the C++ `POD types <https://www.parashift.com/c++-faq-lite/intrinsic-types.html#faq-26.7>`_, e.g. ``char``, ``int``, ``double`` etc.
 In addition you can use more complex types like :dox:`String` as the contained type of strings, e.g. ``String<String<char> >``.
 
 SeqAn also provides the following types that are useful in bioinformatics.

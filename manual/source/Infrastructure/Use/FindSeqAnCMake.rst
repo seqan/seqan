@@ -10,10 +10,10 @@ Using SeqAn in CMake-based projects
 Overview
 --------
 
-`CMake <http://cmake.org/>`_ is a cross-platform build system generator where you describe different executables, binaries and their dependencies in ``CMakeLists.txt`` files.
+`CMake <https://cmake.org/>`_ is a cross-platform build system generator where you describe different executables, binaries and their dependencies in ``CMakeLists.txt`` files.
 Then, CMake generates build systems such as Makefiles or Visual Studio projects from these files. This article describes only the most basic things about CMake in general and focuses on how to use SeqAn easily from within CMake projects.
 
-In CMake projects, one uses `modules to find libraries <http://www.vtk.org/Wiki/CMake:How_To_Find_Libraries>`_ such as SeqAn.
+In CMake projects, one uses `modules to find libraries <https://www.vtk.org/Wiki/CMake:How_To_Find_Libraries>`_ such as SeqAn.
 SeqAn ships with such a module.
 
 In the following we assume that you have installed CMake on your operating system. If you have not yet, install it via the operating systems mechanisms (see also :ref:`Setting up SeqAn <infra-use-install>`) and/or `download from the CMake homepage <https://cmake.org/download/>`_.
@@ -154,7 +154,7 @@ You can then execute the application in the usual way
 Using IDEs
 ^^^^^^^^^^
 
-On Linux and BSD many IDEs directly support cmake, just open/import the ``CMakeLists.txt`` with e.g. `KDevelop <https://www.kdevelop.org>`_ or `QtCreator <http://www.qt.io/ide/>`_.
+On Linux and BSD many IDEs directly support cmake, just open/import the ``CMakeLists.txt`` with e.g. `KDevelop <https://www.kdevelop.org>`_ or `QtCreator <https://www.qt.io/ide/>`_.
 
 To use XCode on Mac with your CMake-based project, add ``-G Xcode`` to the cmake call above and then run ``open TODO``.
 

@@ -20,12 +20,12 @@ class TextNodeTest(unittest.TestCase):
 
     def testRenderNested(self):
         parent = proc_doc.TextNode(
-            type='a', attrs={'href': 'http://www.example.com'})
+            type='a', attrs={'href': 'https://www.example.com'})
         parent.addChild(proc_doc.TextNode(text='A word'))
         parent.addChild(proc_doc.TextNode(text=' does not make a '))
         parent.addChild(proc_doc.TextNode(text='sentence'))
         self.assertEqual(parent.toHtmlLike(),
-                         '<a href="http://www.example.com">A word does '
+                         '<a href="https://www.example.com">A word does '
                          'not make a sentence</a>')
 
 

@@ -20,7 +20,7 @@ Prerequisite Tutorials
   :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, :ref:`tutorial-datastructures-alignment`, :ref:`tutorial-algorithms-alignment-pairwise-sequence-alignment`
 
 Other recommended reading
-  `Basics of Blast Statistics <http://www.ncbi.nlm.nih.gov/BLAST/tutorial/Altschul-1.html>`_
+  `Basics of Blast Statistics <https://www.ncbi.nlm.nih.gov/BLAST/tutorial/Altschul-1.html>`_
 
 Technical requirements
   Full C++11 support required in compiler

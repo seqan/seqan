@@ -1,7 +1,7 @@
                                    NGS ROI
                        NGS Region of Interest Analysis
 
-                     http://www.seqan.de/projects/ngs-roi
+                     https://www.seqan.de/projects/ngs-roi
                                 Version 0.2.2
                                 October, 2013
 
@@ -243,7 +243,7 @@ Contact
 
 The integration of ngs_roi is available in the Galaxy Tool Shed (Testing)
 
-  http://testtoolshed.g2.bx.psu.edu/view/holtgrewe/ngs_roi
+  https://testtoolshed.g2.bx.psu.edu/view/holtgrewe/ngs_roi
 
 ------------------------------------------------------------------------------
 5. File Formats
@@ -284,7 +284,7 @@ as follows
 
 See the following external resources for a specification of these formats:
 
-  BED http://genome.ucsc.edu/FAQ/FAQformat.html#format1
-  GFF http://www.sanger.ac.uk/resources/software/gff/spec.html
-      http://www.sequenceontology.org/gff3.shtml
-  GTF http://mblab.wustl.edu/GTF22.html
+  BED https://genome.ucsc.edu/FAQ/FAQformat.html#format1
+  GFF https://www.sanger.ac.uk/resources/software/gff/spec.html
+      https://www.sequenceontology.org/gff3.shtml
+  GTF https://mblab.wustl.edu/GTF22.html

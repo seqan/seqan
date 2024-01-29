@@ -7,7 +7,7 @@
 Creating Workflows with SeqAn Nodes in KNIME
 ============================================
 
-`KNIME <http://www.knime.org>`_ is a well-established data analysis framework which supports the generation of workflows for data analysis.
+`KNIME <https://www.knime.org>`_ is a well-established data analysis framework which supports the generation of workflows for data analysis.
 In this tutorial, we describe how to use SeqAn applications in KNIME.
 
 Install SeqAn in KNIME
@@ -30,7 +30,7 @@ In the opening dialog fill-in the following Information:
 ``Name``
   ``Trusted Community Contributions (3.1)``
 ``Location``
-  ``http://update.knime.org/community-contributions/trusted/3.1``
+  ``https://update.knime.org/community-contributions/trusted/3.1``
 
 If you are, by chance, still using an  older KNIME version and you do not want to update to the latest version you can find the corresponding update site location at the `community-contributions <https://tech.knime.org/community>`_ page of the KNIME website.
 
@@ -49,13 +49,13 @@ After the installation is done, KNIME will prompt you to restart. Click OK and K
    :width: 75%
 
 
-Now you can drag and drop the installed SeqAn nodes to make your desired workflow together with the other KNIME nodes. 
+Now you can drag and drop the installed SeqAn nodes to make your desired workflow together with the other KNIME nodes.
 
 A variant calling workflow (An example)
 -----------------------------------------
 In this example we will use a read mapper (yara) to map short reads against a reference genome. Then we will use SnpStore to call variants and store the variants as ``vcf`` and ``gff`` files. We will also do error correction of Illumina reads before we map them to the reference. In this way we can identify SNP's more clearly.
 
-1. Download this zipped :download:`example data<example_data.zip>` and extract it somewhere appropriate. It contains three files. The file ``NC_008253_1K.fa`` is a small toy reference genome. Files ``sim_reads_l.fq`` and ``sim_reads_r.fq`` are short sequencing paired reads. For each read in one file its mate is contained in the other file. 
+1. Download this zipped :download:`example data<example_data.zip>` and extract it somewhere appropriate. It contains three files. The file ``NC_008253_1K.fa`` is a small toy reference genome. Files ``sim_reads_l.fq`` and ``sim_reads_r.fq`` are short sequencing paired reads. For each read in one file its mate is contained in the other file.
 
 2. On the left side of the opened KNIME window under KNIME Explorer right click on ``LOCAL (Local Workspace)`` and chose the menu item ``New KNIME Workflow``. You will be presented with a dialog to enter the name and location of the workflow to be created. Give your workflow an appropriate name, perhaps something like 'Variant Calling Workflow', and click finish.
 
@@ -65,7 +65,7 @@ In this example we will use a read mapper (yara) to map short reads against a re
 
 4. Now it's time to configure our nodes. To configure a node just double-click on it. A configuration dialog will pop up. Let us configure our nodes on our workflow one by one.
 
-|  **a. InputFile Node** (``INPUT: Reference``): 
+|  **a. InputFile Node** (``INPUT: Reference``):
 |      - browse and select the file ``NC_008253_1K.fa`` under Selected file field.
 |      - click OK.
 |  **b. InputFiles Node** (``READS L&R``):
@@ -88,7 +88,7 @@ The git repository https://github.com/seqan/knime_seqan_workflows has several wo
 
 With the steps described above you will be able to set up your own workflows in KNIME.
 If you want to contribute a workflow to the SeqAn community  you are encouraged to do so.
-You can do it as follows: 
+You can do it as follows:
 
 - Simply clone the workflow git repository into your own github repository and add a new folder ``WORKFLOWNAME_workflow``.
 - In KNIME export your workflow without the data files as a ``.zip`` file into that folder.

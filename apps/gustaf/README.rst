@@ -23,7 +23,7 @@ Installation
 ------------
 
 | Gustaf is distributed with SeqAn - The C++ Sequence Analysis Library
-  (see http://www.seqan.de). Please check out the
+  (see https://www.seqan.de). Please check out the
   latest version of SeqAn and build a release version with:
 
 ::
@@ -35,7 +35,7 @@ Installation
     make gustaf
 
 | Precompiled binaries (Linux 64-bit, Windows, Mac OS X) of Gustaf can
-  be downloaded from the SeqAn project page: http://www.seqan.de/projects/gustaf/
+  be downloaded from the SeqAn project page: https://www.seqan.de/projects/gustaf/
 
 Usage
 -----
@@ -91,9 +91,9 @@ Output Formats
 
 | Gustaf currently supports the GFF and the VCF output format for reporting breakpoints. Using option ``-do``, Gustaf creates a Dot file of each(!) read that can be converted to png and show a graph with all alignments used for the read.
 |
-| The General Feature Format is specified by the Sanger Institute as a tab- delimited text format http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
+| The General Feature Format is specified by the Sanger Institute as a tab- delimited text format https://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
 |
-| See  http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41 for information about the VCF file format specifications.
+| See  https://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41 for information about the VCF file format specifications.
 
 Example
 -------

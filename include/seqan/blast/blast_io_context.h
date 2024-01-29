@@ -166,7 +166,7 @@ struct BlastIOContext
         append(versionString, std::to_string(SEQAN_VERSION_MINOR));
         append(versionString, '.');
         append(versionString, std::to_string(SEQAN_VERSION_PATCH));
-        append(versionString, ", http://www.seqan.de]");
+        append(versionString, ", https://www.seqan.de]");
     }
 
     /*!

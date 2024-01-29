@@ -49,7 +49,7 @@ template <typename T> struct Pointer;
  *
  * @signature IteratorAssociatedTypesConcept<T>
  *
- * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
+ * The SeqAn iterators mirror the definitions from <a href="https://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
 
 /*!
@@ -168,7 +168,7 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  *
  * @signature InputIteratorConcept<T>
  *
- * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
+ * The SeqAn iterators mirror the definitions from <a href="https://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  *
  * @see OutputIteratorConcept
  */
@@ -264,7 +264,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  *
  * @signature OutputIteratorConcept<T>
  *
- * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>. *
+ * The SeqAn iterators mirror the definitions from <a href="https://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>. *
  *
  * @section Examples
  *
@@ -363,7 +363,7 @@ SEQAN_CONCEPT_REFINE(OutputIteratorConcept, (T), (CopyConstructible))
  *
  * @signature ForwardIteratorConcept<T>
  *
- * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
+ * The SeqAn iterators mirror the definitions from <a href="https://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  *
  * @section Examples
  *
@@ -398,7 +398,7 @@ SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(Default
  *
  * @brief A @link ForwardIteratorConcept Forward Iterator @endlink that allows dereferenced assignment.
  *
- * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
+ * The SeqAn iterators mirror the definitions from <a href="https://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
 
 SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept)(OutputIteratorConcept))
@@ -425,7 +425,7 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  *
  * @signature BidirectionalIteratorConcept<T>
  *
- * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
+ * The SeqAn iterators mirror the definitions from <a href="https://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  *
  * @section Examples
  *

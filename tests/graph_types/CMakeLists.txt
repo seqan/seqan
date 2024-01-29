@@ -21,7 +21,7 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
 endif ()
 
 # Clang 3.2.0 has a bug that prevents test_graph_types from compiling.  See
-# http://llvm.org/bugs/show_bug.cgi?id=14538
+# https://llvm.org/bugs/show_bug.cgi?id=14538
 #
 # Still present in Clang 3.3.0 but apparently fixed for 3.4.0.
 if (COMPILER_IS_CLANG AND ("${_GCC_VERSION}" STREQUAL "320" OR

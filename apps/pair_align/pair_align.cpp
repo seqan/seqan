@@ -1,6 +1,6 @@
 /*==========================================================================
                SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de
+                         https://www.seqan.de
 ============================================================================
 Copyright (C) 2007-2012
 This library is free software; you can redistribute it and/or

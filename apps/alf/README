@@ -1,5 +1,5 @@
                *** ALF - Alignment Free Sequence Comparison ***
-                       http://www.seqan.de/projects/alf
+                       https://www.seqan.de/projects/alf
                                 January, 2012
 
 ---------------------------------------------------------------------------
@@ -20,7 +20,7 @@ Table of Contents
 ALF can be used to calculate the pairwise similarity of sequences using
 alignment-free methods. All methods which are implemented are based on
 k-mer counts. More details can be found in the online documentation of the
-alignment-free methods (www.seqan.de). By default, ALF uses the 
+alignment-free methods (www.seqan.de). By default, ALF uses the
 N2 similarity measure.
 
 ---------------------------------------------------------------------------
@@ -28,7 +28,7 @@ N2 similarity measure.
 ---------------------------------------------------------------------------
 
 ALF is distributed with SeqAn - The C++ Sequence Analysis Library (see
-http://www.seqan.de). To build ALF from Git do the following:
+https://www.seqan.de). To build ALF from Git do the following:
 
   1) git clone https://github.com/seqan/seqan.git
   2) mkdir -p build/Release
@@ -130,7 +130,7 @@ sequences from the input fasta file, for example:
 ---------------------------------------------------------------------------
 
 These examples use the fasta file "small.fasta" which can be found in
-seqan/apps/alf/example/. Copy this file to the directory where you 
+seqan/apps/alf/example/. Copy this file to the directory where you
 execute alf.
 
 (1) Run ALF with default settings on two sequences:

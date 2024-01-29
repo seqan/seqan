@@ -26,7 +26,7 @@ This is the first practical tutorial you should look at when starting to use our
 We assume that you have some programming experience (preferably in C++ or C) and concentrate on SeqAn specific aspects.
 We will start out pretty slowly and hopefully the tutorial will make sense to you even if you are new to C++.
 However, to really leverage the power of SeqAn you will have to learn C++.
-There are many tutorials on C++, for example `the tutorial at cplusplus.com <http://www.cplusplus.com/doc/tutorial/>`_.
+There are many tutorials on C++, for example `the tutorial at cplusplus.com <https://www.cplusplus.com/doc/tutorial/>`_.
 
 This tutorial will walk you through a simple example program that highlights the things that are most prominently different from the libraries that many SeqAn newcomers are used to:
 
@@ -130,7 +130,7 @@ Another string implementation stores the characters on disk and only keeps a par
 For alphabets, you can use strings of nucleotides, such as genomes, or you can use strings of amino acids, for example.
 
 SeqAn uses **template functions** and **template classes** to implement the different types of strings using the **generic programming** paradigm.
-Template functions/classes are normal functions/classes with the additional feature that one passes the type of a variable as well as its value (see also: `templates in cpp <http://www.cplusplus.com/doc/tutorial/templates/>`_).
+Template functions/classes are normal functions/classes with the additional feature that one passes the type of a variable as well as its value (see also: `templates in cpp <https://www.cplusplus.com/doc/tutorial/templates/>`_).
 This means that SeqAn algorithms and data structures are implemented in such a way that they work on all types implementing an informal interface (see information box below for more details).
 This is similar to the philosophy employed in the C++ STL (Standard Template Library).
 

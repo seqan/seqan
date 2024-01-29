@@ -13,7 +13,7 @@ Files
 
   FindTBB
 
-    Copy from http://code.google.com/p/findtbb/ of the TBB finder.
+    Copy from https://code.google.com/p/findtbb/ of the TBB finder.
 
   CMakeMacroParseArguments.cmake
 

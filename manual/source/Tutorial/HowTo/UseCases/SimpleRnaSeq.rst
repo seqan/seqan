@@ -48,7 +48,7 @@ These tasks typically require lots of data structures that are related to each o
 The Fragment Store subsumes all these data structures in an easy to use interface.
 It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting of multiple contigs.
 Additionally, regions of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intron' (see :dox:`FragmentStore::PredefinedAnnotationTypes`) or custom features.
-The Fragment Store supports I/O functionality to read/write a read alignment in `SAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://amos.sourceforge.net/wiki/index.php/AMOS>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
+The Fragment Store supports I/O functionality to read/write a read alignment in `SAM <https://samtools.sourceforge.net/>`_ or `AMOS <https://amos.sourceforge.net/wiki/index.php/AMOS>`_ format and to read/write annotations in `GFF <https://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <https://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
 
 The Fragment Store can be compared with a database where each table (called "store") is implemented as a :dox:`String` member of the :dox:`FragmentStore` class.
 The rows of each table (implemented as structs) are referred by their ids which are their positions in the string and not stored explicitly.
@@ -75,7 +75,7 @@ Instead of accessing these tables directly, the :dox:`AnnotationTreeIterator Ann
 Interval Tree
 ^^^^^^^^^^^^^
 
-The :dox:`IntervalTree` is a data structure that stores one-dimensional intervals in a balanced tree and efficiently answers `range queries <http://en.wikipedia.org/wiki/Range_query>`_.
+The :dox:`IntervalTree` is a data structure that stores one-dimensional intervals in a balanced tree and efficiently answers `range queries <https://en.wikipedia.org/wiki/Range_query>`_.
 A range query is an operation that returns all tree intervals that overlap a given query point or interval.
 
 The interval tree implementation provided in SeqAn is based on a :dox:`Tree` which is balanced if all intervals are given at construction time.
@@ -92,7 +92,7 @@ An empty ``FragmentStore`` can simply be created with:
 .. includefrags:: demos/tutorial/simple_rna_seq/base.cpp
       :fragment: store
 
-Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`FileFormats File Format` tag.
+Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <https://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`FileFormats File Format` tag.
 The contents of different files can be loaded with subsequent calls of ``read``.
 As we want the user to specify the files via command line, our application will parse them using the :dox:`ArgumentParser` and store them in an option object.
 
@@ -115,9 +115,9 @@ Assignment 1
         .. includefrags:: demos/tutorial/simple_rna_seq/genequant_assignment1.cpp
 
    Hint
-     * Open STL `std::fstream <http://www.cplusplus.com/reference/iostream/ifstream>`_ objects and use the function :dox:`File#read` with a SAM or GTF tag.
-     * `ifstream::open <http://www.cplusplus.com/reference/iostream/ifstream/open>`_ requires the file path to be given as a C-style string (``const char *``).
-     * Use `string::c_str <http://www.cplusplus.com/reference/string/string/c_str>`_ to convert the option strings into C-style strings.
+     * Open STL `std::fstream <https://www.cplusplus.com/reference/iostream/ifstream>`_ objects and use the function :dox:`File#read` with a SAM or GTF tag.
+     * `ifstream::open <https://www.cplusplus.com/reference/iostream/ifstream/open>`_ requires the file path to be given as a C-style string (``const char *``).
+     * Use `string::c_str <https://www.cplusplus.com/reference/string/string/c_str>`_ to convert the option strings into C-style strings.
      * The function :dox:`File#read` expects a stream, a :dox:`FragmentStore` and a tag, i.e. ``Sam()`` or ``Gtf()``.
 
    Solution
@@ -271,7 +271,7 @@ Assignment 3
 
         Use the function :dox:`IntervalTree#createIntervalTree`.
 
-        **Optional:** Construct the trees in parallel over all contigs with an OpenMP parallel for-loop, see `here <http://developers.sun.com/solaris/articles/openmp.html>`_ for more information about OpenMP.
+        **Optional:** Construct the trees in parallel over all contigs with an OpenMP parallel for-loop, see `here <https://developers.sun.com/solaris/articles/openmp.html>`_ for more information about OpenMP.
 
    Solution
      .. container:: foldable
@@ -385,7 +385,7 @@ Output the gene names and their RPKM values separated by tabs as follows:
 
 .. todo: Move the files to somewhere else.
 
-Download and decompress the attached mouse annotation (`Mus_musculus.NCBIM37.61.gtf.zip <http://ftp.seqan.de/manual_files/seqan-1.4/Mus_musculus.NCBIM37.61.gtf.zip>`_ and the alignment file of RNA-Seq reads aligned to chromosome Y (`sim40mio_onlyY.sam.zip <http://ftp.seqan.de/manual_files/seqan-1.4/sim40mio_onlyY.sam.zip>`_).
+Download and decompress the attached mouse annotation (`Mus_musculus.NCBIM37.61.gtf.zip <https://ftp.seqan.de/manual_files/seqan-1.4/Mus_musculus.NCBIM37.61.gtf.zip>`_ and the alignment file of RNA-Seq reads aligned to chromosome Y (`sim40mio_onlyY.sam.zip <https://ftp.seqan.de/manual_files/seqan-1.4/sim40mio_onlyY.sam.zip>`_).
 Test your program and compare your output with the output above.
 
 Assignment 5

@@ -17,14 +17,14 @@ Duration
  45 min
 
 Prerequisites
-  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, `GFF Format Specification <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_
+  :ref:`tutorial-datastructures-sequences`, :ref:`tutorial-io-input-output-overview`, `GFF Format Specification <https://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_
 
 This tutorial shows how to read and write GFF and GTF files using the :dox:`GffFileIn` and :dox:`GffFileOut` classes.
 It starts out with a quick reminder on the structure of GFF and GTF files and will then continue with how to read and write GFF and GTF files.
 
 The GFF and GTF formats are used for annotating genomic intervals (an interval with begin/end position on a contig/chromosome).
 GFF exists in versions 2 and 3 and GTF is sometimes called "GFF 2.5".
-There are specifications for `GFF 2 <http://www.sanger.ac.uk/resources/software/gff/spec.html>`_, `GFF 3 <http://www.sequenceontology.org/gff3.shtml>`_, and `GTF <http://mblab.wustl.edu/GTF22.html>`_ available elsewhere.
+There are specifications for `GFF 2 <https://www.sanger.ac.uk/resources/software/gff/spec.html>`_, `GFF 3 <https://www.sequenceontology.org/gff3.shtml>`_, and `GTF <https://mblab.wustl.edu/GTF22.html>`_ available elsewhere.
 GFF and GTF are TSV-based formats and in general have the same structure.
 The main difference is the underlying system/ontology for the annotation but also smaller differences in the format.
 

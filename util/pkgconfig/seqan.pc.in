@@ -2,7 +2,7 @@ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 
 Name: @CMAKE_PROJECT_NAME@
 Description: C++ library for biological sequence analysis
-URL: http://www.seqan.de
+URL: https://www.seqan.de
 Version: @SEQAN_VERSION_STRING@
 Requires: zlib
 Cflags: -I${includedir} -DSEQAN_HAS_ZLIB=1 -DSEQAN_HAS_BZIP2=1

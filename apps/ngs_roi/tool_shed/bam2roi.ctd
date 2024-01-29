@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tool name="Bam2roi" version="0.1" docurl="http://www.seqan.de" category="" >
+<tool name="Bam2roi" version="0.1" docurl="https://www.seqan.de" category="" >
 	<executableName>bam2roi</executableName>
 	<description>Create ROI from BAM file.</description>
 	<manual>Calculated consecutive regions of coverage from alignment file IN.bam and write regions of interst to file OUT.roi. Counting is performed over the entire region (including intron and N-regions) based on the CIGAR string of the alignment record.
@@ -36,7 +36,7 @@
 			<mapping referenceName="bam2roi.link-over-skipped" />
 		</clielement>
 	</cli>
-	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<PARAMETERS version="1.6.2" xsi:noNamespaceSchemaLocation="https://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<NODE name="bam2roi" description="Create ROI from BAM file.">
 			<ITEM name="write-ctd-file-ext" value="" type="string" description="Override file extension for --write-ctd" required="false" advanced="true" />
 			<ITEM name="verbose" value="false" type="string" description="Verbose mode." restrictions="true,false" required="false" advanced="false" />

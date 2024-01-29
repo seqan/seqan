@@ -58,7 +58,7 @@ namespace seqan2 {
  * @see GeneticCode
  *
  * The numeric values of the enums correspond to the genbank transl_table values
- * (see <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi">http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi</a>).
+ * (see <a href="https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi">https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi</a>).
  * Some genetic codes have been deprecated, so not all numeric values are available.
  *
  * Please not that this is part of the translation module which requires C++11.
@@ -201,7 +201,7 @@ struct TranslateTableDnaToAminoAcid_
 };
 
 /* Tables according to:
- * http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
+ * https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi
  */
 
 template <typename TVoidSpec>

@@ -49,7 +49,7 @@ namespace seqan2
 
 
 // Helper function for rounding to n significant digits.  Ported from
-// Java code found here: http://stackoverflow.com/questions/202302
+// Java code found here: https://stackoverflow.com/questions/202302
 inline double
 _roundToSignificantFigures(double num, int n)
 {

@@ -17,13 +17,13 @@ Prerequisites
 -------------
 
 | ** Eclipse KNIME SDK**
-|   You can download it from the `KNIME Download Site <http://www.knime.org/downloads/overview>`_ (at the end of the page). We will use Version 3.1.
+|   You can download it from the `KNIME Download Site <https://www.knime.org/downloads/overview>`_ (at the end of the page). We will use Version 3.1.
 | **git**
 |   For Downloading the latest samtools and GenericKnimeNodes.
 | **Apache Ant**
-|   The Generic KNIME Plugins project uses `Apache Ant <http://ant.apache.org/>`_ as the build system.
+|   The Generic KNIME Plugins project uses `Apache Ant <https://ant.apache.org/>`_ as the build system.
    On Linux and Mac, you should be able to install it through your package manager.
-   For Windows, see the `Apache Ant Downloads <http://ant.apache.org/bindownload.cgi>`_ (note that samtools does not work on Windows so you will not be able to follow through with this tutorial on Windows).
+   For Windows, see the `Apache Ant Downloads <https://ant.apache.org/bindownload.cgi>`_ (note that samtools does not work on Windows so you will not be able to follow through with this tutorial on Windows).
 
 |br|
 
@@ -103,7 +103,7 @@ The descriptors directory contains two types of files i.e. the *CTD files* for e
 
 MIME Types
 ^^^^^^^^^^
-*mime.types*  file is a text file that contains a mapping between MIME types and file extensions. Every file extension, to be either used or produced by the applications in the plugin, has to be registered here. Each line contains the definition of a `MIME type <http://en.wikipedia.org/wiki/Internet_media_type>`_.
+*mime.types*  file is a text file that contains a mapping between MIME types and file extensions. Every file extension, to be either used or produced by the applications in the plugin, has to be registered here. Each line contains the definition of a `MIME type <https://en.wikipedia.org/wiki/Internet_media_type>`_.
 The name of the mime type is followed (separated by a space) by the file extensions associated with the file type.  The following example shows how the content of a *mime.types* file looks like.
 
 ::
@@ -141,7 +141,7 @@ Below is an example of a CTD file for a SortBam tool for sorting BAM files.
 
     <?xml version="1.0" encoding="UTF-8"?>
     <tool name="SortBam" version="0.1.17" category="SAM and BAM"
-          docurl="http://samtools.sourceforge.net/samtools.shtml">
+          docurl="https://samtools.sourceforge.net/samtools.shtml">
         <executableName>samtools</executableName>
         <description><![CDATA[SAMtools BAM Sorting.]]></description>
         <manual><![CDATA[samtools sort]]></manual>
@@ -164,7 +164,7 @@ Below is an example of a CTD file for a SortBam tool for sorting BAM files.
             </clielement>
         </cli>
         <PARAMETERS version="1.4"
-                    xsi:noNamespaceSchemaLocation="http://open-ms.sourceforge.net/schemas/Param_1_4.xsd"
+                    xsi:noNamespaceSchemaLocation="https://open-ms.sourceforge.net/schemas/Param_1_4.xsd"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <NODE name="bam_to_sam" description="SAMtools BAM to SAM conversion">
                 <ITEM name="argument-0" value="" type="input-file" required="true"
@@ -306,7 +306,7 @@ The following picture illustrates the process.
 Running Example
 ---------------
 
-We will adapt some functions from the `samtools <http://samtools.sf.net>`_ package to KNIME:
+We will adapt some functions from the `samtools <https://samtools.sf.net>`_ package to KNIME:
 
 | **BamToSam**
 |   This tool will execute ``samtools view -o ${OUT} ${IN}``.
@@ -321,7 +321,7 @@ Preparation: Building samtools and Downloading GenericKnimeNodes
 ----------------------------------------------------------------
 
 We will work in a new directory *knime\_samtools* (we will assume that the directory is directly in your *$HOME* for the rest of the tutorial.
-First we need to download samtools-1.3 from http://www.htslib.org/download/. Alternatively you can also use this `direct link <https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2>`_ or use either of `wget` or `curl` utilities from your command line as follows.
+First we need to download samtools-1.3 from https://www.htslib.org/download/. Alternatively you can also use this `direct link <https://github.com/samtools/samtools/releases/download/1.3/samtools-1.3.tar.bz2>`_ or use either of `wget` or `curl` utilities from your command line as follows.
 
 wget
 
@@ -374,7 +374,7 @@ We need to install support for file handling nodes in KNIME. In order to do that
    :align: center
    :width: 75%
 
-- On the install window enter ``http://www.knime.org/update/3.1`` into the ``Work with:`` field, enter ``file`` into the search box, and finally select ``KNIME File Handling Nodes`` in the list.
+- On the install window enter ``https://www.knime.org/update/3.1`` into the ``Work with:`` field, enter ``file`` into the search box, and finally select ``KNIME File Handling Nodes`` in the list.
 
 - Then, click ``Next`` and follow through with the installation of the plugin. When done, Eclipse must be restarted.; in the program's main menu: ``Help > Install New Software...``.
 

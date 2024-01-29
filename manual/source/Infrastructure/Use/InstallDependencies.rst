@@ -32,11 +32,11 @@ Windows
 The downloadable contribs contain precompiled library binaries (zlib, libbz2) for Windows by the supported compilers.
 The contribs come in 32 bit and 64 bit variants.
 
-* `Download contribs for 32 bit builds <http://ftp.seqan.de/contribs/seqan-contrib-D20160115-x86.zip>`_.
-* `Download contribs for 64 bit builds <http://ftp.seqan.de/contribs/seqan-contrib-D20160115-x64.zip>`_.
+* `Download contribs for 32 bit builds <https://ftp.seqan.de/contribs/seqan-contrib-D20160115-x86.zip>`_.
+* `Download contribs for 64 bit builds <https://ftp.seqan.de/contribs/seqan-contrib-D20160115-x64.zip>`_.
 
 You can install both variants in parallel if you want to do both 32 bit and 64 bit builds.
-Previous contribs packages are available `here <http://ftp.seqan.de/contribs/>`__ and `here <http://svn.mi.fu-berlin.de/seqan-contrib/>`__ you can find the code for building contribs with new VS versions, for example.
+Previous contribs packages are available `here <https://ftp.seqan.de/contribs/>`__ and `here <https://svn.mi.fu-berlin.de/seqan-contrib/>`__ you can find the code for building contribs with new VS versions, for example.
 
 Now, extract the downloaded ZIP file either to ``C:\Program Files`` or ``C:\``.
 

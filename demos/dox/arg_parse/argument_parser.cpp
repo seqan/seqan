@@ -49,7 +49,7 @@ int main(int argc, char const ** argv)
 
     // Add a Reference section.
     addTextSection(parser, "References");
-    addText(parser, "http://www.seqan.de");
+    addText(parser, "https://www.seqan.de");
 
     // Parse the arguments.
     ArgumentParser::ParseResult res = parse(parser, argc, argv);

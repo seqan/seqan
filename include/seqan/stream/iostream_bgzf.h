@@ -29,7 +29,7 @@ namespace seqan2 {
 const unsigned BGZF_MAX_BLOCK_SIZE = 64 * 1024;
 const unsigned BGZF_BLOCK_HEADER_LENGTH = 18;
 const unsigned BGZF_BLOCK_FOOTER_LENGTH = 8;
-const unsigned ZLIB_BLOCK_OVERHEAD = 5; // 5 bytes block overhead (see 3.2.4. at http://www.gzip.org/zlib/rfc-deflate.html)
+const unsigned ZLIB_BLOCK_OVERHEAD = 5; // 5 bytes block overhead (see 3.2.4. at https://www.gzip.org/zlib/rfc-deflate.html)
 
 // Reduce the maximal input size, such that the compressed data
 // always fits in one block even for level Z_NO_COMPRESSION.

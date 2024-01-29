@@ -28,7 +28,7 @@ Basic usage::
 
 See the end of the module code for a brief, annotated usage example.
 
-Website : http://chrisarndt.de/projects/threadpool/
+Website : https://chrisarndt.de/projects/threadpool/
 
 """
 __docformat__ = "restructuredtext en"

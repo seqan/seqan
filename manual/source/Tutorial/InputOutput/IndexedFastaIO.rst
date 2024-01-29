@@ -20,7 +20,7 @@ Duration
 Prerequisites
   :ref:`tutorial-datastructures-sequences`
 
-The idea of FASTA index files (*FAI*) comes from the `samtools <http://samtools.sourceforge.net/samtools.shtml>`_ program by Heng Li.
+The idea of FASTA index files (*FAI*) comes from the `samtools <https://samtools.sourceforge.net/samtools.shtml>`_ program by Heng Li.
 The program provides a command ``samtools faidx`` for rapidly accessing parts of a large FASTA file (e.g. querying for the first chromosome by the identifier "chr1" or querying for 900 characters starting from character 100 (1-based) by ``chr1:100-1,000``).
 To do this, the program creates an index file that contains one entry for each sequence.
 If the FASTA file is named ``path/sequence.fasta``, the index file is usually named ``path/sequence.fasta.fai``.
@@ -37,9 +37,9 @@ The module ``<seqan/seq_io.h>`` allows to create and read such ``.fai`` index fi
     There is no consensus for the metadata.
 
     However, it is common to store the sequence identifier (*id*) at the beginning of the metadata field before the first space.
-    The id is unique to the whole file and often identifies the associated sequence uniquely in a database (see section Sequence Identifiers on the `Wikipedia FASTA format <http://en.wikipedia.org/wiki/FASTA_format>`_ page).
+    The id is unique to the whole file and often identifies the associated sequence uniquely in a database (see section Sequence Identifiers on the `Wikipedia FASTA format <https://en.wikipedia.org/wiki/FASTA_format>`_ page).
 
-    While not documented anywhere explicitly, **only the characters up to the first space are used as identifiers** by widely used tools such as `BWA <http://bio-bwa.sourceforge.net/>`_.
+    While not documented anywhere explicitly, **only the characters up to the first space are used as identifiers** by widely used tools such as `BWA <https://bio-bwa.sourceforge.net/>`_.
     Only the identifier is carried over into files generated from the input files (BWA uses the sequence id from the genome FASTA to identify the contig/chromosome and the read id as the read name in the SAM output).
 
 How Does It Work?
@@ -161,7 +161,7 @@ Assignment 2
 Next Steps
 ----------
 
-* Read the Wikipedia articles about the `FASTA file format <http://en.wikipedia.org/wiki/FASTA_format>`_ and the `FASTQ file format and quality values <http://en.wikipedia.org/wiki/FASTQ_format>`_ to refresh your knowledge.
+* Read the Wikipedia articles about the `FASTA file format <https://en.wikipedia.org/wiki/FASTA_format>`_ and the `FASTQ file format and quality values <https://en.wikipedia.org/wiki/FASTQ_format>`_ to refresh your knowledge.
 * Read the API documentation of the :dox:`GenomicRegion` class for storing regions (sequence identifier, start and end position).
   There also is functionality for parsing strings like ``chr1:2,032-3,212`` into :dox:`GenomicRegion` objects.
 * Continue with the :ref:`tutorial`.

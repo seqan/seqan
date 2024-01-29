@@ -36,7 +36,7 @@
 // This code is based on the Python class PNGCanvas by Rui Carmo.  You can
 // find the code with some documentation on his site:
 //
-//   http://taoofmac.com/space/projects/PNGCanvas
+//   https://taoofmac.com/space/projects/PNGCanvas
 // ==========================================================================
 
 #ifndef SANDBOX_JAGLA_APPS_NGS_ROI_PNG_CANVAS_H_

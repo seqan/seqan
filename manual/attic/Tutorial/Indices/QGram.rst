@@ -1,4 +1,4 @@
-`Index\_QGram <http://www.seqan.de/dddoc/html/Spec_Index_QGram.html>`__
+`Index\_QGram <https://www.seqan.de/dddoc/html/Spec_Index_QGram.html>`__
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 --------------
@@ -26,18 +26,18 @@ been created already):
 
 ''' How can I create a q-gram index with q given by a variable? '''
 
-`FixedShape <http://www.seqan.de/dddoc/html/Spec_FixedShape.html>`__
+`FixedShape <https://www.seqan.de/dddoc/html/Spec_FixedShape.html>`__
 (ungapped q-gram) or
-`FixedGappedShape <http://www.seqan.de/dddoc/html/Spec_FixedGappedShape.html>`__
+`FixedGappedShape <https://www.seqan.de/dddoc/html/Spec_FixedGappedShape.html>`__
 (gapped q-gram) can only be used if q (or the gapped shape) is fixed at
 compile time. If q or the q-gram shape is variable and not known at
 compile time, you have to specialize Index\_QGram using a
-`SimpleShape <http://www.seqan.de/dddoc/html/Spec_SimpleShape.html>`__
+`SimpleShape <https://www.seqan.de/dddoc/html/Spec_SimpleShape.html>`__
 (ungapped) or
-`GappedShape <http://www.seqan.de/dddoc/html/Spec_GappedShape.html>`__
+`GappedShape <https://www.seqan.de/dddoc/html/Spec_GappedShape.html>`__
 (gapped). Directly after the instantiation of the index, you should set
 the q or the gapped shaped with resize(indexShape(myIndex), q) or
-`shapeToString <http://www.seqan.de/dddoc/html/Function_shapeToString.html>`__\ (indexShape(myIndex),
+`shapeToString <https://www.seqan.de/dddoc/html/Function_shapeToString.html>`__\ (indexShape(myIndex),
 bitString):
 
 ::
@@ -67,9 +67,9 @@ or
     open(index, fileName);
 
 If you have built your q-gram index with variable shapes (i.e.
-`SimpleShape <http://www.seqan.de/dddoc/html/Spec_SimpleShape.html>`__
+`SimpleShape <https://www.seqan.de/dddoc/html/Spec_SimpleShape.html>`__
 (ungapped) or
-`GappedShape <http://www.seqan.de/dddoc/html/Spec_GappedShape.html>`__
+`GappedShape <https://www.seqan.de/dddoc/html/Spec_GappedShape.html>`__
 (gapped)), you have to mind that q or the shape is not stored or loaded.
 This must be done manually directly before or after loading with resize
 (SimpleShape) oder stringToShape (GappedShape).
@@ -77,7 +77,7 @@ This must be done manually directly before or after loading with resize
 **Hint:** A newly instantiated index is initially empty. If you assign a
 text to be indexed, solely the text fibre is set (fibre=a certain index
 table, see
-`Fibres <http://www.seqan.de/dddoc/html/Tag_QGram%20Index%20Fibres.html>`__).
+`Fibres <https://www.seqan.de/dddoc/html/Tag_QGram%20Index%20Fibres.html>`__).
 All other fibres are empty and created on demand. Normally, a full
 created index should be saved to disk. Therefore, you have to create the
 required fibres explicitly by hand:
@@ -120,7 +120,7 @@ The **suffix array** contains all occurrences of q-grams, s.t. the
 occurrences of a single q-gram are a stored in a contiguous block. The
 **directory** stores for any possible q-gram the index of the first
 occurrence in the suffix array (see `QGram Index
-Fibres <http://www.seqan.de/dddoc/html/Tag_QGram%20Index%20Fibres.html>`__).
+Fibres <https://www.seqan.de/dddoc/html/Tag_QGram%20Index%20Fibres.html>`__).
 If the hash value of a g-gram is determined, the q-gram occurrences are
 stored from position ``dirAt(hash,index)`` to ``dirAt(hash+1,index)-1``
 in the suffix array. An occurrence is stored either as a single integer
@@ -130,7 +130,7 @@ the position within the sequence with ``getSeqOffset``.
 
 Alternatively, the Finder class can be used to determine all occurrences
 of a certain q-gram. See
-`Example <http://www.seqan.de/dddoc/html/Demo_Index%20Finder.html>`__.
+`Example <https://www.seqan.de/dddoc/html/Demo_Index%20Finder.html>`__.
 
 --------------
 

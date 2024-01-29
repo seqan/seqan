@@ -201,7 +201,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_interface)
 
 
         /* Commented out until move construction is fixed.
-           See http://trac.mi.fu-berlin.de/seqan/ticket/380 for more information.
+           See https://trac.mi.fu-berlin.de/seqan/ticket/380 for more information.
         // TODO(holtgrew): Fix move construction
         arrayConstruct(a_buf2, a_buf2 + 23); //23 ctor
         arrayConstructMove(a_buf2, a_buf2 + 23, a_buf1); // 23 move
@@ -230,7 +230,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_interface)
         //1 dtor for a
     }
 
-    /* Commented out until http://trac.mi.fu-berlin.de/seqan/ticket/380 is fixed.
+    /* Commented out until https://trac.mi.fu-berlin.de/seqan/ticket/380 is fixed.
     // TODO(holtgrew): Fix moving of values in arrays
     SEQAN_ASSERT_EQ(Test1::m_ctor_count, 574);
     SEQAN_ASSERT_EQ(Test1::m_dtor_count, 574);

@@ -230,7 +230,7 @@ SEQAN_DEFINE_TEST(Suffix)
 
 SEQAN_DEFINE_TEST(ticket317)
 {
-    // http://trac.mi.fu-berlin.de/seqan/ticket/317
+    // https://trac.mi.fu-berlin.de/seqan/ticket/317
 
     CharString text = "thisisatext";
     Infix<CharString>::Type sub1 = infix(text, 2, 8);
@@ -278,7 +278,7 @@ SEQAN_DEFINE_TEST(ticket317)
 
 SEQAN_DEFINE_TEST(ticket848)
 {
-    // http://trac.mi.fu-berlin.de/seqan/ticket/848
+    // https://trac.mi.fu-berlin.de/seqan/ticket/848
 
     CharString text = "012345";
 

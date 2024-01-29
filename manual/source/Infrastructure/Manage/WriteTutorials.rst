@@ -21,7 +21,7 @@ Wiki Conventions
 Naming Conventions
 ------------------
 
-* Use `headline capitalization <http://www.newsletterfillers.com/archives/grammar/capitalization_headline.htm>`_ for headlines.
+* Use `headline capitalization <https://www.newsletterfillers.com/archives/grammar/capitalization_headline.htm>`_ for headlines.
 * Use the tutorial's title as the file name (e.g. ``/wiki/Tutorial/NameOfYourTutorial.rst``).
 * Assignments are numbered in the order they appear in a tutorial (e.g. ``Assignment 5``).
   Do not use a section relative numbering but an absolute one.

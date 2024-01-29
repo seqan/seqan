@@ -56,7 +56,7 @@ namespace seqan2 {
  *
  * The UCSC genome browser server allows the download of a set of the known genes and isoforms used in the browser.
  * These files can be downloaded from the UCSC FTP's <tt>goldenPath</tt> folder, e.g. the one for <a
- * href="http://hgdownload.cse.ucsc.edu/goldenpath/hg19/">hg19</a>.
+ * href="https://hgdownload.cse.ucsc.edu/goldenpath/hg19/">hg19</a>.
  *
  * To load the annotations, you need to download both the <tt>knownGenes.txt.gz</tt> and the
  * <tt>knownIsoforms.txt.gz</tt> files from the UCSC <tt>goldenPath</tt> database.  These files can then be read record

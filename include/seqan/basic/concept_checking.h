@@ -53,9 +53,9 @@ namespace seqan2 {
 //  (C) Copyright John Maddock 2000.
 //  Use, modification and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
-//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//  LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-//  See http://www.boost.org/libs/static_assert for documentation.
+//  See https://www.boost.org/libs/static_assert for documentation.
 
 #define SEQAN_STATIC_ASSERT_MSG( B, Msg ) static_assert(B, Msg)
 
@@ -73,7 +73,7 @@ namespace seqan2 {
 
 // Copyright David Abrahams 2006. Distributed under the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt).
+// https://www.boost.org/LICENSE_1_0.txt).
 
 template <class UnaryFunctionPointer>
 struct unaryfunptr_arg_type;
@@ -96,7 +96,7 @@ struct unaryfunptr_arg_type<void(*)(void)>
 
 // Copyright David Abrahams 2006. Distributed under the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt).
+// https://www.boost.org/LICENSE_1_0.txt).
 
 namespace concept_checking
 {
@@ -135,7 +135,7 @@ struct concept_check_<void(*)(Model)>
 
 // Copyright David Abrahams 2006. Distributed under the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt).
+// https://www.boost.org/LICENSE_1_0.txt).
 
 /*!
  * @defgroup ConceptChecking Concept Checking
@@ -146,7 +146,7 @@ struct concept_check_<void(*)(Model)>
  * @code{.cpp}
  * // Copyright David Abrahams 2006. Distributed under the Boost Software
  * // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
- * // http://www.boost.org/LICENSE_1_0.txt).
+ * // https://www.boost.org/LICENSE_1_0.txt).
  * @endcode
  */
 
@@ -242,7 +242,7 @@ struct usage_requirements
 
 // Copyright David Abrahams 2006. Distributed under the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt).
+// https://www.boost.org/LICENSE_1_0.txt).
 
 namespace detail {
   typedef char yes;
@@ -271,7 +271,7 @@ struct not_satisfied
 
 // Copyright David Abrahams 2006. Distributed under the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt).
+// https://www.boost.org/LICENSE_1_0.txt).
 
 template <class ModelFn>
 struct requirement_;
@@ -332,7 +332,7 @@ struct requirement_<void(*)(Model)>
 
 // Copyright David Abrahams 2006. Distributed under the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt).
+// https://www.boost.org/LICENSE_1_0.txt).
 
 // Template for use in handwritten assertions
 template <class Model, class More>
@@ -383,7 +383,7 @@ struct Requires_ : unaryfunptr_arg_type<Result>
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)    //
+// https://www.boost.org/LICENSE_1_0.txt)    //
 // Backward compatibility
 //
 
@@ -414,7 +414,7 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
 
 // Copyright David Abrahams 2006. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 // SEQAN_CONCEPT_REFINE added by David Weese
 
@@ -429,7 +429,7 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  *               Typically, template parameters are models, i.e. one or multiple
  *               classes that should be checked for fulfilling a concept.This is
  *               a sequence of the Boost Preprocessor Library, read <a
- *               href="http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
+ *               href="https://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Concept identifier. Non-trivial concepts should have an
  *             identifier with a Concept-suffix.
  *
@@ -439,7 +439,7 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  * @endlink and valid expressions in a function @link ConceptChecking#SEQAN_CONCEPT_USAGE
  * @endlink, see below. Variables used in valid expressions should be (private)
  * struct members instead of local variables in member functions (read <a
- * href="http://www.boost.org/doc/libs/1_47_0/libs/concept_check/creating_concepts.htm">more</a>.
+ * href="https://www.boost.org/doc/libs/1_47_0/libs/concept_check/creating_concepts.htm">more</a>.
  *
  * @section Examples
  *
@@ -492,14 +492,14 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  *               Typically, template parameters are models, i.e. one or multiple
  *               classes that should be checked for fulfilling a concept.This is
  *               a sequence of the Boost Preprocessor Library, read <a
- *               href="http://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
+ *               href="https://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Concept identifier. Non-trivial concepts should have an
  *             identifier with a Concept-suffix.
  * @param refinedConcepts Identifiers of concepts that are refined by the new
  *                        concept.Refined concepts are implicitly integrated
  *                        into the requirements of the new concept.This is a
  *                        sequence of the Boost Preprocessor Library, read
- *                        <a href="http://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>
+ *                        <a href="https://boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>
  *
  * A concept is implemented as a template struct with name <tt>name</tt> and
  * arguments <tt>params</tt>. The struct inherits all refined concept structs.
@@ -552,7 +552,7 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  *
  * @param implementedConcepts Identifiers of concepts that are fulfilled by the model.  This is a sequence of the
  *                            Boost Preprocessor Library, read <a
- *                            href="http://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
+ *                            href="https://www.boost.org/doc/libs/1_47_0/libs/preprocessor/doc/index.html">more</a>.
  * @param name Model type, i.e. an identifier or an identifier with template
  *             arguments.
  *
@@ -569,7 +569,7 @@ template <class T> inline void ignoreUnusedVariableWarning(T const&) {}
  */
 
 
-// STRIP_PARENS macro by Steven Watanabe (http://lists.boost.org/boost-users/2010/08/61429.php)
+// STRIP_PARENS macro by Steven Watanabe (https://lists.boost.org/boost-users/2010/08/61429.php)
 #define SEQAN_APPLY(macro, args) SEQAN_APPLY_I(macro, args)
 #define SEQAN_APPLY_I(macro, args) macro args
 #define SEQAN_STRIP_PARENS(x) SEQAN_EVAL((SEQAN_STRIP_PARENS_I x), x)

@@ -377,7 +377,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
     }
 
     ctdfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    ctdfile << "<tool name=\"" << class_name << "\" version=\"" << xmlEscape(getVersion(me)) << "\" docurl=\"http://www.seqan.de\" category=\"" << xmlEscape(getCategory(me)) << "\" ctdVersion=\"1.7\">\n";
+    ctdfile << "<tool name=\"" << class_name << "\" version=\"" << xmlEscape(getVersion(me)) << "\" docurl=\"https://www.seqan.de\" category=\"" << xmlEscape(getCategory(me)) << "\" ctdVersion=\"1.7\">\n";
     ctdfile << _indent(currentIndent) << "<executableName>" << toolname << "</executableName>\n";
     ctdfile << _indent(currentIndent) << "<description>" << xmlEscape(getShortDescription(me)) << "</description>\n";
     ctdfile << _indent(currentIndent) << "<manual>" << xmlEscape(_getManual(me)) << "</manual>\n"; // TODO(aiche): as soon as we have a more sophisticated documentation embedded into the CmdParser, we should at this here
@@ -421,7 +421,7 @@ writeCTD(ArgumentParser const & me, std::ostream & ctdfile)
     }
 
     ctdfile << _indent(--currentIndent) << "</cli>\n";
-    ctdfile << _indent(currentIndent++) << "<PARAMETERS version=\"1.6.2\" xsi:noNamespaceSchemaLocation=\"http://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
+    ctdfile << _indent(currentIndent++) << "<PARAMETERS version=\"1.6.2\" xsi:noNamespaceSchemaLocation=\"https://open-ms.sourceforge.net/schemas/Param_1_6_2.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
     ctdfile << _indent(currentIndent++) << "<NODE name=\"" << toolname << "\" description=\"" << xmlEscape(getShortDescription(me)) << "\">\n";
 
     for (TOptionMapIterator optionMapIterator = me.optionMap.begin();

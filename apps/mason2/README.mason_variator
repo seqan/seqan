@@ -1,7 +1,7 @@
                                 Mason Variator
                          Genomic Variation Simulator
 
-                      http://www.seqan.de/projects/mason
+                      https://www.seqan.de/projects/mason
                               Version 2.0.0-beta1
                                 February, 2014
 
@@ -98,7 +98,7 @@ In case of questions and problems please contact the mailing list
 
 or file a bug at
 
-  http://trac.seqan.de/newticket
+  https://trac.seqan.de/newticket
 
 ------------------------------------------------------------------------------
 4. File Formats
@@ -139,7 +139,7 @@ SV indels are also marked as SVTYPE={INS,DEL}.  Duplications are given as
 <DUP> in the ALT column, inversions as <INV>.  Translocations are given as 6
 breakend BND entries, 2 for each of the breakpoints.
 
-[1] http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
+[1] https://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41
 
 ------------------------------------------------------------------------------
 4.2 Variation Selection TSV File

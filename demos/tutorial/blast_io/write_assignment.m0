@@ -1,4 +1,4 @@
-BLASTP 2.2.26+ [I/O Module of SeqAn-2.0.0, http://www.seqan.de]
+BLASTP 2.2.26+ [I/O Module of SeqAn-2.0.0, https://www.seqan.de]
 
 
 Reference: Altschul, Stephen F., Thomas L. Madden, Alejandro A. Schaffer,
@@ -45,7 +45,7 @@ Length=200
  Score =  22.3 bits (46), Expect =  0.0009
  Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)
 
-Query  3    YAQPRKLC  10 
+Query  3    YAQPRKLC  10
             YAQPRKLC
 Sbjct  157  YAQPRKLC  164
 
@@ -96,7 +96,7 @@ Length=200
  Score =  18.9 bits (37), Expect =  0.007
  Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)
 
-Query  1   AVITSFTQ  8 
+Query  1   AVITSFTQ  8
            AVITSFTQ
 Sbjct  10  AVITSFTQ  17
 
@@ -107,7 +107,7 @@ Length=200
  Score =  16.9 bits (32), Expect =  0.03
  Identities = 7/8 (88%), Positives = 8/8 (100%), Gaps = 0/8 (0%)
 
-Query  1    AVITSFTQ  8  
+Query  1    AVITSFTQ  8
             AVITS+TQ
 Sbjct  184  AVITSWTQ  191
 

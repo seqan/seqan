@@ -49,7 +49,7 @@ You can expect the globally implemented interface functions @link ContainerConce
 
 @htmlonly <h3 data-toc="hidden">External Resources</h3> @endhtmlonly
 
-See the <a href="http://en.cppreference.com/w/cpp/concept">concepts chapter at cppreference.com</a>.
+See the <a href="https://en.cppreference.com/w/cpp/concept">concepts chapter at cppreference.com</a>.
 
 
 @htmlonly <h2 data-lang-entity="class" id="class">Class</h2> @endhtmlonly
@@ -168,7 +168,7 @@ In contrast to standard <a href="#function">functions</a> that use objects as ar
 
 In SeqAn, they are mainly used to retrieve the appropriate type for a specific task, such as the iteration over a @link ContainerConcept @endlink.
 
-See the <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms Wikibook</a> for more information.
+See the <a href="https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Metafunction">Metafunctions in the More C++ Idioms Wikibook</a> for more information.
 
 
 @htmlonly <h3 data-toc="hidden">Example</h3> @endhtmlonly

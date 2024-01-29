@@ -222,7 +222,7 @@ allocate(T const &,
 
 // NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
 // allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
-// See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
+// See following discussion: https://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
 template <typename T, typename TValue, typename TSize>
 inline void
 allocate(T const &,
@@ -363,7 +363,7 @@ deallocate(
 
 // NOTE(rrahn): Currently *new* does not support aligned memory, but we need it for dynamically
 // allocated SimdVector class, so we overload the allocation to use mem_alloc for simd vector types.
-// See following discussion: http://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
+// See following discussion: https://stackoverflow.com/questions/6973995/dynamic-aligned-memory-allocation-in-c11
 template <typename T, typename TValue, typename TSize>
 inline void
 deallocate(

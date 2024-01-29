@@ -158,7 +158,7 @@ Including the header makes the code in the module available.
 manual
 ------
 
-The SeqAn manual is created using the `Sphinx <http://sphinx-doc.org/>`_ documentation system.
+The SeqAn manual is created using the `Sphinx <https://sphinx-doc.org/>`_ documentation system.
 
 Follow these instructions to set up a local sphinx environment and build the manual:
 
@@ -179,7 +179,7 @@ If you are working on the main branch there is nothing to do, since ``'main'`` i
     (seqan-manual-env) $ export READTHEDOCS_VERSION='main'
 
 before you call ``make html`` as described in the previous step.
-This will generate the correct links to the main version of the dox, i.e., ``http://docs.seqan.de/seqan/main/``
+This will generate the correct links to the main version of the dox, i.e., ``https://docs.seqan.de/seqan/main/``
 
 tests
 -----

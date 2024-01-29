@@ -7,9 +7,9 @@
 Nightly Builds
 ==============
 
-Every night the main branch of SeqAn is fetched and built on a variety of platforms. The results can be seen at the `SeqAn CDash site <http://www.seqan.de/cdash/index.php?project=SeqAn>`__.
+Every night the main branch of SeqAn is fetched and built on a variety of platforms. The results can be seen at the `SeqAn CDash site <https://www.seqan.de/cdash/index.php?project=SeqAn>`__.
 
-The scripts that facilitate this are hosted `here <http://svn.mi.fu-berlin.de/seqan-nightly/trunk/>`__. Please note that the ``linux`` and ``macosx`` directories are outdated, both are now handled by the ``unix`` directory.
+The scripts that facilitate this are hosted `here <https://svn.mi.fu-berlin.de/seqan-nightly/trunk/>`__. Please note that the ``linux`` and ``macosx`` directories are outdated, both are now handled by the ``unix`` directory.
 
 Unix Script variables
 ---------------------
@@ -43,7 +43,7 @@ Unix Script variables
 | ``THREADS``         | number of threads to use (defaults to 1)                           |
 +---------------------+--------------------------------------------------------------------+
 
-Please see the up-to-date variables `here <http://svn.mi.fu-berlin.de/seqan-nightly/trunk/unix/bin/misc.sh>`__.
+Please see the up-to-date variables `here <https://svn.mi.fu-berlin.de/seqan-nightly/trunk/unix/bin/misc.sh>`__.
 
 Unix cron jobs
 --------------
@@ -97,7 +97,7 @@ Now, test the setup by running:
 
     run_nightly.bat
 
-Add ``run_nightly.bat`` to nightly Scheduled Tasks of Windows (analogously to the `CTest Tutorial <http://www.vtk.org/Wiki/CMake_Scripting_Of_CTest#On_Windows_.2F_Cygwin_.2F_MinGW>`_):
+Add ``run_nightly.bat`` to nightly Scheduled Tasks of Windows (analogously to the `CTest Tutorial <https://www.vtk.org/Wiki/CMake_Scripting_Of_CTest#On_Windows_.2F_Cygwin_.2F_MinGW>`_):
 
    #.   Open ``Scheduled Tasks`` from Control Panel.
    #.   Select ``Add Scheduled Task``.

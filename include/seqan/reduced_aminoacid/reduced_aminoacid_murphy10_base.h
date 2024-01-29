@@ -59,7 +59,7 @@ namespace seqan2 {
  * @signature typedef Murphy10 Tag<Murphy10_>;
  *
  * This is the 10-character reduction defined by Murphy et al,
- * 2000, <a href="http://www.ncbi.nlm.nih.gov/pubmed/10775656">http://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
+ * 2000, <a href="https://www.ncbi.nlm.nih.gov/pubmed/10775656">https://www.ncbi.nlm.nih.gov/pubmed/10775656</a>
  *
  * This alphabet is used by many tools, e.g. Rapsearch2, Lambda, UBlast.
  *

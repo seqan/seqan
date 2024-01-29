@@ -1,6 +1,6 @@
 // ==========================================================================
 //                    STELLAR - SwifT Exact LocaL AligneR
-//                   http://www.seqan.de/projects/stellar/
+//                   https://www.seqan.de/projects/stellar/
 // ==========================================================================
 // Copyright (C) 2010-2012 by Birte Kehr
 //
@@ -15,7 +15,7 @@
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 // ==========================================================================
 // Author: Birte Kehr <birte.kehr@fu-berlin.de>

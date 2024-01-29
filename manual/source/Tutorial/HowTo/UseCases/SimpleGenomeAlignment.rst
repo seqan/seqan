@@ -96,7 +96,7 @@ Assignment 1
 
    Hint
      * :dox:`SeqFileIn` constructor accepts a c-style string.
-     * Use `string::c_str <http://www.cplusplus.com/reference/string/string/c_str>`_ to convert the option strings into C-style strings.
+     * Use `string::c_str <https://www.cplusplus.com/reference/string/string/c_str>`_ to convert the option strings into C-style strings.
      * The function :dox:`SeqFileIn#readRecord` expects the input file, a sequence, e.g. :dox:`Dna5String` and an id, e.g. :dox:`CharString`.
 
    Solution

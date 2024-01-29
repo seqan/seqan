@@ -1,6 +1,6 @@
 /*==========================================================================
              RazerS - Fast Read Mapping with Controlled Loss Rate
-                   http://www.seqan.de/projects/razers.html
+                   https://www.seqan.de/projects/razers.html
 
  ============================================================================
   Copyright (C) 2008 by David Weese
@@ -16,7 +16,7 @@
   Lesser General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ==========================================================================*/
 // We require mate-pairs to be stored together in one read string.
 // Pair i has mates at positions 2*i and 2*i+1 in the read string.

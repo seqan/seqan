@@ -1,5 +1,5 @@
 # Locate Intel Threading Building Blocks include paths and libraries
-# TBB can be found at http://www.threadingbuildingblocks.org/ 
+# TBB can be found at https://www.threadingbuildingblocks.org/
 # Written by Hannes Hofmann, hannes.hofmann _at_ informatik.uni-erlangen.de
 # Adapted by Gino van den Bergen gino _at_ dtecta.com
 
@@ -126,7 +126,7 @@ if (NOT TBB_INSTALL_DIR)
 endif (NOT TBB_INSTALL_DIR)
 
 
-#-- A macro to rewrite the paths of the library. This is necessary, because 
+#-- A macro to rewrite the paths of the library. This is necessary, because
 #   find_library() always found the em64t/vc9 version of the TBB libs
 macro(TBB_CORRECT_LIB_DIR var_name)
 #    if (NOT "${_TBB_ARCHITECTURE}" STREQUAL "em64t")
@@ -152,7 +152,7 @@ mark_as_advanced(TBB_INCLUDE_DIR)
 #-- Look for libraries
 # GvdB: $ENV{TBB_ARCH_PLATFORM} is set by the build script tbbvars[.bat|.sh|.csh]
 if (NOT $ENV{TBB_ARCH_PLATFORM} STREQUAL "")
-    set (_TBB_LIBRARY_DIR 
+    set (_TBB_LIBRARY_DIR
          ${_TBB_INSTALL_DIR}/lib/$ENV{TBB_ARCH_PLATFORM}
          ${_TBB_INSTALL_DIR}/$ENV{TBB_ARCH_PLATFORM}/lib
         )

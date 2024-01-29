@@ -34,7 +34,7 @@
 // Alternative, more flexible test system, based on the ideas and mechanisms
 // used by google-test system.
 //
-// See http://code.google.com/p/googletest/ for the better implementation. ;)
+// See https://code.google.com/p/googletest/ for the better implementation. ;)
 // ==========================================================================
 
 // TODO(holtgrew): Add fixture support.

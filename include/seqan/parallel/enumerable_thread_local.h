@@ -194,7 +194,7 @@ setCount(CountingThreadLocalManager & mngr, size_t const count)
  * internal buffer. The class offers an iterator interface, such that the thread specific values can be
  * enumerated allowing to apply reduce operations at the end of the parallel execution.
  * Creating thread local storage happens via a lazy evaluation using the <tt>local</tt> function.
- * If a thread, identified by its <a href="http://en.cppreference.com/w/cpp/thread/get_id">thread id</a>,
+ * If a thread, identified by its <a href="https://en.cppreference.com/w/cpp/thread/get_id">thread id</a>,
  * requests storage for the first time a new thread specific storage will be created and a lvalue reference pointing
  * to this storage is returned.
  * If the thread id was already registered, then a lvalue reference to the associated storage will be returned.
@@ -236,7 +236,7 @@ public:
      *
      * @param[in] init An optional value used to initialize the newly created storage.
      * @note The class is not @link CopyConstructibleConcept copy constructible @endlink and not
-     * <a href="http://en.cppreference.com/w/cpp/concept/MoveConstructible">move constructible</a>.
+     * <a href="https://en.cppreference.com/w/cpp/concept/MoveConstructible">move constructible</a>.
      */
     EnumerableThreadLocal() = default;
 

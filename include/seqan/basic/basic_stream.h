@@ -249,7 +249,7 @@ SEQAN_CONCEPT_REFINE(BidirectionalStreamConcept, (TStream), (InputStreamConcept)
  * @headerfile <seqan/basic.h>
  *
  * @brief Helper class for storing a numeric value together with a
- *        <a href="http://www.cplusplus.com/reference/cstdio/printf/">printf format string</a>.
+ *        <a href="https://www.cplusplus.com/reference/cstdio/printf/">printf format string</a>.
  *
  * @signature template <typename TValue>
  *            struct FormattedNumber;

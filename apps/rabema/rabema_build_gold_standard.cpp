@@ -14,7 +14,7 @@
 // more details.
 //
 // You should have received a copy of the GNU General Public License along
-// with this program.  If not, see <http://www.gnu.org/licenses/>.
+// with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
@@ -1062,8 +1062,8 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     addText(parser,
             "M. Holtgrewe, A.-K. Emde, D. Weese and K. Reinert.  A Novel And Well-Defined Benchmarking Method "
             "For Second Generation Read Mapping, BMC Bioinformatics 2011, 12:210.");
-    addListItem(parser, "\\fIhttp://www.seqan.de/rabema\\fP", "RABEMA Homepage");
-    addListItem(parser, "\\fIhttp://www.seqan.de/mason\\fP", "Mason Homepage");
+    addListItem(parser, "\\fIhttps://www.seqan.de/rabema\\fP", "RABEMA Homepage");
+    addListItem(parser, "\\fIhttps://www.seqan.de/mason\\fP", "Mason Homepage");
 
     // Actually do the parsing and exit on error, help display etc.
     seqan2::ArgumentParser::ParseResult res = parse(parser, argc, argv);

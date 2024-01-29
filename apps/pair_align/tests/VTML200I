@@ -1,10 +1,10 @@
 #
-#  VTML200 
+#  VTML200
 #
 # This matrix was produced by scripts written by
 # Kai Kneutgen and Tobias Mueller [Mai-2002]
 #
-# VTML200  substitution matrix, Units = Third-Bits 
+# VTML200  substitution matrix, Units = Third-Bits
 #
 # Expected Score = -1.038 Third-Bits
 # Lowest Score   = -6.432
@@ -12,18 +12,18 @@
 # Entropy H      = 0.420 Bits
 #
 #
-# For further information on the VTML substitution model, see 
+# For further information on the VTML substitution model, see
 #
 #    Estimating Amino Acid Substitution Models:
 #    A Comparison of Dayhoff's Estimator, the Resolvent Approach and a Maximum Likelihood Method.
 #    T. Mueller, R. Spang and M. Vingron
-#    Mol Biol Evol 19(1): 8-13. 2002. 
+#    Mol Biol Evol 19(1): 8-13. 2002.
 #
 # or mail to
 #    Tobias.Mueller@molgen.mpg.de
 #
-# The latest version of this perl script can be downloaded at 
-#    http://www.molgen.mpg.de/~muelle_t
+# The latest version of this perl script can be downloaded at
+#    https://www.molgen.mpg.de/~muelle_t
    A  R  N  D  C  Q  E  G  H  I  L  K  M  F  P  S  T  W  Y  V  B  Z  X  *
 A  4 -2 -1 -1  1 -1 -1  0 -2 -1 -2 -1 -1 -3  0  1  1 -4 -3  0 -1 -1 -1 -6
 R -2  7  0 -2 -3  2 -1 -2  1 -3 -3  4 -2 -4 -1 -1 -1 -3 -2 -3 -1  0 -1 -6

@@ -133,7 +133,7 @@ template <typename TWord, typename TPos>
 inline void
 setBitTo(TWord & word, TPos index, bool value)
 {
-    // See http://graphics.stanford.edu/~seander/bithacks.html#ConditionalSetOrClearBitsWithoutBranching
+    // See https://graphics.stanford.edu/~seander/bithacks.html#ConditionalSetOrClearBitsWithoutBranching
     word = (word & ~(1u << index)) | (-value & (1u << index));
 }
 

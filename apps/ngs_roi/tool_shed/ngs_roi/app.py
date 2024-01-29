@@ -27,12 +27,12 @@ class App(object):
         if self.args.link_type == 'local_igv':
             vals['host'] = self.args.igv_host
             vals['port'] = self.args.igv_port
-            return 'http://%(host)s:%(port)d/goto?locus=%(ref)s:%(start_pos)d-%(end_pos)d' % vals
+            return 'https://%(host)s:%(port)d/goto?locus=%(ref)s:%(start_pos)d-%(end_pos)d' % vals
         else:  # self.args.link_type == 'ucsc'
             vals['org'] = self.args.ucsc_org
             vals['db'] = self.args.ucsc_db
             vals['ref'] = self.args.ucsc_chr_prefix + vals['ref']
-            return 'http://genome.ucsc.edu/cgi-bin/hgTracks?org=%(org)s&db=%(db)s&position=%(ref)s:%(start_pos)d-%(end_pos)d' % vals
+            return 'https://genome.ucsc.edu/cgi-bin/hgTracks?org=%(org)s&db=%(db)s&position=%(ref)s:%(start_pos)d-%(end_pos)d' % vals
 
 
 class PlotThumbnailsRunner(object):

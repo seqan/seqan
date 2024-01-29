@@ -1,6 +1,6 @@
                 Gustaf - Generic mUlti-SpliT Alignment Finder
 
-                   http://www.seqan.de/projects/gustaf.html
+                   https://www.seqan.de/projects/gustaf.html
                                  Version 1.0
                                  August, 2014
 
@@ -44,10 +44,10 @@ GUSTAF on the remaining unmappable reads.
 
 Precompiled binaries (Linux 64-bit, Windows, Mac OS X) of Gustaf can be
 downloaded from the SeqAn projects download page:
-http://www.seqan.de/downloads/projects.html
+https://www.seqan.de/downloads/projects.html
 
 Gustaf is distributed with SeqAn - The C++ Sequence Analysis Library (see
-http://www.seqan.de). To build Gustaf yourself, you can check out the latest
+https://www.seqan.de). To build Gustaf yourself, you can check out the latest
 Git version of Gustaf and SeqAn with:
 
   1)  git clone https://github.com/seqan/seqan.git
@@ -220,7 +220,7 @@ Usage: gustaf <GENOME FASTA FILE> <READ FASTA FILE> [Options]
   [ -nth ],  [ --numThreads ]
 
   Specify number of threads for parallelization of I/O.
-  
+
   [ -gff ],  [ --gffOut ]
 
   Option to set name of GFF output file.
@@ -256,7 +256,7 @@ delimited text format with the following columns:
 
 <seqname> <src> <feat> <start> <end> <score> <strand> <frame> [attr] [cmts]
 
-See also: http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
+See also: https://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
 Consistent with this specification Gustaf GFF output looks as follows:
 
 GNAME Gustaf SVTYPE GBEGIN GEND . GSTRAND . ATTRIBUTES
@@ -298,7 +298,7 @@ related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
 4.2. Variant Call Format (VCF)
 ---------------------------------------------------------------------------
 
-See http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-
+See https://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-
 variant-call-format-version-41
 for information about the VCF file format specifications.
 

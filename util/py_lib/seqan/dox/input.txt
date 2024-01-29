@@ -61,7 +61,7 @@ Some formatting: <tt>code</tt>, <i>italic</i>, <b>bold</b>.
 
 Links can be made this way: @link String Link text@endlink or
 <a href="seqan:String">with a different Title</a> or
-<a href="http://www.seqan.de">to arbitrary URLs</a>
+<a href="https://www.seqan.de">to arbitrary URLs</a>
 
 <a href="seqan:String#length">Link to String#length.</a>
 

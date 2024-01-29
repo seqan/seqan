@@ -52,19 +52,19 @@ However, programmers coming from C and Java might find them interesting (We stil
 
 References
   References are alternatives to pointers in C++ to construct value aliases.
-  Also see `Wikipedia on C++ references <http://en.wikipedia.org/wiki/Reference_(C%2B%2B)>`_.
+  Also see `Wikipedia on C++ references <https://en.wikipedia.org/wiki/Reference_(C%2B%2B)>`_.
 
 Templates
-  C++ allows you to perform `generic programming <http://en.wikipedia.org/wiki/Generic_programming>`_ using templates.
+  C++ allows you to perform `generic programming <https://en.wikipedia.org/wiki/Generic_programming>`_ using templates.
   While similar to generics in Java (C++ templates are more than a decade older), C++ templates are designed to write zero-overhead abstractions that can be written to be as efficient as hand-written code while retaining a high level of abstraction.
-  See `cplusplus.com on C++ templates <http://www.cplusplus.com/doc/tutorial/templates/>`_.
+  See `cplusplus.com on C++ templates <https://www.cplusplus.com/doc/tutorial/templates/>`_.
   Note that there is no way to restrict the type that can be used in templates, there is no mechanism such as Java's ``? extends T`` in C++.
   Using an incompatible type leads to compiler errors because some operator or function could not be found.
 
 Memory Management / No Pointers
   Object oriented programming is another key programming paradigm made available with C++ (Compared to C).
   This means, that instead of using raw pointers to allocated chunks of memory, memory management should be done using containers.
-  The STL provides containers such as `std::vector <http://www.cplusplus.com/reference/stl/vector/>`_ and SeqAn offers :dox:`String`.
+  The STL provides containers such as `std::vector <https://www.cplusplus.com/reference/stl/vector/>`_ and SeqAn offers :dox:`String`.
 
 Memory Management in SeqAn
 --------------------------
@@ -112,7 +112,7 @@ Thus, simply using a ``std::string`` would come at high costs to efficiency.
 Given that in the last 10-15 years, Java and C# have gained popularity, one could think about an object oriented solution: strings could simply be arrays of ``Character`` objects.
 Using polymorphism (e.g. overwriting of functions in subclasses), one could then write generic and reusable algorithms.
 For example, the Java 2 platform defines the sort function for all objects implementing a ``Comparable`` interface.
-Note that such an implementation would have to rely on `virtual functions <http://en.wikipedia.org/wiki/Virtual_function>`_ of some sort.
+Note that such an implementation would have to rely on `virtual functions <https://en.wikipedia.org/wiki/Virtual_function>`_ of some sort.
 However, as we will see in the section OOP vs. Generic Progamming, **this comes at a high performance cost, being in conflict with efficiency**.
 For a sequence library, we could implement functions that map values from an alphabet to an ordinal value between ``0`` and ``S - 1`` where ``S`` is the number of elements in the alphabet.
 
@@ -125,7 +125,7 @@ Thus, the compiler does not have to use virtual function tables and other "crutc
 When written appropriately, such algorithms can also work on different string implementations! Also, when defining our own alphabet types, we can directly influence how their abstractions (and APIs) work.
 
 Thus, C++ allows us to implement (1) a generic and reusable library with (2) high level abstractions (and thus ease of use) that still allows the compiler to employ aggressive optimization and thus achieves (3) efficiency.
-With the words of the C++ inventor `Bjarne Stroustrup <http://www.artima.com/intv/abstreffi.html>`_:
+With the words of the C++ inventor `Bjarne Stroustrup <https://www.artima.com/intv/abstreffi.html>`_:
 
    A high level of abstraction is good, not just in C++, but in general.
    We want to deal with problems at the level we are thinking about those problems.
@@ -136,7 +136,7 @@ OOP vs. Generic Programming
 ---------------------------
 
 In SeqAn, we use a technique called :ref:`template subclassing <template-subclassing>` which is based on generic programming.
-This technique provides `polymorphism <http://en.wikipedia.org/wiki/Polymorphism_in_object-oriented_programming>`_ into C++ programs at **compile time** using templates.
+This technique provides `polymorphism <https://en.wikipedia.org/wiki/Polymorphism_in_object-oriented_programming>`_ into C++ programs at **compile time** using templates.
 Such static polymorphism is different from **runtime polymorphism** which is supported in C++ using subclassing and virtual functions.
 It comes at the cost of some additional typing but has the advantage that the compiler can inline all function calls and thus achieve better performance.
 An example will be given in :ref:`the section "From OOP to SeqAn" in the First Example Tutorial <oop-to-seqan>`.
@@ -156,7 +156,7 @@ That means a subclassed object does not inherit the member or member functions o
 In order to reduce the overhead of reimplementing the same member functions for every subclassed object, we use global interface functions.
 
 You might already have seen global function interfaces while working with the STL.
-With the new C++11 standard the STL now provides some global interface functions, e.g., the `begin <http://en.cppreference.com/w/cpp/iterator/begin>`_ or `end <http://en.cppreference.com/w/cpp/iterator/end>`_ interface.
+With the new C++11 standard the STL now provides some global interface functions, e.g., the `begin <https://en.cppreference.com/w/cpp/iterator/begin>`_ or `end <https://en.cppreference.com/w/cpp/iterator/end>`_ interface.
 
 The rationale behind this is the following observation.
 Global interface functions allow us to implement a general functionality that is used for all subclassed objects of this template class (assuming the accessed member variables exists in all subclassed objects as in the base template class, otherwise the compiler will complain).

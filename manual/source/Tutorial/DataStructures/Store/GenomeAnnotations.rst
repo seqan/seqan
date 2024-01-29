@@ -23,7 +23,7 @@ Prerequisites
 
 This tutorial will present SeqAn's efficient and easy-to-use data structures to work with annotations.
 They allow to annotate genome regions with features like 'gene', 'mRNA', 'exon', 'intron' and if required with custom features.
-We will give you an understanding of how to load annotations from a `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ file, store them in efficient data structures, as well as how to traverse and access these information.
+We will give you an understanding of how to load annotations from a `GFF <https://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <https://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ file, store them in efficient data structures, as well as how to traverse and access these information.
 
 AnnotationStore as Part of the FragmentStore
 --------------------------------------------
@@ -84,7 +84,7 @@ Now we can simply write:
 Loading an Annotation File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before we deal with the actual annotation tree, we will first describe how you can easily load annotations from a `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ file into the :dox:`FragmentStore`.
+Before we deal with the actual annotation tree, we will first describe how you can easily load annotations from a `GFF <https://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <https://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ file into the :dox:`FragmentStore`.
 
 An annotation file can be read from an :dox:`GffFileIn` with the function :dox:`FragmentStore#readRecords`.
 The file extension specifies if we want to read a GFF, GTF or UCSC file.
@@ -293,7 +293,7 @@ Assignment 4
        #. Output the average number of mRNAs for genes.
        #. Output the average number of exons for mRNAs.
        #. Additionally output the average exon length.
-       #. Test your program also on large data, e.g. the annotation of the mouse genome `Mus_musculus.NCBIM37.61.gtf.zip <http://ftp.seqan.de/manual_files/seqan-1.4/Mus_musculus.NCBIM37.61.gtf.zip>`_ (don't forget to unzip first).
+       #. Test your program also on large data, e.g. the annotation of the mouse genome `Mus_musculus.NCBIM37.61.gtf.zip <https://ftp.seqan.de/manual_files/seqan-1.4/Mus_musculus.NCBIM37.61.gtf.zip>`_ (don't forget to unzip first).
 
      Solution
       Click **more...** to see one possible solution.

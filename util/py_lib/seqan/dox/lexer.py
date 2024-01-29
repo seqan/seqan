@@ -3,7 +3,7 @@
 
 Taken from Eli Bendersky [1].
 
-[1] http://stackoverflow.com/questions/133886
+[1] https://stackoverflow.com/questions/133886
 """
 
 import re

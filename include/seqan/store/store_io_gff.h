@@ -509,7 +509,7 @@ _fillAnnotationRecord(
         }
 
     // The GTF format version 2.2 requires the keys gene_id and transcript_id to be the last keys of line
-    // read http://mblab.wustl.edu/GTF22.html and http://www.bioperl.org/wiki/GTF
+    // read https://mblab.wustl.edu/GTF22.html and https://www.bioperl.org/wiki/GTF
 
     if (geneId < length(store.annotationStore))
     {

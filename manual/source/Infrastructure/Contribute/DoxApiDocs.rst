@@ -8,7 +8,7 @@ API Documentation System (dox)
 ==============================
 
 Since the 1.4.1 release, SeqAn uses a new documentation system. The
-syntax is similar to `Doxygen <http://doxygen.sf.net>`_ but slightly
+syntax is similar to `Doxygen <https://doxygen.sf.net>`_ but slightly
 different. The main differences are (1) not identifying functions by
 their signatures but only by their names, (2) adding the idea of
 metafunctions, (3) adding the idea of interface functions and (4) an

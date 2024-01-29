@@ -33,7 +33,7 @@
 // ==========================================================================
 // Virtual stream class to automatically compress/decompress files/streams.
 // It adapts the zipstream and bzip2stream classes (Jonathan de Halleux, 2003)
-// http://www.codeproject.com/Articles/4457/zipstream-bzip2stream-iostream-wrappers-for-the-zl
+// https://www.codeproject.com/Articles/4457/zipstream-bzip2stream-iostream-wrappers-for-the-zl
 // and our own implementation of a parallel bgzfstream.
 // ==========================================================================
 

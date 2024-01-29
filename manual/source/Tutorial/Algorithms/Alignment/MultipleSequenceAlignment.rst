@@ -30,7 +30,7 @@ If you are interested in computing consensus sequences of multiple overlapping s
 While the pairwise alignment of sequences can be computed exactly in quadratic time using dynamic programming, the computation of exact MSAs is harder.
 Given :math:`n` sequences of length :math:`\ell`, the exact computation of an MSA is only feasible in time :math:`\mathcal{O}(\ell^n)`.
 Thus, global MSAs are usually computed using a heuristic called **progressive alignment**.
-For an introduction to MSAs, see the `Wikipedia Article on Multiple Sequence Aligment <http://en.wikipedia.org/wiki/Multiple_sequence_alignment>`_.
+For an introduction to MSAs, see the `Wikipedia Article on Multiple Sequence Aligment <https://en.wikipedia.org/wiki/Multiple_sequence_alignment>`_.
 
 Computing MSAs with SeqAn
 -------------------------
