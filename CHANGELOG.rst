@@ -13,6 +13,8 @@ Release 2.5.0 might work with older compilers, but there is no support.
 Library Features
 ^^^^^^^^^^^^^^^^
 
+- **Namespace**:
+   - The namespace was changed from ``seqan`` to ``seqan2`` to allow for interoperability with other SeqAn libraries.
 - Sequence I/O:
    - Accepting files that end in ``.fas``.
 - Indexing:

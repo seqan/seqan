@@ -37,12 +37,12 @@ The licenses for the applications themselves can be found in the LICENSE files.
 
 ## Prerequisites
 
-Older compiler versions might work but are not supported.
+Older compiler versions might work but are neither supported nor tested.
 
 ### Linux, macOS, FreeBSD
-  * GCC ≥ 10
-  * Clang/LLVM ≥ 11
-  * Intel Compiler ≥ 2022.1.0 (Intel OneAPI)
+  * GCC ≥ 11
+  * Clang/LLVM ≥ 15
+  * Intel oneAPI C++ Compiler 2024.0.2 (IntelLLVM)
 
 ### Windows
   * Visual C++ ≥ 17.0 / Visual Studio ≥ 2022
