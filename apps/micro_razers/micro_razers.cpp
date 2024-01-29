@@ -1,6 +1,6 @@
  /*==========================================================================
              MicroRazerS - Rapid Alignment of Small RNA Reads
-                   https://www.seqan.de/projects/microRazers.html
+                   https://www.seqan.de/apps/microRazers.html
 
  ============================================================================
   Copyright (C) 2009 by Anne-Katrin Emde

@@ -1,5 +1,5 @@
               *** STELLAR - the SwifT Exact LocaL AligneR ***
-                 https://www.seqan.de/projects/stellar.html
+                 https://www.seqan.de/apps/stellar.html
                               February, 2013
 
 ---------------------------------------------------------------------------
@@ -30,7 +30,7 @@ written to the output file.
 ---------------------------------------------------------------------------
 
 For precompiled executables (Windows, Linux 64, and Mac OS X) download the
-archive stellar_v1.x.zip from https://www.seqan.de/projects/stellar and
+archive stellar_v1.x.zip from https://www.seqan.de/apps/stellar and
 extract it.
 On linux, for example:
   1) wget https://www.seqan.de/wp-content/plugins/download-monitor/download.php?id=32 -O stellar_v1.3.zip

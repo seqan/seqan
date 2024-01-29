@@ -1,5 +1,5 @@
 *** RazerS 3 - Faster, fully sensitive read mapping ***
-https://www.seqan.de/projects/razers.html
+https://www.seqan.de/apps/razers3.html
 
 ------------------------------------------------------------------------------
 Table of Contents
@@ -88,7 +88,7 @@ After compilation, copy the binary to a folder in your PATH variable, e.g.
 
 We also provide a precompiled binary of RazerS 3 for 64bit Linux. It was
 succesfully tested on Debian GNU/Linux 6.0.5 (squeeze) and Ubuntu 12.04.
-Please download the binary from: https://www.seqan.de/projects/razers.html
+Please download the binary from: https://www.seqan.de/apps/razers3.html
 
 ------------------------------------------------------------------------------
 3. Usage

@@ -1,6 +1,6 @@
 CMake TBB Finder
 ================
 
-Source: https://findtbb.googlecode.com/svn/trunk/CMake/FindTBB/
+Source: https://code.google.com/archive/p/findtbb/source/default/source (findtbb/trunk/CMake/FindTBB)
 Revision: 16
-Docs: https://code.google.com/p/findtbb/wiki/HowTo
+Docs: https://code.google.com/archive/p/findtbb/wikis/HowTo.wiki

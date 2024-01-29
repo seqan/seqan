@@ -365,7 +365,7 @@ void setDateAndVersion(ArgumentParser & parser)
 void setDescription(ArgumentParser & parser)
 {
     addDescription(parser, "Yara - Yet Another Read Aligner.");
-    addDescription(parser, "See \\fIhttps://www.seqan.de/projects/yara\\fP for more information.");
+    addDescription(parser, "See \\fIhttps://www.seqan.de/apps/yara\\fP for more information.");
     addDescription(parser, "(c) Copyright 2011-2014 by Enrico Siragusa.");
     addDescription(parser, "(c) Copyright 2013 by NVIDIA Corporation.");
 }

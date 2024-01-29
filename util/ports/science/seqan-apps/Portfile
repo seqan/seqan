@@ -18,7 +18,7 @@ description         Applications distributed with the SeqAn library
 long_description    SeqAn applications for the analysis of large sets of sequences, e.g. \
                     read mapping, genome comparison, local alignment, data mining.
 
-homepage            https://www.seqan.de/projects
+homepage            https://www.seqan.de/apps
 
 depends_build       port:boost port:coinor-liblemon
 

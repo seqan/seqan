@@ -35,7 +35,7 @@ Installation
     make gustaf
 
 | Precompiled binaries (Linux 64-bit, Windows, Mac OS X) of Gustaf can
-  be downloaded from the SeqAn project page: https://www.seqan.de/projects/gustaf/
+  be downloaded from the SeqAn project page: https://www.seqan.de/apps/gustaf
 
 Usage
 -----

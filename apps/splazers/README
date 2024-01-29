@@ -1,5 +1,5 @@
 ***  SplazerS - Split Read Mapping as a branch of RazerS ***
-https://www.seqan.de/projects/splazers.html
+https://www.seqan.de/apps/splazers.html
 
 ---------------------------------------------------------------------------
 Table of Contents
@@ -18,7 +18,7 @@ Table of Contents
 
 SplazerS (SplitRazerS) is a tool primarily designed for split mapping of
 sequencing reads. It is a branch of the RazerS algorithm
-(https://www.seqan.de/projects/razers.html) and therefore also features basic
+(https://www.seqan.de/apps/razers3.html) and therefore also features basic
 read mapping functionality (split mapping can be switched off via a command
 line parameter).
 SplazerS searches for split read matches where prefix and suffix match of a

@@ -236,7 +236,7 @@ public:
      *
      * @param[in] init An optional value used to initialize the newly created storage.
      * @note The class is not @link CopyConstructibleConcept copy constructible @endlink and not
-     * <a href="https://en.cppreference.com/w/cpp/concept/MoveConstructible">move constructible</a>.
+     * <a href="https://en.cppreference.com/w/cpp/named_req/MoveConstructible">move constructible</a>.
      */
     EnumerableThreadLocal() = default;
 

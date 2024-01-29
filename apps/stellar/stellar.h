@@ -1,6 +1,6 @@
 // ==========================================================================
 //                    STELLAR - SwifT Exact LocaL AligneR
-//                   https://www.seqan.de/projects/stellar/
+//                   https://www.seqan.de/apps/stellar
 // ==========================================================================
 // Copyright (C) 2010-2012 by Birte Kehr
 //

@@ -1,6 +1,6 @@
  /*==========================================================================
              RazerS - Fast Read Mapping with Controlled Loss Rate
-                   https://www.seqan.de/projects/razers.html
+                   https://www.seqan.de/apps/razers3.html
 
  ============================================================================
   Copyright (C) 2008 by David Weese
@@ -257,7 +257,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addDescription(parser, "RazerS is a versatile full-sensitive read mapper based on a k-mer counting filter. "
                            "It supports single and paired-end mapping, and optimally parametrizes "
                            "the filter based on a user-defined minimal sensitivity. "
-                           "See \\fIhttps://www.seqan.de/projects/razers\\fP for more information.");
+                           "See \\fIhttps://www.seqan.de/apps/razers3\fP for more information.");
 
     addDescription(parser, "Input to RazerS is a reference genome file and either one file with single-end reads "
                            "or two files containing left or right mates of paired-end reads. Use - to read single-end "

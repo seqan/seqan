@@ -1,6 +1,6 @@
  /*==========================================================================
                      Dfi - The Deferred Frequency Index
-                   https://www.seqan.de/projects/dfi.html
+                   https://www.seqan.de/apps/dfi.html
 
  ============================================================================
   This is an application of the Dfi algorithm in

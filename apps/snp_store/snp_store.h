@@ -1,6 +1,6 @@
  /*==========================================================================
   SNP Calling routine of RazerS - Fast Read Mapping with Controlled Loss Rate
-                   https://www.seqan.de/projects/razers.html
+                   https://www.seqan.de/apps/razers3.html
 
  ============================================================================
   Copyright (C) 2008 by Anne-Katrin Emde

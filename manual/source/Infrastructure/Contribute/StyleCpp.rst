@@ -10,7 +10,7 @@ C++ Code Style
 The aim of this style guide is to enforce a certain level of canonicity on all SeqAn code.
 Besides good comments, having a common style guide is the key to being able to understand and change code written by others easily.
 
-(The style guide partially follows the `Google C++ Code Style Guide <https://google-styleguide.googlecode.com/svn/trunk/cppguide.xml>`_.)
+(The style guide partially follows the `Google C++ Code Style Guide <https://github.com/google/styleguide/blob/gh-pages/cppguide.xml>`_.)
 
 C++ Features
 ------------
