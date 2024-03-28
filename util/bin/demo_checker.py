@@ -44,7 +44,7 @@ def fuzzyEqual(pattern, text):
                 print('Line %s is different between expected and actual outputs.' % (i), file=sys.stderr)
                 return False
             else:
-                P = (re.escape(P)).replace('\\[VAR\\]', "[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?")
+                P = (re.escape(P)).replace('\\[VAR\\]', r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?')
                 r = re.compile(P)
                 if re.match(r, T) == None:
                     print('Line %s is different (REGEX) between expected and actual outputs.' % (i), file=sys.stderr)

@@ -52,9 +52,17 @@ jobs:
 
       - name: Setup conda
         uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ""
+          auto-activate-base: true
+          auto-update-conda: false
 
       - name: Install conda dependencies
-        run: conda install -c conda-forge boost-cpp bzip2 libxml2 zlib
+        run: |
+          conda install -c conda-forge boost-cpp bzip2 libxml2 zlib
+          $CONDA_BASE = conda info --base
+          "$CONDA_BASE\Library\include" | Out-File -FilePath $env:GITHUB_PATH -Append
+          "$CONDA_BASE\Library\lib" | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Configure tests
         run: |

@@ -740,6 +740,9 @@ getTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
     typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > const TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     TEdgeDescriptor e = findEdge(g, state1, state2);
+#ifdef __INTEL_LLVM_COMPILER
+    asm volatile("" : : "r,m"(e) : "memory"); // Kindly request IntelLLVM (2024.1) to not optimize result away.
+#endif
     if (e == 0) return 0.0;
     else return cargo(e);
 }

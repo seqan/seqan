@@ -59,7 +59,7 @@ int StructuralVariantRecord::endPosition() const
             if (size > 0)
                 return pos;
             else
-                return pos + size;
+                return pos - size; // for deletions, size is negative!
         case INVERSION:
             return pos + size;
         case TRANSLOCATION:
