@@ -414,12 +414,32 @@ int VariantMaterializer::_materializeLargeVariants(
         // Translate positions and lengths of SV record.
         if (verbosity >= 2)
             std::cerr << "  Translating SvRecord\n  " << svRecord << '\n';
-        svRecord.pos = hostToVirtualPosition(journal, svRecord.pos);
-        SEQAN_ASSERT_LT(svRecord.pos, (int)length(contig));
+        // Avoid computing this for both size and position adjustment.
+        int const virtualPos = hostToVirtualPosition(journal, svRecord.pos);
         // We do not need to adjust the sizes for insertions.
         if (svRecord.kind != StructuralVariantRecord::INDEL || svRecord.size < 0)
-            svRecord.size = hostToVirtualPosition(journal, svRecord.pos + svRecord.size) -
-                    hostToVirtualPosition(journal, svRecord.pos);
+        {
+            // Use absolute value for size. Deletions have a negative size, we want the position after the variant.
+            int const virtualEndPos = hostToVirtualPosition(journal, svRecord.pos + std::abs(svRecord.size));
+            // The size of the variant in the contig:
+            //   * contig is the sequence that already has small variants applied, e.g. small deletions are removed.
+            //   * journal is built over contig.
+            //   * hostToVirtualPosition maps the reference position to the contig position.
+            //   * Variants may overlap.
+            // Example for overlapping:
+            //   * Large deletion at position 10, size 50.
+            //   * Small deletion at position 20, size 10.
+            //   * Small insertion at position 30, size 5.
+            // The small deletion and insertion were already applied to contig via _materializeSmallVariants.
+            // Because 10 bases were already deleted, the size would be 40 for the large deletion.
+            // Together with the small insertion, the size would then be 45.
+            int const virtualSize = virtualEndPos - virtualPos;
+            // Keep sign of size, i.e. negative for deletions.
+            svRecord.size = (svRecord.size < 0 ? -1 : 1) * virtualSize;
+        }
+        // Adjust position after size. The original position is needed for adjusting the size.
+        svRecord.pos = virtualPos;
+        SEQAN_ASSERT_LT(svRecord.pos, (int)length(contig));
         if (svRecord.targetPos != -1)
             svRecord.targetPos = hostToVirtualPosition(journal, svRecord.targetPos);
         if (verbosity >= 2)
