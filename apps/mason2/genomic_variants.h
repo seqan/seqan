@@ -422,7 +422,9 @@ public:
     typedef seqan2::IntervalAndCargo<TValue, TCargo> TInterval;
     typedef seqan2::IntervalTree<TValue, TCargo> TIntervalTree;
 
-    typedef seqan2::String<seqan2::GapAnchor<int> > TGapAnchors;
+    // Using seqan2::Nothing limits the maximum decorated sequence length to max<int64_t> / 2.
+    // To decorate all possible positions for `int`, we use `int64_t`.
+    typedef seqan2::String<seqan2::GapAnchor<int64_t> > TGapAnchors;
     typedef seqan2::Gaps<seqan2::Nothing, seqan2::AnchorGaps<TGapAnchors> > TGaps;
 
     // TODO(holtgrew): We need a function *in this class* that builds the large variants data strutures for better encapsulation!

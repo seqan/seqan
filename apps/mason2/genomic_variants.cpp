@@ -182,11 +182,11 @@ int VariantMaterializer::_runImpl(
 // ----------------------------------------------------------------------------
 
 int VariantMaterializer::_materializeSmallVariants(
-        seqan2::Dna5String & seq,
+        seqan2::Dna5String & seq, // resulting sequence, original sequence with small variants applied
         TJournalEntries & journal,
         MethylationLevels * levelsSmallVariants,
         std::vector<SmallVarInfo> & smallVarInfos,
-        seqan2::Dna5String const & contig,
+        seqan2::Dna5String const & contig, // contig == original sequence
         Variants const & variants,
         MethylationLevels const * levels,
         int hId)
@@ -235,7 +235,7 @@ int VariantMaterializer::_materializeSmallVariants(
             if (snpRecord.haplotype == hId)  // Ignore all but the current contig.
             {
                 if (verbosity >= 3)
-                    std::cerr << "append(seq, infix(contig, " << lastPos << ", " << snpRecord.pos << ") " << __LINE__ << "\n";
+                    std::cerr << __LINE__ << "\tappend(seq, infix(contig, " << lastPos << ", " << snpRecord.pos << ")\n";
                 // Append interim sequence and methylation levels->
                 append(seq, infix(contig, lastPos, snpRecord.pos));
                 if (methSimOptions && methSimOptions->simulateMethylationLevels)
@@ -248,7 +248,7 @@ int VariantMaterializer::_materializeSmallVariants(
 
                 SEQAN_ASSERT_GEQ(snpRecord.pos, lastPos);
                 if (verbosity >= 3)
-                    std::cerr << "appendValue(seq, " << snpRecord.to << "')\n";
+                    std::cerr << __LINE__ << "\tappendValue(seq, " << snpRecord.to << "')\n";
                 appendValue(seq, snpRecord.to);
                 lastPos = snpRecord.pos + 1;
                 if (verbosity >= 3)
@@ -270,8 +270,7 @@ int VariantMaterializer::_materializeSmallVariants(
                 if (smallIndelRecord.size > 0)
                 {
                     if (verbosity >= 3)
-                        std::cerr << "append(seq, infix(contig, " << lastPos << ", " << smallIndelRecord.pos << ") "
-                                  << __LINE__ << "\n";
+                        std::cerr << __LINE__ << "\tappend(seq, infix(contig, " << lastPos << ", " << smallIndelRecord.pos << ")\n";
 
                     // Simulate methylation levels for insertion.
                     MethylationLevels lvls;
@@ -292,7 +291,7 @@ int VariantMaterializer::_materializeSmallVariants(
 
                     SEQAN_ASSERT_GEQ(smallIndelRecord.pos, lastPos);
                     if (verbosity >= 3)
-                        std::cerr << "append(seq, \"" << smallIndelRecord.seq << "\") " << __LINE__ << "\n";
+                        std::cerr << __LINE__ << "\tappend(seq, \"" << smallIndelRecord.seq << "\")\n";
                     // Register insertion as small variant info.
                     for (unsigned i = 0; i < length(smallIndelRecord.seq); ++i)
                         smallVarInfos.push_back(SmallVarInfo(SmallVarInfo::INS, length(seq) + i, 1));
@@ -313,7 +312,7 @@ int VariantMaterializer::_materializeSmallVariants(
                 else  // deletion
                 {
                     if (verbosity >= 3)
-                        std::cerr << "append(seq, infix(contig, " << lastPos << ", " << smallIndelRecord.pos << ") " << __LINE__ << "\n";
+                        std::cerr << __LINE__ << "\tappend(seq, infix(contig, " << lastPos << ", " << smallIndelRecord.pos << ")\n";
                     // Append interim sequence and methylation levels->
                     append(seq, infix(contig, lastPos, smallIndelRecord.pos));  // interim chars
                     if (methSimOptions && methSimOptions->simulateMethylationLevels)
@@ -344,7 +343,7 @@ int VariantMaterializer::_materializeSmallVariants(
     }
     // Insert remaining characters.
     if (verbosity >= 3)
-        std::cerr << "append(seq, infix(contig, " << lastPos << ", " << length(contig) << ")\n";
+        std::cerr << __LINE__ << "\tappend(seq, infix(contig, " << lastPos << ", " << length(contig) << ")\n";
     append(seq, infix(contig, lastPos, length(contig)));
 
     if (methSimOptions && methSimOptions->simulateMethylationLevels)
@@ -366,13 +365,13 @@ int VariantMaterializer::_materializeSmallVariants(
 // ----------------------------------------------------------------------------
 
 int VariantMaterializer::_materializeLargeVariants(
-        seqan2::Dna5String & seq,
+        seqan2::Dna5String & seq, // final result sequence
         MethylationLevels * levelsLargeVariants,
         std::vector<SmallVarInfo> & varInfos,
         std::vector<std::pair<int, int> > & breakpoints,
         PositionMap & positionMap,
-        TJournalEntries const & journal,
-        seqan2::Dna5String const & contig,
+        TJournalEntries const & journal, // built over contig
+        seqan2::Dna5String const & contig, // sequence after applying small variants
         std::vector<SmallVarInfo> const & smallVarInfos,
         Variants const & variants,
         MethylationLevels const * levels,
@@ -415,12 +414,32 @@ int VariantMaterializer::_materializeLargeVariants(
         // Translate positions and lengths of SV record.
         if (verbosity >= 2)
             std::cerr << "  Translating SvRecord\n  " << svRecord << '\n';
-        svRecord.pos = hostToVirtualPosition(journal, svRecord.pos);
-        SEQAN_ASSERT_LT(svRecord.pos, (int)length(contig));
+        // Avoid computing this for both size and position adjustment.
+        int const virtualPos = hostToVirtualPosition(journal, svRecord.pos);
         // We do not need to adjust the sizes for insertions.
         if (svRecord.kind != StructuralVariantRecord::INDEL || svRecord.size < 0)
-            svRecord.size = hostToVirtualPosition(journal, svRecord.pos + svRecord.size) -
-                    hostToVirtualPosition(journal, svRecord.pos);
+        {
+            // Use absolute value for size. Deletions have a negative size, we want the position after the variant.
+            int const virtualEndPos = hostToVirtualPosition(journal, svRecord.pos + std::abs(svRecord.size));
+            // The size of the variant in the contig:
+            //   * contig is the sequence that already has small variants applied, e.g. small deletions are removed.
+            //   * journal is built over contig.
+            //   * hostToVirtualPosition maps the reference position to the contig position.
+            //   * Variants may overlap.
+            // Example for overlapping:
+            //   * Large deletion at position 10, size 50.
+            //   * Small deletion at position 20, size 10.
+            //   * Small insertion at position 30, size 5.
+            // The small deletion and insertion were already applied to contig via _materializeSmallVariants.
+            // Because 10 bases were already deleted, the size would be 40 for the large deletion.
+            // Together with the small insertion, the size would then be 45.
+            int const virtualSize = virtualEndPos - virtualPos;
+            // Keep sign of size, i.e. negative for deletions.
+            svRecord.size = (svRecord.size < 0 ? -1 : 1) * virtualSize;
+        }
+        // Adjust position after size. The original position is needed for adjusting the size.
+        svRecord.pos = virtualPos;
+        SEQAN_ASSERT_LT(svRecord.pos, (int)length(contig));
         if (svRecord.targetPos != -1)
             svRecord.targetPos = hostToVirtualPosition(journal, svRecord.targetPos);
         if (verbosity >= 2)
@@ -436,7 +455,7 @@ int VariantMaterializer::_materializeLargeVariants(
 
         // Copy from contig to seq with SVs.
         if (verbosity >= 3)
-            std::cerr << "lastPos == " << lastPos << "\n";
+            std::cerr << __LINE__ << "\tappend(seq, infix(contig, " << lastPos << ", " << svRecord.pos << ") (interim)\n";
         append(seq, infix(contig, lastPos, svRecord.pos));  // interim chars
         if (methSimOptions && methSimOptions->simulateMethylationLevels)
         {
@@ -448,8 +467,6 @@ int VariantMaterializer::_materializeLargeVariants(
             appendValue(intervals, GenomicInterval(currentPos, length(seq), lastPos, svRecord.pos,
                                                    '+', GenomicInterval::NORMAL));
         currentPos = length(seq);
-        if (verbosity >= 3)
-            std::cerr << "append(seq, infix(contig, " << lastPos << ", " << svRecord.pos << ") " << __LINE__ << " (interim)\n";
         switch (svRecord.kind)
         {
             case StructuralVariantRecord::INDEL:
@@ -490,7 +507,8 @@ int VariantMaterializer::_materializeLargeVariants(
                     }
                     else  // deletion
                     {
-                        lastPos = svRecord.pos - svRecord.size;
+                        // skip forward in contig (which does not contain deletion)
+                        lastPos = svRecord.pos - svRecord.size; // svRecord.size is negative
                         SEQAN_ASSERT_LT(lastPos, (int)length(contig));
 
                         // Copy out breakpoint.
@@ -859,48 +877,49 @@ void PositionMap::reinit(TJournalEntries const & journal)
     unsigned lastRefPos = std::numeric_limits<unsigned>::max();  // Previous position from reference.
     for (; it != end(journal, seqan2::Standard()); ++it)
     {
-        // std::cerr << *it << "\n";
         SEQAN_ASSERT_NEQ(it->segmentSource, seqan2::SOURCE_NULL);
+        // The segment is from the reference.
         if (it->segmentSource == seqan2::SOURCE_ORIGINAL)
         {
-            if (lastRefPos == std::numeric_limits<unsigned>::max())
+            // There is a gap at the beginning of the reference.
+            if (lastRefPos == std::numeric_limits<unsigned>::max() && it->physicalPosition != 0)
             {
-                if (it->physicalPosition != 0)
-                {
-                    insertGaps(itRef, it->physicalPosition);
-                    itRef += it->physicalPosition;
-                    itVar += it->physicalPosition;
-                    lastRefPos = it->physicalPosition + it->length;
-                    // std::cerr << "INSERT REF GAPS\t" << it->physicalPosition << "\n";
-                }
-                itRef += it->length;
-                itVar += it->length;
-                // std::cerr << "FORWARD\t" << it->length << "\n";
+                // Insert gaps in reference.
+                insertGaps(itRef, it->physicalPosition);
+                // Jump to position after gaps in reference.
+                itRef += it->physicalPosition;
+                // Jump over characters in variant.
+                itVar += it->physicalPosition;
             }
-            else
+
+            // There is a gap in the variant.
+            if (it->physicalPosition > lastRefPos)
             {
-                if (it->physicalPosition != lastRefPos)
-                {
-                    int len = it->physicalPosition - lastRefPos;
-                    insertGaps(itVar, len);
-                    // std::cerr << "INSERT VAR GAPS\t" << len << "\n";
-                    itRef += len;
-                    itVar += len;
-                    // std::cerr << "FORWARD\t" << len << "\n";
-                }
-                itRef += it->length;
-                itVar += it->length;
-                // std::cerr << "2 FORWARD\t" << it->length << "\n";
+                // How many gaps.
+                int len = it->physicalPosition - lastRefPos;
+                // Insert gaps in variant.
+                insertGaps(itVar, len);
+                // Jump over characters in reference.
+                itRef += len;
+                // Jump to position after gaps in variant.
+                itVar += len;
             }
-            lastRefPos = it->physicalPosition + it->length;
-        }
-        else
-        {
-            insertGaps(itRef, it->length);
-            // std::cerr << "INSERT REF GAPS\t" << it->length << "\n";
+
+            // This is a common segment. Advance both reference and variant.
             itRef += it->length;
             itVar += it->length;
-            // std::cerr << "FORWARD\t" << it->length << "\n";
+
+            // The end of the common segment is the last reference position.
+            lastRefPos = it->physicalPosition + it->length;
+        }
+        else // The segment is from the variant.
+        {
+            // Insert gaps in reference.
+            insertGaps(itRef, it->length);
+            // Jump to position after gaps in reference.
+            itRef += it->length;
+            // Jump over characters in variant.
+            itVar += it->length;
         }
     }
 
