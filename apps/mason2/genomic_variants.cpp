@@ -877,48 +877,49 @@ void PositionMap::reinit(TJournalEntries const & journal)
     unsigned lastRefPos = std::numeric_limits<unsigned>::max();  // Previous position from reference.
     for (; it != end(journal, seqan2::Standard()); ++it)
     {
-        // std::cerr << *it << "\n";
         SEQAN_ASSERT_NEQ(it->segmentSource, seqan2::SOURCE_NULL);
+        // The segment is from the reference.
         if (it->segmentSource == seqan2::SOURCE_ORIGINAL)
         {
-            if (lastRefPos == std::numeric_limits<unsigned>::max())
+            // There is a gap at the beginning of the reference.
+            if (lastRefPos == std::numeric_limits<unsigned>::max() && it->physicalPosition != 0)
             {
-                if (it->physicalPosition != 0)
-                {
-                    insertGaps(itRef, it->physicalPosition);
-                    itRef += it->physicalPosition;
-                    itVar += it->physicalPosition;
-                    lastRefPos = it->physicalPosition + it->length;
-                    // std::cerr << "INSERT REF GAPS\t" << it->physicalPosition << "\n";
-                }
-                itRef += it->length;
-                itVar += it->length;
-                // std::cerr << "FORWARD\t" << it->length << "\n";
+                // Insert gaps in reference.
+                insertGaps(itRef, it->physicalPosition);
+                // Jump to position after gaps in reference.
+                itRef += it->physicalPosition;
+                // Jump over characters in variant.
+                itVar += it->physicalPosition;
             }
-            else
+
+            // There is a gap in the variant.
+            if (it->physicalPosition > lastRefPos)
             {
-                if (it->physicalPosition != lastRefPos)
-                {
-                    int len = it->physicalPosition - lastRefPos;
-                    insertGaps(itVar, len);
-                    // std::cerr << "INSERT VAR GAPS\t" << len << "\n";
-                    itRef += len;
-                    itVar += len;
-                    // std::cerr << "FORWARD\t" << len << "\n";
-                }
-                itRef += it->length;
-                itVar += it->length;
-                // std::cerr << "2 FORWARD\t" << it->length << "\n";
+                // How many gaps.
+                int len = it->physicalPosition - lastRefPos;
+                // Insert gaps in variant.
+                insertGaps(itVar, len);
+                // Jump over characters in reference.
+                itRef += len;
+                // Jump to position after gaps in variant.
+                itVar += len;
             }
-            lastRefPos = it->physicalPosition + it->length;
-        }
-        else
-        {
-            insertGaps(itRef, it->length);
-            // std::cerr << "INSERT REF GAPS\t" << it->length << "\n";
+
+            // This is a common segment. Advance both reference and variant.
             itRef += it->length;
             itVar += it->length;
-            // std::cerr << "FORWARD\t" << it->length << "\n";
+
+            // The end of the common segment is the last reference position.
+            lastRefPos = it->physicalPosition + it->length;
+        }
+        else // The segment is from the variant.
+        {
+            // Insert gaps in reference.
+            insertGaps(itRef, it->length);
+            // Jump to position after gaps in reference.
+            itRef += it->length;
+            // Jump over characters in variant.
+            itVar += it->length;
         }
     }
 
