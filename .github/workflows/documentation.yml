@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2006-2024 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2024 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
 name: Deploy documentation (https://docs.seqan.de/)
 
 on:
@@ -19,7 +23,7 @@ defaults:
 jobs:
   my_job:
     name: Deploy Documentation
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     if: github.repository_owner == 'seqan'
     steps:
@@ -40,14 +44,11 @@ jobs:
           chmod 775 dox_only.sh
           ./dox_only.sh
 
-      - name: Deploy documentation
-        uses: Pendect/action-rsyncer@v2.0.0
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_HOST_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.REMOTE_TARGET }}
+      - name: Deploy Documentation
+        uses: seqan/actions/documentation_deploy_production@main
         with:
-          flags: '-vzr --delete --timeout=60 --omit-dir-times'
-          src: 'dox/html/'
-          dest: '$REMOTE_USER@$REMOTE_HOST:$TARGET/${GITHUB_REF#refs/heads/}'
+          deploy_host: ${{ secrets.DEPLOY_HOST }}
+          deploy_user: ${{ secrets.DEPLOY_USER }}
+          deploy_ssh_key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source_path_user_doc: dox/html/
+          deploy_path_user_doc: ${{ secrets.DEPLOY_PRODUCTION_BASE_PATH }}/main

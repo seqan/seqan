@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2006-2024 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2024 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
 name: Linux
 
 on:
@@ -13,121 +17,78 @@ concurrency:
 
 env:
   TZ: Europe/Berlin
+  CCACHE_MAXSIZE: 125M
 
 defaults:
   run:
-    shell: bash -Eexuo pipefail {0}
+    shell: bash -Eeuxo pipefail {0}
 
 jobs:
   build:
-    name: ${{ matrix.name }}
-    runs-on: ubuntu-22.04
-    timeout-minutes: 180
+    runs-on: ubuntu-latest
+    name: ${{ matrix.compiler }}
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
+        compiler: ["clang-18", "clang-17", "clang-16", "gcc-14", "gcc-13", "gcc-12", "intel"]
         include:
-          - name: "clang17"
-            compiler: "clang-17"
-            build_type: Release
-            cxx_flags: "-std=c++23"
-
-          - name: "clang16"
-            compiler: "clang-16"
-            build_type: Release
+          - cxx_flags: "-std=c++23"
+          - compiler: "clang-16"
             cxx_flags: "-std=c++20"
-
-          - name: "clang15"
-            compiler: "clang-15"
-            build_type: Release
-            cxx_flags: "-std=c++20"
-
-          - name: "gcc13"
-            compiler: "gcc-13"
-            build_type: Release
-            cxx_flags: "-std=c++23"
-
-          - name: "gcc12"
-            compiler: "gcc-12"
-            build_type: Release
-            cxx_flags: "-std=c++20"
-
-          - name: "gcc11"
-            compiler: "gcc-11"
-            build_type: Release
-            cxx_flags: "-std=c++20"
-
-          - name: "IntelLLVM"
-            compiler: "intel"
-            build_type: Release
-            cxx_flags: "-std=c++20 -fp-model=strict"
-
+          - compiler: "intel"
+            cxx_flags: "-std=c++23 -fp-model=strict"
+    container:
+      image: ghcr.io/seqan/${{ matrix.compiler }}
+      volumes:
+        - /home/runner:/home/runner
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Setup toolchain
-        uses: seqan/actions/setup-toolchain@main
-        with:
-          compiler: ${{ matrix.compiler }}
-          ccache_size: 125M
 
       - name: Install dependencies
-        run: install libboost-dev libxml2-utils
-
-      - name: Install OpenMP
-        if: contains(matrix.name, 'clang')
         env:
-          SEQAN_CLANG: ${{ matrix.compiler }}
-        run: install libomp-${SEQAN_CLANG:6}-dev
-
-      - name: Install CMake
-        uses: seqan/actions/setup-cmake@main
-        with:
-          cmake: 3.27.7
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Install Python dependencies
+          PIP_BREAK_SYSTEM_PACKAGES: 1
         run: |
-          pip install setuptools wheel
-          pip install -r manual/requirements.txt
+          apt-get update --quiet=2
+          apt-get install --yes --no-install-recommends libboost-dev libxml2-utils python3-pip
+          pip install --quiet setuptools wheel
+          pip install --quiet --requirement manual/requirements.txt
+
+      - name: Load ccache
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.ccache
+          save-always: true
+          key: ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}-${{ github.ref }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}
 
       - name: Configure tests
         run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release \
                    -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} -Wextra -Wall -pedantic -Werror" \
                    -DSEQAN_DISABLE_VERSION_CHECK=ON \
                    -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
-                   -DPython3_ROOT_DIR=${pythonLocation} \
-                   -DPython3_EXECUTABLE=${pythonLocation}/bin/python3 \
                    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build tests
+        working-directory: build
         run: |
           ccache -z
-          cd build
-          make -k -j2
-          ccache -sv
+          make -k
+          ccache -svvx
 
       - name: Run tests
+        working-directory: build
         continue-on-error: true
         id: test
-        run: |
-          cd build
-          ctest . -j2 --output-on-failure --timeout 240
+        run: ctest . -j --output-on-failure --timeout 240
 
       - name: Rerun failed tests
         if: steps.test.outcome == 'failure'
-        run: |
-          cd build
-          ctest . -j2 --output-on-failure --timeout 240 --rerun-failed
+        working-directory: build
+        run: ctest . -j --output-on-failure --timeout 240 --rerun-failed
