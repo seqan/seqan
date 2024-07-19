@@ -64,7 +64,7 @@ public:
 
     TGraph_ const* data_host;
     TVertexDescriptor_ data_source;
-    TEdgeDescriptor_ data_edge;
+    TEdgeDescriptor_ data_edge{};
 
     Iter() = default;
 
