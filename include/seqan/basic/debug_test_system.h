@@ -604,7 +604,7 @@ struct StaticData
     static char const * _computePathToRoot()
     {
         // Get path to include.
-        const char * file = __FILE__;
+        const char * const file = __FILE__;
         int pos = -1;
         for (size_t i = 0; i < strlen(file) - strlen("include"); ++i)
         {
@@ -615,7 +615,7 @@ struct StaticData
         }
         for (; pos > 0 && *(file + pos - 1) != '/' &&  *(file + pos - 1) != '\\'; --pos)
             continue;
-        if (pos == -1)
+        if (pos <= 0 || static_cast<size_t>(pos) >= strlen(file))
         {
             std::cerr << "Could not extrapolate path to repository from __FILE__ == \""
                       << __FILE__ << "\"" << std::endl;
@@ -623,9 +623,9 @@ struct StaticData
         }
 
         static char buffer[1024];
-        strncpy(&buffer[0], file, pos);
+        memcpy(buffer, file, pos);
         buffer[pos - 1] = '\0';
-        return &buffer[0];
+        return buffer;
     }
 
     // Base path to the directory containing "core" and "extras."
