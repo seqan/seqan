@@ -379,6 +379,9 @@ _computeTrack(TDPScout & scout,
                  TColumnDescriptor(), FirstCell(), TDPProfile());
 
     TSeqVIterator iter = seqBegin;
+#ifdef __INTEL_LLVM_COMPILER // It works with c++20 and c++23, though.
+    asm ("" : : "m"(iter)); // Kindly request IntelLLVM (2024.1.2) to not optimize iter away.
+#endif
     for (; iter != seqEnd - 1; ++iter)
     {
         _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());

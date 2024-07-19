@@ -83,7 +83,7 @@ public:
     typedef typename VertexDescriptor<TGraph_>::Type TVertexDescriptor_;
     TGraph_ const* data_host;
     TVertexDescriptor_ data_source;
-    TEdgeDescriptor_ data_edge;
+    TEdgeDescriptor_ data_edge{};
 
     Iter() = default;
 
@@ -147,7 +147,7 @@ public:
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     TGraph const* data_host;
     TVertexDescriptor data_source;
-    TEdgeDescriptor data_edge;
+    TEdgeDescriptor data_edge{};
 
     Iter() = default;
 
@@ -211,7 +211,7 @@ public:
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     TGraph const* data_host;
     TVertexDescriptor data_source;
-    TEdgeDescriptor data_edge;
+    TEdgeDescriptor data_edge{};
 
     Iter() = default;
 
@@ -357,7 +357,7 @@ public:
     typedef typename VertexDescriptor<TGraph_>::Type TVertexDescriptor_;
     TGraph_ const* data_host;
     TVertexDescriptor_ data_source;
-    TEdgeDescriptor_ data_edge;
+    TEdgeDescriptor_ data_edge{};
 
     Iter() = default;
 

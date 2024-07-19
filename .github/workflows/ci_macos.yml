@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2006-2024 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2024 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
 name: macOS
 
 on:
@@ -20,49 +24,20 @@ defaults:
 
 jobs:
   build:
-    name: ${{ matrix.name }}
     runs-on: macos-12
-    timeout-minutes: 180
+    name: ${{ matrix.compiler }}
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
+        compiler: ["clang-18", "clang-17", "clang-16", "gcc-14", "gcc-13", "gcc-12"]
         include:
-          - name: "clang17"
-            compiler: "clang-17"
-            build_type: Release
-            cxx_flags: "-std=c++23"
-
-          - name: "clang16"
-            compiler: "clang-16"
-            build_type: Release
+          - cxx_flags: "-std=c++23"
+          - compiler: "clang-16"
             cxx_flags: "-std=c++20"
-
-          - name: "clang15"
-            compiler: "clang-15"
-            build_type: Release
-            cxx_flags: "-std=c++20"
-
-          - name: "gcc13"
-            compiler: "gcc-13"
-            build_type: Release
-            cxx_flags: "-std=c++23"
-
-          - name: "gcc12"
-            compiler: "gcc-12"
-            build_type: Release
-            cxx_flags: "-std=c++20"
-
-          - name: "gcc11"
-            compiler: "gcc-11"
-            build_type: Release
-            cxx_flags: "-std=c++20"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - name: Setup toolchain
         uses: seqan/actions/setup-toolchain@main
@@ -72,11 +47,6 @@ jobs:
 
       - name: Install dependencies
         run: install boost
-
-      - name: Install CMake
-        uses: seqan/actions/setup-cmake@main
-        with:
-          cmake: 3.12.4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -90,9 +60,8 @@ jobs:
 
       - name: Configure tests
         run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release \
                    -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} -Wextra -Wall -pedantic -Werror" \
                    -DSEQAN_DISABLE_VERSION_CHECK=ON \
                    -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
@@ -102,21 +71,19 @@ jobs:
                    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build tests
+        working-directory: build
         run: |
           ccache -z
-          cd build
-          make -k -j3
-          ccache -sv
+          make -k
+          ccache -svvx
 
       - name: Run tests
+        working-directory: build
         continue-on-error: true
         id: test
-        run: |
-          cd build
-          ctest . -j3 --output-on-failure --timeout 240
+        run: ctest . -j --output-on-failure --timeout 240
 
       - name: Rerun failed tests
         if: steps.test.outcome == 'failure'
-        run: |
-          cd build
-          ctest . -j3 --output-on-failure --timeout 240 --rerun-failed
+        working-directory: build
+        run: ctest . -j --output-on-failure --timeout 240 --rerun-failed

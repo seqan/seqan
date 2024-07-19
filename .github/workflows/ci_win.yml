@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2006-2024 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2024 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
 name: Windows
 
 on:
@@ -26,14 +30,9 @@ jobs:
         include:
           - name: "Visual Studio 17 2022"
             vsversion : 2022
-            build_type: Release
-            cxx_flags: "/std:c++latest"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -69,27 +68,24 @@ jobs:
           New-Item -Name "build" -ItemType "directory" -Force
           cd build
           cmake .. -G "${{ matrix.name }}" `
-                   -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
-                   -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} /EHsc /W2 /wd4244 /wd4146" `
+                   -DCMAKE_BUILD_TYPE=Release `
+                   -DCMAKE_CXX_FLAGS="/std:c++latest /EHsc /W2 /wd4244 /wd4146" `
                    -DSEQAN_DISABLE_VERSION_CHECK=ON `
                    -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON `
                    -DPython3_ROOT_DIR=$env:pythonLocation `
                    -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3
 
       - name: Build tests
-        run: |
-          cd build
-          cmake --build . --config "${{ matrix.build_type }}" --parallel 2 -- /p:ContinueOnError=ErrorAndContinue
+        working-directory: build
+        run: cmake --build . --config Release --parallel 4 -- /p:ContinueOnError=ErrorAndContinue
 
       - name: Run tests
+        working-directory: build
         continue-on-error: true
         id: test
-        run: |
-          cd build
-          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 -E "app_test_yara"
+        run: ctest . -j4 -C Release --output-on-failure --timeout 240 -E "app_test_yara"
 
       - name: Rerun failed tests
         if: steps.test.outcome == 'failure'
-        run: |
-          cd build
-          ctest . -j2 -C "${{ matrix.build_type }}" --output-on-failure --timeout 240 --rerun-failed
+        working-directory: build
+        run: ctest . -j2 -C Release --output-on-failure --timeout 240 --rerun-failed
