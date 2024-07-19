@@ -272,7 +272,15 @@ public:
     static constexpr bool has_infinity      = false;
     static constexpr bool has_quiet_NaN     = false;
     static constexpr bool has_signaling_NaN = false;
+// P2614R2: std::float_denorm_style, has_denorm, and has_denorm_loss are deprecated in C++23.
+#if defined(__GNUC__) && __cplusplus >= 202302
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     static constexpr float_denorm_style has_denorm = denorm_absent;
+#if defined(__GNUC__) && __cplusplus >= 202302
+#    pragma GCC diagnostic pop
+#endif
     static constexpr bool has_denorm_loss   = false;
     static constexpr float_round_style round_style = round_toward_zero;
     static constexpr bool is_iec559         = false;
