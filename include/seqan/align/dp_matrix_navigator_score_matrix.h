@@ -361,7 +361,7 @@ _goNextCell(DPMatrixNavigator_<DPMatrix_<TValue, FullDPMatrix, THost>, DPScoreMa
 template <typename TDPCell,
           typename TValue, typename TMatrixSpec, typename THost,
           typename TColumnType>
-inline void
+inline std::enable_if_t<!std::is_same_v<TColumnType, DPInitialColumn>>
 _preInitCacheDiagonal(TDPCell & cacheDiagonal,
                       DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> const & dpNavigator,
                       MetaColumnDescriptor<TColumnType, PartialColumnMiddle> const & /*tag*/)
@@ -372,7 +372,7 @@ _preInitCacheDiagonal(TDPCell & cacheDiagonal,
 template <typename TDPCell,
           typename TValue, typename TMatrixSpec, typename THost,
           typename TColumnType>
-inline void
+inline std::enable_if_t<!std::is_same_v<TColumnType, DPInitialColumn>>
 _preInitCacheDiagonal(TDPCell & cacheDiagonal,
                       DPMatrixNavigator_<DPMatrix_<TValue, TMatrixSpec, THost>, DPScoreMatrix, NavigateColumnWiseBanded> const & dpNavigator,
                       MetaColumnDescriptor<TColumnType, PartialColumnBottom> const & /*tag*/)
