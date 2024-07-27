@@ -1615,7 +1615,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_base_length)
 {
     // Test with ints.
     {
-        Tuple<int, 3> t1;
+        Tuple<int, 3> t1{};
         SEQAN_ASSERT_EQ(length(t1), 3u);
     }
 }
@@ -1826,7 +1826,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_clear)
 
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_length)
 {
-    Tuple<char, 2, BitPacked<> > t1;
+    Tuple<char, 2, BitPacked<> > t1{};
     SEQAN_ASSERT_EQ(length(t1), 2u);
 }
 
