@@ -123,8 +123,8 @@ namespace seqan2
                 if (a.i.i3[i] > b.i.i3[i]) return true;
             }
 
-            TName na = a.i.i2[SkewNIndex_<7>::VALUE[a.stream][shft]];
-            TName nb = b.i.i2[SkewNIndex_<7>::VALUE[b.stream][shft]];
+            TName na = getValueI2(a.i)[SkewNIndex_<7>::VALUE[a.stream][shft]];
+            TName nb = getValueI2(b.i)[SkewNIndex_<7>::VALUE[b.stream][shft]];
             if (na < nb) return false;
             if (na > nb) return true;
 

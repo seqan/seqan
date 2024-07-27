@@ -277,7 +277,8 @@ readRecord(BamAlignmentRecord & record,
 
     // tags
     resize(record.tags, remainingBytes, Exact());
-    arrayCopyForward(it, it + remainingBytes, begin(record.tags, Standard()));
+    if (remainingBytes > 0)
+        arrayCopyForward(it, it + remainingBytes, begin(record.tags, Standard()));
 }
 
 }  // namespace seqan2

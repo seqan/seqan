@@ -189,7 +189,7 @@ namespace seqan2
                 if (a.i3[i] == b.i3[i]) continue;
                 return (a.i3[i] <  b.i3[i])? -1 : 1;
             }
-            return (a.i2[0] < b.i2[0])? -1 : 1;
+            return (getValueI2(a)[0] < getValueI2(b)[0])? -1 : 1;
         }
     };
 

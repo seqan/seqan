@@ -283,7 +283,7 @@ template <typename T>
 inline SEQAN_FUNC_DISABLE_IF(Is<StlContainerConcept<typename RemoveReference<T>::Type> >, void const *)
 getObjectId(T const & me)
 {
-    return &*end(me, Standard());
+    return end(me, Standard());
 }
 
 // --------------------------------------------------------------------------

@@ -47,10 +47,10 @@ int main()
               << "\n";
 
     // Get relevant clipping positions.
-    int refSplitPosition = toSourcePosition(row(alignL, 0), clippedEndPosition(row(alignL, 0)));
+    size_t refSplitPosition = toSourcePosition(row(alignL, 0), clippedEndPosition(row(alignL, 0)));
     SEQAN_ASSERT_EQ(refSplitPosition, toSourcePosition(row(alignR, 0), 0));
-    int readSplitLPosition = toSourcePosition(row(alignL, 1), clippedEndPosition(row(alignL, 1)));
-    int readSplitRPosition = toSourcePosition(row(alignR, 1), 0);
+    size_t readSplitLPosition = toSourcePosition(row(alignL, 1), clippedEndPosition(row(alignL, 1)));
+    size_t readSplitRPosition = toSourcePosition(row(alignR, 1), 0);
 
     std::cout << "refSplitPosition   == " << refSplitPosition << "\n"
               << "readSplitLPosition == " << readSplitLPosition << "\n"

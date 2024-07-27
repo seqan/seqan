@@ -289,7 +289,8 @@ compress(TTarget & target, TSourceIterator & source, CompressionContext<BgzfFile
 inline uint16_t
 _bgzfUnpack16(char const * buffer)
 {
-    uint16_t tmp = *reinterpret_cast<uint16_t const *>(buffer);
+    uint16_t tmp;
+    std::memcpy(&tmp, buffer, sizeof(uint16_t));
     enforceLittleEndian(tmp);
     return tmp;
 }
@@ -297,7 +298,8 @@ _bgzfUnpack16(char const * buffer)
 inline uint32_t
 _bgzfUnpack32(char const * buffer)
 {
-    uint32_t tmp = *reinterpret_cast<uint32_t const *>(buffer);
+    uint32_t tmp;
+    std::memcpy(&tmp, buffer, sizeof(uint32_t));
     enforceLittleEndian(tmp);
     return tmp;
 }
