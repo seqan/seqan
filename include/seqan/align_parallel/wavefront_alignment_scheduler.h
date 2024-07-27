@@ -325,7 +325,11 @@ wait2(WavefrontAlignmentScheduler & me, TNotifiable & notifiable)
 inline auto
 getExceptions(WavefrontAlignmentScheduler & me)
 {
-    auto vec = me._exceptionPointers;
+    auto vec = [&me] ()
+    {
+        std::lock_guard<std::mutex> lck(me._mutexPushException);
+        return me._exceptionPointers;
+    }();
     auto innerExceptions = getExceptions(me._taskScheduler);
     std::copy(std::begin(innerExceptions), std::end(innerExceptions), std::back_inserter(vec));
     return vec;

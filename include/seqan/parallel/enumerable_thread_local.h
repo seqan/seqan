@@ -145,7 +145,10 @@ struct CountingThreadLocalManager
     local(TResourceMap & map, TValue const & initValue, bool & exists)
     {
         if (_count.load(std::memory_order_relaxed) == 0)
+        {
+            std::shared_lock<decltype(_mutex)> read_lck(_mutex);
             return map.find(std::this_thread::get_id())->second;
+        }
 
         decltype(map.find(std::this_thread::get_id())) elemIt;
 

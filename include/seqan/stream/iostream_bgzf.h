@@ -339,7 +339,7 @@ public:
 
         std::mutex              cs;
         std::condition_variable readyEvent;
-        bool                    ready;
+        std::atomic<bool>       ready;
         bool                    bgzfEofMarker;
 
         DecompressionJob() :
@@ -361,7 +361,7 @@ public:
             size(other.size),
             cs(),
             readyEvent(),
-            ready(other.ready),
+            ready(other.ready.load()),
             bgzfEofMarker(other.bgzfEofMarker)
         {}
     };
@@ -400,7 +400,7 @@ public:
                 if (!job.ready)
                 {
                     std::unique_lock<std::mutex> lock(job.cs);
-                    job.readyEvent.wait(lock, [&job]{return job.ready;});
+                    job.readyEvent.wait(lock, [&job]{return job.ready.load();});
                     SEQAN_ASSERT_EQ(job.ready, true);
                 }
 
@@ -591,7 +591,7 @@ public:
             // wait for the end of decompression
             {
                 std::unique_lock<std::mutex> lock(job.cs);
-                job.readyEvent.wait(lock, [&job]{return job.ready;});
+                job.readyEvent.wait(lock, [&job]{return job.ready.load();});
             }
 
             size_t size = (job.size != -1)? job.size : 0;
@@ -717,7 +717,7 @@ public:
 
                     {
                         std::unique_lock<std::mutex> lock(job.cs);
-                        job.readyEvent.wait(lock, [&job]{return job.ready;});
+                        job.readyEvent.wait(lock, [&job]{return job.ready.load();});
                     }
 
                     SEQAN_ASSERT_EQ(job.fileOfs, (off_type)destFileOfs);
