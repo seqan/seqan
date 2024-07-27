@@ -327,13 +327,11 @@ _align_banded_nw_best_ends(TTrace& trace,
 			} else {
 				// Usual initialization for first row and column
 				if (actualRow == 0) {
-					*matIt = actualCol * scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-					                                              sequenceEntryForScore(sc, str2, -1));
+					*matIt = actualCol * scoreGap(sc);
 					*lenIt = actualCol;
 				}
 				else {
-					*matIt = actualRow * scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, -1),
-					                                            sequenceEntryForScore(sc, str2, ((int) actualRow - 1)));
+					*matIt = actualRow * scoreGap(sc);
 					*lenIt = actualRow;
 					hori_val = *matIt;
 					hori_len = actualRow;
