@@ -1,0 +1,139 @@
+# SPDX-FileCopyrightText: 2006-2024 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2024 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
+name: Sanitizer
+
+on:
+  schedule:
+    - cron: "0 6 * * SUN"
+  workflow_dispatch:
+
+concurrency:
+  group: sanitizer-actions
+  cancel-in-progress: true
+
+env:
+  TZ: Europe/Berlin
+  ASAN_OPTIONS: abort_on_error=1:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:detect_leaks=0:alloc_dealloc_mismatch=1
+  TSAN_OPTIONS: ignore_noninstrumented_modules=1
+  UBSAN_OPTIONS: print_stacktrace=1
+
+defaults:
+  run:
+    shell: bash -Eeuxo pipefail {0}
+
+jobs:
+  build:
+    name: ${{ matrix.name }} ${{ matrix.build_type }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [ASan, TSan, UBSan]
+        os: [ubuntu-latest, macos-12]
+        build_type: [Release, RelWithDebInfo, Debug]
+        exclude:
+          - name: "TSan"
+            os: macos-12
+        include:
+          - name: "ASan"
+            cxx_flags: "-fno-omit-frame-pointer -fsanitize=address"
+
+          - name: "ASan"
+            os: ubuntu-latest
+            cxx_flags: "-fno-omit-frame-pointer -fsanitize=address -Wno-maybe-uninitialized"
+
+          - name: "TSan"
+            cxx_flags: "-fno-omit-frame-pointer -fsanitize=thread"
+
+          - name: "UBSan"
+            os: macos-12
+            cxx_flags: "-fno-omit-frame-pointer -fsanitize=undefined,float-divide-by-zero,local-bounds,nullability -fno-sanitize=alignment -Wno-pass-failed"
+            ctest_flags: -E "app_test_yara"
+
+          - name: "UBSan"
+            os: ubuntu-latest
+            cxx_flags: "-fno-omit-frame-pointer -fsanitize=undefined,float-divide-by-zero -fno-sanitize=alignment"
+            ctest_flags: -E "app_test_yara"
+
+          - name: "UBSan"
+            os: ubuntu-latest
+            build_type: RelWithDebInfo
+            ctest_flags: -E "app_test_yara|app_test_snp_store"
+
+          - os: macos-12
+            compiler: clang-18
+
+          - os: ubuntu-latest
+            compiler: gcc-14
+            image: ghcr.io/seqan/gcc-14
+
+          - name: "TSan"
+            os: ubuntu-latest
+            compiler: clang-18
+            image: ghcr.io/seqan/clang-18
+    container:
+      image: ${{ matrix.image || '' }}
+      volumes:
+        - /home/runner:/home/runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        if: contains(matrix.os, 'ubuntu')
+        env:
+          PIP_BREAK_SYSTEM_PACKAGES: 1
+        run: |
+          apt-get update --quiet=2
+          apt-get install --yes --no-install-recommends libboost-dev libxml2-utils python3-pip
+          pip install --quiet setuptools wheel
+          pip install --quiet --requirement manual/requirements.txt
+
+      - name: Setup compiler
+        if: contains(matrix.os, 'macos')
+        uses: seqan/actions/setup-compiler@main
+        with:
+          compiler: ${{ matrix.compiler }}
+
+      - name: Install dependencies
+        if: contains(matrix.os, 'macos')
+        run: install boost
+
+      - name: Setup Python
+        if: contains(matrix.os, 'macos')
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - name: Install Python dependencies
+        if: contains(matrix.os, 'macos')
+        run: |
+          pip install setuptools wheel
+          pip install -r manual/requirements.txt
+
+      - name: Configure tests
+        run: |
+          mkdir build && cd build
+          cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                   -DCMAKE_CXX_FLAGS="-Wextra -Wall -pedantic ${{ matrix.cxx_flags }}" \
+                   -DSEQAN_DISABLE_VERSION_CHECK=ON \
+                   -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON
+
+      - name: Build tests
+        working-directory: build
+        run: make -k
+
+      - name: Run tests
+        working-directory: build
+        continue-on-error: true
+        id: test
+        run: ctest . -j ${{ matrix.ctest_flags }} --output-on-failure
+
+      - name: Rerun failed tests
+        if: steps.test.outcome == 'failure'
+        working-directory: build
+        run: ctest . -j ${{ matrix.ctest_flags }} --verbose --output-on-failure --rerun-failed
+
