@@ -233,7 +233,8 @@ struct AssignTagsBamToSamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-        Type tmp = *reinterpret_cast<Type const *>(&*it);
+        Type tmp;
+        std::memcpy(&tmp, it, sizeof(Type));
         enforceLittleEndian(tmp);
         appendNumber(target, tmp);
         it += sizeof(Type);

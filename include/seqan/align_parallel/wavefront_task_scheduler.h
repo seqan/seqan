@@ -210,6 +210,7 @@ wait(WavefrontTaskScheduler & me)
 inline auto
 getExceptions(WavefrontTaskScheduler & me)
 {
+    std::lock_guard<std::mutex> lck(me._mutexPushException);
     return me._exceptionPointers;
 }
 

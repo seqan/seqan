@@ -2328,7 +2328,7 @@ inline int OddsRepeatCutoff(
         for (int nr=1; nr <= nrmax; nr++){
             posteriors[nr] /= sum;
         }
-        post1occ = (1-posteriors[1])/ posteriors[1] ;
+        post1occ = (posteriors[1] == 0.0) ? std::numeric_limits<double>::infinity() : (1-posteriors[1])/ posteriors[1] ;
         c++;
     }
     if (c == cmax) return 0;
@@ -2658,7 +2658,7 @@ void CombinatoricsNoSeed(TMatrix &m, int lread, int kmax, int nerrmax)
         for (k = 0; k < ne; ++k)
             m(ne, k) = 0;
         for (k = ne; k <= kmax; ++k)
-            m(ne, k) = (int)boost::math::binomial_coefficient<double>(k, ne);
+            m(ne, k) = static_cast<int64_t>(boost::math::binomial_coefficient<double>(k, ne));
         int mpos = (ne + 1) * kmax;
         for (k = mpos; k <= lread; ++k)
             m(ne, k) = 0;
@@ -2978,7 +2978,7 @@ inline void linearRegression(
     }
 
     /* save the parameters in the model */
-    linearModel.slope     = (double) covarianceXY/varianceX;
+    linearModel.slope     =  (varianceX == 0.0) ? std::numeric_limits<double>::infinity() : (double) covarianceXY/varianceX;
     linearModel.intercept = (double) (meanY - ((TValue)linearModel.slope * meanX) );
     linearModel.numberObservations = (unsigned int) length(x);
     linearModel.numberPredictors  = (unsigned int) 1;
@@ -3008,6 +3008,8 @@ inline TValue RSquare(
         SStotal  += (y[i] - meanY) * (y[i] - meanY);
         SSerror  += pow((y[i] - fittedValue(linearModel,x[i])), 2.0);
     }
+    if (SStotal == 0.0)
+        return std::numeric_limits<TValue>::infinity();
     return((TValue) ( 1- (SSerror/SStotal)));
 }
 
@@ -3024,6 +3026,8 @@ inline TValue adjustedRSquare(
      * AdjRSquare = 1 - (1-RSquare)*(n-1)/(n-k-1) */
 
     TValue R_2 = RSquare(linearModel,x,y);
+    if (linearModel.numberObservations - linearModel.numberPredictors -1 == 0)
+        return std::numeric_limits<TValue>::infinity();
     return( (TValue) (1 - (TValue)(1-R_2) * (TValue)(linearModel.numberObservations -1)/(TValue)(linearModel.numberObservations - linearModel.numberPredictors -1)));
 }
 

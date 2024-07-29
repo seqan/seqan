@@ -118,7 +118,7 @@ struct ParallelAlignmentExecutor
         computeSplitters(splitter, length(setH), static_cast<TPos>(length(setH)/chunkSize));
 
         std::vector<TResult> superSet;
-        superSet.resize(length(splitter));
+        superSet.resize(length(splitter) - 1);
 
 #ifdef DP_PARALLEL_SHOW_PROGRESS
         ::impl::dp_parallel_progress::show_progress(length(setH));

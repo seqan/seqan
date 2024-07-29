@@ -95,7 +95,7 @@ include(CheckCXXSourceCompiles)
 include(CheckCXXSourceRuns)
 
 option(SEQAN_SIMD_UTILITY_VERBOSE OFF)
-set(SEQAN_SIMD_SUPPORTED_EXTENSIONS "sse4;avx2;avx512_knl;avx512_skx;avx512_cnl")
+set(SEQAN_SIMD_SUPPORTED_EXTENSIONS "sse4;avx2;avx512_skx;avx512_cnl")
 
 if (COMPILER_MSVC)
     set(SEQAN_SIMD_SSE4_FLAGS "/arch:AVX")
@@ -498,7 +498,7 @@ macro(transfer_target_property property source_target target_target)
 
     # message(STATUS "${source_target}: ${property} == ${_property_value}")
 
-    if(_property_value)
+    if(_property_value AND NOT "${property}" STREQUAL "SOURCE_DIR")
         # message(STATUS "${target_target}: set ${property} = ${_property_value}")
         set_target_properties(${target_target} PROPERTIES ${property} "${_property_value}")
     endif()

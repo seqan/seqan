@@ -206,8 +206,8 @@ SEQAN_DEFINE_TEST(test_align_parallel_wavefront_alignment_scheduler_async_with_e
                     event.notify(id);
                     throw test_align_parallel::test_error("Test");
                 }
+                ++calledIds[id];
             }
-            ++calledIds[id];
             event.notify(id);
         };
 

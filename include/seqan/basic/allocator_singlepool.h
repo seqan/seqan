@@ -207,7 +207,7 @@ allocate(Allocator<SinglePool<SIZE, TParentAllocator> > & me,
     else
     {//use new
         ptr = me.data_current_free;
-        if (ptr + bytes_needed > me.data_current_end)
+        if (ptr == nullptr || ptr + bytes_needed > me.data_current_end)
         {//not enough free space in current storage: allocate new
             allocate(parentAllocator(me), ptr, (size_t) TAllocator::STORAGE_SIZE, tag_);
             me.data_current_begin = ptr;

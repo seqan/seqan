@@ -34,6 +34,16 @@
 
 #include <seqan/parallel.h>
 
+#if defined(__SANITIZE_THREAD__)
+#    define SEQAN_IS_NOT_TSAN 0
+#elif defined(__has_feature)
+#    if __has_feature(thread_sanitizer)
+#        define SEQAN_IS_NOT_TSAN 0
+#    endif
+#else
+#    define SEQAN_IS_NOT_TSAN 1
+#endif
+
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_construct)
 {
     using namespace seqan2;
@@ -67,28 +77,23 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_join)
     using namespace seqan2;
 
     ThreadPool pool;
-    std::vector<bool> res{false, false};
+    std::vector<int> res(2);
     for (unsigned i = 0; i < res.size(); ++i)
     {
         auto f = [=, &res]
         {
             std::this_thread::sleep_for(std::chrono::seconds(i));
-            res[i] = true;
+            res[i] = i + 1;
         };
         spawn(pool, f);
     }
 
-    SEQAN_ASSERT_NOT(std::accumulate(std::begin(res), std::end(res), true,
-                                     [](bool const lhs, bool const rhs)
-                                     {
-                                         return lhs && rhs;
-                                     }));
+#if SEQAN_IS_NOT_TSAN
+    SEQAN_ASSERT_NOT(std::accumulate(std::begin(res), std::end(res), 0, std::plus<int>()) == 3);
+#endif
+
     join(pool);
-    SEQAN_ASSERT(std::accumulate(std::begin(res), std::end(res), true,
-                                 [](bool const lhs, bool const rhs)
-                                 {
-                                     return lhs && rhs;
-                                 }));
+    SEQAN_ASSERT(std::accumulate(std::begin(res), std::end(res), 0, std::plus<int>()) == 3);
 }
 
 SEQAN_DEFINE_TEST(test_parallel_thread_pool_destruct)
@@ -106,7 +111,10 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_destruct)
             res = true;
         };
         spawn(*poolPtr, f);
+
+#if SEQAN_IS_NOT_TSAN
         SEQAN_ASSERT_NOT(res);
+#endif
 
         try
         {
@@ -132,7 +140,11 @@ SEQAN_DEFINE_TEST(test_parallel_thread_pool_destruct)
             res = true;
         };
         spawn(*poolPtr, f);
+
+#if SEQAN_IS_NOT_TSAN
         SEQAN_ASSERT_NOT(res);
+#endif
+
         join(*poolPtr);
         SEQAN_ASSERT(res);
 

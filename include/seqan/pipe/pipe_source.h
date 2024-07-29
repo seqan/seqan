@@ -329,6 +329,10 @@ namespace seqan2
             return buffer;
         }
 
+        ~BufferHandler() {
+            cancel();
+        }
+
         inline void process() {}
         inline void end() { cancel(); }
         inline void cancel() { source = ISource(); freePage(buffer, *this); }
