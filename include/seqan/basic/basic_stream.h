@@ -1200,7 +1200,8 @@ template <typename TTargetValue, typename TValue>
 inline void
 appendRawPodImpl(TTargetValue * &ptr, TValue const & val)
 {
-    *reinterpret_cast<TValue* &>(ptr)++ = val;
+    std::memcpy(ptr, &val, sizeof(TValue));
+    ptr += sizeof(TValue);
 }
 
 template <typename TTarget, typename TValue>
