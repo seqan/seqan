@@ -141,7 +141,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addDescription(parser,
                    "Calculated consecutive regions of coverage from alignment file \\fIIN.bam\\fP "
-                   "and write regions of interst to file \\fIOUT.roi\\fP. "
+                   "and write regions of interest to file \\fIOUT.roi\\fP. "
 				   "Counting is performed over the entire region (including intron and N-regions) "
 				   "based on the CIGAR string of the alignment record.");
 	// it is in the scope of this application to make any assumtions over splice junctions
