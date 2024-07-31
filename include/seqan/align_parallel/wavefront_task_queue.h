@@ -55,8 +55,8 @@ public:
 
 
     // Member Types.
-    using TQueue = ConcurrentQueue<TValue*>;
-    using ResultType = std::vector<TValue*>;
+    using TQueue = ConcurrentQueue<std::shared_ptr<TValue>>;
+    using ResultType = std::vector<std::shared_ptr<TValue>>;
     using ValueType = TValue;
 
     // Members.
@@ -121,9 +121,9 @@ tryPopTasks(typename WavefrontTaskQueue<TValue, VECTOR_SIZE>::ResultType & tasks
 template <typename TValue, size_t VECTOR_SIZE>
 inline void
 appendValue(WavefrontTaskQueue<TValue, VECTOR_SIZE> & me,
-            TValue & newTask)
+            std::shared_ptr<TValue> newTask)
 {
-    appendValue(me.queue, &newTask);
+    appendValue(me.queue, newTask);
 }
 
 template <typename TValue, size_t VECTOR_SIZE>
