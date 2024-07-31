@@ -730,36 +730,42 @@ endmacro (seqan_get_version)
 # ---------------------------------------------------------------------------
 
 macro (seqan_get_repository_info)
-  set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
-  message (STATUS "Detected git repository:")
-  message (STATUS "  Selected repository dir: ${CMAKE_SOURCE_DIR}")
-  # Get Git information.
-  if (EXISTS ${_SEQAN_GIT_DIR})
-    find_package (GitInfo QUIET)
-    if (GIT_FOUND)
-      GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
+  option (SEQAN_DISABLE_REVISION_INFO "Disable retrieval of repository revision information." OFF)
+
+  if (SEQAN_DISABLE_REVISION_INFO)
+    message (STATUS "Repository revision information disabled.")
+  else ()
+    set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
+    message (STATUS "Detected git repository:")
+    message (STATUS "  Selected repository dir: ${CMAKE_SOURCE_DIR}")
+    # Get Git information.
+    if (EXISTS ${_SEQAN_GIT_DIR})
+      find_package (GitInfo QUIET)
+      if (GIT_FOUND)
+        GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
+      endif ()
+    else ()
+      message(STATUS "No revision system found.")
     endif ()
-  else ()
-    message(STATUS "No revision system found.")
-  endif ()
 
-  # Set SeqAn date of last commit.
-  if (_SEQAN_WC_LAST_CHANGED_DATE)
-    set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}")
-    # icc doesn't cope with spaces..
-    string(REPLACE " " "_" SEQAN_DATE "${SEQAN_DATE}")
-    message (STATUS "  Determined repository date is ${SEQAN_DATE}")
-  else ()
-    message (STATUS "  Repository date not determined.")
-  endif ()
+    # Set SeqAn date of last commit.
+    if (_SEQAN_WC_LAST_CHANGED_DATE)
+      set (SEQAN_DATE "${_SEQAN_WC_LAST_CHANGED_DATE}")
+      # icc doesn't cope with spaces..
+      string(REPLACE " " "_" SEQAN_DATE "${SEQAN_DATE}")
+      message (STATUS "  Determined repository date is ${SEQAN_DATE}")
+    else ()
+      message (STATUS "  Repository date not determined.")
+    endif ()
 
-  # Set SeqAn repository revision.
-  if (_SEQAN_WC_REVISION)
-    set (SEQAN_REVISION "${_SEQAN_WC_REVISION}" CACHE INTERNAL "SeqAn repository revision.")
-    message (STATUS "  Determined repository revision is ${SEQAN_REVISION}")
-   else ()
-    set (SEQAN_REVISION "tarball" CACHE INTERNAL "SeqAn repository revision.")
-    message (STATUS "  Repository revision not determined.")
+    # Set SeqAn repository revision.
+    if (_SEQAN_WC_REVISION)
+      set (SEQAN_REVISION "${_SEQAN_WC_REVISION}" CACHE INTERNAL "SeqAn repository revision.")
+      message (STATUS "  Determined repository revision is ${SEQAN_REVISION}")
+    else ()
+      set (SEQAN_REVISION "tarball" CACHE INTERNAL "SeqAn repository revision.")
+      message (STATUS "  Repository revision not determined.")
+    endif ()
   endif ()
 endmacro (seqan_get_repository_info)
 
