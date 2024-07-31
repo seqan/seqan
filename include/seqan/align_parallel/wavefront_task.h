@@ -83,7 +83,7 @@ public:
     using TContext  = TAlignmentContext;
 
     TContext &                     context;
-    std::array<WavefrontTask*, 2>  successor{{nullptr, nullptr}};
+    std::array<std::shared_ptr<WavefrontTask>, 2>  successor{{nullptr, nullptr}};
     size_t                         col{0};
     size_t                         row{0};
     std::atomic<size_t>            refCount{0};
@@ -95,7 +95,7 @@ public:
     // Constructor
     WavefrontTask() = delete;
 
-    WavefrontTask(TContext & context, std::array<WavefrontTask*, 2> successor,
+    WavefrontTask(TContext & context, std::array<std::shared_ptr<WavefrontTask>, 2> successor,
                   size_t const col,
                   size_t const row,
                   size_t const refCount,
@@ -315,7 +315,7 @@ template <typename TTasks, typename TDPLocalData>
 inline void
 executeSimd(TTasks & tasks, TDPLocalData & dpLocal)
 {
-    using TTask = typename std::remove_pointer<typename Value<TTasks>::Type>::type;
+    using TTask = typename std::pointer_traits<typename Value<TTasks>::Type>::element_type;
     using TExecTraits = SimdTaskExecutionTraits<typename TTask::TContext>;
 
     auto offset = impl::computeOffset(tasks, TExecTraits{});

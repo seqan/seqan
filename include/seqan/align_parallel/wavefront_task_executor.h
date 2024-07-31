@@ -86,7 +86,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
         for (auto succ : successor(task))
         {
             if (succ && decrementRefCount(*succ) == 0)
-                spawn(wavefrontExec, TWaveTaskExec{succ, &wavefrontExec});
+                spawn(wavefrontExec, TWaveTaskExec{&*succ, &wavefrontExec});
         }
         if (isLastTask(task))
         {
@@ -121,7 +121,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTaskQueue<TValue, VECTOR_SIZE>>
             {
                 if (succ && decrementRefCount(*succ) == 0)
                 {
-                    appendValue(resource, *succ);
+                    appendValue(resource, succ);
                     spawn(wavefrontExec, TWaveTaskExec{&resource, &wavefrontExec});
                 }
             }

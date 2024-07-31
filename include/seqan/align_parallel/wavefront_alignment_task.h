@@ -215,8 +215,8 @@ struct WavefrontAlignmentTaskIncubator
     static auto createTaskGraph(TWavefrontTaskContext & taskContext)
     {
         using TDagTask = WavefrontTask<TWavefrontTaskContext>;
-
-        std::vector<std::vector<std::shared_ptr<TDagTask>>> graph;
+        using TDagTaskPtr = std::shared_ptr<TDagTask>;
+        std::vector<std::vector<TDagTaskPtr>> graph;
 
         resize(graph, length(taskContext.seqHBlocks));
         for (int i = length(taskContext.seqHBlocks); --i >= 0;)
@@ -225,14 +225,14 @@ struct WavefrontAlignmentTaskIncubator
             for (int j = length(taskContext.seqVBlocks); --j >= 0;)
             {
                 using TSize = decltype(length(taskContext.seqHBlocks));
-                TDagTask * successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks))
-                                                ?  graph[i+1][j].get()
+                TDagTaskPtr successorRight = (static_cast<TSize>(i + 1) < length(taskContext.seqHBlocks))
+                                                ? graph[i+1][j]
                                                 : nullptr;
-                TDagTask * successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks))
-                                                ? graph[i][j+1].get()
+                TDagTaskPtr successorDown  = (static_cast<TSize>(j + 1) < length(taskContext.seqVBlocks))
+                                                ? graph[i][j+1]
                                                 : nullptr;
                 graph[i][j] = std::make_shared<TDagTask>(taskContext,
-                                                         std::array<TDagTask*, 2>{{successorRight, successorDown}},
+                                                         std::array<TDagTaskPtr, 2>{{successorRight, successorDown}},
                                                          static_cast<size_t>(i), static_cast<size_t>(j),
                                                          static_cast<size_t>(((i > 0) ? 1 : 0) + ((j > 0) ? 1 : 0)),
                                                          (static_cast<TSize>(i + 1) == length(taskContext.seqHBlocks)),
@@ -373,7 +373,7 @@ public:
 
         // Kick off the execution.
         using TWavefrontTaskExec = WavefrontTaskExecutor<TSimdTaskQueue, TWavefrontExecutor>;
-        appendValue(taskQueue, *taskGraph[0][0]);
+        appendValue(taskQueue, taskGraph[0][0]);
         spawn(executor, TWavefrontTaskExec{&taskQueue, &executor});
 
         // Wait for alignment to finish.
