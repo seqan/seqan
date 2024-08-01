@@ -91,8 +91,8 @@ struct SimdDPSettings : public TDPSettings
     SimdDPSettings() = default;
 
     explicit SimdDPSettings(TScoringScheme score) :
-        TDPSettings(std::move(score)),
-        simdScoringScheme(score)
+        TDPSettings(score),
+        simdScoringScheme(std::move(score))
     {}
 };
 #endif  // SEQAN_SIMD_ENABLED
