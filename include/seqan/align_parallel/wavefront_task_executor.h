@@ -71,6 +71,28 @@ struct WavefrontTaskExecutor
     }
 };
 
+template <typename ...TArgs, typename TWavefrontExecutor>
+struct WavefrontTaskExecutor<WavefrontTask<TArgs...>, TWavefrontExecutor>
+{
+    using TResource = WavefrontTask<TArgs...>;
+    std::shared_ptr<TResource>  _ptrResource{nullptr};
+    TWavefrontExecutor *        _ptrWavefrontExecutor{nullptr};
+
+    //NOTE(rrahn) Bug in g++-4.9 prevents us from using as aggregate type.
+    WavefrontTaskExecutor() = default;
+
+    WavefrontTaskExecutor(std::shared_ptr<TResource> _resource,
+                          TWavefrontExecutor * _wavefrontExecutor) :
+            _ptrResource{_resource},
+            _ptrWavefrontExecutor(_wavefrontExecutor)
+    {}
+
+    inline void operator()()
+    {
+        WavefrontTaskExecutionPolicy<TResource>::execute(_ptrResource, *_ptrWavefrontExecutor);
+    }
+};
+
 // Policy for no SIMD execution.
 template <typename ...TArgs>
 struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
@@ -78,19 +100,20 @@ struct WavefrontTaskExecutionPolicy<WavefrontTask<TArgs...>>
 
     template <typename TResource, typename TWavefrontExecutor>
     inline static void
-    execute(TResource & task, TWavefrontExecutor & wavefrontExec)
+    execute(TResource task, TWavefrontExecutor & wavefrontExec)
     {
-        using TWaveTaskExec = WavefrontTaskExecutor<TResource, TWavefrontExecutor>;
+        using TTask = typename std::pointer_traits<typename Value<TResource>::Type>::element_type;
+        using TWaveTaskExec = WavefrontTaskExecutor<TTask, TWavefrontExecutor>;
 
         executeScalar(task, local(wavefrontExec));
-        for (auto succ : successor(task))
+        for (auto succ : successor(*task))
         {
             if (succ && decrementRefCount(*succ) == 0)
-                spawn(wavefrontExec, TWaveTaskExec{&*succ, &wavefrontExec});
+                spawn(wavefrontExec, TWaveTaskExec{succ, &wavefrontExec});
         }
-        if (isLastTask(task))
+        if (isLastTask(*task))
         {
-            notify(*(context(task).ptrEvent));
+            notify(*(context(*task).ptrEvent));
         }
     }
 };
@@ -111,7 +134,7 @@ struct WavefrontTaskExecutionPolicy<WavefrontTaskQueue<TValue, VECTOR_SIZE>>
 
         SEQAN_ASSERT(!empty(tasks));
         if (tasks.size()  == 1)
-            executeScalar(*front(tasks), local(wavefrontExec));
+            executeScalar(front(tasks), local(wavefrontExec));
         else
             executeSimd(tasks, local(wavefrontExec));
 

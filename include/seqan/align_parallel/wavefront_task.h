@@ -264,33 +264,34 @@ template <typename TTask, typename TDPLocalData>
 inline void
 executeScalar(TTask & task, TDPLocalData & dpLocal)
 {
-    using TExecTraits = TaskExecutionTraits<typename TTask::TContext>;
+    using TTaskElem = typename std::pointer_traits<typename Value<TTask>::Type>::element_type;
+    using TExecTraits = TaskExecutionTraits<typename TTaskElem::TContext>;
 
-    auto & taskContext = context(task);
+    auto & taskContext = context(*task);
     // Load the cache from the local data.
     auto & dpCache = cache(dpLocal, taskContext.alignmentId);
     auto & buffer = taskContext.tileBuffer;
 
     // Capture the buffer.
-    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(task)],
-                                                   buffer.verticalBuffer[row(task)]);  // Task local
+    typename TExecTraits::TDPScoutState scoutState(buffer.horizontalBuffer[column(*task)],
+                                                   buffer.verticalBuffer[row(*task)]);  // Task local
 
     typename TExecTraits::TDPScout scout(scoutState);
 
     impl::computeTile(dpCache, scout,
-                      taskContext.seqHBlocks[column(task)],
-                      taskContext.seqVBlocks[row(task)],
+                      taskContext.seqHBlocks[column(*task)],
+                      taskContext.seqVBlocks[row(*task)],
                       taskContext.dpSettings.scoringScheme,
                       taskContext.dpSettings);
     // We want to get the state here from the scout.
-    if(impl::AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(task))
+    if(impl::AlgorithmProperty<typename TExecTraits::TAlgorithmType>::isTrackingEnabled(*task))
     {
         // TODO(rrahn): Implement the interface.
         // TODO(rrahn): Make it a member function of a policy so that we don't have to implement the specifics here
         updateMax(intermediate(dpLocal, taskContext.alignmentId),
                   {maxScore(scout), maxHostPosition(scout)},
-                  column(task),
-                  row(task));
+                  column(*task),
+                  row(*task));
     }
 }
 

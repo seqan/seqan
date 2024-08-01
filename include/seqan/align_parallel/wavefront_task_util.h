@@ -228,7 +228,7 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
     auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
 
     std::for_each(begin(zipCont), end(zipCont),
-                  [&, getBuffer = std::move(getBuffer)](auto tuple)
+                  [&, getBuffer = std::forward<TFunc>(getBuffer)](auto tuple)
                   {
                       auto & buffer = *getBuffer(*std::get<0>(tuple));
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
@@ -266,7 +266,7 @@ loadIntoSimd(Pair<TDPCell, TTrace> & target,
     auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
     std::for_each(begin(zipCont), end(zipCont),
-                  [&, getBuffer = std::move(getBuffer)](auto tuple)
+                  [&, getBuffer = std::forward<TFunc>(getBuffer)](auto tuple)
                   {
                       auto & buffer = *getBuffer(*std::get<0>(tuple));
                       auto val = (length(buffer) > pos) ? buffer[pos] : typename std::decay<decltype(buffer[0])>::type{};
@@ -318,7 +318,7 @@ storeIntoBuffer(TTasks & tasks,
     auto zipCont = makeZipView(tasks, scoreVec, traceVec, offset);
 
     std::for_each(begin(zipCont), end(zipCont),
-                  [&, getBuffer = std::move(getBuffer)] (auto tuple)
+                  [&, getBuffer = std::forward<TFunc>(getBuffer)] (auto tuple)
                   {
                       auto & buffer = *getBuffer(*std::get<0>(tuple));
                       if (length(buffer) > pos)
@@ -359,7 +359,7 @@ storeIntoBuffer(TTasks & tasks,
     auto zipCont = makeZipView(tasks, scoreVec, scoreHorVec, scoreVerVec, traceVec, offset);
 
     std::for_each(begin(zipCont), end(zipCont),
-                  [&, getBuffer = std::move(getBuffer)](auto tuple)
+                  [&, getBuffer = std::forward<TFunc>(getBuffer)](auto tuple)
                   {
                       auto & buffer = *getBuffer(*std::get<0>(tuple));
                       if (length(buffer) > pos)
