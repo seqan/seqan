@@ -11,6 +11,8 @@ Usage:  run_tests.py SOURCE_ROOT_PATH BINARY_ROOT_PATH
 """
 import logging
 import os.path
+import platform
+import subprocess
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
@@ -27,10 +29,6 @@ def main(source_base, binary_base):
     print('======================')
     print()
 
-    ph = app_tests.TestPathHelper(
-        source_base, binary_base,
-        'apps/mason2/tests')  # tests dir
-
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
@@ -46,7 +44,24 @@ def main(source_base, binary_base):
     path_to_simulator = app_tests.autolocateBinary(
       binary_base, 'bin', 'mason_simulator')
 
-    libcpp = ('CC' in os.environ and 'gcc' in os.environ["CC"]) or sys.platform == "linux" or sys.platform == "linux2"
+    print('Detecting Standard Library')
+    current_platform = platform.system()
+    print('  Platform: {}'.format(current_platform))
+
+    is_libcpp = False
+    if (current_platform == 'Darwin'):
+      is_libcpp = "libc++" in subprocess.run(['otool', '-L', path_to_genome], stdout=subprocess.PIPE).stdout.decode('utf-8')
+      print('  Standard Library: {}'.format('libc++' if is_libcpp else 'libstdc++'))
+    elif (current_platform == 'Linux'):
+      is_libcpp = "libc++" in subprocess.run(['ldd', path_to_genome], stdout=subprocess.PIPE).stdout.decode('utf-8')
+      print('  Standard Library: {}'.format('libc++' if is_libcpp else 'libstdc++'))
+    else:
+      print('  Fallback to libstdc++')
+    print()
+
+    ph = app_tests.TestPathHelper(
+        source_base, binary_base,
+        'apps/mason2/tests/{}'.format("libc++" if is_libcpp else "libstdc++"))  # tests dir
 
     # ============================================================
     # Built TestConf list.
@@ -63,7 +78,7 @@ def main(source_base, binary_base):
     transforms = [
         app_tests.ReplaceTransform(
             os.path.join(ph.source_base_path,
-                         'apps/mason2/tests') + os.sep,
+                         'apps/mason2/tests/{}'.format("libc++" if is_libcpp else "libstdc++")) + os.sep,
             '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
         app_tests.NormalizeScientificExponentsTransform(),
@@ -90,6 +105,7 @@ def main(source_base, binary_base):
                   transforms),
                  ])
     conf_list.append(conf)
+
     conf = app_tests.TestConf(
         program=path_to_genome,
         args=['-s', '1',
@@ -117,13 +133,13 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_methylation,
         args=['--seed', '33',
-              '-i', ph.inFile('random.fasta'),
+              '-i', ph.inFile('../input/random.fasta'),
               '-o', ph.outFile('random_meth1.fasta'),
               ],
         redir_stdout=ph.outFile('methylation.test1.stdout'),
         redir_stderr=ph.outFile('methylation.test1.stderr'),
-        to_diff=[(ph.inFile('methylation.test1.fasta'),
-                  ph.outFile('methylation.test1.fasta')),
+        to_diff=[(ph.inFile('random_meth1.fasta'),
+                  ph.outFile('random_meth1.fasta')),
                  (ph.inFile('methylation.test1.stdout'),
                   ph.outFile('methylation.test1.stdout'),
                   transforms),
@@ -131,6 +147,7 @@ def main(source_base, binary_base):
                   ph.outFile('methylation.test1.stderr'),
                   transforms),
                  ])
+    conf_list.append(conf)
 
     # ============================================================
     # Test mason_variator
@@ -139,7 +156,7 @@ def main(source_base, binary_base):
     # Generation methylation in variator.
     conf = app_tests.TestConf(
         program=path_to_variator,
-        args=['-ir', ph.inFile('random.fasta'),
+        args=['-ir', ph.inFile('../input/random.fasta'),
               '-n', '2',
               '-ov', ph.outFile('random_var1.vcf'),
               '-of', ph.outFile('random_var1.fasta'),
@@ -173,13 +190,12 @@ def main(source_base, binary_base):
                   ph.outFile('random_var1.vcf.stdout'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # Generation methylation in variator.
     conf = app_tests.TestConf(
         program=path_to_variator,
-        args=['-ir', ph.inFile('random.fasta'),
+        args=['-ir', ph.inFile('../input/random.fasta'),
               '-n', '2',
               '-ov', ph.outFile('random_var2.vcf'),
               '-of', ph.outFile('random_var2.fasta'),
@@ -214,13 +230,12 @@ def main(source_base, binary_base):
                   ph.outFile('random_var2.vcf.stdout'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # Variation without methylation levels.
     conf = app_tests.TestConf(
         program=path_to_variator,
-        args=['-ir', ph.inFile('random.fasta'),
+        args=['-ir', ph.inFile('../input/random.fasta'),
               '-n', '2',
               '-ov', ph.outFile('random_var3.vcf'),
               '-of', ph.outFile('random_var3.fasta'),
@@ -250,13 +265,12 @@ def main(source_base, binary_base):
                   ph.outFile('random_var3.vcf.stdout'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # Previously crashing test
     conf = app_tests.TestConf(
         program=path_to_variator,
-        args=['-ir', ph.inFile('adeno_virus.fa'),
+        args=['-ir', ph.inFile('../input/adeno_virus.fa'),
               '-ov', ph.outFile('random_var9.vcf'),
               '-of', ph.outFile('random_var9.fasta'),
               '--sv-indel-rate', '0.01',
@@ -277,8 +291,7 @@ def main(source_base, binary_base):
                   ph.outFile('random_var9.vcf.stdout'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # ============================================================
     # Test mason_materializer
@@ -287,7 +300,7 @@ def main(source_base, binary_base):
     # Without methylation levels.
     conf = app_tests.TestConf(
         program=path_to_materializer,
-        args=['-ir', ph.inFile('random.fasta'),
+        args=['-ir', ph.inFile('../input/random.fasta'),
               '-iv', ph.inFile('random_var1.vcf'),
               '-o', ph.outFile('materializer.random_var1.fasta'),
               ],
@@ -307,7 +320,7 @@ def main(source_base, binary_base):
     # With methylation levels.
     conf = app_tests.TestConf(
         program=path_to_materializer,
-        args=['-ir', ph.inFile('random.fasta'),
+        args=['-ir', ph.inFile('../input/random.fasta'),
               '-iv', ph.inFile('random_var2.vcf'),
               '-o', ph.outFile('materializer.random_var2.fasta'),
               '--meth-fasta-in', ph.inFile('random_meth1.fasta'),
@@ -327,8 +340,7 @@ def main(source_base, binary_base):
                   ph.outFile('materializer.random_var2.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # ============================================================
     # Test mason_simulator
@@ -339,7 +351,7 @@ def main(source_base, binary_base):
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-o', ph.outFile('simulator.left1.fq'),
               '-or', ph.outFile('simulator.right1.fq'),
               '-oa', ph.outFile('simulator.out1.sam'),
@@ -359,13 +371,12 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out1.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-iv', ph.inFile('random_var1.vcf'),
               '-o', ph.outFile('simulator.left2.fq'),
               '-or', ph.outFile('simulator.right2.fq'),
@@ -386,13 +397,12 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out2.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-o', ph.outFile('simulator.left3.fa'),
               '-or', ph.outFile('simulator.right3.fa'),
               ],
@@ -409,13 +419,12 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out3.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-iv', ph.inFile('random_var1.vcf'),
               '-o', ph.outFile('simulator.left7.fa'),
               '-oa', ph.outFile('simulator.out7.sam'),
@@ -433,13 +442,12 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out7.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-o', ph.outFile('simulator.left4.fa'),
               '-oa', ph.outFile('simulator.out4.sam'),
               ],
@@ -456,13 +464,12 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out4.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '--meth-fasta-in', ph.inFile('random_meth1.fasta'),
               '--methylation-levels',
               '--enable-bs-seq',
@@ -482,13 +489,12 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out5.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     conf = app_tests.TestConf(
         program=path_to_simulator,
         args=['-n', '1000',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-iv', ph.inFile('random_var1.vcf'),
               '--meth-fasta-in', ph.inFile('random_meth1.fasta'),
               '--methylation-levels',
@@ -509,8 +515,7 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out6.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # 454 Model
 
@@ -521,7 +526,7 @@ def main(source_base, binary_base):
               '--454-read-length-mean', '200',
               '--454-read-length-stddev', '20',
               '-n', '1000', '-v',
-              '-ir', ph.inFile('random.fasta'),
+              '-ir', ph.inFile('../input/random.fasta'),
               '-o', ph.outFile('simulator.left8.fq'),
               '-oa', ph.outFile('simulator.out8.sam'),
               ],
@@ -538,8 +543,7 @@ def main(source_base, binary_base):
                   ph.outFile('simulator.out8.stderr'),
                   transforms),
                  ])
-    if libcpp:
-        conf_list.append(conf)
+    conf_list.append(conf)
 
     # Execute the tests.
     failures = 0
