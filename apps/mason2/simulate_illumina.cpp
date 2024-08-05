@@ -35,30 +35,6 @@
 #include "sequencing.h"
 
 // ===========================================================================
-// Class IlluminaSequencingOptions
-// ===========================================================================
-
-class IlluminaModel
-{
-public:
-    // Probabilities for a mismatch at a given position.
-    seqan2::String<double> mismatchProbabilities;
-
-    // Standard deviations for the normal distributions of base qualities for the mismatch case.
-    seqan2::String<double> mismatchQualityMeans;
-    // Standard deviations for the normal distributions of base qualities for the mismatch case.
-    seqan2::String<double> mismatchQualityStdDevs;
-
-    // Standard deviations for the normal distributions of base qualities for the non-mismatch case.
-    seqan2::String<double> qualityMeans;
-    // Standard deviations for the normal distributions of base qualities for the non-mismatch case.
-    seqan2::String<double> qualityStdDevs;
-
-    IlluminaModel()
-    {}
-};
-
-// ===========================================================================
 // Class IlluminaSequencingSimulator
 // ===========================================================================
 
