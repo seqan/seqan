@@ -158,7 +158,7 @@ void work(String<ThreadLocalStorage<TJob, TSpec> > & threadLocalStorages, StealO
 {
     // Initialization.
     int maxThreads = omp_get_max_threads();
-    volatile int workingCount = maxThreads;
+    int workingCount = maxThreads;
     SEQAN_OMP_PRAGMA(parallel)
     {
         setWorking(threadLocalStorages[omp_get_thread_num()], true);
