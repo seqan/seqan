@@ -64,7 +64,6 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release \
                    -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} -Wextra -Wall -pedantic -Werror" \
                    -DSEQAN_DISABLE_VERSION_CHECK=ON \
-                   -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
                    -DPython3_ROOT_DIR=${pythonLocation} \
                    -DPython3_EXECUTABLE=${pythonLocation}/bin/python3 \
                    -DCMAKE_C_COMPILER_LAUNCHER=ccache \

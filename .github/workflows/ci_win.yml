@@ -71,7 +71,6 @@ jobs:
                    -DCMAKE_BUILD_TYPE=Release `
                    -DCMAKE_CXX_FLAGS="/std:c++latest /EHsc /W2 /wd4244 /wd4146" `
                    -DSEQAN_DISABLE_VERSION_CHECK=ON `
-                   -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON `
                    -DPython3_ROOT_DIR=$env:pythonLocation `
                    -DPython3_EXECUTABLE=$env:pythonLocation/bin/python3
 

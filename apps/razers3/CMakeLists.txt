@@ -16,12 +16,6 @@ set (SEQAN_APP_VERSION "3.5.9")
 # Dependencies
 # ----------------------------------------------------------------------------
 
-# Disable RazerS3 on GitHub Actions because of computational resource limits.
-if (SEQAN_GH_ACTIONS_BUILD)
-    message (STATUS "  Skipping razers3 on GitHub Actions")
-    return ()
-endif ()
-
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP)

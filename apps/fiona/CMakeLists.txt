@@ -24,12 +24,6 @@ if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
-# all windows compilers are currently broken with Fiona (in different ways)
-if (MSVC)
-    message (STATUS "  Skipping fiona on Visual Studio")
-    return ()
-endif()
-
 # Stop here if we cannot find Boost or OpenMP.
 if (NOT Boost_FOUND)
     message (STATUS "  Skipping fiona, missing Boost")
@@ -105,8 +99,11 @@ install (FILES example/reads.fa
 # ----------------------------------------------------------------------------
 # App Test
 # ----------------------------------------------------------------------------
-
-seqan_add_app_test (fiona)
+if (NOT MSVC)
+    seqan_add_app_test (fiona)
+else ()
+    message (STATUS "  Skipping fiona tests on Visual Studio")
+endif ()
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes
