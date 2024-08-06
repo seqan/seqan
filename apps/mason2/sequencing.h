@@ -48,12 +48,207 @@
 #include "mason_options.h"
 #include "methylation_levels.h"
 
-// ============================================================================
-// Forwards
-// ============================================================================
+// ===========================================================================
+// Class IlluminaSequencingOptions
+// ===========================================================================
 
-class IlluminaModel;
-class Roche454Model;
+class IlluminaModel
+{
+public:
+    // Probabilities for a mismatch at a given position.
+    seqan2::String<double> mismatchProbabilities;
+
+    // Standard deviations for the normal distributions of base qualities for the mismatch case.
+    seqan2::String<double> mismatchQualityMeans;
+    // Standard deviations for the normal distributions of base qualities for the mismatch case.
+    seqan2::String<double> mismatchQualityStdDevs;
+
+    // Standard deviations for the normal distributions of base qualities for the non-mismatch case.
+    seqan2::String<double> qualityMeans;
+    // Standard deviations for the normal distributions of base qualities for the non-mismatch case.
+    seqan2::String<double> qualityStdDevs;
+
+    IlluminaModel()
+    {}
+};
+
+// ===========================================================================
+// Class ThresholdMatrix
+// ===========================================================================
+
+class ThresholdMatrix
+{
+public:
+    // The scaling parameter k.
+    double _k;
+    // Whether or not to use the sqrt for the std deviation computation.
+    bool _useSqrt;
+    // Mean of the log normally distributed noise.
+    double _noiseMu;
+    // Standard deviation of the log normally distributed noise.
+    double _noiseSigma;
+    // The edge length of the matrix.
+    mutable unsigned _size;
+    // The data of the matrix.
+    mutable seqan2::String<double> _data;
+
+    ThresholdMatrix()
+            : _k(0), _useSqrt(false), _noiseMu(0), _noiseSigma(0), _size(0)
+    {}
+
+    ThresholdMatrix(double k, bool useSqrt, double noiseMu, double noiseSigma)
+            : _k(k), _useSqrt(useSqrt), _noiseMu(noiseMu), _noiseSigma(noiseSigma), _size(0)
+    {}
+
+    inline double
+    computeThreshold(unsigned r1, unsigned r2) const
+    {
+        if (r1 > r2)
+            return computeThreshold(r2, r1);
+        // The epsilon we use for convergence detection.
+        const double EPSILON = 0.00001;
+
+        // In i, we will count the number of iterations so we can limit the maximal
+        // number of iterations.
+        [[maybe_unused]] unsigned i = 0;
+
+        // f1 is the density function for r1 and f2 the density function for r2.
+
+        // Pick left such that f1(left) > f2(left).
+        double left = r1;
+        if (left == 0) left = 0.23;
+        while (dispatchDensityFunction(r1, left) <= dispatchDensityFunction(r2, left))
+            left /= 2.0;
+        // And pick right such that f1(right) < f2(right).
+        double right = r2;
+        if (right == 0) right = 0.5;
+        while (dispatchDensityFunction(r1, right) >= dispatchDensityFunction(r2, right))
+            right *= 2.;
+
+        // Now, search for the intersection point.
+        while (true)
+        {
+            SEQAN_ASSERT_LT_MSG(i, 1000u, "Too many iterations (%u)! r1 = %u, r2 = %u.", i, r1, r2);
+            i += 1;
+
+            double center = (left + right) / 2;
+            double fCenter1 = dispatchDensityFunction(r1, center);
+            double fCenter2 = dispatchDensityFunction(r2, center);
+            double delta = fabs(fCenter1 - fCenter2);
+            if (delta < EPSILON)
+                return center;
+
+            if (fCenter1 < fCenter2)
+                right = center;
+            else
+                left = center;
+        }
+    }
+
+    inline void
+    extendThresholds(unsigned dim) const
+    {
+        // Allocate new data array for matrix.  Then compute values or copy
+        // over existing ones.
+        seqan2::String<double> newData;
+        resize(newData, dim * dim);
+        for (unsigned i = 0; i < dim; ++i) {
+            for (unsigned j = 0; j < dim; ++j) {
+                if (i == j)
+                    continue;
+                if (i < _size && j < _size)
+                    newData[i * dim + j] = _data[i * _size + j];
+                else
+                    newData[i * dim + j] = computeThreshold(i, j);
+            }
+        }
+        // Update matrix.
+        assign(_data, newData);
+        _size = dim;
+    }
+
+    inline double
+    getThreshold(unsigned r1, unsigned r2) const
+    {
+        if (_size <= r1 || _size <= r2)
+            extendThresholds(std::max(r1, r2) + 1);
+        return _data[r1 * _size + r2];
+    }
+
+    inline void
+    setK(double k)
+    {
+        _k = k;
+    }
+
+    inline void
+    setUseSqrt(bool useSqrt)
+    {
+        _useSqrt = useSqrt;
+    }
+
+    inline void
+    setNoiseMu(double mu)
+    {
+        _noiseMu = mu;
+    }
+
+    inline void
+    setNoiseSigma(double sigma)
+    {
+        _noiseSigma = sigma;
+    }
+
+    inline void
+    setNoiseMeanStdDev(double mean, double stdDev)
+    {
+        auto tmp = seqan2::cvtLogNormalDistParam(mean, stdDev);
+        _noiseMu = tmp.m();
+        _noiseSigma = tmp.s();
+    }
+
+    inline double
+    normalDensityF(double x, double mu, double sigma) const
+    {
+        const double PI = 3.14159265;
+        double sigma2 = sigma * sigma;
+        return exp(- (x - mu) * (x - mu) / (2 * sigma2)) / sqrt(2 * PI * sigma2);
+    }
+
+    inline double
+    lognormalDensityF(double x, double mu, double sigma) const
+    {
+        if (x <= 0)
+            return 0;
+        const double PI = 3.14159265;
+        double sigma2 = sigma * sigma;
+        double log_mu2 = (log(x) - mu) * (log(x) - mu);
+        return exp(-log_mu2 / (2 * sigma2)) / (x * sigma * sqrt(2 * PI));
+    }
+
+    inline double
+    dispatchDensityFunction(unsigned r, double x) const
+    {
+        if (r == 0) {
+            return lognormalDensityF(x, _noiseMu, _noiseSigma);
+        } else {
+            double rd = static_cast<double>(r);
+            return normalDensityF(x, rd, (_useSqrt ? sqrt(rd) : rd));
+        }
+    }
+};
+
+// ===========================================================================
+// Class Roche454Model
+// ===========================================================================
+
+// Stores the threshold matrix.
+
+class Roche454Model
+{
+public:
+    ThresholdMatrix thresholdMatrix;
+};
 
 // ============================================================================
 // Tags, Classes, Enums

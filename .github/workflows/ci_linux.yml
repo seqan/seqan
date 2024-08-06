@@ -71,7 +71,6 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Release \
                    -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }} -Wextra -Wall -pedantic -Werror" \
                    -DSEQAN_DISABLE_VERSION_CHECK=ON \
-                   -DSEQAN_GH_ACTIONS_BUILD:BOOL=ON \
                    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 

@@ -321,7 +321,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addDescription(parser, "RazerS 3 is a versatile full-sensitive read mapper based on k-mer counting and seeding filters. "
                            "It supports single and paired-end mapping, shared-memory parallelism, and optimally parametrizes "
                            "the filter based on a user-defined minimal sensitivity. "
-                           "See \\fIhttps://www.seqan.de/apps/razers3\fP for more information.");
+                           "See \\fIhttps://www.seqan.de/apps/razers3\\fP for more information.");
 
     addDescription(parser, "Input to RazerS 3 is a reference genome file and either one file with single-end reads "
                            "or two files containing left or right mates of paired-end reads. Use - to read single-end "

@@ -12,12 +12,6 @@ message (STATUS "Configuring apps/mason2")
 
 set (SEQAN_APP_VERSION "2.0.10")
 
-# Presumably due to https://github.com/gcc-mirror/gcc/commit/98c37d3bacbb2f8bbbe56ed53a9547d3be01b66b
-if (SEQAN_GH_ACTIONS_BUILD)
-    message (STATUS "  Skipping mason2 on GitHub Actions")
-    return ()
-endif (SEQAN_GH_ACTIONS_BUILD)
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -177,7 +171,11 @@ install (FILES example/adeno_virus.fa
 # App Test
 # ----------------------------------------------------------------------------
 
-seqan_add_app_test (mason2)
+if (NOT MSVC)
+    seqan_add_app_test (mason2)
+else ()
+    message (STATUS "  Skipping mason2 tests on Visual Studio")
+endif ()
 
 # ----------------------------------------------------------------------------
 # CPack Install

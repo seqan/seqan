@@ -12,8 +12,7 @@ message (STATUS "Configuring tests/align")
 
 set (ALIGN_SIMD_TEST TRUE CACHE INTERNAL "Whether to build test_align_simd.")
 # workaround a bug in llvm35 on FreeBSD
-if ((SEQAN_GH_ACTIONS_BUILD) OR
-    ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
+if (((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND
     (COMPILER_CLANG) AND
     (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.6.0)))
     set (ALIGN_SIMD_TEST FALSE CACHE INTERNAL "Whether to build test_align_simd.")

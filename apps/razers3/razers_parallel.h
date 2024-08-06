@@ -626,8 +626,8 @@ void _mapSingleReadsParallelToContig(
     // Perform filtration.
     // -----------------------------------------------------------------------
     TaskQueue<TVerificationJob, OmpLock> taskQueue;
-    volatile unsigned leaderWindowsDone = 0;  // Number of windows done in leaders.
-    volatile unsigned threadsFiltering = options.threadCount;
+    unsigned leaderWindowsDone = 0;  // Number of windows done in leaders.
+    unsigned threadsFiltering = options.threadCount;
 
     // We will create the swift finder for thread 0 first.  This will trigger parallel repeat finding in the SWIFT
     // finder construction.  Then, we copy over the finder to all threads.

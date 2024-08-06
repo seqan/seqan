@@ -12,11 +12,6 @@ message (STATUS "Configuring apps/pair_align")
 
 set (SEQAN_APP_VERSION "1.3.9")
 
-if (SEQAN_GH_ACTIONS_BUILD)
-    message (STATUS "  Skipping pair_align on GitHub Actions")
-    return ()
-endif (SEQAN_GH_ACTIONS_BUILD)
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------

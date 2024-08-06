@@ -12,11 +12,6 @@ message (STATUS "Configuring apps/razers")
 
 set (SEQAN_APP_VERSION "1.5.9")
 
-if (SEQAN_GH_ACTIONS_BUILD)
-    message (STATUS "  Skipping razers on GitHub Actions")
-    return ()
-endif (SEQAN_GH_ACTIONS_BUILD)
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------

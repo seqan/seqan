@@ -44,9 +44,9 @@ endif (NOT BZIP2_FOUND)
 set (SEQAN_APP_VERSION "1.0.3")
 
 option (YARA_LARGE_CONTIGS "Set to OFF to disable support for more than 32k contigs or contigs longer than 4Gbp." ON)
-if (YARA_LARGE_CONTIGS AND NOT SEQAN_GH_ACTIONS_BUILD)
+if (YARA_LARGE_CONTIGS)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
-endif (YARA_LARGE_CONTIGS AND NOT SEQAN_GH_ACTIONS_BUILD)
+endif (YARA_LARGE_CONTIGS)
 
 # ----------------------------------------------------------------------------
 # Disable Compiler Warnings
