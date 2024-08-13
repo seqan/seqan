@@ -507,7 +507,9 @@ _alignAndGetCigarString(
     TErrors mdErrors = getMDString(md, contigGaps, readGaps);
 
     ignoreUnusedVariableWarning(mdErrors);
-    SEQAN_ASSERT_EQ(errors, mdErrors);
+    // This assertion might not be not valid for all aligners, e.g. for the semi-global Gotoh alignment.
+    // The algorithm that results in `errors` errors might not be the same as the one that results in `mdErrors` errors.
+    // SEQAN_ASSERT_EQ(errors, mdErrors);
 }
 
 template <
