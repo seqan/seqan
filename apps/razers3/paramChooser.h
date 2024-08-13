@@ -53,91 +53,46 @@ int getDir(TPath path, TFilenameString & files)
 struct ParamChooserOptions
 {
     typedef double TFloat;
-    unsigned minThreshold;                  // minimum value for threshold parameter
-    unsigned maxWeight;                                           // maximum value of q
-    bool chooseOneGappedOnly;      // choose onegapped (or ungapped) shape (discard all other gapped shapes)
-    bool chooseUngappedOnly;      // choose ungapped shape (discard all gapped shapes)
-    bool useDefaultShapes;
+    unsigned minThreshold{1};                  // minimum value for threshold parameter
+    unsigned maxWeight{14};                                           // maximum value of q
+    bool chooseOneGappedOnly{};      // choose onegapped (or ungapped) shape (discard all other gapped shapes)
+    bool chooseUngappedOnly{};      // choose ungapped shape (discard all gapped shapes)
+    bool useDefaultShapes{true};
 
     // global input parameters
-    unsigned totalN;                // sequence length
-    unsigned totalK;                    // errors
-    TFloat optionLossRate;      // in
-    TFloat chosenLossRate;          // out
-    TFloat optionErrorRate;     //
-    bool optionHammingOnly;
+    unsigned totalN{32};                // sequence length
+    unsigned totalK{2};                    // errors
+    TFloat optionLossRate{};      // in
+    TFloat chosenLossRate{};          // out
+    TFloat optionErrorRate{0.05};     //
+    bool optionHammingOnly{};
 
-    bool extrapolate;
-    unsigned extrapolN;
-    unsigned extrapolK;
-    unsigned maxComputedEditN;
-    unsigned maxComputedHammingN;
+    bool extrapolate{};
+    unsigned extrapolN{65};
+    unsigned extrapolK{4};
+    unsigned maxComputedEditN{59};
+    unsigned maxComputedHammingN{75};
 
-    TFloat optionProbINSERT;
-    TFloat optionProbDELETE;
+    TFloat optionProbINSERT{};
+    TFloat optionProbDELETE{};
 
     CharString fparams;
     CharString fgparams;
 
-    bool fnameCount0;
-    bool fnameCount1;
-    bool prefixCount;
-    const char * fname[2];
-    const char * fprefix[1];
-    CharString paramFolderPath;
-    CharString paramFolder;
-    const char * shapeFile;
+    bool fnameCount0{};
+    bool fnameCount1{};
+    bool prefixCount{};
+    const char * fname[2] = {"", ""};
+    const char * fprefix[1] = {""};
+    CharString paramFolderPath{};
+    CharString paramFolder{};
+    const char * shapeFile = "";
 
-    int qualityCutoff;
-    bool solexaQual;
+    int qualityCutoff{20};
+    bool solexaQual{true};
 
-    bool appendToPrevious;
-    bool verbose;
-
-    ParamChooserOptions()
-    {
-        minThreshold = 1;                   // minimum value for threshold parameter
-        maxWeight = 14;                                           // maximum value of q
-
-        // global input parameters
-        totalN = 32;                // sequence length
-        totalK = 2;                 // errors
-//         optionLossRate = (TFloat)0.01;      // in
-        optionLossRate = (TFloat)0.0;       // in
-        chosenLossRate = (TFloat)0.0;       // out
-        optionErrorRate = (TFloat)0.05;     //
-        optionHammingOnly = false;
-
-        extrapolate = false;
-        extrapolN = 65;
-        extrapolK = 4;
-        maxComputedEditN = 59;
-        maxComputedHammingN = 75;
-
-        chooseOneGappedOnly = false;      // choose onegapped (or ungapped) shape (discard all other gapped shapes)
-        chooseUngappedOnly = false;      // choose ungapped shape (discard all gapped shapes)
-        useDefaultShapes = true;
-
-        optionProbINSERT = (TFloat)0.0;
-        optionProbDELETE = (TFloat)0.0;
-
-        qualityCutoff = 20;
-        fnameCount0 = 0;
-        fnameCount1 = 0;
-        prefixCount = 0;
-        fname[0] = "";
-        fname[1] = "";
-        fprefix[0] =  "";
-
-        shapeFile = "";
-        paramFolderPath = "";
-        paramFolder = "";
-
-        appendToPrevious = false;
-        verbose = true;
-        solexaQual = true;
-    }
-
+    bool appendToPrevious{};
+    bool verbose{true};
 };
 
 

@@ -63,49 +63,49 @@ namespace seqan2
 	{
 	// main options
 		TSpec		spec;
-		bool		forward;			// compute forward oriented read matches
-		bool		reverse;			// compute reverse oriented read matches
-		double		errorRate;			// Criteria 1 threshold
-		unsigned	maxHits;			// output at most maxHits many matches
-		unsigned	distanceRange;		// output only the best, second best, ..., distanceRange best matches
-		bool		purgeAmbiguous;		// true..remove reads with more than maxHits best matches, false..keep them
-		CharString	output;				// name of result file
-		int			_debugLevel;		// level of verbosity
-		bool		printVersion;		// print version number
-		bool		hammingOnly;		// no indels
-		int			trimLength;			// if >0, cut reads to #trimLength characters
+		bool		forward{true};			// compute forward oriented read matches
+		bool		reverse{true};			// compute reverse oriented read matches
+		double		errorRate{0.08};			// Criteria 1 threshold
+		unsigned	maxHits{100};			// output at most maxHits many matches
+		unsigned	distanceRange{};		// output only the best, second best, ..., distanceRange best matches
+		bool		purgeAmbiguous{false};		// true..remove reads with more than maxHits best matches, false..keep them
+		CharString	output{};				// name of result file
+		int			_debugLevel{};		// level of verbosity
+		bool		printVersion{};		// print version number
+		bool		hammingOnly{};		// no indels
+		int			trimLength{};			// if >0, cut reads to #trimLength characters
 
 	// output format options
-		unsigned	outputFormat;		// 0..Razer format
+		unsigned	outputFormat{};		// 0..Razer format
 										// 1..enhanced Fasta
 										// 2..ELAND format
-		bool		dumpAlignment;		// compute and dump the match alignments in the result files
-		unsigned	genomeNaming;		// 0..use Fasta id
+		bool		dumpAlignment{};		// compute and dump the match alignments in the result files
+		unsigned	genomeNaming{};		// 0..use Fasta id
 										// 1..enumerate reads beginning with 1
-		unsigned	readNaming;			// 0..use Fasta id
+		unsigned	readNaming{};			// 0..use Fasta id
 										// 1..enumerate reads beginning with 1
 										// 2..use the read sequence (only for short reads!)
-		unsigned	sortOrder;			// 0..sort keys: 1. read number, 2. genome position
+		unsigned	sortOrder{};			// 0..sort keys: 1. read number, 2. genome position
 										// 1..           1. genome pos50ition, 2. read number
-		int			positionFormat;		// 0..gap space
+		int			positionFormat{};		// 0..gap space
 										// 1..position space
-		const char	*runID;				// runID needed for gff output
+		const char	*runID = "s";				// runID needed for gff output
 
 	// filtration parameters
-		::std::string shape;			// shape (e.g. 11111111111)
-		int			threshold;			// threshold
-		int			tabooLength;		// taboo length
-		int			repeatLength;		// repeat length threshold
-		double		abundanceCut;		// abundance threshold
+		::std::string shape{"11111111111"};			// shape (e.g. 11111111111)
+		int			threshold{1};			// threshold
+		int			tabooLength{1};		// taboo length
+		int			repeatLength{1000};		// repeat length threshold
+		double		abundanceCut{1.0};		// abundance threshold
 
 	// mate-pair parameters
-		int			libraryLength;		// offset between two mates
-		int			libraryError;		// offset tolerance
-		unsigned	nextMatePairId;		// use this id for the next mate-pair
+		int			libraryLength{220};		// offset between two mates
+		int			libraryError{50};		// offset tolerance
+		unsigned	nextMatePairId{1};		// use this id for the next mate-pair
 
 	// verification parameters
-		bool		matchN;				// false..N is always a mismatch, true..N matches with all
-		unsigned char compMask[5];
+		bool		matchN{};				// false..N is always a mismatch, true..N matches with all
+		unsigned char compMask[5] = {1, 2, 4, 8, 0};
 
 	// statistics
 		int64_t		FP;					// false positives (threshold reached, no match)
@@ -118,31 +118,31 @@ namespace seqan2
         double      timeBuildQGramIndex;  // time for q-gram index building.
 
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
-		bool		maqMapping;
-		int		maxMismatchQualSum;
-		int		mutationRateQual;
-		int		absMaxQualSumErrors;
-		unsigned	artSeedLength;
-		bool		noBelowIdentity;
+		bool		maqMapping{};
+		int		maxMismatchQualSum{70};
+		int		mutationRateQual{30};
+		int		absMaxQualSumErrors{100}; // maximum for sum of mism qualities in total readlength
+		unsigned	artSeedLength{28}; // the "artificial" seed length that is used for mapping quality assignment
+		bool		noBelowIdentity{};
 #endif
 
 #ifdef RAZERS_MICRO_RNA
-		bool		microRNA;
-		unsigned	rnaSeedLength;
-		bool 		exactSeed;
+		bool		microRNA{};
+		unsigned	rnaSeedLength{16};
+		bool 		exactSeed{true};
 #endif
 
-		bool		lowMemory;		// set maximum shape weight to 13 to limit size of q-gram index
-		bool		fastaIdQual;		// hidden option for special fasta+quality format we use
-		int			minClippedLen;
+		bool		lowMemory{};		// set maximum shape weight to 13 to limit size of q-gram index
+		bool		fastaIdQual{};		// hidden option for special fasta+quality format we use
+		int			minClippedLen{};
 
 	// misc
-		unsigned	compactThresh;		// compact match array if larger than compactThresh
+		unsigned	compactThresh{1024};		// compact match array if larger than compactThresh
 
 #ifdef RAZERS_SPLICED
-		unsigned        minMatchLen;
-		unsigned        maxDistance;
-		unsigned        minDistance;
+		unsigned        minMatchLen{};
+		unsigned        maxDistance{4000};
+		unsigned        minDistance{};
 #endif
 
 	// multi-threading
@@ -161,68 +161,6 @@ namespace seqan2
 
 		RazerSOptions()
 		{
-			forward = true;
-			reverse = true;
-			errorRate = 0.08;
-			maxHits = 100;
-			distanceRange = 0;	// disabled
-			purgeAmbiguous = false;
-			output = "";
-			_debugLevel = 0;
-			printVersion = false;
-			hammingOnly = false;
-			trimLength = 0;
-
-			outputFormat = 0;
-			dumpAlignment = false;
-			genomeNaming = 0;
-			readNaming = 0;
-			sortOrder = 0;
-			positionFormat = 0;
-			runID = "s"; 	//
-
-			matchN = false;
-
-			shape = "11111111111";
-			threshold = 1;
-			tabooLength = 1;
-			repeatLength = 1000;
-			abundanceCut = 1;
-
-			libraryLength = 220;
-			libraryError = 50;
-			nextMatePairId = 1;
-
-			for (unsigned i = 0; i < 4; ++i)
-				compMask[i] = 1 << i;
-			compMask[4] = 0;
-
-			compactThresh = 1024;
-#ifdef RAZERS_DIRECT_MAQ_MAPPING
-			maqMapping = false;
-			maxMismatchQualSum = 70;
-			mutationRateQual = 30;
-			artSeedLength = 28;	// the "artificial" seed length that is used for mapping quality assignment
-						// (28bp is maq default)
-			absMaxQualSumErrors = 100; // maximum for sum of mism qualities in total readlength
-			noBelowIdentity = false;
-#endif
-
-#ifdef RAZERS_MICRO_RNA
-			microRNA = false;
-			rnaSeedLength = 16;
-			exactSeed = true;
-#endif
-#ifdef RAZERS_SPLICED
-			minMatchLen = 0;
-			maxDistance = 4000;
-			minDistance = 0;
-#endif
-
-			lowMemory = false;		// set maximum shape weight to 13 to limit size of q-gram index
-			fastaIdQual = false;
-			minClippedLen = 0;
-
             if (TSpec::DUMP_VERIFICATION_TASKS)
             {
                 open(verifications, "verification_tasks.bin", OPEN_WRONLY|OPEN_CREATE);
