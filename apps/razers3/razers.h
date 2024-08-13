@@ -597,6 +597,29 @@ bool loadReads(
     while (!atEnd(seqFile))
     {
         readRecord(seqId, seq, qual, seqFile);
+
+        if (countN)
+        {
+            bool skip_pair = false;
+            int count = 0;
+            int cutoffCount = (int)(options.errorRate * length(seq));
+            for (unsigned j = 0; j < length(seq) && !skip_pair; ++j)
+            {
+                if (getValue(seq, j) == 'N' && ++count > cutoffCount)
+                {
+                    clear(seq);
+                    clear(seqId);
+                    clear(qual);  // So no qualities are assigned below.
+                    ++kickoutcount;
+                    skip_pair = true;
+                }
+            }
+            if (skip_pair)
+                continue;
+// low qual. reads are empty to output them and their id later as LQ reads
+//			if (count > cutoffCount) continue;
+        }
+
         ++seqCount;
 
         if (options.readNaming == 0 || options.readNaming == 3)
@@ -607,24 +630,6 @@ bool loadReads(
         else
         {
             clear(seqId);
-        }
-
-        if (countN)
-        {
-            int count = 0;
-            int cutoffCount = (int)(options.errorRate * length(seq));
-            for (unsigned j = 0; j < length(seq); ++j)
-                if (getValue(seq, j) == 'N')
-                    if (++count > cutoffCount)
-                    {
-                        clear(seq);
-                        clear(seqId);
-                        clear(qual);  // So no qualities are assigned below.
-                        ++kickoutcount;
-                        break;
-                    }
-// low qual. reads are empty to output them and their id later as LQ reads
-//			if (count > cutoffCount) continue;
         }
 
         // store dna and quality together
