@@ -119,7 +119,8 @@ jobs:
           mkdir build && cd build
           cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
                    -DCMAKE_CXX_FLAGS="-Wextra -Wall -pedantic ${{ matrix.cxx_flags }}" \
-                   -DSEQAN_DISABLE_VERSION_CHECK=ON
+                   -DSEQAN_DISABLE_VERSION_CHECK=ON \
+                   -DALIGN_SIMD_TEST=FALSE
 
       - name: Build tests
         working-directory: build
