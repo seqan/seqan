@@ -88,7 +88,7 @@ jobs:
           PIP_BREAK_SYSTEM_PACKAGES: 1
         run: |
           apt-get update --quiet=2
-          apt-get install --yes --no-install-recommends libboost-dev libxml2-utils python3-pip
+          apt-get install --yes --no-install-recommends libboost-dev libxml2-dev libxml2-utils python3-pip
           pip install --quiet setuptools wheel
           pip install --quiet --requirement manual/requirements.txt
 
