@@ -1152,8 +1152,8 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
     pm_options.optionErrorRate += 0.0000001;
     pm_options.totalK = (int)(pm_options.optionErrorRate * pm_options.totalN);
 
-    if ((pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedHammingN)
-       || (!pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedEditN))
+    if (pm_options.totalK != 0 && ((pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedHammingN)
+       || (!pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedEditN)))
         extrapolateNK(pm_options);
 
 
