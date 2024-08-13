@@ -464,7 +464,7 @@ struct MatchVerifier
     double compactionTime;
 
     MatchVerifier() :
-        genomeLength(0), rightClip(0), sinkPos(std::numeric_limits<TContigPos>::max()), onReverseComplement(false), oneMatchPerBucket(false), compactionTime(0) {}
+        genomeLength(0), rightClip(0), sinkPos(std::numeric_limits<TContigPos>::max() >> 1), onReverseComplement(false), oneMatchPerBucket(false), compactionTime(0) {}
 
     MatchVerifier(TMatches_ & _matches, TOptions & _options, TFilterPattern & _filterPattern, TCounts & _cnts) :
         matches(&_matches),
