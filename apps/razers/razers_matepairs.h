@@ -142,6 +142,30 @@ bool loadReads(
         readRecord(fastaId[0], seq[0], qual[0], leftMates);         // read Fasta id, sequence and qualities
         readRecord(fastaId[1], seq[1], qual[1], rightMates);        // read Fasta id, sequence and qualities
 
+		if (countN)
+		{
+			bool skip_pair = false;
+			for (int j = 0; j < 2 && !skip_pair; ++j)
+			{
+				int maxBase = (int)(0.8 * length(seq[j]));
+				int allowed[5] =
+					{ maxBase, maxBase, maxBase, maxBase, (int)(options.errorRate * length(seq[j]))};
+				for (unsigned k = 0; k < length(seq[j]) && !skip_pair; ++k)
+				{
+					if (--allowed[ordValue(getValue(seq[j], k))] == 0)
+					{
+						// std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
+						clear(seq[0]);
+						clear(seq[1]);
+						++kickoutcount;
+						skip_pair = true;
+					}
+				}
+			}
+			if (skip_pair)
+				continue;
+		}
+
 		if (options.readNaming == 0)
 		{
             append(fastaId[0], "/L");
@@ -151,26 +175,9 @@ bool loadReads(
 		}
 
 		reverseComplement(seq[1]);
-		reverse(qual[1]);
-
-		if (countN)
-		{
-			for (int j = 0; j < 2; ++j)
-			{
-				int maxBase = (int)(0.8 * length(seq[j]));
-				int allowed[5] =
-					{ maxBase, maxBase, maxBase, maxBase, (int)(options.errorRate * length(seq[j]))};
-				for (unsigned k = 0; k < length(seq[j]); ++k)
-					if (--allowed[ordValue(getValue(seq[j], k))] == 0)
-					{
-//						std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
-						clear(seq[0]);
-						clear(seq[1]);
-						++kickoutcount;
-						break;
-					}
-			}
-		}
+		// FASTA files don't have a quality
+		if (!empty(qual[1]))
+			reverse(qual[1]);
 
 		for (int j = 0; j < 2; ++j)
 		{

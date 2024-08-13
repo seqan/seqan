@@ -138,10 +138,36 @@ bool loadReads(
 
 	while (!atEnd(leftMates) && !atEnd(rightMates))
     {
-        ++seqCount;
-
         readRecord(seqId[0], seq[0], qual[0], leftMates);
         readRecord(seqId[1], seq[1], qual[1], rightMates);
+
+        if (countN)
+        {
+            bool skip_pair = false;
+            for (int j = 0; j < 2 && !skip_pair; ++j)
+            {
+                int maxBase = (int)(0.8 * length(seq[j]));
+                int allowed[5] =
+                { maxBase, maxBase, maxBase, maxBase, (int)(options.errorRate * length(seq[j]))};
+                for (unsigned k = 0; k < length(seq[j]) && !skip_pair; ++k)
+                    if (--allowed[ordValue(getValue(seq[j], k))] == 0)
+                    {
+//						std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
+                        clear(seq[0]);
+                        clear(seq[1]);
+                        clear(seqId[0]);
+                        clear(seqId[1]);
+                        clear(qual[0]);
+                        clear(qual[1]);
+                        ++kickoutcount;
+                        skip_pair = true;
+                    }
+            }
+            if (skip_pair)
+                continue;
+        }
+
+        ++seqCount;
 
         if (options.readNaming == 0 || options.readNaming == 3)
         {
@@ -160,29 +186,6 @@ bool loadReads(
         {
             clear(seqId[0]);
             clear(seqId[1]);
-        }
-
-        if (countN)
-        {
-            for (int j = 0; j < 2; ++j)
-            {
-                int maxBase = (int)(0.8 * length(seq[j]));
-                int allowed[5] =
-                { maxBase, maxBase, maxBase, maxBase, (int)(options.errorRate * length(seq[j]))};
-                for (unsigned k = 0; k < length(seq[j]); ++k)
-                    if (--allowed[ordValue(getValue(seq[j], k))] == 0)
-                    {
-//						std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
-                        clear(seq[0]);
-                        clear(seq[1]);
-                        clear(seqId[0]);
-                        clear(seqId[1]);
-                        clear(qual[0]);
-                        clear(qual[1]);
-                        ++kickoutcount;
-                        break;
-                    }
-            }
         }
 
         for (int j = 0; j < 2; ++j)

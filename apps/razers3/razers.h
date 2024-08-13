@@ -159,70 +159,70 @@ template <typename TSpec = RazerSSpec<> >
 struct RazerSCoreOptions
 {
     // major options
-    AlignMode  alignMode;
-    GapMode    gapMode;
-    ScoreMode  scoreMode;
+    AlignMode  alignMode{RAZERS_GLOBAL};
+    GapMode    gapMode{RAZERS_GAPPED};
+    ScoreMode  scoreMode{RAZERS_ERRORS};
 
     // main options
     TSpec       spec;
-    bool        forward;                // compute forward oriented read matches
-    bool        reverse;                // compute reverse oriented read matches
-    double      errorRate;              // Criteria 1 threshold
-    unsigned    maxHits;                // output at most maxHits many matches
-    unsigned    scoreDistanceRange;     // output only the best, second best, ..., scoreDistanceRange best matches
-    int         dRange;                 // used in matchVerify
+    bool        forward{true};                // compute forward oriented read matches
+    bool        reverse{true};                // compute reverse oriented read matches
+    double      errorRate{0.05};              // Criteria 1 threshold
+    unsigned    maxHits{100};                // output at most maxHits many matches
+    unsigned    scoreDistanceRange{};     // output only the best, second best, ..., scoreDistanceRange best matches
+    int         dRange{1 << 30};                 // used in matchVerify
                                         // to a best match with e errors
-    bool        purgeAmbiguous;         // true..remove reads with more than maxHits best matches, false..keep them
-    CharString  output;                 // name of result file
-    int         _debugLevel;            // level of verbosity
-    bool        printVersion;           // print version number
-    int         trimLength;             // if >0, cut reads to #trimLength characters
+    bool        purgeAmbiguous{};         // true..remove reads with more than maxHits best matches, false..keep them
+    CharString  output{};                 // name of result file
+    int         _debugLevel{};            // level of verbosity
+    bool        printVersion{};           // print version number
+    int         trimLength{};             // if >0, cut reads to #trimLength characters
     // controlled pigeonhole extensions
-    double      mutationRate;           // difference between reference genome and sequenced genome
-    double      lossRate;               // 1.0 - sensitivity
+    double      mutationRate{0.05};           // difference between reference genome and sequenced genome
+    double      lossRate{};               // 1.0 - sensitivity
 
     // output format options
-    unsigned    outputFormat;           // 0..Razer format
+    unsigned    outputFormat{};           // 0..Razer format
                                         // 1..enhanced Fasta
                                         // 2..ELAND format
-    bool        dumpAlignment;          // compute and dump the match alignments in the result files
-    unsigned    genomeNaming;           // 0..use Fasta id
+    bool        dumpAlignment{};          // compute and dump the match alignments in the result files
+    unsigned    genomeNaming{};           // 0..use Fasta id
                                         // 1..enumerate reads beginning with 1
     // TODO(holtgrew): SAM export should imply --read-naming 3
-    unsigned    readNaming;             // 0..use Fasta id
+    unsigned    readNaming{};             // 0..use Fasta id
                                         // 1..enumerate reads beginning with 1
                                         // 2..use the read sequence (only for short reads!)
                                         // 3..use Fasta id, do not append /L and /R for mate pairs.
-    bool        fullFastaId;            // read full FastaId or clip after first whitespace
-    unsigned    sortOrder;              // 0..sort keys: 1. read number, 2. genome position
+    bool        fullFastaId{};            // read full FastaId or clip after first whitespace
+    unsigned    sortOrder{};              // 0..sort keys: 1. read number, 2. genome position
                                         // 1..           1. genome pos50ition, 2. read number
-    int         positionFormat;         // 0..gap space
+    int         positionFormat{};         // 0..gap space
                                         // 1..position space
-    const char  * runID;                // runID needed for gff output
-    bool        dontShrinkAlignments;   // Required when used for building gold Rabema mapping.
-    bool        computeGlobal;          // compute global alignment in SAM output
+    const char  * runID = "s";                // runID needed for gff output
+    bool        dontShrinkAlignments{};   // Required when used for building gold Rabema mapping.
+    bool        computeGlobal{};          // compute global alignment in SAM output
 
     // filtration parameters
-    std::string shape;                  // shape (e.g. 11111111111)
-    int         threshold;              // threshold (minimal threshold, 0 activates pigeonhole mode)
-    int         tabooLength;            // taboo length
-    int         repeatLength;           // repeat length threshold
-    double      abundanceCut;           // abundance threshold
-    int         delta;                  // q-gram delta (in pigeonhole mode), 0=automatic
-    int         overlap;                // q-gram overlap (in pigeonhole mode), 0=lossless
-    unsigned    maxOverlap;             // limits the overlap in automatic mode
+    std::string shape{"11111111111"};                  // shape (e.g. 11111111111)
+    int         threshold{1};              // threshold (minimal threshold, 0 activates pigeonhole mode)
+    int         tabooLength{1};            // taboo length
+    int         repeatLength{1000};           // repeat length threshold
+    double      abundanceCut{1.0};           // abundance threshold
+    int         delta{};                  // q-gram delta (in pigeonhole mode), 0=automatic
+    int         overlap{};                // q-gram overlap (in pigeonhole mode), 0=lossless
+    unsigned    maxOverlap{10};             // limits the overlap in automatic mode
 
     // mate-pair parameters
-    int         libraryLength;          // offset between two mates
-    int         libraryError;           // offset tolerance
-    unsigned    nextPairMatchId;        // use this id for the next mate-pair
+    int         libraryLength{220};          // offset between two mates
+    int         libraryError{50};           // offset tolerance
+    unsigned    nextPairMatchId{};        // use this id for the next mate-pair
 
     // verification parameters
-    unsigned    prefixSeedLength;       // length of the prefix seed
-    bool        matchN;                 // false..N is always a mismatch, true..N matches with all
-    unsigned char compMask[5];
+    unsigned    prefixSeedLength{28};       // length of the prefix seed
+    bool        matchN{};                 // false..N is always a mismatch, true..N matches with all
+    unsigned char compMask[5] = {1, 2, 4, 8, 0};
     Score<int, Simple> scoringScheme;
-    int         minScore;               // minimal alignment score
+    int         minScore{};               // minimal alignment score
 
     // statistics
     typedef LogProb<> TProb;
@@ -234,40 +234,40 @@ struct RazerSCoreOptions
     CharString  mismatchFilename;
 
     String<double> errorDist;           // error distribution
-    int64_t     countFiltration;        // matches returned by the filter
-    int64_t     countVerification;      // matches returned by the verifier
-    double      timeLoadFiles;          // time for loading input files
-    double      timeMapReads;           // time for mapping reads
-    double      timeDumpResults;        // time for dumping the results
-    double      timeBuildQGramIndex;    // time for q-gram index building.
-    double      timeCompactMatches;     // time for compacting reads
-    double      timeMaskDuplicates;     // time spent masking duplicates
-    double      timeFsCopy;             // time spent copying alignments back into the fragment store
-    double      timeFiltration;
-    double      timeVerification;
+    int64_t     countFiltration{};        // matches returned by the filter
+    int64_t     countVerification{};      // matches returned by the verifier
+    double      timeLoadFiles{};          // time for loading input files
+    double      timeMapReads{};           // time for mapping reads
+    double      timeDumpResults{};        // time for dumping the results
+    double      timeBuildQGramIndex{};    // time for q-gram index building.
+    double      timeCompactMatches{};     // time for compacting reads
+    double      timeMaskDuplicates{};     // time spent masking duplicates
+    double      timeFsCopy{};             // time spent copying alignments back into the fragment store
+    double      timeFiltration{};
+    double      timeVerification{};
 
-    bool        maqMapping;
-    int         absMaxQualSumErrors;
+    bool        maqMapping{};
+    int         absMaxQualSumErrors{100};
 
-    bool        lowMemory;              // set maximum shape weight to 13 to limit size of q-gram index
-    bool        fastaIdQual;            // hidden option for special fasta+quality format we use
+    bool        lowMemory{};              // set maximum shape weight to 13 to limit size of q-gram index
+    bool        fastaIdQual{};            // hidden option for special fasta+quality format we use
 
     // misc
-    double      noCompactFrac;          // If in last noCompactFrac of genome, don't compact.
-    double      compactMult;            // Multiplicator for compaction threshold.
-    int64_t     compactThresh;          // compact match array if larger than compactThresh
+    double      noCompactFrac{0.05};          // If in last noCompactFrac of genome, don't compact.
+    double      compactMult{2.2};            // Multiplicator for compaction threshold.
+    int64_t     compactThresh{1024};          // compact match array if larger than compactThresh
 
     // multi-threading
 
-    unsigned    threadCount;      // Number of threads to use in the parallel version.
-    unsigned    windowSize;      // Collect SWIFT hits in windows of this length.
-    unsigned    verificationPackageSize;      // This number of SWIFT hits per verification.
-    unsigned    maxVerificationPackageCount;      // Maximum number of verification packages to create.
-    int64_t     availableMatchesMemorySize;      // Memory available for matches.  Used for switching to external memory algorithms. -1 for always external, 0 for never.
-    int         matchHistoStartThreshold;      // Threshold to use for starting histogram. >= 1
+    unsigned    threadCount{1};      // Number of threads to use in the parallel version.
+    unsigned    windowSize{500000};      // Collect SWIFT hits in windows of this length.
+    unsigned    verificationPackageSize{100};      // This number of SWIFT hits per verification.
+    unsigned    maxVerificationPackageCount{100};      // Maximum number of verification packages to create.
+    int64_t     availableMatchesMemorySize{};      // Memory available for matches.  Used for switching to external memory algorithms. -1 for always external, 0 for never.
+    int         matchHistoStartThreshold{5};      // Threshold to use for starting histogram. >= 1
 
 #ifdef RAZERS_OPENADDRESSING
-    double      loadFactor;
+    double      loadFactor{1.6};
 #endif
 
     // global preprocessing information and maximal allowed errors
@@ -281,93 +281,6 @@ struct RazerSCoreOptions
 
     CharString commandLine;
     std::string version;
-
-    RazerSCoreOptions()
-    {
-        alignMode = RAZERS_GLOBAL;
-        gapMode = RAZERS_GAPPED;
-        scoreMode = RAZERS_ERRORS;
-
-        forward = true;
-        reverse = true;
-        errorRate = 0.05;
-        maxHits = 100;
-        scoreDistanceRange = 0;     // disabled
-        dRange = 1 << 30;
-        purgeAmbiguous = false;
-        output = "";
-        _debugLevel = 0;
-        printVersion = false;
-        trimLength = 0;
-        mutationRate = 0.05;
-
-        outputFormat = 0;
-        dumpAlignment = false;
-        genomeNaming = 0;
-        readNaming = 0;
-        fullFastaId = false;
-        sortOrder = 0;
-        positionFormat = 0;
-        runID = "s";        //
-        dontShrinkAlignments = false;
-        computeGlobal = false;
-
-        matchN = false;
-        shape = "11111111111";
-        threshold = 1;
-        tabooLength = 1;
-        repeatLength = 1000;
-        abundanceCut = 1;
-        delta = 0;
-        overlap = 0;
-        maxOverlap = 10;
-
-        libraryLength = 220;
-        libraryError = 50;
-        nextPairMatchId = 0;
-
-        prefixSeedLength = 28;      // the "artificial" seed length that is used for mapping quality assignment
-        for (unsigned i = 0; i < 4; ++i)
-            compMask[i] = 1 << i;
-        compMask[4] = 0;
-
-        noCompactFrac = 0.05;
-        compactMult = 2.2;
-        compactThresh = 1024;
-        // compactThresh = 40;
-
-        absMaxQualSumErrors = 100;      // maximum for sum of mism qualities in total readlength
-        lowMemory = false;          // set maximum shape weight to 13 to limit size of q-gram index
-        fastaIdQual = false;
-
-        threadCount = 1;
-        // TODO(holtgrew): Tune this!
-        windowSize = 500000;
-        verificationPackageSize = 100;
-        maxVerificationPackageCount = 100;
-        availableMatchesMemorySize = 0;
-        matchHistoStartThreshold = 5;
-
-#ifdef RAZERS_OPENADDRESSING
-        loadFactor = 1.6;
-#endif
-
-        lossRate = 0.0;
-        minScore = 0;
-        countFiltration = 0;
-        countVerification = 0;
-        timeLoadFiles = 0.0;
-        timeMapReads = 0.0;
-        timeDumpResults = 0.0;
-        timeBuildQGramIndex = 0.0;
-        timeCompactMatches = 0.0;
-        timeMaskDuplicates = 0.0;
-        timeFsCopy = 0.0;
-        timeFiltration = 0.0;
-        timeVerification = 0.0;
-        maqMapping = false;
-    }
-
 };
 
 template <typename TSpec = RazerSSpec<> >
@@ -551,7 +464,7 @@ struct MatchVerifier
     double compactionTime;
 
     MatchVerifier() :
-        genomeLength(0), rightClip(0), sinkPos(std::numeric_limits<TContigPos>::max()), onReverseComplement(false), oneMatchPerBucket(false), compactionTime(0) {}
+        genomeLength(0), rightClip(0), sinkPos(std::numeric_limits<TContigPos>::max() >> 1), onReverseComplement(false), oneMatchPerBucket(false), compactionTime(0) {}
 
     MatchVerifier(TMatches_ & _matches, TOptions & _options, TFilterPattern & _filterPattern, TCounts & _cnts) :
         matches(&_matches),
@@ -684,6 +597,29 @@ bool loadReads(
     while (!atEnd(seqFile))
     {
         readRecord(seqId, seq, qual, seqFile);
+
+        if (countN)
+        {
+            bool skip_pair = false;
+            int count = 0;
+            int cutoffCount = (int)(options.errorRate * length(seq));
+            for (unsigned j = 0; j < length(seq) && !skip_pair; ++j)
+            {
+                if (getValue(seq, j) == 'N' && ++count > cutoffCount)
+                {
+                    clear(seq);
+                    clear(seqId);
+                    clear(qual);  // So no qualities are assigned below.
+                    ++kickoutcount;
+                    skip_pair = true;
+                }
+            }
+            if (skip_pair)
+                continue;
+// low qual. reads are empty to output them and their id later as LQ reads
+//			if (count > cutoffCount) continue;
+        }
+
         ++seqCount;
 
         if (options.readNaming == 0 || options.readNaming == 3)
@@ -694,24 +630,6 @@ bool loadReads(
         else
         {
             clear(seqId);
-        }
-
-        if (countN)
-        {
-            int count = 0;
-            int cutoffCount = (int)(options.errorRate * length(seq));
-            for (unsigned j = 0; j < length(seq); ++j)
-                if (getValue(seq, j) == 'N')
-                    if (++count > cutoffCount)
-                    {
-                        clear(seq);
-                        clear(seqId);
-                        clear(qual);  // So no qualities are assigned below.
-                        ++kickoutcount;
-                        break;
-                    }
-// low qual. reads are empty to output them and their id later as LQ reads
-//			if (count > cutoffCount) continue;
         }
 
         // store dna and quality together

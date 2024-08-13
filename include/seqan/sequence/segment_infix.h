@@ -141,13 +141,17 @@ public:
 
     Segment(Segment const & source)
     {
-        assign(*this, source);
+        data_host = source.data_host;
+        data_begin_position = source.data_begin_position;
+        data_end_position = source.data_end_position;
     }
 
     inline Segment &
     operator = (Segment const & source)
     {
-        assign(*this, source);
+        data_host = source.data_host;
+        data_begin_position = source.data_begin_position;
+        data_end_position = source.data_end_position;
         return *this;
     }
 
