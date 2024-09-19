@@ -1067,6 +1067,16 @@ inline bool _swiftMultiProcessQGram(
     TSAIter occEnd = saBegin + indexDir(index)[getBucket(index.bucketMap, hash) + 1];
     TBucketIter bktBegin = begin(pattern.buckets, Standard());
     Pair<unsigned> ndlPos;
+    if (occ > occEnd)
+    {
+        auto const & dir = indexDir(index);
+        auto const & i = getBucket(index.bucketMap, hash);
+        std::cerr << "Error: Bucket begin before end\n";
+        std::cerr << "h1=" << i << '\n';
+        std::cerr << "previous bucket begin\t" << dir[i-1] << '\n';
+        std::cerr << "current bucket begin\t" << dir[i] << '\n';
+        std::cerr << "next bucket begin\t" << dir[i+1] << '\n';
+    }
 
 /*  std::cerr<<"\t["<<(occEnd-occ)<<"]"<< std::flush;
 

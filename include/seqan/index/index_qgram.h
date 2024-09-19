@@ -1035,15 +1035,23 @@ _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, TText const &text, TShape sh
         }
 }
 
+template <typename T>
+class empty_class;
+
 template < typename TDir, typename TBucketMap, typename TString, typename TSpec, typename TShape, typename TStepSize >
-inline void
-_qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> const &stringSet, TShape shape, TStepSize stepSize)
+inline 
+uint64_t _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> const &stringSet, TShape shape, TStepSize stepSize)
 {
     typedef typename Iterator<TString const, Standard>::Type    TIterator;
     typedef typename Value<TDir>::Type                            TSize;
 
-    if (empty(shape)) return;
+    if (empty(shape)) 0;
 
+    size_t last_hash_count{0};
+    uint64_t last_hash{0};
+    auto dir_copy = dir;
+    std::string last_kmer;
+    last_kmer.resize(shape.span, 'T');
     if (stepSize == 1)
         for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
@@ -1056,8 +1064,65 @@ _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> co
             for(TSize i = 1; i < num_qgrams; ++i)
             {
                 ++itText;
-                ++dir[requestBucket(bucketMap, hashNext(shape, itText))];
-            }
+                std::string kmer_str;
+                for (size_t i{0}; i < 32; i++)
+                {
+                    switch (ordValue(*(itText + i)))
+                    {
+                    case 0:
+                        kmer_str += 'A';
+                        break;
+                    case 1:
+                        kmer_str += 'C';
+                        break;
+                    case 2: 
+                        kmer_str += 'G';
+                        break;
+                    case 3:
+                        kmer_str += 'T';
+                        break;
+                    default:
+                        kmer_str += 'N';
+                        break;
+                    }
+                }
+                    
+                auto next_hash = hashNext(shape, itText);
+                if (kmer_str == last_kmer)
+                {
+                    last_hash = next_hash;
+                    last_hash_count++;
+                }
+                else
+                {
+                    if ((next_hash == last_hash) && (last_hash != 0))
+                    {
+                        std::cerr << "Hash collision with k-mer \t" << kmer_str << '\n';
+                    }
+                }
+                
+                // std::cerr << "last hash=\t" << next_hash << '\n';
+                /*
+                auto currentBucket = requestBucket(bucketMap, next_hash);
+                if (dir[currentBucket] > dir[currentBucket + 1])
+                {
+                    std::cerr << "qgramCountQGrams\n";
+                    std::cerr << "Error: bucketStart > bucketEnd\n";
+                    std::cerr << "h1=" << currentBucket << '\n';
+                    std::cerr << "previous bucket begin\t" << dir[currentBucket-1] << '\n';
+                    std::cerr << "current bucket begin\t" << dir[currentBucket] << '\n';
+                    std::cerr << "next bucket begin\t" << dir[currentBucket+1] << '\n';
+                }
+                */
+                //auto old_count = dir[getBucket(bucketMap, next_hash)];
+                
+                ++dir[requestBucket(bucketMap, next_hash)];
+
+                /*
+                if (dir[getBucket(bucketMap, next_hash)] < old_count)
+                    std::cerr << "Error: numerical overflow\n";
+                */
+            }   
         }
     else
         for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
@@ -1073,6 +1138,26 @@ _qgramCountQGrams(TDir &dir, TBucketMap &bucketMap, StringSet<TString, TSpec> co
                 itText += stepSize;
             }
         }
+
+    std::cerr << "kmer size\t" << shape.span << '\n';
+    std::cerr << "Counted last hash\t" << last_hash_count << '\n';
+    std::cerr << "Previous bucket before\t" << dir_copy[getBucket(bucketMap, last_hash) - 1] << '\n';
+    std::cerr << "Previous bucket after\t" << dir[getBucket(bucketMap, last_hash) - 1] << '\n';
+    std::cerr << "Last hash count dir before\t" << dir_copy[getBucket(bucketMap, last_hash)] << '\n';
+    std::cerr << "Last hash count dir after\t" << dir[getBucket(bucketMap, last_hash)] << '\n';
+    std::cerr << "Last kmer hash\t" << getBucket(bucketMap, last_hash) << '\n'; 
+    std::cerr << "Next bucket before\t" << dir_copy[getBucket(bucketMap, last_hash) + 1] << '\n';
+    std::cerr << "Next bucket after\t" << dir[getBucket(bucketMap, last_hash) + 1] << '\n';
+
+    uint64_t max_count{0};
+    for (auto & count : dir)
+    {
+        if (count > max_count)
+            max_count = count;
+    }
+    std::cerr << "Max count\t" << max_count << '\n'; 
+    
+    return getBucket(bucketMap, last_hash); 
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1108,7 +1193,10 @@ _qgramCummulativeSum(TDir &dir, TWithConstraints)
             prevDiff = *it;
             *it = (TSize)-1;                                // disable bucket
         } else {
+            uint64_t prevSum = sum;
             sum += prev2Diff;
+            if (sum < prevSum)
+                std::cerr << "Numerical overflow in cumulative sum\n";
             prev2Diff = prevDiff;
             prevDiff = *it;
             *it = sum;
@@ -1252,10 +1340,91 @@ _qgramFillSuffixArray(
                 ++itText;
                 assignValueI2(localPos, i);
                 if (TWithConstraints::VALUE) {
-                    TSize bktNo = getBucket(bucketMap, hashNext(shape, itText)) + 1;            // next hash
-                    if (dir[bktNo] != (TSize)-1) sa[dir[bktNo]++] = localPos;                    // if bucket is enabled
+                    auto next_hash = hashNext(shape, itText);
+                    TSize bktNo = getBucket(bucketMap, next_hash) + 1;            // next hash
+                    if (dir[bktNo] != (TSize)-1)
+                    {
+                        uint64_t old_start = dir[bktNo]; 
+                        sa[dir[bktNo]++] = localPos;                    // if bucket is enabled
+                        if (old_start > dir[bktNo])
+                            std::cerr << "Numerical overflow in fillSuffixArray\n";
+                        if ((bktNo + 1 < length(dir)) && (dir[bktNo] > dir[bktNo + 1]))
+                        {
+                            std::cerr << "Error in fillSuffixArray. bucketStart > bucketEnd\n";
+                            std::cerr << "kmer=";
+                            for (size_t i{0}; i < 32; i++)
+                            {
+                                switch (ordValue(*(itText + i)))
+                                {
+                                case 0:
+                                    std::cerr << 'A';
+                                    break;
+                                case 1:
+                                    std::cerr << 'C';
+                                    break;
+                                case 2: 
+                                    std::cerr << 'G';
+                                    break;
+                                case 3:
+                                    std::cerr << 'T';
+                                    break;
+                                default:
+                                    std::cerr << 'N';
+                                    break;
+                                }
+                            }
+                                
+                            std::cerr << '\n';
+                            std::cerr << "bktNo\t" << bktNo << '\n';
+                            std::cerr << "h1=" << next_hash << '\n';
+                            std::cerr << "previous bucket begin\t" << dir[bktNo-1] << '\n';
+                            std::cerr << "current bucket begin\t" << dir[bktNo] << '\n';
+                            std::cerr << "next bucket begin\t" << dir[bktNo+1] << '\n';   
+                        }
+                    }
                 } else
-                    sa[dir[getBucket(bucketMap, hashNext(shape, itText)) + 1]++] = localPos;    // next hash
+                {
+                    auto next_hash = hashNext(shape, itText);
+                    uint64_t old_start = dir[getBucket(bucketMap, next_hash) + 1];  
+                    auto bktNo = getBucket(bucketMap, next_hash) + 1;
+
+                    sa[dir[getBucket(bucketMap, next_hash) + 1]++] = localPos;    // next hash
+                    if (old_start > dir[getBucket(bucketMap, next_hash) + 1])
+                        std::cerr << "Numerical overflow in fillSuffixArray\n";
+                    if ((bktNo + 1 < length(dir)) && (dir[bktNo] > dir[bktNo + 1]))
+                    {
+                        std::cerr << "Error in fillSuffixArray. bucketStart > bucketEnd\n";
+                        std::cerr << "kmer=";
+                            for (size_t i{0}; i < 32; i++)
+                            {
+                                switch (ordValue(*(itText + i)))
+                                {
+                                case 0:
+                                    std::cerr << 'A';
+                                    break;
+                                case 1:
+                                    std::cerr << 'C';
+                                    break;
+                                case 2: 
+                                    std::cerr << 'G';
+                                    break;
+                                case 3:
+                                    std::cerr << 'T';
+                                    break;
+                                default:
+                                    std::cerr << 'N';
+                                    break;
+                                }
+                            }
+                                
+                        std::cerr << '\n';
+                        std::cerr << "bktNo\t" << bktNo << '\n';
+                        std::cerr << "h1=" << next_hash << '\n';
+                        std::cerr << "previous bucket begin\t" << dir[bktNo-1] << '\n';
+                        std::cerr << "current bucket begin\t" << dir[bktNo] << '\n';
+                        std::cerr << "next bucket begin\t" << dir[bktNo+1] << '\n';   
+                    }
+                }
             }
         }
     else
@@ -1348,6 +1517,9 @@ _qgramRefineSuffixArray(TSA & sa, TText const & text, Shape<TValue, MinimizerSha
     _refineQGramIndex(sa, dir, text, 0, length(shape));
 }
 
+template <typename T>
+class empty_class;
+
 template < typename TIndex >
 void createQGramIndex(TIndex &index)
 {
@@ -1357,11 +1529,74 @@ void createQGramIndex(TIndex &index)
     typename Fibre<TIndex, QGramShape>::Type      &shape     = indexShape(index);
     typename Fibre<TIndex, QGramBucketMap>::Type  &bucketMap = index.bucketMap;
 
+    // type of text
+    // const seqan2::StringSet<seqan2::Segment<const seqan2::String<seqan2::SimpleType<unsigned char, seqan2::Dna_>, seqan2::Alloc<> >, seqan2::InfixSegment>, seqan2::Owner<>
+    
+    // type of sa
+    // seqan2::String<seqan2::Pair<long unsigned int, long unsigned int, seqan2::Tag<seqan2::Pack_> >, seqan2::Alloc<> >&>
+    
+    //type of dir
+    // seqan2::String<long unsigned int, seqan2::Alloc<> >&> 
+    
+    /*
+    for (uint64_t i{1}; i < length(dir); i++)
+    {
+        uint64_t bucketBegin = dir[i - 1];
+        uint64_t bucketEnd = dir[i];
+        if (bucketBegin > bucketEnd)
+        {
+            std::cerr << "createQGramIndex\n";
+            std::cerr << "length(dir)\t" << length(dir) << '\n';
+            std::cerr << "Error: bucketBegin > bucketEnd\n";
+            std::cerr << "h1=" << i << '\n';
+            std::cerr << "previous bucket begin\t" << dir[i-1] << '\n';
+            std::cerr << "current bucket begin\t" << dir[i] << '\n';
+            std::cerr << "next bucket begin\t" << dir[i+1] << '\n';
+        }
+    }
+    */
+
     // 1. clear counters
     _qgramClearDir(dir, bucketMap);
 
+    /*
+    for (uint64_t i{1}; i < length(dir); i++)
+    {
+        uint64_t bucketBegin = dir[i - 1];
+        uint64_t bucketEnd = dir[i];
+        if (bucketBegin > bucketEnd)
+        {
+            std::cerr << "1. clear counters\n";
+            std::cerr << "length(dir)\t" << length(dir) << '\n';
+            std::cerr << "Error: bucketBegin > bucketEnd\n";
+            std::cerr << "h1=" << i << '\n';
+            std::cerr << "previous bucket begin\t" << dir[i-1] << '\n';
+            std::cerr << "current bucket begin\t" << dir[i] << '\n';
+            std::cerr << "next bucket begin\t" << dir[i+1] << '\n';
+        }
+    }
+    */
+
     // 2. count q-grams
-    _qgramCountQGrams(dir, bucketMap, text, shape, getStepSize(index));
+    uint64_t last_kmer_hash = _qgramCountQGrams(dir, bucketMap, text, shape, getStepSize(index));
+
+    /*
+    for (uint64_t i{1}; i < length(dir); i++)
+    {
+        uint64_t bucketBegin = dir[i - 1];
+        uint64_t bucketEnd = dir[i];
+        if ((bucketBegin > 1) && (bucketBegin > bucketEnd))
+        {
+            std::cerr << "2. count q-grams\n";
+            std::cerr << "length(dir)\t" << length(dir) << '\n';
+            std::cerr << "Error: bucketBegin > bucketEnd\n";
+            std::cerr << "h1=" << i << '\n';
+            std::cerr << "previous bucket begin\t" << dir[i-1] << '\n';
+            std::cerr << "current bucket begin\t" << dir[i] << '\n';
+            std::cerr << "next bucket begin\t" << dir[i+1] << '\n';
+        }
+    }
+    */
 
     if (_qgramDisableBuckets(index))
     {
@@ -1379,8 +1614,47 @@ void createQGramIndex(TIndex &index)
         // 3. cumulative sum
         _qgramCummulativeSum(dir, False());
 
+
+        uint64_t prev_sum = dir[0];
+        for (uint64_t i{last_kmer_hash - 5}; i < last_kmer_hash + 5; i++)
+        {
+            std::cerr << "cum sum\t" << i << '\t' << dir[i] << '\n';
+        }
+
+        /*
+        for (uint64_t i{0}; i < length(dir); i++)
+        {
+            std::cerr << "cum sum\t" << i << '\t' << dir[i] << '\n';
+        }
+        */
+        
+
         // 4. fill suffix array
         _qgramFillSuffixArray(sa, text, shape, dir, bucketMap, getStepSize(index), False());
+
+        uint64_t correct_count = 0;
+        for (uint64_t i{1}; i < length(dir); i++)
+        {
+            uint64_t bucketBegin = dir[i - 1];
+            uint64_t bucketEnd = dir[i];
+            if (bucketBegin > bucketEnd)
+            {
+                std::cerr << "4. suffix array\n";
+                std::cerr << "length(dir)\t" << length(dir) << '\n';
+                std::cerr << "Error: bucketBegin > bucketEnd\n";
+                std::cerr << "h1=" << i << '\n';
+                std::cerr << "previous bucket begin\t" << dir[i-1] << '\n';
+                std::cerr << "current bucket begin\t" << dir[i] << '\n';
+                std::cerr << "next bucket begin\t" << dir[i+1] << '\n';
+            }
+            else
+            {
+                correct_count++;
+            }
+        }
+
+        //std::cerr << "correct_count\t" << correct_count << '\n';
+
     }
 
     // 5. refine suffix array
