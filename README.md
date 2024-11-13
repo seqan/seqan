@@ -40,9 +40,9 @@ The licenses for the applications themselves can be found in the LICENSE files.
 Older compiler versions might work but are neither supported nor tested.
 
 ### Linux, macOS, FreeBSD
-  * GCC ≥ 11
-  * Clang/LLVM ≥ 15
-  * Intel oneAPI C++ Compiler 2024.0.2 (IntelLLVM)
+  * GCC ≥ 12
+  * Clang/LLVM ≥ 17
+  * Intel oneAPI C++ Compiler 2025.0 (IntelLLVM)
 
 ### Windows
   * Visual C++ ≥ 17.0 / Visual Studio ≥ 2022

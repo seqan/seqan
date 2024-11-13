@@ -31,11 +31,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: ["clang-18", "clang-17", "clang-16", "gcc-14", "gcc-13", "gcc-12", "intel"]
+        compiler: ["clang-19", "clang-18", "clang-17", "gcc-14", "gcc-13", "gcc-12", "intel"]
         include:
           - cxx_flags: "-std=c++23"
-          - compiler: "clang-16"
-            cxx_flags: "-std=c++20"
           - compiler: "intel"
             cxx_flags: "-std=c++23 -fp-model=strict"
     container:
@@ -59,7 +57,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/.ccache
-          save-always: true
           key: ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}-${{ github.ref }}-${{ github.run_id }}
           restore-keys: |
             ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}-${{ github.ref }}

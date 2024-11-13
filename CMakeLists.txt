@@ -127,6 +127,16 @@ seqan_get_repository_info ()
 # Include Subdirectories
 # ===========================================================================
 
+if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DOCUMENTATION")
+  message (STATUS "Configuring dox")
+  add_subdirectory (dox)
+
+  message (STATUS "Configuring manual")
+  add_subdirectory (manual)
+
+  return ()
+endif ()
+
 # Tests, demos and manual are only built when building in DEVELOP mode.
 if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     message (STATUS "Configuring tests")

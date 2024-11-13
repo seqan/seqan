@@ -275,7 +275,7 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_metafunctions_std_string)
 {
     using namespace seqan2;
 
-    typedef int TElement;
+    typedef char TElement;
     typedef std::basic_string<TElement> TString;
     typedef TString const TConstString;
 

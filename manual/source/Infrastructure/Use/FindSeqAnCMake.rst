@@ -232,7 +232,7 @@ An example of where you only want ZLIB and OpenMP support, but not BZip2, would 
 .. code-block:: cmake
 
     find_package (ZLIB)
-    find_package (OpenMP)
+    find_package (OpenMP COMPONENTS CXX)
     find_package (SeqAn)
 
 From within CMake you can check the variables ``ZLIB_FOUND`` or ``OpenMP_FOUND`` to see the results of these dependency searches, but you can also use the following macros from within your source code to escape certain optional code paths:
