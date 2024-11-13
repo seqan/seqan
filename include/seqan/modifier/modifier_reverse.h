@@ -559,6 +559,8 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
 
     TIter itBeg = begin(sequence, Standard());
     TIter itEnd = end(sequence, Standard());
+    if (itBeg == itEnd)
+        return;
     Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
 
     // disable multi-threading if sequence is too small

@@ -295,15 +295,23 @@ public:
     }
 
     Iter(TPackedString &container):
-          data_iterator(begin(host(container), Standard()) + 1),
+          data_iterator(begin(host(container), Standard())),
           localPos(0)
     {
+        // If begin(host(container)) is not a nullptr:
+        //      data_iterator(begin(host(container), Standard()) + 1;
+        // Otherwise, use nullptr.
+        data_iterator += (data_iterator != nullptr);
     }
 
     Iter(TPackedString &container, TPosition pos):
-          data_iterator(begin(host(container), Standard()) + 1 + pos / TTraits::VALUES_PER_HOST_VALUE),
+          data_iterator(begin(host(container), Standard())),
           localPos(pos % TTraits::VALUES_PER_HOST_VALUE)
     {
+        // If begin(host(container)) is not a nullptr:
+        //      data_iterator(begin(host(container), Standard()) + 1 + pos / TTraits::VALUES_PER_HOST_VALUE);
+        // Otherwise, use nullptr.
+        data_iterator += (data_iterator != nullptr) * (1 + pos / TTraits::VALUES_PER_HOST_VALUE);
     }
 
 //    inline
