@@ -16,7 +16,7 @@ message (STATUS "Configuring tests/journaled_string_tree")
 
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (OpenMP)
+    find_package (OpenMP COMPONENTS CXX)
     find_package (SeqAn REQUIRED)
 endif ()
 

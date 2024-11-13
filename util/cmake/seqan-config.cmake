@@ -358,7 +358,7 @@ endif ()
 set (SEQAN_HAS_OPENMP FALSE)
 
 if (NOT SEQAN_NO_OPENMP)
-    find_package (OpenMP QUIET)
+    find_package (OpenMP QUIET COMPONENTS CXX)
 endif ()
 
 if (OPENMP_FOUND)
@@ -372,10 +372,8 @@ if (OPENMP_FOUND)
         set (OPENMP_FOUND FALSE)
     else ()
         set (SEQAN_HAS_OPENMP TRUE) # deprecated: use OPENMP_FOUND instead
-        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_CXX_LIBRARIES})
-        set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_CXX_INCLUDE_DIRS})
+        set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         OpenMP::OpenMP_CXX)
         set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
-        set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     endif ()
 endif ()
 

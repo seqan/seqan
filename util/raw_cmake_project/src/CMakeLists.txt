@@ -1,5 +1,5 @@
 # Configure SeqAn, enabling features for libbz2 and zlib.
-find_package (OpenMP)
+find_package (OpenMP COMPONENTS CXX)
 find_package (ZLIB)
 find_package (BZip2)
 find_package (SeqAn REQUIRED)

@@ -18,7 +18,7 @@ set (SEQAN_APP_VERSION "0.5.9")
 
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    find_package (OpenMP)
+    find_package (OpenMP COMPONENTS CXX)
     find_package (SeqAn CONFIG REQUIRED)
 endif ()
 
