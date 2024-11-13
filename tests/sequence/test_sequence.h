@@ -204,10 +204,7 @@ typedef
     seqan2::TagList<String<char, Alloc<> >,
     seqan2::TagList<String<int, Alloc<> >,
     seqan2::TagList<String<CountingChar, Alloc<> >,
-//     seqan2::TagList<std::basic_string<seqan2::Dna5>,
     seqan2::TagList<std::basic_string<char>,
-    seqan2::TagList<std::basic_string<int>,
-//     seqan2::TagList<std::basic_string<CountingChar>
     seqan2::TagList<std::vector<seqan2::Dna5>,
     seqan2::TagList<std::vector<char>,
     seqan2::TagList<std::vector<int>,
@@ -225,8 +222,8 @@ typedef
     seqan2::TagList<std::list<int>,
     seqan2::TagList<std::list<CountingChar>
     > > > > > > > > > > > > > > > > > > > > > > > > >
-    > > > > > > > > > > > > > > //> >
-    > > > >
+    > > > > > > > > > > > > > >
+    > > >
     StringTestCommonTypes;
 
 SEQAN_TYPED_TEST_CASE(StringTestCommon, StringTestCommonTypes);

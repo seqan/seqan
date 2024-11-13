@@ -152,7 +152,7 @@ struct PngIhdrChunk
 
 struct PngIdatChunk
 {
-    std::basic_string<unsigned char> data;
+    std::vector<unsigned char> data;
 
     // Returns pointer to the payload.
     unsigned char const * payload() const
