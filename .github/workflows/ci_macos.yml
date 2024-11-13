@@ -24,17 +24,15 @@ defaults:
 
 jobs:
   build:
-    runs-on: macos-12
+    runs-on: macos-14
     name: ${{ matrix.compiler }}
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
-        compiler: ["clang-18", "clang-17", "clang-16", "gcc-14", "gcc-13", "gcc-12"]
+        compiler: ["clang-19", "clang-18", "clang-17", "gcc-14", "gcc-13", "gcc-12"]
         include:
           - cxx_flags: "-std=c++23"
-          - compiler: "clang-16"
-            cxx_flags: "-std=c++20"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
