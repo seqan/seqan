@@ -51,7 +51,7 @@ class TokenTranslator(object):
         result = []
         for token in token_list:
             if '$' in token.val:
-                vals = re.split('(\$[^\$]*\$)', token.val)
+                vals = re.split(r'(\$[^\$]*\$)', token.val)
                 for val in vals:
                     if val.startswith('$') and val.endswith('$'):
                         t1 = copy.deepcopy(token)
@@ -84,7 +84,7 @@ def translateTypename(name):
 
 
 def translate(text):
-    return text.replace('\colon', ':').replace('"', '')
+    return text.replace(r'\colon', ':').replace('"', '')
 
 # TODO(holtgrew): Translate spaces to underscores.
 

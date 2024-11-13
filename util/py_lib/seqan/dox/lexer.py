@@ -54,7 +54,7 @@ class Lexer(object):
                 of the token to return when it's recognized.
 
             skip_whitespace:
-                If True, whitespace (\s+) will be skipped and not
+                If True, whitespace (\\s+) will be skipped and not
                 reported by the lexer. Otherwise, you have to
                 specify your rules for whitespace, or it will be
                 flagged as an error.
@@ -72,7 +72,7 @@ class Lexer(object):
         self.line_offset = line_offset
         self.col_offset = col_offset
 
-        self.re_ws_skip = re.compile('\S')
+        self.re_ws_skip = re.compile(r'\S')
 
     def input(self, buf, file_name='<mem>', line=0, col=0, offset_col=None):
         """ Initialize the lexer with a buffer as input.
