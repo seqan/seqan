@@ -336,7 +336,7 @@ void MaterializerOptions::addOptions(seqan2::ArgumentParser & parser) const
     addOption(parser, seqan2::ArgParseOption("ir", "input-reference",
                                             "Path to FASTA file to read the reference from. Many contigs in a "
                                             "reference might be a problem due to many file handles that need to be "
-                                            "openened. Check the hard limit of file handles with 'ulimit -Hn' and "
+                                            "opened. Check the hard limit of file handles with 'ulimit -Hn' and "
                                             "increase the soft limit to the hard limit with 'ulimit -Sn <number>' if "
                                             "necessary.",
                                             seqan2::ArgParseOption::INPUT_FILE, "IN.fa"));

@@ -150,8 +150,11 @@ SEQAN_DEFINE_TEST(test_option_on)
     SEQAN_ASSERT_EQ(stream_result[0], "");
     SEQAN_ASSERT_EQ(stream_result[1], "");
 
-    // make sure that all files now exist
-    SEQAN_ASSERT(fileExists(TestVersionCheck_::APP_TIMESTAMP_FILENAME.c_str()));
+    // make sure that all files now exist, files will not exist if none of wget, curl, ftp, or fetch are installed
+    VersionCheck checker{"foo", "bar", std::cerr};
+    checker._getProgram();
+    if (!checker._program.empty())
+        SEQAN_ASSERT(fileExists(TestVersionCheck_::APP_TIMESTAMP_FILENAME.c_str()));
     if (app_call_succeeded)
         SEQAN_ASSERT(fileExists(TestVersionCheck_::APP_VERSION_FILENAME.c_str()));
 }
