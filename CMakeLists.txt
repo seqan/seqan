@@ -85,7 +85,7 @@ option (SEQAN_ARCH_NATIVE "Build natively optimized binaries." OFF)
 # Version Check Variables.
 # ===========================================================================
 
-option (SEQAN_VERSION_CHECK_OPT_IN "Enable version check but activate as opt-in." OFF)
+option (SEQAN_VERSION_CHECK_OPT_OUT "Enable version check but activate as opt-out." OFF)
 option (SEQAN_DISABLE_VERSION_CHECK "Disable version check." OFF)
 
 # ===========================================================================

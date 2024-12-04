@@ -217,15 +217,15 @@ meaning
  If set to 1 then OpenMP is expected to be available.
  You might have to add ``-fopenmp`` and possibly ``-lgomp`` to your build. And OpenMP needs to be supported by your compiler.
 
-SEQAN_VERSION_CHECK_OPT_IN
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+SEQAN_VERSION_CHECK_OPT_OUT
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-meaning 
- If set then the version update feature is enabled but deactivated in the argument parser options and must be explicitly activated by the user.
- If not specified the update feature is enabled and activated by default.
+meaning
+ If set then the version update feature is enabled and activated by default.
+ If not specified, the update feature is enabled but deactivated in the argument parser options and must be explicitly activated by the user.
 
 usage
- Add compiler flag: ``-DSEQAN_VERSION_CHECK_OPT_IN``
+ Add compiler flag: ``-DSEQAN_VERSION_CHECK_OPT_OUT``
 
 SEQAN_DISABLE_VERSION_CHECK
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -234,7 +234,7 @@ meaning
  If set the version update feature is disabled in the argument parser.
 
 usage
- add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHECK`` 
+ add compiler flag: ``-DSEQAN_DISABLE_VERSION_CHECK``
 
 SEQAN_BGZF_NUM_THREADS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -249,7 +249,7 @@ meaning
  Number of threads to use for BGZF I/O.
 
 usage
- add compiler flag: ``-DSEQAN_BGZF_NUM_THREADS=value`` 
+ add compiler flag: ``-DSEQAN_BGZF_NUM_THREADS=value``
 
 Settings Projects Using Seqan
 -----------------------------

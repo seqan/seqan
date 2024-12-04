@@ -232,11 +232,11 @@ public:
                                         "version-check",
                                         "Turn this option off to disable version update notifications of the application. ",
                                         ArgParseArgument::BOOL));
-#ifdef SEQAN_VERSION_CHECK_OPT_IN
+#ifndef SEQAN_VERSION_CHECK_OPT_OUT
         setDefaultValue(*this, "version-check", false);
 #else  // Make version update opt out.
         setDefaultValue(*this, "version-check", true);
-#endif  // SEQAN_VERSION_CHECK_OPT_IN
+#endif  // SEQAN_VERSION_CHECK_OPT_OUT
 #endif  // !SEQAN_DISABLE_VERSION_CHECK
     }
 
