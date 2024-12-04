@@ -600,6 +600,8 @@ The Version Update Feature
 
 With the seqan-2.3.0 release applications, using the :dox:`ArgumentParser`, check SeqAn servers for version updates. The functionality helps getting new versions out to users faster. It is also used to inform application developers of new versions of the SeqAn library which means that applications ship with less bugs.
 
+By default, this feature requires active consent by the user (opt-in).
+
 Customized Messages
 """""""""""""""""""
 The version information you receive depends on whether you are an application user or developer.
@@ -661,8 +663,15 @@ This may be used for anonymized analysis by the SeqAn team, but raw data is neve
 
 Disable this feature any time you want
 """"""""""""""""""""""""""""""""""""""
+By default, the version check is opt-in and no data is transmitted without your consent.
 If you still feel uncomfortable with the version check, you may
 
   * disable it at run-time simply by setting ``--version-check OFF`` or
-  * rebuild the application and specify ``-DCMAKE_CXX_ARGS="-DSEQAN_VERSION_CHECK_OPT_IN=YES"`` to change the default value of ``--version-check to OFF`` or even
   * rebuild the application and specify ``-DCMAKE_CXX_ARGS="-DSEQAN_DISABLE_VERSION_CHECK=YES"`` to completely remove all codepaths related to this feature.
+
+Making this feature opt-out
+"""""""""""""""""""""""""""
+This feature is opt-in by default.
+Prior version 2.5.0, this feature was opt-out by default.
+To enable opt-out, you can rebuild the application and specify ``-DCMAKE_CXX_ARGS="-DSEQAN_VERSION_CHECK_OPT_OUT=YES"`` to change the default value of ``--version-check to ON``.
+

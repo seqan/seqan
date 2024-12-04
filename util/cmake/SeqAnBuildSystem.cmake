@@ -218,10 +218,11 @@ macro (seqan_build_system_init)
     ## options
 
     # SeqAn Version Check
+    # Default: Available, but opt-in.
     if (SEQAN_DISABLE_VERSION_CHECK)  # Disable completely
         set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
-    elseif (SEQAN_VERSION_CHECK_OPT_IN)  # Build it but make it opt-in.
-        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_VERSION_CHECK_OPT_IN)
+    elseif (SEQAN_VERSION_CHECK_OPT_OUT)  # Build it but make it opt-out.
+        set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_VERSION_CHECK_OPT_OUT)
     endif ()
 
     # Architecture.
