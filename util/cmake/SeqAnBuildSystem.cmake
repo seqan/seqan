@@ -381,7 +381,10 @@ macro (seqan_add_app_test APP_NAME)
     else ()
         set (_VALGRIND_FLAG)
     endif ()
-    find_package (Python3)
+    # If find_package (Python3) was called before and was found, we do not need to search it again.
+    if (NOT Python3_Interpreter_FOUND)
+      find_package (Python3)
+    endif ()
     if (Python3_Interpreter_FOUND)
       add_test (NAME app_test_${APP_NAME}${ARGV1}
                 COMMAND ${Python3_EXECUTABLE}
@@ -805,7 +808,9 @@ macro (_seqan_setup_demo_test CPP_FILE EXECUTABLE)
         endif()
 
         # Add the test.
-        find_package (Python3)
+        if (NOT Python3_Interpreter_FOUND)
+          find_package (Python3)
+        endif ()
         if (Python3_Interpreter_FOUND)
           add_test (NAME test_${EXECUTABLE}
                     COMMAND ${Python3_EXECUTABLE} ${CHECKER_PATH} ${ARGS})
@@ -848,7 +853,10 @@ function (seqan_register_demos PREFIX)
     set (SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} -DSEQAN_DISABLE_VERSION_CHECK)
     add_definitions (${SEQAN_DEFINITIONS})
 
-    # Disable the version check for all demos.
+    # Search Python3 once instead of for each demo separately in _seqan_setup_demo_test.
+    if (NOT Python3_Interpreter_FOUND)
+      find_package (Python3)
+    endif ()
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})

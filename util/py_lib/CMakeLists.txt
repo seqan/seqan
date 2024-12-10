@@ -9,7 +9,9 @@
 # ===========================================================================
 
 # Look for Python and stop if it could not be found.
-find_package (Python3)
+if (NOT Python3_Interpreter_FOUND)
+  find_package (Python3)
+endif ()
 
 if (NOT Python3_Interpreter_FOUND)
   message (STATUS "  Skipping py_lib tests")
