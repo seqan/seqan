@@ -168,6 +168,9 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
     typedef typename seqan2::Iterator<TFrag>::Type TFragIter;
     TFragIter it = begin(frag, seqan2::Standard());
 
+    std::uniform_int_distribution<unsigned short> dist{};
+    using param_t = typename std::uniform_int_distribution<unsigned short>::param_type;
+
     for (unsigned i = 0; i < length(cigar); ++i)
     {
         //unsigned numSimulate = 0;
@@ -183,22 +186,13 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
             continue;
         }
 
+        // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
+        dist.param(param_t{0u, static_cast<unsigned short>(cigar[i].operation == 'I' ? 3u : 4u)});
+
         // Otherwise, we have insertions or mismatches.
         for (unsigned j = 0; j < cigar[i].count; ++j)
         {
-            // Pick a value between 0 and 1.
-            std::uniform_real_distribution<double> dist(0, 1);
-            double x = 1.0;
-            while (x == 1.0)
-                x = dist(rng);
-            int num = static_cast<int>(x / 0.25);
-
-            // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
-
-            if (cigar[i].operation == 'I')
-                appendValue(read, seqan2::Dna5(num));
-            else
-                appendValue(read, seqan2::Dna5(num + (num == ordValue(*it))));
+            appendValue(read, seqan2::Dna5(dist(rng)));
         }
 
         if (cigar[i].operation == 'X')
