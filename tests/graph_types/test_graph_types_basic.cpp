@@ -33,7 +33,9 @@
 #include <seqan/basic.h>
 #include <seqan/graph_types.h>
 
-SEQAN_DEFINE_TEST(test_graph_types_id_manager_basic)
+using namespace seqan2;
+
+SEQAN_DEFINE_TEST(test_graph_types_basic_id_manager)
 {
 //____________________________________________________________________________
 // IdManager
@@ -140,7 +142,7 @@ SEQAN_DEFINE_TEST(test_graph_types_id_manager_basic)
     SEQAN_ASSERT(getIdLowerBound(id_dummy) == 0);
 }
 
-SEQAN_DEFINE_TEST(test_graph_types_edge_stump_basic)
+SEQAN_DEFINE_TEST(test_graph_types_basic_edge_stump)
 {
 //____________________________________________________________________________
 // Test all cargoless EdgeStumps in a list

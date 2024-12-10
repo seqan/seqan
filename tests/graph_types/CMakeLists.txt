@@ -45,7 +45,7 @@ add_definitions (${SEQAN_DEFINITIONS})
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Add targets and register tests.
-set (SOURCES property_map derived iterators types utils)
+set (SOURCES basic property_map derived iterators types utils)
 foreach (NAME ${SOURCES})
   add_executable (test_graph_types_${NAME} test_graph_types_${NAME}.cpp)
   target_link_libraries (test_graph_types_${NAME} ${SEQAN_LIBRARIES})
