@@ -600,41 +600,46 @@ void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
     typedef typename seqan2::Iterator<TFrag>::Type TFragIter;
     TFragIter it = begin(frag, seqan2::Standard());
 
+    // Insertions can be any of ACGT.
+    std::uniform_int_distribution<unsigned short> dna_dist_insertion{0, 3};
+    // Substitutions can be any of ACGT except the original character.
+    // We draw from [0, 2] and add 1 if the drawn value is >= the original character.
+    // |   | 0 | 1 | 2 | <- dna_dist_substitution
+    // | 0 | 1 | 2 | 3 |
+    // | 1 | 0 | 2 | 3 |
+    // | 2 | 0 | 1 | 3 |
+    // | 3 | 0 | 1 | 2 |
+    //   ^
+    // OrdVal(*it)
+    std::uniform_int_distribution<unsigned short> dna_dist_substitution{0, 2};
+
     for (unsigned i = 0; i < length(cigar); ++i)
     {
-        //unsigned numSimulate = 0;
-        if (cigar[i].operation == 'M')
+        switch (cigar[i].operation)
         {
-            for (unsigned j = 0; j < cigar[i].count; ++j, ++it)
-                appendValue(read, *it);
-            continue;
+            case 'D':
+                it += cigar[i].count;
+                break;
+            case 'M':
+                for (unsigned j = 0; j < cigar[i].count; ++j, ++it)
+                    appendValue(read, *it);
+                break;
+            case 'I':
+                for (unsigned j = 0; j < cigar[i].count; ++j)
+                    appendValue(read, seqan2::Dna5(dna_dist_insertion(rng)));
+                break;
+            case 'X':
+                for (unsigned j = 0; j < cigar[i].count; ++j)
+                {
+                    auto new_rank = dna_dist_substitution(rng);
+                    new_rank += (new_rank >= ordValue(*it));
+                    appendValue(read, seqan2::Dna5(new_rank));
+                }
+                it += cigar[i].count;
+                break;
+            default:
+                SEQAN_FAIL("Invalid CIGAR operation!");
         }
-        else if (cigar[i].operation == 'D')
-        {
-            it += cigar[i].count;
-            continue;
-        }
-
-        // Otherwise, we have insertions or mismatches.
-        for (unsigned j = 0; j < cigar[i].count; ++j)
-        {
-            // Pick a value between 0 and 1.
-            std::uniform_real_distribution<double> dist(0, 1);
-            double x = 1.0;
-            while (x == 1.0)
-                x = dist(rng);
-            int num = static_cast<int>(x / 0.25);
-
-            // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
-
-            if (cigar[i].operation == 'I')
-                appendValue(read, seqan2::Dna5(num));
-            else
-                appendValue(read, seqan2::Dna5(num + (num == ordValue(*it))));
-        }
-
-        if (cigar[i].operation == 'X')
-            it += cigar[i].count;
     }
 }
 
