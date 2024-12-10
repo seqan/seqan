@@ -76,6 +76,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # Register with CTest
 # ----------------------------------------------------------------------------
 
+add_test (NAME test_test_basic_observable COMMAND $<TARGET_FILE:test_basic_observable>)
 add_test (NAME test_test_journaled_string_tree COMMAND $<TARGET_FILE:test_journaled_string_tree>)
 add_test (NAME test_test_delta_map COMMAND $<TARGET_FILE:test_delta_map>)
 add_test (NAME test_journaled_string_tree_traverser COMMAND $<TARGET_FILE:test_journaled_string_tree_traverser>)
