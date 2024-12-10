@@ -9,7 +9,9 @@
 cmake_minimum_required (VERSION 3.12)
 project (seqan_dox CXX)
 
-find_package (Python3)
+if (NOT Python3_Interpreter_FOUND)
+    find_package (Python3)
+endif ()
 if (NOT Python3_Interpreter_FOUND)
     message (STATUS "  You need Python for building dox. (skipping)")
     return ()
