@@ -104,5 +104,3 @@ ${SIMULATOR} -n 1000 -ir ../input/random.fasta --meth-fasta-in random_meth1.fast
 ${SIMULATOR} -v --seq-technology 454 -n 1000 -ir ../input/random.fasta -o simulator.left8.fq -oa simulator.out8.sam --fragment-mean-size 800 --454-read-length-mean 200 --454-read-length-stddev 20 >simulator.out8.stdout 2>simulator.out8.stderr
 
 STL_DIR=$(basename $(pwd))
-find . -name "*.fai" -delete
-find ../input -name "*.fai" -delete
