@@ -151,64 +151,6 @@ void IlluminaSequencingSimulator::_initModel()
 }
 
 // ---------------------------------------------------------------------------
-// Function _simulateRead()
-// ---------------------------------------------------------------------------
-
-namespace {
-
-// Simulate the characters that polymorphisms turn into and inserted characters.
-//
-// Through the usage of ModifiedString, we will always go from the left to the right end.
-template <typename TFrag>
-void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
-                       TCigarString const & cigar)
-{
-    clear(read);
-
-    typedef typename seqan2::Iterator<TFrag>::Type TFragIter;
-    TFragIter it = begin(frag, seqan2::Standard());
-
-    for (unsigned i = 0; i < length(cigar); ++i)
-    {
-        //unsigned numSimulate = 0;
-        if (cigar[i].operation == 'M')
-        {
-            for (unsigned j = 0; j < cigar[i].count; ++j, ++it)
-                appendValue(read, *it);
-            continue;
-        }
-        else if (cigar[i].operation == 'D')
-        {
-            it += cigar[i].count;
-            continue;
-        }
-
-        // Otherwise, we have insertions or mismatches.
-        for (unsigned j = 0; j < cigar[i].count; ++j)
-        {
-            // Pick a value between 0 and 1.
-            std::uniform_real_distribution<double> dist(0, 1);
-            double x = 1.0;
-            while (x == 1.0)
-                x = dist(rng);
-            int num = static_cast<int>(x / 0.25);
-
-            // NOTE: We can only insert CGAT, but we can have a polymorphism to N.
-
-            if (cigar[i].operation == 'I')
-                appendValue(read, seqan2::Dna5(num));
-            else
-                appendValue(read, seqan2::Dna5(num + (num == ordValue(*it))));
-        }
-
-        if (cigar[i].operation == 'X')
-            it += cigar[i].count;
-    }
-}
-
-}  // namespace (anonymous)
-
-// ---------------------------------------------------------------------------
 // Function IlluminaSequencingSimulator::simulateRead()
 // ---------------------------------------------------------------------------
 
