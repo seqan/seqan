@@ -99,6 +99,8 @@ namespace seqan2
         typedef typename Cargo<Index>::Type                    TCargo;
         typedef typename Size<Index>::Type                    TSize;
 
+        static_assert(WEIGHT<TShape>::VALUE <= 31, "Incompatible q-gram size. Must be in range [1, 31].");
+
         TTextMember     text;        // underlying text
         TSA                sa;            // suffix array sorted by the first q chars
         TDir            dir;        // bucket directory
@@ -159,14 +161,22 @@ namespace seqan2
             text(_text),
             shape(_shape),
             stepSize(1),
-            alpha(defaultAlpha) {}
+            alpha(defaultAlpha)
+            {
+                if (weight(_shape) > 31u)
+                    throw std::runtime_error("Incompatible q-gram size. Must be in range [1, 31].");
+            }
 
         template <typename TText_, typename TShape_>
         Index(TText_ const &_text, TShape_ const &_shape):
             text(_text),
             shape(_shape),
             stepSize(1),
-            alpha(defaultAlpha) {}
+            alpha(defaultAlpha)
+            {
+                if (weight(_shape) > 31u)
+                    throw std::runtime_error("Incompatible q-gram size. Must be in range [1, 31].");
+            }
     };
 
 
