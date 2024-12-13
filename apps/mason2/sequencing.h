@@ -584,4 +584,63 @@ inline std::pair<int, int> appendOperation(TCigarString & cigar, char op)
     return std::make_pair((op != 'D'), (op != 'I'));
 }
 
+// ---------------------------------------------------------------------------
+// Function _simulateSequence()
+// ---------------------------------------------------------------------------
+
+// Simulate the characters that polymorphisms turn into and inserted characters.
+//
+// Through the usage of ModifiedString, we will always go from the left to the right end.
+template <typename TFrag>
+void _simulateSequence(TRead & read, TRng & rng, TFrag const & frag,
+                       TCigarString const & cigar)
+{
+    clear(read);
+
+    typedef typename seqan2::Iterator<TFrag>::Type TFragIter;
+    TFragIter it = begin(frag, seqan2::Standard());
+
+    // Insertions can be any of ACGT.
+    std::uniform_int_distribution<unsigned short> dna_dist_insertion{0, 3};
+    // Substitutions can be any of ACGT except the original character.
+    // We draw from [0, 2] and add 1 if the drawn value is >= the original character.
+    // |   | 0 | 1 | 2 | <- dna_dist_substitution
+    // | 0 | 1 | 2 | 3 |
+    // | 1 | 0 | 2 | 3 |
+    // | 2 | 0 | 1 | 3 |
+    // | 3 | 0 | 1 | 2 |
+    //   ^
+    // OrdVal(*it)
+    std::uniform_int_distribution<unsigned short> dna_dist_substitution{0, 2};
+
+    for (unsigned i = 0; i < length(cigar); ++i)
+    {
+        switch (cigar[i].operation)
+        {
+            case 'D':
+                it += cigar[i].count;
+                break;
+            case 'M':
+                for (unsigned j = 0; j < cigar[i].count; ++j, ++it)
+                    appendValue(read, *it);
+                break;
+            case 'I':
+                for (unsigned j = 0; j < cigar[i].count; ++j)
+                    appendValue(read, seqan2::Dna5(dna_dist_insertion(rng)));
+                break;
+            case 'X':
+                for (unsigned j = 0; j < cigar[i].count; ++j)
+                {
+                    auto new_rank = dna_dist_substitution(rng);
+                    new_rank += (new_rank >= ordValue(*it));
+                    appendValue(read, seqan2::Dna5(new_rank));
+                }
+                it += cigar[i].count;
+                break;
+            default:
+                SEQAN_FAIL("Invalid CIGAR operation!");
+        }
+    }
+}
+
 #endif  // #ifndef APPS_MASON2_SEQUENCING_H_
