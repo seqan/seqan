@@ -700,7 +700,7 @@ inline SEQAN_FUNC_ENABLE_IF(And<Is<ContainerConcept<TResult> >,
                                 Is<ContainerConcept<typename Value<TResult>::Type > > >, void)
 strSplit(TResult & result, TSequence const & sequence)
 {
-    strSplit(result, sequence, EqualsChar<' '>(), false);
+    strSplit(result, sequence, IsSpace(), false);
 }
 
 }  // namespace seqan2
