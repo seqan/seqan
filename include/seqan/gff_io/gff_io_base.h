@@ -287,7 +287,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
         skipOne(iter);
 
         // Go over the trailing semicolon and any trailing space.
-        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<' '> > >());
+        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, IsSpace> >());
     }
     else
     {
@@ -295,7 +295,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
         readUntil(outValue, iter, OrFunctor<EqualsChar<';'>, IsNewline>());
 
         // Skip semicolon and spaces if any.
-        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<' '> > >());
+        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, IsSpace> >());
     }
     return;
 }
