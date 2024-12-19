@@ -4,13 +4,45 @@ This file summarizes the changes to the SeqAn library and apps.
 
 ## Release 2.5.0
 
-This release aims to add support for interoperability with [SeqAn3](https://github.com/seqan/seqan3) and newer C++
-standards (17, 20, 23). Release 2.5.0 might work with older compilers, but there is no support.
+This release adds support for newer compilers and C++ standards (17, 20, 23).
+It also improves interoperability with [SeqAn3](https://github.com/seqan/seqan3).
+
+### Namespace
+
+To avoid namespace conflicts with other libraries in the SeqAn ecosystem, the namespace was changed
+from `seqan` to `seqan2`.
+
+To use version 2.5.0, you will need to update your code.
+Depending on how you use seqan in your project, the following changes are required:
+
+```cpp
+// Before
+using namespace seqan;
+// After
+using namespace seqan2;
+```
+
+```cpp
+// Before
+auto foo(seqan::StringSet<seqan::DnaString> const & sequences)
+{
+    return seqan::length(sequences);
+}
+// After
+auto foo(seqan2::StringSet<seqan2::DnaString> const & sequences)
+{
+    return seqan2::length(sequences);
+}
+```
+
+A script to automatically update your code may look like this:
+```bash
+for file in $(git grep -l 'namespace seqan'); do sed -i 's/namespace seqan/namespace seqan2/g' ${file}; done
+for file in $(git grep -l 'seqan::'); do sed -i 's/seqan::/seqan2::/g' ${file}; done
+```
 
 ### Library Features
 
-* **Namespace**:
-  * The namespace was changed from `seqan` to `seqan2` to allow for interoperability with other SeqAn libraries.
 * Sequence I/O:
   * Accepting files that end in `.fas`.
 * Indexing:
@@ -22,6 +54,8 @@ standards (17, 20, 23). Release 2.5.0 might work with older compilers, but there
   * Accessing the const reference of a `seqan2::VcfIOContext` via `seqan2::context` now works correctly.
 * Indexing:
   * horspool: If the text is smaller than the query, abort the search.
+* BAM I/O:
+  * The output now includes the SQ header lines.
 
 ### App Updates
 
@@ -31,8 +65,10 @@ standards (17, 20, 23). Release 2.5.0 might work with older compilers, but there
   * Added option to compute and output alignments for secondary matches
   * Added option to specify strata threshold as absolute number of errors
 * Mason:
-  * genome: Use larger integers for `contigLenghts`.
+  * Fixed various bugs that resulted in crashes or incorrect output.
+  * The help page now lists common caveats and how to avoid them.
   * simulator: Now uses the command line parameter for seeding instead of the default.
+  * **simulator**: Removed simulation of 'N', the output will only contain 'A', 'C', 'G', 'T'.
 
 ### Build System
 
@@ -40,10 +76,10 @@ standards (17, 20, 23). Release 2.5.0 might work with older compilers, but there
 
 ### Platform Support
 
-* Compiler support:
-  * GCC 11, 12, 13
-  * Clang 15, 16, 17
-  * Intel oneAPI C++ Compiler 2024.0.2 (IntelLLVM)
+* Compiler support (tested):
+  * GCC 12, 13, 14
+  * Clang 17, 18, 19
+  * Intel oneAPI C++ Compiler 2025.0 (IntelLLVM)
   * Microsoft Visual Studio 17
   * Other compilers might work, but are not tested.
 
