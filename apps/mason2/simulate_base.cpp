@@ -77,6 +77,21 @@ void SequencingSimulator::simulatePairedEnd(TRead & seqL, TQualities & qualsL, S
         _simulateBSTreatment(methFrag, frag, *levels, !bsForward);
         _simulatePairedEnd(seqL, qualsL, infoL, seqR, qualsR, infoR,
                            infix(methFrag, 0, length(methFrag)), isForward);
+        // Bisulfite sequencing
+        // Does not use infix of reference as read sequence, but a standalone copy.
+        // See SequencingSimulator::methFrag (sequencing.h)
+        // As such, the beginPos will be 0, and not the actual begin position in the reference.
+        // Here, we restore the actual begin position such that the alignment record is correct.
+        if (isForward)
+        {
+            infoL.beginPos = beginPosition(frag);
+            infoR.beginPos += infoL.beginPos;
+        }
+        else
+        {
+            infoR.beginPos = beginPosition(frag);
+            infoL.beginPos += infoR.beginPos;
+        }
     }
 }
 
@@ -109,6 +124,12 @@ void SequencingSimulator::simulateSingleEnd(TRead & seq, TQualities & quals, Seq
             bsForward = (distBool(methRng) == 1);
         _simulateBSTreatment(methFrag, frag, *levels, !bsForward);
         _simulateSingleEnd(seq, quals, info, infix(methFrag, 0, length(methFrag)), isForward);
+        // Bisulfite sequencing
+        // Does not use infix of reference as read sequence, but a standalone copy.
+        // See SequencingSimulator::methFrag (sequencing.h)
+        // As such, the beginPos will be 0, and not the actual begin position in the reference.
+        // Here, we restore the actual begin position such that the alignment record is correct.
+        info.beginPos = beginPosition(frag);
     }
 }
 
