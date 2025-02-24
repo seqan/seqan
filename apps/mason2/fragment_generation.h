@@ -321,7 +321,7 @@ void UniformFragmentSamplerImpl::generateMany(std::vector<Fragment> & frags, int
 {
     frags.resize(count);
     for (unsigned i = 0; i < count; ++i)
-        _generate(frags[0], rId, contigLength, gapIntervals);
+        _generate(frags[i], rId, contigLength, gapIntervals);
 }
 
 void UniformFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned contigLength,

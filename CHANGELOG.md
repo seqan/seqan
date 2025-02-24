@@ -69,6 +69,8 @@ for file in $(git grep -l 'seqan::'); do sed -i 's/seqan::/seqan2::/g' ${file}; 
   * The help page now lists common caveats and how to avoid them.
   * simulator: Now uses the command line parameter for seeding instead of the default.
   * **simulator**: Removed simulation of 'N', the output will only contain 'A', 'C', 'G', 'T'.
+  * simulator: Alignment output (`--out-alignment`) in conjunction with bisulfite sequencing (`--enable-bs-seq`) now
+    yields correct reference begin positions.
 
 ### Build System
 

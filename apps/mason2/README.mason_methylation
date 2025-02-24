@@ -101,14 +101,51 @@ methylation levels FASTA file.  The "/TOP" entry provides the levels for the
 forward/top strand, the "/BOT" entry provides the levels for the
 bottom/reverse strand.
 
-The levels are encoded in ASCII values.  Given a level L between 0 and 100
+The levels are encoded in ASCII values. Given a level between 0.0 and 1.0,
 the ASCII character for the encoding is given by:
 
-  if (L / 80 + '!' < '>')
-      return L / 80 + '!';
-  else
-      return L / 80 + '!' + 1;
+```cpp
+char level_to_char(double const level)
+{
+    auto c = static_cast<char>(std::round(level / 0.0125));
+    if (c + '!' < '>')
+        return c + 33;
+    else
+        return c + 34;
+}
+```
 
-Which means the values 0..100 are projected to the ASCII characters '!'...'p'
+```python
+def level_to_char(level):
+    c = round(level / 0.0125)
+    if c + ord('!') < ord('>'):
+        return chr(c + 33)
+    else:
+        return chr(c + 34)
+```
+
+Which means the values 0..1 are projected to the ASCII characters '!'...'r'
 but the character '>' is skipped so there is no ambiguity when reading the
 FASTA file.
+
+Likewise, the opposite operation is given by:
+
+```cpp
+double char_to_level(char const c)
+{
+    if (c < '>')
+        return static_cast<double>(c - 33) / 80.0;
+    else
+        return static_cast<double>(c - 34) / 80.0;
+}
+```
+
+```python
+def char_to_level(c):
+    if ord(c) < ord('>'):
+        return (ord(c) - 33) / 80.0
+    else:
+        return (ord(c) - 34) / 80.0
+```
+
+For a table see `README.mason_methylation.levels.md`, or https://godbolt.org/z/Y7Kd3bo6G.
