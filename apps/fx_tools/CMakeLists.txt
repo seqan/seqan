@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_fx_tools CXX)
 message (STATUS "Configuring apps/fx_tools")
 
-set (SEQAN_APP_VERSION "0.2.11")
+set (SEQAN_APP_VERSION "0.2.12")
 
 # ----------------------------------------------------------------------------
 # Dependencies
