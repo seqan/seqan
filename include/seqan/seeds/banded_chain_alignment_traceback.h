@@ -194,12 +194,13 @@ inline void _glueTracebacks(TTraceSet & globalTraces, TTraceSet & localTraces)
         }
     }
 
+    if (!isGlued)
+        throw std::logic_error("Fatal error while trying to connect trace backs: No glue point available!");
+
     for (unsigned i = length(elementsToErase); i > 0; --i)
     {
         erase(globalTraces, elementsToErase[i-1]); // erase from behind to avoid accessing an element beyond the scope
     }
-    SEQAN_ASSERT_EQ_MSG(isGlued, true, "Fatal error while trying to connect trace backs: No glue point available!");
-    ignoreUnusedVariableWarning(isGlued);
 }
 
 // ----------------------------------------------------------------------------

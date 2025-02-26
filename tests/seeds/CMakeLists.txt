@@ -53,6 +53,8 @@ add_executable (test_seeds_align_banded_chain_impl
                 test_align_banded_chain_impl.cpp)
 add_executable (test_seeds_banded_chain_alignment_interface
                 test_banded_chain_alignment_interface.cpp)
+add_executable (test_seeds_align_banded_chain_issue_2540
+                test_align_banded_chain_issue_2540.cpp)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_seeds_combination ${SEQAN_LIBRARIES})
@@ -65,6 +67,7 @@ target_link_libraries (test_seeds_seed_set_base ${SEQAN_LIBRARIES})
 target_link_libraries (test_seeds_seed_set_unordered ${SEQAN_LIBRARIES})
 target_link_libraries (test_seeds_align_banded_chain_impl ${SEQAN_LIBRARIES})
 target_link_libraries (test_seeds_banded_chain_alignment_interface ${SEQAN_LIBRARIES})
+target_link_libraries (test_seeds_align_banded_chain_issue_2540 ${SEQAN_LIBRARIES})
 
 # ----------------------------------------------------------------------------
 # Register with CTest
@@ -80,3 +83,4 @@ add_test (NAME test_test_seeds_seed_set_base COMMAND $<TARGET_FILE:test_seeds_se
 add_test (NAME test_test_seeds_seed_set_unordered COMMAND $<TARGET_FILE:test_seeds_seed_set_unordered>)
 add_test (NAME test_test_seeds_align_banded_chain_impl COMMAND $<TARGET_FILE:test_seeds_align_banded_chain_impl>)
 add_test (NAME test_test_seeds_banded_chain_alignment_interface COMMAND $<TARGET_FILE:test_seeds_banded_chain_alignment_interface>)
+add_test (NAME test_seeds_align_banded_chain_issue_2540 COMMAND $<TARGET_FILE:test_seeds_align_banded_chain_issue_2540>)
