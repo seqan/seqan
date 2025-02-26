@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_searchjoin CXX)
 message (STATUS "Configuring apps/searchjoin")
 
-set (SEQAN_APP_VERSION "0.5.9")
+set (SEQAN_APP_VERSION "0.5.10")
 
 # ----------------------------------------------------------------------------
 # Dependencies

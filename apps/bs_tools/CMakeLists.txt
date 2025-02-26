@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_bs_tools CXX)
 message (STATUS "Configuring apps/bs_tools")
 
-set (SEQAN_APP_VERSION "0.1.11")
+set (SEQAN_APP_VERSION "0.1.12")
 
 if ((${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD") AND ("$ENV{MODEL}" STREQUAL "Nightly"))
     message (STATUS "bs_tools skipped on FreeBSD because math.h rounding errors.")
