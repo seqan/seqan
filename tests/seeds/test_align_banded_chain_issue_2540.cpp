@@ -29,63 +29,48 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
-// ==========================================================================
-// Module for two-dimensional seeding and chaining.
+// Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SEEDS_H
-#define SEQAN_HEADER_SEEDS_H
+#include <seqan/basic.h>
+#include <seqan/stream.h>  // for printing seqan2::String<>
 
-// ===========================================================================
-// Preliminaries
-// ===========================================================================
+#include <seqan/seeds.h>
 
-#include <algorithm>
-#include <cmath>
-#include <exception>
-#include <list>
-#include <new>
+#include <string>
 
-#include <seqan/sequence.h>
-#include <seqan/index.h>
-#include <seqan/score.h>
-#include <seqan/align.h>
-#include <seqan/map.h>
-#include <seqan/modifier.h>
+using TSeed = seqan2::Seed<seqan2::Simple>;
 
-// ===========================================================================
-// Seeds Module
-// ===========================================================================
+SEQAN_DEFINE_TEST(test_issue_2540_no_glue_point_with_default_band_extension)
+{
+    using namespace std::literals;
+                                     // 0               1               2         3
+                                     // 012345      6789012      345678901234567890123
+    std::string const query =          "GTGCCG"s + "TTCTTTT"s + "TTTTTTTTTTTTTTTTTTTTT"s;
+    std::string const ref =   "CCTTTTTACGTGCTT"s + "TTCTTTT"s + "CTTGCATGTAAATCTCTTTATTTTATTTTATTTTA"s;
+                            // 0         1               2               3         4         5
+                            // 012345678901234      5678901      23456789012345678901234567890123456
 
-// Basic definitions
-// #include <seqan/seeds2/seeds_base.h>
+    seqan2::Align<seqan2::DnaString, seqan2::ArrayGaps> alignment;
+    resize(rows(alignment), 2);
+    assignSource(row(alignment, 0), query);
+    assignSource(row(alignment, 1), ref);
 
-// Class Seed and specializations
-#include <seqan/seeds/seeds_seed_base.h>
-#include <seqan/seeds/seeds_seed_simple.h>
-#include <seqan/seeds/seeds_seed_diagonal.h>
-#include <seqan/seeds/seeds_seed_chained.h>
+    seqan2::String<TSeed> chain{};
+    appendValue(chain, TSeed{6, 15, 13, 22});
 
-// Seed extension algorithms.
-#include <seqan/seeds/seeds_extension.h>
+    seqan2::AlignConfig<false, true, false, false> alignConfig;
 
-// Algorithms for chaining and merging seeds.
-#include <seqan/seeds/seeds_combination.h>
+    seqan2::Score<int, seqan2::Simple> scoringScheme(2, -1, -2);
+    try {
+        seqan2::bandedChainAlignment(alignment, chain, scoringScheme, scoringScheme, alignConfig, 15);
+    } catch (std::logic_error const & e){
+        SEQAN_ASSERT(!std::string{e.what()}.empty());
+    }
+}
 
-// Class SeedSet, specializations, iterators.
-#include <seqan/seeds/basic_iter_indirect.h>
-#include <seqan/seeds/seeds_seed_set_base.h>
-#include <seqan/seeds/seeds_seed_set_unordered.h>
-
-// Banded chain alignment.
-#include <seqan/seeds/banded_chain_alignment_profile.h>
-#include <seqan/seeds/banded_chain_alignment_scout.h>
-#include <seqan/seeds/banded_chain_alignment_traceback.h>
-#include <seqan/seeds/banded_chain_alignment_impl.h>
-#include <seqan/seeds/banded_chain_alignment.h>
-
-// Global chaining algorithms
-#include <seqan/seeds/seeds_global_chaining.h>
-
-#endif  // #ifndef SEQAN_HEADER_SEEDS_H
+SEQAN_BEGIN_TESTSUITE(test_banded_align_chain_issue_2540)
+{
+    SEQAN_CALL_TEST(test_issue_2540_no_glue_point_with_default_band_extension);
+}
+SEQAN_END_TESTSUITE

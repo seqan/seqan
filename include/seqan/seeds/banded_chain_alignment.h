@@ -96,6 +96,8 @@ namespace seqan2 {
  *                smallest value of the score type @endlink is used to return the minimal value of the selected score
  *                type and no alignment is computed.
  *
+ * @throws std::logic_error if during the alignment no valid alignment path can be found connecting two anchors.
+ *
  * There exist multiple overloads for this function with four configuration dimensions.
  *
  * First, you can select whether begin and end gaps are free in either sequence using <tt>alignConfig</tt>.
