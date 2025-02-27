@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_tree_recon CXX)
 message (STATUS "Configuring apps/tree_recon")
 
-set (SEQAN_APP_VERSION "1.4.10")
+set (SEQAN_APP_VERSION "1.4.11")
 
 # ----------------------------------------------------------------------------
 # Dependencies
