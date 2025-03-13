@@ -103,6 +103,14 @@ struct StreamBuffer : public std::basic_streambuf<TValue, TTraits_>
 template <typename TValue, typename TTraits_ = std::char_traits<TValue>>
 class StreamBufferWrapper
 {
+protected:
+    // Having the throw in a separate function results in overflow()'s assembly using a jump instruction,
+    // instead of inline construction and throw of the exception.
+    [[noreturn]] void overflow_failure()
+    {
+        throw IOError{"StreamBuffer: Calling overflow() failed."};
+    }
+
 public:
 
     typedef std::basic_streambuf<TValue, TTraits_> TBasicStreamBuffer;
@@ -148,7 +156,7 @@ public:
     {
         if (baseBuf()->pptr() == baseBuf()->epptr())
             if (baseBuf()->overflow(EOF) == EOF)
-                throw IOError{"StreamBuffer: Calling overflow() failed."};
+                overflow_failure();
     }
 
     template <typename TOffset>
