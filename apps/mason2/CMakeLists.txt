@@ -37,15 +37,6 @@ endif (NOT ZLIB_FOUND)
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -75,8 +66,7 @@ add_library (mason_sim
              variation_size_tsv.h
              vcf_materialization.cpp
              vcf_materialization.h)
-target_link_libraries (mason_sim ${SEQAN_LIBRARIES})
-
+target_link_libraries (mason_sim seqan::seqan2)
 
 # Simulate random genomes.
 add_executable (mason_genome mason_genome.cpp)
