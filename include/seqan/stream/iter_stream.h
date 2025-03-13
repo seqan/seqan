@@ -147,7 +147,8 @@ public:
     void reserveChunk(Output)
     {
         if (baseBuf()->pptr() == baseBuf()->epptr())
-            baseBuf()->overflow(EOF);
+            if (baseBuf()->overflow(EOF) == EOF)
+                throw IOError{"StreamBuffer: Calling overflow() failed."};
     }
 
     template <typename TOffset>

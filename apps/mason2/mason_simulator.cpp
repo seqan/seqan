@@ -991,14 +991,23 @@ public:
                 }
 
                 // Write out the temporary sequence.
-                for (int tID = 0; tID < options.numThreads; ++tID)
+                try
                 {
-                    unsigned idx = rID * haplotypeCount + hID;
-                    writeRecords(*seqFileOuts[idx], threads[tID].ids, threads[tID].seqs, threads[tID].quals);
-                    if (!empty(options.outFileNameSam))
-                        for (unsigned i = 0; i < length(threads[tID].alignmentRecords); ++i)
-                            writeRecord(*bamFileOuts[idx], threads[tID].alignmentRecords[i]);
-                    std::cerr << '.' << std::flush;
+                    for (int tID = 0; tID < options.numThreads; ++tID)
+                    {
+                        unsigned idx = rID * haplotypeCount + hID;
+                        writeRecords(*seqFileOuts[idx], threads[tID].ids, threads[tID].seqs, threads[tID].quals);
+                        if (!empty(options.outFileNameSam))
+                            for (unsigned i = 0; i < length(threads[tID].alignmentRecords); ++i)
+                                writeRecord(*bamFileOuts[idx], threads[tID].alignmentRecords[i]);
+                        std::cerr << '.' << std::flush;
+                    }
+                }
+                catch (seqan2::IOError const &)
+                {
+                    std::throw_with_nested(seqan2::IOError{"Ran out of disk space for temporary files. "
+                        "Try setting the environment variable TMPDIR to a directory with more available disk space. "
+                        "For more information, see mason's help page ('Caveats')."});
                 }
 
                 if (doBreak)
