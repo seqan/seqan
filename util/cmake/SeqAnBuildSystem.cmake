@@ -189,7 +189,7 @@ macro (seqan_build_system_init)
     set (SeqAn_DIR ${SeqAn_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake")
 #     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1" PARENT_SCOPE)
     # Enable global exception handler for all "official" stuff
-    set (SEQAN_DEFINITIONS "${SEQAN_DEFINITIONS} -DSEQAN_GLOBAL_EXCEPTION_HANDLER=1")
+    list (APPEND SEQAN_DEFINITIONS -DSEQAN_GLOBAL_EXCEPTION_HANDLER=1)
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
 
