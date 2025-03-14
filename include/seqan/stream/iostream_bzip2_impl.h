@@ -118,15 +118,15 @@ namespace bzip2_stream{
                     )
     {
         int w = static_cast<int>(this->pptr() - this->pbase());
-        if (c != EOF) {
+        if (!Tr::eq_int_type(c, Tr::eof())) {
              *this->pptr() = c;
              ++w;
          }
          if ( bzip2_to_stream( this->pbase(), w)) {
              this->setp( this->pbase(), this->epptr());
-             return c;
+             return Tr::not_eof(c);
          } else
-             return EOF;
+             return Tr::eof();
     }
 
     template<
