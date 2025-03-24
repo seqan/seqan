@@ -1025,6 +1025,21 @@ inline void _createHit(
         height                  // bucket height                    * *
     };                          //                                    *
 
+    /*
+    THstkPos    hstkPos;            // parallelogram begin in haystack
+    unsigned    ndlSeqNo;           // needle sequence number
+    THstkPos    ndlPos;             // begin position of hit in needle
+    unsigned    bucketWidth;        // (non-diagonal) bucket width (hitLengthNeedle + delta + overlap (for diagonals))
+    unsigned    hitLengthNeedle;    // length of the hit in needle
+    */
+
+    std::cerr << "Creating hit\n";
+    std::cerr << "hstkPos\t" << firstInc << '\n';
+    std::cerr << "ndlSeqNo\t" << ndlSeqNo << '\n';
+    std::cerr << "ndlBegin\t" << ndlBegin << '\n';
+    std::cerr << "width\t" << width << '\n';
+    std::cerr << "height\t" << height << '\n';
+
     // append the hit to the finders hit list
     appendValue(finder.hits, hit);
 }
@@ -1556,7 +1571,10 @@ endPosition(Pattern<TIndex, Swift<TSpec> > const & pattern)
 {
     int64_t hitEnd = pattern.curEndPos;
     int64_t textLength = sequenceLength(pattern.curSeqNo, needle(pattern));
-    if(hitEnd > textLength) hitEnd = textLength;
+    if(hitEnd > textLength) {
+        std::cerr << "clamp hit end from " << hitEnd << " to " << textLength << '\n'; 
+        hitEnd = textLength;
+    }
 
     typename SAValue<TIndex >::Type pos;
     posLocalToX(pos, Pair<unsigned, int64_t>(pattern.curSeqNo, hitEnd), stringSetLimits(host(pattern)));
