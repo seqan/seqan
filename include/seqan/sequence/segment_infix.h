@@ -104,6 +104,7 @@ public:
         data_begin_position(_begin_index),
         data_end_position(_end_index)
     {
+        //static_assert(std::same_as<typename Parameter_<THost>::Type, void>);
         _checkMemberVariables();
     }
 /*

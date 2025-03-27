@@ -1034,6 +1034,10 @@ inline void _createHit(
     */
 
     std::cerr << "Creating hit\n";
+    //!TODO: how are increments set?
+    std::cerr << "pattern.finderPosOffset\t" << pattern.finderPosOffset << '\n';
+    std::cerr << "bkt.firstIncrement\t" << bkt.firstIncrement << '\n';
+    std::cerr << "bkt.lastIncrement\t" << bkt.lastIncrement << '\n';
     std::cerr << "hstkPos\t" << firstInc << '\n';
     std::cerr << "ndlSeqNo\t" << ndlSeqNo << '\n';
     std::cerr << "ndlBegin\t" << ndlBegin << '\n';
@@ -1098,7 +1102,7 @@ inline bool _swiftMultiProcessQGram(
     for(; occ != occEnd; ++occ)
     {
         posLocalize(ndlPos, *occ, stringSetLimits(index)); // get pair of SeqNo and Pos in needle
-        TBucketParams &bucketParams = _swiftBucketParams(pattern, getSeqNo(ndlPos));
+        TBucketParams const &bucketParams = _swiftBucketParams(pattern, getSeqNo(ndlPos));
 
         // begin position of the diagonal of q-gram occurrence in haystack (possibly negative)
         int64_t diag = finder.curPos;
@@ -1108,6 +1112,14 @@ inline bool _swiftMultiProcessQGram(
         unsigned bktOfs = diag & (bucketParams.delta - 1); // offset of diagonal to bucket begin
         int64_t  bktBeginHstk = diag & ~(int64_t)(bucketParams.delta - 1); // haystack position of bucket begin diagonal
 
+        /*
+        std::cerr << "bucketParams.logDelta\t" << bucketParams.logDelta << '\n';
+        std::cerr << "bucketParams.reuseMask\t" << bucketParams.reuseMask << '\n';
+        std::cerr << "bucketParams.delta\t" << bucketParams.delta << '\n';
+        std::cerr << "bktNo\t" << bktNo << '\n';
+        std::cerr << "bktOfs\t" << bktOfs << '\n';
+        std::cerr << "bktBeginHstk\t" << bktBeginHstk << '\n';
+        */
         // global (over all pattern sequences) number of current bucket
         TBucketIter bkt = bktBegin + (_swiftBucketNo(pattern, bucketParams, getSeqNo(ndlPos)) + bktNo);
 
@@ -1788,10 +1800,14 @@ infix(Pattern<TIndex, Swift<TSpec> > const & pattern, TText &text)
     int64_t hitBegin = pattern.curBeginPos;
     int64_t hitEnd = pattern.curEndPos;
     int64_t textLength = sequenceLength(pattern.curSeqNo, needle(pattern));
-
+    std::cerr << "hitBegin\t" << hitBegin << '\n';
+    std::cerr << "hitEnd\t" << hitEnd << '\n';
+    
     if (hitEnd > textLength) hitEnd = textLength;
     if (hitBegin < 0) hitBegin = 0;
-
+    std::cerr << "hitBegin\t" << hitBegin << '\n';
+    std::cerr << "hitEnd\t" << hitEnd << '\n';
+    
     return infix(text, hitBegin, hitEnd);
 }
 
@@ -1908,6 +1924,10 @@ _copySwiftHit(
     pattern.curSeqNo = (*finder.curHit).ndlSeqNo;
     pattern.curBeginPos = (*finder.curHit).ndlPos;
     pattern.curEndPos = (*finder.curHit).ndlPos + (*finder.curHit).hitLengthNeedle;
+
+    std::cerr << "pattern.curSeqNo\t" << pattern.curSeqNo << '\n';
+    std::cerr << "pattern.curBeginPos\t" << pattern.curBeginPos << '\n';
+    std::cerr << "pattern.curEndPos\t" << pattern.curEndPos << '\n';
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
