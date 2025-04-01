@@ -569,7 +569,8 @@ inline Iter<TContainer, StdIteratorAdaptor> &
 operator-=(Iter<TContainer, StdIteratorAdaptor> & left,
            TIntegral right)
 {
-    std::advance(hostIterator(left), -right);
+    using TSignedIntegral = typename MakeSigned<TIntegral>::Type;
+    std::advance(hostIterator(left), -static_cast<TSignedIntegral>(right));
     return left;
 }
 

@@ -68,7 +68,7 @@ class Pattern<TNeedle, ShiftOr>
 {
 //____________________________________________________________________________
 public:
-    typedef unsigned int TWord;
+    typedef uint_fast64_t TWord;
     enum { MACHINE_WORD_SIZE = sizeof(TWord) * 8 };
 
     Holder<TNeedle> data_host;
@@ -103,7 +103,7 @@ template <typename TNeedle>
 inline void
 _reinitPattern(Pattern<TNeedle, ShiftOr> & me)
 {
-    typedef unsigned int TWord;
+    typedef typename Pattern<TNeedle, ShiftOr>::TWord TWord;
     typedef typename Value<TNeedle>::Type TValue;
 
     TNeedle& ndl = needle(me);
@@ -114,13 +114,13 @@ _reinitPattern(Pattern<TNeedle, ShiftOr> & me)
         me.blockCount = (me.needleLength - 1) / BitsPerValue<TWord>::VALUE + 1;
 
     clear(me.bitMasks);
-    resize(me.bitMasks, me.blockCount * ValueSize<TValue>::VALUE, (TWord)~0, Exact());
+    resize(me.bitMasks, me.blockCount * ValueSize<TValue>::VALUE, ~static_cast<TWord>(0), Exact());
 
     for (TWord j = 0; j < me.needleLength; ++j)
         me.bitMasks[
             me.blockCount * ordValue(convert<TValue>(getValue(ndl, j)))
             + j / me.MACHINE_WORD_SIZE
-        ] ^= (TWord)1 << (j % me.MACHINE_WORD_SIZE);
+        ] ^= static_cast<TWord>(1) << (j % me.MACHINE_WORD_SIZE);
 
 //    setValue(me.data_host, needle);
 
@@ -149,10 +149,10 @@ template <typename TNeedle>
 inline void
 _patternInit (Pattern<TNeedle, ShiftOr> & me)
 {
-    typedef unsigned int TWord;
+    typedef typename Pattern<TNeedle, ShiftOr>::TWord TWord;
 
     clear(me.prefSufMatch);
-    resize(me.prefSufMatch, me.blockCount, (TWord) ~0, Exact());
+    resize(me.prefSufMatch, me.blockCount, ~static_cast<TWord>(0), Exact());
 }
 
 //____________________________________________________________________________
@@ -188,9 +188,9 @@ _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
     THaystackIterator hayit = iter(hstk, position(finder));
     THaystackIterator hayit_end = end(hstk, Standard());
 
-    typedef unsigned int TWord;
-    TWord mask = (TWord)1 << (me.needleLength - 1);
-    TWord pref_suf_match = me.prefSufMatch[0];
+    typedef typename Pattern<TNeedle, ShiftOr>::TWord TWord;
+    TWord mask = static_cast<TWord>(1) << (me.needleLength - 1);
+    TWord & pref_suf_match = me.prefSufMatch[0];
 
     for (; hayit < hayit_end; ++hayit)
     {
@@ -204,8 +204,6 @@ _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
         //set finder to start position
         _setFinderEnd(finder, (hayit - begin(hstk, Standard())) + 1);
         setPosition(finder,  beginPosition(finder));
-        //save machine state
-        me.prefSufMatch[0] = pref_suf_match;
         return true;
     }
     return false;
@@ -216,23 +214,23 @@ inline bool
 _findShiftOrLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
     typedef typename Value<TNeedle>::Type TValue;
-    typedef unsigned int TWord;
+    typedef typename Pattern<TNeedle, ShiftOr>::TWord TWord;
 
-    TWord compare = ~((TWord)1 << ((me.needleLength - 1) % BitsPerValue<TWord>::VALUE));
+    TWord compare = ~(static_cast<TWord>(1) << ((me.needleLength - 1) % BitsPerValue<TWord>::VALUE));
     while (!atEnd(finder))
     {
         TWord pos = ordValue(convert<TValue>(*finder));
         TWord carry = 0;
         for(TWord block = 0; block < me.blockCount; ++block)
         {
-            bool newCarry = (me.prefSufMatch[block] & ((TWord)1 << (BitsPerValue<TWord>::VALUE - 1))) != 0;
+            bool newCarry = (me.prefSufMatch[block] & (static_cast<TWord>(1) << (BitsPerValue<TWord>::VALUE - 1))) != 0;
             me.prefSufMatch[block] <<= 1;
             me.prefSufMatch[block] |= carry;
             carry = newCarry;
         }
         for(TWord block = 0; block < me.blockCount; ++block)
             me.prefSufMatch[block] |= me.bitMasks[me.blockCount * pos + block];
-        if ((me.prefSufMatch[me.blockCount - 1] | compare) != (TWord) ~0)
+        if ((me.prefSufMatch[me.blockCount - 1] | compare) != ~static_cast<TWord>(0))
         {
             _setFinderEnd(finder);
             finder -= me.needleLength - 1;
