@@ -24,13 +24,13 @@ defaults:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-latest
     name: ${{ matrix.compiler }}
     if: github.repository_owner == 'seqan' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
-        compiler: ["clang-19", "clang-18", "clang-17", "gcc-14", "gcc-13", "gcc-12"]
+        compiler: ["clang-latest", "clang-second-latest", "clang-third-latest", "gcc-latest", "gcc-second-latest", "gcc-third-latest"]
         include:
           - cxx_flags: "-std=c++23"
     steps:

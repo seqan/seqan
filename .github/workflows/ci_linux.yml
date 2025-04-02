@@ -31,15 +31,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: ["clang-19", "clang-18", "clang-17", "gcc-14", "gcc-13", "gcc-12", "intel"]
+        compiler: ["clang-latest", "clang-second-latest", "clang-third-latest", "gcc-latest", "gcc-second-latest", "gcc-third-latest", "intel"]
         include:
           - cxx_flags: "-std=c++23"
           - compiler: "intel"
             cxx_flags: "-std=c++23 -fp-model=strict"
     container:
       image: ghcr.io/seqan/${{ matrix.compiler }}
-      volumes:
-        - /home/runner:/home/runner
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,14 +51,10 @@ jobs:
           pip install --quiet setuptools wheel
           pip install --quiet --requirement manual/requirements.txt
 
-      - name: Load ccache
-        uses: actions/cache@v4
+      - name: Setup cache
+        uses: seqan/actions/setup-actions-cache@main
         with:
-          path: /home/runner/.ccache
-          key: ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}-${{ github.ref }}-${{ github.run_id }}
-          restore-keys: |
-            ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}-${{ github.ref }}
-            ccache-${{ runner.os }}-${{ github.workflow }}-${{ matrix.compiler }}
+          ccache_size: 125M
 
       - name: Configure tests
         run: |
