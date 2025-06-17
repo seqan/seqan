@@ -259,8 +259,18 @@ SEQAN_DEFINE_TEST(test_sequence_adaptions_sequence_memory_std_vector)
 
         // replace with insertion
         typename Size< std::vector<int> >::Type limit = 5;
-
+// GCC 15 in Release mode complains about out-of-bounds access for pos == length(me) in replace's erase call.
+// erase uses `_iterStl` to basically get the end iterator.
+// A more elegant solution would be to use
+// `std::ranges::next(me.begin(), pos, me.end())` for common_ranges in `_iterStl`.
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ >= 15)
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
         replace(vec_target,pos_begin,pos_end,vec_source,limit);
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && (__GNUC__ >= 15)
+#    pragma GCC diagnostic pop
+#endif
 
         SEQAN_ASSERT_EQ(vec_target[3],100);
         SEQAN_ASSERT_EQ(vec_target[4],10);

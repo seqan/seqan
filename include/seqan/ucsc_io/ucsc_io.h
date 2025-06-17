@@ -298,7 +298,7 @@ void readRecord(UcscRecord & record,
         clear(buffer);
         readUntil(buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> >());
 
-        int32_t tempBegin;
+        int32_t tempBegin{};
         lexicalCastWithException(tempBegin, buffer);
         appendValue(record.exonBegin, tempBegin);
         skipOne(iter);
@@ -311,7 +311,7 @@ void readRecord(UcscRecord & record,
         clear(buffer);
         readUntil(buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> >());
 
-        int32_t tempEnd;
+        int32_t tempEnd{};
         lexicalCastWithException(tempEnd, buffer);
         appendValue(record.exonEnds, tempEnd);
         skipOne(iter);
