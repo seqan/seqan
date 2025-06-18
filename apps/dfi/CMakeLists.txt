@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_dfi CXX)
 message (STATUS "Configuring apps/dfi")
 
-set (SEQAN_APP_VERSION "2.1.13")
+set (SEQAN_APP_VERSION "2.1.14")
 
 # ----------------------------------------------------------------------------
 # Dependencies

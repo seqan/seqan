@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_seqan_tcoffee CXX)
 message (STATUS "Configuring apps/seqan_tcoffee")
 
-set (SEQAN_APP_VERSION "1.13.11")
+set (SEQAN_APP_VERSION "1.13.12")
 
 # ----------------------------------------------------------------------------
 # Dependencies
