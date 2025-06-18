@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                 gustaf_mate_joining
 // ==========================================================================
-// Copyright (c) 2006-2024, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2025, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

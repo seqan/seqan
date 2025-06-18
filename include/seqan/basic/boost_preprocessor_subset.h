@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2024, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2025, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -4821,12 +4821,12 @@
 // ==> boost/config/suffix.hpp <==
 // --------------------------------------------------------------------------
 
-//  Copyright (c) 2001-2024 John Maddock
+//  Copyright (c) 2001,2002,2003 John Maddock
 //  Copyright (c) 2001 Darin Adler
 //  Copyright (c) 2001 Peter Dimov
 //  Copyright (c) 2002 Bill Kempf
 //  Copyright (c) 2002 Jens Maurer
-//  Copyright (c) 2002-2024 David Abrahams
+//  Copyright (c) 2002,2003 David Abrahams
 //  Copyright (c) 2003 Gennaro Prota
 //  Copyright (c) 2003 Eric Friedman
 //  Copyright (c) 2010 Eric Jourdanneau, Joel Falcou

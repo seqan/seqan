@@ -32,7 +32,7 @@
 #   CMAKE_REQUIRED_QUIET = execute quietly without messages
 
 #=============================================================================
-# Copyright 2003-2011 Kitware, Inc.
+# Copyright 2003 - 2011 Kitware, Inc.
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file Copyright.txt for details.

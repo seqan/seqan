@@ -2,7 +2,7 @@
 //                    STELLAR - SwifT Exact LocaL AligneR
 //                   https://www.seqan.de/apps/stellar
 // ==========================================================================
-// Copyright (C) 2010-2012 by Birte Kehr
+// Copyright (C) 2010-2025 by Birte Kehr
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -498,7 +498,7 @@ void _setParser(ArgumentParser & parser)
                    "in FASTA format. Each sequence from file 1 will be compared to each "
                    "sequence in file 2. The sequences from file 1 are used as database, the "
                    "sequences from file 2 as queries.");
-    addDescription(parser, "(c) 2010-2012 by Birte Kehr");
+    addDescription(parser, "(c) 2010-2025 by Birte Kehr");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 1"));
     setValidValues(parser, 0, "fa fasta");  // allow only fasta files as input

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                  Gustaf
 // ==========================================================================
-// Copyright (c) 2011-2024, Kathrin Trappe, FU Berlin
+// Copyright (c) 2011-2025, Kathrin Trappe, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -163,7 +163,7 @@ void _setupArgumentParser(ArgumentParser & parser)
     addDescription(parser, "The genome file is used as database input, the read file as query input.");
     addDescription(parser,
                    "All STELLAR options are supported. See STELLAR documentation for STELLAR parameters and options.");
-    addDescription(parser, "(c) 2011-2012 by Kathrin Trappe");
+    addDescription(parser, "(c) 2011-2025 by Kathrin Trappe");
 
     addSection(parser, "GUSTAF Options");
 
