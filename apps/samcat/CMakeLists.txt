@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 3.12)
 project (seqan_apps_samcat CXX)
 message (STATUS "Configuring apps/samcat")
 
-set (SEQAN_APP_VERSION "0.3.11")
+set (SEQAN_APP_VERSION "0.3.12")
 
 # ----------------------------------------------------------------------------
 # Dependencies
