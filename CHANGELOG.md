@@ -2,6 +2,36 @@
 
 This file summarizes the changes to the SeqAn library and apps.
 
+## Release 2.5.1
+
+### Platform Support
+
+* Support for new compilers: GCC 15 and Clang 20.
+* Compiler support (tested):
+  * GCC 13, 14, 15
+  * Clang 18, 19, 20
+  * Intel oneAPI C++ Compiler 2025.0 (IntelLLVM)
+  * Microsoft Visual Studio 17
+  * Other compilers might work but are not tested.
+
+### Selected Bug Fixes
+
+* Build System:
+  * Fixed an issue in our CMake files that resulted in `SEQAN_DEFINITIONS` being incorrectly set.
+    With this fix, using `target_link_libraries (my_target seqan::seqan2)` instead of setting various variables
+    individually now works as expected.
+    ```diff
+    - include_directories (${SEQAN_INCLUDE_DIRS})
+    - add_definitions (${SEQAN_DEFINITIONS})
+    - set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+    - target_link_libraries (my_project ${SEQAN_LIBRARIES})
+    + target_link_libraries (my_project seqan::seqan2)
+    ```
+* Mason:
+  * An exception will be thrown when Mason runs out of temporary disk space instead of crashing.
+    The exception message contains instructions to resolve the issue by setting the `TMPDIR` environment variable,
+    which are also available in the *Caveats* section of the help page.
+
 ## Release 2.5.0
 
 This release adds support for newer compilers and C++ standards (17, 20, 23).
@@ -83,7 +113,7 @@ for file in $(git grep -l 'seqan::'); do sed -i 's/seqan::/seqan2::/g' ${file}; 
   * Clang 17, 18, 19
   * Intel oneAPI C++ Compiler 2025.0 (IntelLLVM)
   * Microsoft Visual Studio 17
-  * Other compilers might work, but are not tested.
+  * Other compilers might work but are not tested.
 
 ## Release 2.4.0
 
