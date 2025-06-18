@@ -15,7 +15,7 @@
 #   BZIP2_VERSION_STRING - the version of BZip2 found (since CMake 2.8.8)
 
 #=============================================================================
-# Copyright 2006-2012 Kitware, Inc.
+# Copyright 2006 - 2012 Kitware, Inc.
 # Copyright 2006 Alexander Neundorf <neundorf@kde.org>
 # Copyright 2012 Rolf Eike Beer <eike@sf-mail.de>
 #

@@ -2,7 +2,7 @@
 //                    STELLAR - SwifT Exact LocaL AligneR
 //                   https://www.seqan.de/apps/stellar
 // ==========================================================================
-// Copyright (C) 2010-2012 by Birte Kehr
+// Copyright (C) 2010-2025 by Birte Kehr
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public

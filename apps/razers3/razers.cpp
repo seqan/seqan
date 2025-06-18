@@ -327,7 +327,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
                            "or two files containing left or right mates of paired-end reads. Use - to read single-end "
                            "reads from stdin.");
 
-    addDescription(parser, "(c) Copyright 2009-2014 by David Weese.");
+    addDescription(parser, "(c) Copyright 2009-2025 by David Weese.");
 
     addSection(parser, "Main Options");
     addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));

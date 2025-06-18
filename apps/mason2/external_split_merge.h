@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2024, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2025, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -331,7 +331,7 @@ int FastxJoiner<TTag>::get(seqan2::CharString & id, seqan2::CharString & seq, se
 
 /* The MIT License
 
-   Copyright (c) 2008-2024 Genome Research Ltd (GRL).
+   Copyright (c) 2008-2025 Genome Research Ltd (GRL).
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
