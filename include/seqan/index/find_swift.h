@@ -667,7 +667,7 @@ setMinThreshold(Pattern<TIndex, Swift<TSpec> > & pattern, TSeqNo seqNo, TThresho
     typedef typename TPattern::TBucketString                    TBucketString;
     typedef typename Iterator<TBucketString, Standard>::Type    TBucketIterator;
 
-    TBucketParams &bucketParams = _swiftBucketParams(pattern, seqNo);
+    TBucketParams const &bucketParams = _swiftBucketParams(pattern, seqNo);
     TBucketIterator it = begin(pattern.buckets, Standard()) + _swiftBucketNo(pattern, bucketParams, seqNo);
     TBucketIterator itEnd = it + (bucketParams.reuseMask + 1);
 
@@ -981,7 +981,6 @@ inline void _patternInit(Pattern<TIndex, Swift<TSpec> > &pattern, TFloat errorRa
 */
 }
 
-
 /////////////////////////////////////////////////////////////
 // Creates a new hit and appends it to the finders hit list
 template <
@@ -1012,10 +1011,11 @@ inline void _createHit(
     }
 
     // determine width, height, and begin position in needle
-    TSize width = lastInc - firstInc + length(pattern.shape);
-    TSize height = width + bucketParams.delta + bucketParams.overlap;
+    TSize width = lastInc - firstInc + length(pattern.shape);   // length of hit in haystack
+    TSize height = width + bucketParams.delta + bucketParams.overlap;   // length of hit in needle
     int64_t ndlBegin = lastInc + length(pattern.shape) - diag - height;
 
+    SEQAN_ASSERT_GEQ(height, width); // the band width of alignment in verifySwiftHit is height - width
     // create the hit
     THit hit = {                //                              *
         firstInc,               // bucket begin in haystack     * *
@@ -1091,7 +1091,9 @@ inline bool _swiftMultiProcessQGram(
 
         unsigned bktNo = (diag >> bucketParams.logDelta) & bucketParams.reuseMask; // bucket no of diagonal
         unsigned bktOfs = diag & (bucketParams.delta - 1); // offset of diagonal to bucket begin
-        int64_t  bktBeginHstk = diag & ~(int64_t)(bucketParams.delta - 1); // haystack position of bucket begin diagonal
+
+        // set lower bits to 0 to get previous multiple of bucketParams.delta - 1 for the haystack position of bucket begin diagonal
+        int64_t  bktBeginHstk = diag & ~(int64_t)(bucketParams.delta - 1);
 
         // global (over all pattern sequences) number of current bucket
         TBucketIter bkt = bktBegin + (_swiftBucketNo(pattern, bucketParams, getSeqNo(ndlPos)) + bktNo);
