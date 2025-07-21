@@ -72,8 +72,13 @@ namespace seqan2 {
  */
 
 #pragma pack(push,1)
+#if defined(_MSC_VER) && _MSC_VER >= 1944
+template <typename T1, typename T2, template <unsigned, unsigned> typename TSpec, int BITSIZE1, int BITSIZE2>
+struct Pair<T1, T2, TSpec<BITSIZE1, BITSIZE2>>
+#else
 template <typename T1, typename T2, unsigned BITSIZE1, unsigned BITSIZE2>
 struct Pair<T1, T2, BitPacked<BITSIZE1, BITSIZE2> >
+#endif
 {
     // ------------------------------------------------------------------------
     // Members
