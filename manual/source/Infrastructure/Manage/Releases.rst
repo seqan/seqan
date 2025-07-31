@@ -68,7 +68,7 @@ systems, like *apt* (Debian/Ubuntu) or *rpm* (Fedora/RedHat/CentOS/SUSE).
 Library Package
 ^^^^^^^^^^^^^^^
 
-We recommend that downstream package maintainers provide one package named **seqan** that contains only the header-library and the api-docs and that is built from our *library packages* available here: https://packages.seqan.de
+We recommend that downstream package maintainers provide one package named **seqan** that contains only the header-library and the api-docs and that is built from our *library packages* available here: https://github.com/seqan/seqan/releases
 
 They have the advantage of not requiring any build steps, simply copy the ``include`` and ``share`` directories to the desired locations.
 
