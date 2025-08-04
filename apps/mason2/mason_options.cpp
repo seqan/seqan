@@ -1123,7 +1123,7 @@ void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
 
     addOption(parser, seqan2::ArgParseOption("", "chunk-size", "Number of fragments to simulate in one batch.",
                                             seqan2::ArgParseOption::INTEGER, "NUM"));
-    setMinValue(parser, "chunk-size", "65536");
+    setMinValue(parser, "chunk-size", "1");
     setDefaultValue(parser, "chunk-size", "65536");
 
     addOption(parser, seqan2::ArgParseOption("n", "num-fragments", "Number of reads/pairs to simulate.",
