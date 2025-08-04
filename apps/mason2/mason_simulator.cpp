@@ -834,8 +834,8 @@ public:
 
     // Helper for distributing reads/pairs to contigs/haplotypes.
     ContigPicker contigPicker;
-    // Helper for storing the read ids for each contig/haplotype pair.
-    IdSplitter fragmentIdSplitter;
+    // How many fragments per contig/haplotype.
+    std::vector<int> fragmentsPerContig;
 
     // The BamHeader to use.
     seqan2::BamHeader bamHeader;
@@ -859,16 +859,7 @@ public:
             contigPicker(rng)
     {}
 
-    ~MasonSimulatorApp()
-    {
-        clearOutFiles();
-    }
-
-    void clearOutFiles()
-    {
-        for (unsigned i = 0; i < fragmentIdSplitter.files.size(); ++i)
-            fragmentIdSplitter.files[i]->flush();
-    }
+    ~MasonSimulatorApp() = default;
 
     int run()
     {
@@ -940,19 +931,21 @@ public:
                 bool doBreak = false;
                 for (int tID = 0; tID < options.numThreads; ++tID)
                 {
-                    // Read in the ids of the fragments to simulate.
-                    threads[tID].fragmentIds.resize(options.chunkSize);  // make space
-                    threads[tID].methLevels = &levels;
+                    auto & thread =  threads[tID];
 
-                    // Load the fragment ids to simulate for.
-                    fragmentIdSplitter.files[rID * haplotypeCount + hID]->read(
-                        reinterpret_cast<char *>(&threads[tID].fragmentIds[0]),
-                        sizeof(int) * options.chunkSize);
-                    int numRead = fragmentIdSplitter.files[rID * haplotypeCount + hID]->gcount() / 4;
+                    thread.methLevels = &levels;
+
+                    int const contigID = rID * haplotypeCount + hID;
+                    int const readsLeft = std::max(0, fragmentsPerContig[contigID] - contigFragmentCount);
+                    int const numRead = std::min(options.chunkSize, readsLeft);
+                    doBreak = numRead == 0;
+                    SEQAN_ASSERT(!(doBreak ^ (numRead == 0))); // doBreak cannot be set to false after being set to true
+                    // First read ID = Prefixsum of already simulated reads + current count
+                    int const firstReadID = std::reduce(fragmentsPerContig.begin(), fragmentsPerContig.begin() + contigID) + contigFragmentCount;
                     contigFragmentCount += numRead;
-                    if (numRead == 0)
-                        doBreak = true;
-                    threads[tID].fragmentIds.resize(numRead);
+
+                    thread.fragmentIds.resize(numRead);
+                    std::iota(thread.fragmentIds.begin(), thread.fragmentIds.end(), firstReadID);
                 }
 
                 // Build gap intervals.
@@ -1017,20 +1010,11 @@ public:
         int haplotypeCount = vcfMat.numHaplotypes;
         std::cerr << "Distributing fragments to " << seqCount << " contigs (" << haplotypeCount
                   << " haplotypes each) ...";
-        std::vector<int> fragmentsPerContig(seqCount * haplotypeCount);
+        fragmentsPerContig.resize(seqCount * haplotypeCount);
         for (int i = 0; i < options.numFragments; ++i)
         {
-            auto tmp = contigPicker.toId(contigPicker.pick());
-            ++fragmentsPerContig[tmp];
+            ++fragmentsPerContig[contigPicker.toId(contigPicker.pick())];
         }
-        int readID{};
-        for (size_t i = 0; i < fragmentsPerContig.size(); ++i)
-        {
-            for (int j = 0; j < fragmentsPerContig[i]; ++j, ++readID)
-                fragmentIdSplitter.files[i]->write(reinterpret_cast<char *>(&readID), sizeof(int));
-        }
-
-        fragmentIdSplitter.reset();
         std::cerr << " OK\n";
 
         // (2) Simulate the reads in the order of contigs/haplotypes.
@@ -1085,9 +1069,6 @@ public:
             if (i > 0u)
                 contigPicker.lengthSums[i] += contigPicker.lengthSums[i - 1];
         }
-        // Fragment id splitter.
-        fragmentIdSplitter.numContigs = numSeqs(vcfMat.faiIndex) * vcfMat.numHaplotypes;
-        fragmentIdSplitter.open();
         // Splitter for alignments, only required when writing out SAM/BAM.
         if (!empty(options.outFileNameSam))
             _initAlignmentOutput();
