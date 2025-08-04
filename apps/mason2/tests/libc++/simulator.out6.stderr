@@ -4,10 +4,10 @@ MASON SIMULATOR
 ____INITIALIZING______________________________________________________________
 
 Opening reference and variants file ... OK
-Initializing fragment-to-contig distribution ... OK
-Initializing simulation threads ... OK
 Opening output file simulator.left6.fq ... OK
 Opening output file simulator.right6.fq ... OK
+Initializing fragment-to-contig distribution ... OK
+Initializing simulation threads ... OK
 
 ____READ SIMULATION___________________________________________________________
 
@@ -19,5 +19,3 @@ Simulating Reads:
   2 (allele 1) .. (48 fragments) OK
   2 (allele 2) .. (50 fragments) OK
   Done simulating reads.
-
-Joining temporary files ... OK

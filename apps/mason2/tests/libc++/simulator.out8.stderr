@@ -14,7 +14,7 @@ FORCE SINGLE END	NO
 NUM FRAGMENTS	1000
 
 NUM THREADS	1
-CHUNK SIZE	65536
+CHUNK SIZE	900
 
 METHYLATION FASTA IN	
 OUTPUT FILE LEFT	simulator.left8.fq
@@ -119,18 +119,16 @@ ROCHE 454 SEQUENCING
 ____INITIALIZING______________________________________________________________
 
 Opening reference and variants file ... OK
-Initializing fragment-to-contig distribution ... OK
-Initializing simulation threads ... OK
 Opening output file simulator.left8.fq ... OK
 Opening output file simulator.out8.sam... OK
+Initializing fragment-to-contig distribution ... OK
+Initializing simulation threads ... OK
 
 ____READ SIMULATION___________________________________________________________
 
 Distributing fragments to 2 contigs (1 haplotypes each) ... OK
 
 Simulating Reads:
-  1 (allele 1) .. (904 fragments) OK
+  1 (allele 1) ... (904 fragments) OK
   2 (allele 1) .. (96 fragments) OK
   Done simulating reads.
-
-Joining temporary files ... OK
