@@ -917,6 +917,7 @@ public:
         seqan2::Dna5String refSeq;  // reference sequence
         std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
         std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
+        std::vector<std::pair<int, int> > gapIntervals;
         while ((options.seqOptions.bsSeqOptions.bsSimEnabled &&
                 vcfMat.materializeNext(contigSeq, levels, varInfos, breakpoints, rID, hID)) ||
                (!options.seqOptions.bsSeqOptions.bsSimEnabled &&
@@ -926,22 +927,33 @@ public:
             contigFragmentCount = 0;
             readSequence(refSeq, vcfMat.faiIndex, rID);
 
-            while (true)  // Execute as long as there are fragments left.
+            int const contigID = rID * haplotypeCount + hID;
+            int const fragmentCountPrefixSum = std::reduce(fragmentsPerContig.begin(), fragmentsPerContig.begin() + contigID);
+            bool noFragmentsLeft = false;
+
+            while (!noFragmentsLeft)  // Execute as long as there are fragments left.
             {
-                bool doBreak = false;
                 for (int tID = 0; tID < options.numThreads; ++tID)
                 {
                     auto & thread =  threads[tID];
 
+                    if (noFragmentsLeft)
+                    {
+                        thread.fragmentIds.clear();
+                        continue;
+                    }
+
                     thread.methLevels = &levels;
 
-                    int const contigID = rID * haplotypeCount + hID;
-                    int const readsLeft = std::max(0, fragmentsPerContig[contigID] - contigFragmentCount);
+                    int const readsLeft = fragmentsPerContig[contigID] - contigFragmentCount;
+                    SEQAN_ASSERT_GEQ(readsLeft, 0);
+
                     int const numRead = std::min(options.chunkSize, readsLeft);
-                    doBreak = numRead == 0;
-                    SEQAN_ASSERT(!(doBreak ^ (numRead == 0))); // doBreak cannot be set to false after being set to true
+                    noFragmentsLeft = numRead == 0;
+                    SEQAN_ASSERT(!(noFragmentsLeft ^ (numRead == 0))); // noFragmentsLeft cannot be set to false after being set to true
+
                     // First read ID = Prefixsum of already simulated reads + current count
-                    int const firstReadID = std::reduce(fragmentsPerContig.begin(), fragmentsPerContig.begin() + contigID) + contigFragmentCount;
+                    int const firstReadID = fragmentCountPrefixSum + contigFragmentCount;
                     contigFragmentCount += numRead;
 
                     thread.fragmentIds.resize(numRead);
@@ -949,7 +961,6 @@ public:
                 }
 
                 // Build gap intervals.
-                std::vector<std::pair<int, int> > gapIntervals;
                 buildGapIntervals(gapIntervals, contigSeq);
 
                 // Perform the simulation.
