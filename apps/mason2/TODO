@@ -16,8 +16,6 @@ mason_splicer
 IMPORTANT
 ---------
 
- * compress temporary files (allow to switch off) so HDD memory usage is better
- * use heap/tournament tree for merging in FastaJoiner
  * testing, FASTQ profiles etc., methylation pattern check
  * joining of FASTA files uses lexical comparison not natural number order
  * exceptions instead of return codes
