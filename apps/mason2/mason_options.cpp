@@ -1108,7 +1108,7 @@ void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
 
     addOption(parser, seqan2::ArgParseOption("", "chunk-size", "Number of fragments to simulate in one batch. "
         "The contigs are processed sequentially. For each contig, the fragments/reads are simulated in parallel. "
-        "The threads simulates `chunks-size` many fragments each. "
+        "The threads simulate `chunks-size` many fragments each. "
         "This is done until no more fragments are left to be simulated. "
         "Adjusting this parameter affects CPU utilization: Not all threads may be used if the number of fragments "
         "to simulate per contig is low. "
@@ -1116,7 +1116,7 @@ void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
         "different results.",
                                             seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "chunk-size", "1");
-    setDefaultValue(parser, "chunk-size", "65536");
+    setDefaultValue(parser, "chunk-size", "900");
 
     addOption(parser, seqan2::ArgParseOption("n", "num-fragments", "Number of reads/pairs to simulate.",
                                             seqan2::ArgParseOption::INTEGER, "NUM"));

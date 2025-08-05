@@ -971,37 +971,51 @@ public:
                                                       refSeq, rID, hID);
                 }
 
-                // Write out the temporary sequence.
-                try
+                // Write out the sequence.
+                for (int tID = 0; tID < options.numThreads; ++tID)
                 {
-                    for (int tID = 0; tID < options.numThreads; ++tID)
-                    {
-                        auto & thread =  threads[tID];
+                    auto & thread =  threads[tID];
 
-                        if (options.seqOptions.simulateMatePairs)
+                    SEQAN_OMP_PRAGMA(parallel sections num_threads(options.numThreads))
+                    {
+                        // Note: `#pragma omp section` may only be used in `#pragma omp sections` construct
+                        //       I.e. the `if`-block must be the inner block.
+                        SEQAN_OMP_PRAGMA(section)
                         {
-                            for (size_t i = 0; i < length(thread.ids); i+=2)
+                            if (options.seqOptions.simulateMatePairs)
                             {
-                                writeRecord(outSeqsLeft, thread.ids[i], thread.seqs[i], thread.quals[i]);
-                                writeRecord(outSeqsRight, thread.ids[i+1], thread.seqs[i+1], thread.quals[i+1]);
+                                for (size_t i = 0; i < length(thread.ids); i+=2)
+                                {
+                                    writeRecord(outSeqsLeft, thread.ids[i], thread.seqs[i], thread.quals[i]);
+                                }
+                            }
+                            else
+                            {
+                                writeRecords(outSeqsLeft, thread.ids, thread.seqs, thread.quals);
                             }
                         }
-                        else
-                        {
-                            writeRecords(outSeqsLeft, thread.ids, thread.seqs, thread.quals);
-                        }
-                        if (!empty(options.outFileNameSam))
-                            writeRecords(*outBamStream, thread.alignmentRecords);
-                        std::cerr << '.' << std::flush;
-                    }
-                }
-                catch (seqan2::IOError const &)
-                {
-                    std::throw_with_nested(seqan2::IOError{"Ran out of disk space for output files."});
-                }
 
-                if (doBreak)
-                    break;  // No more work left.
+                        SEQAN_OMP_PRAGMA(section)
+                        {
+                            if (options.seqOptions.simulateMatePairs)
+                            {
+                                for (size_t i = 0; i < length(thread.ids); i+=2)
+                                {
+                                    writeRecord(outSeqsRight, thread.ids[i+1], thread.seqs[i+1], thread.quals[i+1]);
+                                }
+                            }
+                        }
+
+                        SEQAN_OMP_PRAGMA(section)
+                        {
+                            if (!empty(options.outFileNameSam))
+                            {
+                                writeRecords(*outBamStream, thread.alignmentRecords);
+                            }
+                        }
+                    }
+                    std::cerr << '.' << std::flush;
+                }
             }
 
             std::cerr << " (" << contigFragmentCount << " fragments) OK\n";
