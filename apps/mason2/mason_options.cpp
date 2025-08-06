@@ -531,6 +531,22 @@ void SequencingOptions::addTextSections(seqan2::ArgumentParser & parser) const
                 "Reads are on the same strand but the \"right\" reads are sequenced to the left of the \"left\" reads, "
                 "same as 454 paired: R2 --> --> R1.");
 
+    addTextSection(parser, "Parallelism");
+    addListItem(parser, "\\fBGeneral\\fP",
+        "The contigs are processed sequentially. For each contig, the fragments/reads are simulated in parallel "
+        "by `--num-threads` many threads. The threads simulate batches of `chunks-size` many fragments each. "
+        "This is done until no more fragments are left to be simulated.");
+    addListItem(parser, "\\fBCPU-Utilization\\fP",
+        "When the number of fragments to simulate per contig is low, it may happen that not all threads are utilized. "
+        "For example, when there are 20,000 fragments to simulate for a contig, 32 threads are available, and each "
+        "thread simulates batches of 1000 (`--chunk-size`) fragments, only 20 threads are utilized. "
+        "Hence, `--chunk-size` affects CPU-utilization. However, very low chunk-sizes also lead to a large overhead, "
+        "especially when using only one thread. "
+        "While we set a sensible default, perfomance gains may be achieved by trying different chunk-sizes.");
+    addListItem(parser, "\\fBRandomization\\fP",
+        "Both `--chunk-size` and `--num-threads` affect randomization. Different values for these parameters yield "
+        "different results.");
+
     // Add text sections for nested options structs.
     bsSeqOptions.addTextSections(parser);
 }
@@ -1098,7 +1114,8 @@ void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
                                             seqan2::ArgParseOption::INTEGER, "NUM"));
     setDefaultValue(parser, "seed-spacing", "2048");
 
-    addOption(parser, seqan2::ArgParseOption("", "num-threads", "Number of threads to use.",
+    addOption(parser, seqan2::ArgParseOption("", "num-threads", "Number of threads to use."
+        "\\fBSee note about Parallelism at the end of the help page.\\fP",
                                             seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "num-threads", "1");
     setDefaultValue(parser, "num-threads", "1");
@@ -1107,13 +1124,7 @@ void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
                                             "file is given."));
 
     addOption(parser, seqan2::ArgParseOption("", "chunk-size", "Number of fragments to simulate in one batch. "
-        "The contigs are processed sequentially. For each contig, the fragments/reads are simulated in parallel. "
-        "The threads simulate `chunks-size` many fragments each. "
-        "This is done until no more fragments are left to be simulated. "
-        "Adjusting this parameter affects CPU utilization: Not all threads may be used if the number of fragments "
-        "to simulate per contig is low. "
-        "\\fBNote: This parameter also affects randomization.\\fP Different `chunks-size` parameters may yield "
-        "different results.",
+        "\\fBSee note about Parallelism at the end of the help page.\\fP",
                                             seqan2::ArgParseOption::INTEGER, "NUM"));
     setMinValue(parser, "chunk-size", "1");
     setDefaultValue(parser, "chunk-size", "900");
