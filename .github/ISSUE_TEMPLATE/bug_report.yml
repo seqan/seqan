@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: 2006-2025 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2025 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
+name: Bug report
+description: Problems with an application or the library? Create a report to help us improve SeqAn2!
+labels: [bug]
+body:
+- type: dropdown
+  id: version
+  attributes:
+    label: Version
+    description: What version of SeqAn are you running?
+    options:
+      - main
+      - 2.5.1
+      - 2.5.0
+      - 2.4.0
+      - Other
+      - Please select
+    default: 5
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Version info
+    description: Extended version information.
+    placeholder: |
+      * If the problem occurs with an application, provide the application version output (`--version` CLI argument).
+      * If you selected `Other` in the version dropdown, please provide the version information here.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Steps To Reproduce
+    description: |
+      * Apps: What command did you run (command line call)?
+      * Library: What code did you write (C++ code snippet)?
+      * If feasible, please provide input data that can be used to reproduce the issue.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Logs
+    description: Compiler or App output.
+    placeholder: |
+      * Copy and paste the relevant compiler or application output here.
+      * Alternatively, you can attach a log file by dragging it into this area.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Environment
+    description: |
+      Please provide information about your environment.
+      Do not worry if you are not sure about some of the details, just provide what you know.
+      To have a first look, the most important information is the compiler.
+      Examples:
+        - **Compiler**: clang 20, gcc 15, MSVC 19.40
+        - **Architecture**: amd64, aarch64, arm64; Mac: Intel or Apple Silicon
+        - **Operating system**: Debian 12, Ubuntu 24.04, macOS 15.1, Windows 11
+    value: |
+        - Compiler:
+        - Architecture:
+        - Operating system:
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
+  validations:
+    required: false
