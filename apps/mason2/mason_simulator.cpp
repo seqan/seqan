@@ -834,23 +834,11 @@ public:
 
     // Helper for distributing reads/pairs to contigs/haplotypes.
     ContigPicker contigPicker;
-    // Helper for storing the read ids for each contig/haplotype pair.
-    IdSplitter fragmentIdSplitter;
-    // Helper for storing the simulated reads for each contig/haplotype pair.  We will write out SAM files with the
-    // alignment information relative to the materialized sequence.
-    IdSplitter fragmentSplitter;
-    // Helper for joining the FASTQ files.
-    std::unique_ptr<FastxJoiner<seqan2::Fastq> > fastxJoiner;
-    // Helper for storing SAM records for each contig/haplotype pair.  In the end, we will join this again.
-    IdSplitter alignmentSplitter;
-    // Helper for joining the SAM files.
-    std::unique_ptr<SamJoiner> alignmentJoiner;
+    // How many fragments per contig/haplotype.
+    std::vector<int> fragmentsPerContig;
 
     // The BamHeader to use.
     seqan2::BamHeader bamHeader;
-    // BamFileOut and SeqFileOut objects for writing to alignmentSplitter and fragmentSplitter files.
-    std::vector<seqan2::BamFileOut *> bamFileOuts;
-    std::vector<seqan2::SeqFileOut *> seqFileOuts;
 
     // ----------------------------------------------------------------------
     // File Output
@@ -871,27 +859,7 @@ public:
             contigPicker(rng)
     {}
 
-    ~MasonSimulatorApp()
-    {
-        clearOutFiles();
-    }
-
-    void clearOutFiles()
-    {
-        for (unsigned i = 0; i < bamFileOuts.size(); ++i)
-            delete bamFileOuts[i];
-        bamFileOuts.clear();
-
-        for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            alignmentSplitter.files[i]->flush();
-
-        for (unsigned i = 0; i < seqFileOuts.size(); ++i)
-            delete seqFileOuts[i];
-        seqFileOuts.clear();
-
-        for (unsigned i = 0; i < fragmentIdSplitter.files.size(); ++i)
-            fragmentIdSplitter.files[i]->flush();
-    }
+    ~MasonSimulatorApp() = default;
 
     int run()
     {
@@ -949,6 +917,7 @@ public:
         seqan2::Dna5String refSeq;  // reference sequence
         std::vector<SmallVarInfo> varInfos;  // small variants for counting in read alignments
         std::vector<std::pair<int, int> > breakpoints;  // unused/ignored
+        std::vector<std::pair<int, int> > gapIntervals;
         while ((options.seqOptions.bsSeqOptions.bsSimEnabled &&
                 vcfMat.materializeNext(contigSeq, levels, varInfos, breakpoints, rID, hID)) ||
                (!options.seqOptions.bsSeqOptions.bsSimEnabled &&
@@ -958,28 +927,40 @@ public:
             contigFragmentCount = 0;
             readSequence(refSeq, vcfMat.faiIndex, rID);
 
-            while (true)  // Execute as long as there are fragments left.
+            int const contigID = rID * haplotypeCount + hID;
+            int const fragmentCountPrefixSum = std::reduce(fragmentsPerContig.begin(), fragmentsPerContig.begin() + contigID);
+            bool noFragmentsLeft = false;
+
+            while (!noFragmentsLeft)  // Execute as long as there are fragments left.
             {
-                bool doBreak = false;
                 for (int tID = 0; tID < options.numThreads; ++tID)
                 {
-                    // Read in the ids of the fragments to simulate.
-                    threads[tID].fragmentIds.resize(options.chunkSize);  // make space
-                    threads[tID].methLevels = &levels;
+                    auto & thread =  threads[tID];
 
-                    // Load the fragment ids to simulate for.
-                    fragmentIdSplitter.files[rID * haplotypeCount + hID]->read(
-                        reinterpret_cast<char *>(&threads[tID].fragmentIds[0]),
-                        sizeof(int) * options.chunkSize);
-                    int numRead = fragmentIdSplitter.files[rID * haplotypeCount + hID]->gcount() / 4;
+                    if (noFragmentsLeft)
+                    {
+                        thread.fragmentIds.clear();
+                        continue;
+                    }
+
+                    thread.methLevels = &levels;
+
+                    int const readsLeft = fragmentsPerContig[contigID] - contigFragmentCount;
+                    SEQAN_ASSERT_GEQ(readsLeft, 0);
+
+                    int const numRead = std::min(options.chunkSize, readsLeft);
+                    noFragmentsLeft = numRead == 0;
+                    SEQAN_ASSERT(!(noFragmentsLeft ^ (numRead == 0))); // noFragmentsLeft cannot be set to false after being set to true
+
+                    // First read ID = Prefixsum of already simulated reads + current count
+                    int const firstReadID = fragmentCountPrefixSum + contigFragmentCount;
                     contigFragmentCount += numRead;
-                    if (numRead == 0)
-                        doBreak = true;
-                    threads[tID].fragmentIds.resize(numRead);
+
+                    thread.fragmentIds.resize(numRead);
+                    std::iota(thread.fragmentIds.begin(), thread.fragmentIds.end(), firstReadID);
                 }
 
                 // Build gap intervals.
-                std::vector<std::pair<int, int> > gapIntervals;
                 buildGapIntervals(gapIntervals, contigSeq);
 
                 // Perform the simulation.
@@ -990,75 +971,56 @@ public:
                                                       refSeq, rID, hID);
                 }
 
-                // Write out the temporary sequence.
-                try
+                // Write out the sequence.
+                for (int tID = 0; tID < options.numThreads; ++tID)
                 {
-                    for (int tID = 0; tID < options.numThreads; ++tID)
-                    {
-                        unsigned idx = rID * haplotypeCount + hID;
-                        writeRecords(*seqFileOuts[idx], threads[tID].ids, threads[tID].seqs, threads[tID].quals);
-                        if (!empty(options.outFileNameSam))
-                            for (unsigned i = 0; i < length(threads[tID].alignmentRecords); ++i)
-                                writeRecord(*bamFileOuts[idx], threads[tID].alignmentRecords[i]);
-                        std::cerr << '.' << std::flush;
-                    }
-                }
-                catch (seqan2::IOError const &)
-                {
-                    std::throw_with_nested(seqan2::IOError{"Ran out of disk space for temporary files. "
-                        "Try setting the environment variable TMPDIR to a directory with more available disk space. "
-                        "For more information, see mason's help page ('Caveats')."});
-                }
+                    auto & thread =  threads[tID];
 
-                if (doBreak)
-                    break;  // No more work left.
+                    SEQAN_OMP_PRAGMA(parallel sections num_threads(options.numThreads))
+                    {
+                        // Note: `#pragma omp section` may only be used in `#pragma omp sections` construct
+                        //       I.e. the `if`-block must be the inner block.
+                        SEQAN_OMP_PRAGMA(section)
+                        {
+                            if (options.seqOptions.simulateMatePairs)
+                            {
+                                for (size_t i = 0; i < length(thread.ids); i+=2)
+                                {
+                                    writeRecord(outSeqsLeft, thread.ids[i], thread.seqs[i], thread.quals[i]);
+                                }
+                            }
+                            else
+                            {
+                                writeRecords(outSeqsLeft, thread.ids, thread.seqs, thread.quals);
+                            }
+                        }
+
+                        SEQAN_OMP_PRAGMA(section)
+                        {
+                            if (options.seqOptions.simulateMatePairs)
+                            {
+                                for (size_t i = 0; i < length(thread.ids); i+=2)
+                                {
+                                    writeRecord(outSeqsRight, thread.ids[i+1], thread.seqs[i+1], thread.quals[i+1]);
+                                }
+                            }
+                        }
+
+                        SEQAN_OMP_PRAGMA(section)
+                        {
+                            if (!empty(options.outFileNameSam))
+                            {
+                                writeRecords(*outBamStream, thread.alignmentRecords);
+                            }
+                        }
+                    }
+                    std::cerr << '.' << std::flush;
+                }
             }
 
             std::cerr << " (" << contigFragmentCount << " fragments) OK\n";
         }
         std::cerr << "  Done simulating reads.\n";
-    }
-
-    void _simulateReadsJoin()
-    {
-        std::cerr << "\nJoining temporary files ...";
-        clearOutFiles();  // clear output files such that they are flushed
-        fragmentSplitter.reset();
-        fastxJoiner.reset(new FastxJoiner<seqan2::Fastq>(fragmentSplitter));
-        FastxJoiner<seqan2::Fastq> & joiner = *fastxJoiner.get();  // Shortcut
-        seqan2::CharString id, seq, qual;
-        if (options.seqOptions.simulateMatePairs)
-            while (!joiner.atEnd())
-            {
-                joiner.get(id, seq, qual);
-                writeRecord(outSeqsLeft, id, seq, qual);
-                joiner.get(id, seq, qual);
-                writeRecord(outSeqsRight, id, seq, qual);
-            }
-        else
-            while (!joiner.atEnd())
-            {
-                joiner.get(id, seq, qual);
-                writeRecord(outSeqsLeft, id, seq, qual);
-            }
-        if (!empty(options.outFileNameSam))
-        {
-            alignmentSplitter.reset();
-            alignmentJoiner.reset(new SamJoiner(alignmentSplitter, outBamStream.get()));
-
-            // Write out header.
-            seqan2::BamFileOut & bamFileOut = *outBamStream;
-            writeHeader(bamFileOut, alignmentJoiner->header);
-
-            SamJoiner & joiner = *alignmentJoiner.get();  // Shortcut
-            seqan2::BamAlignmentRecord record;
-            while (!joiner.atEnd())
-            {
-                joiner.get(record);
-                writeRecord(bamFileOut, record);
-            }
-        }
-        std::cerr << " OK\n";
     }
 
     void _simulateReads()
@@ -1068,66 +1030,55 @@ public:
 
         // (1) Distribute read ids to the contigs/haplotypes.
         //
-        // We will simulate the reads in the order of contigs/haplotypes and in a final join script generate output file
-        // that are sorted by read id.
+        // We will simulate the reads in the order of contigs/haplotype.
         int seqCount = numSeqs(vcfMat.faiIndex);
         int haplotypeCount = vcfMat.numHaplotypes;
         std::cerr << "Distributing fragments to " << seqCount << " contigs (" << haplotypeCount
                   << " haplotypes each) ...";
+        fragmentsPerContig.resize(seqCount * haplotypeCount);
         for (int i = 0; i < options.numFragments; ++i)
-            fragmentIdSplitter.files[contigPicker.toId(contigPicker.pick())]->write(
-                reinterpret_cast<char *>(&i), sizeof(int));
-        fragmentIdSplitter.reset();
+        {
+            ++fragmentsPerContig[contigPicker.toId(contigPicker.pick())];
+        }
         std::cerr << " OK\n";
 
         // (2) Simulate the reads in the order of contigs/haplotypes.
         _simulateReadsDoSimulation();
-
-        // (3) Merge the sequences from external files into the output stream.
-        _simulateReadsJoin();
     }
 
     // Initialize the alignment splitter data structure.
-    void _initAlignmentSplitter()
+    void _initAlignmentOutput()
     {
-        // Open alignment splitters.
-        alignmentSplitter.numContigs = fragmentIdSplitter.numContigs;
-        alignmentSplitter.open();
-        // Construct output BAM files.
-        for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            bamFileOuts.push_back(new seqan2::BamFileOut(*alignmentSplitter.files[i], seqan2::Sam()));
         // Build and write out header, fill ref name store.
         seqan2::BamHeaderRecord vnHeaderRecord;
         vnHeaderRecord.type = seqan2::BAM_HEADER_FIRST;
         appendValue(vnHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("VN", "1.4"));
         appendValue(bamHeader, vnHeaderRecord);
+        seqan2::BamFileOut & bamFileOut = *outBamStream.get();
         for (unsigned i = 0; i < numSeqs(vcfMat.faiIndex); ++i)
         {
-            for (unsigned j = 0; j < bamFileOuts.size(); ++j)
-                if (!empty(options.matOptions.vcfFileName))
-                    appendName(contigNamesCache(context(*bamFileOuts[j])), contigNames(context(vcfMat.vcfFileIn))[i]);
-                else
-                    appendName(contigNamesCache(context(*bamFileOuts[j])), sequenceName(vcfMat.faiIndex, i));
+            if (!empty(options.matOptions.vcfFileName))
+                appendName(contigNamesCache(context(bamFileOut)), contigNames(context(vcfMat.vcfFileIn))[i]);
+            else
+                appendName(contigNamesCache(context(bamFileOut)), sequenceName(vcfMat.faiIndex, i));
             unsigned idx = 0;
-            if (!getIdByName(idx, vcfMat.faiIndex, contigNames(context(*bamFileOuts[0]))[i]))
+            if (!getIdByName(idx, vcfMat.faiIndex, contigNames(context(bamFileOut))[i]))
             {
                 std::stringstream ss;
-                ss << "Could not find " << contigNames(context(*bamFileOuts[0]))[i] << " from VCF file in FAI index.";
+                ss << "Could not find " << contigNames(context(bamFileOut))[i] << " from VCF file in FAI index.";
                 throw MasonIOException(ss.str());
             }
-            for (unsigned j = 0; j < bamFileOuts.size(); ++j)
-                appendValue(contigLengths(context(*bamFileOuts[j])), sequenceLength(vcfMat.faiIndex, idx));
+            appendValue(contigLengths(context(bamFileOut)), sequenceLength(vcfMat.faiIndex, idx));
             seqan2::BamHeaderRecord seqHeaderRecord;
             seqHeaderRecord.type = seqan2::BAM_HEADER_REFERENCE;
-            appendValue(seqHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("SN", contigNames(context(*bamFileOuts[0]))[i]));
+            appendValue(seqHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("SN", contigNames(context(bamFileOut))[i]));
             std::stringstream ss;
-            ss << contigLengths(context(*bamFileOuts[0]))[i];
+            ss << contigLengths(context(bamFileOut))[i];
             appendValue(seqHeaderRecord.tags, seqan2::Pair<seqan2::CharString>("LN", ss.str().c_str()));
             appendValue(bamHeader, seqHeaderRecord);
         }
-        // Write out header to each output BAM file.
-        for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            writeHeader(*bamFileOuts[i], bamHeader);
+
+        writeHeader(bamFileOut, bamHeader);
     }
 
     // Configure contigPicker.
@@ -1143,17 +1094,9 @@ public:
             if (i > 0u)
                 contigPicker.lengthSums[i] += contigPicker.lengthSums[i - 1];
         }
-        // Fragment id splitter.
-        fragmentIdSplitter.numContigs = numSeqs(vcfMat.faiIndex) * vcfMat.numHaplotypes;
-        fragmentIdSplitter.open();
-        // Splitter for sequence.
-        fragmentSplitter.numContigs = fragmentIdSplitter.numContigs;
-        fragmentSplitter.open();
-        for (unsigned i = 0; i < fragmentSplitter.files.size(); ++i)
-            seqFileOuts.push_back(new seqan2::SeqFileOut(*fragmentSplitter.files[i], seqan2::Fastq()));
         // Splitter for alignments, only required when writing out SAM/BAM.
         if (!empty(options.outFileNameSam))
-            _initAlignmentSplitter();
+            _initAlignmentOutput();
         std::cerr << " OK\n";
     }
 
@@ -1199,6 +1142,9 @@ public:
         vcfMat.init();
         std::cerr << " OK\n";
 
+        // Open output files.
+        _initOpenOutputFiles();
+
         // Configure contigPicker and fragment id splitter.
         _initContigPicker();
 
@@ -1210,9 +1156,6 @@ public:
                             options.methSeed + i * options.seedSpacing,
                             options);
         std::cerr << " OK\n";
-
-        // Open output files.
-        _initOpenOutputFiles();
     }
 
     void _printHeader()
