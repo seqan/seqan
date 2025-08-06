@@ -64,6 +64,22 @@ Some official applications might have additional requirements or only work on a 
 * [How-Tos](https://seqan.readthedocs.io/en/main/Tutorial/HowTo)
 * [API Documentation (stable)](https://docs.seqan.de/seqan/main/)
 
+### Building a SeqAn Application (*apps* Directory)
+
+To build an application from the `apps` directory, you can pass `-DSEQAN_BUILD_SYSTEM=APP:<APPNAME>` to CMake. \
+`<APPNAME>` is the name of one of the subdirectories in the `apps` directory. \
+In the examples below, we build the `mason2` application.
+
+```bash
+# To clone a specific release, replace `main` with the desired tag, e.g., `seqan-v2.5.1`.
+git clone --depth 1 --branch main https://github.com/seqan/seqan.git
+cd seqan
+mkdir -p build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSEQAN_BUILD_SYSTEM=APP:mason2
+cmake --build build --parallel
+ls build/bin # Binaries are available in the `build/bin` directory.
+```
+
 ## Contact
 
 * [Mailing List](https://lists.fu-berlin.de/listinfo/seqan-dev#subscribe)
