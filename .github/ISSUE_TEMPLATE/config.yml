@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2006-2025 Knut Reinert & Freie Universität Berlin
+# SPDX-FileCopyrightText: 2016-2025 Knut Reinert & MPI für molekulare Genetik
+# SPDX-License-Identifier: CC0-1.0
+
+blank_issues_enabled: true
+contact_links:
+  - name: "[Resource] Manual"
+    url: https://seqan.readthedocs.io/en/main
+    about: Tutorials, usage examples, and more!
+  - name: "[Resource] API Documentation"
+    url: https://docs.seqan.de/seqan/main
+    about: Documentation of the SeqAn2 API.
