@@ -74,7 +74,7 @@ struct MasonVariatorOptions
     int verbosity;
 
     // Seed for RNG.
-    int seed;
+    uint64_t seed;
 
     // ----------------------------------------------------------------------
     // Input / Output Options
@@ -1684,7 +1684,7 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Enable very verbose output."));
 
     addOption(parser, seqan2::ArgParseOption("s", "seed", "The seed to use for the random number generator.",
-                                            seqan2::ArgParseOption::INTEGER, "INT"));
+                                            seqan2::ArgParseOption::UINT64, "INT"));
     setDefaultValue(parser, "seed", "0");
 
     // ----------------------------------------------------------------------

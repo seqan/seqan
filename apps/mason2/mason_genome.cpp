@@ -65,7 +65,7 @@ struct MasonGenomeOptions
     seqan2::String<int64_t> contigLengths;
 
     // The seed to use for the RNG.
-    int seed;
+    uint64_t seed;
 
     MasonGenomeOptions() : verbosity(1), seed(0)
     {}

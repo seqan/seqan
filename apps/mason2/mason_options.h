@@ -79,7 +79,7 @@ struct MasonSimulateGenomeOptions
     // A list of the lengths of the contigs to simulate.
     seqan2::String<int64_t> contigLengths;
     // The seed to use for random number generation.
-    int seed;
+    uint64_t seed;
 
     MasonSimulateGenomeOptions() : seed(0)
     {}
@@ -649,12 +649,12 @@ struct MasonSimulatorOptions
     // Verbosity: 0 -- quiet, 1 -- normal, 2 -- verbose, 3 -- very verbose.
     int verbosity;
     // The seed for the random number generator.
-    int seed;
+    uint64_t seed;
     // The seed for the random number generator for methylation simulation.
-    int methSeed;
+    uint64_t methSeed;
     // The spacing of the see when using multi-threading.  Thread i (beginning with 0) will get (seed + i) as its
     // initial seed.  While not crytographically safe, this should be OK for read simulation.
-    int seedSpacing;
+    uint64_t seedSpacing;
     // The number of threads to use for the simulation.
     int numThreads;
     // Number of reads/pairs to simulate in one chunk
@@ -720,9 +720,9 @@ struct MasonMaterializerOptions
     int verbosity;
 
     // Seed to use in RNG.
-    int seed;
+    uint64_t seed;
     // Seed to use in RNG for methylation simulation.
-    int methSeed;
+    uint64_t methSeed;
 
     // Options for the materializer.
     MaterializerOptions matOptions;
@@ -768,7 +768,7 @@ struct MasonSplicingOptions
     int verbosity;
 
     // Seed to use in RNG.
-    int seed;
+    uint64_t seed;
 
     // Options for the materializer.
     MaterializerOptions matOptions;
@@ -813,7 +813,7 @@ struct MasonFragmentSequencingOptions
     int verbosity;
 
     // The seed to use for random number generation.
-    int seed;
+    uint64_t seed;
 
     // Whether to force single-end simulation although !empty(outFileNameRight).
     bool forceSingleEnd;
@@ -863,7 +863,7 @@ struct MasonMethylationOptions
     int verbosity;
 
     // The seed to use for the RNG.
-    int seed;
+    uint64_t seed;
 
     // Methylation simulation options.
     MethylationLevelSimulatorOptions methOptions;

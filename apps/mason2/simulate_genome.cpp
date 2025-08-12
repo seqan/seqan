@@ -46,7 +46,7 @@
 int simulateGenome(seqan2::SeqFileOut & stream, MasonSimulateGenomeOptions const & options)
 {
     // Initialize std generator and distribution
-    std::mt19937 generator(options.seed);
+    TRng generator(options.seed);
     std::uniform_real_distribution<double> distribution(0, 1);
     auto randomNumber = std::bind ( distribution, generator );
 
