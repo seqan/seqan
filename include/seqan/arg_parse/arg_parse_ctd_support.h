@@ -307,6 +307,9 @@ inline std::string _toValidGKNTypeSpecifier(ArgParseArgument const & me)
         case ArgParseArgument::INT64:
             return "int";
 
+        case ArgParseArgument::UINT64:
+            return "int";
+
         case ArgParseArgument::INPUT_FILE:
             return "input-file";
 
