@@ -161,6 +161,7 @@ inline bool _convertFlagValue(TObject & /*dst*/, std::string const & /*s*/)
 class ArgParseArgument;
 inline bool isIntegerArgument(ArgParseArgument const & me);
 inline bool isInt64Argument(ArgParseArgument const & me);
+inline bool isUInt64Argument(ArgParseArgument const & me);
 inline bool isDoubleArgument(ArgParseArgument const & me);
 inline bool isStringArgument(ArgParseArgument const & me);
 inline bool isBooleanArgument(ArgParseArgument const & me);
@@ -191,7 +192,7 @@ inline bool _convertArgumentValue(unsigned int & dst, ArgParseArgument const & o
 
 inline bool _convertArgumentValue(int64_t & dst, ArgParseArgument const & opt, std::string const & src)
 {
-    if (!isIntegerArgument(opt) && !isInt64Argument(opt))
+    if (!isIntegerArgument(opt) && !isInt64Argument(opt) && !isUInt64Argument(opt))
         return false;
 
     return _tryCast(dst, src);
@@ -199,7 +200,7 @@ inline bool _convertArgumentValue(int64_t & dst, ArgParseArgument const & opt, s
 
 inline bool _convertArgumentValue(uint64_t & dst, ArgParseArgument const & opt, std::string const & src)
 {
-    if (!isIntegerArgument(opt) && !isInt64Argument(opt))
+    if (!isIntegerArgument(opt) && !isInt64Argument(opt) && !isUInt64Argument(opt))
         return false;
 
     return _tryCast(dst, src);

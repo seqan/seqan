@@ -92,6 +92,9 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @val ArgParseArgument::ArgumentType ArgParseArgument::INT64;
  * @brief Argument is a signed 64 bit integer.
  *
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::UINT64;
+ * @brief Argument is an unsigned 64 bit integer.
+ *
  * @val ArgParseArgument::ArgumentType ArgParseArgument::DOUBLE;
  * @brief Argument is a floating point number stored as double.
  *
@@ -139,7 +142,8 @@ public:
         INPUTPREFIX = INPUT_PREFIX,
         OUTPUT_PREFIX, // .. an outoutprefix (implicitly also a string)
         INPUT_DIRECTORY,
-        OUTPUT_DIRECTORY
+        OUTPUT_DIRECTORY,
+        UINT64
     };
 
 
@@ -232,6 +236,9 @@ inline std::string _typeToString(ArgParseArgument const & me)
 
         case ArgParseArgument::INT64:
             return "int64";
+
+        case ArgParseArgument::UINT64:
+            return "uint64";
 
         case ArgParseArgument::STRING:
             return "string";
@@ -370,6 +377,27 @@ inline bool isIntegerArgument(ArgParseArgument const & me)
 inline bool isInt64Argument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::INT64;
+}
+
+// ----------------------------------------------------------------------------
+// Function isUInt64Argument()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn ArgParseArgument#isUInt64Argument
+ * @headerfile <seqan/arg_parse.h>
+ * @brief Returns whether the argument is an unsigned 64 bit integer.
+ *
+ * @signature bool isUInt64Argument(arg);
+ *
+ * @param[in] arg The ArgParseArgument to query.
+ *
+ * @return bool <tt>true</tt> if it is an unsigned 64 bit integer, <tt>false</tt> otherwise.
+ */
+
+inline bool isUInt64Argument(ArgParseArgument const & me)
+{
+    return me._argumentType == ArgParseArgument::UINT64;
 }
 
 // ----------------------------------------------------------------------------
@@ -615,6 +643,12 @@ inline void setMinValue(ArgParseArgument & me, const std::string minValue)
         _intervalAssert<int64_t>(minValue, me.maxValue);
         me.minValue = minValue;
     }
+    else if (isUInt64Argument(me))
+    {
+        SEQAN_CHECK(_isCastable<uint64_t>(minValue), "The maximal value for an unsigned 64 integer argument must be an unsigned 64 bit integer");
+        _intervalAssert<uint64_t>(minValue, me.maxValue);
+        me.minValue = minValue;
+    }
     else
         SEQAN_FAIL("min/max values are not applicable to non numeric arguments");
 }
@@ -650,8 +684,14 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
     }
     else if (isInt64Argument(me))
     {
-        SEQAN_CHECK(_isCastable<int>(maxValue), "The maximal value for a 64 bit integer argument must be an 64 bit integer");
-        _intervalAssert<int>(me.minValue, maxValue);
+        SEQAN_CHECK(_isCastable<int64_t>(maxValue), "The maximal value for a 64 bit integer argument must be a 64 bit integer");
+        _intervalAssert<int64_t>(me.minValue, maxValue);
+        me.maxValue = maxValue;
+    }
+    else if (isUInt64Argument(me))
+    {
+        SEQAN_CHECK(_isCastable<uint64_t>(maxValue), "The maximal value for an unsigned 64 bit integer argument must be an unsigned 64 bit integer");
+        _intervalAssert<uint64_t>(me.minValue, maxValue);
         me.maxValue = maxValue;
     }
     else
@@ -936,6 +976,9 @@ inline void _checkValue(ArgParseArgument const & me, std::string val, unsigned i
 
     if (isInt64Argument(me))
         _checkNumericArgument<int64_t>(me, val);
+
+    if (isUInt64Argument(me))
+        _checkNumericArgument<uint64_t>(me, val);
 
     if (isDoubleArgument(me))
         _checkNumericArgument<double>(me, val);

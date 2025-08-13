@@ -636,7 +636,7 @@ public:
         delete seqSimulator;
     }
 
-    void init(int seed, int methSeed, MasonSimulatorOptions const & newOptions)
+    void init(uint64_t seed, uint64_t methSeed, MasonSimulatorOptions const & newOptions)
     {
         rng.seed(seed);
         methRng.seed(methSeed);
@@ -1152,8 +1152,8 @@ public:
         std::cerr << "Initializing simulation threads ...";
         threads.resize(options.numThreads);
         for (int i = 0; i < options.numThreads; ++i)
-            threads[i].init(options.seed + i * options.seedSpacing,
-                            options.methSeed + i * options.seedSpacing,
+            threads[i].init(options.seed + static_cast<uint64_t>(i) * options.seedSpacing,
+                            options.methSeed + static_cast<uint64_t>(i) * options.seedSpacing,
                             options);
         std::cerr << " OK\n";
     }

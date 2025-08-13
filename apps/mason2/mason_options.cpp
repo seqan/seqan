@@ -1103,15 +1103,15 @@ void MasonSimulatorOptions::addOptions(seqan2::ArgumentParser & parser) const
     addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
     addOption(parser, seqan2::ArgParseOption("", "seed", "Seed to use for random number generator.",
-                                            seqan2::ArgParseOption::INTEGER, "NUM"));
+                                            seqan2::ArgParseOption::UINT64, "NUM"));
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("", "meth-seed", "Seed to use for methylation level random number "
-                                            "generator.", seqan2::ArgParseOption::INTEGER, "NUM"));
+                                            "generator.", seqan2::ArgParseOption::UINT64, "NUM"));
     setDefaultValue(parser, "meth-seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("", "seed-spacing", "Offset for seeds to use when multi-threading.",
-                                            seqan2::ArgParseOption::INTEGER, "NUM"));
+                                            seqan2::ArgParseOption::UINT64, "NUM"));
     setDefaultValue(parser, "seed-spacing", "2048");
 
     addOption(parser, seqan2::ArgParseOption("", "num-threads", "Number of threads to use."
@@ -1328,11 +1328,11 @@ void MasonMaterializerOptions::addOptions(seqan2::ArgumentParser & parser) const
     addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
     addOption(parser, seqan2::ArgParseOption("", "seed", "Seed for random number generation.",
-                                            seqan2::ArgParseOption::INTEGER, "Int"));
+                                            seqan2::ArgParseOption::UINT64, "Int"));
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("", "meth-seed", "Seed for methylation simulation random number generation.",
-                                            seqan2::ArgParseOption::INTEGER, "Int"));
+                                            seqan2::ArgParseOption::UINT64, "Int"));
     setDefaultValue(parser, "meth-seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("o", "out", "Output of materialized contigs.",
@@ -1446,7 +1446,7 @@ void MasonSplicingOptions::addOptions(seqan2::ArgumentParser & parser) const
     addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
     addOption(parser, seqan2::ArgParseOption("", "seed", "Seed for random number generation.",
-                                            seqan2::ArgParseOption::INTEGER, "Int"));
+                                            seqan2::ArgParseOption::UINT64, "Int"));
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("o", "out", "Output of materialized contigs.",
@@ -1552,7 +1552,7 @@ void MasonFragmentSequencingOptions::addOptions(seqan2::ArgumentParser & parser)
     addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
     addOption(parser, seqan2::ArgParseOption("", "seed", "Seed to use for random number generator.",
-                                            seqan2::ArgParseOption::INTEGER, "NUM"));
+                                            seqan2::ArgParseOption::UINT64, "NUM"));
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("i", "in", "Path to input file.",
@@ -1668,7 +1668,7 @@ void MasonMethylationOptions::addOptions(seqan2::ArgumentParser & parser) const
     addOption(parser, seqan2::ArgParseOption("vv", "very-verbose", "Highest verbosity."));
 
     addOption(parser, seqan2::ArgParseOption("", "seed", "Seed for RNG.",
-                                            seqan2::ArgParseOption::INTEGER, "INT"));
+                                            seqan2::ArgParseOption::UINT64, "INT"));
     setDefaultValue(parser, "seed", "0");
 
     addOption(parser, seqan2::ArgParseOption("i", "in", "Input FASTA file with genome.",
