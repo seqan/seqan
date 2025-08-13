@@ -342,6 +342,9 @@ macro (seqan_build_system_init)
         find_package(Boost)
         find_package(SeqAn CONFIG REQUIRED)
         find_package(LibXml2)
+    elseif (SEQAN_BUILD_SYSTEM MATCHES "APP:.*")
+        # At least look for LibXml2 such that CTD support can be tested when building apps.
+        find_package(LibXml2)
     endif ()
 
     option(CTD_TEST_ENABLED "Checks if correct ctd export of a tool can be tested automatically." OFF)
@@ -517,16 +520,11 @@ endmacro (seqan_setup_library)
 # ---------------------------------------------------------------------------
 
 macro (seqan_setup_install_vars APP_NAME)
-    if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "APP:${APP_NAME}")
-        set (SEQAN_PREFIX_SHARE ".")
-        set (SEQAN_PREFIX_SHARE_DOC ".")
-    else ()
-        if (NOT DEFINED CMAKE_INSTALL_DOCDIR_IS_SET)
-            set (CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc" CACHE STRING "Documentation root (DATAROOTDIR/doc)" FORCE)
-        endif ()
-        set (SEQAN_PREFIX_SHARE "${CMAKE_INSTALL_DATADIR}/${APP_NAME}")
-        set (SEQAN_PREFIX_SHARE_DOC "${CMAKE_INSTALL_DOCDIR}/${APP_NAME}")
+    if (NOT DEFINED CMAKE_INSTALL_DOCDIR_IS_SET)
+        set (CMAKE_INSTALL_DOCDIR "${CMAKE_INSTALL_DATAROOTDIR}/doc" CACHE STRING "Documentation root (DATAROOTDIR/doc)" FORCE)
     endif ()
+    set (SEQAN_PREFIX_SHARE "${CMAKE_INSTALL_DATADIR}/${APP_NAME}")
+    set (SEQAN_PREFIX_SHARE_DOC "${CMAKE_INSTALL_DOCDIR}/${APP_NAME}")
 endmacro (seqan_setup_install_vars)
 
 # ---------------------------------------------------------------------------
