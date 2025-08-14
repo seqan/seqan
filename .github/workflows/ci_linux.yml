@@ -54,7 +54,7 @@ jobs:
       - name: Setup cache
         uses: seqan/actions/setup-actions-cache@main
         with:
-          ccache_size: 125M
+          ccache_size: 150M
 
       - name: Configure tests
         run: |
