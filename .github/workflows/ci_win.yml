@@ -58,16 +58,26 @@ jobs:
 
       - name: Install conda dependencies
         run: |
-          conda install -c conda-forge boost-cpp bzip2 libxml2 zlib
+          conda install -c conda-forge boost-cpp bzip2 ccache libxml2 zlib
           $CONDA_BASE = conda info --base
           "$CONDA_BASE\Library\include" | Out-File -FilePath $env:GITHUB_PATH -Append
           "$CONDA_BASE\Library\lib" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Load ccache
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-${{ runner.os }}-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ github.workflow }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ github.workflow }}
 
       - name: Configure tests
         run: |
           New-Item -Name "build" -ItemType "directory" -Force
           cd build
           cmake .. -G "${{ matrix.name }}" `
+                   -C ../util/cmake/SeqAnMSVCccache.cmake `
                    -DCMAKE_BUILD_TYPE=Release `
                    -DCMAKE_CXX_FLAGS="/std:c++latest /EHsc /W2 /wd4244 /wd4146" `
                    -DSEQAN_DISABLE_VERSION_CHECK=ON `
@@ -76,7 +86,17 @@ jobs:
 
       - name: Build tests
         working-directory: build
-        run: cmake --build . --config Release --parallel 4 -- /p:ContinueOnError=ErrorAndContinue
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ${{ github.workspace }}/.ccache
+          CCACHE_COMPILERCHECK: content
+          CCACHE_COMPRESS: true
+          CCACHE_COMPRESSLEVEL: 12
+          CCACHE_MAXSIZE: 200M
+        run: |
+          ccache -z
+          cmake --build . --config Release --parallel 4 -- /p:ContinueOnError=ErrorAndContinue
+          ccache -svvx
 
       - name: Run tests
         working-directory: build
