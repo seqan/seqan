@@ -849,6 +849,8 @@ public:
         appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "INFO", "<ID=TARGETPOS,Number=1,Type=String,Description=\"Target position for duplications.\">"));
         appendValue(vcfHeader, seqan2::VcfHeaderRecord(
+                "FORMAT", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
+        appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "ALT", "<ID=INV,Description=\"Inversion\">"));
         appendValue(vcfHeader, seqan2::VcfHeaderRecord(
                 "ALT", "<ID=DUP,Description=\"Duplication\">"));
@@ -1266,6 +1268,7 @@ public:
         }
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
+        vcfRecord.format = "GT";
         // Build genotype infos.
         appendValue(vcfRecord.genotypeInfos, "");
         for (int hId = 0; hId < options.numHaplotypes; ++hId)
@@ -1329,6 +1332,7 @@ public:
         vcfRecord.id = variants.getVariantName(variants.posToIdx(Variants::SMALL_INDEL, idx));
         vcfRecord.filter = "PASS";
         vcfRecord.info = ".";
+        vcfRecord.format = "GT";
         // Build genotype infos.
 
         // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
@@ -1403,6 +1407,7 @@ public:
             ss << "SVTYPE=DEL";
         ss << ";SVLEN=" << svRecord.size;
         vcfRecord.info = ss.str();
+        vcfRecord.format = "GT";
 
         // Compute the number of bases in the REF column (1 in case of insertion and (k + 1) in the case of a
         // deletion of length k.
@@ -1514,6 +1519,13 @@ public:
         rightOfCutR.info = "SVTYPE=BND";
         leftOfPaste.info = "SVTYPE=BND";
         rightOfPaste.info = "SVTYPE=BND";
+        // FORMAT
+        leftOfCutL.format = "GT";
+        rightOfCutL.format = "GT";
+        leftOfCutR.format = "GT";
+        rightOfCutR.format = "GT";
+        leftOfPaste.format = "GT";
+        rightOfPaste.format = "GT";
 
         // Create genotype infos.
         appendValue(leftOfCutL.genotypeInfos, "");
@@ -1582,6 +1594,7 @@ public:
         std::stringstream ss;
         ss << "SVTYPE=INV;END=" << (svRecord.pos + svRecord.size) << ";SVLEN=" << svRecord.size;
         vcfRecord.info = ss.str();
+        vcfRecord.format = "GT";
 
         // Create genotype infos.
         appendValue(vcfRecord.genotypeInfos, "");
@@ -1619,6 +1632,7 @@ public:
         ss << "SVTYPE=DUP;SVLEN=" << svRecord.size << ";END=" << svRecord.pos + svRecord.size
            << ";TARGETPOS=" << contigNames(context(vcfFileOut))[svRecord.targetRId] << ":" << svRecord.targetPos + 1;
         vcfRecord.info = ss.str();
+        vcfRecord.format = "GT";
         appendValue(vcfRecord.ref, contig[vcfRecord.beginPos]);
         vcfRecord.alt = "<DUP>";
 

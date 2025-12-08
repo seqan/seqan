@@ -5,6 +5,7 @@
 ##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
 ##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
 ##INFO=<ID=TARGETPOS,Number=1,Type=String,Description="Target position for duplications.">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
 ##ALT=<ID=INV,Description="Inversion">
 ##ALT=<ID=DUP,Description="Duplication">
 ##contig=<ID=gi|56160436|ref|AC_000005.1|,length=34125>
