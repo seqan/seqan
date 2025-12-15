@@ -64,7 +64,7 @@ jobs:
           "$CONDA_BASE\Library\lib" | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Load ccache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .ccache
           key: ccache-${{ runner.os }}-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
