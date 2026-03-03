@@ -264,9 +264,20 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
     {
         // Invert SA value.
         TSAValue saValue = me.sa[saPos];
-        SEQAN_ASSERT_GEQ(suffixLength(saValue, me.contigSeqs), seedLength);
-        if (suffixLength(saValue, me.contigSeqs) < seedLength) continue;
-        setSeqOffset(saValue, suffixLength(saValue, me.contigSeqs) - seedLength);
+        // Bounds-check the SA entry before calling suffixLength().  Boundary
+        // SA values (from Ns randomisation) can reference positions beyond a
+        // contig, causing suffixLength() to underflow (unsigned) or access
+        // out-of-bounds memory.  We validate seqNo/seqOff inline and compute
+        // the suffix length ourselves to avoid the unsafe subtraction inside
+        // SeqAn's suffixLength().
+        auto _seqNo  = getSeqNo(saValue, stringSetLimits(me.contigSeqs));
+        if (_seqNo >= (decltype(_seqNo))length(me.contigSeqs)) continue;
+        auto _seqOff = getSeqOffset(saValue, stringSetLimits(me.contigSeqs));
+        auto _contigLen = length(me.contigSeqs[_seqNo]);
+        if (_seqOff > _contigLen) continue;                   // corrupt entry
+        auto _suffLen = _contigLen - _seqOff;
+        if (_suffLen < seedLength) continue;                   // suffix too short
+        setSeqOffset(saValue, _suffLen - seedLength);
 
         // Compute position in contig.
         TContigsPos contigBegin = saValue;
