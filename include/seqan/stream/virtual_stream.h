@@ -468,7 +468,7 @@ template <typename TValue, typename TStream, typename TCompressionType>
 inline bool _guessFormat(VirtualStream<TValue, Input> &, TStream &fileStream, TCompressionType &compressionType)
 {
     // peek the first character to initialize the underlying streambuf
-    fileStream.rdbuf()->sgetc();
+    (void)fileStream.rdbuf()->sgetc();
     return guessFormatFromStream(fileStream, compressionType);
 }
 
@@ -558,7 +558,7 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TC
 
     // peek the first character to initialize the underlying streambuf (for in_avail)
     SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE)  // Only getc if input stream.
-        fileStream.rdbuf()->sgetc();
+        (void)fileStream.rdbuf()->sgetc();
 
     SEQAN_IF_CONSTEXPR (IsSameType<TDirection, Input>::VALUE && !IsSameType<TStream, TBufferedStream>::VALUE)
     {

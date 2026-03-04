@@ -142,6 +142,10 @@ install (TARGETS mason_frag_sequencing
                  mason_variator
          DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+# This app is is included in the update check, but actually never installed.
+# This commented-out install call is for discovery by list_app_versions.sh.
+#install (TARGETS mason_tests DESTINATION ${CMAKE_INSTALL_BINDIR})
+
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/mason2 for SeqAn release builds.
 install (FILES LICENSE
