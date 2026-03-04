@@ -54,7 +54,7 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install fx_tools in ${PREFIX}/bin directory
-install (TARGETS fx_bam_coverage
+install (TARGETS fx_fastq_stats fx_bam_coverage
          DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and

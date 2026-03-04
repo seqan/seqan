@@ -93,9 +93,9 @@ install (TARGETS rabema_prepare_sam
                  rabema_evaluate
          DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-# Install rabema in /bin directory
-install (TARGETS rabema_prepare_sam rabema_build_gold_standard rabema_evaluate
-        DESTINATION ${CMAKE_INSTALL_BINDIR})
+# This app is is included in the update check, but actually never installed.
+# This commented-out install call is for discovery by list_app_versions.sh.
+#install (TARGETS rabema_do_search DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/pair_align for SeqAn release builds.

@@ -64,6 +64,10 @@ endif (NOT SEQAN_PREFIX_SHARE_DOC)
 install (TARGETS param_chooser
          DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+# This app is is included in the update check, but actually never installed.
+# This commented-out install call is for discovery by list_app_versions.sh.
+#install (TARGETS test_funcs_param_chooser DESTINATION ${CMAKE_INSTALL_BINDIR})
+
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/param_chooser for SeqAn release builds.
 install (FILES LICENSE
