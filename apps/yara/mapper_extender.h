@@ -260,13 +260,28 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
     TReadPos readPos = getPosInRead(me.seeds, seedId);
     TReadSeqSize seedLength = getValueI2(readPos) - getValueI1(readPos);
 
-    for (TSAPos saPos = getValueI1(hitRange); saPos < getValueI2(hitRange); ++saPos)
+    // std::min https://github.com/seqan/seqan/pull/2582#issuecomment-4000388370
+    for (TSAPos saPos = getValueI1(hitRange); saPos < std::min<TSAPos>(length(me.sa), getValueI2(hitRange)); ++saPos)
     {
         // Invert SA value.
         TSAValue saValue = me.sa[saPos];
-        SEQAN_ASSERT_GEQ(suffixLength(saValue, me.contigSeqs), seedLength);
-        if (suffixLength(saValue, me.contigSeqs) < seedLength) continue;
-        setSeqOffset(saValue, suffixLength(saValue, me.contigSeqs) - seedLength);
+
+        // https://github.com/seqan/seqan/pull/2582
+        auto const & limits = stringSetLimits(me.contigSeqs);
+        auto seqNo = getSeqNo(saValue, limits);
+
+        // Validate sequence number
+        if (seqNo >= length(me.contigSeqs))
+            continue;
+
+        auto seqOffset = getSeqOffset(saValue, limits);
+        auto contigLen = length(me.contigSeqs[seqNo]);
+
+        // Check for corrupt entry or insufficient suffix length
+        if (seqOffset > contigLen || contigLen - seqOffset < seedLength)
+            continue;
+
+        setSeqOffset(saValue, contigLen - seqOffset - seedLength);
 
         // Compute position in contig.
         TContigsPos contigBegin = saValue;
