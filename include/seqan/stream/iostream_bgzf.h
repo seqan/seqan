@@ -490,13 +490,14 @@ public:
                 if (!job.ready)
                 {
                     // decompress block
-                    job.size = _decompressBlock(
+                    auto decompressed_size = _decompressBlock(
                         &job.buffer[0] + MAX_PUTBACK, capacity(job.buffer),
                         &job.inputBuffer[0], job.compressedSize, compressionCtx);
 
                     // signal that job is ready
                     {
                         std::unique_lock<std::mutex> lock(job.cs);
+                        job.size = decompressed_size;
                         job.ready = true;
                     }
                     job.readyEvent.notify_all();
