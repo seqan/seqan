@@ -45,6 +45,11 @@ if (POLICY CMP0054)  # Disables auto-dereferencing of variables in quoted statem
   cmake_policy(SET CMP0054 NEW)
 endif()
 
+# https://cmake.org/cmake/help/latest/policy/CMP0167.html
+if (POLICY CMP0167)
+    cmake_policy (SET CMP0167 NEW)
+endif ()
+
 # Valid values for SEQAN_BUILD_SYSTEM:
 #
 # DEVELOP
@@ -326,11 +331,6 @@ macro (seqan_build_system_init)
         (NOT APPLE) AND
         (COMPILER_CLANG OR COMPILER_GCC))
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
-    endif ()
-
-    # https://cmake.org/cmake/help/latest/policy/CMP0167.html
-    if (POLICY CMP0167)
-        cmake_policy (SET CMP0167 NEW)
     endif ()
 
     # search dependencies once, globally, if in DEVELOP
