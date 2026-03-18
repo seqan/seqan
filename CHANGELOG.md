@@ -2,6 +2,26 @@
 
 This file summarizes the changes to the SeqAn library and apps.
 
+## Release 2.5.3
+
+### Platform Support
+
+* Support for new compilers: Clang 22.
+* Compiler support (tested):
+  * GCC 13, 14, 15
+  * Clang 20, 21, 22
+  * Intel oneAPI C++ Compiler 2025.0 (IntelLLVM)
+  * Microsoft Visual Studio 17
+  * Other compilers might work but are not tested.
+
+### Selected Bug Fixes
+
+* I/O:
+  * Fixed discarded `nodiscard` values for Clang 22.
+  * Resolved a rare data race in the BGZF stream.
+* Yara:
+  * Incorporated safeguards to prevent out of bounds access in certain edge cases.
+
 ## Release 2.5.2
 
 ### Platform Support
