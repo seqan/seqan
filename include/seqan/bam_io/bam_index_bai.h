@@ -217,7 +217,33 @@ _getMinFileOffset(uint64_t & minFileOffset,
         return false;
 
     minFileOffset = bamIndex._linearIndices[refId][windowIdx];
-
+    // Indices created by Picard tools or samtools 0.1.7 may contain 0 when there are no alignments in the bin.
+    // Now we have to look for the next lower bin which contains an offset > 0.
+    int32_t cRefId = refId;
+    if (minFileOffset == 0u)
+    {
+        while (true)
+        {
+            for (uint32_t i = 1; i <= windowIdx; ++i)   // Check the previous bins of the current refId
+            {
+                uint32_t j = windowIdx - i;
+                if (bamIndex._linearIndices[cRefId][j] != 0u)
+                {
+                    minFileOffset = bamIndex._linearIndices[cRefId][j];
+                    return true;;
+                }
+            }
+            if (cRefId == 0u)
+            {
+                return false;
+            }
+            else
+            {
+		--cRefId;                               // Nothing found here. Try the previous refId;
+                windowIdx = length(bamIndex._linearIndices[cRefId]);
+            }
+        }
+    }
     return true;
 }
 
@@ -410,6 +436,11 @@ jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
         uint64_t seek_pos = position(bamFile); // store current pos to reset bamFile if necessary
 
         readRecord(record, bamFile);
+        while (!atEnd(bamFile) && record.rID < refId) // in case _getMinFileOffset pointed to a lower bin.
+        {
+            seek_pos = position(bamFile);
+            readRecord(record, bamFile);
+        }
 
         if (record.beginPos == -1 /*invalid pos*/ || static_cast<uint32_t>(record.beginPos) > regionEnd)
             break; // no records can be found anymore in coordinate sorted file
