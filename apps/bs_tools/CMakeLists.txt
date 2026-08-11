@@ -21,6 +21,11 @@ endif ()
 # Dependencies
 # ----------------------------------------------------------------------------
 
+# https://cmake.org/cmake/help/latest/policy/CMP0167.html
+if (POLICY CMP0167)
+    cmake_policy (SET CMP0167 NEW)
+endif ()
+
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (ZLIB)
@@ -41,13 +46,6 @@ endif ()
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
-
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
 
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -75,12 +73,9 @@ add_executable (four2three four2three.cpp
                     four2three.h)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (bisar ${SEQAN_LIBRARIES})
-target_link_libraries (casbar ${Boost_LIBRARIES} ${SEQAN_LIBRARIES})
-target_link_libraries (four2three ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (bisar seqan::seqan2)
+target_link_libraries (casbar Boost::boost seqan::seqan2)
+target_link_libraries (four2three seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes

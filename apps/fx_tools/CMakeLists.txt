@@ -25,24 +25,18 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Setup SeqAn requirements.
-include_directories (${SEQAN_INCLUDE_DIRS})
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
-
 # Computation of coverage and C+G content from genome and mapping.
 add_executable (fx_bam_coverage fx_bam_coverage.cpp)
-target_link_libraries (fx_bam_coverage ${SEQAN_LIBRARIES})
+target_link_libraries (fx_bam_coverage seqan::seqan2)
 
 # Computation of statistics on FASTQ files.
 add_executable (fx_fastq_stats fx_fastq_stats.cpp)
-target_link_libraries (fx_fastq_stats ${SEQAN_LIBRARIES})
+target_link_libraries (fx_fastq_stats seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

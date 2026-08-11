@@ -32,27 +32,19 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable (roi_plot_thumbnails roi_plot_thumbnails.cpp png_canvas.h)
-target_link_libraries (roi_plot_thumbnails ${SEQAN_LIBRARIES})
+target_link_libraries (roi_plot_thumbnails seqan::seqan2)
 
 # bam2roi converts BAM file into ROI files.
 add_executable (bam2roi bam2roi.cpp roi_builder.h roi_builder.cpp record_ext.h)
-target_link_libraries (bam2roi ${SEQAN_LIBRARIES})
+target_link_libraries (bam2roi seqan::seqan2)
 
 # roi_feature_projection allows the projection of ROIs to features (BED/GFF
 # intervals or GFF exons).
@@ -62,7 +54,7 @@ add_executable (roi_feature_projection
                 project_spliced.h
                 project_interval.cpp
                 project_interval.h)
-target_link_libraries (roi_feature_projection ${SEQAN_LIBRARIES})
+target_link_libraries (roi_feature_projection seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

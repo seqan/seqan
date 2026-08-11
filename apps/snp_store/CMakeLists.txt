@@ -16,6 +16,11 @@ set (SEQAN_APP_VERSION "1.3.14")
 # Dependencies
 # ----------------------------------------------------------------------------
 
+# https://cmake.org/cmake/help/latest/policy/CMP0167.html
+if (POLICY CMP0167)
+    cmake_policy (SET CMP0167 NEW)
+endif ()
+
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (ZLIB)
@@ -37,13 +42,6 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -53,10 +51,7 @@ add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 add_executable (snp_store snp_store.cpp snp_store.h)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (snp_store ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (snp_store Boost::boost seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Setup Common Tool Description for Generic Workflow Nodes

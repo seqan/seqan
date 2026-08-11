@@ -31,12 +31,6 @@ endif (NOT ZLIB_FOUND)
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -44,7 +38,7 @@ add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
 # Preparation of SAM files, i.e. filling SEQ field of each record.
 add_executable (rabema_prepare_sam prepare_sam.cpp sorting.h)
-target_link_libraries (rabema_prepare_sam ${SEQAN_LIBRARIES})
+target_link_libraries (rabema_prepare_sam seqan::seqan2)
 
 # Building of GSI file from "perfect" SAM file and reference sequence.
 add_executable (rabema_build_gold_standard
@@ -57,7 +51,7 @@ add_executable (rabema_build_gold_standard
                rabema_stats.h
                ref_id_mapping.h
                sorting.h)
-target_link_libraries (rabema_build_gold_standard ${SEQAN_LIBRARIES})
+target_link_libraries (rabema_build_gold_standard seqan::seqan2)
 
 # Comparison of arbitrary read mapper SAM against GSI file.
 add_executable (rabema_evaluate rabema_evaluate.cpp
@@ -69,14 +63,11 @@ add_executable (rabema_evaluate rabema_evaluate.cpp
                rabema_stats.h
                ref_id_mapping.h
                sorting.h)
-target_link_libraries (rabema_evaluate ${SEQAN_LIBRARIES})
+target_link_libraries (rabema_evaluate seqan::seqan2)
 
 # Small tool for helping in debugging.
 add_executable (rabema_do_search do_search.cpp find_myers_ukkonen_ext.h)
-target_link_libraries (rabema_do_search ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (rabema_do_search seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

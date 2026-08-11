@@ -342,7 +342,7 @@ macro (seqan_build_system_init)
         find_package(Boost)
         find_package(SeqAn CONFIG REQUIRED)
         find_package(LibXml2)
-    elseif (SEQAN_BUILD_SYSTEM MATCHES "APP:.*")
+    else ()
         # At least look for LibXml2 such that CTD support can be tested when building apps.
         find_package(LibXml2)
     endif ()
@@ -352,7 +352,7 @@ macro (seqan_build_system_init)
     if (LIBXML2_FOUND)
         find_program (XMLLINT_EXECUTABLE xmllint DOC "The xmllint tool available in the xmllib package.")
         if (XMLLINT_EXECUTABLE-NOTFOUND)
-            message (STATUS "Could not find xmllint. Not configuring ctd tests.")
+            message (STATUS "Could not find xmllint. Not configuring CTD tests.")
         else ()
             set(CTD_SCHEMA_ROOT "${PROJECT_BINARY_DIR}/vendor/ctd_schema")
             execute_process(COMMAND git clone https://github.com/WorkflowConversion/CTDSchema.git ${CTD_SCHEMA_ROOT}
@@ -360,11 +360,14 @@ macro (seqan_build_system_init)
                             ERROR_QUIET)
 
             if (NOT EXISTS "${CTD_SCHEMA_ROOT}/CTD.xsd")
-                message (STATUS "Could not find CTD.xsd in <${CTD_SCHEMA_ROOT}>. Not confoguing ctd tests.")
+                message (STATUS "Could not find CTD.xsd in <${CTD_SCHEMA_ROOT}>. Not configuring CTD tests.")
             else ()
                 set (CTD_TEST_ENABLED ON)
+                message (STATUS "CTD testing enabled.")
             endif ()
         endif ()
+    else ()
+        message (STATUS "Could not find LibXml2. Not configuring CTD tests.")
     endif ()
 
 endmacro (seqan_build_system_init)
@@ -416,10 +419,7 @@ endif ()
 # The variable CTD_TEST_ENABLED indicates if the update was successful.
 
 macro (seqan_add_ctd_test APP_NAME)
-    # Check if we are good to go for testing the file.
-    if (NOT CTD_TEST_ENABLED)
-        message (STATUS "CTD testing was not configured.")
-    else ()
+    if (CTD_TEST_ENABLED)
         # Add a custom command to create the ctd once the binary has been built.
         add_custom_command(TARGET ${APP_NAME}
                            POST_BUILD

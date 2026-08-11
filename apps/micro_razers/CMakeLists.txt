@@ -25,12 +25,6 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -46,10 +40,7 @@ add_executable (micro_razers
                ../razers/param_tabs.inc)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (micro_razers ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (micro_razers seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

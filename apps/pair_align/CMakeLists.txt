@@ -25,19 +25,10 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable (pair_align pair_align.cpp)
@@ -47,8 +38,7 @@ add_executable (pair_align pair_align.cpp)
 add_subdirectory(lib)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (pair_align pair_align_lib ${SEQAN_LIBRARIES})
-
+target_link_libraries (pair_align pair_align_lib seqan::seqan2)
 # ----------------------------------------------------------------------------
 # Installation
 # ----------------------------------------------------------------------------

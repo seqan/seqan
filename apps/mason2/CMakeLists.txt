@@ -116,7 +116,7 @@ set (SEQAN_CTD_EXECUTABLES
     mason_simulator
     CACHE INTERNAL "")
 
-#Add test to check correct ctd generation.
+# Add test to check correct ctd generation.
 seqan_add_ctd_test (mason_genome)
 seqan_add_ctd_test (mason_frag_sequencing)
 seqan_add_ctd_test (mason_variator)
