@@ -16,6 +16,11 @@ set (SEQAN_APP_VERSION "0.2.16")
 # Dependencies
 # ----------------------------------------------------------------------------
 
+# https://cmake.org/cmake/help/latest/policy/CMP0167.html
+if (POLICY CMP0167)
+    cmake_policy (SET CMP0167 NEW)
+endif ()
+
 # Search SeqAn and select dependencies.
 if (NOT "${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
     find_package (OpenMP COMPONENTS CXX)
@@ -44,14 +49,6 @@ endif()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-#add_definitions("-DQGRAM_LENGTH=5")
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -69,12 +66,9 @@ set_property(TARGET fiona PROPERTY CXX_STANDARD 17)
 set_property(TARGET fiona_illumina PROPERTY CXX_STANDARD 17)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (compute_gain ${SEQAN_LIBRARIES})
-target_link_libraries (fiona ${SEQAN_LIBRARIES})
-target_link_libraries (fiona_illumina ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (compute_gain seqan::seqan2)
+target_link_libraries (fiona Boost::boost seqan::seqan2)
+target_link_libraries (fiona_illumina Boost::boost seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

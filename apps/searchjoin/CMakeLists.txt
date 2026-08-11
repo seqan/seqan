@@ -26,11 +26,8 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS} -DSEARCHJOIN_HUGEDB=TRUE)
+# Add definitions.
+add_definitions (-DSEARCHJOIN_HUGEDB=TRUE)
 
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
@@ -42,11 +39,8 @@ add_executable (s4_search search.cpp finder.h db.h verifier.h writer.h)
 add_executable (s4_join join.cpp finder.h db.h verifier.h writer.h)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (s4_search ${SEQAN_LIBRARIES})
-target_link_libraries (s4_join ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (s4_search seqan::seqan2)
+target_link_libraries (s4_join seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

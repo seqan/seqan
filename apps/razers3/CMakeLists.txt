@@ -28,12 +28,6 @@ endif ()
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
@@ -67,13 +61,10 @@ add_executable (razers3_simulate_reads simulate_reads.cpp)
 add_executable (razers3_quality2prob quality2prob.cpp)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (razers3 ${SEQAN_LIBRARIES})
-target_link_libraries (razers3_simulate_reads ${SEQAN_LIBRARIES})
-target_link_libraries (razers3_quality2prob ${SEQAN_LIBRARIES})
-#target_link_libraries (razers3_compPHSens ${SEQAN_LIBRARIES})
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+target_link_libraries (razers3 seqan::seqan2)
+target_link_libraries (razers3_simulate_reads seqan::seqan2)
+target_link_libraries (razers3_quality2prob seqan::seqan2)
+#target_link_libraries (razers3_compPHSens seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation

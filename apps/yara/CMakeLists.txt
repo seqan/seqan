@@ -64,19 +64,10 @@ endif (MSVC)
 # Build Setup
 # ----------------------------------------------------------------------------
 
-# Add include directories.
-include_directories (${SEQAN_INCLUDE_DIRS})
-
-# Add definitions set by find_package (SeqAn).
-add_definitions (${SEQAN_DEFINITIONS})
-
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
-
-# Add CXX flags found by find_package (SeqAn).
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable(yara_indexer indexer.cpp
@@ -117,8 +108,8 @@ add_executable(yara_mapper    mapper.cpp
                               index_fm.h)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (yara_indexer ${SEQAN_LIBRARIES})
-target_link_libraries (yara_mapper ${SEQAN_LIBRARIES})
+target_link_libraries (yara_indexer seqan::seqan2)
+target_link_libraries (yara_mapper seqan::seqan2)
 
 # ----------------------------------------------------------------------------
 # Installation
