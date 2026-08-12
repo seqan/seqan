@@ -61,7 +61,7 @@ typedef Tag<Vcf_> Vcf;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [VcfHeader]
+// Function readHeader()                                            [VcfHeader]
 // ----------------------------------------------------------------------------
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TString>
