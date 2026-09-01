@@ -82,7 +82,19 @@ writeRecord(TTarget & target,
             Vcf const & /*tag*/)
 {
     // CHROM
-    write(target, contigNames(context)[record.rID]);
+    // safe the id of the corresponding contig name
+    auto s = contigNames(context)[record.rID];
+    for (size_t i{0}; i < length(s) - 3; ++i) {
+        if (s[i] == 'I' and s[i+1] == 'D' and s[i+2] == '=') {
+            erase(s, 0, i+3);
+            for (; i < length(s); ++i) {
+                if (s[i] < '0' or s[i] > '9') break;
+            }
+            erase(s, i, length(s));
+            break;
+        }
+    }
+    write(target, s);
     writeValue(target, '\t');
 
     // POS
