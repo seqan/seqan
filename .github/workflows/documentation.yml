@@ -24,6 +24,7 @@ jobs:
   my_job:
     name: Deploy Documentation
     runs-on: ubuntu-latest
+    environment: server-deploy # deployment branch: main
     timeout-minutes: 30
     if: github.repository_owner == 'seqan'
     steps:
